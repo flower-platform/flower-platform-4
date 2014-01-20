@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+ @author Cristina
+-->
+<popup:TextAreaPopup 
+	implements="com.crispico.flower.flexdiagram.dialog.IDialog"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:popup="com.crispico.flower.util.popup.*" 
+	xmlns:ns="com.crispico.flower.util.ui_inheritance.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.crispico.flower.flexdiagram.dialog.IDialogResultHandler;
+			import com.crispico.flower.util.UtilAssets;
+			
+			public static const OK:int = 0;
+			
+			public static const CANCEL:int = 1;
+			
+			private var resultHandler:IDialogResultHandler;
+			
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				this.resultHandler = resultHandler;
+			}
+			
+			protected override function formOkHandler(event:MouseEvent):void {			
+				resultHandler.handleDialogResult(OK);
+				closeForm();	
+			}
+			
+			protected override function formCancelHandler(event:Event = null):void {
+				resultHandler.handleDialogResult(CANCEL);
+				closeForm();
+			}
+			
+			public static function show(title:String, message:String, resultHandler:IDialogResultHandler, isHHTML:Boolean = false, width:int = NaN, height:int = NaN):void {
+				var popup:OKCancelTextAreaPopup = new OKCancelTextAreaPopup();
+				popup.setResultHandler(resultHandler);			
+				popup.isHTML = isHHTML;
+				popup.title = title;
+				popup.text = message;
+				
+				popup.showPopup(width, height);	
+			}
+			
+		]]>
+	</mx:Script>
+		
+	<ns:InheritableStates component="{this}" currentState="default">
+		<ns:inheritableStates>
+			
+			<mx:State name="default">
+				<mx:AddChild relativeTo="{textAreaPopupControlBar}">
+					<mx:Button id="cancelButton" label="{UtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="formCancelHandler()"/>
+				</mx:AddChild>
+			</mx:State>
+					
+		</ns:inheritableStates>
+	</ns:InheritableStates>
+	
+</popup:TextAreaPopup>

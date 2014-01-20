@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.selection.ISelectionProvider">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			private var _viewHost:IViewHost;
+			
+			public function get viewHost():IViewHost
+			{
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void
+			{
+				_viewHost = value;
+			}
+			
+			
+			public function getActions(selection:IList):Vector.<IAction>
+			{
+				return null;
+			}
+			
+			public function getSelection():IList
+			{
+				return new ArrayList(tree1.selectedItems);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Tree id="tree1" labelField="@label" showRoot="true" width="100%" height="100%" change="FlexUtilGlobals.getInstance().selectionManager.selectionChanged(viewHost, this)">
+		<mx:XMLListCollection id="MailBox">
+			<mx:XMLList>
+				<folder label="Mail">
+					<folder label="INBOX"/>
+					<folder label="Personal Folder">
+						<Pfolder label="Business" />
+						<Pfolder label="Demo" /> 
+						<Pfolder label="Personal" isBranch="true" /> 
+						<Pfolder label="Saved Mail" /> 
+					</folder>
+					<folder label="Sent" />
+					<folder label="Trash" />
+				</folder>
+			</mx:XMLList>
+		</mx:XMLListCollection>
+	</mx:Tree>
+	
+</mx:Box>

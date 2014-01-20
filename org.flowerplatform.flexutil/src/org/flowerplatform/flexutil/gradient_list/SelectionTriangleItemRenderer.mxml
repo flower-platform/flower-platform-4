@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+	Item renderer that displays a triangle on the right (default) or left side for selected items.
+
+	<p>
+	Uses the following styles set on the host component:
+	<ul>
+		<li> showSelectionTriangle
+		<li> selectionTriangleHeight - the height of the triangle
+		<li> selectionTriangleWidth - the width of the triangle
+		<li> selectionTriangleColor - the color of the triangle lines
+		<li> selectionTriangleBackgroundColor - should be set to the color of the component next to the list
+		<li> showSelectionTriangleOnLeftSide - show the selection triangle on the left side of the renderer
+		<li> showGradientAroundSelectionTriangle - adds a gradient around the selection triangle
+		<li> selectionColor - the color used by selected items
+		<li> horizontalDelimiterOffset - left and right offset for the horizontal delimiter
+		<li> horizontalDelimiterColor - the color of the horizontal delimiter
+		<li> paddingLeft - left padding for the data displayed by the renderer
+	</ul>
+
+	<p>
+	Default values are set by the <code>GradientBackgroundList</code> component.
+
+	@author Mariana
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:local="org.flowerplatform.flexutil.gradient_list.*" 
+				width="100%" height="50"
+				autoDrawBackground="false">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.graphics.SolidColorStroke;
+			
+			import spark.components.List;
+			
+			/**
+			 * Accessed from <code>BorderWithSelectionTriangle</code>.
+			 */ 
+			public function get isHovered():Boolean {
+				return hovered;
+			}
+			
+			public var backgroundColor:Number = -1;
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<fx:Component className="BorderWithSelectionTriangle">
+			<s:Rect left="0" right="0" top="0" bottom="0" stroke="{new SolidColorStroke()}">
+				<fx:Script>
+					<![CDATA[
+						import mx.core.UIComponent;
+						import mx.graphics.SolidColorStroke;
+						
+						import spark.components.List;
+						
+						/**
+						 * Draw a triangle in the right side of the item.
+						 */ 
+						override protected function draw(graphics:Graphics):void {
+							var renderer:SelectionTriangleItemRenderer = SelectionTriangleItemRenderer(this.parent);
+							var owner:List = List(renderer.owner);
+							
+							graphics.lineStyle(1, owner.getStyle("horizontalDelimiterColor"), 1);
+							
+							// horizontal separator
+							var horizontalDelimiterOffset:int = owner.getStyle("horizontalDelimiterOffset");
+							graphics.moveTo(horizontalDelimiterOffset, height);
+							graphics.lineTo(width - horizontalDelimiterOffset, height);
+							
+							var gradientColor:Number = owner.getStyle("gradientColor");
+							if (renderer.backgroundColor != -1) {
+								drawBackground(graphics, renderer.backgroundColor);
+								gradientColor = renderer.backgroundColor;
+							}
+							
+							graphics.lineStyle(1, gradientColor, 1);
+							
+							if (renderer.dataLabel) {
+								renderer.dataLabel.setStyle("paddingLeft", owner.getStyle('paddingLeft'));
+							}
+							
+							if (renderer.selected) {
+								// draw a gradient around the triangle
+								if (owner.getStyle("showGradientAroundSelectionTriangle") && owner.getStyle("showSelectionTriangle")) {
+									var gradientAlpha:Number = 1;
+									var count:int = 1;
+									while (gradientAlpha > 0) {
+										drawTriangle(graphics, gradientColor, gradientAlpha, count);
+										gradientAlpha -= 0.25;
+										count++;
+									}
+								}
+								
+								// draw the selection background
+								drawBackground(graphics, owner.getStyle("selectionColor"), 0.5);
+								
+								// fill the triangle with the background color
+								if (owner.getStyle("showSelectionTriangle")) {
+									graphics.beginFill(owner.getStyle("selectionTriangleBackgroundColor"));
+									drawTriangle(graphics, gradientColor);
+									graphics.endFill();
+								
+									// draw a white line to cover up the vertical side of the triangle
+									graphics.lineStyle(1, owner.getStyle("selectionTriangleBackgroundColor"), 1);
+									graphics.lineTo(owner.getStyle("showSelectionTriangleOnLeftSide") ? 0 : width, height/2 - owner.getStyle("selectionTriangleHeight")/2);
+									
+									// finally draw the triangle border, so it doesn't get covered up by the selection background
+									drawTriangle(graphics, owner.getStyle("selectionTriangleColor"));
+								}
+							}
+							
+							if (renderer.isHovered && owner.getStyle("showHoverEffect")) {
+								// semitransparent background
+								graphics.lineStyle(1, owner.getStyle("selectionColor"), 0.5);
+								graphics.beginFill(owner.getStyle("selectionColor"), 0.1);
+								graphics.drawRect(0, 0, width, height);
+								graphics.endFill();
+							}
+						}
+						
+						private function drawBackground(graphics:Graphics, color:Number, gradientAlpha:Number = 1):void {
+							graphics.lineStyle(0, 0xFFFFFF, 0);
+							graphics.beginFill(color, gradientAlpha);
+							graphics.drawRect(0, 0, width, height);
+							graphics.endFill();
+						}
+						
+						private function drawTriangle(graphics:Graphics, color:Number, gradientAlpha:Number = 1, count:int = 0):void {
+							var renderer:SelectionTriangleItemRenderer = SelectionTriangleItemRenderer(this.parent);
+							var owner:List = List(renderer.owner);
+							var triangleHeight:int = owner.getStyle("selectionTriangleHeight");
+							// don't let the triangle height exceed 60% of the height of the renderer
+							if (triangleHeight > 0.6 * renderer.height) {
+								triangleHeight = 0.6 * renderer.height;
+							}
+							var triangleWidth:int = owner.getStyle("selectionTriangleWidth");
+							var showTriangleOnLeftSide:Boolean = owner.getStyle("showSelectionTriangleOnLeftSide");
+							var side:int = showTriangleOnLeftSide ? 0 : width;
+							var m:int = showTriangleOnLeftSide ? -1 : 1;
+							
+							graphics.lineStyle(count == 0 ? 1 : count, color, gradientAlpha);
+							graphics.moveTo(side, height/2 - triangleHeight/2 - count);				// first side
+							graphics.lineTo(side - m * (count + triangleWidth + 2), height/2 - 1);	// rounded tip
+							graphics.lineTo(side - m * (count + triangleWidth + 2), height/2 + 1);
+							graphics.lineTo(side, height/2 + triangleHeight/2 + count);				// second side
+						}
+						
+					]]>
+				</fx:Script>
+			</s:Rect>
+		</fx:Component>
+	</fx:Declarations>
+	
+	<!-- For a full list of states, see ItemRenderer.getCurrentRendererState() -->
+	<s:states>
+		<s:State name="normal" stateGroups="base"/>
+		<s:State name="hovered" stateGroups="base"/>
+		<s:State name="selected" stateGroups="base"/>
+	</s:states>
+	
+	<!-- Border with selection triangle; included in the base skin to show on all extending renderers -->
+	<local:BorderWithSelectionTriangle id="border" includeIn="base"/>
+	
+	<!-- Not included in base skin; extending renderers will add their own components -->
+	<s:Label id="dataLabel" width="100%" height="100%" textAlign="left" verticalAlign="middle" text="{data}"
+			 color.selected="#FFFFFF" fontWeight="bold" fontSize="15"/>
+	
+</s:ItemRenderer>

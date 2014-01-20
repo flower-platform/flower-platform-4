@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="HomeView">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			
+			import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
+			import org.flowerplatform.flexutil.samples.gradient_list.LeftList;
+			import org.flowerplatform.flexutil.samples.gradient_list.RightList;
+			
+			private function splitViewWrapperClickHandler(event:MouseEvent):void {
+				var leftActiveComponent:Button = new Button();
+				leftActiveComponent.label = "Left";
+				
+				var rightActiveComponent:Button = new Button();
+				rightActiveComponent.label = "Right";
+				
+				var data:Object = {
+					switchActionsVisibleOnNonEmptySelection: true,
+//					leftActiveComponent: leftActiveComponent,
+					leftActiveComponent: new ContextMenuSample(),
+//					rightActiveComponent: rightActiveComponent
+					rightActiveComponent: new ContextMenuSample()
+				};
+				
+				navigator.pushView(MobileSplitViewHost, data);
+			}
+			
+			private function gradientListClickHandler(event:MouseEvent):void {
+				var data:Object = {
+					leftActiveComponent: new LeftList(),
+					rightActiveComponent: new RightList()
+				};
+				navigator.pushView(MobileSplitViewHost, data);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.mobile.view_content_host.MobileViewHost;
+			import org.flowerplatform.flexutil.samples.context_menu.ContextMenuSample;
+		]]>
+	</fx:Script>
+	
+	<s:Button label="TreeList" click="navigator.pushView(TreeListSampleView)"/>
+	<s:Button label="Context Menu" click="navigator.pushView(MobileViewHost, { viewContent: new ContextMenuSample() })"/>
+	<s:Button label="Split Mobile View Host" click="splitViewWrapperClickHandler(event)"/>
+	<s:Button label="Gradient List" click="gradientListClickHandler(event)"/>
+</s:View>

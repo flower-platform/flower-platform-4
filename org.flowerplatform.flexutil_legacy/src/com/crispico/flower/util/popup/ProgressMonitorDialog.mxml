@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+ 
+ @author Cristina
+ @author Sorin
+ 
+-->
+<popUp:ResizablePopupWindow
+		xmlns:mx="http://www.adobe.com/2006/mxml" 
+		xmlns:popUp="com.crispico.flower.util.popup.*"
+		xmlns:common="com.crispico.flower.flexdiagram.util.common.*" 
+		implements="org.flowerplatform.flexutil.popup.IProgressMonitor"
+		title="In Progress" showCloseButton="false"
+		width="500" height="170" minWidth="500" minHeight="170" 
+		paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0"
+	creationComplete="creationCompleteHandler();">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.StringUtil;
+			
+			import org.flowerplatform.flexutil.popup.IProgressMonitor;
+			import org.flowerplatform.flexutil.popup.IProgressMonitorHandler;
+		
+			private static const TRACE_ENABLED:Boolean = true;
+			
+			/**
+			 * Needed to know to which progress monitor to call cancel on the server.
+			 * 
+			 */
+			private var progressMonitorHandler:IProgressMonitorHandler;
+			
+			private var allowCancellation:Boolean;
+						
+			private function creationCompleteHandler():void {
+				progressBar.label = title;
+				progressBar.mx_internal::_labelField.multiline = true;
+				progressBar.mx_internal::_labelField.wordWrap = true;
+				progressBar.mx_internal::_labelField.autoSize = TextFieldAutoSize.LEFT;
+				
+				cancelButton.visible = allowCancellation;
+			}
+			
+			public function setAllowCancellation(value:Boolean):IProgressMonitor {
+				this.allowCancellation = value;
+				return this;
+			}	
+			
+			public function setHandler(value:IProgressMonitorHandler):IProgressMonitor {
+				this.progressMonitorHandler = value;
+				return this;
+			}
+			
+			public function setLabel(value:String):IProgressMonitor {
+				if (value != null && StringUtil.trim(value) != "") {
+					progressBar.label = value;
+					if (TRACE_ENABLED) {
+						trace(progressMonitorHandler.toString() + " progressLabel = " + value);
+					}
+				}
+				return this;
+			}
+			
+			public function setTitle(value:String):IProgressMonitor {
+				this.title = value;
+				return this;
+			}
+			
+			public function setTotalWork(value:Number):IProgressMonitor {
+				progressBar.minimum = 0;
+				progressBar.maximum = value;
+				progressBar.setProgress(0, value);
+				if (TRACE_ENABLED) {
+					trace(progressMonitorHandler.toString() + " totalWork = " + value);
+				}
+				return this;
+			}
+			
+			public function setWorked(value:Number):IProgressMonitor {
+				progressBar.setProgress(value, progressBar.maximum);
+				if (TRACE_ENABLED) {
+					trace(progressMonitorHandler.toString() + " workUntilNow = " + value + " totalWork = " + progressBar.maximum);
+				}
+				return this;
+			}
+			
+			public function show():void {
+				showPopup(NaN, NaN, null, true);
+			}
+
+			public function close():void {
+				closeForm();
+			}
+			
+			private function cancelButtonHandler():void {
+				cancelButton.enabled = false;
+				cancelButton.label = "Canceling...";
+				progressMonitorHandler.attemptCancelProgressMonitor();
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:VBox width="100%" height="100%" >
+		<mx:ProgressBar id="progressBar" 
+						width="100%" height="100%"
+						trackHeight="20" verticalGap="10"
+						fontWeight="normal" fontSize="10" labelWidth="{this.width - 25}" labelPlacement="bottom" mode="manual" />
+		<mx:HBox width="100%" horizontalAlign="right" paddingTop="5" paddingBottom="5" paddingRight="5">		
+			<mx:Button id="cancelButton" label="Cancel" click="cancelButtonHandler();"/>
+		</mx:HBox>
+	</mx:VBox>	
+</popUp:ResizablePopupWindow>

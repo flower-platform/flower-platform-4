@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+
+<!--
+	@author Mariana Gheorghe
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.dialog.IDialog"
+		 width="100%" height="100%"
+		 creationComplete="creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.content_assist.ContentAssistItemRenderer;
+			import org.flowerplatform.flexutil.content_assist.IContentAssistProvider;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			import spark.events.TextOperationEvent;
+			
+			private var _contentAssistProvider:IContentAssistProvider;
+			
+			private var _viewHost:IViewHost;
+			
+			private var _resultHandler:IDialogResultHandler;
+			
+			private var previousPattern:String;
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				_resultHandler = resultHandler;
+			}
+			
+			/**
+			 * When the popup is open, the text input has focus (on mobile, 
+			 * the soft keyboard appears).
+			 */
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				pattern.addEventListener(KeyboardEvent.KEY_DOWN, patternKeyDownHandler, true);
+				items.dataGroup.addEventListener(MouseEvent.DOUBLE_CLICK, commitSelectedItem);
+				focusManager.defaultButton = searchButton;
+				pattern.callLater(pattern.setFocus);
+			}
+			
+			public function set contentAssistProvider(contentAssistProvider:IContentAssistProvider):void {
+				_contentAssistProvider = contentAssistProvider;
+				var properties:Object = new Object();
+				properties.contentAssistProvider = _contentAssistProvider;
+				ClassFactory(items.itemRenderer).properties = properties;
+			}
+			
+			protected function enterHandler():void {
+				if (pattern.text == previousPattern) {
+					// search text did not change => use selected item
+					commitSelectedItem();
+				} else {
+					// invoke search logic
+					search();
+				}
+			}
+			
+			protected function search():void {
+				previousPattern = pattern.text;
+				_contentAssistProvider.getContentAssistItems(pattern.text, setContentAssistItems);
+			}
+			
+			public function setContentAssistItems(result:ArrayCollection):void {
+				items.dataProvider = result;
+				items.selectedIndex = 0;
+				focusManager.defaultButton = okButton;
+			}
+			
+			/**
+			 * Clear the results list and switch to search mode.
+			 */
+			protected function patternChangeHandler(event:TextOperationEvent):void {
+				items.dataProvider = null;
+				focusManager.defaultButton = searchButton;
+			}
+			
+			/**
+			 * Navigate through the items list. Stop event propagation so we don't change
+			 * the cursor position in the text input.
+			 */
+			protected function patternKeyDownHandler(event:KeyboardEvent):void	{
+				var offset:int = 0;
+				switch(event.keyCode) {
+					case Keyboard.DOWN: {
+						offset = 1;
+						break;
+					}
+					case Keyboard.UP: {
+						offset = -1;
+						break;
+					}
+				}
+				if (offset != 0) {
+					items.selectedIndex += offset;
+					var length:int = items.dataProvider.length;
+					if (items.selectedIndex < 0) {
+						items.selectedIndex = length + offset;
+					}
+					if (items.selectedIndex >= length) {
+						items.selectedIndex = length - items.selectedIndex;
+					}
+					items.ensureIndexIsVisible(items.selectedIndex);
+					event.stopImmediatePropagation();
+				}
+			}
+			
+			/**
+			 * Commit the selected item, or if there is no selection, commit 
+			 * the text from the text input.
+			 */
+			protected function commitSelectedItem(evt:MouseEvent = null):void {
+				if (items.selectedIndex >= 0) {
+					commitResultAndCloseDialog(items.selectedItem.item);
+				} else {
+					commitText();
+				}
+			}
+			
+			protected function commitText():void {
+				commitResultAndCloseDialog(pattern.text);
+			}
+			
+			protected function commitResultAndCloseDialog(result:Object):void {
+				_resultHandler.handleDialogResult(result);
+				cancel();
+			}
+
+			protected function cancel():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="2" paddingLeft="2" paddingBottom="2" paddingRight="2" gap="5"/>
+	</s:layout>
+	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:TextInput id="pattern" enter="{enterHandler()}" change="patternChangeHandler(event)" width="100%"/>
+		<s:Button id="searchButton" label="{FlexUtilAssets.INSTANCE.getMessage('search')}" click="{search()}"/>
+	</s:HGroup>
+	
+	<s:Label text="{FlexUtilAssets.INSTANCE.getMessage('search.matchingItems')}"/>
+	
+	<s:List id="items" width="100%" height="100%"
+			itemRenderer="org.flowerplatform.flexutil.content_assist.ContentAssistItemRenderer"/>
+	
+	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle">
+		<s:Button id="okButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="{commitSelectedItem()}"/>
+		<s:Button id="cancelButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="{cancel()}"/>
+	</s:HGroup>
+	
+</s:Group>

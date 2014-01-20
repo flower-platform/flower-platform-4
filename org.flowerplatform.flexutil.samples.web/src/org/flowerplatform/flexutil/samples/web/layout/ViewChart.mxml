@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+		<mx:Script>
+			<![CDATA[
+				import mx.collections.ArrayCollection;
+				[Bindable]
+				public var expenses:ArrayCollection = new ArrayCollection([
+				{Month:"Jan", Profit:2000, Expenses:1500},
+				{Month:"Feb", Profit:1000, Expenses:200},
+				{Month:"Mar", Profit:1500, Expenses:500}
+				]);
+			]]>
+		</mx:Script>
+	
+		
+			<mx:ColumnChart id="myChart" dataProvider="{expenses}" showDataTips="true">
+				<mx:horizontalAxis>
+					<mx:CategoryAxis 
+						dataProvider="{expenses}" 
+						categoryField="Month"
+						/>
+				</mx:horizontalAxis>
+				<mx:series>
+					<mx:ColumnSeries 
+						xField="Month" 
+						yField="Profit" 
+						displayName="Profit"
+						/>
+					<mx:ColumnSeries 
+						xField="Month" 
+						yField="Expenses" 
+						displayName="Expenses"
+						/>
+				</mx:series>
+			</mx:ColumnChart>
+			<mx:Legend dataProvider="{myChart}"/>
+	
+</mx:Box>

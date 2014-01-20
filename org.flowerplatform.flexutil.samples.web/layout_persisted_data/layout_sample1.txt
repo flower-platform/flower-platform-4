@@ -1,0 +1,20 @@
+<workbenchLayoutData direction="0" isEditor="false" ratios="31.24/68.76" mrmRatios="0.00/0.00">
+  <stackLayoutData mrmState="0" mrmSide="" closedViews="">
+    <viewLayoutData viewId="navigator" customData="" isEditor="false"/>
+  </stackLayoutData>
+  <sashLayoutData direction="1" isEditor="false" ratios="60.00/40.00" mrmRatios="0.00/0.00">
+    <sashLayoutData direction="1" isEditor="true" ratios="100.00" mrmRatios="0.00">
+	  <stackLayoutData mrmState="0" mrmSide="" closedViews="">
+        <viewLayoutData viewId="view_editor1" customData="fileView1.as" isEditor="true"/>
+        <viewLayoutData viewId="view_editor2" customData="fileView2.as" isEditor="true"/>
+      </stackLayoutData>
+    </sashLayoutData>
+    <sashLayoutData direction="0" isEditor="false" ratios="100" mrmRatios="0.00">
+      <stackLayoutData mrmState="0" mrmSide="" closedViews="">        
+        <viewLayoutData viewId="view_grid" customData="" isEditor="false"/>
+        <viewLayoutData viewId="view_chart" customData="" isEditor="false"/>
+        <viewLayoutData viewId="view_form" customData="" isEditor="false"/>
+      </stackLayoutData>      
+    </sashLayoutData>
+  </sashLayoutData>
+</workbenchLayoutData>

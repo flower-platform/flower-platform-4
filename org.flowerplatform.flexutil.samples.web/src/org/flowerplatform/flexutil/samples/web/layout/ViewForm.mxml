@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Script>
+		<![CDATA[
+			private function submitForm():void {                
+			// Handle the form submission.
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Form id="myForm" width="400">
+		
+		<mx:FormHeading label="Billing Information"/>
+		
+		<mx:FormItem label="First Name">
+			<mx:TextInput id="fname" width="100%"/>
+		</mx:FormItem>
+		
+		<mx:FormItem label="Last Name">
+			<mx:TextInput id="lname" width="100%"/>
+		</mx:FormItem>
+		
+		<mx:FormItem label="Address">
+			<mx:TextInput id="addr1" width="100%"/>
+			<mx:TextInput id="addr2" width="100%"/>
+		</mx:FormItem>
+		
+		<mx:FormItem label="City / State" direction="vertical">
+			<mx:TextInput id="city"/>
+			<mx:ComboBox id="st" width="75">
+				<mx:ArrayCollection>
+					<mx:String>MA</mx:String>
+					<mx:String>NH</mx:String>
+					<mx:String>RI</mx:String>
+				</mx:ArrayCollection>                     
+			</mx:ComboBox>
+		</mx:FormItem>
+		
+		<mx:FormItem label="ZIP Code">
+			<mx:TextInput id="zip" width="100"/>
+		</mx:FormItem>
+		
+		<mx:FormItem label="Country">
+			<mx:ComboBox id="cntry">
+				<mx:ArrayCollection>
+					<mx:String>USA</mx:String>
+					<mx:String>UAE</mx:String>
+					<mx:String>UAW</mx:String>
+				</mx:ArrayCollection>                     
+			</mx:ComboBox>
+		</mx:FormItem>
+		
+		<mx:FormItem>
+			<mx:HRule width="200" height="1"/>
+			<mx:Button label="Submit Form" click="submitForm();"/>
+		</mx:FormItem>
+	</mx:Form>
+</mx:Box>

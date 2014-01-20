@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<s:Application applicationComplete="applicationCompleteHandler(event)"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		s|FormItem {
+			skinClass: ClassReference("org.flowerplatform.flexutil.form.FlowerFormItemSkin");
+		}
+		
+		s|Button {
+			cornerRadius: 4;
+			skinClass: ClassReference("org.flowerplatform.flexutil.button.HaloButtonSkin");
+		}
+		
+		s|ButtonBar {
+			skinClass: ClassReference("org.flowerplatform.flexutil.button.HaloButtonBarSkin");
+		}
+		
+	</fx:Style>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import com.crispico.flower.util.popup.PopupHandlerFactory;
+			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.graphics.ImageSnapshot;
+			import mx.messaging.config.ConfigMap;
+			import mx.messaging.management.Attribute;
+			import mx.messaging.management.MBeanAttributeInfo;
+			import mx.messaging.management.MBeanConstructorInfo;
+			import mx.messaging.management.MBeanFeatureInfo;
+			import mx.messaging.management.MBeanInfo;
+			import mx.messaging.management.MBeanOperationInfo;
+			import mx.messaging.management.MBeanParameterInfo;
+			import mx.messaging.management.ObjectInstance;
+			import mx.messaging.management.ObjectName;
+			import mx.messaging.messages.AcknowledgeMessage;
+			import mx.messaging.messages.AcknowledgeMessageExt;
+			import mx.messaging.messages.AsyncMessage;
+			import mx.messaging.messages.AsyncMessageExt;
+			import mx.messaging.messages.CommandMessage;
+			import mx.messaging.messages.CommandMessageExt;
+			import mx.messaging.messages.ErrorMessage;
+			import mx.messaging.messages.HTTPRequestMessage;
+			import mx.messaging.messages.MessagePerformanceInfo;
+			import mx.messaging.messages.RemotingMessage;
+			import mx.messaging.messages.SOAPMessage;
+			import mx.states.AddChild;
+			import mx.utils.ObjectProxy;
+			import mx.utils.RpcClassAliasInitializer;
+			
+			import spark.utils.DataItem;
+			
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
+			import org.flowerplatform.flexutil.plugin.FlexPluginManager;
+			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
+			
+			
+			// Temporary:
+			// forces loading the "states" resource bundle; needed by the WebPlugin; anyway, "states" is not a big deal: only a property
+			AddChild;
+			
+			// We force the reference towards the classe below, because they declare "RemoteClass" annotation, which is ignored when used
+			// by classes from SWCs (i.e. plugins). By referencing them now, the compiler uses their annotation and automatically registers
+			// the corresponding alias, so that plugins won't have to manually user "registerClassAlias" for them (as they do for their
+			// own Remote Objects
+			RemotingMessage;
+			MBeanParameterInfo;
+			MBeanConstructorInfo;
+			AcknowledgeMessageExt;
+			MBeanFeatureInfo;
+			Attribute;
+			AsyncMessageExt;
+			CommandMessageExt;
+			ObjectInstance;
+			MBeanAttributeInfo;
+			MBeanInfo;
+			DataItem;
+			MBeanOperationInfo;
+			SOAPMessage;
+			AcknowledgeMessage;
+			ObjectName;
+			RpcClassAliasInitializer;
+			ErrorMessage;
+			ArrayCollection;
+			AsyncMessage;
+			MessagePerformanceInfo;
+			ConfigMap;
+			HTTPRequestMessage;
+			CommandMessage;
+			ArrayList;
+			ObjectProxy;
+			ImageSnapshot;
+	
+			protected function applicationCompleteHandler(event:FlexEvent):void	{
+				// NOTE 1:
+				// The channels are puzzled by a query string that has slashes,
+				// e.g. FlexHostApp.swf?openUrl=/my/Resource. That's why we
+				// set the absolute URL here (based on the URL of the application).
+				// NOTE 2:
+				// The flex app is not in the root dir; that's why we use the value below
+				// (that comes from JS) instead of FlexGlobals.topLevelApplication.url
+				var appDirUrl:String = FlexGlobals.topLevelApplication.parameters.rootUrl;
+				var indexOfQuestionMark:int = appDirUrl.indexOf("?");
+				if (indexOfQuestionMark >= 0) {
+					// remove ? and what follows it 
+					appDirUrl = appDirUrl.substr(0, indexOfQuestionMark);
+				}
+				// remove the current resource (e.g. /.../main.jsp)
+				var lastIndexOfSlash:int = appDirUrl.lastIndexOf("/");
+				appDirUrl = appDirUrl.substr(0, lastIndexOfSlash + 1);
+				FlexUtilGlobals.getInstance().rootUrl = appDirUrl;
+
+				FlexUtilGlobals.getInstance().workbench = workbench;
+				workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
+	
+				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
+				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
+				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorDialogHandlerFactory();
+				FlexUtilGlobals.getInstance().contextMenuManager = new ContextMenuManager();
+				
+				var pluginUrlsAsString:String = FlexGlobals.topLevelApplication.parameters.pluginUrls;
+				if (pluginUrlsAsString == null) {
+					throw new Error("No pluginUrls have been specified. Flower Platform cannot start.");
+				}
+								
+				var pluginUrls:Array = pluginUrlsAsString.split(",");
+				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
+			}
+		]]>
+	</fx:Script>
+	
+	<layout:Workbench id="workbench" width="100%" height="100%" />
+	
+</s:Application>

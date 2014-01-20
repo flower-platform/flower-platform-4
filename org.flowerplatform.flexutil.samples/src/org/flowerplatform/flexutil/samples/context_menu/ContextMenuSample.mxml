@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.selection.ISelectionProvider">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.action.IActionProvider;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			// static block
+			{
+				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, function (event:SelectionChangedEvent):void {
+					trace("Selection changed: " + event.selection);
+				});
+			}
+
+			protected var _viewHost:IViewHost;
+			
+			protected var actionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
+				.addActionClass(SampleAction1)
+				.addActionClass(SampleAction2)
+				.addActionClass(SampleAction3);
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return actionProvider.getActions(selection);
+			}
+			
+			/**
+			 * This method is inspired from <code>get selectedItems()</code>. We convert
+			 * the selection like this (and not by converting selectedItems), because
+			 * <code>get selectedItems()</code> does an iteration as well; so that would
+			 * mean 2 iterations. This way, we iterate only once.
+			 */
+			public function getSelection():IList {
+				var result:Array = new Array();
+				
+				if (list.selectedIndices) {
+					var count:int = list.selectedIndices.length;
+					
+					for (var i:int = 0; i < count; i++)
+						result.push(list.dataProvider.getItemAt(list.selectedIndices[i]));  
+				}
+				
+				return new ArrayList(result);
+			}
+			
+			protected function selectionChangeHandler(event:IndexChangeEvent):void {
+				FlexUtilGlobals.getInstance().selectionManager.selectionChanged(viewHost, this);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:List id="list" change="selectionChangeHandler(event)" width="100%" height="100%" maxWidth="500" maxHeight="500">
+		<s:dataProvider>
+			<mx:ArrayCollection>
+				<fx:String>Flash</fx:String> 
+				<fx:String>Director</fx:String> 
+				<fx:String>Dreamweaver</fx:String> 
+				<fx:String>ColdFusion</fx:String> 
+			</mx:ArrayCollection>
+		</s:dataProvider>
+	</s:List>
+</s:Group>

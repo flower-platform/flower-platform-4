@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" height="{HEIGHT}" click="clickHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.mx_internal;
+			
+			import org.flowerplatform.flexutil.action.ActionUtil;
+			import org.flowerplatform.flexutil.action.IAction;
+			
+			public static const HEIGHT:int = 22;
+			
+			public static const HOVER_DELAY_COMPOSED_ACTION:int = 300;
+			
+			public static const HOVER_DELAY_NORMAL_ACTION:int = 500;
+			
+			[Embed(source="resultset_next.png")]
+			public static const rightArrowImage:Class;
+			
+			protected var executeAftedHoverTimer:Timer;
+			
+			override public function set data(value:Object):void {
+				super.data = value;
+				// I do it here instead of binding, to avoid the runtime warning "cannot bind to..."
+				labelComponent.text = IAction(value).label;
+				iconComponent.source = IAction(value).icon;
+				if (ActionUtil.isComposedAction(IAction(value))) {
+					if (!hasSubActions.visible) {
+						hasSubActions.visible = true;
+						hasSubActions.includeInLayout = true;
+						hasSubActions.source = rightArrowImage;
+					}
+				} else {
+					if (hasSubActions.visible) {
+						hasSubActions.visible = false;
+						hasSubActions.includeInLayout = false;
+					}
+				}
+			}
+			
+			protected function clickHandler(event:MouseEvent):void {
+				if (!ActionUtil.isComposedAction(IAction(data))) {
+					var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
+					try {
+						IAction(data).selection = contextMenu.contextMenuManager.selection; 
+						IAction(data).context = contextMenu.contextMenuManager.context; 
+						IAction(data).run();
+					} finally {										
+						IAction(data).selection = null;
+						IAction(data).context = null; 
+						contextMenu.closeContextMenuStack(0);
+					}
+				}
+			}
+					
+			protected function getContextMenu():org.flowerplatform.flexutil.context_menu.ContextMenu {
+				var currentElementUnderMouse:DisplayObject = parent;
+				while (currentElementUnderMouse != null) {
+					if (currentElementUnderMouse is org.flowerplatform.flexutil.context_menu.ContextMenu) {
+						return org.flowerplatform.flexutil.context_menu.ContextMenu(currentElementUnderMouse);
+					}
+					currentElementUnderMouse = currentElementUnderMouse.parent;
+				}
+				
+				throw new Error("ContextMenuItemRenderer cannot find the parent ContextMenu");
+			}
+			
+			override protected function set hovered(value:Boolean):void {
+				super.hovered = value;
+				if (value) {
+					if (executeAftedHoverTimer == null) {
+						executeAftedHoverTimer = new Timer(0);
+						executeAftedHoverTimer.repeatCount = 1;
+						executeAftedHoverTimer.addEventListener(TimerEvent.TIMER_COMPLETE, executeAftedHoverTimerHandler);
+					}
+					if (ActionUtil.isComposedAction(IAction(data))) {
+						executeAftedHoverTimer.delay = HOVER_DELAY_COMPOSED_ACTION;
+					} else {
+						executeAftedHoverTimer.delay = HOVER_DELAY_NORMAL_ACTION;
+					}
+					executeAftedHoverTimer.start();
+				} else {
+					if (executeAftedHoverTimer != null) {
+						executeAftedHoverTimer.reset();
+					}
+				}
+			}
+			
+			protected function executeAftedHoverTimerHandler(event:TimerEvent):void {
+				if (!hovered) {
+					// the mouse is no longer there; don't change the selection
+					return;
+				}
+				var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
+				if (ActionUtil.isComposedAction(IAction(data))) {
+					contextMenu.list.mx_internal::setSelectedIndex(contextMenu.actions.getItemIndex(data), true);
+				} else {
+					contextMenu.list.mx_internal::setSelectedIndex(-1, true);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle" paddingLeft="5" paddingRight="5"/>
+	</s:layout>
+	<s:BitmapImage id="iconComponent" width="16"/>
+	<s:Label id="labelComponent" width="100%"/>
+	<s:BitmapImage id="hasSubActions" visible="false" includeInLayout="false"/>
+</s:ItemRenderer>

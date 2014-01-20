@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.gradient_list.GradientBackgroundList;
+			
+			public var list:GradientBackgroundList;
+			
+			public function changeSelectionStyle():void {
+				list.setStyle("gradientStyle", gradientGroup.selectedValue);
+				list.setStyle("sidesBorderStyle", borderGroup.selectedValue);
+				list.setStyle("showSelectionTriangle", showSelectionTriangle.selected);
+				list.setStyle("showSelectionTriangleOnLeftSide", showSelectionTriangleOnLeftSide.selected);
+				
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="gradientGroup" change="{changeSelectionStyle()}"/>
+		<s:RadioButtonGroup id="borderGroup" change="{changeSelectionStyle()}"/>
+	</fx:Declarations>
+	
+	<s:Label text="Change properties for the second list"/>
+	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:CheckBox id="showSelectionTriangle" label="Show selection triangle" change="{changeSelectionStyle()}" selected="true"/>
+		<s:CheckBox id="showSelectionTriangleOnLeftSide" label="Show selection triangle of left side" change="{changeSelectionStyle()}"/>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:Label text="Gradient Style:"/>
+		<s:RadioButton label="no_gradient" group="{gradientGroup}"/>
+		<s:RadioButton label="left_gradient" group="{gradientGroup}"/>
+		<s:RadioButton label="right_gradient" group="{gradientGroup}" selected="true"/>
+		<s:RadioButton label="full_gradient" group="{gradientGroup}"/>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:Label text="Border Style:"/>
+		<s:RadioButton label="no_side_border" group="{borderGroup}"/>
+		<s:RadioButton label="left_border" group="{borderGroup}"/>
+		<s:RadioButton label="right_border" group="{borderGroup}" selected="true"/>
+		<s:RadioButton label="full_side_border" group="{borderGroup}"/>
+	</s:HGroup>
+	
+</s:Group>

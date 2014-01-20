@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.selection.ISelectionProvider">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			private var _viewHost:IViewHost;
+
+			public function get viewHost():IViewHost
+			{
+				return _viewHost;
+			}
+
+			public function set viewHost(value:IViewHost):void
+			{
+				_viewHost = value;
+			}
+
+			
+			public function getActions(selection:IList):Vector.<IAction>
+			{
+				return null;
+			}
+			
+			public function getSelection():IList
+			{
+				return new ArrayList(myDG.selectedItems);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:DataGrid id="myDG" width="350" change="FlexUtilGlobals.getInstance().selectionManager.selectionChanged(viewHost, this)"> 
+		<mx:dataProvider>
+			<mx:ArrayCollection>
+				<mx:source>
+					<mx:Object Artist="Pavement" Price="11.99" 
+							   Album="Slanted and Enchanted" />
+					<mx:Object Artist="Pavement" 
+							   Album="Brighten the Corners" Price="11.99" />
+				</mx:source>
+			</mx:ArrayCollection>
+		</mx:dataProvider>
+		<mx:columns>
+			<mx:DataGridColumn dataField="Artist" />
+			<mx:DataGridColumn dataField="Album" />
+			<mx:DataGridColumn id="price" dataField="Price" visible="false"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	<!-- The column id property specifies the column to show.-->
+	<mx:Button label="Toggle Price Column" click="price.visible = !price.visible;" />
+	
+</mx:Box>

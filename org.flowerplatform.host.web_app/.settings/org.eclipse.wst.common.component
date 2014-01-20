@@ -2,7 +2,7 @@
     <wb-module deploy-name="org.flowerplatform.host.web_app">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module archiveName="org.flowerplatform.host.servletbridge_base.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.flowerplatform.host.servletbridge_base/org.flowerplatform.host.servletbridge_base">
+        <dependent-module archiveName="org.flowerplatform.host.servletbridge_base.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.flowerplatform.host.servletbridge.base/org.flowerplatform.host.servletbridge.base">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/org.flowerplatform.host.web_app/build/classes"/>

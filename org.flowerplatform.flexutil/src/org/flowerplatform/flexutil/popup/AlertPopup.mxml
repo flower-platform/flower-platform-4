@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+@author Cristina Constantinescu
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"		
+		 implements="org.flowerplatform.flexutil.popup.IMessageBox, org.flowerplatform.flexutil.view_content_host.IViewContent"
+		 creationComplete="creationCompleteHandler(event)">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.formats.LineBreak;
+			
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
+			
+			private var _title:String;
+			
+			private var _text:String;
+			
+			private var _isHTML:Boolean;
+			
+			private var buttons:ArrayList = new ArrayList();
+			private var _selectText:Boolean;
+			
+			private var _viewHost:IViewHost;
+						
+			public function getActions(selection:IList):Vector.<IAction>{
+				return null;
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {	
+				_viewHost = value;
+				// use host label to display alert title
+				_viewHost.setLabel(_title);
+			}
+			
+			public function get text():String {
+				return _text;
+			}
+			
+			public function set text(value:String):void	{
+				_text = value;
+				if (textArea == null) {
+					return;
+				}
+				
+				if (isHTML) {
+					textArea.content = TextConverter.importToFlow(value, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				} else {
+					textArea.text = value;
+				}
+			}
+			
+			public function get isHTML():Boolean {
+				return _isHTML;
+			}
+			
+			public function set isHTML(value:Boolean):void {
+				_isHTML = value;
+				var savedText:String = text;
+				text = null;
+				text = savedText;
+			}
+			
+			protected function okHandler(event:MouseEvent):void {
+				closeMessageBox();
+			}
+			
+			public function setHeight(value:int):IMessageBox {
+				height = value;
+				return this;
+			}
+			
+			public function setText(value:String):IMessageBox {
+				text = value;
+				return this;
+			}
+			
+			public function setTitle(value:String):IMessageBox {
+				_title = value;
+				return this;
+			}
+			
+			public function setWidth(value:int):IMessageBox {
+				width = value;
+				return this;
+			}
+			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			public function addButton(title:String, handler:Function = null):IMessageBox {
+				var newBtn:Button = new Button();
+				newBtn.label = title;
+				
+				newBtn.addEventListener(MouseEvent.CLICK, 
+					function(event:MouseEvent):void {
+						if (handler != null) {
+							handler(event);
+						}
+						closeMessageBox();
+					}
+				);
+				buttons.addItem(newBtn);
+				return this;
+			}
+			
+			public function setWordWrap(value:Boolean):IMessageBox {
+				var styleValue:String = value ? LineBreak.TO_FIT : LineBreak.EXPLICIT;				
+				callLater(function ():void {
+					textArea.setStyle("lineBreak", styleValue);
+				});
+				return this;
+			}
+			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			public function setSelectText(value:Boolean):IMessageBox {								
+				_selectText = value;
+				return this;
+			}
+			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			override protected function createChildren():void	{
+				super.createChildren();
+				
+				if (buttons.length == 0) {
+					alertControlBar.addElement(okButton);
+				} else {
+					for (var i:int=0; i < buttons.length; i++) {
+						alertControlBar.addElement(Button(buttons.getItemAt(i)));
+					}
+				}
+			}
+			
+			public function showMessageBox(modal:Boolean = true):void {		
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setViewContent(this)
+					.setTitle(_title)
+					.setWidth(width)
+					.setHeight(height)
+					.show(modal);
+			}
+			
+			protected function closeMessageBox():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
+						
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				if (_selectText) {
+					callLater(function ():void {
+						textArea.setFocus();
+						textArea.selectAll();
+					});
+					
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	 
+	<fx:Declarations>
+		<s:Button id="okButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okHandler(event)"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:BasicLayout />
+	</s:layout>
+	<s:Rect width="100%" height="100%">
+		<s:fill><s:SolidColor color="0xFFFFFF" /></s:fill>
+	</s:Rect>
+		
+	<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<s:TextArea id="textArea" width="100%" height="100%" editable="false" selectable="true" />	
+		<s:Group id="alertControlBar" left="1" right="2" top="1" bottom="1" width="100%" >
+			<s:layout>
+				<s:HorizontalLayout gap="2" horizontalAlign="center" />
+			</s:layout>			
+		</s:Group>	
+	</s:VGroup>
+	
+</s:Group>

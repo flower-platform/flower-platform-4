@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+ -
+ Base class for wizard style dialogs. It is recommended to have MXML subclasses of this class,
+ that use the old/Flex 3 namespace (i.e. xmlns:mx="http://www.adobe.com/2006/mxml") and not the new
+ one/Flex 4 (i.e. xmlns:fx="http://ns.adobe.com/mxml/2009"), in order to be able to use the old
+ state syntax, which is more appropriate in this case.
+ 
+ <p>
+ Subclasses should define one or several states. <br>
+ An execution order for these states must be provided in order to work properly. <b>
+ This can be done in 2 ways:
+ <ul>
+ 	<li> name each state using only numbers (e.g. "0", "1", etc.) and this numbers should be consecutive. 
+	<li> provide a <code>getIndexForStateFunction</code> function with the following signature:
+		<pre> function getIndexForState(stateName:String):int </pre>
+		The function should return -1 if no index is provided for given state name.
+	</li>	
+ </ul>
+
+ <p>
+ Each state (i.e. wizard page) will probably use overrides for one/several/all of the following:
+ 
+ <ul>
+ 	<li><code>wizardTitle.text</code>;
+ 	<li><code>wizardDescription.text</code>;
+ 	<li><code>contentArea</code> - to add the main UI component(s) of the wizard page;
+ 	<li><code>back(or next or finish).enabled</code> - to add custom enablement logic, if needed.
+ 		Data binding is supported;
+ </ul>
+ 
+ Besides the above, some interesting "global" elements (i.e. per wizard):
+ 
+ <ul>
+ 	<li>override <code>finishClickHandler</code>;
+ 	<li><code>title</code>, <code>titleIconURL</code>, <code>wizardImage.source</code>,
+ 		<code>titleArea.height</code>;
+ </ul>
+ 
+ @author Cristi
+ @author Cristina
+
+ 
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:common="com.crispico.flower.flexdiagram.util.common.*" 
+		 creationComplete="creationCompleteHandler()" 		
+		 xmlns:popup="com.crispico.flower.util.popup.*" 
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent"
+		 top="2" bottom="2" left="2" right="2" >
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			import mx.collections.IList;
+			import mx.states.State;
+			
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+		
+			[Bindable]
+			public var wizardTitle:String;
+			
+			[Bindable]
+			public var wizardDescription:String;
+			
+			protected var _viewHost:IViewHost;
+			
+			/**
+			 * Handler function called to get the index for a given state name.
+			 * This must be used if the states aren't named with consecutive numbers.
+			 * 
+			 * <p>
+			 * Signature: <br>
+			 * <pre> function getIndexForState(stateName:String):int </pre>
+			 * 
+			 * <p>
+			 * Function must return -1 if no index is provided for state.
+			 * In this case, that state will be ignored.
+			 *
+			 */ 
+			public var getIndexForStateFunction:Function;
+			
+			private var idToStateMap:Dictionary;
+			
+			protected function creationCompleteHandler():void {
+				viewHost.addToControlBar(buttonBar);
+				currentState = getStateFromIndex(0);			
+			}
+			
+			override protected function createChildren():void {
+				super.createChildren();
+				
+				if (FlexUtilGlobals.getInstance().isMobile) {
+					addElementAt(mobileTitleArea, 0);					
+				} else {
+					addElementAt(desktopTitleArea, 0);
+				}
+			}
+			
+			/**
+			 * Validate that the numeric states are consecutive.
+			 * 
+			 * <p> 
+			 * To have consecutive numeric state names is a must. We impose to have them
+			 * in the consecutive order as well (besides having consecutive naming) in order to simplify
+			 * the validation.
+			 */ 
+			override public function set states(value:Array):void {
+				super.states = value;
+				if (getIndexForStateFunction == null) {
+					var lastStateNumeric:int = -1;
+					for each (var state:State in states) {
+						var currentStateNumeric:Number = getIndexFromState(state.name);
+						if (!isNaN(currentStateNumeric)) {
+							if (currentStateNumeric != lastStateNumeric + 1) {
+								throw "Usage error. Numeric states should be consecutive. Last state = " + lastStateNumeric + " and current state = " + currentStateNumeric;
+							} else {
+								lastStateNumeric++;
+							}
+						}
+					}
+				}
+			}
+			
+			/**
+			 * Returns the number of states that are named using numbers. In general,
+			 * this equals with the number of states. But, a "stray" state, that has a
+			 * non-numeric name might exist.
+			 */
+			private function getNumberOfNumericStates():int {
+				if (getIndexForStateFunction == null) {
+					var result:int = 0;
+					for each (var state:State in states) {
+						if (!isNaN(parseInt(state.name))) {
+							result++;
+						}
+					}
+					return result;
+				} else {
+					var nbStates:int = 0;
+					for (var key:* in getIdToStateMap()) {
+						nbStates++;
+					}
+					return nbStates;
+				}				
+			}
+			
+			/**
+			 * <strong>Note about SetProperty overrides for back/next/... buttons:</strong><br>
+			 * This method is called after the old state has been removed, and before the 
+			 * new state is applied. This means that each SetProperty has already reverted
+			 * its saved "oldValue", which is not correct in our case (e.g. back button/enabled), and our code from
+			 * this method will override the incorrect values (that resulted from the state "unapplication"),
+			 * with correct ones.
+			 * 
+			 * <p>
+			 * If the new state has SetProperty overrides for back/next/..., after this method, these overrides
+			 * will be applied, and the enablement values that we have calculated here will be overridden (which is
+			 * the desired behavior).
+			 * 
+			 * <p>
+			 * If the new state doensn't have SetProperty overrides for back/next/..., the values calculated
+			 * here will remain (and this because the old state has already been unapplied, cf. the first paragraph
+			 * of this comment).
+			 */ 
+			override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void {
+				super.stateChanged(oldState, newState, recursive);
+				var currentStateNumeric:Number = getIndexFromState(newState);
+				if (!isNaN(currentStateNumeric)) {
+					var numberOfNumericStates:int = getNumberOfNumericStates();
+					back.enabled = currentStateNumeric > 0;
+					next.enabled = currentStateNumeric < numberOfNumericStates - 1;
+					finish.enabled = currentStateNumeric == numberOfNumericStates - 1;
+				}
+			}
+			
+			
+			private function getIndexFromState(stateName:String):int {
+				if (getIndexForStateFunction != null) {					
+					var index:int = getIndexForStateFunction(stateName);
+					getIdToStateMap()[index] = stateName;
+					return index;
+				}
+				return parseInt(stateName);
+			}
+			
+			private function getStateFromIndex(index:int):String {
+				if (getIndexForStateFunction != null) {
+					return getIdToStateMap()[index];
+				}
+				return index.toString();
+			}
+			
+			private function getIdToStateMap():Dictionary {
+				if (idToStateMap == null) {
+					idToStateMap = new Dictionary();
+					for each (var state:State in states) {
+						var index:int = getIndexForStateFunction(state.name);
+						if (index != -1) { // skip if -1 (no id provided)
+							idToStateMap[index] = state.name;
+						}
+					}
+				}
+				return idToStateMap;
+			}		
+						
+			/**
+			 * Comes back to the previous step (state).
+			 */
+			protected function backClickHandler():void {
+				var currentStateNumeric:Number = getIndexFromState(currentState);
+				if (!isNaN(currentStateNumeric) && currentStateNumeric > 0) {
+					currentState = getStateFromIndex(--currentStateNumeric);
+				}
+			}
+			
+			/**
+			 * Advances to the next step (state).
+			 */
+			protected function nextClickHandler():void {
+				var currentStateNumeric:Number = getIndexFromState(currentState);
+				if (!isNaN(currentStateNumeric) && currentStateNumeric < getNumberOfNumericStates() - 1) {
+					currentState = getStateFromIndex(++currentStateNumeric);
+				}
+			}		
+			
+			protected function finishClickHandler():void {	
+				removePopup();
+			}
+			
+			protected function cancelClickHandler():void {
+				removePopup();
+			}
+			
+			protected function removePopup():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);	
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction>{
+				return null;
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;				
+			}
+			
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<s:HGroup id="desktopTitleArea" width="100%" height="66" >
+			<s:VGroup id="titleArea" width="100%" gap="0">
+				<mx:Label fontSize="12" fontWeight="bold" paddingLeft="3" paddingTop="8" width="100%" text="{wizardTitle}"/>				
+				<mx:Text width="100%" paddingLeft="8" text="{wizardDescription}"/>
+			</s:VGroup>
+			<s:VGroup id="wizardImageContainer" width="75" height="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:BitmapImage id="wizardImage"/>
+			</s:VGroup>
+		</s:HGroup>
+		
+		<s:HGroup id="mobileTitleArea" width="100%" horizontalAlign="center" verticalAlign="middle" paddingRight="5" paddingLeft="5">
+			<s:HGroup width="100%" gap="0" verticalAlign="middle">
+				<s:Label  text="{wizardTitle}" fontWeight="bold" width="100%"/>	
+				<s:CalloutButton id="info" icon="{FlexUtilAssets._iconInfo}" verticalPosition="after" >
+					<s:calloutDestructionPolicy>auto</s:calloutDestructionPolicy>
+					<s:calloutContent>
+						<s:TextArea text="{wizardDescription}" color="0x000000" width="100%" skinClass="spark.skins.mobile.TextAreaSkin" editable="false"/>
+					</s:calloutContent>
+				</s:CalloutButton>
+			</s:HGroup>			
+		</s:HGroup>
+				
+		<s:HGroup id="buttonBar" width="100%" horizontalAlign="right" verticalAlign="middle" >
+			<s:Button id="back" label="&#60; Back" width="75" click="backClickHandler()" />
+			<s:Button id="next" label="Next &#62;" width="75" click="nextClickHandler()" />
+			<s:Button id="finish" label="Finish" width="75" click="finishClickHandler()" />
+			<s:Button id="cancel" label="Cancel" width="75" click="cancelClickHandler()"/>		
+		</s:HGroup>
+	</fx:Declarations>
+			
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" gap="5"/>
+	</s:layout>
+	
+	<!-- First element will be desktopTitleArea/mobileTitleArea-->
+	
+	<mx:HRule width="100%"/>
+
+	<mx:VBox id="contentArea" width="100%" borderVisible="false"
+			 horizontalAlign="center" paddingLeft="5" paddingRight="5"
+			 paddingTop="5" >
+	</mx:VBox>		
+	
+</s:Group>

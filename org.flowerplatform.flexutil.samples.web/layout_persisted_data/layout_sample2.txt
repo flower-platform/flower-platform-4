@@ -1,0 +1,18 @@
+<workbenchLayoutData direction="0" isEditor="false" ratios="45.84/54.16" mrmRatios="0.00/0.00">
+  <sashLayoutData direction="1" isEditor="false" ratios="50.07/49.93" mrmRatios="0.00/0.00">
+    <stackLayoutData mrmState="0" mrmSide="" closedViews="">
+      <viewLayoutData viewId="navigator" customData="" isEditor="false"/>
+      <viewLayoutData viewId="view_chart" customData="" isEditor="false"/>
+    </stackLayoutData>
+    <sashLayoutData direction="0" isEditor="false" ratios="50.11/49.89" mrmRatios="0.00/0.00">
+      <stackLayoutData mrmState="0" mrmSide="" closedViews="">
+        <viewLayoutData viewId="view_form" customData="" isEditor="false"/>
+      </stackLayoutData>
+      <stackLayoutData mrmState="0" mrmSide="" closedViews="">
+        <viewLayoutData viewId="view_grid" customData="" isEditor="false"/>
+      </stackLayoutData>
+    </sashLayoutData>
+  </sashLayoutData>
+  <sashLayoutData direction="1" isEditor="true" ratios="" mrmRatios="">   
+  </sashLayoutData>
+</workbenchLayoutData>

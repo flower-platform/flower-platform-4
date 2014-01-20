@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:layout="com.crispico.flower.util.layout.*" width="100%" height="100%" creationComplete="onApplicationComplete()" >
+	<mx:Script>
+		<![CDATA[
+			import com.crispico.flower.util.layout.event.ActiveViewChangedEvent;
+			import com.crispico.flower.util.layout.event.DockHandlerEvent;
+			import com.crispico.flower.util.layout.event.LayoutDataChangedEvent;
+			import com.crispico.flower.util.layout.event.ViewAddedEvent;
+			
+			import flexlib.controls.tabBarClasses.SuperTab;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.CloseEvent;
+			
+			import org.flowerplatform.flexutil.layout.ViewLayoutData;
+			import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
+													
+			private var loader1:URLLoader = new URLLoader();
+			
+			private var loader2:URLLoader = new URLLoader();
+						
+			[Bindable]
+			[Embed(source="/left_arrow.gif")]      
+			private var leftArrow:Class;
+		
+			[Bindable]
+			[Embed(source="/right_arrow.gif")]      
+			private var rightArrow:Class;
+			
+			private var layoutSample1:String;
+			
+			private var layoutSample2:String;
+			
+			private function onApplicationComplete():void {
+				var url:URLRequest = new URLRequest("../layout_persisted_data/layout_sample1.txt");
+				loader1 = new URLLoader();
+				loader1.addEventListener(Event.COMPLETE, loadLayoutSample1Handler);
+				loader1.load(url);
+			
+				url = new URLRequest("../layout_persisted_data/layout_sample2.txt");
+				loader2 = new URLLoader();
+				loader2.addEventListener(Event.COMPLETE, loadLayoutSample2Handler);
+				loader2.load(url);
+				
+				workbench.viewProvider = new TestViewProvider(workbench);	
+				
+				workbench.addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, activeViewChangedHandler);	
+				workbench.addEventListener(LayoutDataChangedEvent.LAYOUT_DATA_CHANGED, layoutDataChangedHandler);
+				
+				workbench.addEventListener(ViewAddedEvent.VIEW_ADDED, viewAddedHandler);								
+				workbench.addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, removeViewsHandler);
+				workbench.addEventListener(DockHandlerEvent.CLICK, dockClickHandler, false, 1);
+			}
+			
+			private function loadLayoutSample1Handler(evt:Event):void {
+				layoutSample1 = loader1.data;
+				layoutSample1 = layoutSample1.split("\n").join("");
+				
+				txtXmlLayout.text = layoutSample1;			
+				workbench.load(txtXmlLayout.text);
+			}
+			
+			private function loadLayoutSample2Handler(evt:Event):void {
+				layoutSample2 = loader2.data;
+				layoutSample2 = layoutSample2.split("\n").join("");
+			}
+			
+			private var editors:ArrayCollection;
+			
+			private function removeViewsHandler(event:ViewsRemovedEvent):void {
+				trace("Views removed");
+				editors = new ArrayCollection();
+				for each (var view:UIComponent in event.removedViews) {					
+					if (view is EditorView) {
+						editors.addItem(view);
+					}
+				}
+//				if (editors.length > 0) {
+//					Alert.show(
+//						"Are you sure you want to close the " + editors.length + " editor views?", 
+//						"Confirmation", 
+//						Alert.YES | Alert.NO, null, confirmCloseHandler, null, Alert.YES); 
+//				}				
+			}
+			
+			private function confirmCloseHandler(event:CloseEvent):void {
+				if (event.detail == Alert.YES) {
+					workbench.closeViews(editors, false);
+				}
+			}
+			
+			private function viewAddedHandler(event:ViewAddedEvent):void {
+				trace("View added");			
+			}
+			
+			private function layoutDataChangedHandler(event:LayoutDataChangedEvent):void {
+				trace("Layout data changed");				
+			}
+			
+			private function activeViewChangedHandler(event:ActiveViewChangedEvent):void {
+				trace("Active view changed");			
+			}
+			
+			private function dockClickHandler(event:DockHandlerEvent):void {
+				event.preventDefault();	
+				
+				workbench.addNormalView(event.viewLayoutData, false, -1, false, null, event.component);
+			}
+			
+			private function cbShowXMLLayout_clickHandler(event:MouseEvent):void {
+				xmlLayoutArea.visible = cbShowXMLLayout.selected;
+				xmlLayoutArea.includeInLayout = cbShowXMLLayout.selected;
+				
+				if (btnSwitchLayout.label == 'Switch to Layout 2') {
+					txtXmlLayout.text = layoutSample1;
+				} else {
+					txtXmlLayout.text = layoutSample2;
+				}
+			}
+									
+			private function btnWorkbenchXML_clickHandler(event:MouseEvent):void {
+				txtXmlLayout.text = String(workbench.getLayoutData(false));			
+			}
+			
+			private function btnXMLWorkbench_clickHandler(event:MouseEvent):void {
+				workbench.load(txtXmlLayout.text);				
+			}
+						
+			private function btnAddView_clickHandler(event:MouseEvent):void {
+				var customView:UIComponent = workbench.getComponent("normal_view");
+				if (customView != null) {
+					Alert.show("Normal View already exists on workbench!", "Info");
+				} else {
+					workbench.addNormalView("normal_view");
+				}			
+			}
+			
+			private function btnRemoveView_clickHandler(event:MouseEvent):void {
+				var customView:UIComponent = workbench.getComponent("normal_view");
+				if (customView != null) {
+					workbench.closeView(customView);
+				} else {
+					Alert.show("Normal View doesn't exist on workbench!", "Info");
+				}				
+			}
+			
+			private function btnSetFocusOnView_clickHandler(event:MouseEvent):void {
+				var customView:UIComponent = workbench.getComponent("normal_view");
+				if (customView != null) {
+					workbench.activeViewList.setActiveView(customView);
+				} else {
+					Alert.show("Normal View doesn't exist on workbench!", "Info");
+				}
+			}
+			
+			private function btnAddEditorView_clickHandler(event:MouseEvent):void {
+				var viewLayoutData:ViewLayoutData = new ViewLayoutData();
+				viewLayoutData.viewId = "editor_view";
+				viewLayoutData.customData = String("file.txt");
+				viewLayoutData.isEditor = true;
+				
+				workbench.addEditorView(viewLayoutData);
+			}
+						
+			protected function btnColorView_clickHandler(event:MouseEvent):void {
+				var customView:UIComponent = workbench.getComponent("normal_view");
+				if (customView != null) {
+					var tab:SuperTab = SuperTab(workbench.getTabComponentForViewLayoutData(workbench.componentToLayoutData[customView]));
+					tab.styleName = "tab1";
+				} else {
+					Alert.show("Normal View doesn't exist on workbench!", "Info");
+				}
+			}
+			
+			protected function btnRefreshLabels_clickHandler(event:MouseEvent):void {
+				workbench.refreshLabels();
+			}
+						
+			protected function btnSwitchLayout_clickHandler(event:MouseEvent):void {
+				if (btnSwitchLayout.label == 'Switch to Layout 2' ) {
+					btnSwitchLayout.label = 'Switch to Layout 1';
+					workbench.load(layoutSample2, true);
+				} else {
+					btnSwitchLayout.label = 'Switch to Layout 2';
+					workbench.load(layoutSample1, true);
+				}
+			}
+			
+			protected function btnAddViewAsPopup_clickHandler(event:MouseEvent):void {
+				workbench.addViewInPopupWindow("view_chart");
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Style>
+		.tab1 {
+			color: #ff0000;
+			fill-colors: #99cc00, #ccff66;
+			selected-fill-colors: #00cc00, #66ff66;
+		}
+				
+	</mx:Style>
+	
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%" paddingLeft="5">
+			<mx:CheckBox label="Show/Hide XML Layout" id="cbShowXMLLayout" click="cbShowXMLLayout_clickHandler(event)" cornerRadius="0" fontWeight="normal"/>
+	
+			<mx:Button id="btnAddView" label="Add Normal View" click="btnAddView_clickHandler(event)" />
+			<mx:Button id="btnAddViewAsPopup" label="Open view_chart as Popup" click="btnAddViewAsPopup_clickHandler(event)" />
+			<mx:Button id="btnSetFocusOnView" label="Set focus on Normal View" click="btnSetFocusOnView_clickHandler(event)" />
+			<mx:Button id="btnColorView" label="Color Normal View Tab" click="btnColorView_clickHandler(event)" />
+			<mx:Button id="btnRemoveView" label="Remove Normal View" click="btnRemoveView_clickHandler(event)" />			
+			<mx:Spacer width="10" />
+			<mx:Button id="btnAddEditorView" label="Add Editor View" click="btnAddEditorView_clickHandler(event)" />	
+			<mx:Button id="btnRefreshLabels" label="Refresh Editor View Labels" click="btnRefreshLabels_clickHandler(event)" />			
+		</mx:HBox>
+		<mx:HBox width="100%" paddingLeft="5">
+			<mx:Button id="btnSwitchLayout" label="Switch to Layout 2" click="btnSwitchLayout_clickHandler(event)" />
+		</mx:HBox>
+				
+		<mx:HDividedBox width="100%" height="100%">
+			<mx:HBox width="30%" height="100%" id="xmlLayoutArea" visible="false" includeInLayout="false">			
+				<mx:TextArea width="100%" height="100%" id="txtXmlLayout"  />
+				<mx:VBox>				
+					<mx:Button id="btnWorkbenchXML" icon="{leftArrow}" click="btnWorkbenchXML_clickHandler(event)" toolTip="Serialize" />
+					<mx:Button id="btnXMLWorkbench" icon="{rightArrow}" click="btnXMLWorkbench_clickHandler(event)" toolTip="Deserialize"/>
+				</mx:VBox>				
+			</mx:HBox>
+			
+			<layout:Workbench id="workbench" width="70%" height="100%" />
+		</mx:HDividedBox>
+	</mx:VBox>	
+	
+</mx:Canvas>

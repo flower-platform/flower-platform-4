@@ -3,7 +3,7 @@
 	<name>org.flowerplatform.host.web_app</name>
 	<comment></comment>
 	<projects>
-		<project>org.flowerplatform.host.servletbridge_base</project>
+		<project>org.flowerplatform.host.servletbridge.base</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

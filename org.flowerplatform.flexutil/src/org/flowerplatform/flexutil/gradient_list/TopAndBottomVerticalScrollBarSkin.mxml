@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+	Vertical scrollbar without track and thumb; the up and down buttons are displayed above
+	and below the component, and have the same width as the component (+/- an offset).
+
+	@author Mariana
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+			 alpha.disabled="0.5" alpha.inactive="0.5" >
+	
+	<fx:Metadata>
+		<![CDATA[ 
+		/** 
+		* @copy spark.skins.spark.ApplicationSkin#hostComponent
+		*/
+		[HostComponent("spark.components.VScrollBar")]
+		]]>
+	</fx:Metadata> 
+	
+	<fx:Script>
+		
+		public static const BUTTON_SIZE:int = 18;
+		
+		[Bindable]
+		public var componentWidth:int = 0;
+		
+		private const OFFSET:int = 0;
+		private const ALPHA:Number = 1;
+		
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+		<s:State name="inactive" />
+	</s:states>
+	
+	<!-- Displayed above the component, with the same width (+ offset) as the component. -->
+	<s:Button id="decrementButton" left="{-componentWidth + OFFSET}" top="0" width="{componentWidth - 2*OFFSET}" height="{BUTTON_SIZE}"
+			  enabled.inactive="false" alpha="{ALPHA}"
+			  skinClass="spark.skins.spark.ScrollBarUpButtonSkin"/>
+	
+	<!-- Displayed below the component, with the same width (+ offset) as the component. -->
+	<s:Button id="incrementButton" left="{-componentWidth + OFFSET}" bottom="0" width="{componentWidth - 2*OFFSET}" height="{BUTTON_SIZE}"
+			  enabled.inactive="false" alpha="{ALPHA}"
+			  skinClass="spark.skins.spark.ScrollBarDownButtonSkin"/>
+	
+</s:SparkSkin>

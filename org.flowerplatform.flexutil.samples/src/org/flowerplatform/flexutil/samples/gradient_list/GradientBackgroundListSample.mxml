@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:ns="org.flowerplatform.flexutil.samples.gradient_list.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.gradient_list.GradientBackgroundList;
+			
+			private function changeSettingsForList(list:GradientBackgroundList):void {
+				settings.list = list;
+				settings.changeSelectionStyle();
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<ns:ListSettings id="settings" width="100%" list="{left.list}"/>
+	
+	<s:HGroup width="100%">
+		<s:RadioButton label="Change settings for left list" click="{changeSettingsForList(left.list)}" selected="true"/>
+		<s:RadioButton label="Change settings for right list" click="{changeSettingsForList(right.list)}"/>
+	</s:HGroup>
+	
+	<s:CheckBox id="gapSize" label="Show gap" selected="false"/>
+	
+	<s:HGroup width="100%" height="80%" gap="{gapSize.selected ? 10 : 0}">
+		<ns:LeftList id="left" width="50%" height="100%"/>
+		<ns:RightList id="right" width="50%" height="100%"/>
+	</s:HGroup>
+	
+</s:Group>

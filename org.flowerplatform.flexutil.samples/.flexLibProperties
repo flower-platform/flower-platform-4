@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="org.flowerplatform.flexutil.samples.renderer.MultipleIconItemRendererSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.tree.TreeNodeHierarchicalModelAdapter"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.tree.TreeSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.context_menu.ContextMenuSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.context_menu.SampleAction1"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.GradientBackgroundListSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.LeftList"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.RightList"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.ListSettings"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.DummyData"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.global_menu.SampleActionGlobalMenu1"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<!--
+	@author Mircea Negreanu
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:ns="org.flowerplatform.flexutil.global_menu.*"
+		 creationComplete="creationCompleteHandler()">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.action.ActionBase;
+			import org.flowerplatform.flexutil.action.VectorActionProvider;
+			import org.flowerplatform.flexutil.samples.renderer.MultipleIconItemRendererSample;
+
+			
+			private function creationCompleteHandler():void {
+				var actionProvider:VectorActionProvider = new VectorActionProvider();
+
+				// first level (menu bar)
+				var action:ActionBase = new SampleActionGlobalMenuC1();
+				action.label = "First Action";
+				action.id = "firstaction";
+				action.icon = MultipleIconItemRendererSample.infoImage;
+				actionProvider.getActions(null).push(action);
+				
+				action = new SampleActionGlobalMenuC1();
+				action.id = "secondaction";
+				SampleActionGlobalMenuC1(action).disableFor = "Flash";
+				actionProvider.getActions(null).push(action);
+				
+				action = new SampleActionGlobalMenuC1();
+				action.id = "thirdaction";
+				actionProvider.getActions(null).push(action);
+				
+				// second level
+				action = new SampleActionGlobalMenu1();
+				action.label = "First SubAction";
+				action.parentId = "firstaction";
+				actionProvider.getActions(null).push(action);
+				
+				action = new SampleActionGlobalMenuC1();
+				action.label = "Second SubAction";
+				action.id = "secondsubaction";
+				action.parentId = "secondaction";
+				action.icon = MultipleIconItemRendererSample.defaultImage;
+				actionProvider.getActions(null).push(action);
+				
+				action = new SampleActionGlobalMenu1();
+				action.label = "Third SubAction";
+				action.parentId = "secondaction";
+				SampleActionGlobalMenu1(action).hideOn = "ColdFusion";
+				actionProvider.getActions(null).push(action);
+				
+				action = new SampleActionGlobalMenu1();
+				action.label = "Fourth SubAction";
+				action.parentId = "thirdaction";
+				SampleActionGlobalMenu1(action).showOn = "ColdFusion";
+				actionProvider.getActions(null).push(action);
+				
+				// Third level (only for Second SubAction)
+				action = new SampleActionGlobalMenu1();
+				action.label = "Second first SubAction";
+				action.parentId = "secondsubaction";
+				SampleActionGlobalMenu1(action).hideOn = "Dreamweaver";
+				actionProvider.getActions(null).push(action);
+				
+				action = new SampleActionGlobalMenu1();
+				action.parentId = "secondsubaction";
+				action.icon = MultipleIconItemRendererSample.defaultImage;
+				actionProvider.getActions(null).push(action);
+				
+				mainMenu.actionProvider = actionProvider;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<ns:WebMenuBar width="100%" id="mainMenu"/>
+</s:Group>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<flexutil_mobile:FlowerViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:flexutil_mobile="org.flowerplatform.flexutil.mobile.*" 
+	firstView="org.flowerplatform.flexutil.samples.views.HomeView" applicationDPI="160">
+
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace ns "org.flowerplatform.flexutil.gradient_list.*";
+		
+		ns|GradientBackgroundList {
+			skinClass: ClassReference("org.flowerplatform.flexutil.mobile.gradient_list.GradientBackgroundMobileListSkin");
+		}
+		
+	</fx:Style>
+
+	<flexutil_mobile:navigationContent>
+		<s:Button label="Back">
+			<s:click>
+				<![CDATA[
+				navigator.popView();
+				]]>
+			</s:click>
+		</s:Button>
+	</flexutil_mobile:navigationContent>
+</flexutil_mobile:FlowerViewNavigatorApplication>

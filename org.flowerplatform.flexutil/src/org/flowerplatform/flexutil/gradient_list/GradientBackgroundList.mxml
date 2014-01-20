@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+	Custom list that uses the <code>GradientBackgroundListSkin</code> and
+	the <code>SelectionTriangleItemRenderer</code>. Defines custom styles
+	that will be used by the skin and item renderer and default values for
+	these styles.
+
+	@author Mariana
+-->
+<s:List xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" 
+		itemRenderer="org.flowerplatform.flexutil.gradient_list.SelectionTriangleItemRenderer">
+	
+	<fx:Metadata>
+		
+		// Gradient related styles; used in list skin
+		
+		[Style(name="backgroundColor", inherit="no", type="Number", format="Color")]
+		[Style(name="gradientColor", inherit="no", type="Number", format="Color")]
+		[Style(name="gradientWidth", inherit="no", type="uint")]
+		[Style(name="gradientStyle", inherit="no", enumeration="no_gradient,left_gradient,right_gradient,full_gradient")]
+		[Style(name="sidesBorderStyle", inherit="no", enumeration="no_side_border,left_border,right_border,full_side_border")]
+		
+		// Selection triangle related styles; used in item renderer
+		
+		[Style(name="showSelectionTriangle", inherit="no", type="Boolean")]
+		[Style(name="selectionTriangleHeight", inherit="no", type="uint")]
+		[Style(name="selectionTriangleWidth", inherit="no", type="uint")]
+		[Style(name="showSelectionTriangleOnLeftSide", inherit="no", type="Boolean")]
+		[Style(name="selectionTriangleColor", inherit="no", type="Number", format="Color")]
+		[Style(name="selectionTriangleBackgroundColor", inherit="no", type="Number", format="Color")]
+		[Style(name="showGradientAroundSelectionTriangle", inherit="no", type="Boolean")]
+		[Style(name="horizontalDelimiterOffset", inherit="no", type="uint")]
+		[Style(name="horizontalDelimiterColor", inherit="no", type="Number", format="Color")]
+		[Style(name="showHoverEffect", inherit="no", type="Boolean")]
+		[Style(name="paddingLeft", inherit="no", type="uint")]
+		
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			 
+			private static var classConstructed:Boolean = classConstruct();
+			
+			/**
+			 * Define default styles.
+			 */
+			private static function classConstruct():Boolean {
+				var styles:CSSStyleDeclaration = FlexGlobals.topLevelApplication.styleManager.
+							getStyleDeclaration("org.flowerplatform.flexutil.gradient_list.GradientBackgroundList");
+				
+				if (styles == null) {
+					styles = new CSSStyleDeclaration();
+					FlexGlobals.topLevelApplication.styleManager.
+						setStyleDeclaration("org.flowerplatform.flexutil.gradient_list.GradientBackgroundList", styles, true);
+				}
+				styles.defaultFactory = function():void {
+					this.skinClass = org.flowerplatform.flexutil.gradient_list.GradientBackgroundListSkin;
+					
+					this.backgroundColor = 0xF8F8F8;
+					this.gradientColor = 0xDFDFDF;
+					this.borderColor = 0x7F7F7F;
+					this.gradientWidth = 8;
+					this.gradientStyle = "right_gradient";
+					this.sidesBorderStyle = "full_side_border";
+					
+					this.showSelectionTriangle = true;
+					this.selectionTriangleHeight = 30;
+					this.selectionTriangleWidth = 10;
+					this.selectionTriangleColor = 0x7F7F7F;
+					this.showSelectionTriangleOnLeftSide = false;
+					this.selectionTriangleBackgroundColor = 0xFFFFFF;
+					this.showGradientAroundSelectionTriangle = true;
+					this.selectionColor = 0x22AAEE;
+					this.horizontalDelimiterOffset = 4;
+					this.horizontalDelimiterColor = 0xDFDFDF;
+					this.showHoverEffect = true;
+					this.paddingLeft = 25;
+				}
+				return true;
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:List>

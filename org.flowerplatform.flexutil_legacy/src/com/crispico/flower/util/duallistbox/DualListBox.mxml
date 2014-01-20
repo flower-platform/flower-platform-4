@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+	Represents a component with two lists and buttons (<<, <, >, >>) to move items between them.
+	The drag/drop functionality is enabled on each list.
+	
+	@author Cristina
+-->
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" headerHeight="0" borderStyle="none" borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0"
+		  creationComplete="onCreationComplete()" xmlns:list="com.crispico.flower.util.list.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+						
+			/**
+			 * This is considered to be the width of the vertical scroll (if it is shown).
+			 * 
+			 * @author mircea
+			 */ 
+			private const VERTICAL_SCROLL_WIDTH:Number = 15;
+			
+			/**
+			 * @see Getter doc.
+			 */ 
+			private var _dirty:Boolean = false;
+			
+			/**
+			 * @see Getter doc.
+			 */ 
+			[Bindable]
+			private var _rightListData:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * @see Getter doc.
+			 */
+			[Bindable]
+			private	var _leftListData:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * Title label displayed above left list.
+			 */ 
+			[Bindable]
+			public var leftListTitleLabel:String;
+			
+			/**
+			 * Title label displayed above right list.
+			 */
+			[Bindable]
+			public var rightListTitleLabel:String;
+			
+			/**
+			 * Adds double click listeners for left/right lists.
+			 */ 
+			private function onCreationComplete():void {
+				leftList.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onItemDoubleClick);
+				rightList.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, onItemDoubleClick);
+			}
+			
+			/**
+			 * Moves selected items from left/right to right/left,
+			 * depending where the double click was executed (on left/right list).
+			 */ 
+			private function onItemDoubleClick(event:ListEvent):void {
+				if (event.target == leftList) {
+					moveItems();
+				} else {
+					moveItems(false);
+				}
+			}
+			
+			/**
+			 * Holds dataProvider for <code>rightList</code>.
+			 */ 
+		 	public function get rightListData():ArrayCollection {
+				return _rightListData;
+			}
+			
+		 	public function set rightListData(value:ArrayCollection):void {
+				this._rightListData = value;				
+			}
+			
+			/**
+			 * Holds dataProvider for <code>leftList</code>.
+			 */
+			public function get leftListData():ArrayCollection {
+				return _leftListData;
+			}
+			
+			public function set leftListData(value:ArrayCollection):void {
+				this._leftListData = value;				
+			}
+			
+			/**
+			 * A flag indicating if at least one change has been made between left/right lists.
+			 */ 
+			[Bindable]
+		 	public function get dirty():Boolean {
+				return _dirty;
+			}
+			
+			public function set dirty(value:Boolean):void {
+				this._dirty = value;
+			}
+			
+			/**
+			 * When changes are detected on lists (e.g. move entries) this method must be called
+			 * to modify flag state.
+			 */ 		 	
+		 	public function makeDirty():void {
+		 		dirty = true;		 		
+		 	}	 	
+		 	
+		 	/**
+		 	 * Moves items between the two lists.
+		 	 * The flag is updated at the end.
+		 	 * 
+		 	 * @param fromLeftToRight - <code>true</code> moves items from left list to right list; 
+		 	 * 							otherwise from right list to left list.
+		 	 * @param onlySelectedItem - if <code>true</code> moves only the selected item;
+		 	 * 							otherwise moves all items from one list to another.
+		 	 */
+		 	private function moveItems(fromLeftToRight:Boolean = true, onlySelectedItems:Boolean = true):void {
+		 		if (fromLeftToRight) {
+		 			if (!onlySelectedItems) {
+		 				rightListData.addAll(leftListData);
+		 				leftListData.removeAll();
+		 			} else if (leftList.selectedIndex >= 0) { 
+		 				for each (var selectedItem:Object in leftList.selectedItems) {
+		 					rightListData.addItem(selectedItem);
+			 				leftListData.removeItemAt(leftListData.getItemIndex(selectedItem));				 					
+			 			} 			
+			 		}
+		 		} else {
+		 			if (!onlySelectedItems) {
+		 				leftListData.addAll(rightListData);
+		 				rightListData.removeAll();
+		 			} else if (rightList.selectedIndex >= 0) {
+		 				for each (var selectedItem:Object in rightList.selectedItems) {
+			 				leftListData.addItem(selectedItem);
+			 				rightListData.removeItemAt(rightListData.getItemIndex(selectedItem));		
+			 			}			 				 			
+			 		}
+		 		}		 		
+		 		makeDirty();
+		 	}		 	
+	
+		]]>
+	</mx:Script>
+	<mx:Grid width="100%" height="100%">
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="50%" height="100%">	
+				<mx:VBox width="100%" height="100%" >
+					<mx:Label text="{leftListTitleLabel}" width="100%" />
+					<list:CustomList id="leftList" dataProvider="{_leftListData}"
+							 doubleClickEnabled="true"
+							 width="100%" height="100%" minWidth="100" borderStyle="solid"
+							 dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" allowMultipleSelection="true" dragDrop="makeDirty()"							
+							 toolTip="Use buttons or drag &amp; drop to modify&#13;Use CTRL or SHIFT for multiple selection">
+					</list:CustomList>
+				</mx:VBox>				
+			</mx:GridItem>
+			<mx:GridItem width="55" maxWidth="55" height="100%" horizontalAlign="left" verticalAlign="bottom">
+				<mx:VBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+					<mx:Label width="100%" visible="false" />
+					<mx:Button icon="@Embed(source='/dual_list_box/arrow_left_double.png')" width="45" minWidth="45" click="moveItems(false, false)"
+						toolTip="Move all items to left"/>				
+					<mx:Spacer height="100%" />										
+					<mx:Button icon="@Embed(source='/dual_list_box/arrow_left.png')" width="45" minWidth="45" click="moveItems(false)"
+						toolTip="Move selected items to left"/>
+					<mx:Button icon="@Embed(source='/dual_list_box/arrow_right.png')" width="45" minWidth="45" click="moveItems()"
+						toolTip="Move selected items to right"/>				
+					<mx:Spacer height="100%" />					
+					<mx:Button icon="@Embed(source='/dual_list_box/arrow_right_double.png')" width="45" minWidth="45" click="moveItems(true, false)"
+						toolTip="Move all items to right"/>
+				</mx:VBox>				
+			</mx:GridItem>
+			<mx:GridItem width="50%" height="100%">
+				<mx:VBox width="100%" height="100%" >
+					<mx:Label text="{rightListTitleLabel}" width="100%" />
+					<list:CustomList id="rightList" dataProvider="{_rightListData}"
+							 doubleClickEnabled="true"
+							 width="100%" height="100%" minWidth="100" borderStyle="solid" 
+							 dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" allowMultipleSelection="true" dragDrop="makeDirty()"							
+							 toolTip="Use buttons or drag &amp; drop to modify&#13;Use CTRL or SHIFT for multiple selection">
+					</list:CustomList>
+				</mx:VBox>		
+			
+			</mx:GridItem>
+		</mx:GridRow>		
+	</mx:Grid>	
+	
+</mx:Panel>

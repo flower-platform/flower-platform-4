@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristi
+-->
+<popup:ResizablePopupWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+							xmlns:s="library://ns.adobe.com/flex/spark"
+							xmlns:mx="library://ns.adobe.com/flex/mx"
+							xmlns:popup="com.crispico.flower.util.popup.*"
+							creationComplete="creationCompleteHandler(event)" paddingBottom="0" paddingLeft="0"
+							paddingRight="0" paddingTop="0" minWidth="200" minHeight="150" implements="org.flowerplatform.flexutil.popup.IMessageBox">
+	<fx:Script>
+		<![CDATA[
+			import com.crispico.flower.util.UtilAssets;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.formats.LineBreak;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.popup.IMessageBox;
+			
+			import spark.components.Button;
+
+			private var _text:String;
+			
+			private var _isHTML:Boolean;
+
+			private var buttons:ArrayList = new ArrayList();
+			private var _selectText:Boolean;
+			
+			public function get text():String {
+				return _text;
+			}
+
+			public function set text(value:String):void	{
+				_text = value;
+				if (textArea == null) {
+					return;
+				}
+				
+				if (isHTML) {
+					textArea.content = TextConverter.importToFlow(value, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				} else {
+					textArea.text = value;
+				}
+			}
+
+			public function get isHTML():Boolean {
+				return _isHTML;
+			}
+
+			public function set isHTML(value:Boolean):void {
+				_isHTML = value;
+				var savedText:String = text;
+				text = null;
+				text = savedText;
+			}
+
+			protected function formOkHandler(event:MouseEvent):void {
+				closeForm();	
+			}
+			
+			public function setHeight(value:int):IMessageBox {
+				height = value;
+				return this;
+			}
+			
+			public function setText(value:String):IMessageBox {
+				text = value;
+				return this;
+			}
+			
+			public function setTitle(value:String):IMessageBox {
+				title = value;
+				return this;
+			}
+			
+			public function setWidth(value:int):IMessageBox {
+				width = value;
+				return this;
+			}
+			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			public function addButton(title:String, handler:Function = null):IMessageBox {
+				var newBtn:mx.controls.Button = new mx.controls.Button();
+				newBtn.label = title;
+				
+				newBtn.addEventListener(MouseEvent.CLICK, 
+					function(event:MouseEvent):void {
+						if (handler != null) {
+							handler(event);
+						}
+						closeForm();
+					}
+				);
+				buttons.addItem(newBtn);
+				return this;
+			}
+			
+			public function setWordWrap(value:Boolean):IMessageBox {
+				var styleValue:String = value ? LineBreak.TO_FIT : LineBreak.EXPLICIT;
+//				callLater(textArea.setStyle, ["lineBreak", styleValue]);
+				callLater(function ():void {
+					textArea.setStyle("lineBreak", styleValue);
+				});
+				return this;
+			}
+			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			public function setSelectText(value:Boolean):IMessageBox {								
+				_selectText = value;
+				return this;
+			}
+			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			override protected function createChildren():void	{
+				super.createChildren();
+				
+				if (buttons.length == 0) {
+					textAreaPopupControlBar.addElement(okButton);
+				} else {
+					for (var i:int=0; i < buttons.length; i++) {
+						textAreaPopupControlBar.addElement(mx.controls.Button(buttons.getItemAt(i)));
+					}
+				}
+			}
+			
+			public function showMessageBox(modal:Boolean = true):void {
+				showPopup(NaN, NaN, null, modal);
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				text = text;
+				if (_selectText) {
+					callLater(function ():void {
+						textArea.setFocus();
+						textArea.selectAll();
+					});
+					
+				}
+			}
+			
+		]]>
+	</fx:Script>
+		
+	<fx:Declarations>
+		<mx:Button id="okButton" label="{UtilAssets.INSTANCE.getMessage('dialog.ok')}" click="formOkHandler(event)"/>
+	</fx:Declarations>
+	
+	<s:TextArea id="textArea" width="100%" height="100%" editable="false"/>
+	<mx:ControlBar id="textAreaPopupControlBar" horizontalAlign="center">		
+	</mx:ControlBar>
+</popup:ResizablePopupWindow>

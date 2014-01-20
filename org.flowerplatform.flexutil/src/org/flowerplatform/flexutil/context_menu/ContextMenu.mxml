@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+The graphical component that displays a list of actions, for one level.
+
+@author Cristian Spiescu
+-->
+<popup:ScreenSizeAwarePopup xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:popup="org.flowerplatform.flexutil.popup.*"
+				   backgroundAlpha="0.9" backgroundColor="#DEECFC"
+				   borderVisible="true" dropShadowVisible="true" borderColor="#616161">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			
+			import org.flowerplatform.flexutil.action.ActionUtil;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.action.IComposedAction;
+			import org.flowerplatform.flexutil.action.MenuClosedEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			protected static const GAP_BETWEEN_MENUS:int = -7;
+			
+			[Bindable]
+			public var actions:IList;
+			
+			public var contextMenuManager:ContextMenuManager;
+			
+			protected var indexInStack:int;
+			
+			/**
+			 * Calculates the actions for the current level, and displays the menu. Called by <code>ContextMenuManager</code> or
+			 * by this class; not intented to be called directly.
+			 */
+			public function openContextMenu(contextMenuManager:ContextMenuManager, x:Number, y:Number, actionsForCurrentLevelAreadyCalculated:IList, parentActionId:String):Boolean {
+				if (actionsForCurrentLevelAreadyCalculated) {
+					actions = actionsForCurrentLevelAreadyCalculated;
+				} else {
+					actions = new ArrayList();
+					ActionUtil.processAndIterateActions(parentActionId, contextMenuManager.allActions, contextMenuManager.selection, contextMenuManager.context, this, function (action:IAction):void {
+						actions.addItem(action);
+					});
+				}
+				
+				if (actions.length == 0) {
+					// this happens, when all the actions are with "preferShowOnActionBar"
+					return false;
+				}
+
+				this.contextMenuManager = contextMenuManager;
+				this.x = x;
+				this.y = y;
+				
+				contextMenuManager.contextMenuStack.push(this);
+				indexInStack = contextMenuManager.contextMenuStack.length - 1;
+				if (indexInStack == 0) {
+					// only the first one listens for click outside the menu
+					addEventListener(Event.ADDED_TO_STAGE, function (event:Event):void {
+						stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+					});
+				}
+			
+				PopUpManager.addPopUp(this, DisplayObject(FlexGlobals.topLevelApplication));
+				return true;
+			}
+			
+			override protected function adjustHorizontalPosition(appWidth:Number):void {
+				if (indexInStack == 0) {
+					// for the first menu, just keep it in the screen 
+					super.adjustHorizontalPosition(appWidth);
+				} else {
+					// for the next menus, try to display to the left
+					var parentMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = contextMenuManager.contextMenuStack[indexInStack - 1];
+					x = Math.max(0, parentMenu.x - width - GAP_BETWEEN_MENUS);
+				}
+			}
+			
+			public function closeContextMenu():void {
+				if (indexInStack == 0) {
+					// only the first one listens for click outside the menu
+					stage.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);					
+					
+					contextMenuManager.allActions = null;
+					contextMenuManager.selection = null;
+					contextMenuManager.context = null;
+					
+					FlexGlobals.topLevelApplication.dispatchEvent(new MenuClosedEvent());		
+				}
+				PopUpManager.removePopUp(this);
+				if (contextMenuManager.contextMenuStack[contextMenuManager.contextMenuStack.length - 1] != this) {
+					throw new Error("Trying to close a context menu, but it's not on the top of the stack");
+				}
+				contextMenuManager.contextMenuStack.pop();
+			}
+			
+			protected function mouseDownHandler(event:MouseEvent):void {
+				var currentElementUnderMouse:DisplayObject = DisplayObject(event.target);
+				while (currentElementUnderMouse != null) {
+					if (currentElementUnderMouse is ContextMenuItemRenderer || currentElementUnderMouse is org.flowerplatform.flexutil.context_menu.ContextMenu) {
+						// don't do anything; just exit
+						return;
+					}
+					currentElementUnderMouse = currentElementUnderMouse.parent;
+				}
+				closeContextMenuStack(0);
+			}
+			
+			public function closeContextMenuStack(startingIndex:int):void {
+				for (var i:int = contextMenuManager.contextMenuStack.length - 1; i >= startingIndex; i--) {
+					contextMenuManager.contextMenuStack[i].closeContextMenu();
+				}
+			}
+
+			/**
+			 * If the current action is composed, opens the corresponding sub menu.
+			 */
+			protected function listSelectionChangeHandler(event:IndexChangeEvent):void {
+				closeContextMenuStack(indexInStack + 1);
+				if (ActionUtil.isComposedAction(IAction(list.selectedItem))) {
+					new org.flowerplatform.flexutil.context_menu.ContextMenu().openContextMenu(
+						contextMenuManager,
+						x + width + GAP_BETWEEN_MENUS,
+						y + list.selectedIndex * ContextMenuItemRenderer.HEIGHT,
+						null,
+						IComposedAction(list.selectedItem).id);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<popup:layout>
+		<s:VerticalLayout id="verticalLayout" paddingTop="3" paddingBottom="3"/>
+	</popup:layout>
+	<popup:addedEffect>
+		<s:Fade alphaFrom="0" alphaTo="1" duration="150"/>
+	</popup:addedEffect>
+<!--	<s:removedEffect>
+		<s:Fade alphaFrom="1" alphaTo="0" duration="300"/>
+	</s:removedEffect>-->
+	<s:List id="list" minHeight="10" borderVisible="false" contentBackgroundAlpha="0" itemRenderer="org.flowerplatform.flexutil.context_menu.ContextMenuItemRenderer"
+			change="listSelectionChangeHandler(event)" dataProvider="{actions}">
+		<!-- 
+		This allows taking into consideration the minHeight; otherwise the minHeight would be something like 110;
+		However, the minWidth still cannot go below 30, but this is not a big problem, as actions are usually bigger then that (on width).
+		Perhaps another solution would have been to change the mins from the skin.
+		-->
+		<s:layout>
+			<s:VerticalLayout requestedMinRowCount="1" horizontalAlign="contentJustify" gap="0"/>
+		</s:layout>	
+	</s:List>
+</popup:ScreenSizeAwarePopup>
