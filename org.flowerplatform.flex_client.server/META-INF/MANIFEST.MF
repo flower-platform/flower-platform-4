@@ -8,3 +8,13 @@ Require-Bundle: org.flowerplatform.util,
  org.eclipse.equinox.http.registry
 Import-Package: javax.servlet,
  javax.servlet.http
+Bundle-ClassPath: lib/commons-codec-1.3.jar,
+ lib/commons-httpclient-3.0.1.jar,
+ lib/commons-logging.jar,
+ lib/flex-messaging-common_modified.jar,
+ lib/flex-messaging-core.jar,
+ lib/flex-messaging-opt.jar,
+ lib/flex-messaging-proxy.jar,
+ lib/flex-messaging-remoting.jar,
+ lib/flex-rds-server.jar,
+ .

@@ -16,8 +16,13 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.core.plugin {
-	import org.flowerplatform.flex_client.core.AbstractFlowerFlexPlugin;
+package org.flowerplatform.flex_client.core {
+	import flash.display.DisplayObject;
+	
+	import mx.core.FlexGlobals;
+	import mx.managers.PopUpManager;
+	
+	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -45,6 +50,9 @@ package org.flowerplatform.flex_client.core.plugin {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
+			
+			var popup:Test = new Test();
+			PopUpManager.addPopUp(popup, DisplayObject(FlexGlobals.topLevelApplication));
 			
 //			linkHandlers = new Dictionary();			
 //			

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services-config>
+
+    <services>
+        <service-include file-path="amfRemoting.xml" />
+	</services>
+	
+   	<!-- For more details about channel definition configuration check http://livedocs.adobe.com/livecycle/8.2/programLC/programmer/lcds/help.html?content=lcconfig_3.html. -->
+    <channels>
+        <channel-definition id="amfRemoting" class="mx.messaging.channels.AMFChannel">
+            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amfRemoting" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <properties>
+                <polling-enabled>false</polling-enabled>
+				<serialization>
+					<log-property-errors>true</log-property-errors>
+				</serialization>
+            </properties>
+        </channel-definition>
+    </channels>
+
+    <logging>
+        <target class="flex.messaging.log.ServletLogTarget" level="Warn"> <!-- Other options : Debug, All, Warn -->
+            <properties>
+                <prefix>[BlazeDS Flower Web] </prefix>
+                <includeDate>false</includeDate>
+                <includeTime>false</includeTime>
+                <includeLevel>false</includeLevel>
+                <includeCategory>true</includeCategory>
+            </properties>
+            <filters>
+				<pattern>*</pattern>
+                <pattern>Endpoint.*</pattern>
+                <pattern>Service.*</pattern>
+                <pattern>Configuration</pattern>
+            </filters>
+        </target>
+    </logging>
+</services-config>

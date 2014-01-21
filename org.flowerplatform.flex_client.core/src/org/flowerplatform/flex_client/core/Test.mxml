@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:ChannelSet id="channelSet">
+			<s:AMFChannel uri="{FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/amfRemoting'}"/>
+		</s:ChannelSet>
+		<s:RemoteObject id="testService" destination="testService" channelSet="{channelSet}">
+		</s:RemoteObject>
+	</fx:Declarations>
+	<s:Button click="testService.sayHello('cristi')"/>
+</s:Group>

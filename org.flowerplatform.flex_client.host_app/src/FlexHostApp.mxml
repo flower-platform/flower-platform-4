@@ -53,6 +53,7 @@ license-end
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
+			import mx.messaging.channels.AMFChannel;
 			import mx.messaging.config.ConfigMap;
 			import mx.messaging.management.Attribute;
 			import mx.messaging.management.MBeanAttributeInfo;
@@ -74,6 +75,7 @@ license-end
 			import mx.messaging.messages.MessagePerformanceInfo;
 			import mx.messaging.messages.RemotingMessage;
 			import mx.messaging.messages.SOAPMessage;
+			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.states.AddChild;
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
@@ -121,6 +123,10 @@ license-end
 			ArrayList;
 			ObjectProxy;
 			ImageSnapshot;
+			
+			AMFChannel;
+			RemoteObject;
+			FunctionReturnWatcher;
 	
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:

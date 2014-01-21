@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.core {
+package org.flowerplatform.flex_client.core.plugin {
 	import mx.resources.ResourceManager;
 	
 	import org.flowerplatform.flexutil.plugin.AbstractFlexPlugin;

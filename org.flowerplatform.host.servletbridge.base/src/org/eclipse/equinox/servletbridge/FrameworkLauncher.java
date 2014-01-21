@@ -118,8 +118,10 @@ public class FrameworkLauncher {
 			throw new IllegalStateException();
 	}
 
+	//MODIF_FROM_ORIGINAL begin
 	protected ServletConfigWrapper config;
 	protected ServletContextWrapper context;
+	//MODIF_FROM_ORIGINAL end
 	protected String resourceBase;
 	private File platformDirectory;
 	private ClassLoader frameworkContextClassLoader;
