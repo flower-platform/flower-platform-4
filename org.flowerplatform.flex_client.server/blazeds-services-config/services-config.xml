@@ -2,13 +2,13 @@
 <services-config>
 
     <services>
-        <service-include file-path="amfRemoting.xml" />
+        <service-include file-path="remoting-config.xml" />
 	</services>
 	
    	<!-- For more details about channel definition configuration check http://livedocs.adobe.com/livecycle/8.2/programLC/programmer/lcds/help.html?content=lcconfig_3.html. -->
     <channels>
-        <channel-definition id="amfRemoting" class="mx.messaging.channels.AMFChannel">
-            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amfRemoting" class="flex.messaging.endpoints.AMFEndpoint"/>
+        <channel-definition id="remoting-amf" class="mx.messaging.channels.AMFChannel">
+            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/remoting-amf" class="flex.messaging.endpoints.AMFEndpoint"/>
             <properties>
                 <polling-enabled>false</polling-enabled>
 				<serialization>

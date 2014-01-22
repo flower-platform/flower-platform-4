@@ -75,6 +75,7 @@ license-end
 			import mx.messaging.messages.MessagePerformanceInfo;
 			import mx.messaging.messages.RemotingMessage;
 			import mx.messaging.messages.SOAPMessage;
+			import mx.rpc.AsyncResponder;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.states.AddChild;
 			import mx.utils.ObjectProxy;
@@ -127,6 +128,7 @@ license-end
 			AMFChannel;
 			RemoteObject;
 			FunctionReturnWatcher;
+			AsyncResponder;
 	
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:

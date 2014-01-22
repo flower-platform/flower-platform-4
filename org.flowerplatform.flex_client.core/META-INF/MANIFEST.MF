@@ -3,4 +3,3 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: org.flowerplatform.flex_client.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.equinox.http.registry

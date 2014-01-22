@@ -26,7 +26,7 @@ public class DummyServletContext implements ServletContext {
 	@Override
 	public InputStream getResourceAsStream(String arg0) {
 		try {
-			URL url = new URL("platform:/plugin/org.flowerplatform.flex_client.server/blazeds-flex-config" + arg0);
+			URL url = new URL("platform:/plugin/org.flowerplatform.flex_client.server/blazeds-services-config" + arg0);
 			return url.openStream();
 		} catch (IOException e) {
 			throw new RuntimeException(e);

@@ -2,6 +2,8 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.core.Test"/>
+    <classEntry path="org.flowerplatform.flex_client.core.service.ServiceLocator"/>
+    <classEntry path="org.flowerplatform.flex_client.core.service.ServiceResponder"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -4,15 +4,23 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
 	<fx:Script>
 		<![CDATA[
-			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
+			
+			protected function button1_clickHandler(event:MouseEvent):void {
+				CorePlugin.getInstance().serviceLocator.invoke("testService2", "sayHello2", ["cr"],
+					function (result:ResultEvent):void {
+						Alert.show("" + result.result);
+					});
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<s:ChannelSet id="channelSet">
-			<s:AMFChannel uri="{FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/amfRemoting'}"/>
-		</s:ChannelSet>
-		<s:RemoteObject id="testService" destination="testService" channelSet="{channelSet}">
-		</s:RemoteObject>
 	</fx:Declarations>
-	<s:Button click="testService.sayHello('cristi')"/>
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
+	
+	<s:Button click="button1_clickHandler(event)"/>
 </s:Group>

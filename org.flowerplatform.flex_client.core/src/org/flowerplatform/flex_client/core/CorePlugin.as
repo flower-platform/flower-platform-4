@@ -23,6 +23,7 @@ package org.flowerplatform.flex_client.core {
 	import mx.managers.PopUpManager;
 	
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.core.service.ServiceLocator;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -31,6 +32,8 @@ package org.flowerplatform.flex_client.core {
 	public class CorePlugin extends AbstractFlowerFlexPlugin {
 		
 		protected static var INSTANCE:CorePlugin;
+		
+		public var serviceLocator:ServiceLocator = new ServiceLocator();
 		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
@@ -53,6 +56,7 @@ package org.flowerplatform.flex_client.core {
 			
 			var popup:Test = new Test();
 			PopUpManager.addPopUp(popup, DisplayObject(FlexGlobals.topLevelApplication));
+			serviceLocator.addService("testService2");
 			
 //			linkHandlers = new Dictionary();			
 //			
@@ -61,6 +65,8 @@ package org.flowerplatform.flex_client.core {
 //				ExternalInterface.addCallback("handleLink", handleLink);
 //			}
 		}
+		
+		
 		
 //		/**
 //		 * @author Cristina Constantinescu
