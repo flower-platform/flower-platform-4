@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.SamplesDiagramShell"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicModelAbsoluteLayoutRectangleController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicModelRendererController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.renderer.BasicModelRendererWithChildren"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.ModelPopulator"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.IModelHolder"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicSubModelSelectionController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicSubModelInplaceEditorController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicModelResizeController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicModelDragToCreateRelationController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicModelDragController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.controller.MindMapModelRendererController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.model.MindMapModel"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.renderer.MindMapModelRenderer"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.MindMapConnector"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicConnectionRendererController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicSubModelChildrenProvider"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapRootController"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

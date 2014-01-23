@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristian Spiescu
+-->
+<s:DataRenderer implements="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable, org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"
+	cacheAsBitmap="true"
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" >
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.PropertyChangeEvent;
+			
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.controller.visual_children.IVisualChildrenController;
+			
+			private var _diagramShell:DiagramShell;
+			protected var visualChildrenController:IVisualChildrenController;
+			private var _shouldRefreshVisualChildren:Boolean;
+			
+			public function get diagramShell():DiagramShell {
+				return _diagramShell;
+			}
+			
+			public function set diagramShell(value:DiagramShell):void {
+				_diagramShell = value;
+			}
+			
+			public function get shouldRefreshVisualChildren():Boolean {
+				return _shouldRefreshVisualChildren;
+			}
+			
+			public function set shouldRefreshVisualChildren(value:Boolean):void {
+				_shouldRefreshVisualChildren = value;
+			}
+			
+			override public function set data(value:Object):void {
+				if (super.data != null) {
+					data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+				}
+				super.data = value;
+				if (data == null) {
+					visualChildrenController = null;
+				} else {
+					visualChildrenController = diagramShell.getControllerProvider(data).getVisualChildrenController(data);
+				}
+				if (data != null) {
+					x = data.x;
+					y = data.y;
+					width = data.width;
+					height = data.height;
+					data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+				}
+			}
+			
+			private function modelChangedHandler(event:PropertyChangeEvent):void {
+				switch (event.property) {
+					case "x":
+						x = data.x;
+						break;
+					case "y":
+						y = data.y;
+						break;
+					case "height":
+						height = data.height;
+						break;
+					case "width":
+						width = data.width;
+						break;
+				}
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+				if (visualChildrenController != null) {
+					visualChildrenController.refreshVisualChildren(data);
+				}
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				graphics.clear();
+				graphics.lineStyle(1);
+				graphics.beginFill(0xCCCCCC, 0);
+				graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
+			}
+		]]>
+	</fx:Script>
+<!--	<s:Rect width="100%" height="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="0x0000FF" weight="2"/>
+		</s:stroke>
+	</s:Rect>
+--></s:DataRenderer>
