@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
  * Callback similar to {@link Runnable} or {@link Callable}, 
  * that takes a param and returns a value.
  * 
- * @author Cristi
+ * @author Cristian Spiescu
  * @param <R> The type of the result. Can be {@link Void} if not used.
  * @param <P> The type of the parameter. Can be {@link Void} if not used.
  */

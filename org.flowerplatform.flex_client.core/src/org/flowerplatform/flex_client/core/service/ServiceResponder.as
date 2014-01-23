@@ -2,6 +2,9 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.rpc.IResponder;
 	import mx.rpc.events.FaultEvent;
 	
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public class ServiceResponder implements IResponder {
 		
 		protected var resultHandler:Function;

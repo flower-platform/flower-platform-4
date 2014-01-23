@@ -33,11 +33,11 @@ import java.util.jar.Attributes.Name;
 
 //MODIF_FROM_ORIGINAL begin
 /**
-* IMPORTANT !!!
-* see FlowerFrameworkLauncher for details
-* 
-* @author Cristian Spiescu
-*/
+ * IMPORTANT !!!
+ * @see FlowerFrameworkLauncher for details
+ * 
+ * @author Cristian Spiescu
+ */
 //MODIF_FROM_ORIGINAL end
 
 public class CloseableURLClassLoader extends URLClassLoader {

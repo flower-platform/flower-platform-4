@@ -39,7 +39,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Inspired from FileServlet proposed here: http://balusc.blogspot.de/2007/07/fileservlet.html
+ * Inspired from FileServlet proposed here: http://balusc.blogspot.de/2007/07/fileservlet.html.
+ * 
+ * <p>
+ * Serves files from <plugin>/public-resources/*.
  * 
  * @author Cristian Spiescu
  */

@@ -27,7 +27,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
-	 * @author Cristi
+	 * @author Cristian Spiescu
 	 */
 	public class CorePlugin extends AbstractFlowerFlexPlugin {
 		

@@ -5,6 +5,11 @@ import javax.servlet.ServletConfig;
 import flex.messaging.config.FlexConfigurationManager;
 import flex.messaging.config.ServletResourceResolver;
 
+/**
+ * @see FlowerMessageBrokerServlet
+ * 
+ * @author Cristian Spiescu
+ */
 public class FlowerFlexConfigurationManager extends FlexConfigurationManager {
 
 	@Override
