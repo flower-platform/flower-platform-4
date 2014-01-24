@@ -46,7 +46,7 @@
 			The configuration file path and the properties osgi.configuration.area, 
 			osgi.dev are generated based on this info,
 			pointing to the development workspace; it is something like
-			...eclipse_workspace_fmp/.metadata/.plugins/org.eclipse.pde.core/Flower MP - Web
+			...WORKSPACE/.metadata/.plugins/org.eclipse.pde.core/Flower Platform - Host WebApp (write plugin config to file)
 			
 			NOTE1: The below configuration needs to be launched manually at least once
 			before launching Tomcat (in order to have the proper files generated). It
@@ -54,7 +54,7 @@
 			are added).
 	
 			NOTE2: In dev. mode the webapp's context is something like
-			eclipse_workspace_fmp\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\org.flowerplatform.web.app\
+			...WORKSPACE\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\org.flowerplatform.web.app\
 		 -->
 		<init-param>
 			<param-name>developmentLaunchConfigurationWindows</param-name>
@@ -84,7 +84,9 @@
 			Mandatory. The location (relative to the webapp's context) where to find the
 			Eclipse workspace to be used.
 			
-			In dev. mode, this is relative the dev workspace.
+			In dev. mode, this is relative the dev web app project (even if this is not in the workspace,
+			and it is within the dir of the git repo). Uses a small helper builder that writes absolute-path-helper.txt.
+			@see FlowerFrameworkLauncher for more details.
 		 -->
 		<init-param>
 			<param-name>workspaceLocation</param-name>
