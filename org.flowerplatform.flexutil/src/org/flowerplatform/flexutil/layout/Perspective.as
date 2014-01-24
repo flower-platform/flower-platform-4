@@ -16,15 +16,13 @@
  *
  * license-end
  */
-package com.crispico.flower.util.layout {
-	import com.crispico.flower.util.layout.Workbench;
-	import com.crispico.flower.util.layout.persistence.SashLayoutData;
-	import com.crispico.flower.util.layout.persistence.StackLayoutData;
-	import com.crispico.flower.util.layout.persistence.WorkbenchLayoutData;
-	
+package org.flowerplatform.flexutil.layout {
 	import mx.collections.ArrayCollection;
 	
+	import org.flowerplatform.flexutil.layout.SashLayoutData;
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 	
 	/**
 	 * An instance for this class should exist for each perspective.
@@ -72,11 +70,11 @@ package com.crispico.flower.util.layout {
 		 * 
 		 * 
 		 */
-		public function resetPerspective(workbench:Workbench):void {
+		public function resetPerspective(workbench:IWorkbench):void {
 			throw new Error("This method needs to be implemented.");
 		}
 		
-		protected function load(workbench:Workbench, workbenchLayoutData:WorkbenchLayoutData, editorSashLayoutData:SashLayoutData):void {
+		protected function load(workbench:IWorkbench, workbenchLayoutData:WorkbenchLayoutData, editorSashLayoutData:SashLayoutData):void {
 			if (editorSashLayoutData == null) {
 				throw new Error("A sash editor must exist on a perspective!");
 			}

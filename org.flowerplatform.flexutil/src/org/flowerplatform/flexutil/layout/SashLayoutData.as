@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package  com.crispico.flower.util.layout.persistence {
+package  org.flowerplatform.flexutil.layout {
 	import mx.collections.ArrayCollection;
 	import org.flowerplatform.flexutil.layout.LayoutData;
 	
