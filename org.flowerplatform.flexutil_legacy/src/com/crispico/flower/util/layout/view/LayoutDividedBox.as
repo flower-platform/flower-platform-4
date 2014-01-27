@@ -20,14 +20,15 @@ package com.crispico.flower.util.layout.view {
 	
 	import com.crispico.flower.util.layout.Workbench;
 	import com.crispico.flower.util.layout.event.LayoutDataChangedEvent;
-	import com.crispico.flower.util.layout.persistence.SashLayoutData;
-	import com.crispico.flower.util.layout.persistence.WorkbenchLayoutData;
 	
 	import mx.containers.BoxDirection;
 	import mx.containers.DividedBox;
 	import mx.core.ScrollPolicy;
 	import mx.core.UIComponent;
 	import mx.events.DividerEvent;
+	
+	import org.flowerplatform.flexutil.layout.SashLayoutData;
+	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 	
 	/**
 	 * DividedBox used by layout mechanism.

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristian Spiescu
+-->
+<s:Group
+	xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009">
+	
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
+			import org.flowerplatform.flexdiagram.tool.SelectOrDragToCreateElementTool;
+		]]>
+	</fx:Script>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.core.FlexGlobals;
+			import mx.events.CollectionEvent;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
+			import org.flowerplatform.flexdiagram.samples.model.BasicModel;
+			import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
+			import org.flowerplatform.flexdiagram.tool.DragTool;
+			import org.flowerplatform.flexdiagram.tool.Tool;
+			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+
+			[Bindable]
+			public var modelHolder:IModelHolder;
+			
+			[Bindable]
+			public var diagramShell:DiagramShell;
+			
+			[Bindable]
+			private var selectedModel:BasicModel;
+
+			[Bindable]
+			private var selectedSubModel:BasicSubModel;
+			
+			[Bindable]
+			private var selectedItems:ArrayList;
+			
+			[Bindable]
+			private var mainTool:Tool;
+			
+			private function getSelectedBasicModel(object:Object):BasicModel {
+				if (object is BasicModel) {
+					return BasicModel(object);
+				}
+				return null;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Binding source="modelName.text" destination="selectedModel.name"/>
+	<fx:Binding source="parseInt(modelX.text)" destination="selectedModel.x"/>
+	<fx:Binding source="parseInt(modelY.text)" destination="selectedModel.y"/>
+	<fx:Binding source="parseInt(modelWidth.text)" destination="selectedModel.width"/>
+	<fx:Binding source="parseInt(modelHeight.text)" destination="selectedModel.height"/>
+	
+	<fx:Binding source="subModelName.text" destination="selectedSubModel.name"/>
+	
+	<fx:Binding source="getSelectedBasicModel(list.selectedItem)" destination="selectedModel"/>
+	<fx:Binding source="subModelsList.selectedItem" destination="selectedSubModel"/>
+	<fx:Binding source="diagramShell.mainTool" destination="mainTool"/>
+	<fx:Binding source="diagramShell.selectedItems" destination="selectedItems"/>
+	
+	<s:Scroller width="100%" height="100%" >
+		<s:VGroup width="100%" height="100%">
+			<s:Label id="selectionLabel"/>
+			
+			<s:Form width="100%" enabled="{selectedModel != null}">
+				<s:FormItem label="Name" width="100%">
+					<s:TextInput id="modelName" width="100%" text="{selectedModel.name}"/>
+				</s:FormItem>
+				<s:FormItem label="X" width="100%">
+					<s:TextInput id="modelX" width="100%" text="{selectedModel.x}"/>
+				</s:FormItem>
+				<s:FormItem label="Y" width="100%">
+					<s:TextInput id="modelY" width="100%" text="{selectedModel.y}"/>
+				</s:FormItem>
+				<s:FormItem label="Width" width="100%">
+					<s:TextInput id="modelWidth" width="100%" text="{selectedModel.width}"/>
+				</s:FormItem>
+				<s:FormItem label="Height" width="100%">
+					<s:TextInput id="modelHeight" width="100%" text="{selectedModel.height}"/>
+				</s:FormItem>
+				<s:FormItem label="SubModel" width="100%">
+					<s:TextInput id="subModelName" width="100%" text="{selectedSubModel.name}"/>
+				</s:FormItem>
+			</s:Form>
+			<s:HGroup width="100%" height="100%">
+				<s:VGroup width="50%" height="100%">
+					<s:Label text="Models"/>
+					<s:HGroup width="100%" horizontalAlign="center">
+						<s:Button label="Add">
+							<s:click>
+								<![CDATA[
+								var model:BasicModel = new BasicModel();
+								model.x = model.y = 300;
+								model.width = model.height = 100;
+								modelHolder.rootModel.addItemAt(model, 0);
+								]]>
+							</s:click>
+						</s:Button>
+						<s:Button id="deleteButton" label="Delete" enabled="{list.selectedItem != null}">
+							<s:click>
+								<![CDATA[
+								modelHolder.rootModel.removeItem(list.selectedItem);
+								]]>
+							</s:click>
+						</s:Button>
+					</s:HGroup>
+					<s:List id="list" allowMultipleSelection="true" dataProvider="{modelHolder.rootModel}" width="100%" height="200"/>			
+				</s:VGroup>
+				<s:VGroup id="vg2" width="50%" height="100%">
+					<s:Label text="SubModels"/>
+					<s:HGroup width="100%" horizontalAlign="center">
+						<s:Button label="Add" enabled="{list.selectedItem != null}">
+							<s:click>
+								<![CDATA[
+								var submodel:BasicSubModel = new BasicSubModel("new", selectedModel);
+								selectedModel.subModels.addItemAt(submodel, 0);
+								]]>
+							</s:click>
+						</s:Button>
+						<s:Button label="Delete" enabled="{subModelsList.selectedItem != null}">
+							<s:click>
+								<![CDATA[
+								selectedModel.subModels.removeItem(selectedSubModel);
+								]]>
+							</s:click>
+						</s:Button>				
+					</s:HGroup>
+					<s:List id="subModelsList" allowMultipleSelection="true" dataProvider="{list.selectedItem.subModels}" width="100%" height="200"/>
+				</s:VGroup>
+			</s:HGroup>
+			<s:Button label="Add Connection" enabled="{selectedItems.length == 2}">
+				<s:click>
+					<![CDATA[
+					var sourceModel:Object;
+					var targetModel:Object;
+					sourceModel = selectedItems.getItemAt(0);
+					targetModel = selectedItems.getItemAt(1);
+					var model:BasicConnection = new BasicConnection();
+					model.source = sourceModel;
+					model.target = targetModel;
+					modelHolder.rootModel.addItem(model);
+					]]>
+				</s:click>
+			</s:Button>
+			<s:HGroup width="100%" height="100%">
+				<s:VGroup id="vg3" width="100%" height="100%">
+					<s:Label text="SelectedItems"/>
+					<s:HGroup width="100%">
+						<s:List id="selectedItemsList" dataProvider="{selectedItems}" width="100%" height="200"/>
+						<s:VGroup>
+							<s:Button label="Add Model" enabled="{list.selectedItem != null}">
+								<s:click>
+									<![CDATA[																	
+									diagramShell.selectedItems.addItem(list.selectedItem);
+									]]>
+								</s:click>
+							</s:Button>		
+							<s:Button label="Add SubModel" enabled="{list.selectedItem != null}">
+								<s:click>
+									<![CDATA[													
+									diagramShell.selectedItems.addItem(subModelsList.selectedItem);
+									]]>
+								</s:click>
+							</s:Button>	
+							<s:Button label="Remove" enabled="{list.selectedItem != null}">
+								<s:click>
+									<![CDATA[														
+									diagramShell.selectedItems.removeItem(selectedItemsList.selectedItem);
+									]]>
+								</s:click>
+							</s:Button>	
+							<s:Button label="Remove All" enabled="{list.selectedItem != null}">
+								<s:click>
+									<![CDATA[														
+									diagramShell.selectedItems.removeAll();
+									]]>
+								</s:click>
+							</s:Button>
+							<s:Label text="{mainTool}"/>
+							<s:Button id="activateTool1" label="Select/Drag" click="{DiagramRenderer(diagramShell.diagramRenderer).setFocus(); diagramShell.mainTool = diagramShell.tools[SelectOrDragToCreateElementTool.ID]}" />	
+							</s:VGroup>					
+					</s:HGroup>
+				</s:VGroup>
+			</s:HGroup>		
+		</s:VGroup>		
+	</s:Scroller>
+	
+</s:Group>

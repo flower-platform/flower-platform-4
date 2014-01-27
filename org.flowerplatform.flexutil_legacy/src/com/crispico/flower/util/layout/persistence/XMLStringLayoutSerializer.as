@@ -18,8 +18,12 @@
  */
 package  com.crispico.flower.util.layout.persistence {
 	import mx.collections.ArrayCollection;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	
 	import org.flowerplatform.flexutil.layout.LayoutData;
+	import org.flowerplatform.flexutil.layout.SashLayoutData;
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
+	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 	
 	
 	/**

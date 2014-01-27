@@ -20,16 +20,13 @@ package com.crispico.flower.util.layout.view.activeview
 {
 	import com.crispico.flower.util.layout.Workbench;
 	import com.crispico.flower.util.layout.event.ActiveViewChangedEvent;
-	import com.crispico.flower.util.layout.persistence.StackLayoutData;
 	import com.crispico.flower.util.layout.view.LayoutTabNavigator;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.INavigatorContent;
 	import mx.core.UIComponent;
-	import mx.managers.FocusManager;
-	import mx.managers.IFocusManagerComponent;
 	
-	import org.flowerplatform.flexutil.layout.LayoutData;
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**

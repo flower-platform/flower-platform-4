@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*" xmlns:local="*"
+			   >
+	<s:layout>
+		<s:VerticalLayout gap="10"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.components.supportClasses.StyleableTextField;
+			
+			private var textDisplay:StyleableTextField;
+						
+		]]>
+	</fx:Script>
+		
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexdiagram.renderer.NoteRenderer;
+						
+			private var notes:ArrayList = new ArrayList();
+			
+			protected function btn2_clickHandler(event:MouseEvent):void {
+				var note:NoteRenderer = new NoteRenderer();
+				note.label = textToDisplay.text;				
+				notesArea.addElement(note);
+				notes.addItem(note);							
+			}
+			
+			protected function btn3_clickHandler(event:MouseEvent):void {
+				for (var i:int = 0; i < notes.length; i++) {
+					NoteRenderer(notes.getItemAt(i)).width = Number(noteWidth.text);
+				}
+			}
+			
+			protected function btn4_clickHandler(event:MouseEvent):void {
+				for (var i:int = 0; i < notes.length; i++) {
+					NoteRenderer(notes.getItemAt(i)).maxWidth = Number(noteMaxWidth.text);
+				}
+			}
+						
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:Group width="100%" height="100%">
+		<s:layout>
+			<s:HorizontalLayout paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10" />
+		</s:layout>
+		<s:VGroup width="500" height="100%">
+			<s:TextArea id="textToDisplay" width="100%" />
+			<s:Button label="Add Note" click="btn2_clickHandler(event)" />
+			<s:Spacer width="50" />
+			<s:TextInput id="noteWidth" width="100%" text="100" />
+			<s:Button label="New Width" click="btn3_clickHandler(event)" />
+			<s:Spacer width="50" />
+			<s:TextInput id="noteMaxWidth" width="100%" text="100" />
+			<s:Button label="Max Width" click="btn4_clickHandler(event)" />	
+						
+		</s:VGroup>
+		
+		<s:Spacer width="50" />
+				
+		<s:Scroller width="100%" height="100%" >
+			<s:HGroup id="notesArea" width="100%" height="100%" />
+		</s:Scroller>
+			
+	</s:Group>
+	
+</s:Application>
