@@ -17,13 +17,22 @@
  * license-end
  */
 package org.flowerplatform.flex_client.web {
+	import flash.events.MouseEvent;
+	
+	import mx.containers.HBox;
+	import mx.core.FlexGlobals;
+	import mx.core.IVisualElementContainer;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.properties.PropertiesViewProvider;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	
+	import spark.components.Button;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -49,10 +58,20 @@ package org.flowerplatform.flex_client.web {
 								
 			CorePlugin.getInstance().getPerspective(MindMapPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			var view:ViewLayoutData = new ViewLayoutData();
-			view.isEditor = true;
-			view.viewId = MindMapEditorProvider.ID;
-			FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
+			var hBox:HBox = new HBox();
+			hBox.percentWidth = 100;
+						
+			var btn:Button = new Button();
+			btn.label = "Open Editor";
+			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
+				var view:ViewLayoutData = new ViewLayoutData();
+				view.isEditor = true;
+				view.viewId = MindMapEditorProvider.ID;
+				FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
+			});
+			hBox.addChild(btn);
+						
+			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);			
 		}
 		
 		override protected function registerMessageBundle():void {			

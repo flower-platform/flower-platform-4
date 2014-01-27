@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flex_client.web.as" projectUUID="0b4c01b2-b84b-4c9c-b2ad-de71e965a11c" version="10">
+<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flex_client.properties.as" projectUUID="31a4bdde-db56-4bd8-af2a-fb6da6376e0f" version="10">
   <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="public-resources/swc" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
@@ -11,12 +11,11 @@
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.core/public-resources/swc/org.flowerplatform.flex_client.core.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.properties/public-resources/swc/org.flowerplatform.flex_client.properties.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="org.flowerplatform.flex_client.web.as"/>
+    <application path="org.flowerplatform.flex_client.properties.as"/>
   </applications>
   <modules/>
   <buildCSSFiles/>

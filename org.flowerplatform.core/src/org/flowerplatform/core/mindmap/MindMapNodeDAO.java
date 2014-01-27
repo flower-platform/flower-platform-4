@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.mindmap.remote.Property;
+import org.freeplane.features.cloud.CloudModel;
+import org.freeplane.features.cloud.CloudModel.Shape;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.map.NodeModel;
@@ -71,6 +74,12 @@ public class MindMapNodeDAO {
 		node.setId(nodeModel.createID());
 		node.setBody(nodeModel.getText());
 		node.setHasChildren(nodeModel.hasChildren());
+		node.addProperty("type", "mindMapNode");
+		node.addProperty("id", node.getId());
+		if (CloudModel.getModel(nodeModel) != null) {
+			node.addProperty("could_shape", CloudModel.getModel(nodeModel).getShape().name());
+			node.addProperty("could_color", CloudModel.getModel(nodeModel).getColor().toString());
+		}
 		return node;
 	}
 	
@@ -106,7 +115,7 @@ public class MindMapNodeDAO {
 		return convert(newNode);
 	}
 	
-	public void removeNode(String nodeId) {		
+	public void removeNode(String nodeId) {
 		NodeModel nodeModel = getNodeModel(nodeId);
 		nodeModel.removeFromParent();
 	}	
@@ -148,6 +157,7 @@ public class MindMapNodeDAO {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void save() {
 		MapModel newModel = maps.get(getTestingURL().toString());
 		try {
@@ -155,6 +165,35 @@ public class MindMapNodeDAO {
 		} catch (IOException e) {
 			// TODO CC: To log
 			e.printStackTrace();
+		}
+	}
+	
+	public List<Property> getPropertiesData(String nodeType) {
+		// TODO CC: temporary code (testing properties view)
+		List<Property> properties = new ArrayList<Property>();
+		properties.add(new Property().setNameAs("type").setReadOnlyAs(true));		
+		properties.add(new Property().setNameAs("id").setReadOnlyAs(true));	
+		properties.add(new Property().setNameAs("could_shape").setReadOnlyAs(false));	
+		properties.add(new Property().setNameAs("could_color"));		
+		return properties;	
+	}
+		
+	public void setProperty(String nodeId, String propertyName, String propertyValue) {
+		// TODO CC: temporary code (testing properties view)
+		NodeModel nodeModel = getNodeModel(nodeId);
+		if (propertyName.equals("could_shape")) {
+			CloudModel cloud = CloudModel.createModel(nodeModel);
+			switch (propertyValue) {
+				case "ARC": 
+					cloud.setShape(Shape.ARC);
+					break;
+				case "RECT": 
+					cloud.setShape(Shape.RECT);
+					break;
+				case "STAR": 
+					cloud.setShape(Shape.STAR);
+					break;
+			}
 		}
 	}
 	

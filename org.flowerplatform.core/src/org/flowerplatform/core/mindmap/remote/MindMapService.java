@@ -67,4 +67,12 @@ public class MindMapService {
 		dao.save();
 	}	
 	
+	public List<Property> getPropertiesData(String nodeType) {		
+		return dao.getPropertiesData(nodeType);		
+	}
+	
+	public void setProperty(String nodeId, String propertyName, String propertyValue) {
+		dao.setProperty(nodeId, propertyName, propertyValue);
+	}
+
 }
