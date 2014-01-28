@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristian Spiescu
+--><s:Group
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+			import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
+			import org.flowerplatform.flexdiagram.samples.model.BasicModel;
+			import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
+			
+			public var modelHolder:IModelHolder;
+			
+			public static function populateRootModel(modelHolder:IModelHolder):void {
+				if (modelHolder.rootModel == null) {
+					modelHolder.rootModel = new ParentAwareArrayList(null);
+					modelHolder.rootModel.parent = modelHolder.rootModel;
+				}
+				
+				var model:BasicModel;
+				
+				model = new BasicModel();
+				model.name = "Model1";
+				model.x = 220;
+				model.y = 220;
+				model.width = 100;
+				model.height = 100;
+				model.subModels.addItem(new BasicSubModel("bsm1", model));
+				model.subModels.addItem(new BasicSubModel("bsm2", model));
+				model.subModels.addItem(new BasicSubModel("bsm3", model));
+				modelHolder.rootModel.addItem(model);
+				
+				model = new BasicModel();
+				model.name = "Model2";
+				model.x = 220;
+				model.y = 800;
+				model.width = 100;
+				model.height = 100;
+				model.subModels.addItem(new BasicSubModel("bsm1", model));
+				model.subModels.addItem(new BasicSubModel("bsm2", model));
+				model.subModels.addItem(new BasicSubModel("bsm3", model));
+				modelHolder.rootModel.addItem(model);
+				
+				var connection:BasicConnection;
+				
+				connection = new BasicConnection();
+				connection.source = BasicModel(modelHolder.rootModel.getItemAt(0));
+				connection.target = BasicModel(modelHolder.rootModel.getItemAt(1));
+				modelHolder.rootModel.addItem(connection);
+			}
+			
+			private function populateWithLotsOfData():void {
+				var paramWidth:int = parseInt(txtWidth.text);
+				var paramHeight:int = parseInt(txtHeight.text);
+				var paramHorizGap:int = parseInt(txtHorizGap.text);
+				var paramVertGap:int = parseInt(txtVertGap.text);
+				var paramHorizNoObj:int = parseInt(txtHorizNoObj.text);
+				var paramVertNoObj:int = parseInt(txtVertNoObj.text);
+				var paramNoSubmodels:int = parseInt(txtNoSubmodels.text);
+				
+				if (modelHolder.rootModel == null) {
+					modelHolder.rootModel = new ParentAwareArrayList(null);
+					modelHolder.rootModel.parent = modelHolder.rootModel;
+				}
+				
+				var currentModel:int = 0;
+				var currentSubModel:int = 0;
+				
+				for (var j:int = 0; j < paramVertNoObj; j++) {
+					for (var i:int = 0; i < paramHorizNoObj; i++) {
+						var model:BasicModel = new BasicModel();
+						model.name = "Model" + currentModel++;
+						model.x = i * (paramWidth + paramHorizGap);
+						model.y = j * (paramHeight + paramVertGap);
+						model.width = paramWidth;
+						model.height = paramHeight;
+						for (var sm:int = 0; sm < paramNoSubmodels; sm++) {
+							var subModel:BasicSubModel = new BasicSubModel(null, model);
+							subModel.name = "SubModel" + sm + "(" + currentSubModel++ + ")";
+							model.subModels.addItem(subModel);
+						}
+						
+						modelHolder.rootModel.addItem(model);
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Button label="Set model null">
+		<s:click>
+			<![CDATA[
+			modelHolder.rootModel = null;
+			]]>
+		</s:click>
+	</s:Button>
+	<s:Button label="Populate model with few data" click="populateRootModel(modelHolder)"/>
+
+	<s:Form width="100%">
+		<s:FormItem width="100%" label="Height">
+			<s:TextInput id="txtHeight" width="100%" text="150"/>
+		</s:FormItem>
+		<s:FormItem width="100%" label="Width">
+			<s:TextInput id="txtWidth" width="100%" text="150"/>
+		</s:FormItem>
+		<s:FormItem width="100%" label="No of obj (horizontal)">
+			<s:TextInput id="txtHorizNoObj" width="100%" text="7"/>
+		</s:FormItem>
+		<s:FormItem width="100%" label="No of obj (vertical)">
+			<s:TextInput id="txtVertNoObj" width="100%" text="7"/>
+		</s:FormItem>
+		<s:FormItem width="100%" label="Gap (horizontal)">
+			<s:TextInput id="txtHorizGap" width="100%" text="150"/>
+		</s:FormItem>
+		<s:FormItem width="100%" label="Gap (vertical)">
+			<s:TextInput id="txtVertGap" width="100%" text="150"/>
+		</s:FormItem>
+		<s:FormItem width="100%" label="No of subModels">
+			<s:TextInput id="txtNoSubmodels" width="100%" text="8"/>
+		</s:FormItem>
+	</s:Form>
+
+	<s:Button label="Populate with lots of data" click="populateWithLotsOfData()"/>
+	   
+</s:Group>

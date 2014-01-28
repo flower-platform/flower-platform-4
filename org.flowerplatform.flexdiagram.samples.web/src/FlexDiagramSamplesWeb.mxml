@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<s:Application implements="org.flowerplatform.flexdiagram.samples.IModelHolder" creationComplete="creationCompleteHandler(event)"
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:samples="org.flowerplatform.flexdiagram.samples.*" xmlns:flexdiagram="org.flowerplatform.flexdiagram.*" xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*" xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexdiagram.tool.ZoomTool;
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.samples.SamplesDiagramShell;
+			import org.flowerplatform.flexdiagram.tool.DragToCreateRelationTool;
+			import org.flowerplatform.flexdiagram.tool.DragTool;
+			import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
+			import org.flowerplatform.flexdiagram.tool.ResizeTool;
+			import org.flowerplatform.flexdiagram.tool.ScrollTool;
+			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
+			import org.flowerplatform.flexdiagram.tool.SelectOrDragToCreateElementTool;
+			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+			
+			private var _rootModel:ParentAwareArrayList;
+			
+			[Bindable]
+			public function get rootModel():ParentAwareArrayList {
+				return _rootModel;
+			}
+			
+			public function set rootModel(value:ParentAwareArrayList):void {
+				_rootModel = value;				
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {				
+				ModelPopulator.populateRootModel(this);
+				diagramShell.registerTools([
+					ScrollTool, SelectOnClickTool, InplaceEditorTool, ResizeTool, 
+					DragToCreateRelationTool, DragTool, SelectOrDragToCreateElementTool, ZoomTool]);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<samples:SamplesDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}" rootModel="{rootModel}"
+									/>
+		
+	</fx:Declarations>
+	<mx:HDividedBox width="100%" height="100%">
+		
+		<mx:TabNavigator width="350" height="100%" creationPolicy="all">			
+			<s:NavigatorContent label="Model Editor">
+				<samples:ModelEditor id="modelEditor" height="100%" width="100%" modelHolder="{this}" diagramShell="{diagramShell}"/>
+			</s:NavigatorContent>			
+			<s:NavigatorContent label="Model Populator">
+				<samples:ModelPopulator id="modelPopulator" height="100%" width="100%" modelHolder="{this}"/>
+			</s:NavigatorContent>
+		</mx:TabNavigator>
+		
+		<s:Group width="100%" height="100%" >
+			<s:Rect  x="{-diagramRenderer.viewPortRectOffsetTowardOutside}" y="{-diagramRenderer.viewPortRectOffsetTowardOutside}"
+					width="{scroller.width + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}" height="{scroller.height + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}">
+				<s:stroke>
+					<s:SolidColorStroke color="0x0000FF" weight="2" />					
+				</s:stroke>			
+			</s:Rect>
+			<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%" >
+				<renderer:DiagramRenderer id="diagramRenderer" viewPortRectOffsetTowardOutside="-100" width="100%" height="100%">
+					
+				</renderer:DiagramRenderer>				
+			</infinitegroup:InfiniteScroller>			
+		</s:Group>
+	</mx:HDividedBox>
+</s:Application>

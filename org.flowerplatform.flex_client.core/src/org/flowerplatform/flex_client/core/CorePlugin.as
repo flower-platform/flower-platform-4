@@ -17,14 +17,18 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core {
-	import flash.display.DisplayObject;
+	import flash.net.registerClassAlias;
 	
-	import mx.core.FlexGlobals;
-	import mx.managers.PopUpManager;
-	
+	import org.flowerplatform.flex_client.core.mindmap.MindMapPerspective;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapService;
+	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.ServiceLocator;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
+	import org.flowerplatform.flexutil.layout.Perspective;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -35,6 +39,12 @@ package org.flowerplatform.flex_client.core {
 		
 		public var serviceLocator:ServiceLocator = new ServiceLocator();
 		
+		public var mindMapService:MindMapService = new MindMapService();
+		
+		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
+		
+		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
+				
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
@@ -53,10 +63,12 @@ package org.flowerplatform.flex_client.core {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
+				
+			serviceLocator.addService(MindMapService.ID);
 			
-			var popup:Test = new Test();
-			PopUpManager.addPopUp(popup, DisplayObject(FlexGlobals.topLevelApplication));
-			serviceLocator.addService("testService2");
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());
+			
+			perspectives.push(new MindMapPerspective());
 			
 //			linkHandlers = new Dictionary();			
 //			
@@ -66,7 +78,23 @@ package org.flowerplatform.flex_client.core {
 //			}
 		}
 		
+		override public function start():void {			
+			super.start();			
+		}
+				
+		override protected function registerClassAliases():void {		
+			super.registerClassAliases();
+			registerClassAlias("org.flowerplatform.core.mindmap.remote.Node", Node);
+		}
 		
+		public function getPerspective(id:String):Perspective {
+			for (var i:int = 0; i < perspectives.length; i++) {
+				if (perspectives[i].id == id) {
+					return perspectives[i];
+				}
+			}
+			return null;
+		}
 		
 //		/**
 //		 * @author Cristina Constantinescu

@@ -17,13 +17,10 @@
  * license-end
  */
 package  com.crispico.flower.util.layout.view {
-	import com.crispico.flower.flexdiagram.contextmenu.ContextMenuManager;
 	import com.crispico.flower.flexdiagram.util.tabNavigator.FlowerSuperTab;
 	import com.crispico.flower.flexdiagram.util.tabNavigator.FlowerSuperTabNavigator;
 	import com.crispico.flower.util.UtilAssets;
 	import com.crispico.flower.util.layout.Workbench;
-	import com.crispico.flower.util.layout.persistence.StackLayoutData;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Graphics;
@@ -48,6 +45,9 @@ package  com.crispico.flower.util.layout.view {
 	import mx.core.mx_internal;
 	import mx.events.IndexChangedEvent;
 	import mx.events.ResizeEvent;
+	
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
+	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 
 	use namespace mx_internal;
 	/**
