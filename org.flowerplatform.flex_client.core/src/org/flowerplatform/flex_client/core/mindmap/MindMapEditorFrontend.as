@@ -102,6 +102,13 @@ package org.flowerplatform.flex_client.core.mindmap {
 			result.push(new ReloadAction(this));
 			result.push(new SaveAction());
 			
+			var actions:Vector.<IAction> = CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.getActions(selection);
+			if (actions != null) {
+				for each (var action:IAction in actions) {
+					result.push(action);
+				}
+			}
+			
 			return result;
 		}
 		
