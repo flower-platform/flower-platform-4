@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristina Constantinescu
+@author Cristian Spiescu
+-->
+<selection:AnchorsSelectionRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+									xmlns:s="library://ns.adobe.com/flex/spark" 
+									xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:selection="org.flowerplatform.flexdiagram.renderer.selection.*" xmlns:ui="org.flowerplatform.flexdiagram.ui.*">
+	<fx:Declarations>
+		<ui:ResizeAnchor id="anchorLeftUp" type="left_up" />
+		<ui:ResizeAnchor id="anchorLeftMiddle" type="left_middle" />
+		<ui:ResizeAnchor id="anchorLeftDown" type="left_down" />
+		<ui:ResizeAnchor id="anchorMiddleDown" type="middle_down" />
+		<ui:ResizeAnchor id="anchorMiddleUp" type="middle_up" />
+		<ui:ResizeAnchor id="anchorRightDown" type="right_down" />
+		<ui:ResizeAnchor id="anchorRightMiddle" type="right_middle" />		
+		<ui:ResizeAnchor id="anchorRightUp" type="right_up" />
+		
+		<ui:RelationAnchor id="relationAnchor1" />
+		<ui:RelationAnchor id="relationAnchor2" />
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			override protected function createChildren():void {
+				addChild(anchorLeftUp);
+				addChild(anchorLeftMiddle);
+				addChild(anchorLeftDown);
+				addChild(anchorMiddleDown);
+				addChild(anchorMiddleUp);
+				addChild(anchorRightDown);
+				addChild(anchorRightMiddle);
+				addChild(anchorRightUp);
+				
+				addChild(relationAnchor1);
+				addChild(relationAnchor2);
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+				anchorLeftUp.x = 0;
+				anchorLeftUp.y = 0;
+				
+				anchorLeftDown.x = 0;
+				anchorLeftDown.y = target.height;
+				
+				anchorMiddleUp.x = int(target.width / 2);
+				anchorMiddleUp.y = 0;
+				
+				anchorRightUp.x = target.width;
+				anchorRightUp.y = 0;
+				
+				anchorRightDown.x = target.width;
+				anchorRightDown.y = target.height;
+										
+				anchorRightMiddle.x = target.width;
+				anchorRightMiddle.y = int(target.height / 2);
+							
+				anchorMiddleDown.x = int(target.width / 2);
+				anchorMiddleDown.y = target.height;
+				
+				anchorLeftMiddle.x = 0;
+				anchorLeftMiddle.y = int(target.height / 2);
+				
+				var quarterX:Number = int(4 * target.width / 5);
+				
+				relationAnchor1.x = quarterX - int(relationAnchor1.width / 2);
+				relationAnchor1.y = - 16; // consider the height of the anchor
+				
+				relationAnchor2.x = quarterX - int(relationAnchor2.width / 2);
+				relationAnchor2.y = target.height + 2; // add an offset so the anchor would not cover the figure edge
+				
+			}
+			
+			override protected function invalidateActiveAnchors():void {
+				anchorLeftUp.invalidateDisplayList();
+				anchorLeftDown.invalidateDisplayList();
+				anchorMiddleUp.invalidateDisplayList();
+				anchorRightUp.invalidateDisplayList();	
+				anchorRightDown.invalidateDisplayList();	
+				anchorRightMiddle.invalidateDisplayList();	
+				anchorMiddleDown.invalidateDisplayList();	
+				anchorLeftMiddle.invalidateDisplayList();	
+				
+				relationAnchor1.invalidateDisplayList();	
+				relationAnchor2.invalidateDisplayList();	
+			}
+		]]>
+	</fx:Script>
+</selection:AnchorsSelectionRenderer>

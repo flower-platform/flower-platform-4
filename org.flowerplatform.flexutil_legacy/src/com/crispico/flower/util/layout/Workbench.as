@@ -30,9 +30,6 @@ package  com.crispico.flower.util.layout {
 	import com.crispico.flower.util.layout.event.LayoutDataChangedEvent;
 	import com.crispico.flower.util.layout.event.ViewAddedEvent;
 	import com.crispico.flower.util.layout.persistence.ILayoutSerializer;
-	import com.crispico.flower.util.layout.persistence.SashLayoutData;
-	import com.crispico.flower.util.layout.persistence.StackLayoutData;
-	import com.crispico.flower.util.layout.persistence.WorkbenchLayoutData;
 	import com.crispico.flower.util.layout.persistence.XMLStringLayoutSerializer;
 	import com.crispico.flower.util.layout.view.LayoutDividedBox;
 	import com.crispico.flower.util.layout.view.LayoutTabNavigator;
@@ -73,19 +70,15 @@ package  com.crispico.flower.util.layout {
 	import org.flowerplatform.flexutil.layout.IViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.LayoutData;
+	import org.flowerplatform.flexutil.layout.SashLayoutData;
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-
 	import org.flowerplatform.flexutil.shortcut.Shortcut;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 
-	import org.flowerplatform.flexutil.view_content_host.IViewContent;
-	import org.flowerplatform.flexutil.view_content_host.IViewHost;
-	import org.flowerplatform.flexutil.shortcut.KeyBindings;
-	import org.flowerplatform.flexutil.shortcut.Shortcut;
-	
-	import spark.components.NavigatorContent;
 
 	use namespace mx_internal;
 	
