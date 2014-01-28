@@ -4,4 +4,11 @@ Bundle-Name: Core
 Bundle-SymbolicName: org.flowerplatform.core
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: temp
+Export-Package: org.flowerplatform.core.mindmap.remote
+Bundle-ClassPath: lib/commons-lang-2.6.jar,
+ lib/freeplaneeditor.jar,
+ lib/freeplaneviewer.jar,
+ lib/gnu-regexp-1.1.4.jar,
+ lib/jortho.jar,
+ lib/SimplyHTML.jar,
+ .

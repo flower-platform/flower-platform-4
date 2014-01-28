@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristian Spiescu
+-->
+<s:DataRenderer x="{data.x}" y="{data.y}" width="{data.width}" height="{data.height}" 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Rect width="100%" height="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="0x000000" weight="2"/>
+		</s:stroke>
+		<s:fill>
+			<s:RadialGradient>
+				<s:entries>
+					<s:GradientEntry color="0x0056FF" ratio="0.00" alpha="0.5"/>
+					<s:GradientEntry color="0x00CC99" ratio="0.33" alpha="0.5"/>
+					<s:GradientEntry color="0xECEC21" ratio="0.66" alpha="0.5"/>
+				</s:entries>
+			</s:RadialGradient>
+		</s:fill>
+	</s:Rect>
+</s:DataRenderer>

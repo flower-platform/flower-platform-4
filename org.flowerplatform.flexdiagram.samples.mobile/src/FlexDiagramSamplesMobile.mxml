@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristian Spiescu
+--><s:Application applicationComplete="applicationCompleteHandler(event)" applicationDPI="160" implements="org.flowerplatform.flexdiagram.samples.IModelHolder"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:samples="org.flowerplatform.flexdiagram.samples.*" xmlns:local="*" xmlns:flexdiagram="org.flowerplatform.flexdiagram.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+			protected function applicationCompleteHandler(event:FlexEvent):void	{
+			}
+			
+			private var _rootModel:ParentAwareArrayList;
+			
+			[Bindable]
+			public function get rootModel():ParentAwareArrayList {
+				return _rootModel;
+			}
+			
+			public function set rootModel(value:ParentAwareArrayList):void {
+				_rootModel = value;				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
+
+	<s:SplitViewNavigator width="100%" height="100%">
+		<s:TabbedViewNavigator id="leftN" width="300" height="100%">
+			<s:ViewNavigator label="Model Editor" width="100%" height="100%" firstView="ModelEditorView"/>
+			<s:ViewNavigator label="Model Populator" width="100%" height="100%" firstView="ModelPopulatorView"/>
+		</s:TabbedViewNavigator>
+		<s:ViewNavigator id="diagramView" width="100%" height="100%" firstView="DiagramView">
+			<s:navigationContent>
+				<s:Button label="{leftN.includeInLayout ? ' Hide left' : 'Show left'}">
+					<s:click>
+						<![CDATA[
+							leftN.includeInLayout = !leftN.includeInLayout;
+							leftN.visible = leftN.includeInLayout;
+						]]>
+					</s:click>
+				</s:Button>
+			</s:navigationContent>
+		</s:ViewNavigator>
+	</s:SplitViewNavigator>
+</s:Application>

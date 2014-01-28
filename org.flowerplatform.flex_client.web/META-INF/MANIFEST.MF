@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Web
+Bundle-SymbolicName: org.flowerplatform.flex_client.web
+Bundle-Version: 1.0.0.qualifier

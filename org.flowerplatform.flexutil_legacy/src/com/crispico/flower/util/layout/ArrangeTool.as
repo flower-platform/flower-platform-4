@@ -18,11 +18,6 @@
  */
 package  com.crispico.flower.util.layout {
 	import com.crispico.flower.flexdiagram.ui.MoveResizePlaceHolder;
-	import org.flowerplatform.flexutil.layout.LayoutData;
-	import com.crispico.flower.util.layout.persistence.SashLayoutData;
-	import com.crispico.flower.util.layout.persistence.StackLayoutData;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
-	import com.crispico.flower.util.layout.persistence.WorkbenchLayoutData;
 	
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
@@ -38,6 +33,12 @@ package  com.crispico.flower.util.layout {
 	import mx.controls.Button;
 	import mx.core.UIComponent;
 	import mx.managers.CursorManager;
+	
+	import org.flowerplatform.flexutil.layout.LayoutData;
+	import org.flowerplatform.flexutil.layout.SashLayoutData;
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
+	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 	
 	/**
 	 * This class represents a state machine for the interactions of the mouse with the layout area.
