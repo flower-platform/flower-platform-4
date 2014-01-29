@@ -18,8 +18,8 @@
  */
 package org.flowerplatform.codesync.action;
 
-import org.flowerplatform.codesync.IModelAdapter;
 import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 public class MatchActionRemoveLeft extends MatchActionRemoveAbstract {
 

@@ -16,18 +16,21 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.code.java.feature_provider;
 
 import java.util.List;
 
-public interface IModelAdapterUI {
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
-	public boolean hasChildren(Object modelElement);
-
-	public List<?> getChildren(Object modelElement);
-
-	public String getLabel(Object modelElement);
-
-	public List<String> getIconUrls(Object modelElement);
+public class JavaModifierFeatureProvider extends NodeFeatureProvider {
 	
+	public static final String MODIFIER_TYPE = "modifierType";
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public List<?> getFeatures(Object element) {
+		List features = super.getFeatures(element);
+		features.add(MODIFIER_TYPE);
+		return features;
+	}
 }

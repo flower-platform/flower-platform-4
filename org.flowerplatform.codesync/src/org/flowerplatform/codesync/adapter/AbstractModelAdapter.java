@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.adapter;
 
 import java.util.Map;
 
@@ -54,6 +54,16 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 		return this;
 	}
 
+	@Override
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+		throw new IllegalArgumentException("Attempted to acces value feature " + feature + " for element " + element);
+	}
+
+	@Override
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+		throw new IllegalArgumentException("Attempted to acces containment feature " + feature + " for element " + element);
+	}
+	
 	@Override
 	public void addToMap(Object element, Map<Object, Object> map) {
 		map.put(getMatchKey(element), element);

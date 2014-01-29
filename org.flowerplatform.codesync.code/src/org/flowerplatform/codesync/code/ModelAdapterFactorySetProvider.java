@@ -21,7 +21,7 @@ package org.flowerplatform.codesync.code;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.flowerplatform.codesync.ModelAdapterFactorySet;
+import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
 
 /**
  * @author Mariana

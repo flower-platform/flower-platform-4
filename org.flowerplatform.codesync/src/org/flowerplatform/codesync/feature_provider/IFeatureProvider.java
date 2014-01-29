@@ -16,22 +16,19 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code.adapter;
+package org.flowerplatform.codesync.feature_provider;
 
-import java.util.Map;
-
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
+import java.util.List;
 
 /**
- * 
+ * @author Mariana
  */
-public abstract class AstModelElementAdapter extends AbstractModelAdapter {
+public interface IFeatureProvider {
 
-	@Override
-	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight) {
-		throw new UnsupportedOperationException("AstModelElementAdapter.removeFromMap() attempted.");
-	}
+	public List<?> getFeatures(Object element);
 
-	abstract protected void updateUID(Object element, Object correspondingElement);
+	public int getFeatureType(Object feature);
+	
+	public String getFeatureName(Object feature);
 	
 }

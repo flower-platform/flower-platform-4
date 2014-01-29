@@ -30,6 +30,8 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
@@ -66,12 +68,11 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	 */
 	@Override
 	protected Object createFileInfo(Object file) {
-		
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		Map options = new HashMap<>(JavaCore.getOptions());
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_7);
 		parser.setCompilerOptions(options);
-		boolean fileExists = false;//EditorPlugin.getInstance().getFileAccessController().exists(file);
+		boolean fileExists = CorePlugin.getInstance().getFileAccessController().exists(file);
 		char[] initialContent = fileExists ? getFileContent(file) : new char[0];
 		parser.setSource(initialContent);
 		CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
@@ -80,9 +81,8 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	}
 
 	private char[] getFileContent(Object file) {
-//		IFileAccessController fileAccessController = EditorPlugin.getInstance().getFileAccessController();
-//		return fileAccessController.readFileToString(file).toCharArray();
-		return null;
+		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
+		return fileAccessController.readFileToString(file).toCharArray();
 	}
 
 	@Override

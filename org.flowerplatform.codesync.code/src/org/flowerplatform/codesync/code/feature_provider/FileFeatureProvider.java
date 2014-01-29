@@ -16,23 +16,36 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.action;
+package org.flowerplatform.codesync.code.feature_provider;
 
-import org.flowerplatform.codesync.Match;
+import java.util.List;
+
 import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
-public class MatchActionAddAncestorToLeftRight extends DiffAction {
+public class FileFeatureProvider extends NodeFeatureProvider {
 
+	public static final String CHILDREN = "children";
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public ActionResult execute(Match match, int diffIndex) {
-		Object child = match.getAncestor();
-		new MatchActionAddAncestorToLeft(false).execute(match, -1);
-		new MatchActionAddAncestorToRight(false).execute(match, -1);
-		IModelAdapter adapter = match.getModelAdapterFactorySet().getAncestorFactory().getModelAdapter(child);
-		return new ActionResult(false, false, false, adapter.getMatchKey(child), true);
+	public List<?> getFeatures(Object element) {
+		List features = super.getFeatures(element);
+		features.add(CHILDREN);
+		return features;
 	}
 
+	@Override
+	public int getFeatureType(Object feature) {
+		if (CHILDREN.equals(feature)) {
+			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
+		}
+		return super.getFeatureType(feature);
+	}
+
+	
+	
 }

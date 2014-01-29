@@ -19,8 +19,8 @@
 package org.flowerplatform.codesync.action;
 
 import org.flowerplatform.codesync.Diff;
-import org.flowerplatform.codesync.IModelAdapter;
 import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 
 /**

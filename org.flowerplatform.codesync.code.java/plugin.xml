@@ -15,7 +15,7 @@
       <modelAdapterFactorySet
             id="org.flowerplatform.codesync.code.java.JavaModelAdapterFactorySet"
             technology="java"
-            modelAdapterFactorySetClass="org.flowerplatform.codesync.code.java.JavaModelAdapterFactorySet">
+            modelAdapterFactorySetClass="org.flowerplatform.codesync.code.java.adapter.JavaModelAdapterFactorySet">
       </modelAdapterFactorySet>
    </extension>
 </plugin>

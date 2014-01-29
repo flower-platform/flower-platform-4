@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Platform;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.ModelAdapterFactorySet;
+import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
 import org.flowerplatform.core.mindmap.remote.Node;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;

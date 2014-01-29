@@ -20,8 +20,8 @@ package org.flowerplatform.codesync.action;
 
 import java.util.Iterator;
 
-import org.flowerplatform.codesync.IModelAdapter;
 import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 public abstract class MatchActionRemoveAbstract extends DiffAction {
 

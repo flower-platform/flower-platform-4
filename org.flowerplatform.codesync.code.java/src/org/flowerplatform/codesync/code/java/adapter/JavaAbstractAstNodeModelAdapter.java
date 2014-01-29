@@ -33,12 +33,14 @@ import org.eclipse.jdt.core.dom.MethodRef;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 
 /**
  * Mapped to {@link ASTNode}.
@@ -57,22 +59,18 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Children().equals(feature)) {
-//			return getChildren(element);
-//		}
-//		
-//		// handle modifiers here to avoid using the same code in multiple adapters
-//		if (AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers().equals(feature)) {
-//			if (element instanceof BodyDeclaration) {
-//				return ((BodyDeclaration) element).modifiers();
-//			}
-//			if (element instanceof SingleVariableDeclaration) {
-//				return ((SingleVariableDeclaration) element).modifiers();
-//			}
-//			return Collections.emptyList();
-//		}
+		// handle modifiers here to avoid using the same code in multiple adapters
+		if (JavaFeaturesConstants.MODIFIERS.equals(feature)) {
+			if (element instanceof BodyDeclaration) {
+				return ((BodyDeclaration) element).modifiers();
+			}
+			if (element instanceof SingleVariableDeclaration) {
+				return ((SingleVariableDeclaration) element).modifiers();
+			}
+			return Collections.emptyList();
+		}
 		
-		return Collections.emptyList();
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
 	/**
@@ -80,10 +78,10 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	 */
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-//		if (AstCacheCodePackage.eINSTANCE.getDocumentableElement_Documentation().equals(feature)) {
-//			return getJavaDoc(element);
-//		}
-		return null;
+		if (JavaFeaturesConstants.DOCUMENTATION.equals(feature)) {
+			return getJavaDoc(element);
+		}
+		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
 	@Override

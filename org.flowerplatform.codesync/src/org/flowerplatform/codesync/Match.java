@@ -21,6 +21,9 @@ package org.flowerplatform.codesync;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
+
 import static org.flowerplatform.codesync.CodeSyncAlgorithm.UNDEFINED;
 
 /**

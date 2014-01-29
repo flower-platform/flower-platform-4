@@ -16,19 +16,35 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.feature_provider;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * @author Mariana
  */
-public interface IFeatureProvider {
+public abstract class NodeFeatureProvider implements IFeatureProvider {
 
-	public List<?> getFeatures(Object element);
+	@Override
+	public List<?> getFeatures(Object element) {
+		List<String> features = new ArrayList<String>();
+		features.add(Node.NAME);
+		features.add(Node.TYPE);
+		return features;
+	}
 
-	public int getFeatureType(Object feature);
-	
-	public String getFeatureName(Object feature);
-	
+	@Override
+	public int getFeatureType(Object feature) {
+		return IModelAdapter.FEATURE_TYPE_VALUE;
+	}
+
+	@Override
+	public String getFeatureName(Object feature) {
+		return feature.toString();
+	}
+
 }

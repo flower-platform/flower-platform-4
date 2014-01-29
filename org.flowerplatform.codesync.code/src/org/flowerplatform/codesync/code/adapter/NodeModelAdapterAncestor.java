@@ -21,7 +21,7 @@ package org.flowerplatform.codesync.code.adapter;
 import java.util.Iterator;
 
 import org.flowerplatform.codesync.FilteredIterable;
-import org.flowerplatform.codesync.NodeModelAdapter;
+import org.flowerplatform.codesync.adapter.NodeModelAdapter;
 
 /**
  * @author Mariana

@@ -16,41 +16,31 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.code.java.feature_provider;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
-/**
- * @author Mariana
- */
-public class NodeFeatureProvider implements IFeatureProvider {
-
-	public static String CHILDREN = "children";
+public class JavaAnnotationFeatureProvider extends NodeFeatureProvider {
 	
+	public static final String ANNOTATION_VALUES = "annotationValues";
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<?> getFeatures(Object element) {
-		List<String> features = new ArrayList<String>();
-		features.add(Node.NAME);
-		features.add(Node.TYPE);
-		features.add(CHILDREN);
+		List features = super.getFeatures(element);
+		features.add(ANNOTATION_VALUES);
 		return features;
 	}
 
 	@Override
 	public int getFeatureType(Object feature) {
-		if (feature.equals(CHILDREN)) {
+		if (ANNOTATION_VALUES.equals(feature)) {
 			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		} else {
-			return IModelAdapter.FEATURE_TYPE_VALUE;
 		}
+		return super.getFeatureType(feature);
 	}
-
-	@Override
-	public String getFeatureName(Object feature) {
-		return feature.toString();
-	}
-
+	
 }

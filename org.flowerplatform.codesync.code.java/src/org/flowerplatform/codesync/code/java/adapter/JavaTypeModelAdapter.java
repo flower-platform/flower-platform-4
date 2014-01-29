@@ -19,6 +19,7 @@
 package org.flowerplatform.codesync.code.java.adapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,10 +36,13 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeFeatureProvider;
 import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * Mapped to {@link AbstractTypeDeclaration}. Children are {@link BodyDeclaration}s.
+ * 
+ * @see JavaTypeFeatureProvider
  * 
  * @author Mariana
  */
@@ -47,14 +51,14 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	public static final String CLASS = "javaClass";
 	public static final String INTERFACE = "javaInterface";
 	public static final String ENUM = "javaEnum";
-	public static final String ANNOTATION = "javaAnnotation";
+	public static final String ANNOTATION_TYPE = "javaAnnotationType";
 	
 	/**
 	 * Returns only types, fields and methods.
 	 */
 	@Override
 	public List<?> getChildren(Object modelElement) {
-		List children = new ArrayList<>();
+		List<ASTNode> children = new ArrayList<ASTNode>();
 		AbstractTypeDeclaration type = getAbstractTypeDeclaration(modelElement);
 		children.addAll(type.bodyDeclarations());
 		if (type instanceof EnumDeclaration) {
@@ -88,7 +92,7 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 				return false;
 			}
 		};
-		List rslt = new ArrayList();
+		List<ASTNode> rslt = new ArrayList<ASTNode>();
 		while (it.hasNext()) {
 			ASTNode node = (ASTNode) it.next();
 			// TODO for field declarations, add the list of fragments
@@ -108,50 +112,47 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		// declared as containment by JavaFeatureProvider
-//		if (AstCacheCodePackage.eINSTANCE.getClass_SuperInterfaces().equals(feature)) {
-//			if (element instanceof TypeDeclaration) {
-//				return getTypeNames(((TypeDeclaration) element).superInterfaceTypes());
-//			}
-//			if (element instanceof EnumDeclaration) {
-//				return getTypeNames(((EnumDeclaration) element).superInterfaceTypes());
-//			}
-//			return Collections.emptyList();
-//		}
+		if (JavaTypeFeatureProvider.TYPE_MEMBERS.equals(feature)) {
+			return getChildren(element);
+		}
+		if (JavaTypeFeatureProvider.SUPER_INTERFACES.equals(feature)) {
+			if (element instanceof TypeDeclaration) {
+				return getTypeNames(((TypeDeclaration) element).superInterfaceTypes());
+			}
+			if (element instanceof EnumDeclaration) {
+				return getTypeNames(((EnumDeclaration) element).superInterfaceTypes());
+			}
+			return Collections.emptyList();
+		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Name().equals(feature)) {
-//			return getLabel(element);
-//		}
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Type().equals(feature)) {
-//			if (element instanceof TypeDeclaration) {
-//				if (((TypeDeclaration) element).isInterface()) {
-//					return INTERFACE;
-//				}
-//				return CLASS;
-//			}
-//			if (element instanceof EnumDeclaration) {
-//				return ENUM;
-//			}
-//			return ANNOTATION;
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getClass_SuperClasses().equals(feature)) {
-//			if (element instanceof TypeDeclaration) {
-//				TypeDeclaration type = (TypeDeclaration) element;
-//				if (type.getSuperclassType() != null) {
-//					return Collections.singletonList(getStringFromType(type.getSuperclassType()));
-//				} else {
-//					return Collections.emptyList();
-//				}
-//			}
-//			return Collections.emptyList();
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getClass_SuperInterfaces().equals(feature)) { 
-//			return Collections.emptyList();
-//		}
+		if (Node.NAME.equals(feature)) {
+			return getLabel(element);
+		}
+		if (Node.TYPE.equals(feature)) {
+			if (element instanceof TypeDeclaration) {
+				if (((TypeDeclaration) element).isInterface()) {
+					return INTERFACE;
+				}
+				return CLASS;
+			}
+			if (element instanceof EnumDeclaration) {
+				return ENUM;
+			}
+			return ANNOTATION_TYPE;
+		}
+		if (JavaTypeFeatureProvider.SUPER_CLASS.equals(feature)) {
+			if (element instanceof TypeDeclaration) {
+				TypeDeclaration type = (TypeDeclaration) element;
+				if (type.getSuperclassType() != null) {
+					return getStringFromType(type.getSuperclassType());
+				}
+			}
+			return null;
+		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 
@@ -249,7 +250,7 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		if (ENUM.equals(cse.getType())) {
 			child = ast.newEnumDeclaration();
 		}
-		if (ANNOTATION.equals(cse.getType())) {
+		if (ANNOTATION_TYPE.equals(cse.getType())) {
 			child = ast.newAnnotationTypeDeclaration();
 		}
 		return child;

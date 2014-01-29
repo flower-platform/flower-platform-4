@@ -27,6 +27,9 @@ import org.flowerplatform.codesync.action.MatchActionAddLeftToRight;
 import org.flowerplatform.codesync.action.MatchActionAddRightToLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveRight;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
+import org.flowerplatform.codesync.feature_provider.IFeatureProvider;
 
 /**
  * 

@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
-import org.flowerplatform.codesync.NodeFeatureProvider;
+import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.mindmap.remote.Node;
 
@@ -56,7 +56,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		if (Node.TYPE.equals(feature)) {
 			return CodeSyncPlugin.FOLDER;
 		}
-		return null;
+		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
 	@Override
@@ -114,7 +114,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (NodeFeatureProvider.CHILDREN.equals(feature)) {
+		if (FileFeatureProvider.CHILDREN.equals(feature)) {
 			return new FilteredIterable(getChildren(element).iterator()) {
 	
 				@Override
@@ -131,7 +131,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 				
 			};
 		}
-		return Collections.emptyList();
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 
 	public String getLimitedPath() {

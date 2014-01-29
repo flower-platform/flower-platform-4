@@ -16,10 +16,12 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.adapter;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
@@ -79,14 +81,34 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return null;
 	}
 	
+	/**
+	 * Get the children categories for this {@link Node}, and then return the children for the required category.
+	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (NodeFeatureProvider.CHILDREN.equals(feature)) {
-			List<Object> children = CodeSyncPlugin.getInstance().getMindMapService()
-					.getChildrenForNodeId(getNode(element).getId());
-			return (Iterable<?>) children.get(1); // first position holds the id
+		Node category = getChildrenCategoryForNode(getNode(element), feature);
+		if (category == null) {
+			return Collections.emptyList();
+		}
+		return getChildrenForNode(category);
+	}
+	
+	/**
+	 * Gets the category node from this node's children list, or create a new category node if it does not exist.
+	 */
+	private Node getChildrenCategoryForNode(Node node, Object feature) {
+		for (Node category : getChildrenForNode(node)) {
+			if (category.getBody().equals(feature)) {
+				return category;
+			}
 		}
 		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Iterable<Node> getChildrenForNode(Node node) {
+		return (Iterable<Node>) CodeSyncPlugin.getInstance().getMindMapService()
+				.getChildrenForNodeId(node.getId()).get(1); // first position holds the id
 	}
 
 	@Override
@@ -101,14 +123,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		CodeSyncPlugin.getInstance().getMindMapService().setProperty(getNode(element).getId(), (String) feature, (String) newValue);
-//		getNode(element).getProperties().put((String) feature, (String) newValue);
+		CodeSyncPlugin.getInstance().getMindMapService().setProperty(getNode(element).getId(), (String) feature, newValue.toString());
 	}
 	
-	/**
-	 * For the <code>children</code> feature of {@link CodeSyncElement}, also add the new child to the {@link AstCacheElement}s
-	 * resource.
-	 */
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
 		// first check if the child already exists
@@ -129,13 +146,16 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 //		}
 //		
 //		if (eObject != null) {
-			if (NodeFeatureProvider.CHILDREN.equals(feature)) {
 				Node parent = getNode(element);
-				return CodeSyncPlugin.getInstance().getMindMapService().addNode(parent.getId(), null);
-			}
+				Node category = getChildrenCategoryForNode(parent, feature);
+				if (category == null) {
+					category = CodeSyncPlugin.getInstance().getMindMapService().addNode(parent.getId(), "category");
+					CodeSyncPlugin.getInstance().getMindMapService().setProperty(category.getId(), Node.NAME, feature.toString());
+				}
+				return CodeSyncPlugin.getInstance().getMindMapService().addNode(category.getId(), getType());
 //		}
 //		
-		return null;
+//		return null;
 	}
 	
 	@Override

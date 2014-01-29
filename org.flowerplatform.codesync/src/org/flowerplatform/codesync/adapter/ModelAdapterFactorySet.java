@@ -16,11 +16,12 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.adapter;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.flowerplatform.codesync.feature_provider.IFeatureProvider;
 import org.flowerplatform.core.mindmap.remote.Node;
 
 public class ModelAdapterFactorySet {
@@ -67,6 +68,9 @@ public class ModelAdapterFactorySet {
 		throw new IllegalArgumentException("Cannot find feature provider for " + element);
 	}
 	
+	/**
+	 * Feature providers are mapped to either class (e.g. JDT type, attribute), or the type of a {@link Node}.
+	 */
 	public ModelAdapterFactorySet addFeatureProvider(Object key, IFeatureProvider provider) {
 		featureProviders.put(key, provider);
 		return this;

@@ -16,11 +16,13 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.adapter;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.flowerplatform.codesync.CodeSyncPlugin;
 
 public class ModelAdapterFactory {
 	

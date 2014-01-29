@@ -16,22 +16,18 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code.adapter;
+package org.flowerplatform.codesync.adapter;
 
-import java.util.Map;
+import java.util.List;
 
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
+public interface IModelAdapterUI {
 
-/**
- * 
- */
-public abstract class AstModelElementAdapter extends AbstractModelAdapter {
+	public boolean hasChildren(Object modelElement);
 
-	@Override
-	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight) {
-		throw new UnsupportedOperationException("AstModelElementAdapter.removeFromMap() attempted.");
-	}
+	public List<?> getChildren(Object modelElement);
 
-	abstract protected void updateUID(Object element, Object correspondingElement);
+	public String getLabel(Object modelElement);
+
+	public List<String> getIconUrls(Object modelElement);
 	
 }

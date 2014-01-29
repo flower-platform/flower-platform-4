@@ -16,10 +16,11 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.adapter;
 
 import java.util.Map;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.action.ActionResult;
 
 /**

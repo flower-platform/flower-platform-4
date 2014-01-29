@@ -16,22 +16,21 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code.adapter;
+package org.flowerplatform.codesync.code.java.feature_provider;
 
-import java.util.Map;
+import java.util.List;
 
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
-/**
- * 
- */
-public abstract class AstModelElementAdapter extends AbstractModelAdapter {
-
-	@Override
-	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight) {
-		throw new UnsupportedOperationException("AstModelElementAdapter.removeFromMap() attempted.");
-	}
-
-	abstract protected void updateUID(Object element, Object correspondingElement);
+public class JavaMemberValuePairFeatureProvider extends NodeFeatureProvider {
 	
+	public static final String ANNOTATION_VALUE_VALUE = "annotationValueValue";
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public List<?> getFeatures(Object element) {
+		List features = super.getFeatures(element);
+		features.add(ANNOTATION_VALUE_VALUE);
+		return features;
+	}
 }

@@ -18,7 +18,6 @@
  */
 package org.flowerplatform.codesync.code.adapter;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,7 @@ import java.util.Map;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.NodeFeatureProvider;
+import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.mindmap.remote.Node;
 
@@ -60,7 +59,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		if (Node.TYPE.equals(feature)) {
 			return CodeSyncPlugin.FILE;
 		}
-		return null;
+		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
 	@Override
@@ -96,10 +95,10 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (NodeFeatureProvider.CHILDREN.equals(feature)) {
+		if (FileFeatureProvider.CHILDREN.equals(feature)) {
 			return getChildren(element);
 		}
-		return Collections.emptyList();
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
 	@Override

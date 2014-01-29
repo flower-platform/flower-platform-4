@@ -16,14 +16,12 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code;
+package org.flowerplatform.codesync.code.adapter;
 
-import org.flowerplatform.codesync.IModelAdapter;
-import org.flowerplatform.codesync.ModelAdapterFactory;
-import org.flowerplatform.codesync.ModelAdapterFactorySet;
-import org.flowerplatform.codesync.NodeModelAdapter;
-import org.flowerplatform.codesync.code.adapter.NodeModelAdapterAncestor;
-import org.flowerplatform.codesync.code.adapter.NodeModelAdapterLeft;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterFactory;
+import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
+import org.flowerplatform.codesync.adapter.NodeModelAdapter;
 import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
@@ -64,9 +62,10 @@ public class CodeSyncModelAdapterFactory extends ModelAdapterFactory {
 	public ModelAdapterEntry addModelAdapter(String type, IModelAdapter modelAdapter, String adapterType) {
 		ModelAdapterEntry e = new ModelAdapterEntry();
 		e.type = type;
-		e.modelAdapter = isLeft 
-							? new NodeModelAdapterLeft() 
-							: new NodeModelAdapterAncestor();
+//		e.modelAdapter = isLeft 
+//							? new NodeModelAdapterLeft() 
+//							: new NodeModelAdapterAncestor();
+		e.modelAdapter = modelAdapter;
 		modelAdapter.setType(adapterType);
 		modelAdapters.add(e);
 		return e;
@@ -75,9 +74,10 @@ public class CodeSyncModelAdapterFactory extends ModelAdapterFactory {
 	public ModelAdapterEntry addModelAdapter(Class<?> clazz, NodeModelAdapter modelAdapter, String adapterType) {
 		modelAdapter.setType(adapterType);
 		return super.addModelAdapter(clazz,
-				isLeft 
-					? new NodeModelAdapterLeft()
-					: new NodeModelAdapterAncestor(),
+//				isLeft 
+//					? new NodeModelAdapterLeft()
+//					: new NodeModelAdapterAncestor(),
+				modelAdapter,
 				adapterType);
 	}
 	

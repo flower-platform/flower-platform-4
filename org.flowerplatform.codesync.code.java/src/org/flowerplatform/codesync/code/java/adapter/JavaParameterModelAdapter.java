@@ -21,23 +21,23 @@ package org.flowerplatform.codesync.code.java.adapter;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.VariableDeclaration;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatureProvider;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
 import org.flowerplatform.core.mindmap.remote.Node;
+import org.omg.Dynamic.Parameter;
 
 /**
- * Mapped to {@link FieldDeclaration}. Children are {@link Modifier}s.
+ * Mapped to {@link SingleVariableDeclaration}. Children are {@link Modifier}s.
  * 
- * @see JavaAttributeFeatureProvider
+ * @see JavaParameterFeatureProvider
  * 
  * @author Mariana
  */
-public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
+public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
-	public static final String ATTRIBUTE = "javaAttribute";
+	public static final String PARAMETER = "javaParameter";
 	
 	@Override
 	public List<?> getChildren(Object modelElement) {
@@ -46,56 +46,51 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getMatchKey(Object modelElement) {
-		VariableDeclaration var = (VariableDeclaration) getFieldDeclaration(modelElement).fragments().get(0);
-		return var.getName().getIdentifier();
-	}
-
-	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
-			return getLabel(element);
-		}
-		if (Node.TYPE.equals(feature)) {
-			return ATTRIBUTE;
-		}
-		if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
-			return getStringFromType(getFieldDeclaration(element).getType());
-		}
-		if (JavaAttributeFeatureProvider.ATTRIBUTE_INITIALIZER.equals(feature)) {
-			VariableDeclaration var = (VariableDeclaration) getFieldDeclaration(element).fragments().get(0);
-			return getStringFromExpression(var.getInitializer());
-		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return getVariableDeclaration(modelElement).getName().getIdentifier();
 	}
 	
 	@Override
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+		if (Node.NAME.equals(feature)) {
+			return getVariableDeclaration(element).getName().getIdentifier();
+		}
+		if (Node.TYPE.equals(feature)) {
+			return PARAMETER;
+		}
+		if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+			return getStringFromType(getVariableDeclaration(element).getType());
+		}
+		return super.getValueFeatureValue(element, feature, correspondingValue);
+	}
+
+	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Name().equals(feature)) {
-//			FieldDeclaration field = getFieldDeclaration(element);
+//		if (AstCacheCodePackage.eINSTANCE.getParameter_Name().equals(feature)) {
+//			SingleVariableDeclaration parameter = getVariableDeclaration(element);
 //			String name = (String) value;
-//			VariableDeclaration var = (VariableDeclaration) field.fragments().get(0);
-//			var.setName(field.getAST().newSimpleName(name));
+//			parameter.setName(parameter.getAST().newSimpleName(name));
 //		}
 //		if (AstCacheCodePackage.eINSTANCE.getTypedElement_Type().equals(feature)) {
-//			FieldDeclaration field = getFieldDeclaration(element);
-//			Type type = getTypeFromString(field.getAST(), (String) value);
-//			field.setType(type);
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getAttribute_Initializer().equals(feature)) {
-//			VariableDeclaration var = (VariableDeclaration) getFieldDeclaration(element).fragments().get(0);
-//			var.setInitializer(getExpressionFromString(var.getAST(), (String) value));
+//			SingleVariableDeclaration parameter = getVariableDeclaration(element);
+//			Type type = getTypeFromString(parameter.getAST(), (String) value);
+//			parameter.setType(type);
 //		}
 		super.setValueFeatureValue(element, feature, value);
 	}
 
-	private FieldDeclaration getFieldDeclaration(Object element) {
-		return (FieldDeclaration) element;
+	private SingleVariableDeclaration getVariableDeclaration(Object element) {
+		return (SingleVariableDeclaration) element;
 	}
 
+	/**
+	 * Creates a {@link Parameter} instance. Also set the parameter name, in case the AST cache was deleted.
+	 */
 	@Override
 	public Object createCorrespondingModelElement(Object element) {
-//		return AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAttribute();
+//		Parameter parameter = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createParameter();
+//		parameter.setName(getVariableDeclaration(element).getName().getIdentifier());
+//		return parameter;
 		return null;
 	}
-	
+
 }

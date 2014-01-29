@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.flowerplatform.codesync.FilteredIterable;
-import org.flowerplatform.codesync.NodeModelAdapter;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.adapter.NodeModelAdapter;
 
 /**
  * @author Mariana

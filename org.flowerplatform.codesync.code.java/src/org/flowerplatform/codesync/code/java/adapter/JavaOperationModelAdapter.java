@@ -21,13 +21,17 @@ package org.flowerplatform.codesync.code.java.adapter;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Type;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
+import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
- * Mapped to {@link MethodDeclaration}. Does not return any children.
+ * Mapped to {@link MethodDeclaration}. Children are {@link Modifier}s and parameters (i.e. {@link SingleVariableDeclaration}).
+ * 
+ * @see JavaOperationFeatureProvider
  * 
  * @author Mariana
  */
@@ -42,23 +46,23 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-//		if (AstCacheCodePackage.eINSTANCE.getOperation_Parameters().equals(feature)) {
-//			return ((MethodDeclaration) element).parameters();
-//		}
+		if (JavaOperationFeatureProvider.OPERATION_PARAMETERS.equals(feature)) {
+			return ((MethodDeclaration) element).parameters();
+		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Name().equals(feature)) {
-//			return getLabel(element);
-//		}
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Type().equals(feature)) {
-//			return OPERATION;
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getTypedElement_Type().equals(feature)) {
-//			return getStringFromType(getMethodDeclaration(element).getReturnType2());
-//		}
+		if (Node.NAME.equals(feature)) {
+			return getMethodDeclaration(element).getName().getIdentifier();
+		}
+		if (Node.TYPE.equals(feature)) {
+			return OPERATION;
+		}
+		if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+			return getStringFromType(getMethodDeclaration(element).getReturnType2());
+		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 
