@@ -18,3 +18,4 @@ Bundle-ClassPath: lib/commons-lang-2.6.jar,
 Require-Bundle: org.flowerplatform.util,
  org.eclipse.osgi
 Bundle-Activator: org.flowerplatform.core.CorePlugin
+Bundle-ActivationPolicy: lazy

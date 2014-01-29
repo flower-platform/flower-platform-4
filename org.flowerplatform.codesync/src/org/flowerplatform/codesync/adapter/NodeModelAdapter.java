@@ -152,7 +152,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 					category = CodeSyncPlugin.getInstance().getMindMapService().addNode(parent.getId(), "category");
 					CodeSyncPlugin.getInstance().getMindMapService().setProperty(category.getId(), Node.NAME, feature.toString());
 				}
-				return CodeSyncPlugin.getInstance().getMindMapService().addNode(category.getId(), getType());
+				return CodeSyncPlugin.getInstance().getMindMapService().addNode(category.getId(), null);
 //		}
 //		
 //		return null;

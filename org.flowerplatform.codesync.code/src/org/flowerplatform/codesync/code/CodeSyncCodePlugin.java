@@ -166,7 +166,7 @@ public class CodeSyncCodePlugin extends AbstractFlowerJavaPlugin {
 	 * @see CodeSyncAlgorithm#generateDiff(Match)
 	 * @see CodeSyncAlgorithm#synchronize(Match)
 	 */
-	public Match runCodeSyncAlgorithm(Node model, File project, String path, String limitedPath, String technology, /*CommunicationChannel communicationChannel,*/ boolean showDialog) {
+	public Match runCodeSyncAlgorithm(Node model, File project, String path, String limitedPath, String technology, boolean showDialog) {
 		// STEP 1: create a match
 		Match match = new Match();
 		

@@ -4,8 +4,7 @@ Bundle-Name: Code
 Bundle-SymbolicName: org.flowerplatform.codesync.code;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.flowerplatform.codesync.code.CodeSyncCodePlugin
-Require-Bundle: org.eclipse.core.runtime,
- org.flowerplatform.codesync;visibility:=reexport,
+Require-Bundle: org.flowerplatform.codesync;visibility:=reexport,
  org.eclipse.text;visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

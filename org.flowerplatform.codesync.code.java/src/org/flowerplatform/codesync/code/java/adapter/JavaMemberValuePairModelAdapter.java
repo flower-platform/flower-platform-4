@@ -25,6 +25,7 @@ import javax.lang.model.element.AnnotationValue;
 
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
+import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * Mapped to {@link MemberValuePair}.
@@ -49,12 +50,15 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-//		if (AstCacheCodePackage.eINSTANCE.getAnnotationValue_Name().equals(feature)) {
-//			return ((MemberValuePair) element).getName().getIdentifier();
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getAnnotationValue_Value().equals(feature)) {
-//			return getStringFromExpression(((MemberValuePair) element).getValue());
-//		}
+		if (Node.NAME.equals(feature)) {
+			return ((MemberValuePair) element).getName().getIdentifier();
+		}
+		if (Node.TYPE.equals(feature)) {
+			return MEMBER_VALUE_PAIR;
+		}
+		if (JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE.equals(feature)) {
+			return getStringFromExpression(((MemberValuePair) element).getValue());
+		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
