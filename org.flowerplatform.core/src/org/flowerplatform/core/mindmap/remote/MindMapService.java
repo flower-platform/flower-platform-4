@@ -30,6 +30,10 @@ public class MindMapService {
 	
 	private MindMapNodeDAO dao = new MindMapNodeDAO();
 	
+	public Node getNode(String nodeId) {
+		return dao.getNode(nodeId);
+	}	
+	
 	public List<Object> getChildrenForNodeId(String nodeId) {
 		return dao.getChildren(nodeId);		
 	}
@@ -51,6 +55,11 @@ public class MindMapService {
 		dao.setBody(nodeId, newBodyValue);
 	}
 	
+	public void setProperty(String nodeId, String propertyName, String propertyValue) {
+		// TODO should check to add propertyName or propertyName.original
+		dao.setProperty(nodeId, propertyName, propertyValue);
+	}
+	
 	public Node addNode(String parentNodeId, String type) {
 		return dao.addNode(parentNodeId, type);
 	}
@@ -65,6 +74,6 @@ public class MindMapService {
 	
 	public void save() {		
 		dao.save();
-	}	
+	}
 	
 }

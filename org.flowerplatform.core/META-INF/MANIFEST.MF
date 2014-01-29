@@ -1,10 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core
-Bundle-SymbolicName: org.flowerplatform.core
+Bundle-SymbolicName: org.flowerplatform.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.flowerplatform.core.mindmap.remote
+Export-Package: org.flowerplatform.core,
+ org.flowerplatform.core.file,
+ org.flowerplatform.core.mindmap,
+ org.flowerplatform.core.mindmap.remote
 Bundle-ClassPath: lib/commons-lang-2.6.jar,
  lib/freeplaneeditor.jar,
  lib/freeplaneviewer.jar,
@@ -12,3 +15,6 @@ Bundle-ClassPath: lib/commons-lang-2.6.jar,
  lib/jortho.jar,
  lib/SimplyHTML.jar,
  .
+Require-Bundle: org.flowerplatform.util,
+ org.eclipse.osgi
+Bundle-Activator: org.flowerplatform.core.CorePlugin

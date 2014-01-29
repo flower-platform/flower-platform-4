@@ -25,6 +25,9 @@ import java.util.Map;
  */
 public class Node {
 
+	public static final String NAME = "name";
+	public static final String TYPE = "type";
+	
 	private String id;
 	
 	// TODO CC: probably this will not be needed
@@ -37,6 +40,11 @@ public class Node {
 	private boolean hasChildren;
 	
 	private Map<String, String> properties;
+
+	@Override
+	public String toString() {
+		return String.format("[%s %s]", body, type);
+	}
 
 	public String getId() {
 		return id;

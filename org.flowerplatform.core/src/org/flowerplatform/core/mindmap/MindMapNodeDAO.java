@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.mindmap.remote.Node;
+import org.freeplane.features.attribute.Attribute;
+import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.map.NodeModel;
@@ -70,6 +72,14 @@ public class MindMapNodeDAO {
 		Node node = new Node();
 		node.setId(nodeModel.createID());
 		node.setBody(nodeModel.getText());
+		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
+		Map<String, String> properties = new HashMap<String, String>();
+		for (Attribute attribute : attributeTable.getAttributes()) {
+			properties.put(attribute.getName(), (String) attribute.getValue());
+		}
+		node.setProperties(properties);
+		node.setType(properties.get(Node.TYPE));
+		node.setBody(properties.get(Node.NAME));
 		node.setHasChildren(nodeModel.hasChildren());
 		return node;
 	}
@@ -96,10 +106,38 @@ public class MindMapNodeDAO {
 		nodeModel.setText(newBodyValue);
 	}
 	
+	public void setProperty(String nodeId, String propertyName, String propertyValue) {
+		NodeModel nodeModel = getNodeModel(nodeId);
+		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
+		boolean set = false;
+		for (Attribute attribute : attributeTable.getAttributes()) {
+			if (attribute.getName().equals(propertyName)) {
+				// there was already an attribute with this value; overwrite it
+				attribute.setValue(propertyValue);
+				set = true;
+			}
+		}
+		if (!set) {
+			// new attribute; add it
+			attributeTable.getAttributes().add(new Attribute(propertyName, propertyValue));
+		}
+		
+		// test only: text won't always be the same as name
+		if (Node.NAME.equals(propertyName)) {
+			nodeModel.setText(propertyValue);
+		}
+	}
+	
 	public Node addNode(String parentNodeId, String type) {
 		NodeModel parent = getNodeModel(parentNodeId);
 		NodeModel newNode = new NodeModel("", parent.getMap());
 		newNode.setLeft(false);
+		
+		NodeAttributeTableModel attributeTable = new NodeAttributeTableModel(newNode);
+		if (type != null) {
+			attributeTable.getAttributes().add(new Attribute(Node.TYPE, type));
+		}
+		newNode.addExtension(attributeTable);
 		
 		parent.insert(newNode, parent.getChildCount());
 		
