@@ -20,8 +20,6 @@ package  com.crispico.flower.util.layout.view {
 	import com.crispico.flower.flexdiagram.util.common.FlowerLinkButton;
 	import com.crispico.flower.util.UtilAssets;
 	import com.crispico.flower.util.layout.Workbench;
-	import com.crispico.flower.util.layout.persistence.StackLayoutData;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	import flash.events.MouseEvent;
 	
@@ -30,6 +28,9 @@ package  com.crispico.flower.util.layout.view {
 	import mx.controls.Button;
 	import mx.controls.LinkButton;
 	import mx.core.UIComponent;
+	
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
+	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**
 	 * Represents a graphical minimized stack.

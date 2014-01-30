@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Code
+Bundle-SymbolicName: org.flowerplatform.codesync.code;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.flowerplatform.codesync.code.CodeSyncCodePlugin
+Require-Bundle: org.flowerplatform.codesync;visibility:=reexport,
+ org.eclipse.text;visibility:=reexport
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.flowerplatform.codesync.code,
+ org.flowerplatform.codesync.code.adapter,
+ org.flowerplatform.codesync.code.feature_provider

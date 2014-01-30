@@ -9,9 +9,15 @@
         <channel ref="remoting-amf"/>
 	</default-channels>
    
-    <destination id="testService2">
+     <destination id="mindMapService">
         <properties>
-            <source>temp.TestService2</source>
+            <source>org.flowerplatform.core.mindmap.remote.MindMapService</source>
+        </properties>
+    </destination>
+    
+    <destination id="codeSyncOperationsService">
+        <properties>
+            <source>org.flowerplatform.codesync.remote.CodeSyncOperationsService</source>
         </properties>
     </destination>
     

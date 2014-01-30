@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flexdiagram.as" projectUUID="08810144-09a1-4a2b-b2f0-90aef8e6d708" version="10">
+  <compiler additionalCompilerArguments="-locale en_US -swf-version=15" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="11.2.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+    <compilerSourcePath>
+      <compilerSourcePathEntry kind="1" linkType="1" path="icons"/>
+    </compilerSourcePath>
+    <libraryPath defaultLinkType="0">
+      <libraryPathEntry kind="4" path="">
+        <excludedEntries>
+          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/flex.swc" useDefaultLinkType="false"/>
+          <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/core.swc" useDefaultLinkType="false"/>
+        </excludedEntries>
+      </libraryPathEntry>
+      <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/mobile/mobilecomponents.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/themes/Mobile/mobile.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
+    </libraryPath>
+    <sourceAttachmentPath/>
+  </compiler>
+  <applications>
+    <application path="org.flowerplatform.flexdiagram.as"/>
+  </applications>
+  <modules/>
+  <buildCSSFiles/>
+  <flashCatalyst validateFlashCatalystCompatibility="false"/>
+</actionScriptProperties>

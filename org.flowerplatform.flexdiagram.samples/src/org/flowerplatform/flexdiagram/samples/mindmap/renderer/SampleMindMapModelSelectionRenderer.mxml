@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristina Constantinescu
+-->
+<selection:AbstractSelectionRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+									xmlns:s="library://ns.adobe.com/flex/spark" 
+									xmlns:mx="library://ns.adobe.com/flex/mx" 
+									xmlns:selection="org.flowerplatform.flexdiagram.renderer.selection.*"
+									xmlns:ui="org.flowerplatform.flexdiagram.ui.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			import mx.events.MoveEvent;
+			import mx.events.ResizeEvent;
+			
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+			import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
+			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+			
+			import spark.primitives.Ellipse;
+						
+			[Bindable]
+			public var circleRadius:int = 10;
+			
+			public var padding:int = 3;
+			
+			override public function activate(diagramShell:DiagramShell, target:IVisualElement):void {
+				super.activate(diagramShell, target);			
+					
+				DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
+				DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize);			
+				// update position
+				handleTargetMoveResize(null);				
+			}
+			
+			/**
+			 * 
+			 * Called when we don't need the anchors, 
+			 * and also when we don't want the anchors shown.
+			 * 
+			 */
+			override public function deactivate():void {
+				try {
+					diagramShell.diagramRenderer.removeElement(circle);
+				} catch (e:ArgumentError) {					
+				}				
+							
+				// remove resize listeners				
+				DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);			
+				DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);			
+				super.deactivate();
+			}
+	
+			protected function handleTargetMoveResize(event:Event):void {
+				setLayoutBoundsPosition(target.x, target.y);
+				setLayoutBoundsSize(target.width, target.height);
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				if (node.hasChildren && 
+					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node) is SampleMindMapModel) {	
+					vLine.visible = !node.expanded;
+					diagramShell.diagramRenderer.addElement(circle);
+				} else if (!node.hasChildren) {
+					if (circle.parent != null) {
+						diagramShell.diagramRenderer.removeElement(circle);
+					}					
+				}
+							
+				graphics.clear();
+				graphics.lineStyle(2, 0x3C37FE);		
+				graphics.drawRoundRect(-padding, - padding, target.width + padding * 2, target.height + padding * 2, 10, 10);			
+				
+				if (node.side == MindMapDiagramShell.LEFT) {
+					circle.x = getDynamicObject(node).x - circleRadius * 2;						
+					circle.y = getDynamicObject(node).y + getDynamicObject(node).height / 2 - circleRadius;
+				} else if (node.side == MindMapDiagramShell.RIGHT) {
+					circle.x = getDynamicObject(node).x + getDynamicObject(node).width;
+					circle.y = getDynamicObject(node).y + getDynamicObject(node).height / 2 - circleRadius;							
+				}
+			}
+			
+			protected function circle_mouseClickHandler(event:MouseEvent):void {
+				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, !node.expanded);
+				
+				vLine.visible = !node.expanded;
+	
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+			
+			protected function circle_mouseDownUpHandler(event:MouseEvent):void {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+			
+			private function get node():SampleMindMapModel {
+				return SampleMindMapModel(getTargetModel());
+			}
+			
+			private function getDynamicObject(model:Object):Object {
+				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+			}
+					
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+			<s:Group id="circle" 
+					 click="circle_mouseClickHandler(event)" 
+					 mouseDown="circle_mouseDownUpHandler(event)" mouseUp="circle_mouseDownUpHandler(event)"
+					 width="{circleRadius * 2}" height="{circleRadius * 2}" >		
+				<s:layout>				
+					<s:BasicLayout />
+				</s:layout>				
+				<s:Ellipse id="ellipse" width="100%" height="100%" >				
+					<s:stroke>
+						<s:SolidColorStroke color="#808080" weight="1" />
+					</s:stroke>
+					<s:fill>
+						<s:SolidColor color="white" />
+					</s:fill>			
+				</s:Ellipse>
+				<s:Line id="hLine" yFrom="{circleRadius -1/2}"  xFrom="{circleRadius/2}" yTo="{circleRadius -1/2}" xTo="{circleRadius * 2 - circleRadius/2}">
+					<s:stroke>
+						<s:SolidColorStroke color="#808080" weight="1" />
+					</s:stroke>
+				</s:Line>
+				<s:Line id="vLine" xFrom="{circleRadius - 1/2}"  yFrom="{circleRadius/2}" xTo="{circleRadius - 1/2}" yTo="{circleRadius * 2 - circleRadius/2}">
+					<s:stroke>
+						<s:SolidColorStroke color="#808080" weight="1" />
+					</s:stroke>
+				</s:Line>
+			</s:Group>
+		
+	</fx:Declarations>
+	
+</selection:AbstractSelectionRenderer>

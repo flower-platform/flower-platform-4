@@ -19,8 +19,8 @@
 package com.crispico.flower.util.layout.actions {
 	import com.crispico.flower.util.UtilAssets;
 	import com.crispico.flower.util.layout.Workbench;
-	import com.crispico.flower.util.layout.persistence.StackLayoutData;
 	
+	import org.flowerplatform.flexutil.layout.StackLayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 
 	/**

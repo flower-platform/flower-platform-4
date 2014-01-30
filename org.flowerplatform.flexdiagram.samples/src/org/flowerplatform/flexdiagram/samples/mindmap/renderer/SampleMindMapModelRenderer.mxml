@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+	@author Cristina Constantinescu
+-->
+<s:IconItemRenderer								
+				xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 				
+				xmlns:model="org.flowerplatform.flexdiagram.samples.mindmap.model.*"
+				implements="org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"
+				creationComplete="creationCompleteHandler(event)" initialize="initializeHandler(event)"
+				paddingTop="2" paddingBottom="2" paddingLeft="2" paddingRight="2"
+				verticalAlign="middle">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+			import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
+			import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelController;
+			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+
+			private static const circleRadius:int = 3;
+								
+			private var _diagramShell:DiagramShell;
+			
+			public function get diagramShell():DiagramShell {
+				return _diagramShell;
+			}
+			
+			public function set diagramShell(value:DiagramShell):void {
+				_diagramShell = value;
+			}
+			
+			private function get node():SampleMindMapModel {
+				return SampleMindMapModel(data);
+			}
+						
+			override public function set data(value:Object):void {
+				if (super.data != null) {
+					data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);						
+				}
+				super.data = value;
+			
+				if (data != null) {
+					data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);					
+					x = getDynamicObject(node).x;
+					y = getDynamicObject(node).y;	
+					label = node.text;
+				}
+			}
+					
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				BindingUtils.bindSetter(resizeHandler, this, "width"); 
+				BindingUtils.bindSetter(resizeHandler, this, "height"); 				
+			}	
+			
+			private function modelChangedHandler(event:PropertyChangeEvent):void {
+				switch (event.property) {
+					case "x":
+						x = getDynamicObject(node).x;						
+						break;
+					case "y":
+						y = getDynamicObject(node).y;						
+						break;
+					case "text":
+						label = data.text;
+						SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(data)).getMindMapModelController(data)).updateModelHandler(data);
+						break;
+					case "parent":						
+					case "expanded":	
+					case "hasChildren":	
+						invalidateDisplayList();			
+						var selectionRenderer:UIComponent = UIComponent(DynamicModelExtraInfoController(diagramShell.getControllerProvider(data).getModelExtraInfoController(data)).getDynamicObject(data).selectionRenderer);
+						if (selectionRenderer != null) {
+							selectionRenderer.invalidateDisplayList();
+						}
+						break;
+				}			
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				graphics.clear();
+				graphics.lineStyle(1, 0x808080);
+				graphics.beginFill(0xCCCCCC, 0);
+				graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
+				
+				if (node != null && node.hasChildren && node.expanded == false) {
+					if (node.side == MindMapDiagramShell.LEFT) {
+						graphics.drawCircle(-circleRadius, height/2, circleRadius);
+					} else if (data.side == MindMapDiagramShell.RIGHT) {						
+						graphics.drawCircle(width + circleRadius, height/2, circleRadius);
+					}
+				}
+			}
+							
+			private function getDynamicObject(model:Object):Object {
+				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+			}
+									
+			private function resizeHandler(value:Number):void {
+				if (data != null) {
+					getDynamicObject(node).width = this.width;
+					getDynamicObject(node).height = this.height;
+					var parent:Object = diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node);
+					if (parent is SampleMindMapModel) {						
+						MindMapDiagramShell(diagramShell).refreshNodePositions(parent);	
+					}
+				}
+			}
+							
+//			protected function doubleClickHandler(event:MouseEvent):void {
+//				if (node != null && node.side == MindMapDiagramShell.NONE) {
+//					return;
+//				}
+//				IMindMapControllerProvider(diagramShell.getControllerProvider(data)).getMindMapModelController(data).setExpanded(data, !node.expanded);
+//			}
+			
+			override protected function drawBorder(unscaledWidth:Number, unscaledHeight:Number):void {				
+			}
+			
+			override protected function drawBackground(unscaledWidth:Number, unscaledHeight:Number):void {			
+			}			
+			
+			protected function initializeHandler(event:FlexEvent):void {
+//				minHeight = 22; // only for desktop version
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:IconItemRenderer>

@@ -1,0 +1,5 @@
+== Icons to be mentioned in license file ==
+
+move_cursor.png -> http://www.iconfinder.com/icondetails/80974/64/move_icon
+
+== Icons allowed for commercial use (NO link required) ==
