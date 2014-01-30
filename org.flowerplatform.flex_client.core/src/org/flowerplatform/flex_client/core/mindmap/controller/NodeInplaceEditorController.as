@@ -18,15 +18,19 @@
  */
 package org.flowerplatform.flex_client.core.mindmap.controller {
 	import flash.display.DisplayObject;
+	import flash.events.FocusEvent;
 	import flash.geom.Rectangle;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
+	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
 	import org.flowerplatform.flexdiagram.tool.controller.IInplaceEditorController;
+	import org.flowerplatform.flexutil.text.AutoGrowSkinnableTextBaseSkin;
+	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
 	
 	import spark.components.TextInput;
 	
@@ -35,34 +39,42 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	 */
 	public class NodeInplaceEditorController extends ControllerBase implements IInplaceEditorController {
 		
+		private static const MAX_WIDTH:int = 1000;
+		
 		public function NodeInplaceEditorController(diagramShell:DiagramShell) {
 			super(diagramShell);
 		}
 		
 		public function canActivate(model:Object):Boolean {		
-			return diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model) is Node;
+			return model is Node;
 		}
 				
-		public function activate(model:Object):void {
-			var renderer:DisplayObject = DisplayObject(diagramShell.getRendererForModel(model));
-			var textField:TextInput = new TextInput();
+		public function activate(model:Object):void {			
+			var controller:IAbsoluteLayoutRectangleController = diagramShell.getControllerProvider(model).getAbsoluteLayoutRectangleController(model);
+			var bounds:Rectangle = controller.getBounds(model);
 			
-			diagramShell.diagramRenderer.addElement(textField);
+			// create text area (auto grow width & height at CTRL + ENTER) 
+			var textArea:AutoGrowTextArea = new AutoGrowTextArea();
+			textArea.x = bounds.x;
+			textArea.y = bounds.y;			
+			textArea.minWidth = bounds.width;
+			textArea.maxWidth = MAX_WIDTH; // needed for width auto grow
+			textArea.minHeight = bounds.height;			
+			textArea.text = Node(model).properties["body"];			
+			// set focus on text
+			textArea.callLater(textArea.setFocus);
+			// select all text
+			textArea.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void {event.currentTarget.selectAll()});
 			
-			var bounds:Rectangle = renderer.getBounds(DisplayObject(diagramShell.diagramRenderer));
-			textField.x = bounds.x + 2;
-			textField.y = bounds.y;
-			textField.width = bounds.width;
-			textField.height = bounds.height;
-			textField.text = Node(model).body;
-			textField.callLater(textField.setFocus);
+			// add to diagram
+			diagramShell.diagramRenderer.addElement(textArea);
 			
-			diagramShell.modelToExtraInfoMap[model].inplaceEditor = textField;
+			diagramShell.modelToExtraInfoMap[model].inplaceEditor = textArea;
 		}
 		
 		public function commit(model:Object):void {		
-			var textField:TextInput = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			CorePlugin.getInstance().mindMapService.setBody(Node(model).id, textField.text);
+			var textArea:AutoGrowTextArea = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
+			CorePlugin.getInstance().mindMapService.setProperty(Node(model).id, "body", textArea.text);
 
 			diagramShell.mainToolFinishedItsJob();
 		}
@@ -73,8 +85,8 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		}
 		
 		public function deactivate(model:Object):void {
-			var textField:TextInput = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			diagramShell.diagramRenderer.removeElement(textField);
+			var textArea:AutoGrowTextArea = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
+			diagramShell.diagramRenderer.removeElement(textArea);
 			
 			delete diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
 		}
