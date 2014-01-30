@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider.ANNOTATION_MEMBER_DEFAULT_VALUE;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -47,14 +49,11 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (Node.NAME.equals(feature)) {
 			return getMatchKey(element);
-		}
-		if (Node.TYPE.equals(feature)) {
+		} else if (Node.TYPE.equals(feature)) {
 			return ANNOTATION_MEMBER;
-		}
-		if (JavaAnnotationTypeMemberDeclarationFeatureProvider.ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
+		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			return getStringFromExpression(getAnnotationMember(element).getDefault());
-		}
-		if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getAnnotationMember(element).getType());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -62,25 +61,17 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Name().equals(feature)) {
-//			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
-//			member.setName(member.getAST().newSimpleName((String) value));
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getAnnotationMember_DefaultValue().equals(feature)) {
-//			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
-//			member.setDefault(getExpressionFromString(member.getAST(), (String) value));
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getTypedElement_Type().equals(feature)) {
-//			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
-//			member.setType(getTypeFromString(member.getAST(), (String) value));
-//		}
+		if (Node.NAME.equals(feature)) {
+			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
+			member.setName(member.getAST().newSimpleName((String) value));
+		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
+			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
+			member.setDefault(getExpressionFromString(member.getAST(), (String) value));
+		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
+			member.setType(getTypeFromString(member.getAST(), (String) value));
+		}
 		super.setValueFeatureValue(element, feature, value);
-	}
-
-	@Override
-	public Object createCorrespondingModelElement(Object element) {
-//		return AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationMember();
-		return null;
 	}
 
 	@Override

@@ -68,13 +68,6 @@ public interface IModelAdapter extends IModelAdapterUI {
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child);
 	
 	/**
-	 * Creates a model element corresponding to the given <code>element</code>.
-	 * 
-	 * @author Mariana
-	 */
-	public Object createCorrespondingModelElement(Object element);
-	
-	/**
 	 * Saves the given <code>element</code> to its underlying resource. Returns <code>true</code> if saving is also required
 	 * on this <code>element</code>'s children.
 	 * 

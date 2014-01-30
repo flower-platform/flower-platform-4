@@ -21,9 +21,11 @@ package org.flowerplatform.codesync.code.java.adapter;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
 import org.flowerplatform.core.mindmap.remote.Node;
@@ -55,46 +57,55 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (Node.NAME.equals(feature)) {
-			return getMethodDeclaration(element).getName().getIdentifier();
-		}
-		if (Node.TYPE.equals(feature)) {
+			return getLabel(element);
+		} else if (Node.TYPE.equals(feature)) {
 			return OPERATION;
-		}
-		if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getMethodDeclaration(element).getReturnType2());
+		} else if (JavaOperationFeatureProvider.HAS_BODY.equals(feature)) {
+			return String.valueOf(getMethodDeclaration(element).getBody() != null);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Name().equals(feature)) {
-//			MethodDeclaration method = getMethodDeclaration(element);
-//			String name = (String) value;
-//			int index = name.indexOf("(");
-//			if (index == -1) {
-//				index = name.length();
-//			}
-//			name = name.substring(0, index);
-//			method.setName(method.getAST().newSimpleName(name));
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getTypedElement_Type().equals(feature)) {
-//			MethodDeclaration method = getMethodDeclaration(element);
-//			Type type = getTypeFromString(method.getAST(), (String) value);
-//			method.setReturnType2(type);
-//		}
+		if (Node.NAME.equals(feature)) {
+			MethodDeclaration method = getMethodDeclaration(element);
+			String name = (String) value;
+			int index = name.indexOf("(");
+			if (index == -1) {
+				index = name.length();
+			}
+			name = name.substring(0, index);
+			method.setName(method.getAST().newSimpleName(name));
+		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+			MethodDeclaration method = getMethodDeclaration(element);
+			Type type = getTypeFromString(method.getAST(), (String) value);
+			method.setReturnType2(type);
+		} else if (JavaOperationFeatureProvider.HAS_BODY.equals(feature)) {
+			// needed to create methods with empty bodies
+			MethodDeclaration method = getMethodDeclaration(element);
+			if (Boolean.parseBoolean(value.toString())) {
+				if (method.getBody() == null) {
+					method.setBody(method.getAST().newBlock());
+				}
+			} else {
+				method.setBody(null);
+			}
+		}
 		super.setValueFeatureValue(element, feature, value);
 	}
 
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
-//		if (AstCacheCodePackage.eINSTANCE.getOperation_Parameters().equals(feature)) {
-//			MethodDeclaration method = (MethodDeclaration) element;
-//			AST ast = method.getAST();
-//			SingleVariableDeclaration parameter = ast.newSingleVariableDeclaration();
-//			method.parameters().add(parameter);
-//			return parameter;
-//		}
+		if (JavaOperationFeatureProvider.OPERATION_PARAMETERS.equals(feature)) {
+			MethodDeclaration method = (MethodDeclaration) element;
+			AST ast = method.getAST();
+			SingleVariableDeclaration parameter = ast.newSingleVariableDeclaration();
+			method.parameters().add(parameter);
+			return parameter;
+		}
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
 	}
 	
@@ -115,12 +126,6 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		}
 		label += ")";
 		return label;
-	}
-
-	@Override
-	public Object createCorrespondingModelElement(Object element) {
-//		return AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createOperation();
-		return null;
 	}
 	
 }

@@ -29,10 +29,13 @@ import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * Mapped to platform-dependent files. Children are files that match the {@link #limitedPath}, if set.
+ * 
+ * @see FileFeatureProvider
  * 
  * @author Mariana
  */
@@ -52,8 +55,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (Node.NAME.equals(feature)) {
 			return getLabel(element);
-		}
-		if (Node.TYPE.equals(feature)) {
+		} else if (Node.TYPE.equals(feature)) {
 			return CodeSyncPlugin.FOLDER;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -66,25 +68,26 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object folder, Object feature, Object value) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Name().equals(feature)) {
-//			filesToRename.put(folder, (String) value);
-//		}
+		if (Node.NAME.equals(feature)) {
+			filesToRename.put(folder, (String) value);
+		}
 	}
 
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Children().equals(feature)) {
-//			CodeSyncElement cse = (CodeSyncElement) correspondingChild;
-//			return EditorPlugin.getInstance().getFileAccessController().createNewFile(element, (String) CodeSyncOperationsService.getInstance().getKeyFeatureValue(cse));
-//		}
-		return null;
+		if (FileFeatureProvider.CHILDREN.equals(feature)) {
+			Node node = (Node) correspondingChild;
+			return CorePlugin.getInstance().getFileAccessController()
+					.getFile(element, (String) node.getProperties().get(Node.NAME));
+		}
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
 	}
 
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Children().equals(feature)) {
-//			filesToDelete.add(child);
-//		}
+		if (FileFeatureProvider.CHILDREN.equals(feature)) {
+			filesToDelete.add(child);
+		}
 	}
 
 	@Override
@@ -142,39 +145,34 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		this.limitedPath = limitedPath;
 	}
 
-	@Override
-	public Object createCorrespondingModelElement(Object element) {
-		return null;
-	}
-	
 	/**
 	 * @author Sebastian Solomon
 	 */
 	@Override
 	public boolean save(Object file) {
-//		IFileAccessController fileAccessController = EditorPlugin.getInstance().getFileAccessController();
-//		if (!fileAccessController.exists(file)) {
-//			fileAccessController.createNewFile(file);
-//		}
-//		
-//		// remove children that were mark deleted	
-//		Object[] children = fileAccessController.listFiles(file);
-//		if (children != null) {
-//			for (Object child : children) {
-//				if (filesToDelete.contains(child)) {
-//					fileAccessController.delete(child);
-//					filesToDelete.remove(child);
-//				}
-//			}
-//		}
-//		
-//		// move the folder if it was marked renamed
-//		String newName = filesToRename.get(file);
-//		if (newName != null) {
-//			Object dest = fileAccessController.createNewFile(fileAccessController.getParentFile(file), newName);
-//			fileAccessController.rename(file, dest);
-//			filesToRename.remove(file);
-//		}
+		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
+		if (!fileAccessController.exists(file)) {
+			fileAccessController.createNewDirectory(file);
+		}
+		
+		// remove children that were mark deleted	
+		Object[] children = fileAccessController.listFiles(file);
+		if (children != null) {
+			for (Object child : children) {
+				if (filesToDelete.contains(child)) {
+					fileAccessController.delete(child);
+					filesToDelete.remove(child);
+				}
+			}
+		}
+		
+		// move the folder if it was marked renamed
+		String newName = filesToRename.get(file);
+		if (newName != null) {
+			Object dest = fileAccessController.getFile(fileAccessController.getParentFile(file), newName);
+			fileAccessController.rename(file, dest);
+			filesToRename.remove(file);
+		}
 		return true;
 	}
 	

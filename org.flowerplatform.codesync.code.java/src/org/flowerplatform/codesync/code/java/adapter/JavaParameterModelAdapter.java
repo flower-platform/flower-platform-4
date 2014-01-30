@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
 import org.flowerplatform.core.mindmap.remote.Node;
@@ -53,11 +54,9 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (Node.NAME.equals(feature)) {
 			return getVariableDeclaration(element).getName().getIdentifier();
-		}
-		if (Node.TYPE.equals(feature)) {
+		} else if (Node.TYPE.equals(feature)) {
 			return PARAMETER;
-		}
-		if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getVariableDeclaration(element).getType());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -65,32 +64,20 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-//		if (AstCacheCodePackage.eINSTANCE.getParameter_Name().equals(feature)) {
-//			SingleVariableDeclaration parameter = getVariableDeclaration(element);
-//			String name = (String) value;
-//			parameter.setName(parameter.getAST().newSimpleName(name));
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getTypedElement_Type().equals(feature)) {
-//			SingleVariableDeclaration parameter = getVariableDeclaration(element);
-//			Type type = getTypeFromString(parameter.getAST(), (String) value);
-//			parameter.setType(type);
-//		}
+		if (Node.NAME.equals(feature)) {
+			SingleVariableDeclaration parameter = getVariableDeclaration(element);
+			String name = (String) value;
+			parameter.setName(parameter.getAST().newSimpleName(name));
+		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+			SingleVariableDeclaration parameter = getVariableDeclaration(element);
+			Type type = getTypeFromString(parameter.getAST(), (String) value);
+			parameter.setType(type);
+		}
 		super.setValueFeatureValue(element, feature, value);
 	}
 
 	private SingleVariableDeclaration getVariableDeclaration(Object element) {
 		return (SingleVariableDeclaration) element;
-	}
-
-	/**
-	 * Creates a {@link Parameter} instance. Also set the parameter name, in case the AST cache was deleted.
-	 */
-	@Override
-	public Object createCorrespondingModelElement(Object element) {
-//		Parameter parameter = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createParameter();
-//		parameter.setName(getVariableDeclaration(element).getName().getIdentifier());
-//		return parameter;
-		return null;
 	}
 
 }

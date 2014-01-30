@@ -31,6 +31,7 @@ import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 public class JavaOperationFeatureProvider extends NodeFeatureProvider {
 	
 	public static final String OPERATION_PARAMETERS = "operationParameters";
+	public static final String HAS_BODY = "hasBody";
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -40,6 +41,7 @@ public class JavaOperationFeatureProvider extends NodeFeatureProvider {
 				DOCUMENTATION,
 				MODIFIERS,
 				TYPED_ELEMENT_TYPE,
+				HAS_BODY,
 				OPERATION_PARAMETERS));
 		return features;
 	}

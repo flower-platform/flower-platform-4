@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.core.CorePlugin;
 
 public class ModelAdapterFactory {
 	
@@ -55,7 +56,8 @@ public class ModelAdapterFactory {
 	public IModelAdapter getModelAdapter(Object modelElement) {
 		for (ModelAdapterEntry e : modelAdapters)
 			if (e.clazz != null && e.clazz.isAssignableFrom(modelElement.getClass())) {
-				if (!(modelElement instanceof File) || CodeSyncPlugin.getInstance().getFileExtension(((File) modelElement)).equals(e.extension)) {
+				if (!(modelElement instanceof File) || CorePlugin.getInstance().getFileAccessController()
+						.getFileExtension(modelElement).equals(e.extension)) {
 					return e.modelAdapter;
 				}
 			}

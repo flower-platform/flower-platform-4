@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Platform;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.adapter.ModelAdapterFactory;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
 import org.flowerplatform.core.mindmap.remote.Node;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -199,7 +200,23 @@ public class CodeSyncCodePlugin extends AbstractFlowerJavaPlugin {
 //			service.unsubscribeAllClientsForcefully(editableResourcePath, false);
 //		}
 		
+		save(match, true);
+		save(match, false);
+		
 		return match;
+	}
+	
+	public void save(Match match, boolean isLeft) {
+		Object lateral = isLeft ? match.getLeft() : match.getRight();
+		ModelAdapterFactory factory = isLeft ? match.getModelAdapterFactorySet().getLeftFactory() 
+				: match.getModelAdapterFactorySet().getRightFactory();
+		if (lateral != null) {
+			if (factory.getModelAdapter(lateral).save(lateral)) {
+				for (Match subMatch : match.getSubMatches()) {
+					save(subMatch, isLeft);
+				}
+			}
+		}
 	}
 	
 	public String getPathRelativeToFile(File file, File relativeTo) {

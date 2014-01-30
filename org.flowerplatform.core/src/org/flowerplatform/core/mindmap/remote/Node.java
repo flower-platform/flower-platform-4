@@ -43,7 +43,7 @@ public class Node {
 
 	@Override
 	public String toString() {
-		return String.format("[%s %s]", body, type);
+		return String.format("Node [body = %s, type = %s]", body, type);
 	}
 
 	public String getId() {

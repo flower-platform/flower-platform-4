@@ -27,12 +27,17 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MemberRef;
 import org.eclipse.jdt.core.dom.MethodRef;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
@@ -40,7 +45,10 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
+import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * Mapped to {@link ASTNode}.
@@ -54,9 +62,6 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return getChildren(modelElement).size() > 0;
 	}
 
-	/**
-	 * Must handle all the containment features provided by <code>common</code>.
-	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		// handle modifiers here to avoid using the same code in multiple adapters
@@ -73,9 +78,6 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
-	/**
-	 * Must handle all the features provided by <code>common</code>, except for containment features.
-	 */
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (JavaFeaturesConstants.DOCUMENTATION.equals(feature)) {
@@ -86,60 +88,63 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-//		if (AstCacheCodePackage.eINSTANCE.getDocumentableElement_Documentation().equals(feature)) {
-//			setJavaDoc(element, value);
-//		}
+		if (JavaFeaturesConstants.DOCUMENTATION.equals(feature)) {
+			setJavaDoc(element, value);
+		}
 	}
 
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
-//		if (AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers().equals(feature)) {
-//			if (!(element instanceof BodyDeclaration || element instanceof SingleVariableDeclaration)) {
-//				return null;
-//			} else {
-//				IExtendedModifier extendedModifier = null;
-//				
-//				if (correspondingChild instanceof com.crispico.flower.mp.model.astcache.code.Modifier) {
-//					ASTNode parent = (ASTNode) element;
-//					AST ast = parent.getAST();
-//					com.crispico.flower.mp.model.astcache.code.Modifier modifier = 
-//							(com.crispico.flower.mp.model.astcache.code.Modifier) correspondingChild;
-//					
-//					extendedModifier = ast.newModifier(Modifier.ModifierKeyword.fromFlagValue(modifier.getType()));
-//					if (parent instanceof BodyDeclaration) {
-//						((BodyDeclaration) parent).modifiers().add(extendedModifier);
-//					} else {
-//						((SingleVariableDeclaration) parent).modifiers().add(extendedModifier);
-//					}
-//				}
-//				
-//				if (correspondingChild instanceof com.crispico.flower.mp.model.astcache.code.Annotation) {
-//					ASTNode parent = (ASTNode) element;
-//					AST ast = parent.getAST();
-//					com.crispico.flower.mp.model.astcache.code.Annotation annotation = 
-//							(com.crispico.flower.mp.model.astcache.code.Annotation) correspondingChild;
-//					if (annotation.getValues().size() == 0) {
-//						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();
-//						extendedModifier = markerAnnotation;
-//					}
-//					if (annotation.getValues().size() == 1) {
-//						SingleMemberAnnotation singleMemberAnnotation = ast.newSingleMemberAnnotation();
-//						extendedModifier = singleMemberAnnotation;
-//					} else {
-//						NormalAnnotation normalAnnotation = ast.newNormalAnnotation();
-//						extendedModifier = normalAnnotation;
-//					}
-//					if (parent instanceof BodyDeclaration) {
-//						((BodyDeclaration) parent).modifiers().add(extendedModifier);
-//					} else {
-//						((SingleVariableDeclaration) parent).modifiers().add(extendedModifier);
-//					}
-//				}
-//				return extendedModifier;
-//			}
-//		}
+		// handle modifiers here to avoid using the same code in multiple adapters
+		if (JavaFeaturesConstants.MODIFIERS.equals(feature)) {
+			if (!(element instanceof BodyDeclaration || element instanceof SingleVariableDeclaration)) {
+				return null;
+			} else {
+				IExtendedModifier extendedModifier = null;
+				
+				Node node = (Node) correspondingChild;
+				
+				if (JavaModifierModelAdapter.MODIFIER.equals(node.getType())) {
+					ASTNode parent = (ASTNode) element;
+					AST ast = parent.getAST();
+					
+					int modifierType = Integer.parseInt(node.getProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE));
+					extendedModifier = ast.newModifier(Modifier.ModifierKeyword.fromFlagValue(modifierType));
+					if (parent instanceof BodyDeclaration) {
+						((BodyDeclaration) parent).modifiers().add(extendedModifier);
+					} else {
+						((SingleVariableDeclaration) parent).modifiers().add(extendedModifier);
+					}
+				}
+				
+				if (JavaAnnotationModelAdapter.ANNOTATION.equals(node.getType())) {
+					ASTNode parent = (ASTNode) element;
+					AST ast = parent.getAST();
+					
+					Node values = getChildrenCategoryForNode(node, JavaAnnotationFeatureProvider.ANNOTATION_VALUES);
+					int valuesCount = values == null ? 0 : getChildrenForNode(values).size();
+					
+					if (valuesCount == 0) {
+						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();
+						extendedModifier = markerAnnotation;
+					} else if (valuesCount == 1) {
+						SingleMemberAnnotation singleMemberAnnotation = ast.newSingleMemberAnnotation();
+						extendedModifier = singleMemberAnnotation;
+					} else {
+						NormalAnnotation normalAnnotation = ast.newNormalAnnotation();
+						extendedModifier = normalAnnotation;
+					}
+					if (parent instanceof BodyDeclaration) {
+						((BodyDeclaration) parent).modifiers().add(extendedModifier);
+					} else {
+						((SingleVariableDeclaration) parent).modifiers().add(extendedModifier);
+					}
+				}
+				return extendedModifier;
+			}
+		}
 		
-		return null;
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
 	}
 
 	@Override
@@ -174,32 +179,31 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
-//		if (element instanceof BodyDeclaration) {
-//			BodyDeclaration node = (BodyDeclaration) element;
-//			Javadoc javadoc = node.getJavadoc();
-//			// if it doesn't have any doc, create it
-//			if (javadoc == null) {
-//				javadoc = node.getAST().newJavadoc();
-//				node.setJavadoc(javadoc);
-//			}
-//			// first remove the existing flower tag, this way we also make sure that it's the last tag
-//			// note: if we only change the id, the rewriter won't format it correctly
-//			for (Object obj : javadoc.tags()) {
-//				if (FLOWER_UID.equals(((TagElement) obj).getTagName())) {
-//					javadoc.tags().remove(obj);
-//					break;
-//				}
-//			}
-//			// create new tag element for UID
-//			TagElement tag = javadoc.getAST().newTagElement();
-//			tag.setTagName(FLOWER_UID);
-//			javadoc.tags().add(tag);
-//			TextElement text = javadoc.getAST().newTextElement();
-//			tag.fragments().add(text);
-//			EObject eObject = (EObject) correspondingElement;
-//			text.setText(eObject.eResource().getURIFragment(eObject));
-//			System.out.println(javadoc);
-//		}
+		if (element instanceof BodyDeclaration) {
+			BodyDeclaration node = (BodyDeclaration) element;
+			Javadoc javadoc = node.getJavadoc();
+			// if it doesn't have any doc, create it
+			if (javadoc == null) {
+				javadoc = node.getAST().newJavadoc();
+				node.setJavadoc(javadoc);
+			}
+			// first remove the existing flower tag, this way we also make sure that it's the last tag
+			// note: if we only change the id, the rewriter won't format it correctly
+			for (Object obj : javadoc.tags()) {
+				if (FLOWER_UID.equals(((TagElement) obj).getTagName())) {
+					javadoc.tags().remove(obj);
+					break;
+				}
+			}
+			// create new tag element for UID
+			TagElement tag = javadoc.getAST().newTagElement();
+			tag.setTagName(FLOWER_UID);
+			javadoc.tags().add(tag);
+			TextElement text = javadoc.getAST().newTextElement();
+			tag.fragments().add(text);
+			text.setText(((Node) correspondingElement).getId());
+			System.out.println(javadoc);
+		}
 	}
 
 	protected Object getJavaDoc(Object element) {

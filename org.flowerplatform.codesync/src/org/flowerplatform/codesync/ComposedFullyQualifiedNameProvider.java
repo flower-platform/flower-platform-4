@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.CorePlugin;
+
 /**
  * @author Cristi
  */
@@ -45,7 +47,7 @@ public class ComposedFullyQualifiedNameProvider implements IFullyQualifiedNamePr
 	public String getFullyQualifiedName(Object object) {
 		IFullyQualifiedNameProvider foundConverter = null;
 		if (object instanceof File) {
-			String fileExtension = CodeSyncPlugin.getInstance().getFileExtension((File) object);
+			String fileExtension = CorePlugin.getInstance().getFileAccessController().getFileExtension(object);
 			foundConverter = fileExtensionBasedDelegateProviders.get(fileExtension);
 		}
 		

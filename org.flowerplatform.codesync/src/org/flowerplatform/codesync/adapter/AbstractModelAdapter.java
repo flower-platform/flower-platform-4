@@ -18,9 +18,12 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * Convenience implementation.
@@ -65,6 +68,16 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 	
 	@Override
+	public void setValueFeatureValue(Object element, Object feature, Object value) {
+		throw new IllegalArgumentException("Attempted to set value feature " + feature + " for element " + element);
+	}
+
+	@Override
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + element);
+	}
+
+	@Override
 	public void addToMap(Object element, Map<Object, Object> map) {
 		map.put(getMatchKey(element), element);
 	}
@@ -107,5 +120,27 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	@Override
 	public void allActionsPerformed(Object element, Object correspondingElement) {
 		// nothing to do
+	}
+	
+	//////////////////////////////////////////////////////////
+	// Node utils
+	//////////////////////////////////////////////////////////
+	
+	/**
+	 * Gets the category node from this node's children list, or create a new category node if it does not exist.
+	 */
+	protected Node getChildrenCategoryForNode(Node node, Object feature) {
+		for (Node category : getChildrenForNode(node)) {
+			if (category.getBody().equals(feature)) {
+				return category;
+			}
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<Node> getChildrenForNode(Node node) {
+		return (List<Node>) CodeSyncPlugin.getInstance().getMindMapService()
+				.getChildrenForNodeId(node.getId()).get(1); // first position holds the id
 	}
 }

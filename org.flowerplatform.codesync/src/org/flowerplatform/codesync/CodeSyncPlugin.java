@@ -386,18 +386,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		}
 	}
 	
-	/**
-	 * @author Mariana Gheorghe
-	 */
-	public String getFileExtension(File file) {
-		String name = file.getName();
-		int index = name.lastIndexOf(".");
-		if (index >= 0) {
-			return name.substring(index + 1);
-		}
-		return "";
-	}
-	
 //	/**
 //	 * Important: the code sync mapping and cache resources <b>must</b> be loaded through the same {@link ResourceSet}.
 //	 */

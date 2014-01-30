@@ -36,6 +36,15 @@ public class Diff {
 	 */
 	private boolean isConflict;
 
+	@Override
+	public String toString() {
+		return String.format("Diff [feature = %s, conflict = %b, leftModif = %b, rightModif = %b", 
+				getFeature(),
+				isConflict(),
+				isLeftModified(),
+				isRightModified());
+	}
+
 	public Object getFeature() {
 		return feature;
 	}

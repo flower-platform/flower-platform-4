@@ -22,14 +22,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
+ * @see FileFeatureProvider
+ * 
  * @author Mariana Gheorghe
  * @author Sebastian Solomon
  */
@@ -55,8 +60,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (Node.NAME.equals(feature)) {
 			return getLabel(element);
-		}
-		if (Node.TYPE.equals(feature)) {
+		} else if (Node.TYPE.equals(feature)) {
 			return CodeSyncPlugin.FILE;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -64,9 +68,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object file, Object feature, Object value) {
-//		if (CodeSyncPackage.eINSTANCE.getCodeSyncElement_Name().equals(feature)) {
-//			filesToRename.put(file, (String) value);
-//		}
+		if (Node.NAME.equals(feature)) {
+			filesToRename.put(file, (String) value);
+		}
 	}
 	
 	@Override
@@ -101,47 +105,42 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
-	@Override
-	public Object createCorrespondingModelElement(Object element) {
-		return null;
-	}
-	
 	/**
 	 * Creates the file, if it does not exist, and commits all the modifications recorded by the AST.
 	 */
 	@Override
 	public boolean save(Object file) {
-//		IFileAccessController fileAccessController = EditorPlugin.getInstance().getFileAccessController();
-//		Object initialFile = file;
-//		
-//		String newName = filesToRename.get(file);
-//		if (newName != null) {
-//			Object dest = fileAccessController.createNewFile(fileAccessController.getParent(initialFile), newName);
-//			fileAccessController.rename(file, dest);
-//			file = dest;
-//		}
-//		
-//		if (!fileAccessController.exists(file)) {
-//			fileAccessController.createNewFile(file);
-//		}
-//		
-//		if (fileAccessController.exists(file)) {
-//			Object fileInfo = fileInfos.get(initialFile);
-//			if (fileInfo != null) {
-//				Document document;
-//				try {
-//					document = new Document(fileAccessController.readFileToString(file));
-//					TextEdit edits = rewrite(document, fileInfo);
-//					if (edits.getChildrenSize() != 0) {
-//						edits.apply(document);
-//						fileAccessController.writeStringToFile(file, document.get());
-//					}
-//				} catch (MalformedTreeException | BadLocationException e) {
-//					throw new RuntimeException(e);
-//				}
-//			}
-//		}
-//		fileInfos.remove(initialFile);
+		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
+		Object initialFile = file;
+		
+		String newName = filesToRename.get(file);
+		if (newName != null) {
+			Object dest = fileAccessController.getFile(fileAccessController.getParent(initialFile), newName);
+			fileAccessController.rename(file, dest);
+			file = dest;
+		}
+		
+		if (!fileAccessController.exists(file)) {
+			fileAccessController.createNewFile(file);
+		}
+		
+		if (fileAccessController.exists(file)) {
+			Object fileInfo = fileInfos.get(initialFile);
+			if (fileInfo != null) {
+				Document document;
+				try {
+					document = new Document(fileAccessController.readFileToString(file));
+					TextEdit edits = rewrite(document, fileInfo);
+					if (edits.getChildrenSize() != 0) {
+						edits.apply(document);
+						fileAccessController.writeStringToFile(file, document.get());
+					}
+				} catch (MalformedTreeException | BadLocationException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		fileInfos.remove(initialFile);
 		
 		// no need to call save for the AST
 		return false;

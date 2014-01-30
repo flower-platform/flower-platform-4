@@ -67,20 +67,6 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return null;
 	}
 	
-	@Override
-	public Object createCorrespondingModelElement(Object element) {
-		IModelAdapter adapter = null;
-		if (element == null) {
-			adapter = codeSyncElementConverter.getModelAdapterByType(getType());
-		} else {
-			adapter = codeSyncElementConverter.getModelAdapter(element);
-		}
-		if (adapter != null) {
-			return adapter.createCorrespondingModelElement(element);
-		}
-		return null;
-	}
-	
 	/**
 	 * Get the children categories for this {@link Node}, and then return the children for the required category.
 	 */
@@ -93,24 +79,6 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return getChildrenForNode(category);
 	}
 	
-	/**
-	 * Gets the category node from this node's children list, or create a new category node if it does not exist.
-	 */
-	private Node getChildrenCategoryForNode(Node node, Object feature) {
-		for (Node category : getChildrenForNode(node)) {
-			if (category.getBody().equals(feature)) {
-				return category;
-			}
-		}
-		return null;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private Iterable<Node> getChildrenForNode(Node node) {
-		return (Iterable<Node>) CodeSyncPlugin.getInstance().getMindMapService()
-				.getChildrenForNodeId(node.getId()).get(1); // first position holds the id
-	}
-
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		return getNode(element).getProperties().get(feature);
@@ -160,10 +128,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-//		EObject eObject = getContainingEObjectForFeature(parent, feature);
-//		if (eObject != null) {
-//			super.removeChildrenOnContainmentFeature(eObject, feature, child);
-//		}
+		CodeSyncPlugin.getInstance().getMindMapService().removeNode(getNode(child).getId());
 	}
 
 	@Override
@@ -180,6 +145,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 
 	protected Node getNode(Object element) {
 		return (Node) element;
+	}
+
+	@Override
+	public boolean save(Object element) {
+		CodeSyncPlugin.getInstance().getMindMapService().save();
+		return false;
 	}
 	
 }

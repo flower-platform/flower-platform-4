@@ -52,11 +52,9 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (Node.NAME.equals(feature)) {
 			return ((MemberValuePair) element).getName().getIdentifier();
-		}
-		if (Node.TYPE.equals(feature)) {
+		} else if (Node.TYPE.equals(feature)) {
 			return MEMBER_VALUE_PAIR;
-		}
-		if (JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE.equals(feature)) {
+		} else if (JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE.equals(feature)) {
 			return getStringFromExpression(((MemberValuePair) element).getValue());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -64,28 +62,16 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-//		if (AstCacheCodePackage.eINSTANCE.getAnnotationValue_Name().equals(feature)) {
-//			MemberValuePair pair = (MemberValuePair) element;
-//			String name = (String) value;
-//			pair.setName(pair.getAST().newSimpleName(name));
-//		}
-//		if (AstCacheCodePackage.eINSTANCE.getAnnotationValue_Value().equals(feature)) {
-//			MemberValuePair pair = (MemberValuePair) element;
-//			String expression = (String) value;
-//			pair.setValue(getExpressionFromString(pair.getAST(), expression));
-//		}
+		if (Node.NAME.equals(feature)) {
+			MemberValuePair pair = (MemberValuePair) element;
+			String name = (String) value;
+			pair.setName(pair.getAST().newSimpleName(name));
+		} else if (JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE.equals(feature)) {
+			MemberValuePair pair = (MemberValuePair) element;
+			String expression = (String) value;
+			pair.setValue(getExpressionFromString(pair.getAST(), expression));
+		}
 		super.setValueFeatureValue(element, feature, value);
-	}
-
-	/**
-	 * Creates a {@link AnnotationValue} instance. Also set the name, in case the AST cache was deleted.
-	 */
-	@Override
-	public Object createCorrespondingModelElement(Object element) {
-//		AnnotationValue value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//		value.setName(((MemberValuePair) element).getName().getIdentifier());
-//		return value;
-		return null;
 	}
 
 }

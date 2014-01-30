@@ -25,9 +25,11 @@ public interface IFileAccessController {
 	
 	Object getParentFile(Object file);
 	
+	Object getFile(Object parent, String name);
+	
 	boolean createNewFile(Object file);
 	
-	Object createNewFile(Object file, String name);
+	boolean createNewDirectory(Object directory);
 	
 	boolean exists(Object file);
 	

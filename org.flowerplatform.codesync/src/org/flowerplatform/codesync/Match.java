@@ -92,7 +92,8 @@ public class Match {
 	
 	@Override
 	public String toString() {
-		return String.format("[%s %s %s, %d sub-matches]", ancestor, left, right, getSubMatches().size());
+		return String.format("Match [%s, ancestor = %s, left = %s, right = %s, %d sub-matches]", 
+				getMatchType(), ancestor, left, right, getSubMatches().size());
 	}
 
 

@@ -69,9 +69,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	@Override
 	protected Object createFileInfo(Object file) {
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
-		Map options = new HashMap<>(JavaCore.getOptions());
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_7);
-		parser.setCompilerOptions(options);
+		parser.setCompilerOptions(getOptions());
 		boolean fileExists = CorePlugin.getInstance().getFileAccessController().exists(file);
 		char[] initialContent = fileExists ? getFileContent(file) : new char[0];
 		parser.setSource(initialContent);
@@ -80,6 +78,12 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 		return astRoot;
 	}
 
+	private Map getOptions() {
+		Map options = new HashMap<>(JavaCore.getOptions());
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_7);
+		return options;
+	}
+	
 	private char[] getFileContent(Object file) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		return fileAccessController.readFileToString(file).toCharArray();
@@ -88,7 +92,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	@Override
 	protected TextEdit rewrite(Document document, Object fileInfo) {
 		CompilationUnit cu = (CompilationUnit) fileInfo;
-		return cu.rewrite(document, null);
+		return cu.rewrite(document, getOptions());
 	}
 	
 }

@@ -121,9 +121,14 @@ public class PlainFileAccessController implements IFileAccessController {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public boolean createNewDirectory(Object directory) {
+		return ((File) directory).mkdir();
+	}
 
 	@Override
-	public Object createNewFile(Object file, String name) {
+	public Object getFile(Object file, String name) {
 		return new File((File) file, name);
 	}
 
@@ -157,5 +162,5 @@ public class PlainFileAccessController implements IFileAccessController {
 	public Object getFile(String path) throws Exception {
 		return new File(path);
 	}
-	
+
 }

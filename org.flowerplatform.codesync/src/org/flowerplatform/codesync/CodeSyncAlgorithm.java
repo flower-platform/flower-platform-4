@@ -18,7 +18,11 @@
  */
 package org.flowerplatform.codesync;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.codesync.action.ActionSynchronize;
@@ -306,12 +310,15 @@ public class CodeSyncAlgorithm {
 	
 	public void synchronize(Match match) {
 		DiffAction action = null;
+		
 		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
 			action = new MatchActionAddLeftToRight(false);
 		} else if (Match.MatchType._1MATCH_RIGHT.equals(match.getMatchType())) {
-			action = new MatchActionAddRightToLeft(false);
+//			action = new MatchActionAddRightToLeft(false);
+			action = new MatchActionRemoveRight(); // TODO test
 		} else if (Match.MatchType._2MATCH_ANCESTOR_LEFT.equals(match.getMatchType())) {
-			action = new MatchActionRemoveLeft();
+//			action = new MatchActionRemoveLeft();
+			action = new MatchActionAddLeftToRight(false); // TODO test
 		} else if (Match.MatchType._2MATCH_ANCESTOR_RIGHT.equals(match.getMatchType())) {
 			action = new MatchActionRemoveRight();
 		}
@@ -320,7 +327,10 @@ public class CodeSyncAlgorithm {
 			action.execute(match, -1);
 		}
 		
-		for (Match subMatch : match.getSubMatches()) {
+		List<Match> subMatches = new ArrayList<Match>();
+		subMatches.addAll(match.getSubMatches());
+		
+		for (Match subMatch : subMatches) {
 			synchronize(subMatch);
 		}
 		
