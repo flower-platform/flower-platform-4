@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Codesync
+Bundle-SymbolicName: org.flowerplatform.flex_client.codesync
+Bundle-Version: 1.0.0.qualifier

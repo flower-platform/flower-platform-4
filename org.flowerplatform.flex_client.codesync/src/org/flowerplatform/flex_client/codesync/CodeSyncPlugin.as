@@ -16,18 +16,25 @@
 *
 * license-end
 */
-package org.flowerplatform.codesync.remote {
-	import org.flowerplatform.flex_client.core.CorePlugin;
+package org.flowerplatform.flex_client.codesync {
 	
-	/**
-	 * @author Mariana Gheorghe
-	 */
-	public class CodeSyncOperationsService {
+	import org.flowerplatform.flex_client.codesync.remote.CodeSyncOperationsService;
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	
+	public class CodeSyncPlugin extends AbstractFlowerFlexPlugin {
 		
-		public static const ID:String = "codeSyncOperationsService";
+		protected static var INSTANCE:CodeSyncPlugin;
 		
-		public function synchronize(path:String, technology:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "synchronize", [path, technology]);
+		public static function getInstance():CodeSyncPlugin {
+			return INSTANCE;
 		}
+		
+		override public function start():void {
+			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
+			
+			new CodeSyncOperationsService().synchronize(null, null);
+		}
+		
 	}
 }

@@ -314,11 +314,11 @@ public class CodeSyncAlgorithm {
 		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
 			action = new MatchActionAddLeftToRight(false);
 		} else if (Match.MatchType._1MATCH_RIGHT.equals(match.getMatchType())) {
-//			action = new MatchActionAddRightToLeft(false);
-			action = new MatchActionRemoveRight(); // TODO test
+			action = new MatchActionAddRightToLeft(false);
+//			action = new MatchActionRemoveRight(); // TODO test
 		} else if (Match.MatchType._2MATCH_ANCESTOR_LEFT.equals(match.getMatchType())) {
-//			action = new MatchActionRemoveLeft();
-			action = new MatchActionAddLeftToRight(false); // TODO test
+			action = new MatchActionRemoveLeft();
+//			action = new MatchActionAddLeftToRight(false); // TODO test
 		} else if (Match.MatchType._2MATCH_ANCESTOR_RIGHT.equals(match.getMatchType())) {
 			action = new MatchActionRemoveRight();
 		}
