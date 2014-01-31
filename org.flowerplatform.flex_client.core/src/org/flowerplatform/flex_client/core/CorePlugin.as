@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.service.ServiceLocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	
 	/**
@@ -42,6 +43,8 @@ package org.flowerplatform.flex_client.core {
 		
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
+		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
+				
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}

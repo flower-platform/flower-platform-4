@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.core.mindmap.remote;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -92,6 +93,13 @@ public class Node {
 
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
-	}	
+	}
+	
+	public void addProperty(String name, String value) {
+		if (properties == null) {
+			properties = new HashMap<String, String>();
+		}
+		properties.put(name, value);
+	}
 	
 }

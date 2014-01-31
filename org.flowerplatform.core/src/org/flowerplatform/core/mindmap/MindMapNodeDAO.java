@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.mindmap.remote.Property;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.MapModel;
@@ -72,14 +73,13 @@ public class MindMapNodeDAO {
 		Node node = new Node();
 		node.setId(nodeModel.createID());
 		node.setBody(nodeModel.getText());
+		node.addProperty("id", node.getId());
 		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
-		Map<String, String> properties = new HashMap<String, String>();
 		for (Attribute attribute : attributeTable.getAttributes()) {
-			properties.put(attribute.getName(), (String) attribute.getValue());
+			node.addProperty(attribute.getName(), (String) attribute.getValue());
 		}
-		node.setProperties(properties);
-		node.setType(properties.get(Node.TYPE));
-		node.setBody(properties.get(Node.NAME));
+		node.setType(node.getProperties().get(Node.TYPE));
+		node.setBody(node.getProperties().get(Node.NAME));
 		node.setHasChildren(nodeModel.hasChildren());
 		return node;
 	}
@@ -144,7 +144,7 @@ public class MindMapNodeDAO {
 		return convert(newNode);
 	}
 	
-	public void removeNode(String nodeId) {		
+	public void removeNode(String nodeId) {
 		NodeModel nodeModel = getNodeModel(nodeId);
 		nodeModel.removeFromParent();
 	}	
@@ -186,6 +186,7 @@ public class MindMapNodeDAO {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void save() {
 		MapModel newModel = maps.get(getTestingURL().toString());
 		try {
@@ -194,6 +195,16 @@ public class MindMapNodeDAO {
 			// TODO CC: To log
 			e.printStackTrace();
 		}
+	}
+	
+	public List<Property> getPropertiesData(String nodeType) {
+		// TODO CC: temporary code (testing properties view)
+		List<Property> properties = new ArrayList<Property>();
+		properties.add(new Property().setNameAs("type").setReadOnlyAs(true));		
+		properties.add(new Property().setNameAs("id").setReadOnlyAs(true));	
+		properties.add(new Property().setNameAs("could_shape").setReadOnlyAs(false));	
+		properties.add(new Property().setNameAs("could_color"));		
+		return properties;	
 	}
 	
 }
