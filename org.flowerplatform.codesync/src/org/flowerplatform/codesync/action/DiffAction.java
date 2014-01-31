@@ -20,6 +20,7 @@ package org.flowerplatform.codesync.action;
 
 
 import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 /**
  * 
@@ -27,4 +28,21 @@ import org.flowerplatform.codesync.Match;
 public abstract class DiffAction {
 	
 	public abstract ActionResult execute(Match match, int diffIndex);
+	
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public void actionPerformed(
+			IModelAdapter leftModelAdapter, Object left, 
+			IModelAdapter rightModelAdapter, Object right,
+			Object feature, ActionResult result) {
+		
+		if (leftModelAdapter != null) {
+			leftModelAdapter.actionPerformed(left, feature, result);
+		}
+		if (rightModelAdapter != null) {
+			rightModelAdapter.actionPerformed(right, feature, result);
+		}
+	}
+	
 }

@@ -33,7 +33,7 @@ public class CodeSyncModelAdapterFactory extends ModelAdapterFactory {
 	private ModelAdapterFactory astModelAdapterFactory;
 	private boolean isLeft;
 	
-	public CodeSyncModelAdapterFactory(ModelAdapterFactorySet factorySet, ModelAdapterFactory astModelAdapterFactory, /*Resource resource,*/ boolean isLeft) {
+	public CodeSyncModelAdapterFactory(ModelAdapterFactorySet factorySet, ModelAdapterFactory astModelAdapterFactory, boolean isLeft) {
 		this.factorySet = factorySet;
 		this.astModelAdapterFactory = astModelAdapterFactory;
 		this.isLeft = isLeft;

@@ -38,6 +38,10 @@ public class DiffActionCopyLeftToRight extends DiffAction {
 		rightModelAdapter.setValueFeatureValue(match.getRight(), diff.getFeature(), value);
 		diff.setConflict(false);
 		diff.setRightModified(true);
-		return new ActionResult(false, diff.isLeftModified(), true);
+
+		ActionResult result = new ActionResult(false, diff.isLeftModified(), true);
+		actionPerformed(leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
+		
+		return result;
 	}
 }

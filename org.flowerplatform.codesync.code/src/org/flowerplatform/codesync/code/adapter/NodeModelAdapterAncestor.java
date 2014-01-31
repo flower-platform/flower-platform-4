@@ -22,56 +22,40 @@ import java.util.Iterator;
 
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.adapter.NodeModelAdapter;
+import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * @author Mariana
  */
 public class NodeModelAdapterAncestor extends NodeModelAdapter {
 
-	public NodeModelAdapterAncestor() {
-		super();
-	}
-	
 	/**
-	 * Filters out added {@link CodeSyncElement}s. Returns the new containment list from the {@link FeatureChange}s map for
-	 * the <code>feature</code>, if it exists. 
+	 * Filters out added {@link Node}s. from the containment list for <code>feature</code>.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		// first get the children from the FeatureChange, if it exists
-		Iterable<?> result = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
-//		FeatureChange change = getFeatureChange(element, feature);
-//		if (change != null) {
-//			result = (Iterable<?>) change.getOldValue();
-//		} else {
-//			result = astCacheElementModelAdapter != null 
-//					? astCacheElementModelAdapter.getContainmentFeatureIterable(element, feature, correspondingIterable) 
-//					: super.getContainmentFeatureIterable(element, feature, correspondingIterable);
-//		}
-		return new FilteredIterable<Object, Object>((Iterator<Object>) result.iterator()) {
+		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-//				if (candidate instanceof Node && ((Node) candidate).isAdded())
-//					return false;
+				if (candidate instanceof Node && Boolean.parseBoolean(((Node) candidate).getProperties().get(Node.ADDED))) {
+					return false;
+				}
 				return true;
 			}
-		
 		};
 	}
 
 	/**
-	 * Returns the old value from the {@link FeatureChange}s map for the <code>feature</code>, if it exists.
+	 * Returns the original value for <code>feature</code>.
 	 */
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		// first get the value from the FeatureChange, if it exists
-//		FeatureChange change = getFeatureChange(element, feature);
-//		if (change != null) {
-//			return change.getOldValue();
-//		}
-//		return astCacheElementModelAdapter != null 
-//				? astCacheElementModelAdapter.getValueFeatureValue(element, feature, correspondingValue)
-//				: super.getValueFeatureValue(element, feature, correspondingValue);
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		Object originalValue = super.getValueFeatureValue(element, getOriginalFeatureName(feature), correspondingValue);
+		if (originalValue == null) {
+			originalValue = super.getValueFeatureValue(element, feature, correspondingValue);
+		}
+		return originalValue;
 	}
+	
 }

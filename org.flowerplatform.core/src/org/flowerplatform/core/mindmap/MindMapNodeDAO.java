@@ -107,6 +107,9 @@ public class MindMapNodeDAO {
 	}
 	
 	public void setProperty(String nodeId, String propertyName, String propertyValue) {
+		if (propertyValue == null) {
+			return;
+		}
 		NodeModel nodeModel = getNodeModel(nodeId);
 		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
 		boolean set = false;
@@ -126,6 +129,28 @@ public class MindMapNodeDAO {
 		if (Node.NAME.equals(propertyName)) {
 			nodeModel.setText(propertyValue);
 		}
+	}
+	
+	public void unsetProperty(String nodeId, String propertyName) {
+		NodeModel nodeModel = getNodeModel(nodeId);
+		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
+		for (Attribute attribute : attributeTable.getAttributes()) {
+			if (attribute.getName().equals(propertyName)) {
+				attributeTable.getAttributes().remove(attribute);
+				return; // to avoid ConcurrentModificationException
+			}
+		}
+	}
+	
+	public String getProperty(String nodeId, String propertyName) {
+		NodeModel nodeModel = getNodeModel(nodeId);
+		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
+		for (Attribute attribute : attributeTable.getAttributes()) {
+			if (attribute.getName().equals(propertyName)) {
+				return (String) attribute.getValue();
+			}
+		}
+		return null;
 	}
 	
 	public Node addNode(String parentNodeId, String type) {
@@ -202,8 +227,8 @@ public class MindMapNodeDAO {
 		List<Property> properties = new ArrayList<Property>();
 		properties.add(new Property().setNameAs("type").setReadOnlyAs(true));		
 		properties.add(new Property().setNameAs("id").setReadOnlyAs(true));	
-		properties.add(new Property().setNameAs("could_shape").setReadOnlyAs(false));	
-		properties.add(new Property().setNameAs("could_color"));		
+		properties.add(new Property().setNameAs("typedElementType").setReadOnlyAs(false));
+		properties.add(new Property().setNameAs("typedElementType.original").setReadOnlyAs(true));
 		return properties;	
 	}
 	

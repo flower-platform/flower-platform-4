@@ -34,6 +34,7 @@ import org.flowerplatform.codesync.action.MatchActionRemoveRight;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
 import org.flowerplatform.codesync.feature_provider.IFeatureProvider;
+import org.flowerplatform.util.Utils;
 
 /**
  * 
@@ -228,13 +229,7 @@ public class CodeSyncAlgorithm {
 		if (UNDEFINED.equals(a) || UNDEFINED.equals(b)) {
 			return true;
 		}
-		
-		if (a == null && b == null)
-			return true;
-		else if (a == null || b == null)
-			return false;
-		else
-			return a.equals(b);
+		return Utils.safeEquals(a, b);
 	}
 	
 	/**

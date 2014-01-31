@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.flowerplatform.core.mindmap.MindMapNodeDAO;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Cristina Constantinescu
@@ -56,16 +57,53 @@ public class MindMapService {
 	}
 	
 	public void setProperty(String nodeId, String propertyName, String propertyValue) {
-		// TODO should check to add propertyName or propertyName.original
+		Node node = getNode(nodeId);
+		boolean isOriginalPropertySet = false;
+		String originalPropertyValue = null;
+		String originalPropertyName = getOriginalPropertyName(propertyName);
+		// get the original value from property.original or property
+		if (node.getProperties().containsKey(originalPropertyName)) {
+			isOriginalPropertySet = true;
+			originalPropertyValue = node.getProperties().get(originalPropertyName);
+		} else {
+			originalPropertyValue = node.getProperties().get(propertyName);
+		}
+		
+		if (!Utils.safeEquals(originalPropertyValue, propertyValue)) {
+			if (!isOriginalPropertySet) {
+				// trying to set a different value; keep the old value in property.original if it does not exist
+				dao.setProperty(nodeId, originalPropertyName, originalPropertyValue);
+			}
+		} else {
+			if (isOriginalPropertySet) {
+				// trying to set the same value as the original (a revert operation); unset the original value
+				dao.unsetProperty(nodeId, originalPropertyName);
+			}
+		}
+		
 		dao.setProperty(nodeId, propertyName, propertyValue);
 	}
 	
-	public Node addNode(String parentNodeId, String type) {
-		return dao.addNode(parentNodeId, type);
+	public void unsetProperty(String nodeId, String propertyName) {
+		dao.unsetProperty(nodeId, propertyName);
 	}
 	
-	public void removeNode(String nodeId) {		
-		dao.removeNode(nodeId);
+	protected String getOriginalPropertyName(String propertyName) {
+		return propertyName + ".original";
+	}
+	
+	public Node addNode(String parentNodeId, String type) {
+		Node child = dao.addNode(parentNodeId, type);
+		dao.setProperty(child.getId(), Node.ADDED, "true");
+		return getNode(child.getId());
+	}
+	
+	public void removeNode(String nodeId, boolean delete) {
+		if (delete) {
+			dao.removeNode(nodeId);
+		} else {
+			dao.setProperty(nodeId, Node.REMOVED, "true");
+		}
 	}	
 	
 	public void moveNode(String nodeId, String newParentId, int newIndex) {

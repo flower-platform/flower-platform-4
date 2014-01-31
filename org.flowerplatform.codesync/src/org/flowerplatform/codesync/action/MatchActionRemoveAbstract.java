@@ -28,6 +28,7 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 	protected abstract Object getThis(Match match);
 	protected abstract Object getOpposite(Match match);
 	protected abstract IModelAdapter getModelAdapter(Match match);
+	protected abstract IModelAdapter getOppositeModelAdapter(Match match);
 	protected abstract void unsetThis(Match match);
 	
 	/**
@@ -36,6 +37,7 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 	 */
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
+		Match parentMatch = match.getParentMatch();
 		IModelAdapter modelAdapter = getModelAdapter(match.getParentMatch() != null ? match.getParentMatch() : match);
 		Object child = getThis(match);
 		IModelAdapter childModelAdapter = getModelAdapter(match);
@@ -43,6 +45,8 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 				match.getParentMatch() != null ? getThis(match.getParentMatch()) : null, 
 				match.getFeature(), 
 				child);
+		
+		ActionResult result = null;
 		
 		if (match.getAncestor() == null) {
 			if (getOpposite(match) != null) {
@@ -54,13 +58,16 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 				// 0-match => remove the match
 				match.getParentMatch().getSubMatches().remove(match);
 				match.setParentMatch(null);
-				return new ActionResult(false, false, false, childModelAdapter.getMatchKey(child), false);
+				result = new ActionResult(false, false, false, childModelAdapter.getMatchKey(child), false);
 			}
 		} else {
 			// submatches (and possible diffs) still exist; they need to be updated
 			recurseUpdateFieldsAndFlags(match);
-			return new ActionResult(false, true, true, childModelAdapter.getMatchKey(child), false);
+			result = new ActionResult(false, true, true, childModelAdapter.getMatchKey(child), false);
 		}
+		
+		actionPerformed(getModelAdapter(parentMatch), getThis(parentMatch), getOppositeModelAdapter(parentMatch), getOpposite(parentMatch), match.getFeature(), result);
+		return result;
 	}
 	
 	protected void recurseUpdateFieldsAndFlags(Match match) {

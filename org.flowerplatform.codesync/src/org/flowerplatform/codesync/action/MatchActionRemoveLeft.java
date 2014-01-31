@@ -39,6 +39,11 @@ public class MatchActionRemoveLeft extends MatchActionRemoveAbstract {
 	}
 
 	@Override
+	protected IModelAdapter getOppositeModelAdapter(Match match) {
+		return match.getModelAdapterFactorySet().getRightFactory().getModelAdapter(match.getRight());
+	}
+	
+	@Override
 	protected void unsetThis(Match match) {
 		match.setDiffsModifiedLeft(false);
 		match.setChildrenModifiedLeft(false);

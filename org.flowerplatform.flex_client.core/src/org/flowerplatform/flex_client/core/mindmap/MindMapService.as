@@ -67,7 +67,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		}
 		
 		public function removeNode(nodeId:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "removeNode", [nodeId]);
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "removeNode", [nodeId, false]);
 		}
 		
 		public function moveNode(nodeId:String, newParentNodeId:String, newIndex:int):void {

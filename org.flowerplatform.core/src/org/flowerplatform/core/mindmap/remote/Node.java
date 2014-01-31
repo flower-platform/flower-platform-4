@@ -29,6 +29,9 @@ public class Node {
 	public static final String NAME = "name";
 	public static final String TYPE = "type";
 	
+	public static final String ADDED = "added";
+	public static final String REMOVED = "removed";
+	
 	private String id;
 	
 	// TODO CC: probably this will not be needed

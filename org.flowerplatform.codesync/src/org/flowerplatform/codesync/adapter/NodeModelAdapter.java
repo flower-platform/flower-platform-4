@@ -128,7 +128,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		CodeSyncPlugin.getInstance().getMindMapService().removeNode(getNode(child).getId());
+		CodeSyncPlugin.getInstance().getMindMapService().removeNode(getNode(child).getId(), true);
 	}
 
 	@Override
@@ -142,15 +142,19 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public boolean save(Object element) {
+		CodeSyncPlugin.getInstance().getMindMapService().save();
+		return false;
+	}
 
 	protected Node getNode(Object element) {
 		return (Node) element;
 	}
 
-	@Override
-	public boolean save(Object element) {
-		CodeSyncPlugin.getInstance().getMindMapService().save();
-		return false;
+	protected Object getOriginalFeatureName(Object feature) {
+		return feature.toString() + ".original";
 	}
 	
 }
