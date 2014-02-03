@@ -46,11 +46,13 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
+	
+	import spark.components.Group;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapEditorFrontend extends VBox implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+	public class MindMapEditorFrontend extends Group implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
 		
 		public var diagramShell:DiagramShell;
 		
@@ -64,10 +66,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 			var scroller:InfiniteScroller = new InfiniteScroller();
 			scroller.percentWidth = 100;
 			scroller.percentHeight = 100;
-			addChild(scroller);
+			addElement(scroller);
 			
 			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
-			diagramRenderer.useGrid = false;
+			diagramRenderer.useGrid = false;		
 			scroller.viewport = diagramRenderer;
 			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
 							

@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="lib/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/jortho.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML.jar"/>
-	<classpathentry kind="lib" path="lib/freeplaneeditor.jar" sourcepath="C:/Users/PowerUser/git/freeplane"/>
+	<classpathentry kind="lib" path="lib/freeplaneeditor_modified.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
