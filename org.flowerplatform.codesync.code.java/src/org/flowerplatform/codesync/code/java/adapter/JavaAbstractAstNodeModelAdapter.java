@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,13 +31,9 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
-import org.eclipse.jdt.core.dom.MemberRef;
-import org.eclipse.jdt.core.dom.MethodRef;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
@@ -44,6 +41,7 @@ import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
@@ -210,65 +208,29 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		if (element instanceof BodyDeclaration) {
 			BodyDeclaration node = (BodyDeclaration) element;
 			if (node.getJavadoc() != null) {
-				String docComment = null;
-				for (Object o : node.getJavadoc().tags()) {
-					TagElement tag = (TagElement) o;
-					String tagName = tag.getTagName();
-					if (getModelAdapterFactorySet().useUIDs() && FLOWER_UID.equals(tagName)) {
-						continue;
-					}
-					if (docComment == null) {
-						docComment = new String();
-					}
-					if (tagName != null) {
-						docComment += tag.getTagName() + " ";
-					}
-					for (Object o2 : tag.fragments()) {
-						docComment += getTextFromDocElement(o2);
-					}
-					docComment += "\n";
-				}
-				return docComment;
+				return node.getJavadoc().toString();
 			}
 		}
 		return null;
 	}
 	
-	/**
-	 * @param node an IDocElement
-	 */
-	private String getTextFromDocElement(Object node) {
-		if (node instanceof MemberRef) {
-			return ((MemberRef) node).getName().getIdentifier();
-		}
-		if (node instanceof MethodRef) {
-			return ((MethodRef) node).getName().getIdentifier();
-		}
-		if (node instanceof SimpleName) {
-			return ((SimpleName) node).getIdentifier();
-		}
-		if (node instanceof QualifiedName) {
-			return ((QualifiedName) node).getFullyQualifiedName();
-		}
-		if (node instanceof TagElement) {
-			return ((TagElement) node).getTagName();
-		}
-		if (node instanceof TextElement) {
-			return ((TextElement) node).getText();
-		}
-		return "";
-	}
-	
 	protected void setJavaDoc(Object element, Object docComment) {
 		if (element instanceof BodyDeclaration) {
 			BodyDeclaration node = (BodyDeclaration) element;
-			ASTParser parser = ASTParser.newParser(AST.JLS4);
-			parser.setKind(ASTParser.K_CLASS_BODY_DECLARATIONS);
-			parser.setSource(("/** " + docComment + "*/ int x;").toCharArray());
-			TypeDeclaration type = (TypeDeclaration) parser.createAST(null);
-			BodyDeclaration x = (BodyDeclaration) type.bodyDeclarations().get(0);
-			Javadoc javadoc = x.getJavadoc();
-			node.setJavadoc((Javadoc) ASTNode.copySubtree(node.getAST(), javadoc));
+			try {
+				Class ast = node.getAST().getClass();
+				Field rewriterField = ast.getDeclaredField("rewriter");
+				rewriterField.setAccessible(true);
+				Object rewriter = rewriterField.get(node.getAST());
+				Field storeField = rewriter.getClass().getDeclaredField("nodeStore");
+				storeField.setAccessible(true);
+				NodeInfoStore store = (NodeInfoStore) storeField.get(rewriter);
+				ASTNode javadoc = store.newPlaceholderNode(ASTNode.JAVADOC);
+				store.markAsStringPlaceholder(javadoc, (String) docComment);
+				node.setJavadoc((Javadoc) javadoc);
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 	

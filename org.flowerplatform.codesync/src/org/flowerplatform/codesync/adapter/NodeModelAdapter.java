@@ -31,7 +31,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 
 	protected ModelAdapterFactory modelAdapterFactory;
 	
-	protected ModelAdapterFactory codeSyncElementConverter;
+	protected ModelAdapterFactory oppositeModelAdapterFactory;
 	
 	public NodeModelAdapter setModelAdapterFactory(ModelAdapterFactory modelAdapterFactory) {
 		this.modelAdapterFactory = modelAdapterFactory;
@@ -43,15 +43,15 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	/**
-	 * @see IModelAdapter#createCorrespondingModelElement(Object)
+	 * @see #createChildOnContainmentFeature(Object, Object, Object)
 	 */
-	public NodeModelAdapter setEObjectConverter(ModelAdapterFactory codeSyncElementConverter) {
-		this.codeSyncElementConverter = codeSyncElementConverter;
+	public NodeModelAdapter setOppositeModelAdapterFactory(ModelAdapterFactory codeSyncElementConverter) {
+		this.oppositeModelAdapterFactory = codeSyncElementConverter;
 		return this;
 	}
 	
-	public ModelAdapterFactory getEObjectConverter() {
-		return codeSyncElementConverter;
+	public ModelAdapterFactory getOppositeModelAdapterFactory() {
+		return oppositeModelAdapterFactory;
 	}
 	
 	/**
@@ -120,7 +120,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 					category = CodeSyncPlugin.getInstance().getMindMapService().addNode(parent.getId(), "category");
 					CodeSyncPlugin.getInstance().getMindMapService().setProperty(category.getId(), Node.NAME, feature.toString());
 				}
-				return CodeSyncPlugin.getInstance().getMindMapService().addNode(category.getId(), null);
+				// set the type for the new node; needed by the action performed handler
+				String type = getOppositeModelAdapterFactory().getModelAdapter(correspondingChild).getType();
+				return CodeSyncPlugin.getInstance().getMindMapService().addNode(category.getId(), type);
 //		}
 //		
 //		return null;

@@ -150,20 +150,20 @@ public class JavaModelAdapterFactorySet extends ModelAdapterFactorySet {
 	private CodeSyncModelAdapterFactory createCodeSyncModelAdapterFactory(boolean isLeft) {
 		CodeSyncModelAdapterFactory factory = new CodeSyncModelAdapterFactory(this, rightFactory, isLeft);
 		
-		factory.addModelAdapter(CLASS, createNodeModelAdapter(isLeft), CLASS);
-		factory.addModelAdapter(INTERFACE, createNodeModelAdapter(isLeft), INTERFACE);
-		factory.addModelAdapter(ENUM, createNodeModelAdapter(isLeft), ENUM);
-		factory.addModelAdapter(ANNOTATION_TYPE, createNodeModelAdapter(isLeft), ANNOTATION_TYPE);
+		factory.addModelAdapter(CLASS, createNodeModelAdapter(factory, isLeft), CLASS);
+		factory.addModelAdapter(INTERFACE, createNodeModelAdapter(factory, isLeft), INTERFACE);
+		factory.addModelAdapter(ENUM, createNodeModelAdapter(factory, isLeft), ENUM);
+		factory.addModelAdapter(ANNOTATION_TYPE, createNodeModelAdapter(factory, isLeft), ANNOTATION_TYPE);
 		
-		factory.addModelAdapter(ATTRIBUTE, createNodeModelAdapter(isLeft), ATTRIBUTE);
-		factory.addModelAdapter(OPERATION, createNodeModelAdapter(isLeft), OPERATION);
-		factory.addModelAdapter(ENUM_CONSTANT, createNodeModelAdapter(isLeft), ENUM_CONSTANT);
-		factory.addModelAdapter(ANNOTATION_MEMBER, createNodeModelAdapter(isLeft), ANNOTATION_MEMBER);
+		factory.addModelAdapter(ATTRIBUTE, createNodeModelAdapter(factory, isLeft), ATTRIBUTE);
+		factory.addModelAdapter(OPERATION, createNodeModelAdapter(factory, isLeft), OPERATION);
+		factory.addModelAdapter(ENUM_CONSTANT, createNodeModelAdapter(factory, isLeft), ENUM_CONSTANT);
+		factory.addModelAdapter(ANNOTATION_MEMBER, createNodeModelAdapter(factory, isLeft), ANNOTATION_MEMBER);
 		
-		factory.addModelAdapter(ANNOTATION, createNodeModelAdapter(isLeft), ANNOTATION);
-		factory.addModelAdapter(MEMBER_VALUE_PAIR, createNodeModelAdapter(isLeft), MEMBER_VALUE_PAIR);
-		factory.addModelAdapter(MODIFIER, createNodeModelAdapter(isLeft), MODIFIER);
-		factory.addModelAdapter(PARAMETER, createNodeModelAdapter(isLeft), PARAMETER);
+		factory.addModelAdapter(ANNOTATION, createNodeModelAdapter(factory, isLeft), ANNOTATION);
+		factory.addModelAdapter(MEMBER_VALUE_PAIR, createNodeModelAdapter(factory, isLeft), MEMBER_VALUE_PAIR);
+		factory.addModelAdapter(MODIFIER, createNodeModelAdapter(factory, isLeft), MODIFIER);
+		factory.addModelAdapter(PARAMETER, createNodeModelAdapter(factory, isLeft), PARAMETER);
 		
 //		NodeModelAdapter cseAdapter = isLeft 
 //				? new NodeModelAdapterLeft()
@@ -172,15 +172,15 @@ public class JavaModelAdapterFactorySet extends ModelAdapterFactorySet {
 //		cseAdapter.setEObjectConverter(rightFactory);
 		
 		// TODO fix this; all the adapters above should be wrapped in a left/ancestor
-		factory.addModelAdapter(Node.class, createNodeModelAdapter(isLeft), CodeSyncPlugin.FOLDER);
-		factory.addModelAdapter(Node.class, createNodeModelAdapter(isLeft), CodeSyncPlugin.FILE);
+		factory.addModelAdapter(Node.class, createNodeModelAdapter(factory, isLeft), CodeSyncPlugin.FOLDER);
+		factory.addModelAdapter(Node.class, createNodeModelAdapter(factory, isLeft), CodeSyncPlugin.FILE);
 		
 		return factory;
 	}
 	
-	private IModelAdapter createNodeModelAdapter(boolean isLeft) {
-		ModelAdapterFactory factory = isLeft ? leftFactory : ancestorFactory;
+	private IModelAdapter createNodeModelAdapter(ModelAdapterFactory factory, boolean isLeft) {
 		return (isLeft ? new NodeModelAdapterLeft() : new NodeModelAdapterAncestor())
+				.setOppositeModelAdapterFactory(rightFactory)
 				.setModelAdapterFactory(factory)
 				.setModelAdapterFactorySet(this);
 	}

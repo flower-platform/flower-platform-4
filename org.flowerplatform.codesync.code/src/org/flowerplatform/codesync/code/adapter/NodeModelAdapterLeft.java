@@ -193,9 +193,9 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		if (element == null || matchKey == null) {
 			return false;
 		}
-		Iterable<?> children = getEObjectConverter().getModelAdapter(element).getContainmentFeatureIterable(element, feature, null);
+		Iterable<?> children = getOppositeModelAdapterFactory().getModelAdapter(element).getContainmentFeatureIterable(element, feature, null);
 		for (Object child : children) {
-			if (matchKey.equals(getEObjectConverter().getModelAdapter(child).getMatchKey(child))) {
+			if (matchKey.equals(getOppositeModelAdapterFactory().getModelAdapter(child).getMatchKey(child))) {
 				return true;
 			}
 		}
