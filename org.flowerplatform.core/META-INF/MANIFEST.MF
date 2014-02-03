@@ -12,3 +12,6 @@ Bundle-ClassPath: lib/commons-lang-2.6.jar,
  lib/jortho.jar,
  lib/SimplyHTML.jar,
  .
+Require-Bundle: org.flowerplatform.util,
+ org.eclipse.osgi
+Bundle-Activator: org.flowerplatform.core.CorePlugin

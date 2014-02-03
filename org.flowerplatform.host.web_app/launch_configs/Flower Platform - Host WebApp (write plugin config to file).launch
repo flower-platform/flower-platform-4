@@ -22,5 +22,5 @@
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<stringAttribute key="workspace_bundles" value="org.flowerplatform.core@default:default,org.flowerplatform.flex_client.core@default:default,org.flowerplatform.flex_client.host_app.config.web@default:default,org.flowerplatform.flex_client.host_app@default:default,org.flowerplatform.flex_client.server@default:default,org.flowerplatform.host.servletbridge.extensionbundle@default:false,org.flowerplatform.host.servletbridge.registry@default:default,org.flowerplatform.util@default:default"/>
+<stringAttribute key="workspace_bundles" value="org.flowerplatform.core@default:default,org.flowerplatform.flex_client.core@default:default,org.flowerplatform.flex_client.host_app.config.web@default:default,org.flowerplatform.flex_client.host_app@default:default,org.flowerplatform.flex_client.properties@default:default,org.flowerplatform.flex_client.server@default:default,org.flowerplatform.flex_client.web@default:default,org.flowerplatform.host.servletbridge.extensionbundle@default:false,org.flowerplatform.host.servletbridge.registry@default:default,org.flowerplatform.util@default:default"/>
 </launchConfiguration>

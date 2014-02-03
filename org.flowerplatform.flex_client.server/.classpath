@@ -3,11 +3,11 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-httpclient-3.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-common_modified.jar" sourcepath="D:/Java/libs/blazeds-src-4.0.0.14931/modules/common"/>
-	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-core.jar" sourcepath="D:/Java/libs/blazeds-src-4.0.0.14931/modules/core/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-common_modified.jar" sourcepath="//csp1/SharedDocs/sources-external-libs/blazeds-src-4.0.0.14931/modules/common/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-core.jar" sourcepath="//csp1/SharedDocs/sources-external-libs/blazeds-src-4.0.0.14931/modules/core/src"/>
 	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-opt.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-proxy.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-remoting.jar" sourcepath="D:/Java/libs/blazeds-src-4.0.0.14931/modules/remoting/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/flex-messaging-remoting.jar" sourcepath="//csp1/SharedDocs/sources-external-libs/blazeds-src-4.0.0.14931/modules/remoting/src"/>
 	<classpathentry exported="true" kind="lib" path="lib/flex-rds-server.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
