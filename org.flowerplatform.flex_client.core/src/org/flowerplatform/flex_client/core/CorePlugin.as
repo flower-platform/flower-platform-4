@@ -17,12 +17,19 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core {
-	import flash.net.registerClassAlias;
-	
 	import org.flowerplatform.flex_client.core.mindmap.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapService;
+	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
+	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
+	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
+	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
+	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
+	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.ClientNodeStatus;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.NodeUpdate;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.ServiceLocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -70,6 +77,13 @@ package org.flowerplatform.flex_client.core {
 			
 			perspectives.push(new MindMapPerspective());
 			
+			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
+			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);			
+			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
+			
 //			linkHandlers = new Dictionary();			
 //			
 //			if (ExternalInterface.available) {
@@ -84,7 +98,10 @@ package org.flowerplatform.flex_client.core {
 				
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
-			registerClassAlias("org.flowerplatform.core.mindmap.remote.Node", Node);
+			registerClassAliasFromAnnotation(Node);
+			registerClassAliasFromAnnotation(ChildrenListUpdate);
+			registerClassAliasFromAnnotation(ClientNodeStatus);
+			registerClassAliasFromAnnotation(NodeUpdate);
 		}
 		
 		public function getPerspective(id:String):Perspective {

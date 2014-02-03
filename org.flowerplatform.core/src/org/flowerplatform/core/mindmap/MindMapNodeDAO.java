@@ -1,17 +1,17 @@
 package org.flowerplatform.core.mindmap;
 
+import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.mindmap.remote.MindMapService;
 import org.flowerplatform.core.mindmap.remote.Node;
 import org.flowerplatform.core.mindmap.remote.Property;
 import org.freeplane.features.cloud.CloudModel;
@@ -28,23 +28,20 @@ import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapNodeDAO {
+public class MindMapNodeDAO implements INodeDAO {
 	
 	// TODO CC: temporary code
-	public static Map<String, MapModel> maps = new HashMap<String, MapModel>();
+	private static Map<String, MapModel> maps = new HashMap<String, MapModel>();
 	
 	// TODO CC: temporary code
 	private static final String TEST_PATH = "D:/temp/FAP-FlowerPlatform4.mm";
 	
 	static {
-		// configure freeplane starter
+		// configure FreePlane starter
 		new FreeplaneHeadlessStarter().createController().setMapViewManager(new HeadlessMapViewController());		
 		HeadlessMModeControllerFactory.createModeController();	
 	}
 	
-	public MindMapNodeDAO() {		
-	}
-			
 	// TODO CC: temporary code
 	private URL getTestingURL() {
 		try {
@@ -54,28 +51,26 @@ public class MindMapNodeDAO {
 		}
 	}
 	
-	private NodeModel getNodeModel(String nodeId) {		
-		if (nodeId == null) {
-			if (!maps.containsKey(getTestingURL().toString())) {
-				try {
-					load(null);
-				} catch (Exception e) {	
-					// TODO CC: To log
-					e.printStackTrace();
-				}
-			}
-			return maps.get(getTestingURL().toString()).getRootNode();
-		} 
-		return maps.get(getTestingURL().toString()).getNodeForID(nodeId);		
+	public Node getNodeFromId(String nodeId) {
+		return convertObject(getNodeModelFromId(nodeId));
 	}
 	
-	public Node convert(NodeModel nodeModel) {
+	private NodeModel getNodeModelFromId(String nodeId) {
+		if (nodeId == null) {			
+			return maps.get(getTestingURL().toString()).getRootNode();
+		}
+		return maps.get(getTestingURL().toString()).getNodeForID(nodeId);
+	}
+	
+	private Node convertObject(NodeModel obj) {
+		NodeModel nodeModel = (NodeModel) obj;
 		Node node = new Node();
 		node.setId(nodeModel.createID());
-		node.setBody(nodeModel.getText());
-		node.setHasChildren(nodeModel.hasChildren());
+		node.addProperty("body", nodeModel.getText());
+		node.addProperty("hasChildren", nodeModel.hasChildren());		
 		node.addProperty("type", "mindMapNode");
 		node.addProperty("id", node.getId());
+		node.addProperty("timestamp", nodeModel.getHistoryInformation().getLastModifiedAt().getTime());
 		if (CloudModel.getModel(nodeModel) != null) {
 			node.addProperty("could_shape", CloudModel.getModel(nodeModel).getShape().name());
 			node.addProperty("could_color", CloudModel.getModel(nodeModel).getColor().toString());
@@ -83,60 +78,69 @@ public class MindMapNodeDAO {
 		return node;
 	}
 	
-	public Node getNode(String nodeId) {		
-		return convert(getNodeModel(nodeId));
+	public int getNodeChildCount(Node node) {
+		NodeModel nodeModel = getNodeModelFromId(node.getId());		
+		return nodeModel.getChildCount();
+	}
+	
+	public Node getParentNode(Node node) {
+		NodeModel nodeModel = getNodeModelFromId(node.getId());		
+		return convertObject(nodeModel.getParentNode());
+	}
+	
+	public int getNodeChildPosition(Node parentNode, Node childNode) {
+		NodeModel parent = getNodeModelFromId(parentNode.getId());	
+		NodeModel child = getNodeModelFromId(childNode.getId());	
+		
+		return parent.getChildPosition(child);
+	}
+	
+	public long updateNodeTimestamp(Node node, boolean addOneMsIfSameAsLastTimestamp) {
+		NodeModel nodeModel = getNodeModelFromId(node.getId());
+		
+		Date currentDate = new Date();
+		if (addOneMsIfSameAsLastTimestamp) {
+			currentDate = new Date(currentDate.getTime() + 1);
+		}
+		nodeModel.getHistoryInformation().setLastModifiedAt(currentDate);
+		
+		return nodeModel.getHistoryInformation().getLastModifiedAt().getTime();
 	}
 		
-	public List<Object> getChildren(String nodeId) {		
-		NodeModel nodeModel = getNodeModel(nodeId);
-		if (nodeId == null) {
-			return Arrays.asList(nodeId, Collections.singletonList(convert(nodeModel)));
+	public List<Node> getChildrenForNodeId(String nodeId) {
+		List<Node> children = new ArrayList<Node>();
+		if (nodeId == null) {			
+			children.add(convertObject(getNodeModelFromId(null)));
+		} else {		
+			NodeModel nodeModel = getNodeModelFromId(nodeId);
+			for (NodeModel child : nodeModel.getChildren()) {
+				children.add(convertObject(child));
+			}
 		}
-		List<Node> children = new ArrayList<Node>();		
-		for (NodeModel child : nodeModel.getChildren()) {
-			children.add(convert(child));
-		}
+		return children;		
+	}
 			
-		return Arrays.asList(nodeId, children);
-	}
-	
-	public void setBody(String nodeId, String newBodyValue) {
-		NodeModel nodeModel = getNodeModel(nodeId);
-		nodeModel.setText(newBodyValue);
-	}
-	
-	public Node addNode(String parentNodeId, String type) {
-		NodeModel parent = getNodeModel(parentNodeId);
-		NodeModel newNode = new NodeModel("", parent.getMap());
-		newNode.setLeft(false);
+	public Node addNode(Node parentNode, String type) {		
+		NodeModel parentModel = getNodeModelFromId(parentNode.getId());
+		NodeModel newNodeModel = new NodeModel("", parentModel.getMap());
+		newNodeModel.setLeft(false);
 		
-		parent.insert(newNode, parent.getChildCount());
-		
-		return convert(newNode);
+		parentModel.insert(newNodeModel, parentModel.getChildCount());
+
+		return convertObject(newNodeModel);
 	}
 	
-	public void removeNode(String nodeId) {
-		NodeModel nodeModel = getNodeModel(nodeId);
+	public void insertNode(Node parentNode, Node newNode, int index) {		
+		NodeModel parent = getNodeModelFromId(parentNode.getId());
+		NodeModel newChild = getNodeModelFromId(newNode.getId());
+				
+		parent.insert(newChild, index);
+	}
+	
+	public void removeNode(Node node) {
+		NodeModel nodeModel = getNodeModelFromId(node.getId());
 		nodeModel.removeFromParent();
 	}	
-	
-	public void moveNode(String nodeId, String newParentId, int newIndex) {
-		NodeModel nodeModel = getNodeModel(nodeId);
-		NodeModel newParentModel = getNodeModel(newParentId);
-		
-		if (newIndex != -1) {
-			if (newIndex == -2) {
-				newIndex = newParentModel.getChildCount();
-			}
-			NodeModel oldParent = nodeModel.getParentNode();
-			oldParent.remove(nodeModel);
-						
-			if (oldParent.equals(newParentModel) && newIndex > oldParent.getChildCount()) {
-				newIndex--;
-			}	
-			newParentModel.insert(nodeModel, newIndex);
-		}	
-	}
 	
 	public void load(URL url) throws Exception {
 		url = getTestingURL();
@@ -158,14 +162,9 @@ public class MindMapNodeDAO {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void save() {
+	public void save() throws Exception {
 		MapModel newModel = maps.get(getTestingURL().toString());
-		try {
-			((MFileManager) UrlManager.getController()).writeToFile(newModel, newModel.getFile());
-		} catch (IOException e) {
-			// TODO CC: To log
-			e.printStackTrace();
-		}
+		((MFileManager) UrlManager.getController()).writeToFile(newModel, newModel.getFile());		
 	}
 	
 	public List<Property> getPropertiesData(String nodeType) {
@@ -178,23 +177,46 @@ public class MindMapNodeDAO {
 		return properties;	
 	}
 		
-	public void setProperty(String nodeId, String propertyName, String propertyValue) {
-		// TODO CC: temporary code (testing properties view)
-		NodeModel nodeModel = getNodeModel(nodeId);
-		if (propertyName.equals("could_shape")) {
-			CloudModel cloud = CloudModel.createModel(nodeModel);
-			switch (propertyValue) {
-				case "ARC": 
-					cloud.setShape(Shape.ARC);
-					break;
-				case "RECT": 
-					cloud.setShape(Shape.RECT);
-					break;
-				case "STAR": 
-					cloud.setShape(Shape.STAR);
-					break;
-			}
+	public void setProperty(Node node, String propertyName, Object propertyValue) {		
+		// TODO CC: temporary code (testing properties view)		
+		NodeModel nodeModel = getNodeModelFromId(node.getId());
+		switch (propertyName) {
+			case "body":
+				nodeModel.setText((String) propertyValue);
+				break;
+			case "could_shape":
+				CloudModel cloud = CloudModel.createModel(nodeModel);
+				switch ((String) propertyValue) {
+					case "ARC": 
+						cloud.setShape(Shape.ARC);
+						new MindMapService().setProperty(node.getId(), "could_color", "green");
+						break;
+					case "RECT": 
+						cloud.setShape(Shape.RECT);
+						new MindMapService().setProperty(node.getId(), "could_color", "red");
+						break;
+					case "STAR": 
+						cloud.setShape(Shape.STAR);
+						new MindMapService().setProperty(node.getId(), "could_color", "black");
+						break;
+				}
+				break;
+			case "could_color":
+				CloudModel cloud1 = CloudModel.createModel(nodeModel);
+				switch ((String) propertyValue) {
+					case "green": 
+						cloud1.setColor(Color.GREEN);						
+						break;
+					case "red": 
+						cloud1.setColor(Color.RED);											
+						break;
+					case "black": 
+						cloud1.setColor(Color.BLACK);											
+						break;
+				}
+				break;
+				
 		}
 	}
-	
+
 }

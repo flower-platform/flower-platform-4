@@ -26,7 +26,6 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 		
 	/**
@@ -49,16 +48,17 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		}
 		
 		public function beginListeningForChanges(model:Object):void	{	
-			Node(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, updateConnectionEndsHandler);
+			Node(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, updateConnectionEndsHandler);			
 		}
 		
 		public function endListeningForChanges(model:Object):void {		
-			Node(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, updateConnectionEndsHandler);
+			Node(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, updateConnectionEndsHandler);			
 		}
 		
 		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent):void {
 			var model:Object = event.target;
 			MindMapModelRendererController(diagramShell.getControllerProvider(model).getRendererController(model)).updateConnectors(model);
 		}
+		
 	}
 }

@@ -17,8 +17,18 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.mindmap {
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import mx.collections.ArrayCollection;
+	import mx.messaging.messages.ErrorMessage;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.ClientNodeStatus;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -26,7 +36,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	public class MindMapService {
 		
 		public static const ID:String = "mindMapService";
-		
+				
 		public function getNodeFromId(node:Node, nodeId:String):Node {
 			if (node.id == nodeId) {
 				return node;
@@ -41,25 +51,30 @@ package org.flowerplatform.flex_client.core.mindmap {
 			}
 			return null;
 		}
-		
+				
+		private function faultHandler(fault:FaultEvent):void {			
+			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+				.setTitle("Error")
+				.setText(ErrorMessage(fault.message).rootCause.message)
+				.setWidth(300)
+				.setHeight(200)
+				.showMessageBox();				
+		}
+				
 		public function getChildrenForNodeId(nodeId:String, callbackFunction:Function):void {
 			CorePlugin.getInstance().serviceLocator.invoke(ID, "getChildrenForNodeId", [nodeId], callbackFunction);
 		}
 		
-		public function reload(callbackFunction:Function):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "reload", null, callbackFunction);
+		public function reload(resultCallback:Function):void {
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "reload", null, resultCallback, faultHandler);
 		}
 		
 		public function save():void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "save");
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "save", null, null, faultHandler);
 		}
 		
 		public function refresh(nodeId:String, callbackFunction:Function):void {
 			CorePlugin.getInstance().serviceLocator.invoke(ID, "refresh", [nodeId], callbackFunction);
-		}
-		
-		public function setBody(nodeId:String, newBodyValue:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "setBody", [nodeId, newBodyValue]);
 		}
 		
 		public function addNode(parentNodeId:String, type:String):void {
@@ -73,5 +88,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 		public function moveNode(nodeId:String, newParentNodeId:String, newIndex:int):void {
 			CorePlugin.getInstance().serviceLocator.invoke(ID, "moveNode", [nodeId, newParentNodeId, newIndex]);
 		}
+		
+		public function setProperty(nodeId:String, propertyName:String, propertyValue:Object):void {
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "setProperty", [nodeId, propertyName, propertyValue]);	
+		}
+			
 	}
 }

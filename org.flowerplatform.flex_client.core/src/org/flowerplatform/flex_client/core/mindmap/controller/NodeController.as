@@ -133,9 +133,9 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function setExpanded(model:Object, value:Boolean):void {
 			if (value) {
-				CorePlugin.getInstance().mindMapService.getChildrenForNodeId(Node(model).id, getChildrenForNodeIdCallbackHandler);
+				MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(Node(model));
 			} else {				
-				disposeModel(model);				
+				MindMapEditorDiagramShell(diagramShell).updateProcessor.removeChildren(Node(model));
 			}		
 		}
 		
@@ -148,46 +148,9 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		}
 		
 		private function getDynamicObject(model:Object):Object {
-			return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+			return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model)
+				.getModelExtraInfoController(model)).getDynamicObject(model);
 		}
-		
-		private function getChildrenForNodeIdCallbackHandler(result:ResultEvent):void {
-			var node:Node = CorePlugin.getInstance().mindMapService.getNodeFromId(Node(Diagram(diagramShell.rootModel).rootNode), result.result[0]);
 			
-			for each (var child:Node in ArrayCollection(result.result[1])) {
-				child.parent = node;
-			}
-			node.children = result.result[1];
-			
-			MindMapDiagramShell(diagramShell).refreshDiagramChildren();
-			MindMapDiagramShell(diagramShell).refreshNodePositions(node);
-		}
-		
-		public function disposeModel(model:Object, disposeModel:Boolean = false):void {
-			disposeModelHandlerRecursive(model, disposeModel);
-			Node(model).children = null;
-			mindMapDiagramShell.refreshDiagramChildren();
-			
-			if (diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model) is Node) {
-				MindMapDiagramShell(diagramShell).refreshNodePositions(
-					diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model));
-			} else {
-				mindMapDiagramShell.refreshNodePositions(Diagram(mindMapDiagramShell.rootModel).rootNode);
-			}
-			
-			MindMapDiagramShell(diagramShell).shouldRefreshVisualChildren(diagramShell.rootModel);
-		}
-		
-		private function disposeModelHandlerRecursive(model:Object, disposeModel:Boolean = false):void {
-			if (Node(model).hasChildren && Node(model).children != null) {
-				for (var i:int=0; i < Node(model).children.length; i++) {
-					disposeModelHandlerRecursive(Node(model).children.getItemAt(i), true);
-				}		
-			}
-			if (disposeModel) {
-				diagramShell.unassociateModelFromRenderer(model, diagramShell.getRendererForModel(model), true);
-			}
-		}		
-		
 	}
 }

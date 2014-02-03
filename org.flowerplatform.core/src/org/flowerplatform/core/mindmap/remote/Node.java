@@ -30,14 +30,10 @@ public class Node {
 	
 	// TODO CC: probably this will not be needed
 	private String parentId;
-	
-	private String body;
-	
+		
 	private String type;
-	
-	private boolean hasChildren;
-	
-	private Map<String, String> properties;
+		
+	private Map<String, Object> properties;
 
 	public String getId() {
 		return id;
@@ -47,20 +43,17 @@ public class Node {
 		this.id = id;
 	}
 
+	public Node setIdAs(String id) {
+		this.id = id;
+		return this;
+	}
+	
 	public String getParentId() {
 		return parentId;
 	}
 
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
 	}
 
 	public String getType() {
@@ -71,25 +64,17 @@ public class Node {
 		this.type = type;
 	}	
 	
-	public boolean isHasChildren() {
-		return hasChildren;
-	}
-
-	public void setHasChildren(boolean hasChildren) {
-		this.hasChildren = hasChildren;
-	}
-
-	public Map<String, String> getProperties() {
+	public Map<String, Object> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(Map<String, String> properties) {
+	public void setProperties(Map<String, Object> properties) {
 		this.properties = properties;
 	}
 	
-	public void addProperty(String name, String value) {
+	public void addProperty(String name, Object value) {
 		if (properties == null) {
-			properties = new HashMap<String, String>();
+			properties = new HashMap<String, Object>();
 		}
 		properties.put(name, value);
 	}

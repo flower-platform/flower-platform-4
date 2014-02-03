@@ -17,6 +17,9 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.mindmap.remote {
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	
 	import mx.collections.ArrayCollection;
 	
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -25,20 +28,16 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 	 * @author Cristina Constantinescu
 	 */
 	[Bindable]
-	[RemoteClass]
+	[RemoteClass(alias="org.flowerplatform.core.mindmap.remote.Node")]
 	public class Node {
 		
 		public var id:String;
 		
 		public var parentId:String;
-		
-		public var body:String;
-		
+				
 		public var type:String;
 		
-		public var hasChildren:Boolean;
-		
-		public var properties:Object;
+		public var properties:Object = new Object();
 		
 		[Transient]
 		public var parent:Node;

@@ -33,6 +33,7 @@
 			import mx.events.MoveEvent;
 			import mx.events.ResizeEvent;
 			
+			import org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flexdiagram.DiagramShell;
 			import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
@@ -52,7 +53,8 @@
 					
 				DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
 				DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize);		
-
+				DisplayObject(target).addEventListener(NodeRenderer_HasChildrenChangedEvent.HAS_CHILDREN_CHANGED, handleHasChildrenChanged);		
+				
 				// update position
 				handleTargetMoveResize(null);				
 			}
@@ -66,6 +68,7 @@
 				// remove resize listeners				
 				DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);			
 				DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);	
+				DisplayObject(target).removeEventListener(NodeRenderer_HasChildrenChangedEvent.HAS_CHILDREN_CHANGED, handleHasChildrenChanged);		
 				
 				super.deactivate();
 			}
@@ -75,10 +78,14 @@
 				setLayoutBoundsSize(target.width, target.height);
 			}
 			
+			protected function handleHasChildrenChanged(event:NodeRenderer_HasChildrenChangedEvent):void {
+				invalidateDisplayList();
+			}
+			
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
-				if (node.hasChildren &&
+				if (Boolean(node.properties["hasChildren"]).valueOf() &&
 					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node) != null) {	
 					vLine.visible = !getMindMapModelController(node).getExpanded(node);
 					diagramShell.diagramRenderer.addElement(circle);

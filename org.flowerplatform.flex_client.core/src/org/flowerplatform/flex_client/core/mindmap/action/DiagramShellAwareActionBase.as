@@ -18,30 +18,27 @@
 */
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
-	import mx.messaging.messages.ErrorMessage;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
-	
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
-	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
-	public class SaveAction extends ActionBase {
+	public class DiagramShellAwareActionBase extends ActionBase implements IDiagramShellAware {
 		
-		public function SaveAction() {			
-			label = CorePlugin.getInstance().getMessage("mindmap.action.save");
-			preferShowOnActionBar = true;
-		}
-				
-		override public function get visible():Boolean {			
-			return true;
+		private var _diagramShell:DiagramShell;
+		
+		public function DiagramShellAwareActionBase() {
+			super();
 		}
 		
-		override public function run():void {
-			CorePlugin.getInstance().mindMapService.save();
+		public function get diagramShell():DiagramShell {		
+			return _diagramShell;
+		}
+		
+		public function set diagramShell(value:DiagramShell):void {
+			_diagramShell = value;
 		}
 				
 	}
