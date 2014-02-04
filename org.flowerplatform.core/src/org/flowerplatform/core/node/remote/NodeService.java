@@ -173,24 +173,4 @@ public class NodeService {
 		}
 	}
 	
-	// TODO CC: temporary code 
-	public void load() {
-		try {
-			CorePlugin.getInstance().getFreeplaneUtils().load(null);
-		} catch (Exception e) {
-			// TODO CC: to log
-			e.printStackTrace();
-		}
-	}
-	
-	// TODO CC: temporary code 
-	public void save() {
-		try {
-			CorePlugin.getInstance().getFreeplaneUtils().save();
-		} catch (Exception e) {
-			// TODO CC: to log
-			e.printStackTrace();
-		}
-	}
-	
 }

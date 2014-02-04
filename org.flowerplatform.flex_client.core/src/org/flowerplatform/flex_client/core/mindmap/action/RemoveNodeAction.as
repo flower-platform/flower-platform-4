@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().mindMapService.removeNode(Node(selection.getItemAt(0)).parent, Node(selection.getItemAt(0)));
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.removeChild", [Node(selection.getItemAt(0)).parent, Node(selection.getItemAt(0))]);
 		}
 	}
 }
