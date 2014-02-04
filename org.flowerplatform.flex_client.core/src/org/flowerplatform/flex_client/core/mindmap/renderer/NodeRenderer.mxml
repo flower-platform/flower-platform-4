@@ -143,7 +143,7 @@ license-end
 					x = _diagramShell.getModelController(node).getX(node);	
 					y = _diagramShell.getModelController(node).getY(node);	
 					
-					labelDisplay.text = data.body;
+					labelDisplay.text = data.properties["body"];
 //					if (node.viewDetails != null) {
 //						viewDetailsUpdatedHandler(null);
 //					}
@@ -229,7 +229,7 @@ license-end
 						y = _diagramShell.getModelController(node).getY(node);				
 						break;
 					case "body":
-						labelDisplay.text = data.body;
+						labelDisplay.text = data.properties["body"];
 					case "hasChildren":
 						invalidateSize();
 						invalidateDisplayList();
@@ -249,7 +249,7 @@ license-end
 				graphics.beginFill(0xCCCCCC, 0);
 				graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 				
-				if (node != null && node.hasChildren && !_diagramShell.getModelController(node).getExpanded(node)) {
+				if (node != null && Boolean(node.properties["hasChildren"]).valueOf() && !_diagramShell.getModelController(node).getExpanded(node)) {
 					if (node.side == MindMapDiagramShell.LEFT) {
 						graphics.drawCircle(-circleRadius, height/2, circleRadius);
 					} else if (node.side == MindMapDiagramShell.RIGHT) {						

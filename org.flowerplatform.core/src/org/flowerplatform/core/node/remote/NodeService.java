@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeTypeDescriptor;
 import org.flowerplatform.core.node.NodeTypeDescriptorRegistry;
+import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
+import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.RunnableWithParam;
 import org.slf4j.Logger;
@@ -15,16 +19,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Cristian Spiescu
+ * @author Cristina Constantinescu
  */
 public class NodeService {
 	
 	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
 	
-	protected NodeTypeDescriptorRegistry registry;
+	protected static NodeTypeDescriptorRegistry registry;
+	
+	public NodeService() {
+		super();		
+	}
 	
 	public NodeService(NodeTypeDescriptorRegistry registry) {
 		super();
-		this.registry = registry;
+		NodeService.registry = registry;
 	}
 
 	public List<Node> getChildren(Node node, boolean populateProperties) {
@@ -86,15 +95,102 @@ public class NodeService {
 		}
 	}
 	
-	public void setProperty(Node node, String property, Object value) {
+	@SuppressWarnings("unchecked")
+	public List<Property> getPropertiestoDisplay(Node node) {
+		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return Collections.emptyList();
+		}
 		
+		List<PropertiesProvider<?>> providers = registry.getControllersForTypeAndCategories(descriptor, new RunnableWithParam<List<PropertiesProvider<?>>, NodeTypeDescriptor>() {
+			@Override
+			public List<PropertiesProvider<?>> run(NodeTypeDescriptor param) {
+				return param.getPropertiesProviders();
+			}
+		});
+
+		List<Property> properties = new ArrayList<Property>();
+		for (PropertiesProvider<?> provider : providers) {
+			List<Property> providerPropertiesToDisplay = ((PropertiesProvider<Object>) provider).getPropertiesToDisplay(node);
+			if (providerPropertiesToDisplay != null) {
+				properties.addAll(providerPropertiesToDisplay);
+			}
+		}
+		return properties;
+	}
+		
+	public void setProperty(Node node, String property, Object value) {
+		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return;
+		}
+		
+		List<PropertySetter> controllers = registry.getControllersForTypeAndCategories(descriptor, new RunnableWithParam<List<PropertySetter>, NodeTypeDescriptor>() {
+			@Override
+			public List<PropertySetter> run(NodeTypeDescriptor param) {
+				return param.getPropertiesSetters();
+			}
+		});
+
+		for (PropertySetter controller : controllers) {
+			controller.setProperty(node, property, value);
+		}
 	}
 	
 	public void addChild(Node node, Node child) {
+		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return;
+		}
 		
+		List<AddNodeController> controllers = registry.getControllersForTypeAndCategories(descriptor, new RunnableWithParam<List<AddNodeController>, NodeTypeDescriptor>() {
+			@Override
+			public List<AddNodeController> run(NodeTypeDescriptor param) {
+				return param.getAddNodeControllers();
+			}
+		});
+
+		for (AddNodeController controller : controllers) {
+			controller.addNode(node, child);
+		}
 	}
 	
 	public void removeChild(Node node, Node child) {
+		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return;
+		}
 		
+		List<RemoveNodeController> controllers = registry.getControllersForTypeAndCategories(descriptor, new RunnableWithParam<List<RemoveNodeController>, NodeTypeDescriptor>() {
+			@Override
+			public List<RemoveNodeController> run(NodeTypeDescriptor param) {
+				return param.getRemoveNodeControllers();
+			}
+		});
+
+		for (RemoveNodeController controller : controllers) {
+			controller.removeNode(node, child);
+		}
 	}
+	
+	// TODO CC: temporary code 
+	public void load() {
+		try {
+			CorePlugin.getInstance().getFreeplaneUtils().load(null);
+		} catch (Exception e) {
+			// TODO CC: to log
+			e.printStackTrace();
+		}
+	}
+	
+	// TODO CC: temporary code 
+	public void save() {
+		try {
+			CorePlugin.getInstance().getFreeplaneUtils().save();
+		} catch (Exception e) {
+			// TODO CC: to log
+			e.printStackTrace();
+		}
+	}
+	
 }

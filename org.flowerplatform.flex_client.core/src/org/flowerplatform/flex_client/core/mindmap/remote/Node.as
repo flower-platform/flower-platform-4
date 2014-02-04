@@ -25,18 +25,12 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 	 * @author Cristina Constantinescu
 	 */
 	[Bindable]
-	[RemoteClass(alias="org.flowerplatform.core.mindmap.remote.Node")]
+	[RemoteClass(alias="org.flowerplatform.core.node.remote.Node")]
 	public class Node {
 		
 		public var id:String;
-		
-		public var parentId:String;
-		
-		public var body:String;
-		
+				
 		public var type:String;
-		
-		public var hasChildren:Boolean;
 		
 		public var properties:Object;
 		

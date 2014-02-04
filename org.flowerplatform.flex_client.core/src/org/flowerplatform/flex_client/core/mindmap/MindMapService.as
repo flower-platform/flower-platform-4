@@ -25,7 +25,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	 */
 	public class MindMapService {
 		
-		public static const ID:String = "mindMapService";
+		public static const ID:String = "nodeService";
 		
 		public function getNodeFromId(node:Node, nodeId:String):Node {
 			if (node.id == nodeId) {
@@ -42,12 +42,12 @@ package org.flowerplatform.flex_client.core.mindmap {
 			return null;
 		}
 		
-		public function getChildrenForNodeId(nodeId:String, callbackFunction:Function):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "getChildrenForNodeId", [nodeId], callbackFunction);
+		public function getChildrenForNodeId(node:Node, callbackFunction:Function):void {
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "getChildren", [node, true], callbackFunction);
 		}
 		
 		public function reload(callbackFunction:Function):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "reload", null, callbackFunction);
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "load", null, callbackFunction);
 		}
 		
 		public function save():void {
@@ -58,16 +58,16 @@ package org.flowerplatform.flex_client.core.mindmap {
 			CorePlugin.getInstance().serviceLocator.invoke(ID, "refresh", [nodeId], callbackFunction);
 		}
 		
-		public function setBody(nodeId:String, newBodyValue:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "setBody", [nodeId, newBodyValue]);
+		public function setBody(node:Node, newBodyValue:String):void {
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "setProperty", [node, "body", newBodyValue]);
 		}
 		
-		public function addNode(parentNodeId:String, type:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "addNode", [parentNodeId, type]);
+		public function addNode(parentNode:Node, child:Node):void {
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "addChild", [parentNode, child]);
 		}
 		
-		public function removeNode(nodeId:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "removeNode", [nodeId]);
+		public function removeNode(parent:Node, child:Node):void {
+			CorePlugin.getInstance().serviceLocator.invoke(ID, "removeChild", [parent, child]);
 		}
 		
 		public function moveNode(nodeId:String, newParentNodeId:String, newIndex:int):void {

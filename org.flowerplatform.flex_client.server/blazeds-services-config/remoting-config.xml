@@ -9,9 +9,9 @@
         <channel ref="remoting-amf"/>
 	</default-channels>
    
-     <destination id="mindMapService">
+     <destination id="nodeService">
         <properties>
-            <source>org.flowerplatform.core.mindmap.remote.MindMapService</source>
+            <source>org.flowerplatform.core.node.remote.NodeService</source>
         </properties>
     </destination>
     

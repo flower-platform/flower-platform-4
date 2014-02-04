@@ -75,7 +75,7 @@
 				
 				var node:Node = Node(event.selection.getItemAt(0));
 				CorePlugin.getInstance().serviceLocator.invoke(
-					"mindMapService", "getPropertiesData", [node.type], 
+					"nodeService", "getPropertiesToDisplay", [node], 
 					function(result:ResultEvent):void {
 						var properties:ArrayCollection = ArrayCollection(result.result);
 						for each (var property:Property in properties) {
@@ -84,7 +84,7 @@
 							}
 						}
 						propertyList.dataProvider = properties;		
-						label.text = node.body;
+						label.text = node.properties["body"];
 						PropertiesPlugin.getInstance().currentSelection = event.selection;
 					}
 				);		

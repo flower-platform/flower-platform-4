@@ -47,7 +47,7 @@ package org.flowerplatform.flex_client.properties {
 		}
 		
 		override protected function registerClassAliases():void {
-			registerClassAlias("org.flowerplatform.core.mindmap.remote.Property", Property);
+			registerClassAliasFromAnnotation(Property);
 		}
 				
 		private function registerPropertyProviders():void {
