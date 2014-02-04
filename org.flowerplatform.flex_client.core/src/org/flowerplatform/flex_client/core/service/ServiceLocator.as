@@ -11,6 +11,9 @@ package org.flowerplatform.flex_client.core.service {
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public class ServiceLocator {
 		
 		protected var channelSet:ChannelSet;

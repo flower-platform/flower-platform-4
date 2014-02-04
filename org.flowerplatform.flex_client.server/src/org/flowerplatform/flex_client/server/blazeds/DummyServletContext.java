@@ -21,8 +21,20 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
+/**
+ * All methods throw {@link UnsupportedOperationException}. Except {@link #getResourceAsStream(String)}, 
+ * the only one that's used by {@link FlowerFlexConfigurationManager}.
+ * 
+ * @see FlowerMessageBrokerServlet
+ * @see #getResourceAsStream(String)
+ * 
+ * @author Cristian Spiescu
+ */
 public class DummyServletContext implements ServletContext {
 
+	/**
+	 * Loads necessary config resources from this plugin.
+	 */
 	@Override
 	public InputStream getResourceAsStream(String arg0) {
 		try {

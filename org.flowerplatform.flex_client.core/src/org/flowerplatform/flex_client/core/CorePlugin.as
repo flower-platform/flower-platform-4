@@ -31,7 +31,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.layout.Perspective;
 	
 	/**
-	 * @author Cristi
+	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
 	public class CorePlugin extends AbstractFlowerFlexPlugin {
 		
@@ -77,14 +78,9 @@ package org.flowerplatform.flex_client.core {
 //				ExternalInterface.addCallback("handleLink", handleLink);
 //			}
 		}
-		
-		override public function start():void {			
-			super.start();			
-		}
-				
-		override protected function registerClassAliases():void {		
-			super.registerClassAliases();
-			registerClassAlias("org.flowerplatform.core.mindmap.remote.Node", Node);
+						
+		override protected function registerClassAliases():void {	
+			registerClassAliasFromAnnotation(Node);
 		}
 		
 		public function getPerspective(id:String):Perspective {

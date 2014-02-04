@@ -46,11 +46,13 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
+	
+	import spark.components.Group;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapEditorFrontend extends VBox implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+	public class MindMapEditorFrontend extends Group implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
 		
 		public var diagramShell:DiagramShell;
 		
@@ -64,10 +66,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 			var scroller:InfiniteScroller = new InfiniteScroller();
 			scroller.percentWidth = 100;
 			scroller.percentHeight = 100;
-			addChild(scroller);
+			addElement(scroller);
 			
 			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
-			diagramRenderer.useGrid = false;
+			diagramRenderer.useGrid = false;		
 			scroller.viewport = diagramRenderer;
 			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
 							
@@ -94,8 +96,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 			result.push(new AddNodeAction());
 			result.push(new RemoveNodeAction());
 			
-			result.push(new RefreshAction(this));
-			result.push(new RefreshAction(this, true));
+//			result.push(new RefreshAction(this));
+//			result.push(new RefreshAction(this, true));
 			
 			result.push(new RenameAction());
 			
@@ -126,13 +128,17 @@ package org.flowerplatform.flex_client.core.mindmap {
 		}
 		
 		public function requestRootModel():void {
-			CorePlugin.getInstance().mindMapService.getChildrenForNodeId(null, getChildrenForNodeIdCallbackHandler);
+			var node:Node = new Node();
+			node.type = "freeplaneNode";
+			CorePlugin.getInstance().mindMapService.getChildrenForNodeId(node, function(result:ResultEvent):void {
+				getChildrenForNodeIdCallbackHandler(node, result);
+			});			
 		}
 		
-		private function getChildrenForNodeIdCallbackHandler(result:ResultEvent):void {
+		private function getChildrenForNodeIdCallbackHandler(node:Node, result:ResultEvent):void {
 			var diagram:Diagram = new Diagram();
 			
-			var node:Node = Node(result.result[1].getItemAt(0));
+			var node:Node = Node(result.result.getItemAt(0));
 			node.side = MindMapDiagramShell.NONE;
 			diagram.rootNode = node;
 					

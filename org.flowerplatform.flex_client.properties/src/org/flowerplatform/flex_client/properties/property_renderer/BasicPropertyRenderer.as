@@ -32,8 +32,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		protected function sendChangedValuesToServer(event:Event):void {			
 			if (!data.readOnly) {
 				CorePlugin.getInstance().serviceLocator.invoke(
-					"mindMapService", "setProperty", 
-					[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).id, data.name, getValue()]);				
+					"nodeService", "setProperty", 
+					[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)), data.name, getValue()]);				
 			}	
 		}
 

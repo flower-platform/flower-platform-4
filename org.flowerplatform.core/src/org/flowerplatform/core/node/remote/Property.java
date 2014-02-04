@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.core.mindmap.remote;
+package org.flowerplatform.core.node.remote;
 
 /**
  * @author Razvan Tache

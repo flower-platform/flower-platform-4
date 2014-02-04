@@ -5,6 +5,14 @@ import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
+/**
+ * Delegates all operations to {@link #delegate}. Except {@link #getInitParameter(String)}.
+ * 
+ * @see FlowerMessageBrokerServlet
+ * @see #getInitParameter(String)
+ * 
+ * @author Cristian Spiescu
+ */
 public class ServletConfigWrapper implements ServletConfig {
 
 	protected ServletConfig delegate;

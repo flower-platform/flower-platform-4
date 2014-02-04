@@ -26,7 +26,7 @@ import org.eclipse.equinox.servletbridge.flower.ServletConfigWrapper;
 import org.eclipse.equinox.servletbridge.flower.ServletContextWrapper;
 /**
  * IMPORTANT !!!
- * see FlowerFrameworkLauncher for details
+ * @see FlowerFrameworkLauncher for details
  * 
  * @author Cristian Spiescu
  */

@@ -5,6 +5,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
+/**
+ * @see FlowerFrameworkLauncher
+ * @author Cristian Spiescu
+ */
 public interface ServletContextWrapper {
 	String getTempDir();
 	

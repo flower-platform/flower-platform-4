@@ -43,7 +43,7 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 						
 		/////////////////
 		
-		[SkinPart(required="false", type="com.crispico.flower.flexdiagram.infinitegroup.InfiniteVScrollBar")]
+		[SkinPart(required="false", type="org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteVScrollBar")]
 		public var verticalScrollBarFactory:IFactory;
 		
 		[SkinPart(required="false")]
@@ -52,7 +52,7 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 		
 		/////////////////
 		
-		[SkinPart(required="false", type="com.crispico.flower.flexdiagram.infinitegroup.InfiniteHScrollBar")]		
+		[SkinPart(required="false", type="org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteHScrollBar")]		
 		public var horizontalScrollBarFactory:IFactory;
 		
 		[SkinPart(required="false")]

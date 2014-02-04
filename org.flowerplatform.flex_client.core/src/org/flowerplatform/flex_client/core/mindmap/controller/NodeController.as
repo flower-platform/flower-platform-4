@@ -133,7 +133,9 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function setExpanded(model:Object, value:Boolean):void {
 			if (value) {
-				CorePlugin.getInstance().mindMapService.getChildrenForNodeId(Node(model).id, getChildrenForNodeIdCallbackHandler);
+				CorePlugin.getInstance().mindMapService.getChildrenForNodeId(Node(model), function(result:ResultEvent):void {
+					getChildrenForNodeIdCallbackHandler(Node(model), result);
+				});					
 			} else {				
 				disposeModel(model);				
 			}		
@@ -151,13 +153,11 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
 		}
 		
-		private function getChildrenForNodeIdCallbackHandler(result:ResultEvent):void {
-			var node:Node = CorePlugin.getInstance().mindMapService.getNodeFromId(Node(Diagram(diagramShell.rootModel).rootNode), result.result[0]);
-			
-			for each (var child:Node in ArrayCollection(result.result[1])) {
+		private function getChildrenForNodeIdCallbackHandler(node:Node, result:ResultEvent):void {
+			for each (var child:Node in ArrayCollection(result.result)) {
 				child.parent = node;
 			}
-			node.children = result.result[1];
+			node.children = ArrayCollection(result.result);
 			
 			MindMapDiagramShell(diagramShell).refreshDiagramChildren();
 			MindMapDiagramShell(diagramShell).refreshNodePositions(node);
@@ -179,7 +179,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		}
 		
 		private function disposeModelHandlerRecursive(model:Object, disposeModel:Boolean = false):void {
-			if (Node(model).hasChildren && Node(model).children != null) {
+			if (Node(model).properties["hasChildren"] && Node(model).children != null) {
 				for (var i:int=0; i < Node(model).children.length; i++) {
 					disposeModelHandlerRecursive(Node(model).children.getItemAt(i), true);
 				}		
