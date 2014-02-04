@@ -161,10 +161,8 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 				}
 			}
 			
-			CorePlugin.getInstance().mindMapService.moveNode(
-				model.id, 
-				dropParentModel.id,
-				index);
+			// TODO CC: to implement on server side
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.move", [model.id, dropParentModel.id, index]);
 						
 			// select model or parent 
 			diagramShell.selectedItems.removeAll();

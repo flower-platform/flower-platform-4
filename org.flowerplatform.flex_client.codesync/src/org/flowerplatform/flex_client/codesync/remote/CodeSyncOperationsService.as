@@ -27,7 +27,7 @@ package org.flowerplatform.flex_client.codesync.remote {
 		public static const ID:String = "codeSyncOperationsService";
 		
 		public function synchronize(path:String, technology:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID, "synchronize", [path, technology]);
+			CorePlugin.getInstance().serviceLocator.invoke(ID + ".synchronize", [path, technology]);
 		}
 	}
 }

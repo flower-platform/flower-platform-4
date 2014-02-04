@@ -16,7 +16,7 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.mindmap {
+package org.flowerplatform.flex_client.core.mindmap.layout {
 	
 	import mx.collections.ArrayCollection;
 	
@@ -43,7 +43,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		}
 		
 		public override function get iconUrl():String {			
-			return null;
+			return CorePlugin.getInstance().getResourceUrl("images/icon_flower.gif");
 		}
 		
 		public override function resetPerspective(workbench:IWorkbench):void {

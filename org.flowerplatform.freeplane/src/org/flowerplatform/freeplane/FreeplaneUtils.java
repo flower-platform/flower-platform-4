@@ -1,4 +1,4 @@
-package org.flowerplatform.core.mindmap;
+package org.flowerplatform.freeplane;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.flowerplatform.freeplane.HeadlessMapViewController;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.map.NodeModel;

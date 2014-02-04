@@ -19,39 +19,34 @@
 package org.flowerplatform.flex_client.core.mindmap.layout {
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
+	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapEditorProvider implements IViewProvider {
+	public class MindMapEditorProvider extends AbstractViewProvider {
 				
 		public static const ID:String = "mindMapEditor";
 		
-		public function getId():String {
+		override public function getId():String {
 			return ID;
 		}
 		
-		public function createView(viewLayoutData:ViewLayoutData):UIComponent {
+		override public function createView(viewLayoutData:ViewLayoutData):UIComponent {
 			return new MindMapEditorFrontend();
 		}
 		
-		public function getTitle(viewLayoutData:ViewLayoutData=null):String {
+		override public function getTitle(viewLayoutData:ViewLayoutData=null):String {
 			return "mindmap";
 		}
 		
-		public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
-			return null;
+		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
+			return CorePlugin.getInstance().getResourceUrl("images/icon_flower.gif");
 		}
-		
-		public function getTabCustomizer(viewLayoutData:ViewLayoutData):Object {
-			return null;
-		}
-		
-		public function getViewPopupWindow(viewLayoutData:ViewLayoutData):UIComponent {
-			return null;
-		}
+	
 	}
 }

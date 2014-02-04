@@ -21,4 +21,10 @@
         </properties>
     </destination>
     
+    <destination id="freeplaneService">
+        <properties>
+            <source>org.flowerplatform.freeplane.remote.FreeplaneService</source>
+        </properties>
+    </destination>
+    
 </service>

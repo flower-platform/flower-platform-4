@@ -1,4 +1,4 @@
-package org.flowerplatform.core.mindmap;
+package org.flowerplatform.freeplane.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,6 @@ import java.util.List;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.Property;
-import org.freeplane.features.attribute.Attribute;
-import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.map.NodeModel;
 
@@ -20,12 +18,6 @@ public class FreeplanePropertiesProvider extends PropertiesProvider<NodeModel> {
 	public void populateWithProperties(Node node, NodeModel rawNodeData) {		
 		node.getOrCreateProperties().put("body", rawNodeData.getText());
 		node.getOrCreateProperties().put("hasChildren", rawNodeData.hasChildren());
-		
-		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(rawNodeData);
-		for (Attribute attribute : attributeTable.getAttributes()) {
-			node.getOrCreateProperties().put(attribute.getName(), attribute.getValue());
-		}
-		node.setType((String) node.getProperties().get("type"));
 		
 		// TODO CC: remove
 		if (CloudModel.getModel(rawNodeData) != null) {
