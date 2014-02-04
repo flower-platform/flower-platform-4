@@ -1,5 +1,6 @@
 package org.flowerplatform.core;
 
+import org.flowerplatform.core.mindmap.remote.MindMapService;
 import org.flowerplatform.core.node.NodeTypeDescriptorRegistry;
 import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -22,6 +23,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 		
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
+		getServiceRegistry().registerService("org.flowerplatform.core.mindmap.remote.MindMapService", new MindMapService());
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
