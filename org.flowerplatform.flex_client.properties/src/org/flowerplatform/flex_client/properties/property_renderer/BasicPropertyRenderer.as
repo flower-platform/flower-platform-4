@@ -32,7 +32,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		protected function sendChangedValuesToServer(event:Event):void {			
 			if (!data.readOnly) {
 				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService", "setProperty", 
+					"nodeService.setProperty", 
 					[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)), data.name, getValue()]);				
 			}	
 		}

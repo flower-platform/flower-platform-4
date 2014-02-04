@@ -1,8 +1,8 @@
-package org.flowerplatform.core.mindmap;
+package org.flowerplatform.freeplane.controller;
 
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
 import org.freeplane.features.map.NodeModel;
@@ -14,7 +14,7 @@ public class FreeplanePropertySetter extends PropertySetter {
 
 	@Override
 	public void setProperty(Node node, String property, Object value) {
-		NodeModel nodeModel = CorePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getId());		
+		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getId());		
 		switch (property) {
 			case "body": 
 				nodeModel.setText((String) value);

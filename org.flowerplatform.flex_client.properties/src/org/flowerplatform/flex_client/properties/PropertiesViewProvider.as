@@ -19,38 +19,33 @@
 package org.flowerplatform.flex_client.properties {
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**
+	 * @author Cristina Constantinescu
 	 * @author Razvan Tache
 	 */
-	public class PropertiesViewProvider implements IViewProvider {
+	public class PropertiesViewProvider extends AbstractViewProvider {
 		
 		public static const ID:String = "properties";
 		
-		public function getId():String {
+		override public function getId():String {
 			return ID;
 		}
 		
-		public function createView(viewLayoutData:ViewLayoutData):UIComponent {			
+		override public function createView(viewLayoutData:ViewLayoutData):UIComponent {			
 			return new PropertiesView();
 		}
 		
-		public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
+		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
 			return PropertiesPlugin.getInstance().getMessage("properties.view");
 		}
 		
-		public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
+		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
 			return PropertiesPlugin.getInstance().getResourceUrl("images/properties.gif");
 		}
-		
-		public function getTabCustomizer(viewLayoutData:ViewLayoutData):Object {
-			return null;
-		}
-		
-		public function getViewPopupWindow(viewLayoutData:ViewLayoutData):UIComponent {
-			return null;
-		}
+	
 	}
 }

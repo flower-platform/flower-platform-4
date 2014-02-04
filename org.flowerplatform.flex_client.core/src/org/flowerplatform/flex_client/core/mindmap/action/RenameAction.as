@@ -69,7 +69,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			var node:Node = Node(selection.getItemAt(0));
 			var messageBox:IMessageBox = askForTextInput(node.properties["body"], "Rename", "Rename",
 				function(name:String):void {
-					CorePlugin.getInstance().mindMapService.setBody(node, name);
+					CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node, "body", name]);
 				});		
 		}
 				

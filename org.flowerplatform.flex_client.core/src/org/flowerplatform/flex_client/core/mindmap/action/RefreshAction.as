@@ -58,41 +58,41 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			refresh(Node(selection.getItemAt(0)));
+//			refresh(Node(selection.getItemAt(0)));
 		}
 		
-		private function refresh(node:Node):void {			
-			if (recursive) {
-				for each (var child:Node in node.children) {
-					refresh(child);
-				}
-			}
-			CorePlugin.getInstance().mindMapService.refresh(node.id, refreshCallbackHandler);
-		}
-		
-		private function refreshCallbackHandler(result:ResultEvent):void {
-			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(editorFrontend.diagramShell);
-			
-			var oldNode:Node = CorePlugin.getInstance().mindMapService.getNodeFromId(Node(Diagram(diagramShell.rootModel).rootNode), result.result[0]);
-			var newNode:Node = result.result[1];
-			copyProperties(newNode, oldNode, false);			
-		}
-		
-		// TODO CC: temporary code (to be refactored when update mechanism implemented)
-		protected function copyProperties(source:IEventDispatcher, dest:IEventDispatcher, postProcessOnly:Boolean):void {			
-			var classInfo:XML = DescribeTypeCache.describeType(dest).typeDescription;
-			for each (var v:XML in classInfo..accessor) {
-				if (v.@name != null && v.@access != 'readonly' && !ObjectUtil.hasMetadata(dest, v.@name, 'Transient')) {
-					copyProperty(source, dest, v.@name, postProcessOnly);
-				}
-			}
-		}
-		
-		// TODO CC: temporary code (to be refactored when update mechanism implemented)
-		protected function copyProperty(source:Object, dest:Object, propertyName:String, postProcessOnly:Boolean):void {
-			if (!postProcessOnly && dest[propertyName] != source[propertyName]) {
-				dest[propertyName] = source[propertyName];
-			}
-		}
+//		private function refresh(node:Node):void {			
+//			if (recursive) {
+//				for each (var child:Node in node.children) {
+//					refresh(child);
+//				}
+//			}
+//			CorePlugin.getInstance().mindMapService.refresh(node.id, refreshCallbackHandler);
+//		}
+//		
+//		private function refreshCallbackHandler(result:ResultEvent):void {
+//			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(editorFrontend.diagramShell);
+//			
+//			var oldNode:Node = CorePlugin.getInstance().mindMapService.getNodeFromId(Node(Diagram(diagramShell.rootModel).rootNode), result.result[0]);
+//			var newNode:Node = result.result[1];
+//			copyProperties(newNode, oldNode, false);			
+//		}
+//		
+//		// TODO CC: temporary code (to be refactored when update mechanism implemented)
+//		protected function copyProperties(source:IEventDispatcher, dest:IEventDispatcher, postProcessOnly:Boolean):void {			
+//			var classInfo:XML = DescribeTypeCache.describeType(dest).typeDescription;
+//			for each (var v:XML in classInfo..accessor) {
+//				if (v.@name != null && v.@access != 'readonly' && !ObjectUtil.hasMetadata(dest, v.@name, 'Transient')) {
+//					copyProperty(source, dest, v.@name, postProcessOnly);
+//				}
+//			}
+//		}
+//		
+//		// TODO CC: temporary code (to be refactored when update mechanism implemented)
+//		protected function copyProperty(source:Object, dest:Object, propertyName:String, postProcessOnly:Boolean):void {
+//			if (!postProcessOnly && dest[propertyName] != source[propertyName]) {
+//				dest[propertyName] = source[propertyName];
+//			}
+//		}
 	}
 }

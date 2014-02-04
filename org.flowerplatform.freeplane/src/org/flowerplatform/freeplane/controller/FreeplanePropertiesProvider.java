@@ -1,4 +1,4 @@
-package org.flowerplatform.core.mindmap;
+package org.flowerplatform.freeplane.controller;
 
 import java.util.ArrayList;
 import java.util.List;

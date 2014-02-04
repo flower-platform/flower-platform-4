@@ -133,7 +133,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function setExpanded(model:Object, value:Boolean):void {
 			if (value) {
-				CorePlugin.getInstance().mindMapService.getChildrenForNodeId(Node(model), function(result:ResultEvent):void {
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [Node(model), true], function(result:ResultEvent):void {				
 					getChildrenForNodeIdCallbackHandler(Node(model), result);
 				});					
 			} else {				

@@ -62,7 +62,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function commit(model:Object):void {		
 			var textField:TextInput = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			CorePlugin.getInstance().mindMapService.setBody(Node(model), textField.text);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model), "body", textField.text]);
 
 			diagramShell.mainToolFinishedItsJob();
 		}

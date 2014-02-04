@@ -93,25 +93,16 @@ package org.flowerplatform.flex_client.core.mindmap {
 		public function getActions(selection:IList):Vector.<IAction> {	
 			var result:Vector.<IAction> = new Vector.<IAction>();
 			
-			result.push(new AddNodeAction());
-			result.push(new RemoveNodeAction());
-			
-//			result.push(new RefreshAction(this));
-//			result.push(new RefreshAction(this, true));
-			
-			result.push(new RenameAction());
-			
+			// TODO CC: temporary code
 			result.push(new ReloadAction(this));
-			result.push(new SaveAction());
 			
-			var actions:Vector.<IAction> = CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.getActions(selection);
+			var actions:Vector.<IAction> = CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.getActions(selection);	
 			if (actions != null) {
-				for each (var action:IAction in actions) {
+				for each (var action:IAction in actions) {					
 					result.push(action);
 				}
-			}
-			
-			return result;
+			}	
+			return result;			
 		}
 		
 		public function getSelection():IList {			
@@ -130,9 +121,9 @@ package org.flowerplatform.flex_client.core.mindmap {
 		public function requestRootModel():void {
 			var node:Node = new Node();
 			node.type = "freeplaneNode";
-			CorePlugin.getInstance().mindMapService.getChildrenForNodeId(node, function(result:ResultEvent):void {
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [node, true], function(result:ResultEvent):void {
 				getChildrenForNodeIdCallbackHandler(node, result);
-			});			
+			});
 		}
 		
 		private function getChildrenForNodeIdCallbackHandler(node:Node, result:ResultEvent):void {
@@ -143,7 +134,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			diagram.rootNode = node;
 					
 			diagramShell.rootModel = diagram;			
-			IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, true);
+			IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, true);			
 		}
 	}
 }

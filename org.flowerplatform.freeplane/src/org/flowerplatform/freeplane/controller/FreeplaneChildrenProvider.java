@@ -1,12 +1,12 @@
-package org.flowerplatform.core.mindmap;
+package org.flowerplatform.freeplane.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.util.Pair;
 import org.freeplane.features.map.NodeModel;
 
@@ -17,7 +17,7 @@ public class FreeplaneChildrenProvider extends ChildrenProvider {
 			
 	@Override
 	public List<Pair<Node, Object>> getChildren(Node node) {
-		NodeModel nodeModel = CorePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getId());
+		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getId());
 		if (node.getId() == null) {
 			return Collections.singletonList(new Pair<Node, Object>(getEmptyNode(nodeModel), nodeModel));
 		}

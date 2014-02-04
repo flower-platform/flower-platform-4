@@ -38,6 +38,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			this.editorFrontend = editorFrontend;
 			label = CorePlugin.getInstance().getMessage("mindmap.action.reload");
 			preferShowOnActionBar = true;
+			orderIndex = 100;
 		}
 				
 		override public function get visible():Boolean {			
@@ -45,7 +46,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().mindMapService.reload(reloadCallbackHandler);
+			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, reloadCallbackHandler);			
 		}
 		
 		private function reloadCallbackHandler(result:ResultEvent):void {
