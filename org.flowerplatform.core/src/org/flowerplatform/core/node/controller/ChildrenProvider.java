@@ -11,4 +11,5 @@ import org.flowerplatform.core.node.remote.Node;
 public abstract class ChildrenProvider extends NodeController {
 
 	public abstract List<Pair<Node, Object>> getChildren(Node node);
+	
 }

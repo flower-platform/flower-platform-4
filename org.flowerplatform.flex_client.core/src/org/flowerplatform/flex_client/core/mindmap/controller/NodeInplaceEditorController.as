@@ -54,7 +54,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			textField.y = bounds.y;
 			textField.width = bounds.width;
 			textField.height = bounds.height;
-			textField.text = Node(model).body;
+			textField.text = Node(model).properties["body"];
 			textField.callLater(textField.setFocus);
 			
 			diagramShell.modelToExtraInfoMap[model].inplaceEditor = textField;
@@ -62,7 +62,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function commit(model:Object):void {		
 			var textField:TextInput = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			CorePlugin.getInstance().mindMapService.setBody(Node(model).id, textField.text);
+			CorePlugin.getInstance().mindMapService.setBody(Node(model), textField.text);
 
 			diagramShell.mainToolFinishedItsJob();
 		}

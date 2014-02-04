@@ -111,6 +111,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		/**
 		 * @author Cristian Spiescu
 		 * @author Mircea Negreanu
+		 * @author Cristina Constantinescu
 		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
 			if (visualChildrenController != null) {
@@ -122,10 +123,11 @@ package org.flowerplatform.flexdiagram.renderer {
 			
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 
+			// draw a black border around visible area
 			graphics.clear();
 			graphics.lineStyle(1);
-			graphics.beginFill(0xCCCCCC, 0);
-			graphics.drawRect(horizontalScrollPosition, verticalScrollPosition, width, height);
+			graphics.beginFill(0xCCCCCC, 0);			
+			graphics.drawRect(horizontalScrollPosition, verticalScrollPosition, width - 1, height - 1);
 		}
 		
 		/**
