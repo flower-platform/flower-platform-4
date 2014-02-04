@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.flowerplatform.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.flowerplatform.core,
+ org.flowerplatform.core.file,
  org.flowerplatform.core.node.remote
 Bundle-ClassPath: lib/commons-lang-2.6.jar,
  lib/freeplaneviewer.jar,

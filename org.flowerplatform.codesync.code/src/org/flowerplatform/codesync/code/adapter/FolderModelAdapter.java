@@ -28,9 +28,10 @@ import java.util.Map;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to platform-dependent files. Children are files that match the {@link #limitedPath}, if set.
@@ -53,9 +54,9 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return CodeSyncPlugin.FOLDER;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -68,7 +69,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object folder, Object feature, Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			filesToRename.put(folder, (String) value);
 		}
 	}
@@ -78,7 +79,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		if (FileFeatureProvider.CHILDREN.equals(feature)) {
 			Node node = (Node) correspondingChild;
 			return CorePlugin.getInstance().getFileAccessController()
-					.getFile(element, (String) node.getProperties().get(Node.NAME));
+					.getFile(element, (String) node.getProperties().get(NodeFeatureProvider.NAME));
 		}
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
 	}

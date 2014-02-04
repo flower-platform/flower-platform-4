@@ -44,7 +44,6 @@ import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactory;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
-import org.flowerplatform.codesync.adapter.NodeModelAdapter;
 import org.flowerplatform.codesync.code.adapter.CodeSyncModelAdapterFactory;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
 import org.flowerplatform.codesync.code.adapter.NodeModelAdapterAncestor;
@@ -62,7 +61,7 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatu
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana
@@ -79,7 +78,7 @@ public class JavaModelAdapterFactorySet extends ModelAdapterFactorySet {
 		// folder adapter
 		FolderModelAdapter folderModelAdapter = (FolderModelAdapter) createAstModelAdapter(new FolderModelAdapter());
 		folderModelAdapter.setLimitedPath(limitedPath);
-		Class fileClass = CorePlugin.getInstance().getFileAccessController().getFileClass();
+		Class<?> fileClass = CorePlugin.getInstance().getFileAccessController().getFileClass();
 		rightFactory.addModelAdapter(fileClass, folderModelAdapter, "", CodeSyncPlugin.FOLDER);
 		
 		// java specific adapters

@@ -22,7 +22,7 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactory;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
 import org.flowerplatform.codesync.adapter.NodeModelAdapter;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana

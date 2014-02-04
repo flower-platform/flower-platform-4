@@ -18,7 +18,6 @@
  */
 package org.flowerplatform.codesync;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +28,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
-import org.flowerplatform.core.mindmap.remote.MindMapService;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -86,7 +86,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected ComposedCodeSyncAlgorithmRunner codeSyncAlgorithmRunner;
 	
-	protected MindMapService mindMapService = new MindMapService();
+	protected NodeService nodeService = (NodeService) CorePlugin.getInstance()
+			.getServiceRegistry().getService("nodeService");
 	
 //	protected List<DependentFeature> dependentFeatures;
 //	
@@ -137,8 +138,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return codeSyncAlgorithmRunner;
 	}
 	
-	public MindMapService getMindMapService() {
-		return mindMapService;
+	public NodeService getNodeService() {
+		return nodeService;
 	}
 	
 	/**
@@ -449,7 +450,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			resource.unload();
 //			return resource;
 //		}
-		return getMindMapService().getNode(null);
+		Node node = new Node();
+		return getNodeService().getChildren(node, true).get(0);
 	}
 //	
 //	/**
@@ -549,9 +551,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	 * @author Mariana
 	 */
 	public Node getSrcDir(Node root, String name) {
-		List<Node> children = (List<Node>) mindMapService.getChildrenForNodeId(root.getId()).get(1);
+		List<Node> children = nodeService.getChildren(root, true);
 		for (Node child : children) {
-			if (name.equals(child.getBody())) {
+			if (name.equals(child.getProperties().get("body"))) {
 				return child;
 			}
 		}

@@ -37,7 +37,8 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeFeatureProvider;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to {@link AbstractTypeDeclaration}. Children are {@link BodyDeclaration}s.
@@ -128,9 +129,9 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				if (((TypeDeclaration) element).isInterface()) {
 					return INTERFACE;
@@ -156,7 +157,7 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, final Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			AbstractTypeDeclaration type = getAbstractTypeDeclaration(element);
 			String name = (String) value;
 			type.setName(type.getAST().newSimpleName(name));

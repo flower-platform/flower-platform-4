@@ -29,7 +29,7 @@ import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactory;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -142,10 +142,9 @@ public class CodeSyncCodePlugin extends AbstractFlowerJavaPlugin {
 		boolean foundForPath = true;
 		for (int i = 0; i < path.length; i++) {
 			boolean foundChild = false;
-			List<Node> children = (List<Node>) CodeSyncPlugin.getInstance().getMindMapService()
-					.getChildrenForNodeId(node.getId()).get(1);
+			List<Node> children = CodeSyncPlugin.getInstance().getNodeService().getChildren(node, true);
 			for (Node child : children) {
-				String name = child.getBody();
+				String name = (String) child.getProperties().get("body");
 				if (name.equals(path[i])) {
 					node = child;
 					foundChild = true;

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowerplatform.codesync.feature_provider.IFeatureProvider;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 public class ModelAdapterFactorySet {
 

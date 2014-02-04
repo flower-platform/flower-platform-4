@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Modifier;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
  * Mapped to {@link Modifier}.
@@ -53,9 +53,9 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return MODIFIER;
 		} else if (JavaModifierFeatureProvider.MODIFIER_TYPE.equals(feature)) {
 			return String.valueOf(getModifierType(element));

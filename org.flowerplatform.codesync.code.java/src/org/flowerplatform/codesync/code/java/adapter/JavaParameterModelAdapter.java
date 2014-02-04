@@ -26,8 +26,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
-import org.flowerplatform.core.mindmap.remote.Node;
-import org.omg.Dynamic.Parameter;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
  * Mapped to {@link SingleVariableDeclaration}. Children are {@link Modifier}s.
@@ -52,9 +51,9 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getVariableDeclaration(element).getName().getIdentifier();
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return PARAMETER;
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getVariableDeclaration(element).getType());
@@ -64,7 +63,7 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			SingleVariableDeclaration parameter = getVariableDeclaration(element);
 			String name = (String) value;
 			parameter.setName(parameter.getAST().newSimpleName(name));

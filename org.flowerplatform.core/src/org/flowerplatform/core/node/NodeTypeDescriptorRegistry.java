@@ -30,7 +30,8 @@ public class NodeTypeDescriptorRegistry {
 	}
 	
 	public NodeTypeDescriptor getExpectedNodeTypeDescriptor(String type) {
-		NodeTypeDescriptor result = nodeTypeDescriptors.get(type);
+//		NodeTypeDescriptor result = nodeTypeDescriptors.get(type);
+		NodeTypeDescriptor result = nodeTypeDescriptors.values().iterator().next();
 		if (result == null) {
 			logger.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
 			return null;

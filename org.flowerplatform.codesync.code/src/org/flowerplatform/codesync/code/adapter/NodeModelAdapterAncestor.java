@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.adapter.NodeModelAdapter;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana
@@ -38,7 +38,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				if (candidate instanceof Node && Boolean.parseBoolean(((Node) candidate).getProperties().get(Node.ADDED))) {
+				if (candidate instanceof Node && Boolean.parseBoolean((String) ((Node) candidate).getProperties().get(ADDED))) {
 					return false;
 				}
 				return true;

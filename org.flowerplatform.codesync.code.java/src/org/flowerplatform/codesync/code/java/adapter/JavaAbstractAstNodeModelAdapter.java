@@ -39,14 +39,13 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to {@link ASTNode}.
@@ -106,7 +105,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					ASTNode parent = (ASTNode) element;
 					AST ast = parent.getAST();
 					
-					int modifierType = Integer.parseInt(node.getProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE));
+					int modifierType = Integer.parseInt((String) node.getProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE));
 					extendedModifier = ast.newModifier(Modifier.ModifierKeyword.fromFlagValue(modifierType));
 					if (parent instanceof BodyDeclaration) {
 						((BodyDeclaration) parent).modifiers().add(extendedModifier);

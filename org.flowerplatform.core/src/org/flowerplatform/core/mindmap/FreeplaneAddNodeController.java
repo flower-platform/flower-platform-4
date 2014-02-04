@@ -17,6 +17,7 @@ public class FreeplaneAddNodeController extends AddNodeController {
 		newNodeModel.setLeft(false);
 
 		parentModel.insert(newNodeModel, parentModel.getChildCount());
+		child.setId(newNodeModel.createID());
 	}
 
 }

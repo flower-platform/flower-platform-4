@@ -21,7 +21,7 @@ package org.flowerplatform.codesync.code;
 import java.io.File;
 
 import org.flowerplatform.codesync.ICodeSyncAlgorithmRunner;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana

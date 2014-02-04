@@ -22,13 +22,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana Gheorghe
  */
 public class NodeModelAdapter extends AbstractModelAdapter {
 
+	public static final String ADDED = "added";
+	public static final String REMOVED = "removed";
+	
 	protected ModelAdapterFactory modelAdapterFactory;
 	
 	protected ModelAdapterFactory oppositeModelAdapterFactory;
@@ -86,12 +90,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getBody();
+		return getNode(element).getProperties().get("body");
 	}
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		CodeSyncPlugin.getInstance().getMindMapService().setProperty(getNode(element).getId(), (String) feature, newValue.toString());
+		CodeSyncPlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue.toString());
 	}
 	
 	@Override
@@ -117,12 +121,17 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				Node parent = getNode(element);
 				Node category = getChildrenCategoryForNode(parent, feature);
 				if (category == null) {
-					category = CodeSyncPlugin.getInstance().getMindMapService().addNode(parent.getId(), "category");
-					CodeSyncPlugin.getInstance().getMindMapService().setProperty(category.getId(), Node.NAME, feature.toString());
+					category = new Node();
+					category.setType("category");
+					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category);
+					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, NodeFeatureProvider.NAME, feature.toString());
 				}
 				// set the type for the new node; needed by the action performed handler
 				String type = getOppositeModelAdapterFactory().getModelAdapter(correspondingChild).getType();
-				return CodeSyncPlugin.getInstance().getMindMapService().addNode(category.getId(), type);
+				Node child = new Node();
+				child.setType(type);
+				CodeSyncPlugin.getInstance().getNodeService().addChild(category, child);
+				return child;
 //		}
 //		
 //		return null;
@@ -130,7 +139,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		CodeSyncPlugin.getInstance().getMindMapService().removeNode(getNode(child).getId(), true);
+		CodeSyncPlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), true);
 	}
 
 	@Override
@@ -147,7 +156,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public boolean save(Object element) {
-		CodeSyncPlugin.getInstance().getMindMapService().save();
+		CodeSyncPlugin.getInstance().getNodeService().save();
 		return false;
 	}
 

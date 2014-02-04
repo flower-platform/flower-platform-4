@@ -32,7 +32,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to files with the extension <code>java</code>. Chidren are {@link ASTNode}s.

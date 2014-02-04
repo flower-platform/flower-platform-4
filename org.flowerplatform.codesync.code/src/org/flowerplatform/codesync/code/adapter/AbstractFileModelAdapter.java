@@ -28,9 +28,10 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @see FileFeatureProvider
@@ -58,9 +59,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return CodeSyncPlugin.FILE;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -68,7 +69,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object file, Object feature, Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			filesToRename.put(file, (String) value);
 		}
 	}

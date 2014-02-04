@@ -27,7 +27,7 @@ import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
  * Mapped by {@link AnnotationTypeMemberDeclaration}. Children are {@link Modifier}s.
@@ -47,9 +47,9 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getMatchKey(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return ANNOTATION_MEMBER;
 		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			return getStringFromExpression(getAnnotationMember(element).getDefault());
@@ -61,7 +61,7 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
 			member.setName(member.getAST().newSimpleName((String) value));
 		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {

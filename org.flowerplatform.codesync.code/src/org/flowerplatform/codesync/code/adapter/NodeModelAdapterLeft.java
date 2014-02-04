@@ -26,7 +26,7 @@ import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.NodeModelAdapter;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana
@@ -42,7 +42,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		// filter out deleted elements
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				if (candidate instanceof Node && Boolean.parseBoolean(((Node) candidate).getProperties().get(Node.REMOVED))) {
+				if (candidate instanceof Node && Boolean.parseBoolean((String) ((Node) candidate).getProperties().get(REMOVED))) {
 					return false;
 				}
 				return true;
@@ -170,7 +170,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		int featureType = getModelAdapterFactorySet().getFeatureProvider(node).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
-			CodeSyncPlugin.getInstance().getMindMapService().unsetProperty(node.getId(), getOriginalFeatureName(feature).toString());
+//			CodeSyncPlugin.getInstance().getNodeService().unsetProperty(node.getId(), getOriginalFeatureName(feature).toString());
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
 			List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
@@ -178,9 +178,9 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 			if (child != null && child instanceof Node) {
 				Node childNode = (Node) child;
 				if (result.childAdded) {
-					CodeSyncPlugin.getInstance().getMindMapService().unsetProperty(childNode.getId(), Node.ADDED);
+//					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode.getId(), ADDED);
 				} else {
-					CodeSyncPlugin.getInstance().getMindMapService().removeNode(childNode.getId(), true);
+//					CodeSyncPlugin.getInstance().getNodeService().removeChild(childNode.getId(), true);
 				}
 			}
 			break;

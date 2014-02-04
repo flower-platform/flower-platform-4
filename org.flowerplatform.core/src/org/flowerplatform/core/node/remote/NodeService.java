@@ -155,7 +155,7 @@ public class NodeService {
 		}
 	}
 	
-	public void removeChild(Node node, Node child) {
+	public void removeChild(Node node, Node child, boolean delete) {
 		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;

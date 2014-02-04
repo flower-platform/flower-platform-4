@@ -27,7 +27,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
  * Mapped to {@link FieldDeclaration}. Children are {@link Modifier}s.
@@ -53,9 +53,9 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return ATTRIBUTE;
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getFieldDeclaration(element).getType());
@@ -68,7 +68,7 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			FieldDeclaration field = getFieldDeclaration(element);
 			String name = (String) value;
 			VariableDeclaration var = (VariableDeclaration) field.fragments().get(0);

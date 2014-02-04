@@ -26,7 +26,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
  * Mapped to {@link EnumConstantDeclaration}. Children are enum constant arguments (i.e. {@link Expression}).
@@ -46,9 +46,9 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getMatchKey(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return ENUM_CONSTANT;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -56,7 +56,7 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			EnumConstantDeclaration enumConstant = getEnumConstant(element);
 			enumConstant.setName(enumConstant.getAST().newSimpleName((String) value));
 		}

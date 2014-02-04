@@ -22,18 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.codesync.adapter.IModelAdapter;
-import org.flowerplatform.core.mindmap.remote.Node;
 
 /**
  * @author Mariana
  */
 public abstract class NodeFeatureProvider implements IFeatureProvider {
 
+	public static final String NAME = "name";
+	public static final String TYPE = "type";
+	
 	@Override
 	public List<?> getFeatures(Object element) {
 		List<String> features = new ArrayList<String>();
-		features.add(Node.NAME);
-		features.add(Node.TYPE);
+		features.add(NAME);
+		features.add(TYPE);
 		return features;
 	}
 

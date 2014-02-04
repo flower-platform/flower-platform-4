@@ -25,14 +25,14 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to {@link Annotation}. Children are annotation values, i.e. {@link MemberValuePair}.
@@ -69,9 +69,9 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getAnnotationName(element);
-		} else if (Node.TYPE.equals(feature)) {
+		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return ANNOTATION;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -79,7 +79,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (Node.NAME.equals(feature)) {
+		if (NodeFeatureProvider.NAME.equals(feature)) {
 			if (element instanceof Annotation) {
 				Annotation annotation = (Annotation) element;
 				String name = (String) value;
@@ -126,7 +126,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 				// if the existing annotation is a SingleMemberAnnotation, then set its value
 				if (parent instanceof SingleMemberAnnotation) {
 					ASTNode expression = getExpressionFromString(parent.getAST(), 
-							value.getProperties().get(JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE));
+							(String) value.getProperties().get(JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE));
 					((SingleMemberAnnotation) parent).setValue((Expression) expression);
 					child = ast.newMemberValuePair(); // avoid NPE later
 				}

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Convenience implementation.
@@ -131,16 +131,14 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	 */
 	protected Node getChildrenCategoryForNode(Node node, Object feature) {
 		for (Node category : getChildrenForNode(node)) {
-			if (category.getBody().equals(feature)) {
+			if (category.getProperties().get("body").equals(feature)) {
 				return category;
 			}
 		}
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected List<Node> getChildrenForNode(Node node) {
-		return (List<Node>) CodeSyncPlugin.getInstance().getMindMapService()
-				.getChildrenForNodeId(node.getId()).get(1); // first position holds the id
+		return CodeSyncPlugin.getInstance().getNodeService().getChildren(node, true);
 	}
 }
