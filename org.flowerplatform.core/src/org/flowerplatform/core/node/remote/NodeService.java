@@ -55,18 +55,20 @@ public class NodeService {
 		for (ChildrenProvider provider : providers) {
 			// we take the children ...
 			List<Pair<Node, Object>> childrenFromCurrentProvider = provider.getChildren(node);
-			for (Pair<Node, Object> currentChild : childrenFromCurrentProvider) {
-				if (populateProperties) {
-					// ... and then populate them
-					populateNode(currentChild.a, currentChild.b);
+			if (childrenFromCurrentProvider != null) {
+				for (Pair<Node, Object> currentChild : childrenFromCurrentProvider) {
+					if (populateProperties) {
+						// ... and then populate them
+						populateNode(currentChild.a, currentChild.b);
+					}
+					
+					// and add them to the result list
+					if (children == null) {
+						// lazy init of the list
+						children = new ArrayList<Node>();
+					}
+					children.add(currentChild.a);
 				}
-				
-				// and add them to the result list
-				if (children == null) {
-					// lazy init of the list
-					children = new ArrayList<Node>();
-				}
-				children.add(currentChild.a);
 			}
 		}
 		if (children == null) {
