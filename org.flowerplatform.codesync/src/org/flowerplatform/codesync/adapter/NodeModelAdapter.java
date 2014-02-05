@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -85,17 +86,23 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		return getNode(element).getProperties().get(feature);
+		if (NodeFeatureProvider.TYPE.equals(feature)) {
+			return getNode(element).getType();
+		}
+		return getNode(element).getOrCreateProperties().get(feature);
 	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getProperties().get("body");
+		return getNode(element).getOrCreateProperties().get("body");
 	}
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		CodeSyncPlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue.toString());
+		if (NodeFeatureProvider.TYPE.equals(feature)) {
+			getNode(element).setType((String) newValue);
+		}
+		CodeSyncPlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
 	}
 	
 	@Override
@@ -122,9 +129,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				Node category = getChildrenCategoryForNode(parent, feature);
 				if (category == null) {
 					category = new Node();
-					category.setType("category");
+					category.setType(CodeSyncPlugin.CATEGORY);
 					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category);
-					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, NodeFeatureProvider.NAME, feature.toString());
+					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, NodeFeatureProvider.NAME, feature);
 				}
 				// set the type for the new node; needed by the action performed handler
 				String type = getOppositeModelAdapterFactory().getModelAdapter(correspondingChild).getType();
@@ -139,7 +146,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		CodeSyncPlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), true);
+		CodeSyncPlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child));
 	}
 
 	@Override
@@ -156,7 +163,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public boolean save(Object element) {
-		CodeSyncPlugin.getInstance().getNodeService().save();
+//		CodeSyncPlugin.getInstance().getNodeService().save();
 		return false;
 	}
 
@@ -165,7 +172,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 
 	protected Object getOriginalFeatureName(Object feature) {
-		return feature.toString() + ".original";
+		return feature.toString() + CodeSyncPropertySetter.ORIGINAL;
 	}
 	
 }

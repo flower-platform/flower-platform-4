@@ -16,29 +16,35 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.mindmap.action {
+package org.flowerplatform.flex_client.codesync.action {
 	
+	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
-	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
-	public class RemoveNodeAction extends ActionBase {
+	public class MarkNodeRemovedAction extends ActionBase {
 		
-		public function RemoveNodeAction() {
+		public function MarkNodeRemovedAction() {
 			super();
-			label = CorePlugin.getInstance().getMessage("mindmap.action.remove");	
+			label = CodeSyncPlugin.getInstance().getMessage("codesync.action.markRemoved");
 			orderIndex = 20;
 		}
 		
-		override public function get visible():Boolean {			
-			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node;
+		override public function get visible():Boolean {
+			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
+				var node:Node = Node(selection.getItemAt(0));
+				return node.type != "category";
+			}
+			return false;
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.removeChild", [Node(selection.getItemAt(0)).parent, Node(selection.getItemAt(0))]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selection.getItemAt(0), "removed", true]);
 		}
+		
 	}
 }

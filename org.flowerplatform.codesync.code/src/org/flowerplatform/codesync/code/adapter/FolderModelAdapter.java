@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -57,7 +58,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
 		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
-			return CodeSyncPlugin.FOLDER;
+			return CodeSyncCodePlugin.FOLDER;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
@@ -79,7 +80,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		if (FileFeatureProvider.CHILDREN.equals(feature)) {
 			Node node = (Node) correspondingChild;
 			return CorePlugin.getInstance().getFileAccessController()
-					.getFile(element, (String) node.getProperties().get(NodeFeatureProvider.NAME));
+					.getFile(element, (String) node.getOrCreateProperties().get(NodeFeatureProvider.NAME));
 		}
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
 	}

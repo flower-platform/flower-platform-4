@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeTypeDescriptor;
 import org.flowerplatform.core.node.NodeTypeDescriptorRegistry;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -95,28 +94,27 @@ public class NodeService {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Property> getPropertiestoDisplay(Node node) {
-		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return Collections.emptyList();
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public List<PropertyDescriptor> getPropertiesToDisplay(String type) {
+		List<PropertyDescriptor> propertyDescriptors = new ArrayList<PropertyDescriptor>();
+		
+		addPropertyDescriptorsFromNodeType(type, propertyDescriptors);
+		
+		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(type);
+		for (String category : descriptor.getCategories()) {
+			addPropertyDescriptorsFromNodeType(category, propertyDescriptors);
 		}
 		
-		List<PropertiesProvider<?>> providers = registry.getControllersForTypeAndCategories(descriptor, new RunnableWithParam<List<PropertiesProvider<?>>, NodeTypeDescriptor>() {
-			@Override
-			public List<PropertiesProvider<?>> run(NodeTypeDescriptor param) {
-				return param.getPropertiesProviders();
-			}
-		});
-
-		List<Property> properties = new ArrayList<Property>();
-		for (PropertiesProvider<?> provider : providers) {
-			List<Property> providerPropertiesToDisplay = ((PropertiesProvider<Object>) provider).getPropertiesToDisplay(node);
-			if (providerPropertiesToDisplay != null) {
-				properties.addAll(providerPropertiesToDisplay);
-			}
+		return propertyDescriptors;
+	}
+	
+	private void addPropertyDescriptorsFromNodeType(String type, List<PropertyDescriptor> propertyDescriptors) {
+		NodeTypeDescriptor nodeTypeDescriptor = registry.getExpectedNodeTypeDescriptor(type);
+		if (nodeTypeDescriptor != null && nodeTypeDescriptor.getPropertyDescriptors() != null) {
+			propertyDescriptors.addAll(nodeTypeDescriptor.getPropertyDescriptors());
 		}
-		return properties;
 	}
 		
 	public void setProperty(Node node, String property, Object value) {
@@ -134,6 +132,27 @@ public class NodeService {
 
 		for (PropertySetter controller : controllers) {
 			controller.setProperty(node, property, value);
+		}
+	}
+	
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public void unsetProperty(Node node, String property) {
+		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return;
+		}
+		
+		List<PropertySetter> controllers = registry.getControllersForTypeAndCategories(descriptor, new RunnableWithParam<List<PropertySetter>, NodeTypeDescriptor>() {
+			@Override
+			public List<PropertySetter> run(NodeTypeDescriptor param) {
+				return param.getPropertiesSetters();
+			}
+		});
+
+		for (PropertySetter controller : controllers) {
+			controller.unsetProperty(node, property);
 		}
 	}
 	
@@ -155,7 +174,7 @@ public class NodeService {
 		}
 	}
 	
-	public void removeChild(Node node, Node child, boolean delete) {
+	public void removeChild(Node node, Node child) {
 		NodeTypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;

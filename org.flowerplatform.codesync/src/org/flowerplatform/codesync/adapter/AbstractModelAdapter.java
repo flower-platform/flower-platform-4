@@ -131,7 +131,7 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	 */
 	protected Node getChildrenCategoryForNode(Node node, Object feature) {
 		for (Node category : getChildrenForNode(node)) {
-			if (category.getProperties().get("body").equals(feature)) {
+			if (category.getOrCreateProperties().get("body").equals(feature)) {
 				return category;
 			}
 		}

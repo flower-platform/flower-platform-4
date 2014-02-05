@@ -63,7 +63,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getMethodDeclaration(element).getReturnType2());
 		} else if (JavaOperationFeatureProvider.HAS_BODY.equals(feature)) {
-			return String.valueOf(getMethodDeclaration(element).getBody() != null);
+			return getMethodDeclaration(element).getBody() != null;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
@@ -86,7 +86,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		} else if (JavaOperationFeatureProvider.HAS_BODY.equals(feature)) {
 			// needed to create methods with empty bodies
 			MethodDeclaration method = getMethodDeclaration(element);
-			if (Boolean.parseBoolean(value.toString())) {
+			if ((boolean) value) {
 				if (method.getBody() == null) {
 					method.setBody(method.getAST().newBlock());
 				}

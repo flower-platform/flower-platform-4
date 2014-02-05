@@ -26,11 +26,15 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.flowerplatform.codesync.controller.CodeSyncAddNodeController;
+import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeTypeDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -43,6 +47,8 @@ import org.slf4j.LoggerFactory;
 public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
+	
+	public static final String CATEGORY = "category";
 	
 	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
 	
@@ -73,10 +79,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public String ACE_FILE_LOCATION = "/ACE.notation";
 	
 	protected List<String> srcDirs = null;
-	
-	public static final String FOLDER = "Folder";
-	
-	public static final String FILE = "File";
 	
 	public static final String TOP_LEVEL = "topLevel";
 	
@@ -223,6 +225,13 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
+		
+		NodeTypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("category.codeSync");
+		codeSyncDescriptor.addAddNodeController(new CodeSyncAddNodeController());
+		codeSyncDescriptor.addPropertySetter(new CodeSyncPropertySetter());
+		codeSyncDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("name").setReadOnlyAs(false));
+		codeSyncDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("added"));
+		codeSyncDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("removed"));
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());
@@ -451,6 +460,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			return resource;
 //		}
 		Node node = new Node();
+		node.setType("freeplaneNode");
 		return getNodeService().getChildren(node, true).get(0);
 	}
 //	
@@ -553,7 +563,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public Node getSrcDir(Node root, String name) {
 		List<Node> children = nodeService.getChildren(root, true);
 		for (Node child : children) {
-			if (name.equals(child.getProperties().get("body"))) {
+			if (name.equals(child.getOrCreateProperties().get("body"))) {
 				return child;
 			}
 		}

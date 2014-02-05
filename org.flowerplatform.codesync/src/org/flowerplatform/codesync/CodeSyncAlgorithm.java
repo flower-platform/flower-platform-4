@@ -19,9 +19,7 @@
 package org.flowerplatform.codesync;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +27,6 @@ import org.flowerplatform.codesync.action.ActionSynchronize;
 import org.flowerplatform.codesync.action.DiffAction;
 import org.flowerplatform.codesync.action.MatchActionAddLeftToRight;
 import org.flowerplatform.codesync.action.MatchActionAddRightToLeft;
-import org.flowerplatform.codesync.action.MatchActionRemoveLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveRight;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;

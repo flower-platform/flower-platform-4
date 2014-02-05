@@ -27,6 +27,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -62,7 +63,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		if (NodeFeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
 		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
-			return CodeSyncPlugin.FILE;
+			return CodeSyncCodePlugin.FILE;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}

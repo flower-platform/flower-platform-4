@@ -58,7 +58,7 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
 			return MODIFIER;
 		} else if (JavaModifierFeatureProvider.MODIFIER_TYPE.equals(feature)) {
-			return String.valueOf(getModifierType(element));
+			return getModifierType(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
@@ -68,7 +68,7 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		if (JavaModifierFeatureProvider.MODIFIER_TYPE.equals(feature)) {
 			if (element instanceof Modifier) {
 				Modifier modifier = (Modifier) element;
-				int flag = Integer.parseInt(value.toString());
+				int flag = (int) value;
 				modifier.setKeyword(Modifier.ModifierKeyword.fromFlagValue(flag));
 			}
 			return;
@@ -76,7 +76,7 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		super.setValueFeatureValue(element, feature, value);
 	}
 
-	private Object getModifierType(Object element) {
+	private Integer getModifierType(Object element) {
 		if (element instanceof Modifier) {
 			return ((Modifier) element).getKeyword().toFlagValue();
 		}

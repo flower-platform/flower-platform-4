@@ -18,10 +18,15 @@
 */
 package org.flowerplatform.flex_client.codesync {
 	
+	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.remote.CodeSyncOperationsService;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flexutil.Utils;
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public class CodeSyncPlugin extends AbstractFlowerFlexPlugin {
 		
 		protected static var INSTANCE:CodeSyncPlugin;
@@ -31,9 +36,17 @@ package org.flowerplatform.flex_client.codesync {
 		}
 		
 		override public function start():void {
+			super.start();
+			if (INSTANCE != null) {
+				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
+			}
+			INSTANCE = this;
+			
 			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
+			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 			
 			new CodeSyncOperationsService().synchronize(null, null);
+			
 		}
 		
 	}

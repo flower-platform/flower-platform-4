@@ -142,8 +142,7 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 				return ENUM;
 			}
 			return ANNOTATION_TYPE;
-		}
-		if (JavaTypeFeatureProvider.SUPER_CLASS.equals(feature)) {
+		} else if (JavaTypeFeatureProvider.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				TypeDeclaration type = (TypeDeclaration) element;
 				if (type.getSuperclassType() != null) {

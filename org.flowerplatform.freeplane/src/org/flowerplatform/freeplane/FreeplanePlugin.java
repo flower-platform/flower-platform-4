@@ -2,6 +2,7 @@ package org.flowerplatform.freeplane;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeTypeDescriptor;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.freeplane.controller.FreeplaneAddNodeController;
 import org.flowerplatform.freeplane.controller.FreeplaneChildrenProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertiesProvider;
@@ -29,14 +30,21 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		NodeTypeDescriptor nodeTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("freeplaneNode");
+		createNodeTypeDescriptor("freeplaneNode");
+		createNodeTypeDescriptor("category.persistence-codeSync");
+		
+		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
+	}
+	
+	private void createNodeTypeDescriptor(String type) {
+		NodeTypeDescriptor nodeTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor(type);
 		nodeTypeDescriptor.addChildrenProvider(new FreeplaneChildrenProvider());
 		nodeTypeDescriptor.addPropertiesProvider(new FreeplanePropertiesProvider());
 		nodeTypeDescriptor.addAddNodeController(new FreeplaneAddNodeController());
 		nodeTypeDescriptor.addRemoveNodeController(new FreeplaneRemoveNodeController());
-		nodeTypeDescriptor.addPropertySetter(new FreeplanePropertySetter());	
-		
-		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
+		nodeTypeDescriptor.addPropertySetter(new FreeplanePropertySetter());
+		nodeTypeDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("type"));
+		nodeTypeDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("body"));
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

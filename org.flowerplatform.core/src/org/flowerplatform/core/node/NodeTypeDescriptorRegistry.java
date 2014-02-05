@@ -30,8 +30,7 @@ public class NodeTypeDescriptorRegistry {
 	}
 	
 	public NodeTypeDescriptor getExpectedNodeTypeDescriptor(String type) {
-//		NodeTypeDescriptor result = nodeTypeDescriptors.get(type);
-		NodeTypeDescriptor result = nodeTypeDescriptors.values().iterator().next();
+		NodeTypeDescriptor result = nodeTypeDescriptors.get(type);
 		if (result == null) {
 			logger.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
 			return null;
@@ -41,7 +40,10 @@ public class NodeTypeDescriptorRegistry {
 	
 	public <PROVIDER_DATA_TYPE extends NodeController> List<PROVIDER_DATA_TYPE> getControllersForTypeAndCategories(NodeTypeDescriptor descriptor, RunnableWithParam<List<PROVIDER_DATA_TYPE>, NodeTypeDescriptor> giveMeProvidersListFromDescriptorRunnable) {
 		final List<PROVIDER_DATA_TYPE> controllers = new ArrayList<PROVIDER_DATA_TYPE>();
-		controllers.addAll(giveMeProvidersListFromDescriptorRunnable.run(descriptor));
+		List<PROVIDER_DATA_TYPE> providers = giveMeProvidersListFromDescriptorRunnable.run(descriptor);
+		if (providers != null) {
+			controllers.addAll(giveMeProvidersListFromDescriptorRunnable.run(descriptor));
+		}
 		
 		for (String category : descriptor.getCategories()) {
 			NodeTypeDescriptor categoryDescriptor = getExpectedNodeTypeDescriptor(category);
@@ -49,7 +51,10 @@ public class NodeTypeDescriptorRegistry {
 				// semi-error; a WARN is logged
 				continue;
 			}
-			controllers.addAll(giveMeProvidersListFromDescriptorRunnable.run(categoryDescriptor));
+			List<PROVIDER_DATA_TYPE> categoryProviders = giveMeProvidersListFromDescriptorRunnable.run(categoryDescriptor);
+			if (categoryProviders != null) {
+				controllers.addAll(categoryProviders);
+			}
 		}
 		Collections.sort(controllers);
 		return controllers;

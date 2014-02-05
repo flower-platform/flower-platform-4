@@ -22,7 +22,7 @@ package org.flowerplatform.core.node.remote;
  * @author Razvan Tache
  * @author Cristina Constantinescu
  */
-public class Property {
+public class PropertyDescriptor {
 	
 	private static final String DEFAULT_TYPE = "String";
 	
@@ -38,7 +38,7 @@ public class Property {
 		this.name = name;
 	}
 	
-	public Property setNameAs(String name) {
+	public PropertyDescriptor setNameAs(String name) {
 		this.name = name;
 		return this;
 	}
@@ -51,7 +51,7 @@ public class Property {
 		this.type = type;
 	}
 	
-	public Property setTypeAs(String type) {
+	public PropertyDescriptor setTypeAs(String type) {
 		this.type = type;
 		return this;
 	}
@@ -64,7 +64,7 @@ public class Property {
 		this.readOnly = readOnly;
 	}
 	
-	public Property setReadOnlyAs(boolean readOnly) {
+	public PropertyDescriptor setReadOnlyAs(boolean readOnly) {
 		this.readOnly = readOnly;
 		return this;
 	}

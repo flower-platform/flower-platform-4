@@ -42,7 +42,8 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		// filter out deleted elements
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				if (candidate instanceof Node && Boolean.parseBoolean((String) ((Node) candidate).getProperties().get(REMOVED))) {
+				Boolean isRemoved = (Boolean) getNode(candidate).getOrCreateProperties().get(REMOVED);
+				if (isRemoved != null && isRemoved) {
 					return false;
 				}
 				return true;
@@ -170,7 +171,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		int featureType = getModelAdapterFactorySet().getFeatureProvider(node).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
-//			CodeSyncPlugin.getInstance().getNodeService().unsetProperty(node.getId(), getOriginalFeatureName(feature).toString());
+			CodeSyncPlugin.getInstance().getNodeService().unsetProperty(node, getOriginalFeatureName(feature).toString());
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
 			List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
@@ -178,9 +179,9 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 			if (child != null && child instanceof Node) {
 				Node childNode = (Node) child;
 				if (result.childAdded) {
-//					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode.getId(), ADDED);
+					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED);
 				} else {
-//					CodeSyncPlugin.getInstance().getNodeService().removeChild(childNode.getId(), true);
+					CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
 				}
 			}
 			break;

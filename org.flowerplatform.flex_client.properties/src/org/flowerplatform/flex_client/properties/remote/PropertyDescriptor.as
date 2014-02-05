@@ -23,8 +23,8 @@ package org.flowerplatform.flex_client.properties.remote {
 	 * @author Cristina Constantinescu
 	 */
 	[Bindable]
-	[RemoteClass(alias="org.flowerplatform.core.node.remote.Property")]	
-	public class Property {
+	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
+	public class PropertyDescriptor {
 
 		public var name:String;
 		

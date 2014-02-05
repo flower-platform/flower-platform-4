@@ -86,7 +86,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
 		if (JavaFeaturesConstants.DOCUMENTATION.equals(feature)) {
-			setJavaDoc(element, value);
+			setJavaDoc(element, (String) value);
 		}
 	}
 
@@ -105,7 +105,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					ASTNode parent = (ASTNode) element;
 					AST ast = parent.getAST();
 					
-					int modifierType = Integer.parseInt((String) node.getProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE));
+					int modifierType = Integer.parseInt((String) node.getOrCreateProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE));
 					extendedModifier = ast.newModifier(Modifier.ModifierKeyword.fromFlagValue(modifierType));
 					if (parent instanceof BodyDeclaration) {
 						((BodyDeclaration) parent).modifiers().add(extendedModifier);
@@ -203,7 +203,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		}
 	}
 
-	protected Object getJavaDoc(Object element) {
+	protected String getJavaDoc(Object element) {
 		if (element instanceof BodyDeclaration) {
 			BodyDeclaration node = (BodyDeclaration) element;
 			if (node.getJavadoc() != null) {
@@ -213,7 +213,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return null;
 	}
 	
-	protected void setJavaDoc(Object element, Object docComment) {
+	protected void setJavaDoc(Object element, String docComment) {
 		if (element instanceof BodyDeclaration) {
 			BodyDeclaration node = (BodyDeclaration) element;
 			try {
@@ -225,7 +225,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 				storeField.setAccessible(true);
 				NodeInfoStore store = (NodeInfoStore) storeField.get(rewriter);
 				ASTNode javadoc = store.newPlaceholderNode(ASTNode.JAVADOC);
-				store.markAsStringPlaceholder(javadoc, (String) docComment);
+				store.markAsStringPlaceholder(javadoc, docComment);
 				node.setJavadoc((Javadoc) javadoc);
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				throw new RuntimeException(e);

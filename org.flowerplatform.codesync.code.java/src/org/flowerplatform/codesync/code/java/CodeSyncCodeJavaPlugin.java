@@ -18,7 +18,27 @@
  */
 package org.flowerplatform.codesync.code.java;
 
+import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelAdapter.ANNOTATION;
+import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter.ANNOTATION_MEMBER;
+import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaEnumConstantDeclarationModelAdapter.ENUM_CONSTANT;
+import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
+import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
+import static org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter.OPERATION;
+import static org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter.PARAMETER;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.ANNOTATION_TYPE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.CLASS;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.ENUM;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.INTERFACE;
+
+
+import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeTypeDescriptor;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -45,6 +65,32 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		INSTANCE = this;
+		
+		PropertyDescriptor returnType = new PropertyDescriptor().setNameAs(JavaFeaturesConstants.TYPED_ELEMENT_TYPE).setReadOnlyAs(false);
+		
+		createNodeTypeDescriptor(CLASS);
+		createNodeTypeDescriptor(INTERFACE);
+		createNodeTypeDescriptor(ENUM);
+		createNodeTypeDescriptor(ANNOTATION_TYPE);
+		
+		createNodeTypeDescriptor(ATTRIBUTE)
+			.addPropertyDescriptor(returnType);
+		createNodeTypeDescriptor(OPERATION)
+			.addPropertyDescriptor(returnType);
+		createNodeTypeDescriptor(ENUM_CONSTANT);
+		createNodeTypeDescriptor(ANNOTATION_MEMBER)
+			.addPropertyDescriptor(returnType);
+		
+		createNodeTypeDescriptor(ANNOTATION);
+		createNodeTypeDescriptor(MEMBER_VALUE_PAIR);
+		createNodeTypeDescriptor(MODIFIER);
+		createNodeTypeDescriptor(PARAMETER)
+			.addPropertyDescriptor(returnType);
+		
+		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER);
+		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE);
+		
+		createNodeTypeDescriptor(CodeSyncPlugin.CATEGORY);
 		
 		// wrap the descriptor register code in a runnable
 //		CodeSyncPlugin.getInstance().addRunnablesForLoadDescriptors(new Runnable() {
@@ -124,6 +170,13 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 //			}
 //		});
 		
+	}
+	
+	private NodeTypeDescriptor createNodeTypeDescriptor(String type) {
+		NodeTypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor(type);
+		descriptor.addCategory("category.codeSync");
+		descriptor.addCategory("category.persistence-codeSync");
+		return descriptor;
 	}
 
 	public FolderModelAdapter getFolderModelAdapter() {

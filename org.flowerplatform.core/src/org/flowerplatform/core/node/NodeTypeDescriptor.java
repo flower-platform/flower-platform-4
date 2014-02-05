@@ -9,6 +9,7 @@ import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 
 /**
  * @author Cristian Spiescu
@@ -109,4 +110,20 @@ public class NodeTypeDescriptor {
 		return this;
 	}
 	
+	private List<PropertyDescriptor> propertyDescriptors;
+	
+	public List<PropertyDescriptor> getPropertyDescriptors() {
+		return propertyDescriptors;
+	}
+
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public NodeTypeDescriptor addPropertyDescriptor(PropertyDescriptor propertyDescriptor) {
+		if (propertyDescriptors == null) {
+			propertyDescriptors = new ArrayList<PropertyDescriptor>();
+		}
+		propertyDescriptors.add(propertyDescriptor);
+		return this;
+	}
 }

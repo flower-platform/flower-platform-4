@@ -41,6 +41,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CodeSyncCodePlugin extends AbstractFlowerJavaPlugin {
 	
+	public static final String FOLDER = "Folder";
+	public static final String FILE = "File";
+	
 	public static String MARKER_ANNOTATION = "_MARKER";
 	
 	public static String SINGLE_MEMBER_ANNOTATION = "_SINGLE_MEMBER";
@@ -144,7 +147,7 @@ public class CodeSyncCodePlugin extends AbstractFlowerJavaPlugin {
 			boolean foundChild = false;
 			List<Node> children = CodeSyncPlugin.getInstance().getNodeService().getChildren(node, true);
 			for (Node child : children) {
-				String name = (String) child.getProperties().get("body");
+				String name = (String) child.getOrCreateProperties().get("body");
 				if (name.equals(path[i])) {
 					node = child;
 					foundChild = true;

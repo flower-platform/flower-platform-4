@@ -40,10 +40,10 @@ import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactory;
 import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
+import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.adapter.CodeSyncModelAdapterFactory;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
 import org.flowerplatform.codesync.code.adapter.NodeModelAdapterAncestor;
@@ -79,11 +79,11 @@ public class JavaModelAdapterFactorySet extends ModelAdapterFactorySet {
 		FolderModelAdapter folderModelAdapter = (FolderModelAdapter) createAstModelAdapter(new FolderModelAdapter());
 		folderModelAdapter.setLimitedPath(limitedPath);
 		Class<?> fileClass = CorePlugin.getInstance().getFileAccessController().getFileClass();
-		rightFactory.addModelAdapter(fileClass, folderModelAdapter, "", CodeSyncPlugin.FOLDER);
+		rightFactory.addModelAdapter(fileClass, folderModelAdapter, "", CodeSyncCodePlugin.FOLDER);
 		
 		// java specific adapters
 		JavaFileModelAdapter fileModelAdapter = (JavaFileModelAdapter) createAstModelAdapter(new JavaFileModelAdapter());
-		rightFactory.addModelAdapter(fileClass, fileModelAdapter, CodeSyncCodeJavaPlugin.TECHNOLOGY, CodeSyncPlugin.FILE);
+		rightFactory.addModelAdapter(fileClass, fileModelAdapter, CodeSyncCodeJavaPlugin.TECHNOLOGY, CodeSyncCodePlugin.FILE);
 		rightFactory.addModelAdapter(AbstractTypeDeclaration.class, createAstModelAdapter(new JavaTypeModelAdapter()), CLASS);
 		rightFactory.addModelAdapter(FieldDeclaration.class, createAstModelAdapter(new JavaAttributeModelAdapter()), ATTRIBUTE);
 		rightFactory.addModelAdapter(MethodDeclaration.class, createAstModelAdapter(new JavaOperationModelAdapter()), OPERATION);
@@ -103,8 +103,8 @@ public class JavaModelAdapterFactorySet extends ModelAdapterFactorySet {
 		// feature providers
 		NodeFeatureProvider featureProvider = new FileFeatureProvider();
 		addFeatureProvider(fileClass, featureProvider);
-		addFeatureProvider(CodeSyncPlugin.FOLDER, featureProvider);
-		addFeatureProvider(CodeSyncPlugin.FILE, featureProvider);
+		addFeatureProvider(CodeSyncCodePlugin.FOLDER, featureProvider);
+		addFeatureProvider(CodeSyncCodePlugin.FILE, featureProvider);
 		
 		JavaTypeFeatureProvider typeFeatureProvider = new JavaTypeFeatureProvider();
 		addFeatureProvider(AbstractTypeDeclaration.class, typeFeatureProvider);
@@ -171,8 +171,8 @@ public class JavaModelAdapterFactorySet extends ModelAdapterFactorySet {
 //		cseAdapter.setEObjectConverter(rightFactory);
 		
 		// TODO fix this; all the adapters above should be wrapped in a left/ancestor
-		factory.addModelAdapter(Node.class, createNodeModelAdapter(factory, isLeft), CodeSyncPlugin.FOLDER);
-		factory.addModelAdapter(Node.class, createNodeModelAdapter(factory, isLeft), CodeSyncPlugin.FILE);
+		factory.addModelAdapter(Node.class, createNodeModelAdapter(factory, isLeft), CodeSyncCodePlugin.FOLDER);
+		factory.addModelAdapter(Node.class, createNodeModelAdapter(factory, isLeft), CodeSyncCodePlugin.FILE);
 		
 		return factory;
 	}
