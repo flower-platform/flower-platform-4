@@ -37,9 +37,9 @@ import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.NodeTypeDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.type_descriptor.TypeDescriptor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -74,18 +74,18 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		createNodeTypeDescriptor(ANNOTATION_TYPE);
 		
 		createNodeTypeDescriptor(ATTRIBUTE)
-			.addPropertyDescriptor(returnType);
+			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		createNodeTypeDescriptor(OPERATION)
-			.addPropertyDescriptor(returnType);
+			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		createNodeTypeDescriptor(ENUM_CONSTANT);
 		createNodeTypeDescriptor(ANNOTATION_MEMBER)
-			.addPropertyDescriptor(returnType);
+			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		
 		createNodeTypeDescriptor(ANNOTATION);
 		createNodeTypeDescriptor(MEMBER_VALUE_PAIR);
 		createNodeTypeDescriptor(MODIFIER);
 		createNodeTypeDescriptor(PARAMETER)
-			.addPropertyDescriptor(returnType);
+			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		
 		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER);
 		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE);
@@ -172,8 +172,8 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 	}
 	
-	private NodeTypeDescriptor createNodeTypeDescriptor(String type) {
-		NodeTypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor(type);
+	private TypeDescriptor createNodeTypeDescriptor(String type) {
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor(type);
 		descriptor.addCategory("category.codeSync");
 		descriptor.addCategory("category.persistence-codeSync");
 		return descriptor;

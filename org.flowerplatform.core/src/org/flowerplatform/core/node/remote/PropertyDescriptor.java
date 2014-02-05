@@ -18,11 +18,15 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import org.flowerplatform.util.type_descriptor.OrderedElement;
+
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
  */
-public class PropertyDescriptor {
+public class PropertyDescriptor extends OrderedElement {
+	
+	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	
 	private static final String DEFAULT_TYPE = "String";
 	

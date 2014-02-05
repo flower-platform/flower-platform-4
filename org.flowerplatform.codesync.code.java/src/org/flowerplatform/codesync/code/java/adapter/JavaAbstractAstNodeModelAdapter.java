@@ -105,7 +105,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					ASTNode parent = (ASTNode) element;
 					AST ast = parent.getAST();
 					
-					int modifierType = Integer.parseInt((String) node.getOrCreateProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE));
+					int modifierType = (int) node.getOrCreateProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE);
 					extendedModifier = ast.newModifier(Modifier.ModifierKeyword.fromFlagValue(modifierType));
 					if (parent instanceof BodyDeclaration) {
 						((BodyDeclaration) parent).modifiers().add(extendedModifier);

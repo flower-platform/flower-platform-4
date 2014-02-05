@@ -75,7 +75,7 @@
 				
 				var node:Node = Node(event.selection.getItemAt(0));
 				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService.getPropertiesToDisplay", [node.type], 
+					"nodeService.getPropertyDescriptors", [node.type], 
 					function(result:ResultEvent):void {
 						var properties:ArrayCollection = ArrayCollection(result.result);
 						for each (var property:PropertyDescriptor in properties) {

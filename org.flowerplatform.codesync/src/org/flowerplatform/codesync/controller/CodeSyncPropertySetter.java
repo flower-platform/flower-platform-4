@@ -32,7 +32,7 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	public static final String ORIGINAL = ".original";
 	
 	public CodeSyncPropertySetter() {
-		setPriority(-1000);
+		setOrderIndex(-100000);
 	}
 	
 	@Override

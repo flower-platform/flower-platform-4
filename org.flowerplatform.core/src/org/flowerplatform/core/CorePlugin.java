@@ -20,9 +20,9 @@ package org.flowerplatform.core;
 
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
-import org.flowerplatform.core.node.NodeTypeDescriptorRegistry;
 import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -57,9 +57,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return serviceRegistry;
 	}
 	
-	private NodeTypeDescriptorRegistry nodeTypeDescriptorRegistry = new NodeTypeDescriptorRegistry();
+	private TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 
-	public NodeTypeDescriptorRegistry getNodeTypeDescriptorRegistry() {
+	public TypeDescriptorRegistry getNodeTypeDescriptorRegistry() {
 		return nodeTypeDescriptorRegistry;
 	}
 

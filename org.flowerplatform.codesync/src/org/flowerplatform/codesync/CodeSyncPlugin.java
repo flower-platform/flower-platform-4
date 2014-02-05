@@ -31,11 +31,13 @@ import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.NodeTypeDescriptor;
+import org.flowerplatform.core.node.controller.AddNodeController;
+import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.type_descriptor.TypeDescriptor;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,12 +228,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		super.start(context);
 		INSTANCE = this;
 		
-		NodeTypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("category.codeSync");
-		codeSyncDescriptor.addAddNodeController(new CodeSyncAddNodeController());
-		codeSyncDescriptor.addPropertySetter(new CodeSyncPropertySetter());
-		codeSyncDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("name").setReadOnlyAs(false));
-		codeSyncDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("added"));
-		codeSyncDescriptor.addPropertyDescriptor(new PropertyDescriptor().setNameAs("removed"));
+		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("category.codeSync");
+		codeSyncDescriptor.addControllerToList(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
+		codeSyncDescriptor.addControllerToList(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
+		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("name").setReadOnlyAs(false));
+		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("added"));
+		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("removed"));
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());

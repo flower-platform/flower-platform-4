@@ -30,7 +30,7 @@ public class CodeSyncAddNodeController extends AddNodeController {
 
 	public CodeSyncAddNodeController() {
 		// must be invoked after the persistence controller
-		setPriority(500);
+		setOrderIndex(50000);
 	}
 	
 	@Override
