@@ -343,19 +343,19 @@ public class CodeSyncAlgorithm {
 	}
 	
 	public FeatureProvider getFeatureProvider(Object object) {
-		return typeDescriptorRegistry.getController(getDescriptor(object), FeatureProvider.FEATURE_PROVIDER);
+		return getDescriptor(object).getSingleController(FeatureProvider.FEATURE_PROVIDER);
 	}
 
 	public AbstractModelAdapter getRightModelAdapter(Object right) {
-		return typeDescriptorRegistry.getController(getDescriptor(right), AbstractModelAdapter.MODEL_ADAPTER_RIGHT);
+		return getDescriptor(right).getSingleController(AbstractModelAdapter.MODEL_ADAPTER_RIGHT);
 	}
 
 	public AbstractModelAdapter getAncestorModelAdapter(Object ancestor) {
-		return typeDescriptorRegistry.getController(getDescriptor(ancestor), AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR);
+		return getDescriptor(ancestor).getSingleController(AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR);
 	}
 
 	public AbstractModelAdapter getLeftModelAdapter(Object left) {
-		return typeDescriptorRegistry.getController(getDescriptor(left), AbstractModelAdapter.MODEL_ADAPTER_LEFT);
+		return getDescriptor(left).getSingleController(AbstractModelAdapter.MODEL_ADAPTER_LEFT);
 	}
 	
 	private TypeDescriptor getDescriptor(Object object) {

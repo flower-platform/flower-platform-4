@@ -25,21 +25,21 @@ public class FreeplanePropertySetter extends PropertySetter {
 		
 		// persist the property value in the attributes table
 		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);		
+		if (attributeTable == null) {
+			attributeTable = new NodeAttributeTableModel(nodeModel);
+			nodeModel.addExtension(attributeTable);
+		}		
+		
 		boolean set = false;
-		if (attributeTable != null) {
-			for (Attribute attribute : attributeTable.getAttributes()) {
-				if (attribute.getName().equals(property)) {
-					// there was already an attribute with this value; overwrite it
-					attribute.setValue(value);
-					set = true;
-					break;
-				}
+		for (Attribute attribute : attributeTable.getAttributes()) {
+			if (attribute.getName().equals(property)) {
+				// there was already an attribute with this value; overwrite it
+				attribute.setValue(value);
+				set = true;
+				break;
 			}
 		}
 		if (!set) {
-			attributeTable = new NodeAttributeTableModel(nodeModel);
-			nodeModel.addExtension(attributeTable);
-			
 			// new attribute; add it
 			attributeTable.getAttributes().add(new Attribute(property, value));
 		}

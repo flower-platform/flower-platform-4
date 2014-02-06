@@ -47,7 +47,7 @@ public class NodeService {
 			return null;
 		}
 		
-		List<ChildrenProvider> providers = registry.getControllers(descriptor, CHILDREN_PROVIDER);
+		List<ChildrenProvider> providers = descriptor.getAdditiveControllers(CHILDREN_PROVIDER);
 		// many times there will be no children; that's why we lazy init the list (if needed)
 		List<Node> children = null;
 		// we ask each registered provider for children
@@ -82,7 +82,7 @@ public class NodeService {
 			return;
 		}
 		
-		List<PropertiesProvider<?>> providers = registry.getControllers(descriptor, PROPERTIES_PROVIDER);
+		List<PropertiesProvider<?>> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER);
 		for (PropertiesProvider<?> provider : providers) {
 			((PropertiesProvider<Object>) provider).populateWithProperties(node, rawNodeData);
 		}
@@ -97,7 +97,7 @@ public class NodeService {
 			return Collections.emptyList();
 		}
 		
-		return registry.getControllers(descriptor, PROPERTY_DESCRIPTOR);
+		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR);
 	}
 	
 	public void setProperty(Node node, String property, Object value) {
@@ -106,7 +106,7 @@ public class NodeService {
 			return;
 		}
 		
-		List<PropertySetter> controllers = registry.getControllers(descriptor, PROPERTY_SETTER);
+		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER);
 		for (PropertySetter controller : controllers) {
 			controller.setProperty(node, property, value);
 		}
@@ -121,7 +121,7 @@ public class NodeService {
 			return;
 		}
 		
-		List<PropertySetter> controllers = registry.getControllers(descriptor, PROPERTY_SETTER);
+		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER);
 		for (PropertySetter controller : controllers) {
 			controller.unsetProperty(node, property);
 		}
@@ -133,7 +133,7 @@ public class NodeService {
 			return;
 		}
 		
-		List<AddNodeController> controllers = registry.getControllers(descriptor, ADD_NODE_CONTROLLER);
+		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER);
 		for (AddNodeController controller : controllers) {
 			controller.addNode(node, child);
 		}
@@ -145,7 +145,7 @@ public class NodeService {
 			return;
 		}
 		
-		List<RemoveNodeController> controllers = registry.getControllers(descriptor, REMOVE_NODE_CONTROLLER);
+		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER);
 		for (RemoveNodeController controller : controllers) {
 			controller.removeNode(node, child);
 		}

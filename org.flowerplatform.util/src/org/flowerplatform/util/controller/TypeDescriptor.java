@@ -1,6 +1,7 @@
 package org.flowerplatform.util.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -100,13 +101,47 @@ public class TypeDescriptor {
 	 * 
 	 * @see #additiveControllers
 	 */
-	protected Map<String, Pair<AbstractController, Boolean>> singleControllers;
+	protected Map<String, Pair<AbstractController, Boolean>> singleControllers = new HashMap<String, Pair<AbstractController, Boolean>>();
 
 	/**
 	 * @return For a given controller type, the single controller (collected from this node type, as well as its categories). 
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends AbstractController> T getSingleController(String controllerType) {
-		throw new UnsupportedOperationException();
+		getRegistry().configurable = false;
+		
+		Pair<AbstractController, Boolean> pair = getSingleControllerPair(controllerType);
+		if (pair.b) {
+			// categories were processed before; return the controller
+			return (T) pair.a;
+		}
+		
+		// else => let's scan now the categories
+		
+		// iterate categories to cache the controller
+		for (String category : getCategories()) {
+			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
+			if (categoryDescriptor == null) {
+				// semi-error; a WARN is logged
+				continue;
+			}
+			
+			T categoryController = categoryDescriptor.getSingleController(controllerType);
+			if (categoryController != null) {
+				// found a controller from a category; cache it
+				pair.a = categoryController;
+				if (pair.b) {
+					throw new RuntimeException(String.format(
+							"Node with type %s registered multiple categories with controllers of type %s", type, controllerType));
+				}
+				pair.b = true;
+			}
+		}
+		
+		// finished scanning the categories
+		pair.b = true;
+		
+		return (T) pair.a;
 	}
 	
 	/**
@@ -118,9 +153,21 @@ public class TypeDescriptor {
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
 	public TypeDescriptor addSingleController(String type, AbstractController controller) {
-		Pair<Object, Boolean> pair = getController(type);
+		if (!getRegistry().isConfigurable()) {
+			throw new IllegalStateException("Trying to add a new single controller to a non-configurable registry");
+		}
+		Pair<AbstractController, Boolean> pair = getSingleControllerPair(type);
 		pair.a = controller;
 		return this;
+	}
+	
+	private Pair<AbstractController, Boolean> getSingleControllerPair(String type) {
+		Pair<AbstractController, Boolean> pair = singleControllers.get(type);
+		if (pair == null) {
+			pair = new Pair<AbstractController, Boolean>(null, false);
+			singleControllers.put(type, pair);
+		}
+		return pair;
 	}
 	
 	/**
@@ -141,13 +188,42 @@ public class TypeDescriptor {
 	 * 
 	 * @see #singleControllers
 	 */
-	protected Map<String, Pair<List<? extends AbstractController>, Boolean>> additiveControllers;
+	protected Map<String, Pair<List<? extends AbstractController>, Boolean>> additiveControllers = new HashMap<String, Pair<List<? extends AbstractController>,Boolean>>();
 
 	/**
 	 * @return For a given controller type, the additive controllers (collected from this node type, as well as its categories). 
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType) {
-		throw new UnsupportedOperationException();
+		getRegistry().configurable = false;
+		
+		Pair<List<? extends AbstractController>, Boolean> pair = getAdditiveControllersPair(controllerType);
+		List<T> controllers = (List<T>) pair.a;
+		if (pair.b) {
+			// categories were processed before; return the controllers
+			return controllers;
+		}
+		
+		// else => let's scan now the categories
+		
+		// iterate categories to cache the controllers
+		for (String category : getCategories()) {
+			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
+			if (categoryDescriptor == null) {
+				// semi-error; a WARN is logged
+				continue;
+			}
+			
+			controllers.addAll((Collection<? extends T>) categoryDescriptor.getAdditiveControllers(controllerType));
+			pair.b = true;
+		}
+		
+		// finished scanning the categories
+		pair.b = true;
+		
+		// order the controllers before returning
+		Collections.sort(controllers);
+		return controllers;
 	}
 	
 	/**
@@ -160,45 +236,21 @@ public class TypeDescriptor {
 	 */
 	@SuppressWarnings("unchecked")
 	public TypeDescriptor addAdditiveController(String type, AbstractController controller) {
-		Pair<Object, Boolean> pair = getControllers(type);
+		if (!getRegistry().isConfigurable()) {
+			throw new IllegalStateException("Trying to add a new additive controller to a non-configurable registry");
+		}
+		Pair<List<? extends AbstractController>, Boolean> pair = getAdditiveControllersPair(type);
 		((List<AbstractController>) pair.a).add(controller);
 		return this;
 	}
 	
-	// TODO cele de mai jos vor disparea cred
-	
-	private Map<String, Pair<Object, Boolean>> controllers;
-	
-	private Map<String, Pair<Object, Boolean>> getControllers() {
-		if (controllers == null) {
-			controllers = new HashMap<String, Pair<Object,Boolean>>();
-		}
-		return controllers;
-	}
-	
-	/**
-	 * Returns the pair from the controllers map; perform lazy init
-	 * if there is no pair registered.
-	 */
-	public Pair<Object, Boolean> getController(String type) {
-		Pair<Object, Boolean> pair = getControllers().get(type);
+	private Pair<List<? extends AbstractController>, Boolean> getAdditiveControllersPair(String type) {
+		Pair<List<? extends AbstractController>, Boolean> pair = additiveControllers.get(type);
 		if (pair == null) {
-			pair = new Pair<Object, Boolean>(null, false);
-			getControllers().put(type, pair);
+			pair = new Pair<List<? extends AbstractController>, Boolean>(new ArrayList<AbstractController>(), false);
+			additiveControllers.put(type, pair);
 		}
 		return pair;
 	}
 	
-	/**
-	 * Returns the pair from the controllers map; perform lazy init
-	 * if there is no pair registered.
-	 */
-	public Pair<Object, Boolean> getControllers(String type) {
-		Pair<Object, Boolean> pair = getControllers().get(type);
-		if (pair == null) {
-			pair = new Pair<Object, Boolean>(new ArrayList<Object>(), false);
-			getControllers().put(type, pair);
-		}
-		return pair;
-	}
 }
