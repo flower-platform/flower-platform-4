@@ -30,16 +30,40 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.CLASS;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.ENUM;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.INTERFACE;
+import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
+import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
+import org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaEnumConstantDeclarationModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaFileModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeFeatureProvider;
+import org.flowerplatform.codesync.code.java.type_provider.JavaTypeProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -66,31 +90,37 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		PropertyDescriptor returnType = new PropertyDescriptor().setNameAs(JavaFeaturesConstants.TYPED_ELEMENT_TYPE).setReadOnlyAs(false);
+		CodeSyncPlugin.getInstance().addTypeProvider(TECHNOLOGY, new JavaTypeProvider());
 		
-		createNodeTypeDescriptor(CLASS);
-		createNodeTypeDescriptor(INTERFACE);
-		createNodeTypeDescriptor(ENUM);
-		createNodeTypeDescriptor(ANNOTATION_TYPE);
+		FileFeatureProvider fileFeatureProvider = new FileFeatureProvider();
+		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER, new FolderModelAdapter(), fileFeatureProvider);
+		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE, new JavaFileModelAdapter(), fileFeatureProvider);
 		
-		createNodeTypeDescriptor(ATTRIBUTE)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
-		createNodeTypeDescriptor(OPERATION)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
-		createNodeTypeDescriptor(ENUM_CONSTANT);
-		createNodeTypeDescriptor(ANNOTATION_MEMBER)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
+		PropertyDescriptor returnType = new PropertyDescriptor()
+			.setNameAs(JavaFeaturesConstants.TYPED_ELEMENT_TYPE).setReadOnlyAs(false);
 		
-		createNodeTypeDescriptor(ANNOTATION);
-		createNodeTypeDescriptor(MEMBER_VALUE_PAIR);
-		createNodeTypeDescriptor(MODIFIER);
-		createNodeTypeDescriptor(PARAMETER)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
+		JavaTypeModelAdapter typeModelAdapter = new JavaTypeModelAdapter();
+		JavaTypeFeatureProvider typeFeatureProvider = new JavaTypeFeatureProvider();
+		createNodeTypeDescriptor(CLASS, typeModelAdapter, typeFeatureProvider);
+		createNodeTypeDescriptor(INTERFACE, typeModelAdapter, typeFeatureProvider);
+		createNodeTypeDescriptor(ENUM, typeModelAdapter, typeFeatureProvider);
+		createNodeTypeDescriptor(ANNOTATION_TYPE, typeModelAdapter, typeFeatureProvider);
 		
-		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER);
-		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE);
+		createNodeTypeDescriptor(ATTRIBUTE, new JavaAttributeModelAdapter(), new JavaAttributeFeatureProvider())
+			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
+		createNodeTypeDescriptor(OPERATION, new JavaOperationModelAdapter(), new JavaOperationFeatureProvider())
+			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
+		createNodeTypeDescriptor(ENUM_CONSTANT, new JavaEnumConstantDeclarationModelAdapter(), new JavaEnumConstantDeclarationFeatureProvider());
+		createNodeTypeDescriptor(ANNOTATION_MEMBER, new JavaAnnotationTypeMemberDeclarationModelAdapter(), new JavaAnnotationTypeMemberDeclarationFeatureProvider())
+			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		
-		createNodeTypeDescriptor(CodeSyncPlugin.CATEGORY);
+		createNodeTypeDescriptor(ANNOTATION, new JavaAnnotationModelAdapter(), new JavaAnnotationFeatureProvider());
+		createNodeTypeDescriptor(MEMBER_VALUE_PAIR, new JavaMemberValuePairModelAdapter(), new JavaMemberValuePairFeatureProvider());
+		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new JavaModifierFeatureProvider());
+		createNodeTypeDescriptor(PARAMETER, new JavaParameterModelAdapter(), new JavaParameterFeatureProvider())
+			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
+		
+		createNodeTypeDescriptor(CodeSyncPlugin.CATEGORY, null, null);
 		
 		// wrap the descriptor register code in a runnable
 //		CodeSyncPlugin.getInstance().addRunnablesForLoadDescriptors(new Runnable() {
@@ -172,10 +202,12 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 	}
 	
-	private TypeDescriptor createNodeTypeDescriptor(String type) {
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor(type);
+	private TypeDescriptor createNodeTypeDescriptor(String type, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
 		descriptor.addCategory("category.codeSync");
 		descriptor.addCategory("category.persistence-codeSync");
+		descriptor.addSingleController(AbstractModelAdapter.MODEL_ADAPTER_RIGHT, modelAdapterRight);
+		descriptor.addSingleController(FeatureProvider.FEATURE_PROVIDER, featureProvider);
 		return descriptor;
 	}
 

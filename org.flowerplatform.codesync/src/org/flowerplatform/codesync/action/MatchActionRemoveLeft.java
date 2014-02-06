@@ -35,12 +35,12 @@ public class MatchActionRemoveLeft extends MatchActionRemoveAbstract {
 
 	@Override
 	protected IModelAdapter getModelAdapter(Match match) {
-		return match.getModelAdapterFactorySet().getLeftFactory().getModelAdapter(match.getLeft());
+		return match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
 	}
 
 	@Override
 	protected IModelAdapter getOppositeModelAdapter(Match match) {
-		return match.getModelAdapterFactorySet().getRightFactory().getModelAdapter(match.getRight());
+		return match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
 	}
 	
 	@Override

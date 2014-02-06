@@ -38,6 +38,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -176,7 +177,7 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// declared as containment by JavaFeatureProvider 
 		if (JavaTypeFeatureProvider.SUPER_INTERFACES.equals(feature)) {
 			if (element instanceof TypeDeclaration || element instanceof EnumDeclaration) {
@@ -207,7 +208,7 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			return child;
 		}
 
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 	
 	public static Object createCorrespondingModelElement(AST ast, Node node) {

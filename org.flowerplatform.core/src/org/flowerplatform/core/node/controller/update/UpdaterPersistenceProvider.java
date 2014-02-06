@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.ChildrenListUpdate;
-import org.flowerplatform.util.type_descriptor.OrderedElement;
+import org.flowerplatform.util.controller.AbstractController;
 
-public abstract class UpdaterPersistenceProvider extends OrderedElement {
+public abstract class UpdaterPersistenceProvider extends AbstractController {
 	
 	public static final String UPDATER_CONTROLLER = "updaterPersistenceProvider";
 		

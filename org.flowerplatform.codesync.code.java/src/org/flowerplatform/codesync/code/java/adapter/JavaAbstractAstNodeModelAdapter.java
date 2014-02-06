@@ -45,6 +45,7 @@ import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -91,7 +92,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// handle modifiers here to avoid using the same code in multiple adapters
 		if (JavaFeaturesConstants.MODIFIERS.equals(feature)) {
 			if (!(element instanceof BodyDeclaration || element instanceof SingleVariableDeclaration)) {
@@ -141,7 +142,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 			}
 		}
 		
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 
 	@Override

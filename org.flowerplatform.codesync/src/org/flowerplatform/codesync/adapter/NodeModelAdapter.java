@@ -24,6 +24,7 @@ import java.util.List;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -33,31 +34,6 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 
 	public static final String ADDED = "added";
 	public static final String REMOVED = "removed";
-	
-	protected ModelAdapterFactory modelAdapterFactory;
-	
-	protected ModelAdapterFactory oppositeModelAdapterFactory;
-	
-	public NodeModelAdapter setModelAdapterFactory(ModelAdapterFactory modelAdapterFactory) {
-		this.modelAdapterFactory = modelAdapterFactory;
-		return this;
-	}
-	
-	public ModelAdapterFactory getModelAdapterFactory() {
-		return modelAdapterFactory;
-	}
-	
-	/**
-	 * @see #createChildOnContainmentFeature(Object, Object, Object)
-	 */
-	public NodeModelAdapter setOppositeModelAdapterFactory(ModelAdapterFactory codeSyncElementConverter) {
-		this.oppositeModelAdapterFactory = codeSyncElementConverter;
-		return this;
-	}
-	
-	public ModelAdapterFactory getOppositeModelAdapterFactory() {
-		return oppositeModelAdapterFactory;
-	}
 	
 	/**
 	 * Checks for a {@link FeatureChange} on the name feature first.
@@ -106,7 +82,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// first check if the child already exists
 //		Iterable<?> children = super.getContainmentFeatureIterable(eObject, feature, null);
 //		IModelAdapter adapter = codeSyncElementConverter.getModelAdapter(correspondingChild);
@@ -134,7 +110,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, NodeFeatureProvider.NAME, feature);
 				}
 				// set the type for the new node; needed by the action performed handler
-				String type = getOppositeModelAdapterFactory().getModelAdapter(correspondingChild).getType();
+				String type = typeProvider.getType(correspondingChild);
 				Node child = new Node();
 				child.setType(type);
 				CodeSyncPlugin.getInstance().getNodeService().addChild(category, child);

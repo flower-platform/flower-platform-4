@@ -29,9 +29,9 @@ import org.flowerplatform.core.node.controller.update.UpdaterPersistenceProvider
 import org.flowerplatform.core.node.controller.update.UpdaterPropertySetterController;
 import org.flowerplatform.core.node.controller.update.UpdaterRemoveNodeController;
 import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
-import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -52,11 +52,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 				
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
 		
-		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("category.all");
-		updaterDescriptor.addControllerToList(AddNodeController.ADD_NODE_CONTROLLER, new UpdaterAddNodeController());
-		updaterDescriptor.addControllerToList(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdaterRemoveNodeController());
-		updaterDescriptor.addControllerToList(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
-		updaterDescriptor.addControllerToList(UpdaterPersistenceProvider.UPDATER_CONTROLLER, new InMemoryUpdaterProvider());
+		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.all");
+		updaterDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdaterAddNodeController());
+		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdaterRemoveNodeController());
+		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
+		updaterDescriptor.addAdditiveController(UpdaterPersistenceProvider.UPDATER_CONTROLLER, new InMemoryUpdaterProvider());
 		
 		setFileAccessController(new PlainFileAccessController());
 	}

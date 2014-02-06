@@ -16,16 +16,15 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code.adapter;
+package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.codesync.adapter.IModelAdapter;
-import org.flowerplatform.codesync.adapter.NodeModelAdapter;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -162,20 +161,20 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	}
 
 	@Override
-	public void actionPerformed(Object element, Object feature, ActionResult result) {
+	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (result == null || result.conflict) {
 			return;
 		}
 
 		Node node = getNode(element);
-		int featureType = getModelAdapterFactorySet().getFeatureProvider(node).getFeatureType(feature);
+		int featureType = codeSyncAlgorithm.getFeatureProvider(node).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
 			CodeSyncPlugin.getInstance().getNodeService().unsetProperty(node, getOriginalFeatureName(feature).toString());
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
 			List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
-			Object child = findChild(children, result.childMatchKey);
+			Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
 			if (child != null && child instanceof Node) {
 				Node childNode = (Node) child;
 				if (result.childAdded) {
@@ -190,13 +189,13 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		}
 	}
 	
-	private boolean elementContainsChildWithMatchKey(Object element, Object feature, Object matchKey) {
+	private boolean elementContainsChildWithMatchKey(CodeSyncAlgorithm codeSyncAlgorithm, Object element, Object feature, Object matchKey) {
 		if (element == null || matchKey == null) {
 			return false;
 		}
-		Iterable<?> children = getOppositeModelAdapterFactory().getModelAdapter(element).getContainmentFeatureIterable(element, feature, null);
+		Iterable<?> children = codeSyncAlgorithm.getRightModelAdapter(element).getContainmentFeatureIterable(element, feature, null);
 		for (Object child : children) {
-			if (matchKey.equals(getOppositeModelAdapterFactory().getModelAdapter(child).getMatchKey(child))) {
+			if (matchKey.equals(codeSyncAlgorithm.getRightModelAdapter(child).getMatchKey(child))) {
 				return true;
 			}
 		}
@@ -206,11 +205,11 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	/**
 	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
 	 */
-	private Object findChild(List list, Object matchKey) {
+	private Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
 		if (matchKey == null)
 			return null;
 		for (Object existingChild : list) {
-			if (matchKey.equals(getModelAdapterFactory().getModelAdapter(existingChild).getMatchKey(existingChild))) {
+			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
 				return existingChild;
 			}
 		}

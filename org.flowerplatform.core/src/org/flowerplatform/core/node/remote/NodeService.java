@@ -24,8 +24,8 @@ import org.flowerplatform.core.node.update.remote.ChildrenListUpdate;
 import org.flowerplatform.core.node.update.remote.ClientNodeStatus;
 import org.flowerplatform.core.node.update.remote.NodeUpdate;
 import org.flowerplatform.util.Pair;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
-import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
+import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,12 +78,12 @@ public class NodeService {
 	}
 	
 	public List<Node> getChildren(Node node, boolean populateProperties) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
 		
-		List<ChildrenProvider> providers = registry.getControllers(descriptor, CHILDREN_PROVIDER);
+		List<ChildrenProvider> providers = descriptor.getAdditiveControllers(CHILDREN_PROVIDER);
 		// many times there will be no children; that's why we lazy init the list (if needed)
 		List<Node> children = null;
 		// we ask each registered provider for children
@@ -113,12 +113,12 @@ public class NodeService {
 	
 	@SuppressWarnings("unchecked")
 	protected void populateNode(Node node, Object rawNodeData) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		List<PropertiesProvider<?>> providers = registry.getControllers(descriptor, PROPERTIES_PROVIDER);
+		List<PropertiesProvider<?>> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER);
 		for (PropertiesProvider<?> provider : providers) {
 			((PropertiesProvider<Object>) provider).populateWithProperties(node, rawNodeData);
 		}
@@ -128,21 +128,21 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public List<PropertyDescriptor> getPropertyDescriptors(String type) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(type);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(type);
 		if (descriptor == null) {
 			return Collections.emptyList();
 		}
 		
-		return registry.getControllers(descriptor, PROPERTY_DESCRIPTOR);
+		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR);
 	}
 	
 	public void setProperty(Node node, String property, Object value) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		List<PropertySetter> controllers = registry.getControllers(descriptor, PROPERTY_SETTER);
+		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER);
 		for (PropertySetter controller : controllers) {
 			controller.setProperty(node, property, value);
 		}
@@ -152,36 +152,36 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public void unsetProperty(Node node, String property) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		List<PropertySetter> controllers = registry.getControllers(descriptor, PROPERTY_SETTER);
+		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER);
 		for (PropertySetter controller : controllers) {
 			controller.unsetProperty(node, property);
 		}
 	}
 	
 	public void addChild(Node node, Node child) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		List<AddNodeController> controllers = registry.getControllers(descriptor, ADD_NODE_CONTROLLER);
+		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER);
 		for (AddNodeController controller : controllers) {
 			controller.addNode(node, child);
 		}
 	}
 	
 	public void removeChild(Node node, Node child) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		List<RemoveNodeController> controllers = registry.getControllers(descriptor, REMOVE_NODE_CONTROLLER);
+		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER);
 		for (RemoveNodeController controller : controllers) {
 			controller.removeNode(node, child);
 		}
@@ -204,42 +204,42 @@ public class NodeService {
 	}
 	
 	public Map<String, Object> getPropertyUpdates(Node node, long startingWithTimestamp) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
 		
-		UpdaterPersistenceProvider provider = registry.getController(descriptor, UPDATER_CONTROLLER);		
+		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);		
 		return provider.getPropertyUpdates(node, startingWithTimestamp);		
 	}
 	
 	public List<ChildrenListUpdate> getChildrenListUpdates(Node node, long startingWithTimestamp) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
 		
-		UpdaterPersistenceProvider provider = registry.getController(descriptor, UPDATER_CONTROLLER);		
+		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);		
 		return provider.getChildrenListUpdates(node, startingWithTimestamp);	
 	}
 	
 	public void addPropertyUpdate(Node node, long timestamp, String property, Object value) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		UpdaterPersistenceProvider provider = registry.getController(descriptor, UPDATER_CONTROLLER);	
+		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);	
 		provider.addPropertyUpdate(node, timestamp, property, value);		
 	}
 	
 	public void addChildrenListUpdate(Node node, long timestamp, String type, int index, Node childNode) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		UpdaterPersistenceProvider provider = registry.getController(descriptor, UPDATER_CONTROLLER);	
+		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);
 		provider.addChildrenListUpdate(node, timestamp, type, index, childNode);	
 	}
 	
