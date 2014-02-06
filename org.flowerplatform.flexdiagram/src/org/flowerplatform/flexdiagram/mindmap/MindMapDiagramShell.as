@@ -45,6 +45,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public var horizontalPadding:int = HORIZONTAL_PADDING_DEFAULT;
 		public var verticalPadding:int = VERTICAL_PADDING_DEFAULT;
 		
+		/**
+		 * Structure:
+		 * - rootModel -> keeps in its dynamic object the list of model children added directly on diagram renderer
+		 * - root (model from where the mindmap structure begins) -> first child in getDynamicObject(rootModel).children, it has no parent
+		 */ 
 		override public function set rootModel(value:Object):void {
 			super.rootModel = value;
 			
