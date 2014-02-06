@@ -26,7 +26,5 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		
 		function getMindMapModelController(model:Object):IMindMapModelController;
 		
-		function getMindMapRootController(model:Object):IMindMapRootController;
-		
 	}
 }

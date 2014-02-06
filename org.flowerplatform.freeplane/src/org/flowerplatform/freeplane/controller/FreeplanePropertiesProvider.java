@@ -19,8 +19,10 @@ public class FreeplanePropertiesProvider extends PropertiesProvider<NodeModel> {
 		
 		// properties are populated from the attributes table
 		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(rawNodeData);
-		for (Attribute attribute : attributeTable.getAttributes()) {
-			node.getOrCreateProperties().put(attribute.getName(), attribute.getValue());
+		if (attributeTable != null) {
+			for (Attribute attribute : attributeTable.getAttributes()) {
+				node.getOrCreateProperties().put(attribute.getName(), attribute.getValue());
+			}
 		}
 	}
 	

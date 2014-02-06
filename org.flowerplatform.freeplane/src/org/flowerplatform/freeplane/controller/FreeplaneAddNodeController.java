@@ -20,8 +20,11 @@ public class FreeplaneAddNodeController extends AddNodeController {
 		newNodeModel.setLeft(false);
 
 		// create attributes table and persist the type
-		NodeAttributeTableModel attributeTable = new NodeAttributeTableModel(newNodeModel);
-		newNodeModel.addExtension(attributeTable);
+		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) newNodeModel.getExtension(NodeAttributeTableModel.class);
+		if (attributeTable == null) {
+			attributeTable = new NodeAttributeTableModel(newNodeModel);
+			newNodeModel.addExtension(attributeTable);
+		}		
 		attributeTable.getAttributes().add(new Attribute("type", child.getType()));
 		
 		parentModel.insert(newNodeModel, parentModel.getChildCount());

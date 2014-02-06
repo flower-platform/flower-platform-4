@@ -17,13 +17,11 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.mindmap.Diagram;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
-			import org.flowerplatform.flexutil.selection.ISelectionForServerProvider;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
@@ -66,7 +64,7 @@
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				// I did this, because the selection system, sends an empty selection when the diagram is opened
 				// so in case the event.selectionForServer is an empty array we stop the logic.								
-				if (event.selection == null || event.selection.length == 0 || event.selection.getItemAt(0) is Diagram) {
+				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).id == null) {
 					icon.source = null;
 					label.text = null;
 					IList(propertyList.dataProvider).removeAll();

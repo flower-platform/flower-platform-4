@@ -95,10 +95,10 @@
 				graphics.lineStyle(2, 0x3C37FE);		
 				graphics.drawRoundRect(-padding, - padding, target.width + padding * 2, target.height + padding * 2, 10, 10);			
 				
-				if (node.side == MindMapDiagramShell.LEFT) {
+				if (node.side == MindMapDiagramShell.POSITION_LEFT) {
 					circle.x = getDynamicObject(node).x - circleRadius * 2;						
 					circle.y = getDynamicObject(node).y + getDynamicObject(node).height / 2 - circleRadius;
-				} else if (node.side == MindMapDiagramShell.RIGHT) {
+				} else if (node.side == MindMapDiagramShell.POSITION_RIGHT) {
 					circle.x = getDynamicObject(node).x + getDynamicObject(node).width;
 					circle.y = getDynamicObject(node).y + getDynamicObject(node).height / 2 - circleRadius;							
 				}

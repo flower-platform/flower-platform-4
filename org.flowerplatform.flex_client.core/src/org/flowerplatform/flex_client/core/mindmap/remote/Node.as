@@ -32,7 +32,7 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 				
 		public var type:String;
 		
-		public var properties:Object;
+		public var properties:Object = new Object();
 		
 		[Transient]
 		public var parent:Node;
@@ -41,7 +41,7 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		public var children:ArrayCollection;
 		
 		[Transient]
-		public var side:int = MindMapDiagramShell.RIGHT;
+		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
 			
 	}
 }
