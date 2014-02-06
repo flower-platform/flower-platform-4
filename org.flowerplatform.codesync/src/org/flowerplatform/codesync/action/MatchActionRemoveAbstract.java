@@ -66,7 +66,7 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 			result = new ActionResult(false, true, true, childModelAdapter.getMatchKey(child), false);
 		}
 		
-		actionPerformed(getModelAdapter(parentMatch), getThis(parentMatch), getOppositeModelAdapter(parentMatch), getOpposite(parentMatch), match.getFeature(), result);
+		actionPerformed(match.getCodeSyncAlgorithm(), getModelAdapter(parentMatch), getThis(parentMatch), getOppositeModelAdapter(parentMatch), getOpposite(parentMatch), match.getFeature(), result);
 		return result;
 	}
 	

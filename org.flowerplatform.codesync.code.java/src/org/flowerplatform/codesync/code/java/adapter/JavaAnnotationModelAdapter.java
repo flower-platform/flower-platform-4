@@ -32,6 +32,7 @@ import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -110,7 +111,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	}
 	
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (JavaAnnotationFeatureProvider.ANNOTATION_VALUES.equals(feature)) {
 			ASTNode child = null;
 			ASTNode parent = (ASTNode) element;
@@ -135,7 +136,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 			return child;
 		}
 		
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 
 	@Override

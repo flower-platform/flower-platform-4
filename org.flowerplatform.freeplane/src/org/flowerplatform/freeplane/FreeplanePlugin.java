@@ -39,14 +39,13 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		createNodeTypeDescriptor(FREEPLANE_NODE_TYPE);
-		createNodeTypeDescriptor("category.persistence-codeSync");
+		addControllers(CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FREEPLANE_NODE_TYPE));
+		addControllers(CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.persistence-codeSync"));
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
 	}
 	
-	private void createNodeTypeDescriptor(String type) {
-		TypeDescriptor nodeTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
+	private void addControllers(TypeDescriptor nodeTypeDescriptor) {
 		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneChildrenProvider());
 		nodeTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FreeplanePropertiesProvider());
 		nodeTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FreeplaneAddNodeController());

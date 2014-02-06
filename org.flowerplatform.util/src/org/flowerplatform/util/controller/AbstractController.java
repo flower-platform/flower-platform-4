@@ -13,7 +13,7 @@ package org.flowerplatform.util.controller;
  * 	</li>
  * 	<li>a descriptor, that has no methods. It has some attributes that provide information that applies
  * 		to all nodes of a certain type (of type = the type for which the controller was registered in {@link TypeDescriptorRegistry}. E.g.
- * 		some <code>PropertyDescriptor</code> specify what are the valid properties for a certain node.
+ * 		some <code>PropertyDescriptor</code> specifies what are the valid properties for a certain node.
  * 	</li> 
  * </ul>
  * 

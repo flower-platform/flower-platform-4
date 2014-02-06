@@ -1,7 +1,7 @@
 package org.flowerplatform.util.controller;
 
 /**
- * Same as it's superclass, but disables {@link #addCategory(String)}, so that categories 
+ * Same as its superclass, but disables {@link #addCategory(String)}, so that categories 
  * cannot belong to categories.
  * 
  * <p>

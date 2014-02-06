@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
 /**
  * Mapped to {@link MethodDeclaration}. Children are {@link Modifier}s and parameters (i.e. {@link SingleVariableDeclaration}).
@@ -98,7 +99,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (JavaOperationFeatureProvider.OPERATION_PARAMETERS.equals(feature)) {
 			MethodDeclaration method = (MethodDeclaration) element;
 			AST ast = method.getAST();
@@ -106,7 +107,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			method.parameters().add(parameter);
 			return parameter;
 		}
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 	
 	private MethodDeclaration getMethodDeclaration(Object element) {

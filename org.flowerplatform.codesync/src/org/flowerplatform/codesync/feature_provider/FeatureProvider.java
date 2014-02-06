@@ -20,15 +20,19 @@ package org.flowerplatform.codesync.feature_provider;
 
 import java.util.List;
 
+import org.flowerplatform.util.controller.AbstractController;
+
 /**
  * @author Mariana
  */
-public interface IFeatureProvider {
-
-	public List<?> getFeatures(Object element);
-
-	public int getFeatureType(Object feature);
+public abstract class FeatureProvider extends AbstractController {
 	
-	public String getFeatureName(Object feature);
+	public static final String FEATURE_PROVIDER = "featureProvider";
+
+	public abstract List<?> getFeatures(Object element);
+
+	public abstract int getFeatureType(Object feature);
+	
+	public abstract String getFeatureName(Object feature);
 	
 }

@@ -16,21 +16,13 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code;
-
-import java.io.File;
-
-import org.flowerplatform.codesync.ICodeSyncAlgorithmRunner;
-import org.flowerplatform.core.node.remote.Node;
+package org.flowerplatform.codesync.type_provider;
 
 /**
- * @author Mariana
+ * @author Mariana Gheorghe
  */
-public class CodeSyncCodeAlgorithmRunner implements ICodeSyncAlgorithmRunner {
+public interface ITypeProvider {
 
-	@Override
-	public void runCodeSyncAlgorithm(File project, File resource, String technology, boolean showDialog) {
-		Node node = CodeSyncCodePlugin.getInstance().getNode(project, resource, technology, showDialog);
-	}
-
+	public String getType(Object object);
+	
 }

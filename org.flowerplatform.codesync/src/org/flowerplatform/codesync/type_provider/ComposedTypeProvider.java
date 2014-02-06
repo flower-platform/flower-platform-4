@@ -16,22 +16,32 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code;
+package org.flowerplatform.codesync.type_provider;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author Mariana
+ * @author Mariana Gheorghe
  */
-public class ModelAdapterFactorySetProvider {
+public class ComposedTypeProvider implements ITypeProvider {
 
-	private Map<String, ModelAdapterFactorySet> factorySets = new HashMap<String, ModelAdapterFactorySet>();
+	private List<ITypeProvider> typeProviders = new ArrayList<ITypeProvider>();
 	
-	public Map<String, ModelAdapterFactorySet> getFactorySets() {
-		return factorySets;
+	@Override
+	public String getType(Object object) {
+		for (ITypeProvider typeProvider : typeProviders) {
+			String type = typeProvider.getType(object);
+			if (type != null) {
+				return type;
+			}
+		}
+		throw new RuntimeException("Cannot provide type for " + object);
 	}
 	
+	public ComposedTypeProvider addTypeProvider(ITypeProvider typeProvider) {
+		typeProviders.add(typeProvider);
+		return this;
+	}
+
 }

@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
@@ -42,7 +43,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 
 	@Override
-	public Object createChildOnContainmentFeature(Object file, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object file, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		CompilationUnit cu = getOrCreateCompilationUnit(file);
 		ASTNode node = (ASTNode) JavaTypeModelAdapter.createCorrespondingModelElement(cu.getAST(), (Node) correspondingChild);
 		cu.types().add(node);

@@ -31,13 +31,13 @@ public class DiffActionRevert extends DiffAction {
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Diff diff = match.getDiffs().get(diffIndex);
-		IModelAdapter ancestorModelAdapter = match.getModelAdapterFactorySet().getAncestorFactory().getModelAdapter(match.getAncestor());
+		IModelAdapter ancestorModelAdapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(match.getAncestor());
 		IModelAdapter leftModelAdapter = null;
 		if (diff.isLeftModified())
-			leftModelAdapter = match.getModelAdapterFactorySet().getLeftFactory().getModelAdapter(match.getLeft());
+			leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
 		IModelAdapter rightModelAdapter = null;
 		if (diff.isRightModified())
-			rightModelAdapter = match.getModelAdapterFactorySet().getRightFactory().getModelAdapter(match.getRight());
+			rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
 		
 		Object value = ancestorModelAdapter.getValueFeatureValue(match.getAncestor(), diff.getFeature(), null);
 		if (diff.isLeftModified()) {
@@ -49,7 +49,7 @@ public class DiffActionRevert extends DiffAction {
 		match.getDiffs().remove(diffIndex);
 
 		ActionResult result = new ActionResult(false, false, false);
-		actionPerformed(leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
+		actionPerformed(match.getCodeSyncAlgorithm(), leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
 		
 		return result;
 	}
