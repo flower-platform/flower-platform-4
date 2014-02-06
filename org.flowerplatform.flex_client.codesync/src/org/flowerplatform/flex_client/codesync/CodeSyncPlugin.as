@@ -45,7 +45,7 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 			
-			new CodeSyncOperationsService().synchronize(null, null);
+//			new CodeSyncOperationsService().synchronize(null, null);
 			
 		}
 		

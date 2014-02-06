@@ -75,14 +75,7 @@ package org.flowerplatform.flex_client.core {
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
 			perspectives.push(new MindMapPerspective());
-			
-			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);	
-			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);	
-//			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
-//			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
-			
+		
 			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);			

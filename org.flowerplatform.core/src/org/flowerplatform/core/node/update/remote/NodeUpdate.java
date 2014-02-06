@@ -1,17 +1,17 @@
-package org.flowerplatform.core.mindmap.remote.update;
+package org.flowerplatform.core.node.update.remote;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.mindmap.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Cristina Constantinescu
  */
 public class NodeUpdate {
 
-	private String nodeId;
+	private Node node;
 	
 	private Map<String, Object> updatedProperties;
 	
@@ -21,12 +21,12 @@ public class NodeUpdate {
 	
 	private List<NodeUpdate> nodeUpdatesForChildren;
 
-	public String getNodeId() {
-		return nodeId;
+	public Node getNode() {
+		return node;
 	}
 
-	public void setNodeId(String nodeId) {
-		this.nodeId = nodeId;
+	public void setNode(Node node) {
+		this.node = node;
 	}
 
 	public Map<String, Object> getUpdatedProperties() {

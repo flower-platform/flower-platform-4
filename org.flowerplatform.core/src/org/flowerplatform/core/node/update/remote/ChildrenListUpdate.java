@@ -1,4 +1,6 @@
-package org.flowerplatform.core.mindmap.remote.update;
+package org.flowerplatform.core.node.update.remote;
+
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Cristina Constantinescu
@@ -8,7 +10,7 @@ public class ChildrenListUpdate {
 	public static final String ADDED = "ADDED";
 	public static final String REMOVED = "REMOVED";
 	
-	private String parentNodeId;
+	private Node parentNode;
 	
 	private String type;
 	
@@ -18,16 +20,16 @@ public class ChildrenListUpdate {
 
 	private long timestamp;
 	
-	public String getParentNodeId() {
-		return parentNodeId;
+	public Node getParentNode() {
+		return parentNode;
 	}
 
-	public void setParentNodeId(String parentNodeId) {
-		this.parentNodeId = parentNodeId;
+	public void setParentNode(Node parentNode) {
+		this.parentNode = parentNode;
 	}
 
-	public ChildrenListUpdate setParentNodeIdAs(String parentNodeId) {
-		this.parentNodeId = parentNodeId;
+	public ChildrenListUpdate setParentNodeAs(Node parentNode) {
+		this.parentNode = parentNode;
 		return this;
 	}
 	

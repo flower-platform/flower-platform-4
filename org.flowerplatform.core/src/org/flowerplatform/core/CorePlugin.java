@@ -20,8 +20,17 @@ package org.flowerplatform.core;
 
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
+import org.flowerplatform.core.node.controller.AddNodeController;
+import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.RemoveNodeController;
+import org.flowerplatform.core.node.controller.update.InMemoryUpdaterProvider;
+import org.flowerplatform.core.node.controller.update.UpdaterAddNodeController;
+import org.flowerplatform.core.node.controller.update.UpdaterPersistenceProvider;
+import org.flowerplatform.core.node.controller.update.UpdaterPropertySetterController;
+import org.flowerplatform.core.node.controller.update.UpdaterRemoveNodeController;
 import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.type_descriptor.TypeDescriptor;
 import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
 import org.osgi.framework.BundleContext;
 
@@ -42,6 +51,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 				
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
+		
+		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("category.all");
+		updaterDescriptor.addControllerToList(AddNodeController.ADD_NODE_CONTROLLER, new UpdaterAddNodeController());
+		updaterDescriptor.addControllerToList(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdaterRemoveNodeController());
+		updaterDescriptor.addControllerToList(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
+		updaterDescriptor.addControllerToList(UpdaterPersistenceProvider.UPDATER_CONTROLLER, new InMemoryUpdaterProvider());
 		
 		setFileAccessController(new PlainFileAccessController());
 	}

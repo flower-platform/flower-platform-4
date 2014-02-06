@@ -9,8 +9,6 @@
 		<![CDATA[
 			import mx.binding.utils.BindingUtils;
 			import mx.events.FlexEvent;
-			
-			import org.flowerplatform.flex_client.properties.remote.Property;
 						
 			override protected function getValue():Object {
 				return propertyValue.text;	

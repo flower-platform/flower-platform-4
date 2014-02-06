@@ -1,24 +1,26 @@
-package org.flowerplatform.core.mindmap.remote.update;
+package org.flowerplatform.core.node.update.remote;
 
 import java.util.List;
+
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Cristina Constantinescu
  */
 public class ClientNodeStatus {
 
-	private String nodeId;
+	private Node node;
 	
 	private long timestamp;
 	
 	private List<ClientNodeStatus> visibleChildren;
 
-	public String getNodeId() {
-		return nodeId;
+	public Node getNode() {
+		return node;
 	}
 
-	public void setNodeId(String nodeId) {
-		this.nodeId = nodeId;
+	public void setNode(Node node) {
+		this.node = node;
 	}
 
 	public long getTimestamp() {

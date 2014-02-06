@@ -51,13 +51,14 @@ package org.flowerplatform.flex_client.core.mindmap {
 	
 	import spark.components.Button;
 	import spark.components.CheckBox;
-	import spark.components.HGroup;
 	import spark.components.Group;
+	import spark.components.HGroup;
+	import spark.components.VGroup;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapEditorFrontend extends Group implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+	public class MindMapEditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
 		
 		public var diagramShell:DiagramShell;
 			
@@ -80,7 +81,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			toolbarsArea.verticalAlign = "middle";
 			toolbarsArea.gap = 10;		
 			toolbarsArea.paddingLeft = 5;
-			addChild(toolbarsArea);	
+			addElement(toolbarsArea);	
 									
 			// Auto Refresh checkbox
 			var ckBox:CheckBox = new CheckBox();
@@ -116,10 +117,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			super.createChildren();					
 		}
 		
-		private function creationCompleteHandler(event:FlexEvent):void {
-			// request root node
-			diagramShell.rootModel = new Diagram();		
-			
+		private function creationCompleteHandler(event:FlexEvent):void {			
 			// TODO CC: Temporary code
 			var reloadAction:ReloadAction = new ReloadAction();
 			reloadAction.diagramShell = diagramShell;
