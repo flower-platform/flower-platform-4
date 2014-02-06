@@ -87,7 +87,7 @@
 				
 				if (Boolean(node.properties["hasChildren"]).valueOf() &&
 					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node) != null) {	
-					vLine.visible = !getMindMapModelController(node).getExpanded(node);
+					vLine.visible = !mindMapDiagramShell.getModelController(node).getExpanded(node);
 					diagramShell.diagramRenderer.addElement(circle);
 				} else {
 					if (circle.parent != null) {
@@ -99,17 +99,17 @@
 				graphics.lineStyle(2, 0x3C37FE);		
 				graphics.drawRoundRect(-padding, - padding, target.width + padding * 2, target.height + padding * 2, 10, 10);			
 				
-				if (node.side == MindMapDiagramShell.LEFT) {
-					circle.x = getDynamicObject(node).x - circleRadius * 2;						
-					circle.y = getDynamicObject(node).y + getDynamicObject(node).height / 2 - circleRadius;
-				} else if (node.side == MindMapDiagramShell.RIGHT) {
-					circle.x = getDynamicObject(node).x + getDynamicObject(node).width;
-					circle.y = getDynamicObject(node).y + getDynamicObject(node).height / 2 - circleRadius;							
+				if (node.side == MindMapDiagramShell.POSITION_LEFT) {
+					circle.x = mindMapDiagramShell.getDynamicObject(node).x - circleRadius * 2;						
+					circle.y = mindMapDiagramShell.getDynamicObject(node).y + mindMapDiagramShell.getDynamicObject(node).height / 2 - circleRadius;
+				} else if (node.side == MindMapDiagramShell.POSITION_RIGHT) {
+					circle.x = mindMapDiagramShell.getDynamicObject(node).x + mindMapDiagramShell.getDynamicObject(node).width;
+					circle.y = mindMapDiagramShell.getDynamicObject(node).y + mindMapDiagramShell.getDynamicObject(node).height / 2 - circleRadius;							
 				}
 			}
 			
 			protected function circle_mouseClickHandler(event:MouseEvent):void {
-				getMindMapModelController(node).setExpanded(node, !getMindMapModelController(node).getExpanded(node));
+				mindMapDiagramShell.getModelController(node).setExpanded(node, !mindMapDiagramShell.getModelController(node).getExpanded(node));
 				vLine.visible = !vLine.visible;
 	
 				event.preventDefault();
@@ -124,13 +124,9 @@
 			private function get node():Node {
 				return Node(getTargetModel());
 			}
-			
-			private function getDynamicObject(model:Object):Object {
-				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
-			}
 				
-			private function getMindMapModelController(model:Object):IMindMapModelController {
-				return IMindMapControllerProvider(diagramShell.getControllerProvider(model)).getMindMapModelController(model);
+			private function get mindMapDiagramShell():MindMapDiagramShell {
+				return MindMapDiagramShell(diagramShell);
 			}
 			
 		]]>

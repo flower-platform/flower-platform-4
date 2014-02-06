@@ -31,6 +31,7 @@ import java.security.Policy;
 import java.util.Map;
 import java.util.Properties;
 
+import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
 import org.eclipse.equinox.servletbridge.FrameworkLauncher;
 
 /**
@@ -39,17 +40,38 @@ import org.eclipse.equinox.servletbridge.FrameworkLauncher;
  * from web.xml.
  * 
  * <p>
- * The original classes (form the *.servletbridge package) are not modified
- * (for the moment), in order to allow an easy merge from their original source
- * repository. We even had to access a private field using reflection.
+ * The original classes (form the *.servletbridge package) are modified
+ * very little, in order to allow an easy merge from their original source
+ * repository. We even had to access a private field using reflection. These
+ * modifications are marked with "MODIF_FROM_ORIGINAL".
  * 
  * <p>
- * <strong>NOTE:</strong>
- * The source files from *.servlet bridge are taken from Eclipse's CVS:
- * dev.eclipse.org; /cvsroot/rt; org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge 
+ * The reason for using {@link ServletConfigWrapper} and {@link ServletConfigWrapper}:
+ * to be able to use this class, in a host that is not a servlet container. E.g. a normal
+ * java app like IDEA. And we kept them, in order to preserve the {@link FrameworkLauncher} class
+ * mostly not modified. 
  * 
- * The version of servletbridge in use is v20080929-1800. Before we used a newer version (v20110502), 
- * but this one did not worked when using the security manager (java.lang.ClassCircularityError appeared). 
+ * <p>
+ * While in dev mode, the system relies on "absolute-path-helper.txt". This file is generated at
+ * runtime by an ANT builder, that writes the absolute path of the parent project. We need this,
+ * so that we can have the workspace relative to the parent project, in the real location (i.e.
+ * in the git repo). Before using git, the project was in the workspace, so this wasn't necessary.<br/>
+ * This is neede because at dev/runtime, the current dir is something like: WORKSPACE\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\WEBAPP,
+ * i.e. the location where WTP publishes the web app.
+ * 
+ * <p>
+ * <strong>History of these classes:</strong>
+ * 
+ * <p>
+ * <b>V1</b><br/>
+ * From Eclipse's CVS, dev.eclipse.org; /cvsroot/rt; org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge
+ * Version v20110502.
+ * 
+ * <p>
+ * <b>V2</b><br/>
+ * CVS, an older version: v20080929-1800. CVS is no longer available; the files exist in older Flower Platform repos.
+ * 
+ * The newer version did not worked when using the security manager (java.lang.ClassCircularityError appeared). 
  * We changed to an older servletbridge version as indicated here: 
  * http://www.eclipse.org/forums/index.php?t=msg&goto=127453&S=5647d1811f8b25b9cbb9757fb10ab336
  * 
@@ -67,11 +89,16 @@ import org.eclipse.equinox.servletbridge.FrameworkLauncher;
  * The newer version might be needed if jar connections need to be closed (i.e. to physically delete the jar file).
  * 
  * <p>
- * <strong>NOTE/UPDATE:</strong><br>
- * We needed to modify the original <code>FrameworkLauncher</code> class. Be <strong>CAREFUL</strong> when/if merging with
- * a newer version. Modifications are marked with "MODIF_FROM_ORIGINAL"
+ * <b>V3</b><br/>
+ * From Eclipse's GIT (http://git.eclipse.org/c/equinox/rt.equinox.bundles.git/), at 2014-01-20; this was last git commit:
+ * http://git.eclipse.org/c/equinox/rt.equinox.bundles.git/commit/?id=03ad9b1cfc586b4350185115e94742f78e33d1fe
+ * 
+ * <p>
+ * This version may be newer than V1. However, if we experience problems, we may revert to V2. Or just avoid using {@link CloseableURLClassLoader}, which
+ * may be the source of the exception from above.
  * 
  * @see web.xml for boot parameter details
+ * 
  * @author Cristian Spiescu
  */
 public class FlowerFrameworkLauncher extends FrameworkLauncher {

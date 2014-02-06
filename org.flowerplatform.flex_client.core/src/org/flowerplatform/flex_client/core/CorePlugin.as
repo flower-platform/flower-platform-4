@@ -17,8 +17,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core {
-	import org.flowerplatform.flex_client.core.mindmap.MindMapPerspective;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapService;
+
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
@@ -26,6 +25,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
+	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ClientNodeStatus;
@@ -38,15 +38,14 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.layout.Perspective;
 	
 	/**
-	 * @author Cristi
+	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
 	public class CorePlugin extends AbstractFlowerFlexPlugin {
 		
 		protected static var INSTANCE:CorePlugin;
 		
 		public var serviceLocator:ServiceLocator = new ServiceLocator();
-		
-		public var mindMapService:MindMapService = new MindMapService();
 		
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
@@ -71,11 +70,18 @@ package org.flowerplatform.flex_client.core {
 			}
 			INSTANCE = this;
 				
-			serviceLocator.addService(MindMapService.ID);
+			serviceLocator.addService("nodeService");
+			serviceLocator.addService("freeplaneService");
 			
-			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());
-			
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
 			perspectives.push(new MindMapPerspective());
+			
+			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);	
+			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);	
+//			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
+//			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
 			
 			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
@@ -90,10 +96,6 @@ package org.flowerplatform.flex_client.core {
 //				// on mobile, it's not available
 //				ExternalInterface.addCallback("handleLink", handleLink);
 //			}
-		}
-		
-		override public function start():void {			
-			super.start();			
 		}
 				
 		override protected function registerClassAliases():void {		

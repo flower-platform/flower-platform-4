@@ -22,8 +22,6 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeDragController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeInplaceEditorController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRootController;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeSelectionRenderer;
@@ -33,7 +31,6 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.IModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.LightweightModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.renderer.IRendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.ISelectionController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
@@ -43,7 +40,6 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapRootController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
@@ -65,8 +61,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		public var updateProcessor:NodeUpdateProcessor;
 		
 		private var nodeController:IMindMapModelController;
-		private var rootController:IMindMapRootController;
-				
+			
 		private var nodeDragController:IDragController;
 		private var nodeInplaceEditorController:IInplaceEditorController;
 		private var nodeSelectionController:ISelectionController;
@@ -75,11 +70,9 @@ package org.flowerplatform.flex_client.core.mindmap {
 		private var nodeAbsoluteRectangleController:IAbsoluteLayoutRectangleController;
 		
 		private var nodeChildrenController:IModelChildrenController;
-		private var diagramChildrenController:IModelChildrenController;
+		private var rootModelChildrenController:IModelChildrenController;
 		
 		private var nodeRendererController:IRendererController;
-		
-		private var diagramExtraInfoController:IModelExtraInfoController;
 		private var nodeExtraInfoController:IModelExtraInfoController;
 				
 		public function MindMapEditorDiagramShell() {
@@ -96,13 +89,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 			absoluteLayoutVisualChildrenController = new AbsoluteLayoutVisualChildrenController(this);
 			
 			nodeChildrenController = new NodeChildrenController(this);
-			diagramChildrenController = new MindMapRootModelChildrenController(this);
+			rootModelChildrenController = new MindMapRootModelChildrenController(this);
 			
-			nodeRendererController = new NodeRendererController(this, NodeRenderer);
-			diagramExtraInfoController = new LightweightModelExtraInfoController(this);
-			
-			rootController = new NodeRootController(this);		
-			
+			nodeRendererController = new MindMapModelRendererController(this, NodeRenderer);
+				
 			registerTools([ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool, InplaceEditorTool]);
 		}
 				
@@ -115,14 +105,14 @@ package org.flowerplatform.flex_client.core.mindmap {
 		}
 		
 		public function getAbsoluteLayoutRectangleController(model:Object):IAbsoluteLayoutRectangleController {
-			if (model is Node) {
+			if (model != rootModel) {
 				return nodeAbsoluteRectangleController;
 			}
 			return null;
 		}
 		
 		public function getDragController(model:Object):IDragController {
-			if (model is Node) { 
+			if (model != rootModel) { 
 				return nodeDragController;
 			}
 			return null;
@@ -133,28 +123,28 @@ package org.flowerplatform.flex_client.core.mindmap {
 		}
 		
 		public function getInplaceEditorController(model:Object):IInplaceEditorController {
-			if (model is Node) {
+			if (model != rootModel) {
 				return nodeInplaceEditorController;
 			}
 			return null;
 		}
 		
 		public function getModelChildrenController(model:Object):IModelChildrenController {	
-			if (model is Node) {
-				return nodeChildrenController;
+			if (model == rootModel) {
+				return rootModelChildrenController;
 			}
-			return diagramChildrenController;
+			return nodeChildrenController;
 		}
 		
 		public function getModelExtraInfoController(model:Object):IModelExtraInfoController {
 			if (model is Node) {
 				return nodeExtraInfoController;
 			}
-			return diagramExtraInfoController;			
+			return null;			
 		}
 		
 		public function getRendererController(model:Object):IRendererController {
-			if (model is Node) {
+			if (model != rootModel) {
 				return nodeRendererController;
 			}
 			return null;
@@ -169,22 +159,18 @@ package org.flowerplatform.flex_client.core.mindmap {
 		}
 		
 		public function getSelectionController(model:Object):ISelectionController {
-			if (model is Node) {
+			if (model != rootModel) {
 				return nodeSelectionController;
 			}
 			return null;
 		}
 		
 		public function getVisualChildrenController(model:Object):IVisualChildrenController {			
-			if (model is Diagram) {
+			if (model == rootModel) {
 				return absoluteLayoutVisualChildrenController;
 			} 
 			return null;
 		}
-		
-		public function getMindMapRootController(model:Object):IMindMapRootController {			
-			return rootController;
-		}
-		
+				
 	}
 }

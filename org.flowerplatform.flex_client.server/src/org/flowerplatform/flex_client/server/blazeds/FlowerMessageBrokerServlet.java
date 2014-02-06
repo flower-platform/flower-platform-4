@@ -5,6 +5,13 @@ import javax.servlet.ServletException;
 
 import flex.messaging.MessageBrokerServlet;
 
+/**
+ * The classes from this package, override classes from BlazeDS so that we can
+ * replace the mechanism that reads the configuration files (i.e. {@link DummyServletContext#getResourceAsStream(String)}).
+ * 
+ * @see DummyServletContext#getResourceAsStream(String)
+ * @author Cristian Spiescu
+ */
 public class FlowerMessageBrokerServlet extends MessageBrokerServlet {
 
 	private static final long serialVersionUID = 1L;

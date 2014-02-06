@@ -41,19 +41,20 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		public function ReloadAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.reload");
 			preferShowOnActionBar = true;
+			orderIndex = 100;
 		}
 				
 		override public function get visible():Boolean {			
 			return true;
 		}
 		
-		private function reloadResultHandler(result:ResultEvent):void {			
+		private function reloadCallbackHandler(result:ResultEvent):void {			
 			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(null);
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().mindMapService.reload(reloadResultHandler);
-		}		
+			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, reloadCallbackHandler);			
+		}			
 		
 	}
 }

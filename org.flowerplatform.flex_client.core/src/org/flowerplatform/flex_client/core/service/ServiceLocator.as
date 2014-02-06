@@ -11,6 +11,9 @@ package org.flowerplatform.flex_client.core.service {
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public class ServiceLocator {
 		
 		protected var channelSet:ChannelSet;
@@ -40,8 +43,17 @@ package org.flowerplatform.flex_client.core.service {
 			Alert.show("Error while sending request to server: " + event.fault.faultString + "\n" + event.fault.content);
 		}
 		
-		public function invoke(serviceId:String, methodName:String, parameters:Array = null, resultCallback:Function = null, faultCallback:Function = null):void {
-			var operation:AbstractOperation = getRemoteObject(serviceId).getOperation(methodName);
+		/**
+		 * @author Cristian Spiescu
+		 * @author Cristina Constantinescu
+		 */
+		public function invoke(serviceIdAndMethodName:String, parameters:Array = null, resultCallback:Function = null, faultCallback:Function = null):void {
+			if (serviceIdAndMethodName.indexOf(".") == -1) {
+				throw new Error("serviceIdAndMethodName MUST have the following format: <service_id>.<method_name>!");
+			}
+			var tokens:Array = serviceIdAndMethodName.split(".");
+			
+			var operation:AbstractOperation = getRemoteObject(tokens[0]).getOperation(tokens[1]);
 			var token:AsyncToken = operation.send.apply(operation, parameters);
 			token.addResponder(new ServiceResponder(this, resultCallback, faultCallback));
 		}

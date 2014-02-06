@@ -24,10 +24,9 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
+	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.properties.PropertiesViewProvider;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;

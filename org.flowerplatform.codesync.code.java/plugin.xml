@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+         point="org.flowerplatform.codesync.codeSyncAlgorithmRunner">
+      <codeSyncAlgorithmRunner
+            codeSyncAlgorithmRunnerClass="org.flowerplatform.codesync.code.CodeSyncCodeAlgorithmRunner"
+            id="org.flowerplatform.codesync.code.java.CodeSyncCodeAlgorithmRunner"
+            technology="java">
+      </codeSyncAlgorithmRunner>
+   </extension>
+   
+   <extension
+         point="org.flowerplatform.codesync.code.modelAdapterFactorySet">
+      <modelAdapterFactorySet
+            id="org.flowerplatform.codesync.code.java.JavaModelAdapterFactorySet"
+            technology="java"
+            modelAdapterFactorySetClass="org.flowerplatform.codesync.code.java.adapter.JavaModelAdapterFactorySet">
+      </modelAdapterFactorySet>
+   </extension>
+</plugin>

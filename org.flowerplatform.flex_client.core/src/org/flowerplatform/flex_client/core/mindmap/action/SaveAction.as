@@ -34,6 +34,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		public function SaveAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.save");
 			preferShowOnActionBar = true;
+			orderIndex = 110;
 		}
 				
 		override public function get visible():Boolean {			
@@ -41,7 +42,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().mindMapService.save();
+			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.save");
 		}
 				
 	}

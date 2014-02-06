@@ -21,11 +21,11 @@ import org.eclipse.equinox.servletbridge.flower.ServletConfigWrapperImpl;
 
 //MODIF_FROM_ORIGINAL begin
 /**
-* IMPORTANT !!!
-* see FlowerFrameworkLauncher for details
-* 
-* @author Cristian Spiescu
-*/
+ * IMPORTANT !!!
+ * see FlowerFrameworkLauncher for details
+ * 
+ * @author Cristian Spiescu
+ */
 //MODIF_FROM_ORIGINAL end
 
 /**

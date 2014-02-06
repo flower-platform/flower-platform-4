@@ -52,11 +52,12 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import spark.components.Button;
 	import spark.components.CheckBox;
 	import spark.components.HGroup;
+	import spark.components.Group;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapEditorFrontend extends VBox implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+	public class MindMapEditorFrontend extends Group implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
 		
 		public var diagramShell:DiagramShell;
 			
@@ -102,10 +103,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 			var scroller:InfiniteScroller = new InfiniteScroller();
 			scroller.percentWidth = 100;
 			scroller.percentHeight = 100;
-			addChild(scroller);
+			addElement(scroller);
 			
 			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
-			diagramRenderer.useGrid = false;
+			diagramRenderer.useGrid = false;		
 			scroller.viewport = diagramRenderer;
 			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
 							
@@ -134,19 +135,17 @@ package org.flowerplatform.flex_client.core.mindmap {
 			}
 		}
 		
-		public function getActions(selection:IList):Vector.<IAction> {	
-			var result:Vector.<IAction> = new Vector.<IAction>();
-			
-			var actions:Vector.<IAction> = CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.getActions(selection);			
+		public function getActions(selection:IList):Vector.<IAction> {			
+			var actions:Vector.<IAction> = CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.getActions(selection);	
+
 			if (actions != null) {
 				for each (var action:IAction in actions) {
 					if (action is IDiagramShellAware) {
 						IDiagramShellAware(action).diagramShell = diagramShell;
 					}
-					result.push(action);
 				}
-			}	
-			return result;
+			}
+			return actions;
 		}
 		
 		public function getSelection():IList {			
@@ -160,10 +159,9 @@ package org.flowerplatform.flex_client.core.mindmap {
 		public function get viewHost():IViewHost {
 			return _viewHost;
 		}
-										
+						
 		private function autoRefresh(event:TimerEvent):void {
-			var rootNode:Node = Node(IMindMapControllerProvider(diagramShell.getControllerProvider(diagramShell.rootModel))
-				.getMindMapRootController(diagramShell.rootModel).getMindMapRoot());
+			var rootNode:Node = Node(MindMapEditorDiagramShell(diagramShell).getRoot());
 			MindMapEditorDiagramShell(diagramShell).updateProcessor.checkForNodeUpdates(rootNode);
 		}
 		

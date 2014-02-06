@@ -67,14 +67,13 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			textArea.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void {event.currentTarget.selectAll()});
 			
 			// add to diagram
-			diagramShell.diagramRenderer.addElement(textArea);
-			
+			diagramShell.diagramRenderer.addElement(textArea);			
 			diagramShell.modelToExtraInfoMap[model].inplaceEditor = textArea;
 		}
 		
 		public function commit(model:Object):void {		
 			var textArea:AutoGrowTextArea = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			CorePlugin.getInstance().mindMapService.setProperty(Node(model).id, "body", textArea.text);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model), "body", textArea.text]);
 
 			diagramShell.mainToolFinishedItsJob();
 		}
@@ -91,9 +90,6 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			delete diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
 		}
 		
-		private function getModelController(model:Object):IMindMapModelController {
-			return MindMapDiagramShell(diagramShell).getModelController(model);
-		}
 	}
 	
 }

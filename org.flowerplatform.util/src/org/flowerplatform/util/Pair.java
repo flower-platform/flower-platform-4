@@ -18,6 +18,9 @@
  */
 package org.flowerplatform.util;
 
+/**
+ * @author Cristian Spiescu
+ */
 public class Pair<A, B> {
 	public A a;
 	public B b;

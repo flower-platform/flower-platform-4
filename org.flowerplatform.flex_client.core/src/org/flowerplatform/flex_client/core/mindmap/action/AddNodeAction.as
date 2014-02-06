@@ -38,7 +38,10 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().mindMapService.addNode(Node(selection.getItemAt(0)).id, null);		
+			// TODO MG: replace with specific actions later
+			var child:Node = new Node();
+			child.type = "javaParameter";
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)), child]);		
 		}
 		
 	}
