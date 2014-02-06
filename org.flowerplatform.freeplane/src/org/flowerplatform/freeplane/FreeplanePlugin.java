@@ -21,6 +21,8 @@ import org.osgi.framework.BundleContext;
 
 public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 
+	public static final String FREEPLANE_NODE_TYPE = "freeplaneNode";
+	
 	protected static FreeplanePlugin INSTANCE;
 	
 	public static FreeplanePlugin getInstance() {
@@ -37,7 +39,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		createNodeTypeDescriptor("freeplaneNode");
+		createNodeTypeDescriptor(FREEPLANE_NODE_TYPE);
 		createNodeTypeDescriptor("category.persistence-codeSync");
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());

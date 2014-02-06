@@ -18,18 +18,9 @@
 */
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
-	import flash.events.IEventDispatcher;
-	
-	import mx.collections.ArrayCollection;
-	import mx.rpc.events.ResultEvent;
-	import mx.utils.DescribeTypeCache;
-	import mx.utils.ObjectUtil;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.Diagram;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.action.ActionBase;
 		
 	/**
