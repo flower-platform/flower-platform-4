@@ -79,9 +79,6 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			delete diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
 		}
 		
-		private function getModelController(model:Object):IMindMapModelController {
-			return MindMapDiagramShell(diagramShell).getModelController(model);
-		}
 	}
 	
 }

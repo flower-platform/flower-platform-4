@@ -1,26 +1,30 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* Contributors:
+*   Crispico - Initial API and implementation
+*
+* license-end
+*/
 package org.flowerplatform.flexdiagram.mindmap {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IInvalidating;
+	import mx.core.ILayoutDirectionElement;
 	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
+	import mx.events.PropertyChangeEvent;
+	import mx.olap.aggregators.MaxAggregator;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
@@ -32,9 +36,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 	 */
 	public class MindMapDiagramShell extends DiagramShell {
 		
-		public static const NONE:int = 0;
-		public static const LEFT:int = -1;
-		public static const RIGHT:int = 1;
+		public static const POSITION_LEFT:int = -1;
+		public static const POSITION_RIGHT:int = 1;
 		
 		public static const HORIZONTAL_PADDING_DEFAULT:int = 20;
 		public static const VERTICAL_PADDING_DEFAULT:int = 5;
@@ -42,102 +45,156 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public var horizontalPadding:int = HORIZONTAL_PADDING_DEFAULT;
 		public var verticalPadding:int = VERTICAL_PADDING_DEFAULT;
 		
-		public var diagramChildren:ArrayList = new ArrayList();
-		
-		public function MindMapDiagramShell() {
-			super();			
-		}
-				
 		override public function set rootModel(value:Object):void {
 			super.rootModel = value;
-					
-			refreshDiagramChildren();
-			shouldRefreshVisualChildren(rootModel)
+			
+			shouldRefreshVisualChildren(rootModel);
 		}
 		
-		public function refreshDiagramChildren():void {
-			diagramChildren = new ArrayList();
-			var mindMapRoot:Object = IMindMapControllerProvider(getControllerProvider(rootModel)).getMindMapRootController(rootModel).getMindMapRoot();
-			if (mindMapRoot != null) {
-				addChildren(mindMapRoot);
-				shouldRefreshVisualChildren(rootModel);
-			}			
+		public function getRoot():Object {
+			var children:IList = getControllerProvider(rootModel).getModelChildrenController(rootModel).getChildren(rootModel);
+			if (children == null || children.length == 0) {
+				throw new Error("No root provided!");
+			}
+			return children.getItemAt(0);
 		}
-				
-		public function addChildren(model:Object):void {			
+		
+		public function refreshRootModelChildren():void {			
+			var root:Object = getRoot();
+			// clear old children
+			getDynamicObject(rootModel).children = new ArrayList();
+			// add new children
+			addModelInRootModelChildrenListRecursive(root, true);	
+			// refresh rootModel's visual children
+			shouldRefreshVisualChildren(rootModel);
+		}
+		
+		public function addModelInRootModelChildrenList(model:Object, asRoot:Boolean = false):void {
+			if (getDynamicObject(rootModel).children == null) {
+				getDynamicObject(rootModel).children = new ArrayList();
+			}
+			if (asRoot) {
+				getDynamicObject(rootModel).children.addItemAt(model, 0);
+			} else {
+				getDynamicObject(rootModel).children.addItem(model);
+			}
+		}
+		
+		protected function addModelInRootModelChildrenListRecursive(model:Object, asRoot:Boolean = false):void {			
 			if (getModelController(model).getExpanded(model)) {
 				var children:IList = getModelController(model).getChildren(model);
 				for (var i:int = 0; i < children.length; i++) {
-					addChildren(children.getItemAt(i));
-				}				
+					addModelInRootModelChildrenListRecursive(children.getItemAt(i));
+				}
 			}
-			diagramChildren.addItem(model);		
+			addModelInRootModelChildrenList(model, asRoot);				
 		}
 		
 		public function getModelController(model:Object):IMindMapModelController {
 			return IMindMapControllerProvider(getControllerProvider(model)).getMindMapModelController(model);
 		}
 		
-		private function getDynamicObject(model:Object):Object {
+		public function getDynamicObject(model:Object):Object {
 			return DynamicModelExtraInfoController(getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
 		}
 		
-		private function getExpandedHeight(model:Object):Number {
-			var expandedHeight:Number = getDynamicObject(model).expandedHeight;
-			if (isNaN(expandedHeight)) {
-				expandedHeight = getModelController(model).getHeight(model);
+		private function getInitialPropertyValue(model:Object, property:String):Object {
+			switch (property) {								
+				case "width":
+					return 10;	// minWidth
+				case "height":
+					return 22;	// minHeight
+				case "expandedY":
+					return getPropertyValue(model, "y");					
+				case "expandedHeight":
+					return getPropertyValue(model, "height");
+				default:
+					return 0;
 			}
-			return expandedHeight;
 		}
 		
-		private function getExpandedY(model:Object):Number {
-			var expandedY:Number = getDynamicObject(model).expandedY;
-			if (isNaN(expandedY)) {
-				expandedY = model.y;
+		public function getPropertyValue(model:Object, property:String):Number {
+			if (isNaN(getDynamicObject(model)[property])) {				
+				getDynamicObject(model)[property] = getInitialPropertyValue(model, property);
 			}
-			return expandedY;
+			return getDynamicObject(model)[property];			
 		}
-				
-		public function refreshNodePositions(model:Object):void {			
-			var oldExpandedHeight:Number = getExpandedHeight(model);
-			var oldExpandedHeightLeft:Number = getDynamicObject(model).expandedHeightLeft;			
-			var oldExpandedHeightRight:Number = getDynamicObject(model).expandedHeightRight;
+		
+		public function setPropertyValue(model:Object, property:String, value:Object):void {	
+			var oldValue:Number = getDynamicObject(model)[property];
 			
-			calculateRootNodeExpandedHeight(getModelController(model).getSide(model));
+			getDynamicObject(model)[property] = value;
+			
+			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(model, property, oldValue, value));
+		}
 		
+		protected function getChildrenBasedOnSide(model:Object, side:int = 0):IList {
+			if (side == 0) {
+				side = getModelController(model).getSide(model);
+			}
+			
+			var list:ArrayList = new ArrayList();	
+			var children:IList = getModelController(model).getChildren(model);
+			if (children != null) {
+				for (var i:int = 0; i < children.length; i++) {
+					var child:Object = children.getItemAt(i);
+					if (side == 0 || side == getModelController(child).getSide(child)) {
+						list.addItem(child);
+					}
+				}
+			}
+			return list;
+		}
+		
+		public function refreshModelPositions(model:Object):void {			
+			var oldExpandedHeight:Number = getPropertyValue(model, "expandedHeight");
+			var oldExpandedHeightLeft:Number = getPropertyValue(model, "expandedHeightLeft");		
+			var oldExpandedHeightRight:Number = getPropertyValue(model, "expandedHeightRight");
+			
 			var side:int = getModelController(model).getSide(model);
-			if (side == NONE || side == LEFT) {
-				if (side == NONE) {
-					getDynamicObject(model).expandedHeight = getDynamicObject(model).expandedHeightLeft;
+			var isRoot:Boolean = getModelController(model).isRoot(model);			
+			
+			calculateRootExpandedHeight(side);
+			
+			if (isRoot || side == POSITION_LEFT) {						
+				if (isRoot) {										
 					oldExpandedHeight = oldExpandedHeightLeft;
 				}			
-				changeCoordinates(model, oldExpandedHeight, getExpandedHeight(model), side == NONE ? LEFT : side);
+				changeCoordinates(model, oldExpandedHeight, getPropertyValue(model, "expandedHeight"), POSITION_LEFT);
 			}
-			if (side == NONE || side == RIGHT) { 
-				if (side == NONE) {
-					getDynamicObject(model).expandedHeight = getDynamicObject(model).expandedHeightRight;
+			if (isRoot || side == POSITION_RIGHT) {
+				if (isRoot) {								
 					oldExpandedHeight = oldExpandedHeightRight;
 				}				
-				changeCoordinates(model, oldExpandedHeight, getExpandedHeight(model), side == NONE ? RIGHT : side);
+				changeCoordinates(model, oldExpandedHeight, getPropertyValue(model, "expandedHeight"), POSITION_RIGHT);
 			}
 		}
 		
-		private function calculateRootNodeExpandedHeight(side:int):void {
-			var model:Object = IMindMapControllerProvider(getControllerProvider(rootModel)).getMindMapRootController(rootModel).getMindMapRoot();
-			if (side == NONE || side == LEFT) { 
-				calculateExpandedHeight(model, LEFT);
-				getDynamicObject(model).expandedHeightLeft = getExpandedHeight(model);
+		/**
+		 * Recalculates all <code>expandedHeight</code> starting from root model.
+		 * This is done only for a specific size (left/right).
+		 * <p>
+		 * Used when getting delta to re-arrange model siblings.
+		 * @see changeCoordinates
+		 */ 
+		private function calculateRootExpandedHeight(side:int):void {
+			var model:Object = getRoot();
+			var isRoot:Boolean = getModelController(model).isRoot(model);			
+			
+			if (isRoot || side == POSITION_LEFT) {
+				calculateExpandedHeight(model, POSITION_LEFT);
+				setPropertyValue(model, "expandedHeightLeft", getPropertyValue(model, "expandedHeight"));				
 			}
-			if (side == NONE || side == RIGHT) { 
-				calculateExpandedHeight(model, RIGHT);
-				getDynamicObject(model).expandedHeightRight = getExpandedHeight(model);
+			if (isRoot || side == POSITION_RIGHT) {
+				calculateExpandedHeight(model, POSITION_RIGHT);
+				setPropertyValue(model, "expandedHeightRight", getPropertyValue(model, "expandedHeight"));				
 			}
 		}
 		
 		private function calculateExpandedHeight(model:Object, side:int):Number {			
 			var expandedHeight:Number = 0;
-			var children:IList = getModelController(model).getChildrenBasedOnSide(model, side);
-			if (getModelController(model).getExpanded(model) && children.length > 0) {
+			var children:IList = getChildrenBasedOnSide(model, side);
+			if (getModelController(model).getExpanded(model)) {
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
 					expandedHeight += calculateExpandedHeight(child, side);
@@ -145,74 +202,102 @@ package org.flowerplatform.flexdiagram.mindmap {
 						expandedHeight += verticalPadding;
 					}
 				}
+				setPropertyValue(model, "expandedHeight", expandedHeight);
+				expandedHeight = Math.max(expandedHeight, getPropertyValue(model, "height"));				
 			} else {
-				expandedHeight = getModelController(model).getHeight(model);				
-			}
-			getDynamicObject(model).expandedHeight = expandedHeight;
+				expandedHeight = getPropertyValue(model, "height");
+				// for collapse models, the expandedHeight must be 0
+				setPropertyValue(model, "expandedHeight", 0);
+			}			
 			return expandedHeight;
 		}
 		
-		private function changeCoordinates(model:Object, oldExpandedHeight:Number, newExpandedHeight:Number, side:int):void {			
-			getDynamicObject(model).expandedY = getModelController(model).getY(model) - (newExpandedHeight - getModelController(model).getHeight(model))/2;
-			
-			changeChildrenCoordinates(model, side, true);				
-			changeSiblingsCoordinates(model, (newExpandedHeight - oldExpandedHeight)/2, side);
+		private function changeCoordinates(model:Object, oldExpandedHeight:Number, newExpandedHeight:Number, side:int):void {
+			changeChildrenCoordinates(model, side, true);	
+
+			var delta:Number = 0;
+							
+			if (newExpandedHeight != 0 && newExpandedHeight < getPropertyValue(model, "height")) {
+				
+			} else {
+				var diff:Number = 0;
+				if (newExpandedHeight == 0) {
+					if (oldExpandedHeight > getPropertyValue(model, "height")) {						
+						diff = (getPropertyValue(model, "height") - oldExpandedHeight)/2;
+					}					
+				} else if (oldExpandedHeight == 0) {
+					diff = (newExpandedHeight - getPropertyValue(model, "height"))/2;
+				} else {
+					diff = (newExpandedHeight - oldExpandedHeight)/2;
+				}
+				if (diff != 0) {
+					changeSiblingsCoordinates(model, diff, side);
+				}
+			}
 			getDynamicObject(model).shouldRefreshPosition = false;
 		}		
 		
-		private function changeChildrenCoordinates(model:Object, side:int, changeOnlyForChildren:Boolean = false):void {	
-			if (!changeOnlyForChildren) {	
-				getModelController(model).setY(model, getExpandedY(model) + (getExpandedHeight(model) - getModelController(model).getHeight(model))/2);		
-				var parent:Object = getControllerProvider(model).getModelChildrenController(model).getParent(model);
-				if (parent != null) {
-					if (getModelController(model).getSide(model) == LEFT) {
-						getModelController(model).setX(model, getModelController(parent).getX(parent) - getModelController(model).getWidth(model) - horizontalPadding);	
-					} else {					
-						getModelController(model).setX(model, getModelController(parent).getX(parent) + getModelController(parent).getWidth(parent) + horizontalPadding);				
-					}
-				}
-			} else {
-				getDynamicObject(model).expandedY = getModelController(model).getY(model) - (getExpandedHeight(model) - getModelController(model).getHeight(model))/2;		
+		private function changeChildrenCoordinates(model:Object, side:int, changeOnlyChildrenCoordinates:Boolean = false):void {
+			if (changeOnlyChildrenCoordinates && getPropertyValue(model, "expandedHeight") == 0) {
+				return;
 			}
-			if (getModelController(model).getExpanded(model)) {				
-				var children:IList = getModelController(model).getChildrenBasedOnSide(model, side);				
+			if (changeOnlyChildrenCoordinates) {
+				setPropertyValue(model, "expandedY", getPropertyValue(model, "y") + (getPropertyValue(model, "height") - getPropertyValue(model, "expandedHeight"))/2);	
+			} else {
+				if (getPropertyValue(model, "expandedHeight") == 0) {
+					setPropertyValue(model, "y", getPropertyValue(model, "expandedY"));					
+				} else {
+					setPropertyValue(model, "y", getPropertyValue(model, "expandedY") + (getPropertyValue(model, "height") - getPropertyValue(model, "expandedHeight"))/2);	
+				}
+				var parent:Object = getControllerProvider(model).getModelChildrenController(model).getParent(model);
+				if (parent != null) {					
+					if (getModelController(model).getSide(model) == POSITION_LEFT) {
+						setPropertyValue(model, "x", getPropertyValue(parent, "x") - getPropertyValue(model, "width") - horizontalPadding);							
+					} else {	
+						setPropertyValue(model, "x", getPropertyValue(parent, "x") + getPropertyValue(parent, "width") + horizontalPadding);															
+					}
+				}				
+			}
+			
+			if (getModelController(model).getExpanded(model)) {
+				var children:IList = getChildrenBasedOnSide(model, side);				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
 					if (i == 0) {
-						getDynamicObject(child).expandedY = getExpandedY(model);						
+						setPropertyValue(child, "expandedY", getPropertyValue(model, "expandedY"));										
 					} else {
 						var previousChild:Object = children.getItemAt(i - 1);
-						getDynamicObject(child).expandedY = getExpandedY(previousChild) + getExpandedHeight(previousChild) + verticalPadding;
+						setPropertyValue(child, "expandedY", getPropertyValue(previousChild, "expandedY") + Math.max(getPropertyValue(previousChild, "expandedHeight"), getPropertyValue(previousChild, "height")) + verticalPadding);						
 					}					
 					changeChildrenCoordinates(child, side);			
 				}				
 			}
 		}
 		
-		private function changeSiblingsCoordinates(model:Object, diff:Number, side:int):void {
+		private function changeSiblingsCoordinates(model:Object, delta:Number, side:int):void {			
 			var parent:Object = getControllerProvider(model).getModelChildrenController(model).getParent(model);
-			if (parent != null) {
-				var children:IList = getModelController(model).getChildrenBasedOnSide(parent, side);				
+			if (parent != null) {				
+				var children:IList = getChildrenBasedOnSide(parent, side);				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
-					if (children.getItemIndex(model) > children.getItemIndex(child)) {				
-						getModelController(child).setY(child, getModelController(child).getY(child) - diff);					
-						changeSiblingChildrenCoordinates(child, -diff, side);
+					if (children.getItemIndex(model) > children.getItemIndex(child)) {		
+						setPropertyValue(child, "y", getPropertyValue(child, "y") - delta);										
+						changeSiblingChildrenCoordinates(child, - delta, side);
 					} else if (children.getItemIndex(model) < children.getItemIndex(child)) {
-						getModelController(child).setY(child, getModelController(child).getY(child) + diff);					
-						changeSiblingChildrenCoordinates(child, diff, side);
-					}
+						setPropertyValue(child, "y", getPropertyValue(child, "y") + delta);								
+						changeSiblingChildrenCoordinates(child, delta, side);						
+					}					
 				}
-				changeSiblingsCoordinates(parent, diff, side);
-			}
+				changeSiblingsCoordinates(parent, delta, side);
+			}			
 		}
 		
-		private function changeSiblingChildrenCoordinates(model:Object, diff:Number, side:int):void {
-			var children:IList = getModelController(model).getChildrenBasedOnSide(model, side);				
+		private function changeSiblingChildrenCoordinates(model:Object, delta:Number, side:int):void {
+			var children:IList = getChildrenBasedOnSide(model, side);				
 			for (var i:int = 0; i < children.length; i++) {
 				var child:Object = children.getItemAt(i);
-				getModelController(child).setY(child, getModelController(child).getY(child) + diff);					
-				changeSiblingChildrenCoordinates(child, diff, side);
+				setPropertyValue(child, "y", getPropertyValue(child, "y") + delta);					
+				changeSiblingChildrenCoordinates(child, delta, side);
 			}
 		}
 		

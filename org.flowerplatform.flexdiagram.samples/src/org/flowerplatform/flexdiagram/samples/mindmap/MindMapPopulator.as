@@ -31,7 +31,6 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			var rootModel:ParentAwareArrayList = modelHolder.rootModel;
 			if (rootModel == null) {
 				rootModel = new ParentAwareArrayList(null);
-				rootModel.parent = rootModel;
 			}
 			
 			var model:SampleMindMapModel = getMindMapModel(rootModel);
@@ -43,7 +42,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			rootModel.addItem(model);
 			
 			var child2:SampleMindMapModel = getMindMapModel(model);	
-			child2.side = MindMapDiagramShell.LEFT;
+			child2.side = MindMapDiagramShell.POSITION_LEFT;
 			for (var i:int = 0; i < 10; i++) {
 				child2.children.addItem(getMindMapModel(child2));
 			}
@@ -54,7 +53,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			model.hasChildren = true;
 			
 			var child:SampleMindMapModel = getMindMapModel(model);
-			child.side = MindMapDiagramShell.RIGHT;
+			child.side = MindMapDiagramShell.POSITION_RIGHT;
 			for (var i:int = 0; i < 10; i++) {
 				child.children.addItem(getMindMapModel(child));
 			}
@@ -67,7 +66,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			model.children.addItem(child);
 			
 			var child1:SampleMindMapModel = getMindMapModel(model);	
-			child1.side = MindMapDiagramShell.RIGHT;
+			child1.side = MindMapDiagramShell.POSITION_RIGHT;
 			child1.children.addItem(getMindMapModel(child1));
 			child1.hasChildren = true;
 			child1.parent = model;				
@@ -101,10 +100,11 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			if (parent is SampleMindMapModel && parent != null && parent.side != 0) {
 				model.side = parent.side;
 			} else if (parent is SampleMindMapModel && parent != null) {
-				model.side = MindMapDiagramShell.LEFT;
+				model.side = MindMapDiagramShell.POSITION_LEFT;
 			}
-			model.parent = parent;
-			
+			if (!(parent is ParentAwareArrayList)) {
+				model.parent = parent;
+			}
 			return model;
 		}
 	}

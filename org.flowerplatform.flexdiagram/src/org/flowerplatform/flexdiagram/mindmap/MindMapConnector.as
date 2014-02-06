@@ -64,7 +64,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var sourcePoint:Point;
 			var targetPoint:Point;
 			
-			if (getDiagramShell().getModelController(source).getSide(source) == MindMapDiagramShell.LEFT) {
+			if (getDiagramShell().getModelController(source).getSide(source) == MindMapDiagramShell.POSITION_LEFT) {
 				sourcePoint = new Point(sourceBounds[0] + sourceBounds[2], sourceBounds[1] + sourceBounds[3]/2);
 				targetPoint = new Point(targetBounds[0], targetBounds[1] + targetBounds[3]/2);
 				graphics.moveTo(sourcePoint.x, sourcePoint.y);
@@ -138,9 +138,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 				var rect:Rectangle = controller.getBounds(model);
 				return [rect.x, rect.y, rect.width, rect.height];
 			} else {
-				// renderer on screen => provide real data from renderer
-				var modelController:IMindMapModelController = IMindMapControllerProvider(getDiagramShell().getControllerProvider(model)).getMindMapModelController(model);				
-				return [modelController.getX(model), modelController.getY(model), modelController.getWidth(model), modelController.getHeight(model)];
+				// renderer on screen => provide real data from renderer							
+				return [getDiagramShell().getPropertyValue(model, "x"), getDiagramShell().getPropertyValue(model, "y"), getDiagramShell().getPropertyValue(model, "width"), getDiagramShell().getPropertyValue(model, "height")];
 			}
 		}
 	}
