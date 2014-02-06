@@ -8,6 +8,8 @@ import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.util.Pair;
+import org.freeplane.features.attribute.Attribute;
+import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.NodeModel;
 
 /**
@@ -33,7 +35,14 @@ public class FreeplaneChildrenProvider extends ChildrenProvider {
 	public Node getEmptyNode(NodeModel nodeModel) {
 		Node node = new Node();
 		node.setId(nodeModel.createID());
-		node.setType("freeplaneNode");		
+		// get type from attributes table
+		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
+		for (Attribute attribute : attributeTable.getAttributes()) {
+			if (attribute.getName().equals("type")) {
+				node.setType((String) attribute.getValue());
+				break;
+			}
+		}
 		return node;
 	}
 	

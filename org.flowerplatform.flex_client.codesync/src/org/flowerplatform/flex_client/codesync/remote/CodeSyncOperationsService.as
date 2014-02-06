@@ -16,23 +16,18 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.properties.remote {
-
+package org.flowerplatform.flex_client.codesync.remote {
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	
 	/**
-	 * @author Razvan Tache
-	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
-	[Bindable]
-	[RemoteClass(alias="org.flowerplatform.core.node.remote.Property")]	
-	public class Property {
-
-		public var name:String;
+	public class CodeSyncOperationsService {
 		
-		public var value:Object;
+		public static const ID:String = "codeSyncOperationsService";
 		
-		public var readOnly:Boolean;
-		
-		public var type:String;
-		
+		public function synchronize(path:String, technology:String):void {
+			CorePlugin.getInstance().serviceLocator.invoke(ID + ".synchronize", [path, technology]);
+		}
 	}
 }
