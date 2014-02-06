@@ -58,4 +58,10 @@ public class Node {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public String toString() {
+		return String.format("Node [body = %s, type = %s]", 
+				getOrCreateProperties().get("body"), type);
+	}
+	
 }

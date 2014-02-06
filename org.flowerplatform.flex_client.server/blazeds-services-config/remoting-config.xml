@@ -15,7 +15,13 @@
         </properties>
     </destination>
     
-     <destination id="freeplaneService">
+    <destination id="codeSyncOperationsService">
+        <properties>
+            <source>org.flowerplatform.codesync.remote.CodeSyncOperationsService</source>
+        </properties>
+    </destination>
+    
+    <destination id="freeplaneService">
         <properties>
             <source>org.flowerplatform.freeplane.remote.FreeplaneService</source>
         </properties>
