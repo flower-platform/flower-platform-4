@@ -36,12 +36,18 @@ public class FreeplaneChildrenProvider extends ChildrenProvider {
 		Node node = new Node();
 		node.setId(nodeModel.createID());
 		// get type from attributes table
-		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(nodeModel);
-		for (Attribute attribute : attributeTable.getAttributes()) {
-			if (attribute.getName().equals("type")) {
-				node.setType((String) attribute.getValue());
-				break;
+		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);
+		if (attributeTable != null) {
+			for (Attribute attribute : attributeTable.getAttributes()) {
+				if (attribute.getName().equals("type")) {
+					node.setType((String) attribute.getValue());
+					break;
+				}
 			}
+		}
+		if (node.getType() == null) { 
+			// no type provided, maybe this node is provided by a random .mm file, so set type to freeplaneNode
+			node.setType(FreeplanePlugin.FREEPLANE_NODE_TYPE);
 		}
 		return node;
 	}
