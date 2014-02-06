@@ -28,7 +28,7 @@ import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 
 /**
  * @author Mariana Gheorghe

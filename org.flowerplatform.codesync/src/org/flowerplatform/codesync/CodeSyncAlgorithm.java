@@ -34,8 +34,8 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
-import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
+import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 
 /**
  * 
@@ -360,7 +360,7 @@ public class CodeSyncAlgorithm {
 	
 	private TypeDescriptor getDescriptor(Object object) {
 		String type = typeProvider.getType(object);
-		return typeDescriptorRegistry.getExpectedNodeTypeDescriptor(type);
+		return typeDescriptorRegistry.getExpectedTypeDescriptor(type);
 	}
 	
 }

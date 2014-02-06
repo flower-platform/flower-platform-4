@@ -20,12 +20,12 @@ package org.flowerplatform.codesync.feature_provider;
 
 import java.util.List;
 
-import org.flowerplatform.util.type_descriptor.OrderedElement;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Mariana
  */
-public abstract class FeatureProvider extends OrderedElement {
+public abstract class FeatureProvider extends AbstractController {
 	
 	public static final String FEATURE_PROVIDER = "featureProvider";
 

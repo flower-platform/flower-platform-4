@@ -17,8 +17,8 @@ import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.util.Pair;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
-import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
+import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class NodeService {
 	}
 
 	public List<Node> getChildren(Node node, boolean populateProperties) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
@@ -77,7 +77,7 @@ public class NodeService {
 	
 	@SuppressWarnings("unchecked")
 	protected void populateNode(Node node, Object rawNodeData) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -92,7 +92,7 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public List<PropertyDescriptor> getPropertyDescriptors(String type) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(type);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(type);
 		if (descriptor == null) {
 			return Collections.emptyList();
 		}
@@ -101,7 +101,7 @@ public class NodeService {
 	}
 	
 	public void setProperty(Node node, String property, Object value) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -116,7 +116,7 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public void unsetProperty(Node node, String property) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -128,7 +128,7 @@ public class NodeService {
 	}
 	
 	public void addChild(Node node, Node child) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -140,7 +140,7 @@ public class NodeService {
 	}
 	
 	public void removeChild(Node node, Node child) {
-		TypeDescriptor descriptor = registry.getExpectedNodeTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}

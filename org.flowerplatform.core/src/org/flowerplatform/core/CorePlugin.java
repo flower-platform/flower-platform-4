@@ -21,8 +21,8 @@ package org.flowerplatform.core;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
 import org.osgi.framework.BundleContext;
 
 /**

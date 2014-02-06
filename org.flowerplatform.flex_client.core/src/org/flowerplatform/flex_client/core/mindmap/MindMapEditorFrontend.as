@@ -127,14 +127,13 @@ package org.flowerplatform.flex_client.core.mindmap {
 		}
 		
 		private function getChildrenForNodeIdCallbackHandler(node:Node, result:ResultEvent):void {
-			var diagram:Diagram = new Diagram();
+			var rootModel:Node = new Node();	
+			diagramShell.rootModel = rootModel;	
 			
-			var node:Node = Node(result.result.getItemAt(0));
-			node.side = MindMapDiagramShell.NONE;
-			diagram.rootNode = node;
-					
-			diagramShell.rootModel = diagram;			
-			IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, true);			
+			MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(ArrayCollection(result.result).getItemAt(0), true);
+						
+			var root:Node = Node(MindMapDiagramShell(diagramShell).getRoot());
+			IMindMapControllerProvider(diagramShell.getControllerProvider(root)).getMindMapModelController(root).setExpanded(root, true);			
 		}
 	}
 }

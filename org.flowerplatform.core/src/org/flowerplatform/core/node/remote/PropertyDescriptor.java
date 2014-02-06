@@ -18,13 +18,13 @@
  */
 package org.flowerplatform.core.node.remote;
 
-import org.flowerplatform.util.type_descriptor.OrderedElement;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
  */
-public class PropertyDescriptor extends OrderedElement {
+public class PropertyDescriptor extends AbstractController {
 	
 	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	

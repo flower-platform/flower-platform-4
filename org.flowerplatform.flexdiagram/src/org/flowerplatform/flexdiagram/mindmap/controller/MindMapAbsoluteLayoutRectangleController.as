@@ -35,12 +35,12 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		}
 		
 		public function getBounds(model:Object):Rectangle {
-			var modelController:IMindMapModelController = MindMapDiagramShell(diagramShell).getModelController(model);
+			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
 			return new Rectangle(
-				modelController.getX(model), 
-				modelController.getY(model), 
-				modelController.getWidth(model), 
-				modelController.getHeight(model));
+				diagramShell.getPropertyValue(model, "x"), 
+				diagramShell.getPropertyValue(model, "y"), 
+				diagramShell.getPropertyValue(model, "width"), 
+				diagramShell.getPropertyValue(model, "height"));
 		}
 		
 	}

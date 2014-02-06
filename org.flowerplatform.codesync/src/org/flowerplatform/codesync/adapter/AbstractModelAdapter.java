@@ -26,14 +26,14 @@ import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.type_descriptor.OrderedElement;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * Convenience implementation.
  * 
  * @author Mariana Gheorghe
  */
-public abstract class AbstractModelAdapter extends OrderedElement implements IModelAdapter {
+public abstract class AbstractModelAdapter extends AbstractController implements IModelAdapter {
 
 	public static final String MODEL_ADAPTER_ANCESTOR = "modelAdapterAncestor";
 	public static final String MODEL_ADAPTER_LEFT = "modelAdapterLeft";
