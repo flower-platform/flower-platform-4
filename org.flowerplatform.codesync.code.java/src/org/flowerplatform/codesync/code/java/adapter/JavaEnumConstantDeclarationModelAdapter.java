@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
 /**
  * Mapped to {@link EnumConstantDeclaration}. Children are enum constant arguments (i.e. {@link Expression}).
@@ -72,7 +73,7 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (JavaEnumConstantDeclarationFeatureProvider.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
 			EnumConstantDeclaration parent = (EnumConstantDeclaration) element;
 			AST ast = parent.getAST();
@@ -80,7 +81,7 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 			parent.arguments().add(arg);
 			return arg;
 		}
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 
 	@Override

@@ -16,12 +16,11 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code.adapter;
+package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
 
 import org.flowerplatform.codesync.FilteredIterable;
-import org.flowerplatform.codesync.adapter.NodeModelAdapter;
 import org.flowerplatform.core.node.remote.Node;
 
 /**

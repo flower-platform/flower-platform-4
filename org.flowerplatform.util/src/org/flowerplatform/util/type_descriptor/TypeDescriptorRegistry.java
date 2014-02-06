@@ -53,14 +53,20 @@ public class TypeDescriptorRegistry {
 				continue;
 			}
 			Pair<Object, Boolean> categoryPair = categoryDescriptor.getController(controllerType);
-			if (pair.b) {
-				throw new RuntimeException(String.format(
-						"Node with type %s registered multiple categories with controllers of type %s", null, controllerType));
+			if (categoryPair.a != null) {
+				pair.a = categoryPair.a;
+				if (pair.b) {
+					throw new RuntimeException(String.format(
+							"Node with type %s registered multiple categories with controllers of type %s", null, controllerType));
+				}
+				pair.b = true;
 			}
-			pair.a = categoryPair.a;
-			pair.b = true;
 		}
 		
+		// a controller was found
+		if (pair.a != null) {
+			pair.b = true;
+		}
 		// nobody registered a controller for this type
 		if (!pair.b) {
 			throw new RuntimeException("No controller of type " + controllerType);

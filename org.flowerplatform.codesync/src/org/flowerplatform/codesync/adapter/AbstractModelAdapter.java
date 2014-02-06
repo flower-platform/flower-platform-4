@@ -21,42 +21,24 @@ package org.flowerplatform.codesync.adapter;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.type_descriptor.OrderedElement;
 
 /**
  * Convenience implementation.
  * 
  * @author Mariana Gheorghe
  */
-public abstract class AbstractModelAdapter implements IModelAdapter {
+public abstract class AbstractModelAdapter extends OrderedElement implements IModelAdapter {
 
-	protected String type;
+	public static final String MODEL_ADAPTER_ANCESTOR = "modelAdapterAncestor";
+	public static final String MODEL_ADAPTER_LEFT = "modelAdapterLeft";
+	public static final String MODEL_ADAPTER_RIGHT = "modelAdapterRight";
 	
-	private ModelAdapterFactorySet modelAdapterFactorySet;
-	
-	@Override
-	public String getType() {
-		return type;
-	}
-
-	@Override
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	@Override
-	public ModelAdapterFactorySet getModelAdapterFactorySet() {
-		return modelAdapterFactorySet;
-	}
-	
-	@Override
-	public IModelAdapter setModelAdapterFactorySet(ModelAdapterFactorySet modelAdapterFactorySet) {
-		this.modelAdapterFactorySet = modelAdapterFactorySet;
-		return this;
-	}
-
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		throw new IllegalArgumentException("Attempted to acces value feature " + feature + " for element " + element);
@@ -73,7 +55,7 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + element);
 	}
 
@@ -108,7 +90,7 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 
 	@Override
-	public void actionPerformed(Object element, Object feature, ActionResult result) {
+	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 

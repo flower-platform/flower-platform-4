@@ -18,18 +18,24 @@
  */
 package org.flowerplatform.codesync;
 
+import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
+import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
+import org.flowerplatform.codesync.adapter.NodeModelAdapterLeft;
 import org.flowerplatform.codesync.controller.CodeSyncAddNodeController;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
@@ -88,7 +94,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 
 	protected ComposedFullyQualifiedNameProvider fullyQualifiedNameProvider;
 	
-	protected ComposedCodeSyncAlgorithmRunner codeSyncAlgorithmRunner;
+	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
 	
 	protected NodeService nodeService = (NodeService) CorePlugin.getInstance()
 			.getServiceRegistry().getService("nodeService");
@@ -138,8 +144,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return fullyQualifiedNameProvider;
 	}
 	
-	public ComposedCodeSyncAlgorithmRunner getCodeSyncAlgorithmRunner() {
-		return codeSyncAlgorithmRunner;
+	public void addTypeProvider(String technology, ITypeProvider typeProvider) {
+		typeProviders.put(technology, typeProvider);
+	}
+	
+	public ITypeProvider getTypeProvider(String technology) {
+		return typeProviders.get(technology);
 	}
 	
 	public NodeService getNodeService() {
@@ -228,12 +238,16 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		super.start(context);
 		INSTANCE = this;
 		
+		addTypeProvider("node", new NodeTypeProvider());
+		
 		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("category.codeSync");
 		codeSyncDescriptor.addControllerToList(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
 		codeSyncDescriptor.addControllerToList(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
 		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("name").setReadOnlyAs(false));
 		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("added"));
 		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("removed"));
+		codeSyncDescriptor.addController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());
+		codeSyncDescriptor.addController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());
@@ -344,9 +358,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			}
 //		});
 
-		// give the codeSyncExtension the signal to register their own runnable descriptors
-		initializeExtensionPoint_codeSyncAlgorithmRunner();
-		
 //		// needs custom descriptor because it uses the builder template (i.e. setters return the instance)
 //		new CustomSerializationDescriptor(CodeSyncElementDescriptor.class)
 //			.addDeclaredProperty("codeSyncType")
@@ -383,19 +394,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			.addDeclaredProperty("targetLabel")
 //			.addDeclaredProperty("targetIconUrl")
 //			.register();
-	}
-	
-	private void initializeExtensionPoint_codeSyncAlgorithmRunner() throws CoreException {
-		codeSyncAlgorithmRunner = new ComposedCodeSyncAlgorithmRunner();
-		IConfigurationElement[] configurationElements = 
-				Platform.getExtensionRegistry().getConfigurationElementsFor("org.flowerplatform.codesync.codeSyncAlgorithmRunner");
-		for (IConfigurationElement configurationElement : configurationElements) {
-			String id = configurationElement.getAttribute("id");
-			String technology = configurationElement.getAttribute("technology");
-			Object instance = configurationElement.createExecutableExtension("codeSyncAlgorithmRunnerClass");
-			codeSyncAlgorithmRunner.addRunner(technology, (ICodeSyncAlgorithmRunner) instance);
-			logger.debug("Added CodeSync algorithm runner with id = {} with class = {}", id, instance.getClass());
-		}
 	}
 	
 //	/**

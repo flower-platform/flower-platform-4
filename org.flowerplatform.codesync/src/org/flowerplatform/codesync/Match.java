@@ -18,13 +18,12 @@
  */
 package org.flowerplatform.codesync;
 
+import static org.flowerplatform.codesync.CodeSyncAlgorithm.UNDEFINED;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.codesync.adapter.IModelAdapter;
-import org.flowerplatform.codesync.adapter.ModelAdapterFactorySet;
-
-import static org.flowerplatform.codesync.CodeSyncAlgorithm.UNDEFINED;
 
 /**
  * 
@@ -218,18 +217,18 @@ public class Match {
 	 * @author Cristi
 	 * @author Mariana
 	 */
-	public Object[] getDelegateAndModelAdapter(ModelAdapterFactorySet factorySet) {
+	public Object[] getDelegateAndModelAdapter(CodeSyncAlgorithm algorithm) {
 		Object delegate = null;
 		IModelAdapter modelAdapter = null;
 		if (getAncestor() != null && !getAncestor().equals(CodeSyncAlgorithm.UNDEFINED)) {
 			delegate = getAncestor();
-			modelAdapter = factorySet.getAncestorFactory().getModelAdapter(delegate);
+			modelAdapter = algorithm.getAncestorModelAdapter(delegate);
 		} else if (getLeft() != null && !getLeft().equals(CodeSyncAlgorithm.UNDEFINED)) {
 			delegate = getLeft();
-			modelAdapter = factorySet.getLeftFactory().getModelAdapter(delegate);
+			modelAdapter = algorithm.getLeftModelAdapter(delegate);
 		} else if (getRight() != null && !getRight().equals(CodeSyncAlgorithm.UNDEFINED)) {
 			delegate = getRight();
-			modelAdapter = factorySet.getRightFactory().getModelAdapter(delegate);
+			modelAdapter = algorithm.getRightModelAdapter(delegate);
 		}
 		
 		if (delegate == null)
@@ -312,7 +311,7 @@ public class Match {
 	public void addSubMatch(Match subMatch) {
 		getSubMatches().add(subMatch);
 		subMatch.parentMatch = this;
-		subMatch.modelAdapterFactorySet = modelAdapterFactorySet;
+		subMatch.codeSyncAlgorithm = codeSyncAlgorithm;
 		
 		int nMatch = 0;
 		if (getAncestor() != null)
@@ -545,14 +544,14 @@ public class Match {
 		return true;
 	}
 	
-	private ModelAdapterFactorySet modelAdapterFactorySet;
+	private CodeSyncAlgorithm codeSyncAlgorithm;
 	
-	public ModelAdapterFactorySet getModelAdapterFactorySet() {
-		return modelAdapterFactorySet;
+	public CodeSyncAlgorithm getCodeSyncAlgorithm() {
+		return codeSyncAlgorithm;
 	}
 
-	public void setModelAdapterFactorySet(ModelAdapterFactorySet modelAdapterFactorySet) {
-		this.modelAdapterFactorySet = modelAdapterFactorySet;
+	public void setCodeSyncAlgorithm(CodeSyncAlgorithm codeSyncAlgorithm) {
+		this.codeSyncAlgorithm = codeSyncAlgorithm;
 	}
 	
 }

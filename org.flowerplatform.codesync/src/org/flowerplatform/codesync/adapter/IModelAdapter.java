@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
 /**
  * @see AbstractModelAdapter
@@ -38,19 +39,6 @@ public interface IModelAdapter extends IModelAdapterUI {
 	
 	public static final String FLOWER_UID = "@flowerUID";
 	
-	/**
-	 * Same type must be set on a pair of adapters.
-	 * 
-	 * @author Mariana Gheorghe
-	 */
-	public String getType();
-	
-	public void setType(String type);
-	
-	public ModelAdapterFactorySet getModelAdapterFactorySet();
-	
-	public IModelAdapter setModelAdapterFactorySet(ModelAdapterFactorySet modelAdapterFactorySet);
-
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable);
 	
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue);
@@ -63,7 +51,7 @@ public interface IModelAdapter extends IModelAdapterUI {
 	
 	public void setValueFeatureValue(Object element, Object feature, Object value);
 	
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild);
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider);
 	
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child);
 	
@@ -102,10 +90,10 @@ public interface IModelAdapter extends IModelAdapterUI {
 	 * @param element the element where the action was performed
 	 * @param feature the feature that was changed
 	 * @param result the action's result
-	 * 
+	 * @param codeSyncAlgorithm TODO
 	 * @author Mariana
 	 */
-	public void actionPerformed(Object element, Object feature, ActionResult result);
+	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm);
 
 	/**
 	 * Called after all the {@link DiffAction}s were performed for the <code>element</code>,

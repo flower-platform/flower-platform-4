@@ -30,6 +30,7 @@ import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
@@ -76,13 +77,13 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (FileFeatureProvider.CHILDREN.equals(feature)) {
 			Node node = (Node) correspondingChild;
 			return CorePlugin.getInstance().getFileAccessController()
 					.getFile(element, (String) node.getOrCreateProperties().get(NodeFeatureProvider.NAME));
 		}
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 
 	@Override

@@ -26,7 +26,7 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 /**
  * @author Mariana
  */
-public abstract class NodeFeatureProvider implements IFeatureProvider {
+public abstract class NodeFeatureProvider extends FeatureProvider {
 
 	public static final String NAME = "name";
 	public static final String TYPE = "type";

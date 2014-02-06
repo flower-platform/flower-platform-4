@@ -14,4 +14,5 @@ Export-Package: org.flowerplatform.codesync,
  org.flowerplatform.codesync.adapter,
  org.flowerplatform.codesync.feature_provider,
  org.flowerplatform.codesync.project,
- org.flowerplatform.codesync.remote
+ org.flowerplatform.codesync.remote,
+ org.flowerplatform.codesync.type_provider
