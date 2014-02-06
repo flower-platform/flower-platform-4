@@ -29,17 +29,17 @@ public class NodeServiceTest {
 	@Test
 	public void testPriority() {
 		
-		class MuckChildProvider extends ChildrenProvider {
+		class MockChildProvider extends ChildrenProvider {
 			public List<Pair<Node, Object>> getChildren(Node node) {
 				return null;
 			}
 		}
 		
-		ChildrenProvider spyProviderForTypeA = spy(new MuckChildProvider());
-		ChildrenProvider spyProviderForTypeB = spy(new MuckChildProvider());
-		ChildrenProvider spyProviderForTypeC = spy(new MuckChildProvider());
-		ChildrenProvider spyProviderForTypeFileSystem = spy(new MuckChildProvider());
-		ChildrenProvider spyProviderAll = spy(new MuckChildProvider());
+		ChildrenProvider spyProviderForTypeA = spy(new MockChildProvider());
+		ChildrenProvider spyProviderForTypeB = spy(new MockChildProvider());
+		ChildrenProvider spyProviderForTypeC = spy(new MockChildProvider());
+		ChildrenProvider spyProviderForTypeFileSystem = spy(new MockChildProvider());
+		ChildrenProvider spyProviderAll = spy(new MockChildProvider());
 		
 		// setPrioritys
 		spyProviderForTypeA.setPriority(-100);
