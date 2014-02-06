@@ -1,12 +1,12 @@
 package org.flowerplatform.core.node.controller;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.type_descriptor.OrderedElement;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Cristina Constantinescu
  */
-public abstract class PropertySetter extends OrderedElement {
+public abstract class PropertySetter extends AbstractController {
 	
 	public static final String PROPERTY_SETTER = "propertySetter";
 

@@ -32,14 +32,15 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.INTERFACE;
 
 
+
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -74,18 +75,18 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		createNodeTypeDescriptor(ANNOTATION_TYPE);
 		
 		createNodeTypeDescriptor(ATTRIBUTE)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
+			.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		createNodeTypeDescriptor(OPERATION)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
+			.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		createNodeTypeDescriptor(ENUM_CONSTANT);
 		createNodeTypeDescriptor(ANNOTATION_MEMBER)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
+			.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		
 		createNodeTypeDescriptor(ANNOTATION);
 		createNodeTypeDescriptor(MEMBER_VALUE_PAIR);
 		createNodeTypeDescriptor(MODIFIER);
 		createNodeTypeDescriptor(PARAMETER)
-			.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
+			.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, returnType);
 		
 		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER);
 		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE);
@@ -173,7 +174,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 	}
 	
 	private TypeDescriptor createNodeTypeDescriptor(String type) {
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor(type);
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
 		descriptor.addCategory("category.codeSync");
 		descriptor.addCategory("category.persistence-codeSync");
 		return descriptor;

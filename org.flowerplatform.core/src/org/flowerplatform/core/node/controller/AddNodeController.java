@@ -1,12 +1,12 @@
 package org.flowerplatform.core.node.controller;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.type_descriptor.OrderedElement;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Cristina Constantinescu
  */
-public abstract class AddNodeController extends OrderedElement {
+public abstract class AddNodeController extends AbstractController {
 
 	public static final String ADD_NODE_CONTROLLER = "addNodeController";
 	
