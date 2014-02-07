@@ -19,8 +19,11 @@
 package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
+import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -56,6 +59,15 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 			originalValue = super.getValueFeatureValue(element, feature, correspondingValue);
 		}
 		return originalValue;
+	}
+
+	@Override
+	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+		if (result == null || result.conflict) {
+			return;
+		}
+		List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
+		processContainmentFeatureAfterActionPerformed(getNode(element), children, result, codeSyncAlgorithm);
 	}
 	
 }

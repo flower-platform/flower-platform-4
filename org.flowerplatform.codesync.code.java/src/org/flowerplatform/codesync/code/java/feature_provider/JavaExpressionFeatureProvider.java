@@ -18,36 +18,19 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.MODIFIERS;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.TYPED_ELEMENT_TYPE;
-
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
-public class JavaParameterFeatureProvider extends NodeFeatureProvider {
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		List features = super.getValueFeatures(element);
-		features.add(TYPED_ELEMENT_TYPE);
-		return features;
-	}
+/**
+ * @author Mariana Gheorghe
+ */
+public class JavaExpressionFeatureProvider extends NodeFeatureProvider {
 
 	@Override
 	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(MODIFIERS);
+		return Collections.emptyList();
 	}
-	
-	@Override
-	public int getFeatureType(Object feature) {
-		if (MODIFIERS.equals(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		}
-		return super.getFeatureType(feature);
-	}
-	
+
 }

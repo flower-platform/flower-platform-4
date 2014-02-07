@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.flowerplatform.codesync.adapter.IModelAdapter;
@@ -27,12 +28,9 @@ public class JavaEnumConstantDeclarationFeatureProvider extends NodeFeatureProvi
 	
 	public static final String ENUM_CONSTANT_ARGUMENTS = "enumConstantArguments";
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<?> getFeatures(Object element) {
-		List features = super.getFeatures(element);
-		features.add(ENUM_CONSTANT_ARGUMENTS);
-		return features;
+	public List<?> getContainmentFeatures(Object element) {
+		return Arrays.asList(ENUM_CONSTANT_ARGUMENTS);
 	}
 
 	@Override
@@ -42,6 +40,5 @@ public class JavaEnumConstantDeclarationFeatureProvider extends NodeFeatureProvi
 		}
 		return super.getFeatureType(feature);
 	}
-	
 	
 }

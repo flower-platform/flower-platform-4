@@ -23,10 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.action.ActionSynchronize;
 import org.flowerplatform.codesync.action.DiffAction;
 import org.flowerplatform.codesync.action.MatchActionAddLeftToRight;
 import org.flowerplatform.codesync.action.MatchActionAddRightToLeft;
+import org.flowerplatform.codesync.action.MatchActionRemoveAbstract;
 import org.flowerplatform.codesync.action.MatchActionRemoveLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveRight;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
@@ -36,11 +38,15 @@ import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class CodeSyncAlgorithm {
+	
+	private final static Logger logger = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
 	
 	/**
 	 * The value used in case the model adapter does not know about its value.
@@ -61,23 +67,40 @@ public class CodeSyncAlgorithm {
 		this.typeProvider = typeProvider;
 	}
 
-	public void generateDiff(Match match) {
+	public void generateDiff(Match match, boolean performAction) {
+		logger.debug("Generate diff for " + match);
+		
 		beforeOrAfterFeaturesProcessed(match, true);
 		Object[] delegateAndAdapter = match.getDelegateAndModelAdapter(this);
 		if (delegateAndAdapter == null) {
 			throw new IllegalArgumentException("A match with no members has been given as parameter.");
 		}
 		FeatureProvider featureProvider = getFeatureProvider(delegateAndAdapter[0]);
-		for (Object feature : featureProvider.getFeatures(delegateAndAdapter[0])) {
-			switch (featureProvider.getFeatureType(feature)) {
-			case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
-				processContainmentFeature(feature, match);
-				break;
-			case IModelAdapter.FEATURE_TYPE_VALUE:
-				processValueFeature(feature, match);
-				break;
-			}
+		
+		// first iterate over value features
+		for (Object feature : featureProvider.getValueFeatures(delegateAndAdapter[0])) {
+			processValueFeature(feature, match);
 		}
+		
+		// sync
+		DiffAction action = getDiffActionToApplyForMatch(match);
+		boolean performLater = false;
+		if (action instanceof MatchActionRemoveAbstract) {
+			// remove actions must be performed after the sub-matches are computed
+			performLater = true;
+		} else if (performAction) {
+			synchronize(match, action);
+		}
+		
+		// iterate over containment features
+		for (Object feature : featureProvider.getContainmentFeatures(delegateAndAdapter[0])) {
+			processContainmentFeature(feature, match, !performLater);
+		}
+
+		if (performLater && performAction) {
+			synchronize(match, action);
+		}
+		
 		beforeOrAfterFeaturesProcessed(match, false);
 	}
 	
@@ -127,7 +150,9 @@ public class CodeSyncAlgorithm {
 	 * 
 	 * 
 	 */
-	public void processContainmentFeature(Object feature, Match match) {
+	public void processContainmentFeature(Object feature, Match match, boolean performAction) {
+		logger.debug("Process containment feature " + feature + " for " + match);
+		
 		// cache the model adapters for children to avoid
 		// a lot of calls to the model adapter factory; we are
 		// assuming that all the children of an object, for a certain
@@ -182,7 +207,7 @@ public class CodeSyncAlgorithm {
 						match.addSubMatch(childMatch);
 	
 						// recurse
-						generateDiff(childMatch);
+						generateDiff(childMatch, performAction);
 					}
 				}
 			}
@@ -206,7 +231,7 @@ public class CodeSyncAlgorithm {
 				match.addSubMatch(childMatch);
 
 				// recurse
-				generateDiff(childMatch);
+				generateDiff(childMatch, performAction);
 			}
 		} 
 		
@@ -221,7 +246,7 @@ public class CodeSyncAlgorithm {
 				match.addSubMatch(childMatch);
 
 				// recurse
-				generateDiff(childMatch);
+				generateDiff(childMatch, performAction);
 			}
 		}
 	}
@@ -244,6 +269,8 @@ public class CodeSyncAlgorithm {
 	 * 
 	 */
 	public void processValueFeature(Object feature, Match match) {
+		logger.debug("Process value feature " + feature + " for " + match);
+		
 		Diff diff = null;
 		
 		Object ancestor = match.getAncestor();
@@ -309,18 +336,18 @@ public class CodeSyncAlgorithm {
 	}
 	
 	public void synchronize(Match match) {
-		DiffAction action = null;
+		synchronize(match, null);
+	}
+	
+	public void synchronize(Match match, DiffAction action) {
+		if (match.isConflict() || match.isChildrenConflict()) {
+			logger.debug("Conflict/children conflict for " + match);
+			return;
+		}
+		logger.debug("Perform sync for " + match);
 		
-		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
-			action = new MatchActionAddLeftToRight(false);
-		} else if (Match.MatchType._1MATCH_RIGHT.equals(match.getMatchType())) {
-			action = new MatchActionAddRightToLeft(false);
-//			action = new MatchActionRemoveRight(); // TODO test
-		} else if (Match.MatchType._2MATCH_ANCESTOR_LEFT.equals(match.getMatchType())) {
-			action = new MatchActionRemoveLeft();
-//			action = new MatchActionAddLeftToRight(false); // TODO test
-		} else if (Match.MatchType._2MATCH_ANCESTOR_RIGHT.equals(match.getMatchType())) {
-			action = new MatchActionRemoveRight();
+		if (action == null) {
+			action = getDiffActionToApplyForMatch(match);
 		}
 		
 		if (action != null) {
@@ -336,6 +363,32 @@ public class CodeSyncAlgorithm {
 		
 		ActionSynchronize syncAction = new ActionSynchronize();
 		syncAction.execute(match);
+		
+		if (action == null) {
+			// no action performed; inform the ancestor
+			if (match.getParentMatch() != null && match.getParentMatch().getAncestor() != null) {
+				Match parentMatch = match.getParentMatch();
+				Object matchKey = match.getAncestor() != null ? getAncestorModelAdapter(match.getAncestor()).getMatchKey(match.getAncestor())
+						: getLeftModelAdapter(match.getLeft()).getMatchKey(match.getLeft());
+				ActionResult result = new ActionResult(false, false, false, matchKey, !(match.getLeft() == null));
+				getAncestorModelAdapter(parentMatch.getAncestor()).actionPerformed(parentMatch.getAncestor(), match.getFeature(), result, this);
+			}
+		}
+	}
+	
+	protected DiffAction getDiffActionToApplyForMatch(Match match) {
+		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
+			return new MatchActionAddLeftToRight(false);
+		} else if (Match.MatchType._1MATCH_RIGHT.equals(match.getMatchType())) {
+			return new MatchActionAddRightToLeft(false);
+//			return new MatchActionRemoveRight(); // TODO test
+		} else if (Match.MatchType._2MATCH_ANCESTOR_LEFT.equals(match.getMatchType())) {
+			return new MatchActionRemoveLeft();
+//			return new MatchActionAddLeftToRight(false); // TODO test
+		} else if (Match.MatchType._2MATCH_ANCESTOR_RIGHT.equals(match.getMatchType())) {
+			return new MatchActionRemoveRight();
+		}
+		return null;
 	}
 	
 	public ITypeProvider getTypeProvider() {

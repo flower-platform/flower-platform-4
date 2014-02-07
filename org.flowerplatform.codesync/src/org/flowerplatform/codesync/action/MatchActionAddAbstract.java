@@ -64,16 +64,12 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		IModelAdapter thisMa = getThisModelAdapter(match);
 		IModelAdapter oppositeMa = getOppositeModelAdapter(match);
 		FeatureProvider featureProvider = match.getCodeSyncAlgorithm().getFeatureProvider(this_);
-		for (Object childFeature : featureProvider.getFeatures(this_)) {
-			switch (featureProvider.getFeatureType(childFeature)) {
-			case IModelAdapter.FEATURE_TYPE_VALUE:
-				Object value = thisMa.getValueFeatureValue(this_, childFeature, null);
-				Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null);
-				if (!CodeSyncAlgorithm.safeEquals(value, valueOpposite)) {
-					oppositeMa.setValueFeatureValue(opposite, childFeature, value);
-					actionPerformed(match.getCodeSyncAlgorithm(), thisMa, this_, oppositeMa, opposite, childFeature, new ActionResult(false, true, true));
-				}
-				break;
+		for (Object childFeature : featureProvider.getValueFeatures(this_)) {
+			Object value = thisMa.getValueFeatureValue(this_, childFeature, null);
+			Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null);
+			if (!CodeSyncAlgorithm.safeEquals(value, valueOpposite)) {
+				oppositeMa.setValueFeatureValue(opposite, childFeature, value);
+				actionPerformed(match.getCodeSyncAlgorithm(), thisMa, this_, oppositeMa, opposite, childFeature, new ActionResult(false, true, true));
 			}
 		}
 		

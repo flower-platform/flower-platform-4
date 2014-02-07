@@ -28,11 +28,8 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
  */
 public abstract class NodeFeatureProvider extends FeatureProvider {
 
-	public static final String NAME = "name";
-	public static final String TYPE = "type";
-	
 	@Override
-	public List<?> getFeatures(Object element) {
+	public List<?> getValueFeatures(Object element) {
 		List<String> features = new ArrayList<String>();
 		features.add(NAME);
 		features.add(TYPE);

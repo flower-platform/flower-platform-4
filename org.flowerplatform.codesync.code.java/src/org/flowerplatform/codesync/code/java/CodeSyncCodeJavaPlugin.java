@@ -26,12 +26,12 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairM
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter.OPERATION;
 import static org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter.PARAMETER;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.ANNOTATION_TYPE;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.CLASS;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.ENUM;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.INTERFACE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ANNOTATION_TYPE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ENUM;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.INTERFACE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.EXPRESSION;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
-
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
@@ -47,7 +47,8 @@ import org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAda
 import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
-import org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatureProvider;
@@ -57,7 +58,8 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePai
 import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaExpressionFeatureProvider;
 import org.flowerplatform.codesync.code.java.type_provider.JavaTypeProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -99,8 +101,8 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		PropertyDescriptor returnType = new PropertyDescriptor()
 			.setNameAs(JavaFeaturesConstants.TYPED_ELEMENT_TYPE).setReadOnlyAs(false);
 		
-		JavaTypeModelAdapter typeModelAdapter = new JavaTypeModelAdapter();
-		JavaTypeFeatureProvider typeFeatureProvider = new JavaTypeFeatureProvider();
+		JavaTypeDeclarationModelAdapter typeModelAdapter = new JavaTypeDeclarationModelAdapter();
+		JavaTypeDeclarationFeatureProvider typeFeatureProvider = new JavaTypeDeclarationFeatureProvider();
 		createNodeTypeDescriptor(CLASS, typeModelAdapter, typeFeatureProvider);
 		createNodeTypeDescriptor(INTERFACE, typeModelAdapter, typeFeatureProvider);
 		createNodeTypeDescriptor(ENUM, typeModelAdapter, typeFeatureProvider);
@@ -119,6 +121,8 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new JavaModifierFeatureProvider());
 		createNodeTypeDescriptor(PARAMETER, new JavaParameterModelAdapter(), new JavaParameterFeatureProvider())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
+		
+		createNodeTypeDescriptor(EXPRESSION, new JavaExpressionModelAdapter(), new JavaExpressionFeatureProvider());
 		
 		createNodeTypeDescriptor(CodeSyncPlugin.CATEGORY, null, null);
 		
