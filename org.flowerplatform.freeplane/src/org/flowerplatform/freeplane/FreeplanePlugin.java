@@ -6,11 +6,13 @@ import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERT
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.freeplane.controller.FreeplaneAddNodeController;
 import org.flowerplatform.freeplane.controller.FreeplaneChildrenProvider;
+import org.flowerplatform.freeplane.controller.FreeplaneParentProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertiesProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertySetter;
 import org.flowerplatform.freeplane.controller.FreeplaneRemoveNodeController;
@@ -47,6 +49,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	
 	private void addControllers(TypeDescriptor nodeTypeDescriptor) {
 		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneChildrenProvider());
+		nodeTypeDescriptor.addSingleController(PARENT_PROVIDER, new FreeplaneParentProvider());
 		nodeTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FreeplanePropertiesProvider());
 		nodeTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FreeplaneAddNodeController());
 		nodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new FreeplaneRemoveNodeController());

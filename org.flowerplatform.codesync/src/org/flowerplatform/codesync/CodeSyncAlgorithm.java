@@ -371,8 +371,18 @@ public class CodeSyncAlgorithm {
 				Object matchKey = match.getAncestor() != null ? getAncestorModelAdapter(match.getAncestor()).getMatchKey(match.getAncestor())
 						: getLeftModelAdapter(match.getLeft()).getMatchKey(match.getLeft());
 				ActionResult result = new ActionResult(false, false, false, matchKey, !(match.getLeft() == null));
-				getAncestorModelAdapter(parentMatch.getAncestor()).actionPerformed(parentMatch.getAncestor(), match.getFeature(), result, this);
+				getAncestorModelAdapter(parentMatch.getAncestor()).actionPerformed(parentMatch.getAncestor(), match.getFeature(), result, parentMatch);
 			}
+		}
+		
+		if (match.getAncestor() != null) {
+			getAncestorModelAdapter(match.getAncestor()).allActionsPerformed(match.getAncestor(), null, this);
+		}
+		if (match.getLeft() != null) {
+			getLeftModelAdapter(match.getLeft()).allActionsPerformed(match.getLeft(), match.getRight(), this);
+		}
+		if (match.getRight() != null) {
+			getRightModelAdapter(match.getRight()).allActionsPerformed(match.getRight(), match.getLeft(), this);
 		}
 	}
 	

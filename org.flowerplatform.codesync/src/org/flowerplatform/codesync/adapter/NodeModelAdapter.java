@@ -18,13 +18,13 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -34,9 +34,6 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class NodeModelAdapter extends AbstractModelAdapter {
 
-	public static final String ADDED = "added";
-	public static final String REMOVED = "removed";
-	
 	/**
 	 * Checks for a {@link FeatureChange} on the name feature first.
 	 */
@@ -72,7 +69,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrCreateProperties().get("body");
+		return getNode(element).getOrCreateProperties().get("name");
 	}
 	
 	@Override
@@ -148,36 +145,51 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	protected Node getNode(Object element) {
 		return (Node) element;
 	}
-
 	
-	protected void processContainmentFeatureAfterActionPerformed(Node node, List<Object> children, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
-		Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
+	protected void processContainmentFeatureAfterActionPerformed(Node node, Object feature, ActionResult result, Match match) {
+		Object child = findChild(match, feature, result.childAdded, result.childMatchKey);
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED);
+				CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
 			} else {
 				CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
 			}
 		}
 	}
 	
-	protected Object getOriginalFeatureName(Object feature) {
-		return feature.toString() + CodeSyncPropertySetter.ORIGINAL;
-	}
-	
 	/**
 	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
+	 * @param matchKey 
+	 * @param childMatchKey 
 	 */
-	protected Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
+	protected Object findChild(Match parentMatch, Object feature, boolean childAdded, Object matchKey) {
 		if (matchKey == null)
 			return null;
-		for (Object existingChild : list) {
-			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
+		for (Object existingChild : getChildrenFromMatch(parentMatch, feature, childAdded)) {
+			if (existingChild == null) {
+				continue;
+			}
+			Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(existingChild).getMatchKey(existingChild);
+			if (matchKey.equals(childMatchKey)) {
 				return existingChild;
 			}
 		}
 		return null;
+	}
+
+	protected List<Object> getChildrenFromMatch(Match parentMatch, Object feature, boolean childAdded) {
+		List<Object> children = new ArrayList<Object>();
+		for (Match match : parentMatch.getSubMatches()) {
+			if (match.getFeature().equals(feature)) {
+				if (childAdded) {
+					children.add(match.getLeft());
+				} else {
+					children.add(match.getAncestor());
+				}
+			}
+		}
+		return children;
 	}
 	
 }

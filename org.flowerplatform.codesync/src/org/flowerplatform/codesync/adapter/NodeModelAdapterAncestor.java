@@ -19,11 +19,12 @@
 package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
-import java.util.List;
 
-import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -40,7 +41,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isAdded = (Boolean) getNode(candidate).getOrCreateProperties().get(ADDED);
+				Boolean isAdded = (Boolean) getNode(candidate).getOrCreateProperties().get(CodeSyncPlugin.ADDED);
 				if (isAdded != null && isAdded) {
 					return false;
 				}
@@ -54,7 +55,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 	 */
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		Object originalValue = super.getValueFeatureValue(element, getOriginalFeatureName(feature), correspondingValue);
+		Object originalValue = super.getValueFeatureValue(element, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), correspondingValue);
 		if (originalValue == null) {
 			originalValue = super.getValueFeatureValue(element, feature, correspondingValue);
 		}
@@ -62,12 +63,11 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 	}
 
 	@Override
-	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public void actionPerformed(Object element, Object feature, ActionResult result, Match match) {
 		if (result == null || result.conflict) {
 			return;
 		}
-		List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
-		processContainmentFeatureAfterActionPerformed(getNode(element), children, result, codeSyncAlgorithm);
+		processContainmentFeatureAfterActionPerformed(getNode(element), feature, result, match);
 	}
-	
+
 }

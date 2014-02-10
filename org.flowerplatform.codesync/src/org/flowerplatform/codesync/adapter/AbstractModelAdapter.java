@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -95,7 +96,7 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	}
 
 	@Override
-	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public void actionPerformed(Object element, Object feature, ActionResult result, Match match) {
 		// nothing to do
 	}
 

@@ -8,7 +8,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.HeadlessMapViewController;
+import org.freeplane.features.attribute.Attribute;
+import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.map.NodeModel;
@@ -57,6 +60,26 @@ public class FreeplaneUtils {
 			return maps.get(getTestingURL().toString()).getRootNode();
 		} 
 		return maps.get(getTestingURL().toString()).getNodeForID(nodeId);		
+	}
+	
+	public Node getEmptyNode(NodeModel nodeModel) {
+		Node node = new Node();
+		node.setId(nodeModel.createID());
+		// get type from attributes table
+		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);
+		if (attributeTable != null) {
+			for (Attribute attribute : attributeTable.getAttributes()) {
+				if (attribute.getName().equals("type")) {
+					node.setType((String) attribute.getValue());
+					break;
+				}
+			}
+		}
+		if (node.getType() == null) { 
+			// no type provided, maybe this node is provided by a random .mm file, so set type to freeplaneNode
+			node.setType(FreeplanePlugin.FREEPLANE_NODE_TYPE);
+		}
+		return node;
 	}
 	
 	public void load(URL url) throws Exception {

@@ -18,6 +18,13 @@
  */
 package org.flowerplatform.codesync.controller;
 
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isCodeSyncFlagConstant;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isOriginalPropertyName;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateParentSyncFalse;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateParentSyncTrue;
+
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
@@ -29,19 +36,21 @@ import org.flowerplatform.util.Utils;
  */
 public class CodeSyncPropertySetter extends PropertySetter {
 
-	public static final String ORIGINAL = ".original";
-	
 	public CodeSyncPropertySetter() {
 		setOrderIndex(-100000);
 	}
 	
 	@Override
 	public void setProperty(Node node, String property, Object value) {
-		if (isOriginalPropertyName(property)) {
-			return;
+		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		
+		if (CodeSyncPlugin.REMOVED.equals(property) || CodeSyncPlugin.ADDED.equals(property)) {
+			setSyncFalseAndPropagateParentSyncFalse(node, service);
 		}
 		
-		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		if (isOriginalPropertyName(property) || isCodeSyncFlagConstant(property)) {
+			return;
+		}
 		
 		boolean isOriginalPropertySet = false;
 		Object originalValue = null;
@@ -60,21 +69,15 @@ public class CodeSyncPropertySetter extends PropertySetter {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
 				service.setProperty(node, originalProperty, originalValue);
+				setSyncFalseAndPropagateParentSyncFalse(node, service);
 			}
 		} else {
 			if (isOriginalPropertySet) {
 				// trying to set the same value as the original (a revert operation); unset the original value
 				service.unsetProperty(node, originalProperty);
+				setSyncTrueAndPropagateParentSyncTrue(node, service);
 			}
 		}
-	}
-
-	protected boolean isOriginalPropertyName(String property) {
-		return property.endsWith(ORIGINAL);
-	}
-	
-	protected String getOriginalPropertyName(String property) {
-		return property + ORIGINAL;
 	}
 
 	@Override

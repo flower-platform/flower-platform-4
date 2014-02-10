@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
+import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
@@ -73,6 +75,23 @@ public class NodeService {
 		} else {
 			return children;
 		}
+	}
+	
+	public Node getParent(Node node, boolean populateProperties) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
+		
+		ParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER);
+		Pair<Node, Object> parent = provider.getParent(node);
+		if (parent == null) {
+			return null;
+		}
+		if (populateProperties) {
+			populateNode(parent.a, parent.b);
+		}
+		return parent.a;
 	}
 	
 	@SuppressWarnings("unchecked")

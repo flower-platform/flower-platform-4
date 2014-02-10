@@ -40,7 +40,7 @@ public class DiffActionCopyLeftToRight extends DiffAction {
 		diff.setRightModified(true);
 
 		ActionResult result = new ActionResult(false, diff.isLeftModified(), true);
-		actionPerformed(match.getCodeSyncAlgorithm(), leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
+		actionPerformed(match, leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
 		
 		return result;
 	}
