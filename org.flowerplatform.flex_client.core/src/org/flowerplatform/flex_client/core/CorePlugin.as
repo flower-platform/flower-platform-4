@@ -71,6 +71,7 @@ package org.flowerplatform.flex_client.core {
 			INSTANCE = this;
 				
 			serviceLocator.addService("nodeService");
+			serviceLocator.addService("updaterService");
 			serviceLocator.addService("freeplaneService");
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			

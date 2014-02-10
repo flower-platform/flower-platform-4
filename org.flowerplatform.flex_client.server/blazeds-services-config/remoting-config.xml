@@ -15,6 +15,12 @@
         </properties>
     </destination>
     
+    <destination id="updaterService">
+        <properties>
+            <source>org.flowerplatform.core.node.update.remote.UpdaterService</source>
+        </properties>
+    </destination>
+    
     <destination id="codeSyncOperationsService">
         <properties>
             <source>org.flowerplatform.codesync.remote.CodeSyncOperationsService</source>

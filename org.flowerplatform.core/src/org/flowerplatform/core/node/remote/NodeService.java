@@ -6,23 +6,16 @@ import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERT
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.node.controller.update.UpdaterPersistenceProvider.UPDATER_CONTROLLER;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
-import org.flowerplatform.core.node.controller.update.UpdaterPersistenceProvider;
-import org.flowerplatform.core.node.update.remote.ChildrenListUpdate;
-import org.flowerplatform.core.node.update.remote.ClientNodeStatus;
-import org.flowerplatform.core.node.update.remote.NodeUpdate;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -37,8 +30,6 @@ public class NodeService {
 	
 	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
 	
-	private static final String FULL_CHILDREN_LIST_KEY = "fullChildrenList";
-	
 	protected static TypeDescriptorRegistry registry;
 	
 	public NodeService() {
@@ -50,33 +41,6 @@ public class NodeService {
 		NodeService.registry = registry;
 	}
 
-	private NodeUpdate checkForNodeUpdates(ClientNodeStatus clientNodeStatus, Map<String, Object> context, List<ChildrenListUpdate> listUpdates) {
-		NodeUpdate nodeUpdate = new NodeUpdate();
-		nodeUpdate.setNode(clientNodeStatus.getNode());
-		
-		if (context != null && context.containsKey(FULL_CHILDREN_LIST_KEY)) {
-			nodeUpdate.setFullChildrenList(getChildren(nodeUpdate.getNode(), true));
-			return nodeUpdate;
-		}
-				
-		nodeUpdate.setUpdatedProperties(
-				getPropertyUpdates(
-						clientNodeStatus.getNode(), 
-						clientNodeStatus.getTimestamp()));
-					
-		if (clientNodeStatus.getVisibleChildren() != null) {
-			listUpdates.addAll(
-					getChildrenListUpdates(
-							clientNodeStatus.getNode(), 
-							clientNodeStatus.getTimestamp()));
-			
-			for (ClientNodeStatus childNodeStatus : clientNodeStatus.getVisibleChildren()) {
-				nodeUpdate.addNodeUpdatesForChild(checkForNodeUpdates(childNodeStatus, context, listUpdates));
-			}
-		}
-		return nodeUpdate;
-	}
-	
 	public List<Node> getChildren(Node node, boolean populateProperties) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -185,62 +149,6 @@ public class NodeService {
 		for (RemoveNodeController controller : controllers) {
 			controller.removeNode(node, child);
 		}
-	}
-	
-	public NodeUpdate checkForNodeUpdates(ClientNodeStatus clientNodeStatus, Map<String, Object> context) {				
-		List<ChildrenListUpdate> listUpdates = new ArrayList<ChildrenListUpdate>();
-		
-		NodeUpdate nodeUpdate = checkForNodeUpdates(clientNodeStatus, context, listUpdates);
-		
-		Collections.sort(listUpdates, new Comparator<ChildrenListUpdate>() {
-			public int compare(ChildrenListUpdate u1, ChildrenListUpdate u2) {
-				return Long.compare(u1.getTimestamp1(), u2.getTimestamp1());
-            }
-		});		
-		
-		nodeUpdate.setChildrenListUpdates(listUpdates);
-		
-		return nodeUpdate;
-	}
-	
-	public Map<String, Object> getPropertyUpdates(Node node, long startingWithTimestamp) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return null;
-		}
-		
-		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);		
-		return provider.getPropertyUpdates(node, startingWithTimestamp);		
-	}
-	
-	public List<ChildrenListUpdate> getChildrenListUpdates(Node node, long startingWithTimestamp) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return null;
-		}
-		
-		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);		
-		return provider.getChildrenListUpdates(node, startingWithTimestamp);	
-	}
-	
-	public void addPropertyUpdate(Node node, long timestamp, String property, Object value) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return;
-		}
-		
-		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);	
-		provider.addPropertyUpdate(node, timestamp, property, value);		
-	}
-	
-	public void addChildrenListUpdate(Node node, long timestamp, String type, int index, Node childNode) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return;
-		}
-		
-		UpdaterPersistenceProvider provider = descriptor.getSingleController(UPDATER_CONTROLLER);
-		provider.addChildrenListUpdate(node, timestamp, type, index, childNode);	
 	}
 	
 }

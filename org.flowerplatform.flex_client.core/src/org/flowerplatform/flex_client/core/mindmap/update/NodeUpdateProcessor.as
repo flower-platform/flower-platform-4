@@ -114,7 +114,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		
 		public function checkForNodeUpdates(node:Node, context:Object = null):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
-				"nodeService.checkForNodeUpdates",				
+				"updaterService.checkForNodeUpdates",				
 				[getClientNodeStatus(node), context], nodeUpdatesHandler);	
 		}
 		

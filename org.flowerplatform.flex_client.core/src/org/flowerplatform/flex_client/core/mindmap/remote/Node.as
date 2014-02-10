@@ -35,6 +35,8 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 				
 		public var type:String;
 		
+		public var resource:String;
+		
 		public var properties:Object = new Object();
 		
 		[Transient]

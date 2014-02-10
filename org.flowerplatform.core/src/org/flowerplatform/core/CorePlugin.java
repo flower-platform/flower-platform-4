@@ -25,10 +25,10 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.update.InMemoryUpdaterProvider;
 import org.flowerplatform.core.node.controller.update.UpdaterAddNodeController;
-import org.flowerplatform.core.node.controller.update.UpdaterPersistenceProvider;
 import org.flowerplatform.core.node.controller.update.UpdaterPropertySetterController;
 import org.flowerplatform.core.node.controller.update.UpdaterRemoveNodeController;
 import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.core.node.update.remote.UpdaterService;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -51,12 +51,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 				
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
+		getServiceRegistry().registerService("updaterService", new UpdaterService(new InMemoryUpdaterProvider()));
 		
 		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.all");
 		updaterDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdaterAddNodeController());
 		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdaterRemoveNodeController());
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
-		updaterDescriptor.addAdditiveController(UpdaterPersistenceProvider.UPDATER_CONTROLLER, new InMemoryUpdaterProvider());
 		
 		setFileAccessController(new PlainFileAccessController());
 	}
