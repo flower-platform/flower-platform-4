@@ -70,7 +70,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			var messageBox:IMessageBox = askForTextInput(node.properties["body"], "Rename", "Rename",
 				function(name:String):void {
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node, "body", name]);
-				});		
+			});		
 		}
 				
 	}

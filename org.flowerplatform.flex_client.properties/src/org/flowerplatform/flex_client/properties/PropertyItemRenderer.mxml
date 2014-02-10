@@ -36,9 +36,7 @@
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
 
 				propertyName.text = data.name;
-				
-				
-				
+							
 				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[data.type]);			
 
 				if (itemRenderedInstance != null && itemRenderedInstance is factory.generator) {
