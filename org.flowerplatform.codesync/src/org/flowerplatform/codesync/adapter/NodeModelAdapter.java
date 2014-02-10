@@ -25,9 +25,12 @@ import java.util.List;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeService;
 
 /**
  * @author Mariana Gheorghe
@@ -140,6 +143,18 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	public boolean save(Object element) {
 //		CodeSyncPlugin.getInstance().getNodeService().save();
 		return false;
+	}
+
+	@Override
+	public void setConflict(Object element, Object feature, Object oppositeValue) {
+		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, service);
+	}
+	
+	@Override
+	public void unsetConflict(Object element, Object feature) {
+		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), service);
 	}
 
 	protected Node getNode(Object element) {

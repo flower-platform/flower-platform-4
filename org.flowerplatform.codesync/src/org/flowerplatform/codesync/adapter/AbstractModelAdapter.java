@@ -110,6 +110,16 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 		// nothing to do
 	}
 	
+	@Override
+	public void setConflict(Object element, Object feature, Object oppositeValue) {
+		// nothing to do
+	}
+	
+	@Override
+	public void unsetConflict(Object element, Object feature) {
+		// nothing to do
+	}
+	
 	//////////////////////////////////////////////////////////
 	// Node utils
 	//////////////////////////////////////////////////////////

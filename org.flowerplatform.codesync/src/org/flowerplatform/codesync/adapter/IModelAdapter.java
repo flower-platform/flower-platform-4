@@ -112,4 +112,8 @@ public interface IModelAdapter extends IModelAdapterUI {
 	 */
 	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	public void setConflict(Object element, Object feature, Object oppositeValue);
+	
+	public void unsetConflict(Object element, Object feature);
+	
 }

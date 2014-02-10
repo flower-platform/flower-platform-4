@@ -306,6 +306,8 @@ public class CodeSyncAlgorithm {
 				diff = new Diff();
 				diff.setLeftModified(true);
 				diff.setRightModified(true);
+				getLeftModelAdapter(left).unsetConflict(left, feature);
+				getRightModelAdapter(right).unsetConflict(right, feature);
 			}
 		} else {
 			if (ancestor != null && left != null && safeEquals(ancestorValue, leftValue)) {
@@ -313,25 +315,38 @@ public class CodeSyncAlgorithm {
 				if (right != null) {
 					diff = new Diff();
 					diff.setRightModified(true);
+					getLeftModelAdapter(left).unsetConflict(left, feature);
 				}
 			} else if (ancestor != null && right != null && safeEquals(ancestorValue, rightValue)) {
 				// modif on LEFT
 				if (left != null) {
 					diff = new Diff();
 					diff.setLeftModified(true);
+					getRightModelAdapter(right).unsetConflict(right, feature);
 				}
 			} else {
 				diff = new Diff();
-				if (left != null)
+				if (left != null) {
 					diff.setLeftModified(true);
-				if (right != null)
+					getLeftModelAdapter(left).setConflict(left, feature, rightValue);
+				}
+				if (right != null) {
 					diff.setRightModified(true);
+					getRightModelAdapter(right).setConflict(right, feature, leftValue);
+				}
 				diff.setConflict(true);
+				
 			}
 		}
 		if (diff != null) {
 			diff.setFeature(feature);
 			match.addDiff(diff);
+			if (match.getLeft() != null) {
+				getLeftModelAdapter(left).unsetConflict(left, feature);
+			}
+			if (match.getRight() != null) {
+				getRightModelAdapter(right).unsetConflict(right, feature);
+			}
 		}
 	}
 	
@@ -341,9 +356,12 @@ public class CodeSyncAlgorithm {
 	
 	public void synchronize(Match match, DiffAction action) {
 		if (match.isConflict() || match.isChildrenConflict()) {
-			logger.debug("Conflict/children conflict for " + match);
+			logger.debug("Conflict for " + match);
 			return;
 		}
+		
+		
+		
 		logger.debug("Perform sync for " + match);
 		
 		if (action == null) {

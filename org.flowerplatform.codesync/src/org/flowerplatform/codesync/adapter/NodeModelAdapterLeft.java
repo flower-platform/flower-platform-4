@@ -89,7 +89,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		Node node = getNode(element);
 		NodeService nodeService = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
-		CodeSyncControllerUtils.setSyncTrueAndPropagateParentSyncTrue(node, nodeService);
+		CodeSyncControllerUtils.setSyncTrueAndPropagateToParents(node, nodeService);
 	}
 
 	@Override

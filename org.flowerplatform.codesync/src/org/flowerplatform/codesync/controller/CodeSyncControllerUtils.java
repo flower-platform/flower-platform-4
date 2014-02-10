@@ -17,6 +17,7 @@ import org.flowerplatform.core.node.remote.NodeService;
 public class CodeSyncControllerUtils {
 
 	public static final String ORIGINAL = ".original";
+	public static final String OTHER = ".conflict";
 	
 	public static boolean isOriginalPropertyName(String property) {
 		return property.endsWith(ORIGINAL);
@@ -24,6 +25,14 @@ public class CodeSyncControllerUtils {
 	
 	public static String getOriginalPropertyName(String property) {
 		return property + ORIGINAL;
+	}
+	
+	public static boolean isConflictPropertyName(String property) {
+		return property.endsWith(OTHER);
+	}
+	
+	public static String getConflictPropertyName(String property) {
+		return property + OTHER;
 	}
 	
 	public static boolean isCodeSyncFlagConstant(String property) {
@@ -35,15 +44,15 @@ public class CodeSyncControllerUtils {
 		return false;
 	}
 	
-	public static void setSyncFalseAndPropagateParentSyncFalse(Node node, NodeService service) {
+	public static void setSyncFalseAndPropagateToParents(Node node, NodeService service) {
 		// set sync false
 		service.setProperty(node, SYNC, false);
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
 		while ((parent = service.getParent(node, true)) != null) {
-			// if the parent was marked not sync, then the parentSync flag has already been propagated
-			if (!isSync(parent) || !isChildrenSync(parent)) {
+			if (!isChildrenSync(parent)) {
+				// the parentSync flag has already been propagated
 				return;
 			}
 			// set childrenSync false
@@ -52,7 +61,12 @@ public class CodeSyncControllerUtils {
 		}
 	}
 	
-	public static void setSyncTrueAndPropagateParentSyncTrue(Node node, NodeService service) {
+	public static void setSyncTrueAndPropagateToParents(Node node, NodeService service) {
+		if (isSync(node)) {
+			// already set
+			return;
+		}
+		
 		// added/removed nodes are not sync
 		if (isAdded(node) || isRemoved(node)) {
 			return;
@@ -91,9 +105,82 @@ public class CodeSyncControllerUtils {
 		}
 	}
 	
+	public static void setConflictTrueAndPropagateToParents(Node node, String conflictProperty, Object conflictValue, NodeService service) {
+		service.setProperty(node, getConflictPropertyName(conflictProperty), conflictValue);
+		
+		if (isConflict(node)) {
+			// already set
+			return;
+		}
+		
+		// set conflict true
+		service.setProperty(node, CONFLICT, true);
+		
+		// propagate childrenConflict flag for parents
+		Node parent = null;
+		while ((parent = service.getParent(node, true)) != null) {
+			if (isChildrenConflict(parent)) {
+				// the childrenConflict flag has already been propagated
+				return;
+			}
+			// set childrenConflict false
+			service.setProperty(parent, CHILDREN_CONFLICT, true);
+			node = parent;
+		}
+	}
+
+	public static void setConflictFalseAndPropagateToParents(Node node, String conflictProperty, NodeService service) {
+		service.unsetProperty(node, getConflictPropertyName(conflictProperty));
+		
+		if (!isConflict(node)) {
+			return;
+		}
+		
+		// check if it has any other property.conflict set
+		boolean conflict = false;
+		for (String property : node.getOrCreateProperties().keySet()) {
+			if (isConflictPropertyName(property)) {
+				conflict = true;
+			}
+		}
+		if (conflict) {
+			return;
+		}
+		
+		// set conflict false
+		service.setProperty(node, CONFLICT, false);
+		if (noChildConflict(node, service)) {
+			service.setProperty(node, CHILDREN_CONFLICT, false);
+		}
+		
+		// propagate childrenConflict flag for parents
+		Node parent = null;
+		while ((parent = service.getParent(node, true)) != null) {
+			if (!noChildConflict(parent, service)) {
+				return;
+			}
+			// if childrenConflict is already true for the parent, no need to go up
+			if (!isChildrenConflict(parent)) {
+				return;
+			}
+			// set childrenConflict false
+			service.setProperty(parent, CHILDREN_CONFLICT, false);
+			node = parent;
+		}
+	}
+	
 	public static boolean allChildrenSync(Node node, NodeService service) {
 		for (Node child : service.getChildren(node, true)) {
 			if (!isSync(child) || !isChildrenSync(child) || isAdded(child) || isRemoved(child)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean noChildConflict(Node node, NodeService service) {
+		for (Node child : service.getChildren(node, true)) {
+			if (isConflict(child) || isChildrenConflict(child)) {
 				return false;
 			}
 		}
@@ -119,6 +206,14 @@ public class CodeSyncControllerUtils {
 	
 	public static boolean isRemoved(Node node) {
 		return hasFlagTrue(node, REMOVED);
+	}
+	
+	public static boolean isConflict(Node node) {
+		return hasFlagTrue(node, CONFLICT);
+	}
+	
+	public static boolean isChildrenConflict(Node node) {
+		return hasFlagTrue(node, CHILDREN_CONFLICT);
 	}
 	
 	private static boolean hasFlagTrue(Node node, String flag) {
