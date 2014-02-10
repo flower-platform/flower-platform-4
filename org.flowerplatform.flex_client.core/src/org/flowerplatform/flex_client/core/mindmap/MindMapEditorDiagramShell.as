@@ -22,9 +22,11 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeDragController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeInplaceEditorController;
+	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeSelectionRenderer;
+	import org.flowerplatform.flex_client.core.mindmap.update.NodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.controller.IControllerProvider;
 	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
@@ -57,6 +59,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements IMindMapControllerProvider {
 		
+		public var updateProcessor:NodeUpdateProcessor;
+		
 		private var nodeController:IMindMapModelController;
 			
 		private var nodeDragController:IDragController;
@@ -75,6 +79,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 		public function MindMapEditorDiagramShell() {
 			super();
 			
+			updateProcessor = new NodeUpdateProcessor(this);
+			
 			nodeController = new NodeController(this);
 			nodeAbsoluteRectangleController = new MindMapAbsoluteLayoutRectangleController(this);
 			nodeDragController = new NodeDragController(this);
@@ -86,8 +92,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 			nodeChildrenController = new NodeChildrenController(this);
 			rootModelChildrenController = new MindMapRootModelChildrenController(this);
 			
-			nodeRendererController = new MindMapModelRendererController(this, NodeRenderer);
-						
+			nodeRendererController = new NodeRendererController(this, NodeRenderer);
+				
 			registerTools([ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool, InplaceEditorTool]);
 		}
 				

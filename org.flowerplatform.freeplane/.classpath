@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/freeplaneeditor_modified.jar"/>
-	<classpathentry kind="lib" path="lib/freeplaneviewer.jar"/>
+	<classpathentry kind="lib" path="lib/freeplaneviewer.jar" sourcepath="/freeplane"/>
 	<classpathentry kind="lib" path="lib/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/jortho.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML.jar"/>

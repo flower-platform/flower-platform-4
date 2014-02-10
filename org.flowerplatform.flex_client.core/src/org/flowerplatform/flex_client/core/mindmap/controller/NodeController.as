@@ -54,11 +54,9 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function setExpanded(model:Object, value:Boolean):void {
 			if (value) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [Node(model), true], function(result:ResultEvent):void {				
-					getChildrenForNodeIdCallbackHandler(Node(model), result);
-				});					
+				MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(Node(model));
 			} else {				
-				disposeModel(model);				
+				MindMapEditorDiagramShell(diagramShell).updateProcessor.removeChildren(Node(model));
 			}		
 		}
 		
@@ -69,41 +67,10 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		public function setSide(model:Object, value:int):void {
 //			Node(model).side = value;
 		}
-		
+
 		public function isRoot(model:Object):Boolean {			
 			return Node(model).parent == null;
 		}
-				
-		private function getChildrenForNodeIdCallbackHandler(node:Node, result:ResultEvent):void {
-			for each (var child:Node in ArrayCollection(result.result)) {
-				child.parent = node;
-			}
-			node.children = ArrayCollection(result.result);			
-			MindMapDiagramShell(diagramShell).refreshRootModelChildren();
-			
-			MindMapDiagramShell(diagramShell).refreshModelPositions(node);
-		}
-		
-		public function disposeModel(model:Object, disposeModel:Boolean = false):void {
-			disposeModelHandlerRecursive(model, disposeModel);
-			
-			Node(model).children = null;
-			mindMapDiagramShell.refreshRootModelChildren();
-			
-			MindMapDiagramShell(diagramShell).refreshModelPositions(model);
-			MindMapDiagramShell(diagramShell).shouldRefreshVisualChildren(diagramShell.rootModel);
-		}
-		
-		private function disposeModelHandlerRecursive(model:Object, disposeModel:Boolean = false):void {
-			if (Node(model).properties["hasChildren"] && Node(model).children != null) {
-				for (var i:int=0; i < Node(model).children.length; i++) {
-					disposeModelHandlerRecursive(Node(model).children.getItemAt(i), true);
-				}		
-			}
-			if (disposeModel) {
-				diagramShell.unassociateModelFromRenderer(model, diagramShell.getRendererForModel(model), true);
-			}
-		}		
-		
+	
 	}
 }

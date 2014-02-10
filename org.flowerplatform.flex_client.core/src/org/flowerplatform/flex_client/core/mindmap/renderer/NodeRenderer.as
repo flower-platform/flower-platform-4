@@ -1,5 +1,7 @@
 package org.flowerplatform.flex_client.core.mindmap.renderer {
 	
+	import flash.events.Event;
+	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.DPIClassification;
@@ -9,6 +11,8 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 	import mx.events.ResizeEvent;
 	
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
+	import org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent;
+	import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
@@ -41,12 +45,12 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 				_diagramShell.setPropertyValue(data, "width", width);
 				refresh = true;
 			}
-			if (_diagramShell.getPropertyValue(data, "height") != height) {
+			if (_diagramShell.getPropertyValue(data, "height") != height) {			
 				_diagramShell.setPropertyValue(data, "height", height);
 				refresh = true;
 			}
 			
-			if (refresh) {
+			if (refresh) {				
 				var parent:Object = _diagramShell.getControllerProvider(data).getModelChildrenController(data).getParent(data);
 				_diagramShell.refreshModelPositions(parent != null ? parent : data);
 			}
@@ -67,6 +71,29 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 				case "children":
 					invalidateDisplayList();
 			}
+		}
+		
+		override public function set data(value:Object):void {
+			if (super.data != null) {				
+				data.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);				
+			}
+			
+			super.data = value;
+			
+			if (data != null) {
+				data.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);				
+			}
+		}
+		
+		protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
+			if (data.properties.hasOwnProperty("body")) {
+				labelDisplay.text = data.properties["body"];
+			}
+			if (data.properties.hasOwnProperty("hasChildren")) {
+				dispatchEvent(new NodeRenderer_HasChildrenChangedEvent());
+			}			
+			invalidateSize();
+			invalidateDisplayList();
 		}
 		
 		override protected function canDrawCircle(model:Object):Boolean {			

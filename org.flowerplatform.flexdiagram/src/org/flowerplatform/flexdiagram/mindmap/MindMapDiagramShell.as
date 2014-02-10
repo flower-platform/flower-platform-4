@@ -108,9 +108,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 				case "width":
 					return 10;	// minWidth
 				case "height":
-					return 22;	// minHeight
-				case "expandedY":
-					return getPropertyValue(model, "y");					
+				case "oldHeight":
+					return 22;	// minHeight							
 				case "expandedHeight":
 					return getPropertyValue(model, "height");
 				default:
@@ -177,7 +176,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		/**
 		 * Recalculates all <code>expandedHeight</code> starting from root model.
-		 * This is done only for a specific size (left/right).
+		 * This is done only for a specific side (left/right).
 		 * <p>
 		 * Used when getting delta to re-arrange model siblings.
 		 * @see changeCoordinates
@@ -199,16 +198,17 @@ package org.flowerplatform.flexdiagram.mindmap {
 		private function calculateExpandedHeight(model:Object, side:int):Number {			
 			var expandedHeight:Number = 0;
 			var children:IList = getChildrenBasedOnSide(model, side);
-			if (getModelController(model).getExpanded(model)) {
+			if (getModelController(model).getExpanded(model)) {				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
-					expandedHeight += calculateExpandedHeight(child, side);
+					var childExpandedHeight:Number = calculateExpandedHeight(child, side);
+					expandedHeight += childExpandedHeight;					
 					if (i < children.length - 1) { // add padding only between children (not after the last one)
-						expandedHeight += verticalPadding;
+						expandedHeight += verticalPadding;						
 					}
 				}
-				setPropertyValue(model, "expandedHeight", expandedHeight);
-				expandedHeight = Math.max(expandedHeight, getPropertyValue(model, "height"));				
+				setPropertyValue(model, "expandedHeight", expandedHeight);				
+				expandedHeight = Math.max(expandedHeight, getPropertyValue(model, "height"));			
 			} else {
 				expandedHeight = getPropertyValue(model, "height");
 				// for collapse models, the expandedHeight must be 0
@@ -217,75 +217,57 @@ package org.flowerplatform.flexdiagram.mindmap {
 			return expandedHeight;
 		}
 		
-		private function changeCoordinates(model:Object, oldExpandedHeight:Number, newExpandedHeight:Number, side:int):void {
-			changeChildrenCoordinates(model, side, true);	
-
-			var delta:Number = 0;
-							
+		private function changeCoordinates(model:Object, oldExpandedHeight:Number, newExpandedHeight:Number, side:int):void {			
+			changeChildrenCoordinates(model, side);	
+			
 			if (newExpandedHeight != 0 && newExpandedHeight < getPropertyValue(model, "height")) {
 				
 			} else {
-				var diff:Number = 0;
+				var delta:Number = 0;
 				if (newExpandedHeight == 0) {
 					if (oldExpandedHeight > getPropertyValue(model, "height")) {						
-						diff = (getPropertyValue(model, "height") - oldExpandedHeight)/2;
+						delta = (getPropertyValue(model, "height") - oldExpandedHeight)/2;
 					}					
 				} else if (oldExpandedHeight == 0) {
-					diff = (newExpandedHeight - getPropertyValue(model, "height"))/2;
+					delta = (newExpandedHeight - getPropertyValue(model, "height"))/2;
 				} else {
-					diff = (newExpandedHeight - oldExpandedHeight)/2;
+					delta = (newExpandedHeight - oldExpandedHeight)/2;
 				}
-				if (diff != 0) {
-					changeSiblingsCoordinates(model, diff, side);
+				if (delta != 0) {
+					changeSiblingsCoordinates(model, delta, side);
 				}
-			}
+			}					
 			getDynamicObject(model).shouldRefreshPosition = false;
 		}		
 		
-		private function changeChildrenCoordinates(model:Object, side:int, changeOnlyChildrenCoordinates:Boolean = false):void {
-			if (changeOnlyChildrenCoordinates && getPropertyValue(model, "expandedHeight") == 0) {
-				return;
-			}
-			if (changeOnlyChildrenCoordinates) {
-				setPropertyValue(model, "expandedY", getPropertyValue(model, "y") + (getPropertyValue(model, "height") - getPropertyValue(model, "expandedHeight"))/2);	
-			} else {
-				if (getPropertyValue(model, "expandedHeight") == 0) {
-					setPropertyValue(model, "y", getPropertyValue(model, "expandedY"));					
-				} else {
-					setPropertyValue(model, "y", getPropertyValue(model, "expandedY") + (getPropertyValue(model, "height") - getPropertyValue(model, "expandedHeight"))/2);	
-				}
-				var parent:Object = getControllerProvider(model).getModelChildrenController(model).getParent(model);
-				if (parent != null) {					
-					if (getModelController(model).getSide(model) == POSITION_LEFT) {
-						setPropertyValue(model, "x", getPropertyValue(parent, "x") - getPropertyValue(model, "width") - horizontalPadding);							
-					} else {	
-						setPropertyValue(model, "x", getPropertyValue(parent, "x") + getPropertyValue(parent, "width") + horizontalPadding);															
-					}
-				}				
-			}
-			
+		private function changeChildrenCoordinates(model:Object, side:int):void {					
 			if (getModelController(model).getExpanded(model)) {
 				var children:IList = getChildrenBasedOnSide(model, side);				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
-					if (i == 0) {
-						setPropertyValue(child, "expandedY", getPropertyValue(model, "expandedY"));										
+					if (i == 0) {						
+						setPropertyValue(child, "y", getPropertyValue(model, "y") + getDeltaBetweenExpandedHeightAndHeight(child)/2 - getDeltaBetweenExpandedHeightAndHeight(model)/2);										
 					} else {
 						var previousChild:Object = children.getItemAt(i - 1);
-						setPropertyValue(child, "expandedY", getPropertyValue(previousChild, "expandedY") + Math.max(getPropertyValue(previousChild, "expandedHeight"), getPropertyValue(previousChild, "height")) + verticalPadding);						
-					}					
+						setPropertyValue(child, "y", getPropertyValue(previousChild, "y") + getModelBottomHeight(previousChild) + verticalPadding + getDeltaBetweenExpandedHeightAndHeight(child, true)/2);
+					}								
+					if (getModelController(child).getSide(child) == POSITION_LEFT) {
+						setPropertyValue(child, "x", getPropertyValue(model, "x") - getPropertyValue(child, "width") - horizontalPadding);							
+					} else {	
+						setPropertyValue(child, "x", getPropertyValue(model, "x") + getPropertyValue(model, "width") + horizontalPadding);															
+					}						
 					changeChildrenCoordinates(child, side);			
 				}				
 			}
 		}
 		
-		private function changeSiblingsCoordinates(model:Object, delta:Number, side:int):void {			
+		private function changeSiblingsCoordinates(model:Object, delta:Number, side:int, onlyBottomSiblings:Boolean = false):void {			
 			var parent:Object = getControllerProvider(model).getModelChildrenController(model).getParent(model);
 			if (parent != null) {				
 				var children:IList = getChildrenBasedOnSide(parent, side);				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
-					if (children.getItemIndex(model) > children.getItemIndex(child)) {		
+					if (!onlyBottomSiblings && children.getItemIndex(model) > children.getItemIndex(child)) {		
 						setPropertyValue(child, "y", getPropertyValue(child, "y") - delta);										
 						changeSiblingChildrenCoordinates(child, - delta, side);
 					} else if (children.getItemIndex(model) < children.getItemIndex(child)) {
@@ -293,7 +275,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 						changeSiblingChildrenCoordinates(child, delta, side);						
 					}					
 				}
-				changeSiblingsCoordinates(parent, delta, side);
+				changeSiblingsCoordinates(parent, delta, side, onlyBottomSiblings);
 			}			
 		}
 		
@@ -306,5 +288,18 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 		}
 		
+		private function getDeltaBetweenExpandedHeightAndHeight(model:Object, preventNegativeValues:Boolean = false):Number {
+			if (preventNegativeValues && getPropertyValue(model, "expandedHeight") < getPropertyValue(model, "height")) {
+				return 0;
+			}
+			if (getPropertyValue(model, "expandedHeight") != 0) {
+				return getPropertyValue(model, "expandedHeight") - getPropertyValue(model, "height");
+			}
+			return 0;		
+		}
+		
+		private function getModelBottomHeight(model:Object):Number {			
+			return Math.max(getPropertyValue(model, "expandedHeight"), getPropertyValue(model, "height"))/2 + getPropertyValue(model, "height")/2;
+		}
 	}
 }
