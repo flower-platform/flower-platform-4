@@ -19,6 +19,7 @@ public class FileRemoveNodeController extends RemoveNodeController {
 		}
 	}
 	
+	//TODO see if it must be moved in IFileAccessController
 	private void deleteFolder(Object folder) {
 		Object[] files = fileAccessController.listFiles(folder);
 	    if(files != null) { 

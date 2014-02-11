@@ -14,6 +14,16 @@ public class Node {
 	private String id;
 	
 	private Map<String, Object> properties;
+	
+	public Node() {
+			}
+
+	public Node(String type, String resource, String id) {
+		this.type = type;
+		this.resource = resource;
+		this.id = id;
+	}
+
 
 	public String getType() {
 		return type;
