@@ -1,6 +1,8 @@
 package org.flowerplatform.util.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Cristian Spiescu
  * @author Mariana Gheorghe
+ * @author Cristina Constantinescu
  */
 public class TypeDescriptorRegistry {
 
@@ -79,5 +82,18 @@ public class TypeDescriptorRegistry {
 		}
 		return result;
 	}
-
+		
+	private List<IDynamicCategoryProvider> dynamicCategoryProviders;
+	
+	public List<IDynamicCategoryProvider> getDynamicCategoryProviders() {
+		if (dynamicCategoryProviders == null) {
+			dynamicCategoryProviders = new ArrayList<IDynamicCategoryProvider>();			
+		}
+		return dynamicCategoryProviders;
+	}
+	
+	public void addDynamicCategoryProvider(IDynamicCategoryProvider provider) {
+		getDynamicCategoryProviders().add(provider);
+	}
+	
 }

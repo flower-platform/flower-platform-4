@@ -459,8 +459,10 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			resource.unload();
 //			return resource;
 //		}
+		// TODO CC: temporary code
 		Node node = new Node();
 		node.setType("freeplaneNode");
+		node.setResource("mm://path_to_resource");
 		return getNodeService().getChildren(node, true).get(0);
 	}
 //	

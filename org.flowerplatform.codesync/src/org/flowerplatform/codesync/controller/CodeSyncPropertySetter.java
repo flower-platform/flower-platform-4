@@ -37,6 +37,10 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	
 	@Override
 	public void setProperty(Node node, String property, Object value) {
+		// TODO CC: temporary code
+		if ("timestamp".equals(property)) {
+			return;
+		}
 		if (isOriginalPropertyName(property)) {
 			return;
 		}

@@ -39,6 +39,7 @@ import org.flowerplatform.util.Pair;
  * 
  * @author Cristian Spiescu
  * @author Mariana Gheorghe
+ * @author Cristina Constantinescu
  */
 public class TypeDescriptor {
 
@@ -72,7 +73,7 @@ public class TypeDescriptor {
 	 */
 	public List<String> getCategories() {
 		if (categories == null) {
-			return Collections.emptyList();
+			return new ArrayList<String>();
 		}
 		return categories;
 	}
@@ -86,6 +87,9 @@ public class TypeDescriptor {
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
 	public TypeDescriptor addCategory(String category) {
+		if (!getRegistry().isConfigurable()) {
+			throw new IllegalStateException("Trying to add a new category to a non-configurable registry");
+		}
 		if (!category.startsWith(CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Category type should be prefixed with 'category.'");
 		}
@@ -104,10 +108,22 @@ public class TypeDescriptor {
 	protected Map<String, Pair<AbstractController, Boolean>> singleControllers = new HashMap<String, Pair<AbstractController, Boolean>>();
 
 	/**
+	 * @return For a given controller type, the single controller 
+	 * (collected from this node type, as well as its categories OR from object's dynamic category providers). 
+	 */
+	public <T extends AbstractController> T getSingleController(String controllerType, Object object) {
+		T controller = getCachedSingleController(controllerType, object);
+		if (controller == null) {
+			controller = getSingleControllerFromDynamicCategoryProviders(controllerType, object);
+		}
+		return controller;
+	}
+	
+	/**
 	 * @return For a given controller type, the single controller (collected from this node type, as well as its categories). 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractController> T getSingleController(String controllerType) {
+	protected <T extends AbstractController> T getCachedSingleController(String controllerType, Object object) {
 		getRegistry().configurable = false;
 		
 		Pair<AbstractController, Boolean> pair = getSingleControllerPair(controllerType);
@@ -117,7 +133,7 @@ public class TypeDescriptor {
 		}
 		
 		// else => let's scan now the categories
-		
+				
 		// iterate categories to cache the controller
 		for (String category : getCategories()) {
 			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
@@ -126,13 +142,13 @@ public class TypeDescriptor {
 				continue;
 			}
 			
-			T categoryController = categoryDescriptor.getSingleController(controllerType);
+			T categoryController = categoryDescriptor.getSingleController(controllerType, object);
 			if (categoryController != null) {
 				// found a controller from a category; cache it
 				pair.a = categoryController;
 				if (pair.b) {
 					throw new RuntimeException(String.format(
-							"Node with type %s registered multiple categories with controllers of type %s", type, controllerType));
+							"Object with type %s registered multiple categories with controllers of type %s", type, controllerType));
 				}
 				pair.b = true;
 			}
@@ -143,6 +159,34 @@ public class TypeDescriptor {
 		
 		return (T) pair.a;
 	}
+	
+	/**
+	 * @return For a given controller type and given object, the single controller (collected from this object's dynamic category providers). 
+	 */
+	protected <T extends AbstractController> T getSingleControllerFromDynamicCategoryProviders(String controllerType, Object object) {
+		List<String> categories =  new ArrayList<String>();
+		
+		for (IDynamicCategoryProvider categoryProvider : getRegistry().getDynamicCategoryProviders()) {
+			categories.addAll(categoryProvider.getDynamicCategories(object));
+		}
+		
+		T categoryController = null;
+		
+		for (String category : categories) {
+			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
+			if (categoryDescriptor == null) {
+				// semi-error; a WARN is logged
+				continue;
+			}
+			if (categoryController != null) {
+				throw new RuntimeException(String.format(
+						"Object with type %s registered multiple categories with controllers of type %s", type, controllerType));
+			}
+			categoryController = categoryDescriptor.getCachedSingleController(controllerType, object);		
+		}
+		return categoryController;
+	}
+	
 	
 	/**
 	 * Adds a new single controller. 
@@ -190,11 +234,25 @@ public class TypeDescriptor {
 	 */
 	protected Map<String, Pair<List<? extends AbstractController>, Boolean>> additiveControllers = new HashMap<String, Pair<List<? extends AbstractController>,Boolean>>();
 
+	@SuppressWarnings("unchecked")
+	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType, Object object) {
+		List<T> allControllers = new ArrayList<T>();
+		allControllers.addAll((Collection<? extends T>) getCachedAdditiveControllers(controllerType, object));
+		
+		allControllers.addAll((Collection<? extends T>) getAdditiveControllersFromDynamicCategoryProviders(controllerType, object));
+				
+		// order the controllers before returning
+		Collections.sort(allControllers);
+		
+		return allControllers;
+	}
+		
 	/**
-	 * @return For a given controller type, the additive controllers (collected from this node type, as well as its categories). 
+	 * @return For a given controller type, the additive controllers 
+	 * (collected from this node type, as well as its categories AND from object's dynamic category providers). 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType) {
+	protected <T extends AbstractController> List<T> getCachedAdditiveControllers(String controllerType, Object object) {
 		getRegistry().configurable = false;
 		
 		Pair<List<? extends AbstractController>, Boolean> pair = getAdditiveControllersPair(controllerType);
@@ -214,15 +272,39 @@ public class TypeDescriptor {
 				continue;
 			}
 			
-			controllers.addAll((Collection<? extends T>) categoryDescriptor.getAdditiveControllers(controllerType));
+			controllers.addAll((Collection<? extends T>) categoryDescriptor.getAdditiveControllers(controllerType, object));
 			pair.b = true;
 		}
 		
 		// finished scanning the categories
 		pair.b = true;
 		
-		// order the controllers before returning
-		Collections.sort(controllers);
+		return controllers;
+	}
+	
+	/**
+	 * @return For a given controller type and given object, the additive controllers 
+	 * (collected from this object's dynamic category providers). 
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T extends AbstractController> List<T> getAdditiveControllersFromDynamicCategoryProviders(String controllerType, Object object) {
+		List<String> categories =  new ArrayList<String>();
+		
+		for (IDynamicCategoryProvider categoryProvider : getRegistry().getDynamicCategoryProviders()) {
+			categories.addAll(categoryProvider.getDynamicCategories(object));
+		}
+		
+		List<T> controllers = new ArrayList<T>();
+		
+		for (String category : categories) {
+			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
+			if (categoryDescriptor == null) {
+				// semi-error; a WARN is logged
+				continue;
+			}
+			
+			controllers.addAll((Collection<? extends T>) categoryDescriptor.getCachedAdditiveControllers(controllerType, object));		
+		}
 		return controllers;
 	}
 	
@@ -252,5 +334,5 @@ public class TypeDescriptor {
 		}
 		return pair;
 	}
-	
+			
 }

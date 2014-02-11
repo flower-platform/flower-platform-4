@@ -47,80 +47,14 @@ public class FreeplaneChildrenProvider extends ChildrenProvider {
 		}
 		if (node.getType() == null) { 
 			// no type provided, maybe this node is provided by a random .mm file, so set type to freeplaneNode
-			node.setType(FreeplanePlugin.FREEPLANE_NODE_TYPE);
+			node.setType(FreeplanePlugin.FREEPLANE_NODE_TYPE);			
+		}
+		
+		// TODO CC: temporary code
+		if (FreeplanePlugin.FREEPLANE_NODE_TYPE.equals(node.getType())) {
+			node.setResource("mm://path_to_resource");
 		}
 		return node;
 	}
-	
-//	public Node getNode(String nodeId) {		
-//		return convert(getNodeModel(nodeId));
-//	}
-			
-//	public void setBody(String nodeId, String newBodyValue) {
-//		NodeModel nodeModel = getNodeModel(nodeId);
-//		nodeModel.setText(newBodyValue);
-//	}
-//		
-//	public Node addNode(String parentNodeId, String type) {
-//		NodeModel parent = getNodeModel(parentNodeId);
-//		NodeModel newNode = new NodeModel("", parent.getMap());
-//		newNode.setLeft(false);
-//		
-//		parent.insert(newNode, parent.getChildCount());
-//		
-//		return convert(newNode);
-//	}
-//	
-//	public void removeNode(String nodeId) {
-//		NodeModel nodeModel = getNodeModel(nodeId);
-//		nodeModel.removeFromParent();
-//	}	
-//		
-//	public void moveNode(String nodeId, String newParentId, int newIndex) {
-//		NodeModel nodeModel = getNodeModel(nodeId);
-//		NodeModel newParentModel = getNodeModel(newParentId);
-//		
-//		if (newIndex != -1) {
-//			if (newIndex == -2) {
-//				newIndex = newParentModel.getChildCount();
-//			}
-//			NodeModel oldParent = nodeModel.getParentNode();
-//			oldParent.remove(nodeModel);
-//						
-//			if (oldParent.equals(newParentModel) && newIndex > oldParent.getChildCount()) {
-//				newIndex--;
-//			}	
-//			newParentModel.insert(nodeModel, newIndex);
-//		}	
-//	}
-			
-//	public List<Property> getPropertiesData(String nodeType) {
-//		// TODO CC: temporary code (testing properties view)
-//		List<Property> properties = new ArrayList<Property>();
-//		properties.add(new Property().setNameAs("type").setReadOnlyAs(true));		
-//		properties.add(new Property().setNameAs("id").setReadOnlyAs(true));	
-//		properties.add(new Property().setNameAs("could_shape").setReadOnlyAs(false));	
-//		properties.add(new Property().setNameAs("could_color"));		
-//		return properties;	
-//	}
-//			
-//	public void setProperty(String nodeId, String propertyName, String propertyValue) {
-//		// TODO CC: temporary code (testing properties view)
-//		NodeModel nodeModel = getNodeModel(nodeId);
-//		if (propertyName.equals("could_shape")) {
-//			CloudModel cloud = CloudModel.createModel(nodeModel);
-//			switch (propertyValue) {
-//				case "ARC": 
-//					cloud.setShape(Shape.ARC);
-//					break;
-//				case "RECT": 
-//					cloud.setShape(Shape.RECT);
-//					break;
-//				case "STAR": 
-//					cloud.setShape(Shape.STAR);
-//					break;
-//			}
-//		}
-//	}
-		
+
 }

@@ -14,6 +14,7 @@ public class FreeplaneRemoveNodeController extends RemoveNodeController {
 	public void removeNode(Node node, Node child) {
 		NodeModel childModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(child.getId());
 		childModel.removeFromParent();
+		childModel.getMap().unregistryNodes(childModel);
 	}
 
 }
