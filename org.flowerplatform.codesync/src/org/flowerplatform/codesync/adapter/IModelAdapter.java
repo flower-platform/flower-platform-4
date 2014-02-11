@@ -23,6 +23,7 @@ import java.util.Map;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.action.DiffAction;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
 /**

@@ -59,7 +59,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 		}
 		String[] paths = requestedFile.split("\\|");
 		
-		BufferedImage result = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage result = new BufferedImage(23, 16, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = result.createGraphics();
 		
 		for (String path : paths) {

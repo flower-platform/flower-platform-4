@@ -20,10 +20,10 @@ package org.flowerplatform.codesync.controller;
 
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isCodeSyncFlagConstant;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isConflictPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isOriginalPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isConflictPropertyName;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
@@ -48,8 +48,6 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		}
 		
 		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
-		
-		service.setProperty(node, "icon", "org.flowerplatform.codesync/images/folder.gif");
 		
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncPlugin.REMOVED.equals(property) || CodeSyncPlugin.ADDED.equals(property)) {
