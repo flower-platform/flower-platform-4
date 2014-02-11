@@ -4,10 +4,6 @@
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
-            alias="/servlet/public-resources"
-            class="org.flowerplatform.flex_client.server.public_resources.PublicResourcesServlet">
-      </servlet>
-      <servlet
             alias="/messagebroker"
             class="org.flowerplatform.flex_client.server.blazeds.FlowerMessageBrokerServlet">
       </servlet>

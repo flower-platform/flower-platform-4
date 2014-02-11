@@ -43,11 +43,13 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	
 	@Override
 	public void setProperty(Node node, String property, Object value) {
-		if (property.equals("timestamp")) {
+		if (property.equals("timestamp") || property.equals("icon")) {
 			return; // TODO skipping all non-sync props
 		}
 		
 		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		
+		service.setProperty(node, "icon", "org.flowerplatform.codesync/images/folder.gif");
 		
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncPlugin.REMOVED.equals(property) || CodeSyncPlugin.ADDED.equals(property)) {

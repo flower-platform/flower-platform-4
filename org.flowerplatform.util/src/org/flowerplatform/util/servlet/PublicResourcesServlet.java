@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.server.public_resources;
+package org.flowerplatform.util.servlet;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
@@ -28,7 +28,6 @@ import java.net.URLDecoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Cristian Spiescu
  */
-public class PublicResourcesServlet extends HttpServlet {
+public class PublicResourcesServlet extends ResourcesServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(PublicResourcesServlet.class);
 
@@ -75,16 +74,6 @@ public class PublicResourcesServlet extends HttpServlet {
         }
     }
     
-	protected void send404(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
-		} catch (IOException e) {
-			// do nothing
-		}
-		logger.warn("Resource not found; sending 404: {}", request.getPathInfo());
-	}
-
-	@SuppressWarnings("resource")
 	protected Pair<InputStream, Closeable> getInputStreamForFileWithinZip(final InputStream fileInputStream, String fileWithinZip) throws IOException {
 		final BufferedInputStream bis = new BufferedInputStream(fileInputStream, DEFAULT_BUFFER_SIZE);
 		final ZipInputStream zis = new ZipInputStream(bis);

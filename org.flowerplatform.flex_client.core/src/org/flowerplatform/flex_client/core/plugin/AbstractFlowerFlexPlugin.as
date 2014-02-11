@@ -46,18 +46,6 @@ package org.flowerplatform.flex_client.core.plugin {
 			return _resourcesUrl;
 		}
 		
-		/**
-		 * @author Mariana
-		 */
-		public function get composedImagesUrl():String {
-			if (_composedImagesUrl == null) {
-				var index:int = resourcesUrl.indexOf("public-resources");
-				_composedImagesUrl = resourcesUrl.substr(0, index) + "image-composer/";
-//				_composedImagesUrl = resourcesUrl.replace("public-resources", "image-composer");				
-			}
-			return _composedImagesUrl;
-		}
-
 		override public function start():void {
 			super.start();
 			registerMessageBundle();
@@ -84,12 +72,36 @@ package org.flowerplatform.flex_client.core.plugin {
 			return resourcesUrl + resource;
 		}
 
-		/**
-		 * @author Mariana
-		 */
-		public function getComposedImageUrl(images:String):String {
-			return composedImagesUrl + images;  
-		}
+		public const IMAGE_COMPOSER:String = "servlet/image-composer/";
 		
+		/**
+		 * Returns the request string for the image composed from the URLs. 
+		 * E.g. <tt>servlet/image-composer/url1|url2|url3</tt>
+		 * 
+		 * <p>
+		 * Checks if the first URL already contains the image-composer prefix; 
+		 * this way it can be used to append images to the same string.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		public function getImageComposerUrl(... urls:Array):String {
+			if (urls.length == 0) {
+				return null;
+			}
+			var composedUrl:String = "";
+			for each (var url:String in urls) {
+				if (url != null) {
+					composedUrl += (composedUrl.length > 0 ? "|" : "") + url;
+				}
+			}
+			if (composedUrl.length == 0) {
+				return null;
+			}
+			if (composedUrl.indexOf(IMAGE_COMPOSER) < 0) {
+				composedUrl = IMAGE_COMPOSER + composedUrl;
+			}
+			return composedUrl;
+		}
+	
 	}
 }

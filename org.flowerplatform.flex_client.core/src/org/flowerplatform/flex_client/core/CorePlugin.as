@@ -51,6 +51,9 @@ package org.flowerplatform.flex_client.core {
 		
 		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 				
+		// TODO MG: remove
+		public var mindmapNodeRendererControllerClass:Class;
+		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
