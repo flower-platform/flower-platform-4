@@ -93,6 +93,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			if (node == null) {
 				node = new Node();
 				node.type = "freeplaneNode";
+				node.resource = "mm://path_to_resource";
 			}
 			checkForNodeUpdates(node, context);
 		}
