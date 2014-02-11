@@ -43,6 +43,12 @@ public class FreeplaneChildrenProvider extends ChildrenProvider {
 				break;
 			}
 		}
+		
+		if (node.getType() == null) { 
+			   // no type provided, maybe this node is provided by a random .mm file, so set type to freeplaneNode
+			node.setType(nodeModel.isRoot() ? "freeplaneRootNode" : "freeplaneNode");
+		}
+		
 		return node;
 	}
 	

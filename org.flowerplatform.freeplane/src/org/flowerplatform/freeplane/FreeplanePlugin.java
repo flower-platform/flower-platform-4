@@ -8,6 +8,7 @@ import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOV
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.fileSystem.FileSystemChildrenProvider;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.freeplane.controller.FreeplaneAddNodeController;
 import org.flowerplatform.freeplane.controller.FreeplaneChildrenProvider;
@@ -37,13 +38,20 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		createNodeTypeDescriptor("freeplaneNode");
-		createNodeTypeDescriptor("category.persistence-codeSync");
+		createNodeTypeDescriptor("category.freeplaneNode");
+		TypeDescriptor nodeTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("freeplaneNode");
+		nodeTypeDescriptor.addCategory("category.freeplaneNode");
+		
+		nodeTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("freeplaneRootNode");
+		nodeTypeDescriptor.addCategory("category.freeplaneNode");
+		nodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER, new FileSystemChildrenProvider());
+		
+ 		createNodeTypeDescriptor("category.persistence-codeSync");
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
 	}
 	
-	private void createNodeTypeDescriptor(String type) {
+	private TypeDescriptor createNodeTypeDescriptor(String type) {
 		TypeDescriptor nodeTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor(type);
 		nodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER, new FreeplaneChildrenProvider());
 		nodeTypeDescriptor.addControllerToList(PROPERTIES_PROVIDER, new FreeplanePropertiesProvider());
@@ -52,6 +60,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		nodeTypeDescriptor.addControllerToList(PROPERTY_SETTER, new FreeplanePropertySetter());
 		nodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("type"));
 		nodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("body"));
+		return nodeTypeDescriptor;
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

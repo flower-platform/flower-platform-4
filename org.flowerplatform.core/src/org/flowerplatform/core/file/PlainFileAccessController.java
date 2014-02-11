@@ -163,4 +163,12 @@ public class PlainFileAccessController implements IFileAccessController {
 		return new File(path);
 	}
 
+	@Override
+	public boolean hasChildren(Object file) {
+		if (((File)file).list() == null) {
+			return false;
+		}
+		return ((File)file).list().length > 0;
+	}
+
 }

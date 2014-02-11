@@ -3,6 +3,7 @@
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.core.service.ServiceLocator"/>
     <classEntry path="org.flowerplatform.flex_client.core.service.ServiceResponder"/>
+    <classEntry path="org.flowerplatform.flex_client.core.mindmap.CreateFileDialogView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

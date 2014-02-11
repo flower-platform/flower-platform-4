@@ -19,7 +19,9 @@
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.mindmap.CreateFileDialogView;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
@@ -41,7 +43,19 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			// TODO MG: replace with specific actions later
 			var child:Node = new Node();
 			child.type = "javaParameter";
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)), child]);		
+			if (Node(selection.getItemAt(0)).type != "fileNode" && 
+				Node(selection.getItemAt(0)).type != "fileSystem") { 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)), child]);
+			} else {
+				var view:CreateFileDialogView = new CreateFileDialogView();
+				view.setParentNode(Node(selection.getItemAt(0)));
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setTitle("New file/directory")
+					.setWidth(300)
+					.setHeight(150)
+					.setViewContent(view)
+					.show();
+			}
 		}
 		
 	}

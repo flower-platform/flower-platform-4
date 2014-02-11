@@ -18,10 +18,25 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
+import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
+
+import org.flowerplatform.core.file.FileAddNodeControlller;
+import org.flowerplatform.core.file.FileChildrenProvider;
+import org.flowerplatform.core.file.FilePropertiesProvider;
+import org.flowerplatform.core.file.FilePropertySetter;
+import org.flowerplatform.core.file.FileRemoveNodeController;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
+import org.flowerplatform.core.fileSystem.FileSystemPropertiesProvider;
 import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.type_descriptor.TypeDescriptor;
 import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
 import org.osgi.framework.BundleContext;
 
@@ -40,8 +55,31 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
-				
+		
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
+				
+		setFileAccessController(new PlainFileAccessController());
+		
+		TypeDescriptor fileSystemNodeTypeDescriptor = getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("fileSystem");
+		fileSystemNodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER,	new FileChildrenProvider());
+		fileSystemNodeTypeDescriptor.addControllerToList(PROPERTIES_PROVIDER, new FileSystemPropertiesProvider());
+		fileSystemNodeTypeDescriptor.addControllerToList(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
+		fileSystemNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeControlller());
+
+		TypeDescriptor fileNodeTypeDescriptor = getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("fileNode");
+		fileNodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER, new FileChildrenProvider());
+		fileNodeTypeDescriptor.addControllerToList(PROPERTIES_PROVIDER, new FilePropertiesProvider());
+		fileNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeControlller());
+		fileNodeTypeDescriptor.addControllerToList(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_SETTER, new FilePropertySetter());
+
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("body").setReadOnlyAs(false));
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("hasChildren"));
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("size"));
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("isDirectory").setReadOnlyAs(false));
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("creationTime"));
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("lastModifiedTime"));
+		fileNodeTypeDescriptor.addControllerToList(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("lastAccessTime"));
 		
 		setFileAccessController(new PlainFileAccessController());
 	}
