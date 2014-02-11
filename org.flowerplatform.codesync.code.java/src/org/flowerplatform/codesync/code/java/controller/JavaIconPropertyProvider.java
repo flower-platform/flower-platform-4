@@ -18,13 +18,13 @@ import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR
 import static org.flowerplatform.codesync.code.java.JavaImageConstants.VISIBILITY_DEFAULT;
 import static org.flowerplatform.codesync.code.java.JavaImageConstants.VISIBILITY_PRIVATE;
 import static org.flowerplatform.codesync.code.java.JavaImageConstants.VISIBILITY_PROTECTED;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.getImagePath;
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider.MODIFIER_TYPE;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
@@ -89,7 +89,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 	
 	private String append(String icon, String decorator) {
-		return icon + "|" + CodeSyncCodeJavaPlugin.getInstance().getIcon(decorator);
+		return icon + "|" + getImagePath(decorator);
 	}
 
 	protected int getModifiersFlags(Node node) {

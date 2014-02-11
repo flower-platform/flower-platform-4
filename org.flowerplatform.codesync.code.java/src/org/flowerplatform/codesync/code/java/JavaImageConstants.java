@@ -28,4 +28,7 @@ public class JavaImageConstants {
 	public static final String VISIBILITY_PROTECTED = "_protected";
 	public static final String VISIBILITY_DEFAULT = "_default";
 	
+	public static final String getImagePath(String image) {
+		return "org.flowerplatform.codesync.code.java/images/" + image;
+	}
 }

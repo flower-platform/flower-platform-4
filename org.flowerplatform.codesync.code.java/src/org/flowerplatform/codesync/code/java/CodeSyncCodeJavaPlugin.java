@@ -27,6 +27,7 @@ import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_
 import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_CLASS;
 import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_ENUM;
 import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_INTERFACE;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.getImagePath;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelAdapter.ANNOTATION;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter.ANNOTATION_MEMBER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
@@ -110,9 +111,9 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 		FileFeatureProvider fileFeatureProvider = new FileFeatureProvider();
 		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER, new FolderModelAdapter(), fileFeatureProvider)
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getIcon(IMG_PACKAGE)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_PACKAGE)));
 		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE, new JavaFileModelAdapter(), fileFeatureProvider)
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getIcon(IMG_FILE)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_FILE)));
 		
 		PropertyDescriptor returnType = new PropertyDescriptor()
 			.setNameAs(JavaFeaturesConstants.TYPED_ELEMENT_TYPE).setReadOnlyAs(false);
@@ -120,28 +121,28 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		JavaTypeDeclarationModelAdapter typeModelAdapter = new JavaTypeDeclarationModelAdapter();
 		JavaTypeDeclarationFeatureProvider typeFeatureProvider = new JavaTypeDeclarationFeatureProvider();
 		createNodeTypeDescriptor(CLASS, typeModelAdapter, typeFeatureProvider)
-			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getIcon(IMG_TYPE_CLASS)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_CLASS)));
 		createNodeTypeDescriptor(INTERFACE, typeModelAdapter, typeFeatureProvider)
-			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getIcon(IMG_TYPE_INTERFACE)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_INTERFACE)));
 		createNodeTypeDescriptor(ENUM, typeModelAdapter, typeFeatureProvider)
-			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getIcon(IMG_TYPE_ENUM)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_ENUM)));
 		createNodeTypeDescriptor(ANNOTATION_TYPE, typeModelAdapter, typeFeatureProvider)
-			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getIcon(IMG_TYPE_ANNOTATION)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_ANNOTATION)));
 		
 		createNodeTypeDescriptor(ATTRIBUTE, new JavaAttributeModelAdapter(), new JavaAttributeFeatureProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getIcon(IMG_FIELD)))
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_FIELD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		createNodeTypeDescriptor(OPERATION, new JavaOperationModelAdapter(), new JavaOperationFeatureProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getIcon(IMG_METHOD)))
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_METHOD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		createNodeTypeDescriptor(ENUM_CONSTANT, new JavaEnumConstantDeclarationModelAdapter(), new JavaEnumConstantDeclarationFeatureProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getIcon(IMG_FIELD)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_FIELD)));
 		createNodeTypeDescriptor(ANNOTATION_MEMBER, new JavaAnnotationTypeMemberDeclarationModelAdapter(), new JavaAnnotationTypeMemberDeclarationFeatureProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getIcon(IMG_METHOD)))
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_METHOD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		
 		createNodeTypeDescriptor(ANNOTATION, new JavaAnnotationModelAdapter(), new JavaAnnotationFeatureProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getIcon(IMG_ANNOTATION)));
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_ANNOTATION)));
 		createNodeTypeDescriptor(MEMBER_VALUE_PAIR, new JavaMemberValuePairModelAdapter(), new JavaMemberValuePairFeatureProvider());
 		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new JavaModifierFeatureProvider());
 		createNodeTypeDescriptor(PARAMETER, new JavaParameterModelAdapter(), new JavaParameterFeatureProvider())
@@ -229,10 +230,6 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 //			}
 //		});
 		
-	}
-	
-	public String getIcon(String icon) {
-		return "org.flowerplatform.codesync.code.java/images/" + icon;
 	}
 	
 	private TypeDescriptor createNodeTypeDescriptor(String type, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
