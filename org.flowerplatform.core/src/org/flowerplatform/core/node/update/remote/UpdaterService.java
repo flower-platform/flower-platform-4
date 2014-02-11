@@ -19,7 +19,7 @@ public class UpdaterService {
 	
 	private static final String FULL_CHILDREN_LIST_KEY = "fullChildrenList";
 	
-	protected static UpdaterPersistenceProvider updaterProvider;
+	protected UpdaterPersistenceProvider updaterProvider;
 	
 	public UpdaterService() {
 		super();		
@@ -27,7 +27,7 @@ public class UpdaterService {
 	
 	public UpdaterService(UpdaterPersistenceProvider updaterProvider) {
 		super();
-		UpdaterService.updaterProvider = updaterProvider;
+		this.updaterProvider = updaterProvider;
 	}
 
 	private NodeUpdate checkForNodeUpdates(ClientNodeStatus clientNodeStatus, Map<String, Object> context, List<ChildrenListUpdate> listUpdates) {
