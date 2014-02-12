@@ -4,19 +4,17 @@ package org.flowerplatform.flex_client.core.mindmap.remote.update {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	[RemoteClass(alias="org.flowerplatform.core.node.update.remote.ChildrenListUpdate")]
-	public class ChildrenListUpdate {
-	
+	[RemoteClass(alias="org.flowerplatform.core.node.update.remote.ChildrenUpdate")]
+	public class ChildrenUpdate extends Update {
+		
 		public static const ADDED:String = "ADDED";
 		public static const REMOVED:String = "REMOVED";
 		
-		public var parentNode:Node;
-		
 		public var type:String;
 		
-		public var index:int;
+		public var targetNode:Node;
 		
-		public var node:Object;
-		
+		public var targetNodeAddedBefore:Node;
+
 	}
 }

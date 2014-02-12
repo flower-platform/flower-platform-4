@@ -29,12 +29,12 @@ import org.flowerplatform.core.node.remote.Node;
 public class CodeSyncAddNodeController extends AddNodeController {
 
 	public CodeSyncAddNodeController() {
-		// must be invoked after the persistence controller
-		setOrderIndex(50000);
+		// must be invoked after the persistence controller and update controller
+		setOrderIndex(500000);
 	}
 	
 	@Override
-	public void addNode(Node node, Node child) {
+	public void addNode(Node node, Node child, Node currentChildAtInsertionPoint) {
 		if (!child.getType().equals(CodeSyncPlugin.CATEGORY)) {
 			CodeSyncPlugin.getInstance().getNodeService().setProperty(child, NodeModelAdapter.ADDED, true);
 		}

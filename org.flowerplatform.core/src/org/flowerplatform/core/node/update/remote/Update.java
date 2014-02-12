@@ -1,19 +1,15 @@
 package org.flowerplatform.core.node.update.remote;
 
-import java.util.List;
-
 import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Cristina Constantinescu
  */
-public class ClientNodeStatus {
+public class Update implements Comparable<Update> {
 
 	private Node node;
 	
 	private long timestamp;
-	
-	private List<ClientNodeStatus> visibleChildren;
 
 	public Node getNode() {
 		return node;
@@ -23,6 +19,11 @@ public class ClientNodeStatus {
 		this.node = node;
 	}
 
+	public Update setNodeAs(Node node) {
+		this.node = node;
+		return this;
+	}
+	
 	public long getTimestamp() {
 		return timestamp;
 	}
@@ -30,13 +31,20 @@ public class ClientNodeStatus {
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
-
-	public List<ClientNodeStatus> getVisibleChildren() {
-		return visibleChildren;
-	}
-
-	public void setVisibleChildren(List<ClientNodeStatus> visibleChildren) {
-		this.visibleChildren = visibleChildren;
-	}
 	
+	public Update setTimestampAs(long timestamp) {
+		this.timestamp = timestamp;
+		return this;
+	}
+
+	@Override
+	public int compareTo(Update o) {
+		return Long.compare(getTimestamp(), o.getTimestamp());
+	}
+
+	@Override
+	public String toString() {
+		return "Update [node=" + node + ", timestamp=" + timestamp + "]";
+	}
+		
 }

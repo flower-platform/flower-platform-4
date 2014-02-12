@@ -5,28 +5,34 @@ import java.util.Date;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
-import org.flowerplatform.core.node.update.remote.UpdaterService;
+import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 
+/**
+ * @author Cristina Constantinescu
+ */
 public class UpdaterPropertySetterController extends PropertySetter {
 
+	public UpdaterPropertySetterController() {
+		// must be invoked last
+		setOrderIndex(100000);
+	}
+	
 	@Override
-	public void setProperty(Node node, String property, Object value) {
-		if ("timestamp".equals(property)) {
-			return;
+	public void setProperty(Node node, String key, Object value) {	
+		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
+		if (rootNode != null) {
+			CorePlugin.getInstance().getUpdateService().getUpdateDAO()
+				.addUpdate(rootNode, new PropertyUpdate().setKeyAs(key).setValueAs(value).setNodeAs(node).setTimestampAs(new Date().getTime()));
 		}
-		UpdaterService service = (UpdaterService) CorePlugin.getInstance().getServiceRegistry().getService("updaterService");
-		NodeService nodeService = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
-		
-		long timestamp = new Date().getTime();
-		nodeService.setProperty(node, "timestamp", timestamp);
-		
-		service.addPropertyUpdate(node, timestamp, property, value);
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property) {
-		setProperty(node, property, null);
+	public void unsetProperty(Node node, String key) {
+		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
+		if (rootNode != null) {
+			CorePlugin.getInstance().getUpdateService().getUpdateDAO()
+				.addUpdate(rootNode, new PropertyUpdate().setKeyAs(key).setUnsetAs(true).setNodeAs(node).setTimestampAs(new Date().getTime()));
+		}
 	}
 
 }

@@ -89,7 +89,7 @@
 				
 				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService.getPropertyDescriptors", [node.type], 
+					"nodeService.getPropertyDescriptors", [node], 
 						function(result:ResultEvent):void {
 						// properties available -> add them in list
 						propertyList.dataProvider = ArrayCollection(result.result);		
