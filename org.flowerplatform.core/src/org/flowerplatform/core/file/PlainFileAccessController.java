@@ -171,4 +171,19 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).list().length > 0;
 	}
 
+	@Override
+	public void deleteFolderContent(Object folder) {
+		File[] files = ((File) folder).listFiles();
+		if (files != null) {
+			for (File f : files) {
+				if (f.isDirectory()) {
+					deleteFolderContent(f);
+				} else {
+					f.delete();
+				}
+			}
+		}
+		((File) folder).delete();
+	}
+
 }

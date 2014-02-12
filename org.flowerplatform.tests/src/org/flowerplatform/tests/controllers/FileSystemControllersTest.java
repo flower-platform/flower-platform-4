@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.file.FileAddNodeControlller;
+import org.flowerplatform.core.file.FileAddNodeController;
 import org.flowerplatform.core.file.FileChildrenProvider;
 import org.flowerplatform.core.file.FilePropertiesProvider;
 import org.flowerplatform.core.file.FilePropertySetter;
@@ -70,7 +70,7 @@ public class FileSystemControllersTest {
 		
 		fileNodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER, new FileChildrenProvider());
 		fileNodeTypeDescriptor.addControllerToList(PROPERTIES_PROVIDER, new FilePropertiesProvider());
-		fileNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeControlller());
+		fileNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeController());
 		fileNodeTypeDescriptor.addControllerToList(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
 		fileNodeTypeDescriptor.addControllerToList(PROPERTY_SETTER, new FilePropertySetter());
 	}
@@ -82,7 +82,7 @@ public class FileSystemControllersTest {
 		fileSystemNode = f.getPath() + "\\temp\\fileSystemNode";
 		initialToBeCopied = f.getPath()  + "\\src\\org\\flowerplatform\\tests\\controllers\\resources\\initial_to_be_copied";
 		
-		new FileRemoveNodeController().deleteFolder(new File(fileSystemNode));
+		fileAccessController.deleteFolderContent(new File(fileSystemNode));
 		try {
 			copyDirectory(new File(initialToBeCopied), new File(fileSystemNode));
 		} catch (IOException e) {

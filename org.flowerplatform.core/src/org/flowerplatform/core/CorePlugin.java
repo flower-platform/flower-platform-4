@@ -25,7 +25,7 @@ import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SE
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
-import org.flowerplatform.core.file.FileAddNodeControlller;
+import org.flowerplatform.core.file.FileAddNodeController;
 import org.flowerplatform.core.file.FileChildrenProvider;
 import org.flowerplatform.core.file.FilePropertiesProvider;
 import org.flowerplatform.core.file.FilePropertySetter;
@@ -64,12 +64,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		fileSystemNodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER,	new FileChildrenProvider());
 		fileSystemNodeTypeDescriptor.addControllerToList(PROPERTIES_PROVIDER, new FileSystemPropertiesProvider());
 		fileSystemNodeTypeDescriptor.addControllerToList(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
-		fileSystemNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeControlller());
+		fileSystemNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeController());
 
 		TypeDescriptor fileNodeTypeDescriptor = getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("fileNode");
 		fileNodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER, new FileChildrenProvider());
 		fileNodeTypeDescriptor.addControllerToList(PROPERTIES_PROVIDER, new FilePropertiesProvider());
-		fileNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeControlller());
+		fileNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeController());
 		fileNodeTypeDescriptor.addControllerToList(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
 		fileNodeTypeDescriptor.addControllerToList(PROPERTY_SETTER, new FilePropertySetter());
 

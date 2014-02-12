@@ -57,4 +57,6 @@ public interface IFileAccessController {
 	
 	boolean hasChildren(Object file);
 	
+	void deleteFolderContent(Object folder);
+	
 }
