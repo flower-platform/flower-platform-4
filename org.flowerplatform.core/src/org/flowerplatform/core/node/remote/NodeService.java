@@ -32,7 +32,7 @@ public class NodeService {
 	
 	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
 	
-	protected static TypeDescriptorRegistry registry;
+	protected TypeDescriptorRegistry registry;
 	
 	public NodeService() {
 		super();		
@@ -40,7 +40,7 @@ public class NodeService {
 	
 	public NodeService(TypeDescriptorRegistry registry) {
 		super();
-		NodeService.registry = registry;
+		this.registry = registry;
 	}
 
 	public List<Node> getChildren(Node node, boolean populateProperties) {

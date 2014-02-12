@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.core;
 
+import org.flowerplatform.core.mindmap.remote.MindMapService;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.controller.AddNodeController;
