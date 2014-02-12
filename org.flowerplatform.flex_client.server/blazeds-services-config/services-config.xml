@@ -5,6 +5,11 @@
         <service-include file-path="remoting-config.xml" />
 	</services>
 	
+	  <factories>
+		<factory id="flowerFactory"
+			class="org.flowerplatform.flex_client.server.blazeds.FlowerFactory" />
+	</factories>
+	
    	<!-- For more details about channel definition configuration check http://livedocs.adobe.com/livecycle/8.2/programLC/programmer/lcds/help.html?content=lcconfig_3.html. -->
     <channels>
         <channel-definition id="remoting-amf" class="mx.messaging.channels.AMFChannel">
@@ -17,7 +22,7 @@
             </properties>
         </channel-definition>
     </channels>
-
+    
     <logging>
         <target class="flex.messaging.log.ServletLogTarget" level="Warn"> <!-- Other options : Debug, All, Warn -->
             <properties>

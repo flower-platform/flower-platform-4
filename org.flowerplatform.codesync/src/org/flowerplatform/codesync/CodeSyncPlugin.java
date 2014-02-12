@@ -34,6 +34,7 @@ import org.flowerplatform.codesync.controller.CodeSyncAddNodeController;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
+import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -244,6 +245,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
+		
+		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncOperationsService", new CodeSyncOperationsService());
 		
 		addTypeProvider("node", new NodeTypeProvider());
 		
