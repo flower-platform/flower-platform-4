@@ -3,7 +3,9 @@
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.core.service.ServiceLocator"/>
     <classEntry path="org.flowerplatform.flex_client.core.service.ServiceResponder"/>
-    <classEntry path="org.flowerplatform.flex_client.core.mindmap.CreateFileDialogView"/>
+    <classEntry path="org.flowerplatform.flex_client.core.mindmap.remote.update.NodeUpdate"/>
+    <classEntry path="org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate"/>
+    <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

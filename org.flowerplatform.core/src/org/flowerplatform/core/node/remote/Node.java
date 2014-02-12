@@ -17,11 +17,22 @@ public class Node {
 	
 	public Node() {
 			}
-
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
 	public Node(String type, String resource, String id) {
 		this.type = type;
 		this.resource = resource;
 		this.id = id;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Node(String type, String resource, String id, Map<String, Object> properties) {
+		this(type, resource, id);
+		this.properties = properties;
 	}
 
 
@@ -74,4 +85,55 @@ public class Node {
 				getOrCreateProperties().get("body"), type);
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Node)) {
+			return false;
+		}
+
+		Node node = (Node) obj;
+
+		if (this.id == null) {
+			if (node.id != null) {
+				return false;
+			}
+		} else {
+			if (!this.id.equals(node.id))
+				return false;
+		}
+
+		if (this.properties == null) {
+			if (node.properties != null) {
+				return false;
+			}
+		} else {
+			if (!this.properties.equals(node.properties))
+				return false;
+		}
+
+		if (this.type == null) {
+			if (node.type != null) {
+				return false;
+			}
+		} else {
+			if (!this.type.equals(node.type))
+				return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @author Sebastian Solomon
+	 */
+	@Override
+	public int hashCode() {
+		return (id == null ? 0 : id.hashCode())
+				+ (type == null ? 0 : type.hashCode())
+				+ (properties == null ? 0 : properties.hashCode()) / 3;
+	}
+
 }
