@@ -5,18 +5,21 @@ import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.freeplane.controller.FreeplaneAddNodeController;
-import org.flowerplatform.freeplane.controller.FreeplaneChildrenProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertiesProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertySetter;
-import org.flowerplatform.freeplane.controller.FreeplaneRemoveNodeController;
+import org.flowerplatform.freeplane.controller.MindMapBasicAddNodeController;
+import org.flowerplatform.freeplane.controller.MindMapBasicChildrenProvider;
+import org.flowerplatform.freeplane.controller.MindMapBasicRemoveNodeController;
 import org.flowerplatform.freeplane.controller.MindMapPropertiesProvider;
 import org.flowerplatform.freeplane.controller.MindMapPropertySetter;
+import org.flowerplatform.freeplane.controller.MindMapRootNodeProvider;
 import org.flowerplatform.freeplane.remote.FreeplaneService;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -48,29 +51,30 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FREEPLANE_NODE_TYPE);
 		
 		TypeDescriptor csTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.persistence-codeSync");
+		csTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FreeplanePropertiesProvider());
+		csTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FreeplaneAddNodeController());
 		csTypeDescriptor.addAdditiveController(PROPERTY_SETTER, new FreeplanePropertySetter());
 		addControllers(csTypeDescriptor);
 		
-		TypeDescriptor mmTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry()
-				.getOrCreateCategoryTypeDescriptor(ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + "mm");
-		addControllers(mmTypeDescriptor);
-		mmTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider());
+		TypeDescriptor mmTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + "mm");		
+		mmTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider());		
+		mmTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapBasicAddNodeController());
 		mmTypeDescriptor.addAdditiveController(PROPERTY_SETTER, new MindMapPropertySetter());
 		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("min_width").setReadOnlyAs(false));
 		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("max_width").setReadOnlyAs(false));
+		addControllers(mmTypeDescriptor);
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
 	}
 	
 	private void addControllers(TypeDescriptor nodeTypeDescriptor) {
-		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneChildrenProvider());
-		nodeTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FreeplanePropertiesProvider());
-		nodeTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FreeplaneAddNodeController());
-		nodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new FreeplaneRemoveNodeController());		
+		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new MindMapBasicChildrenProvider());
+		nodeTypeDescriptor.addAdditiveController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider());
+		nodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapBasicRemoveNodeController());
 		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("type"));
 		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("body"));
 	}
-
+	
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
 		INSTANCE = null;

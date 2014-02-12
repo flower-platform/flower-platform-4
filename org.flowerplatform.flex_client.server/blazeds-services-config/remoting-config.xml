@@ -15,9 +15,9 @@
         </properties>
     </destination>
     
-    <destination id="updaterService">
+    <destination id="updateService">
         <properties>
-            <source>org.flowerplatform.core.node.update.remote.UpdaterService</source>
+            <source>org.flowerplatform.core.node.update.remote.UpdateService</source>
         </properties>
     </destination>
     

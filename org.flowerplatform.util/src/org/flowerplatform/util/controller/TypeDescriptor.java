@@ -272,7 +272,7 @@ public class TypeDescriptor {
 				continue;
 			}
 			
-			controllers.addAll((Collection<? extends T>) categoryDescriptor.getAdditiveControllers(controllerType, object));
+			controllers.addAll((Collection<? extends T>) categoryDescriptor.getCachedAdditiveControllers(controllerType, object));
 			pair.b = true;
 		}
 		

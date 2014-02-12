@@ -24,12 +24,12 @@ import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
-import org.flowerplatform.core.node.controller.update.InMemoryUpdaterProvider;
 import org.flowerplatform.core.node.controller.update.UpdaterAddNodeController;
 import org.flowerplatform.core.node.controller.update.UpdaterPropertySetterController;
 import org.flowerplatform.core.node.controller.update.UpdaterRemoveNodeController;
 import org.flowerplatform.core.node.remote.NodeService;
-import org.flowerplatform.core.node.update.remote.UpdaterService;
+import org.flowerplatform.core.node.update.InMemoryUpdateDAO;
+import org.flowerplatform.core.node.update.remote.UpdateService;
 import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -53,7 +53,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 				
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
-		getServiceRegistry().registerService("updaterService", new UpdaterService(new InMemoryUpdaterProvider()));
+		getServiceRegistry().registerService("updateService", new UpdateService(new InMemoryUpdateDAO()));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new AllDynamicCategoryProvider());		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
@@ -101,4 +101,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		// no messages yet
 	}
 
+	public UpdateService getUpdateService() {
+		return (UpdateService) serviceRegistry.getService("updateService");
+	}
+	
+	public NodeService getNodeService() {
+		return (NodeService) serviceRegistry.getService("nodeService");
+	}
 }

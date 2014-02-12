@@ -1,18 +1,18 @@
 package org.flowerplatform.freeplane.controller;
 
-import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapPropertySetter extends PropertySetter {
+public class MindMapPropertySetter extends MindMapBasicPropertySetter {
 
 	@Override
 	public void setProperty(Node node, String property, Object value) {
+		super.setProperty(node, property, value);
+		
 		NodeModel nodeModel = getNodeModel(node);		
 		switch (property) {
 			case "min_width":
@@ -32,16 +32,8 @@ public class MindMapPropertySetter extends PropertySetter {
 					newMaxWidth = NodeSizeModel.NOT_SET;
 				}
 				NodeSizeModel.createNodeSizeModel(nodeModel).setMaxNodeWidth(newMaxWidth);								
-				break;
+				break;			
 		}
-	}
-
-	@Override
-	public void unsetProperty(Node node, String property) {		
-	}
-	
-	protected NodeModel getNodeModel(Node node) {
-		return FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getId());
 	}
 
 }

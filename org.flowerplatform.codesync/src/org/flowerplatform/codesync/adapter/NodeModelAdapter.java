@@ -106,14 +106,14 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				if (category == null) {
 					category = new Node();
 					category.setType(CodeSyncPlugin.CATEGORY);
-					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category);
+					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category, null);
 					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, NodeFeatureProvider.NAME, feature);
 				}
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
 				Node child = new Node();
 				child.setType(type);
-				CodeSyncPlugin.getInstance().getNodeService().addChild(category, child);
+				CodeSyncPlugin.getInstance().getNodeService().addChild(category, child, null);
 				return child;
 //		}
 //		

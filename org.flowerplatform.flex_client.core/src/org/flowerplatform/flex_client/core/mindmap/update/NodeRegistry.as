@@ -41,17 +41,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				delete registry[nodeId];
 			}
 		}
-		
-		public function updateNode(nodeId:String, properties:Object):void {
-			var nodeFromRegistry:Node = registry[nodeId];
-			
-			if (nodeFromRegistry != null) {
-				for (var propertyName:String in properties) {
-					nodeFromRegistry.properties[propertyName] = properties[propertyName];				
-				}				
-				nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry));				
-			}
-		}
-				
+						
 	}
 }

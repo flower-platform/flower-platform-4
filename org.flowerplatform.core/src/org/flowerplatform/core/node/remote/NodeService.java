@@ -5,6 +5,7 @@ import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
+import org.flowerplatform.core.node.controller.RootNodeProvider;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -127,7 +129,7 @@ public class NodeService {
 		}
 	}
 	
-	public void addChild(Node node, Node child) {
+	public void addChild(Node node, Node child, Node currentChildAtInsertionPoint) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -135,7 +137,7 @@ public class NodeService {
 		
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
-			controller.addNode(node, child);
+			controller.addNode(node, child, currentChildAtInsertionPoint);
 		}
 	}
 	
@@ -149,6 +151,23 @@ public class NodeService {
 		for (RemoveNodeController controller : controllers) {
 			controller.removeNode(node, child);
 		}
+	}
+	
+	public Node getRootNode(Node node) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
+		
+		List<RootNodeProvider> providers = descriptor.getAdditiveControllers(ROOT_NODE_PROVIDER, node);
+		Node rootNode = null;
+		for (RootNodeProvider provider : providers) {
+			rootNode = provider.getRootNode(node);
+			if (rootNode != null) {
+				break;
+			}
+		}
+		return rootNode;
 	}
 	
 }
