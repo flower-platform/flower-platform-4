@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.HeadlessMapViewController;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.MapModel;
@@ -18,7 +17,6 @@ import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.url.UrlManager;
 import org.freeplane.features.url.mindmapmode.MFileManager;
-import org.freeplane.main.headlessmode.FreeplaneHeadlessStarter;
 import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
 
 /**
