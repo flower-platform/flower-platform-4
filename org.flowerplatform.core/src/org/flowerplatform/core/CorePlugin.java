@@ -24,12 +24,14 @@ import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
-import org.flowerplatform.core.node.controller.update.InMemoryUpdaterProvider;
+import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.controller.update.UpdaterAddNodeController;
 import org.flowerplatform.core.node.controller.update.UpdaterPropertySetterController;
 import org.flowerplatform.core.node.controller.update.UpdaterRemoveNodeController;
 import org.flowerplatform.core.node.remote.NodeService;
-import org.flowerplatform.core.node.update.remote.UpdaterService;
+import org.flowerplatform.core.node.update.InMemoryUpdateDAO;
+import org.flowerplatform.core.node.update.remote.UpdateService;
+import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -52,13 +54,16 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 				
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
-		getServiceRegistry().registerService("updaterService", new UpdaterService(new InMemoryUpdaterProvider()));
+		getServiceRegistry().registerService("updateService", new UpdateService(new InMemoryUpdateDAO()));
 		
-		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.all");
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new AllDynamicCategoryProvider());		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
+				
+		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL);
 		updaterDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdaterAddNodeController());
 		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdaterRemoveNodeController());
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
-		
+			
 		setFileAccessController(new PlainFileAccessController());
 		//TODO 
 		setIRemoteMethodInvocationListener(new RemoteMethodInvocationListenerTest());
@@ -112,4 +117,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
 	}
 	
+	public UpdateService getUpdateService() {
+		return (UpdateService) serviceRegistry.getService("updateService");
+	}
+	
+	public NodeService getNodeService() {
+		return (NodeService) serviceRegistry.getService("nodeService");
+	}
 }

@@ -5,6 +5,7 @@ import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
+import org.flowerplatform.core.node.controller.RootNodeProvider;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -47,7 +49,7 @@ public class NodeService {
 			return null;
 		}
 		
-		List<ChildrenProvider> providers = descriptor.getAdditiveControllers(CHILDREN_PROVIDER);
+		List<ChildrenProvider> providers = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
 		// many times there will be no children; that's why we lazy init the list (if needed)
 		List<Node> children = null;
 		// we ask each registered provider for children
@@ -82,7 +84,7 @@ public class NodeService {
 			return;
 		}
 		
-		List<PropertiesProvider<?>> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER);
+		List<PropertiesProvider<?>> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);
 		for (PropertiesProvider<?> provider : providers) {
 			((PropertiesProvider<Object>) provider).populateWithProperties(node, rawNodeData);
 		}
@@ -91,13 +93,13 @@ public class NodeService {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public List<PropertyDescriptor> getPropertyDescriptors(String type) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(type);
+	public List<PropertyDescriptor> getPropertyDescriptors(Node node) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return Collections.emptyList();
 		}
 		
-		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR);
+		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
 	}
 	
 	public void setProperty(Node node, String property, Object value) {
@@ -106,7 +108,7 @@ public class NodeService {
 			return;
 		}
 		
-		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER);
+		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (PropertySetter controller : controllers) {
 			controller.setProperty(node, property, value);
 		}
@@ -121,21 +123,21 @@ public class NodeService {
 			return;
 		}
 		
-		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER);
+		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (PropertySetter controller : controllers) {
 			controller.unsetProperty(node, property);
 		}
 	}
 	
-	public void addChild(Node node, Node child) {
+	public void addChild(Node node, Node child, Node currentChildAtInsertionPoint) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER);
+		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
-			controller.addNode(node, child);
+			controller.addNode(node, child, currentChildAtInsertionPoint);
 		}
 	}
 	
@@ -145,10 +147,27 @@ public class NodeService {
 			return;
 		}
 		
-		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER);
+		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (RemoveNodeController controller : controllers) {
 			controller.removeNode(node, child);
 		}
+	}
+	
+	public Node getRootNode(Node node) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
+		
+		List<RootNodeProvider> providers = descriptor.getAdditiveControllers(ROOT_NODE_PROVIDER, node);
+		Node rootNode = null;
+		for (RootNodeProvider provider : providers) {
+			rootNode = provider.getRootNode(node);
+			if (rootNode != null) {
+				break;
+			}
+		}
+		return rootNode;
 	}
 	
 }

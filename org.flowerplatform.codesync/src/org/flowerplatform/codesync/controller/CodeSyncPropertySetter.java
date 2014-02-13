@@ -36,7 +36,7 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value) {
+	public void setProperty(Node node, String property, Object value) {		
 		if (isOriginalPropertyName(property)) {
 			return;
 		}

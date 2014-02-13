@@ -16,10 +16,10 @@
         </properties>
     </destination>
     
-    <destination id="updaterService">
+    <destination id="updateService">
         <properties>
-        	<factory>flowerFactory</factory>
-            <source>updaterService</source>
+       		<factory>flowerFactory</factory>
+            <source>org.flowerplatform.core.node.update.remote.UpdateService</source>        	
         </properties>
     </destination>
     

@@ -27,9 +27,9 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.ClientNodeStatus;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.NodeUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.ServiceLocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -71,7 +71,7 @@ package org.flowerplatform.flex_client.core {
 			INSTANCE = this;
 				
 			serviceLocator.addService("nodeService");
-			serviceLocator.addService("updaterService");
+			serviceLocator.addService("updateService");
 			serviceLocator.addService("freeplaneService");
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
@@ -95,9 +95,9 @@ package org.flowerplatform.flex_client.core {
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
-			registerClassAliasFromAnnotation(ChildrenListUpdate);
-			registerClassAliasFromAnnotation(ClientNodeStatus);
-			registerClassAliasFromAnnotation(NodeUpdate);
+			registerClassAliasFromAnnotation(Update);
+			registerClassAliasFromAnnotation(PropertyUpdate);
+			registerClassAliasFromAnnotation(ChildrenUpdate);
 		}
 		
 		public function getPerspective(id:String):Perspective {
