@@ -44,6 +44,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
@@ -133,17 +134,27 @@ package org.flowerplatform.flex_client.core.mindmap {
 			}
 		}
 		
-		public function getActions(selection:IList):Vector.<IAction> {			
-			var actions:Vector.<IAction> = CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.getActions(selection);	
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Mariana Gheorghe
+		 */
+		public function getActions(selection:IList):Vector.<IAction> {
+			var result:Vector.<IAction> = new Vector.<IAction>();
+			
+			for each (var provider:IActionProvider in CorePlugin.getInstance().mindmapEditorActionProviders) {
+				var actions:Vector.<IAction> = provider.getActions(selection);	
 
-			if (actions != null) {
-				for each (var action:IAction in actions) {
-					if (action is IDiagramShellAware) {
-						IDiagramShellAware(action).diagramShell = diagramShell;
+				if (actions != null) {
+					for each (var action:IAction in actions) {
+						if (action is IDiagramShellAware) {
+							IDiagramShellAware(action).diagramShell = diagramShell;
+						}
+						result.push(action);
 					}
 				}
 			}
-			return actions;
+			
+			return result;
 		}
 		
 		public function getSelection():IList {			

@@ -27,13 +27,13 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
-import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
+import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
 
 /**
- * @see FileFeatureProvider
+ * @see FolderFeatureProvider
  * 
  * @author Mariana Gheorghe
  * @author Sebastian Solomon
@@ -95,14 +95,6 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	@Override
 	public boolean hasChildren(Object modelElement) {
 		return true;
-	}
-	
-	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (FileFeatureProvider.CHILDREN.equals(feature)) {
-			return getChildren(element);
-		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
 	/**

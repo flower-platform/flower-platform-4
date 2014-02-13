@@ -6,11 +6,15 @@ import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROV
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.node.remote.AddChildDescriptor.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
@@ -170,4 +174,18 @@ public class NodeService {
 		}
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
+		Map<String, List<AddChildDescriptor>> descriptorsMap = new HashMap<String, List<AddChildDescriptor>>();
+		
+		Collection<TypeDescriptor> typeDescriptors = registry.getTypeDescriptors();
+		for (TypeDescriptor typeDescriptor : typeDescriptors) {
+			List<AddChildDescriptor> addChildDescriptors = typeDescriptor.getAdditiveControllers(ADD_CHILD_DESCRIPTOR);
+			descriptorsMap.put(typeDescriptor.getType(), addChildDescriptors);
+		}
+		
+		return descriptorsMap;
+	}
 }

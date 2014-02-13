@@ -1,5 +1,6 @@
 package org.flowerplatform.util.controller;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,4 +81,11 @@ public class TypeDescriptorRegistry {
 		return result;
 	}
 
+	/**
+	 * @return All the registered type descriptors.
+	 */
+	public Collection<TypeDescriptor> getTypeDescriptors() {
+		return typeDescriptors.values();
+	}
+	
 }

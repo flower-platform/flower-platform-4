@@ -33,6 +33,8 @@ public class JavaTypeDeclarationFeatureProvider extends NodeFeatureProvider {
 	public static final String SUPER_CLASS = "superClass";
 	public static final String SUPER_INTERFACES = "superInterfaces";
 	
+	public static final String SUPER_INTERFACE = "superInterface";
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<?> getValueFeatures(Object element) {

@@ -1,7 +1,6 @@
 package org.flowerplatform.codesync.controller;
 
 import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CATEGORY;
 import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_CONFLICT;
 import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_SYNC;
 import static org.flowerplatform.codesync.CodeSyncPlugin.CONFLICT;
@@ -187,13 +186,8 @@ public class CodeSyncControllerUtils {
 		return true;
 	}
 	
-	public static boolean isCategoryNode(Node node) {
-		return CATEGORY.equals(node.getType());
-	}
-	
 	public static boolean isSync(Node node) {
-		// category nodes are always sync
-		return isCategoryNode(node) || hasFlagTrue(node, SYNC);
+		return hasFlagTrue(node, SYNC);
 	}
 	
 	public static boolean isChildrenSync(Node node) {

@@ -57,7 +57,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	public static final String CATEGORY = "category";
 	public static final String REMOVED = "removed";
 	public static final String ADDED = "added";
 	public static final String SYNC = "sync";

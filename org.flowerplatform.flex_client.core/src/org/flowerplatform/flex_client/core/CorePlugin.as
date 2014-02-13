@@ -18,6 +18,9 @@
  */
 package org.flowerplatform.flex_client.core {
 
+	import mx.rpc.events.ResultEvent;
+	
+	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
@@ -26,6 +29,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
+	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ClientNodeStatus;
@@ -35,6 +39,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
+	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	
 	/**
@@ -50,7 +55,11 @@ package org.flowerplatform.flex_client.core {
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
 		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
-				
+		
+		public var mindmapEditorActionProviders:Vector.<IActionProvider> = new Vector.<IActionProvider>();
+		
+		public var addChildDescriptors:Object = new Object();
+		
 		// TODO MG: remove
 		public var mindmapNodeRendererControllerClass:Class;
 		
@@ -87,6 +96,15 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
 			
+			mindmapEditorActionProviders.push(mindmapEditorClassFactoryActionProvider);
+			mindmapEditorActionProviders.push(new AddChildActionProvider());
+			
+			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
+				function(result:ResultEvent):void {
+					addChildDescriptors = result.result;		
+				}
+			);
+			
 //			linkHandlers = new Dictionary();			
 //			
 //			if (ExternalInterface.available) {
@@ -101,6 +119,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(ChildrenListUpdate);
 			registerClassAliasFromAnnotation(ClientNodeStatus);
 			registerClassAliasFromAnnotation(NodeUpdate);
+			registerClassAliasFromAnnotation(AddChildDescriptor);
 		}
 		
 		public function getPerspective(id:String):Perspective {

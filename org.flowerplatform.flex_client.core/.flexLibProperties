@@ -7,6 +7,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>
+    <classEntry path="org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
