@@ -61,28 +61,29 @@ public class FreeplaneUtils {
 	}
 	
 	public Node getStandardNode(NodeModel nodeModel) {
-		Node node = new Node();
-		node.setId(nodeModel.createID());
+		String type = null;
+		String resource = null;
+		
 		// get type from attributes table
 		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);
 		if (attributeTable != null) {
 			for (Attribute attribute : attributeTable.getAttributes()) {
 				if (attribute.getName().equals("type")) {
-					node.setType((String) attribute.getValue());
+					type = (String) attribute.getValue();
 					break;
 				}
 			}
 		}
-		if (node.getType() == null) { 
+		if (type == null) { 
 			// no type provided, maybe this node is provided by a random .mm file, so set type to freeplaneNode
-			node.setType(FreeplanePlugin.FREEPLANE_NODE_TYPE);			
+			type = FreeplanePlugin.FREEPLANE_NODE_TYPE;			
 		}
 		
 		// TODO CC: temporary code
-		if (FreeplanePlugin.FREEPLANE_NODE_TYPE.equals(node.getType())) {
-			node.setResource("mm://path_to_resource");
+		if (FreeplanePlugin.FREEPLANE_NODE_TYPE.equals(type)) {
+			resource = "mm://path_to_resource";
 		}
-		return node;
+		return new Node(type, resource, nodeModel.createID(), nodeModel);
 	}
 	
 	public void load(URL url) throws Exception {

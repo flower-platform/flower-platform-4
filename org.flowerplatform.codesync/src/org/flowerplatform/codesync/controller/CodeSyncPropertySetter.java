@@ -47,11 +47,11 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		Object originalValue = null;
 		String originalProperty = getOriginalPropertyName(property);
 		// get the original value from property.original or property
-		if (node.getOrCreateProperties().containsKey(originalProperty)) {
+		if (node.getOrPopulateProperties().containsKey(originalProperty)) {
 			isOriginalPropertySet = true;
-			originalValue = node.getOrCreateProperties().get(originalProperty);
-		} else if (node.getOrCreateProperties().containsKey(property)) {
-			originalValue = node.getOrCreateProperties().get(property);
+			originalValue = node.getOrPopulateProperties().get(originalProperty);
+		} else if (node.getOrPopulateProperties().containsKey(property)) {
+			originalValue = node.getOrPopulateProperties().get(property);
 		} else {
 			originalValue = value;
 		}

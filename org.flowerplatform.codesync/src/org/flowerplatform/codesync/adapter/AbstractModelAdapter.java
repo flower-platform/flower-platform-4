@@ -113,7 +113,7 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	 */
 	protected Node getChildrenCategoryForNode(Node node, Object feature) {
 		for (Node category : getChildrenForNode(node)) {
-			if (category.getOrCreateProperties().get("body").equals(feature)) {
+			if (category.getOrPopulateProperties().get("body").equals(feature)) {
 				return category;
 			}
 		}
