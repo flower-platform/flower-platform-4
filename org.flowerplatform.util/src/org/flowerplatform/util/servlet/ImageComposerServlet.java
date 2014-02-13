@@ -23,6 +23,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -59,8 +61,9 @@ public class ImageComposerServlet extends ResourcesServlet {
 		}
 		String[] paths = requestedFile.split("\\|");
 		
-		BufferedImage result = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = result.createGraphics();
+		int width = 0;
+		int height = 0;
+		List<BufferedImage> images = new ArrayList<BufferedImage>();
 		
 		for (String path : paths) {
 			if (!path.startsWith("/")) {
@@ -73,12 +76,23 @@ public class ImageComposerServlet extends ResourcesServlet {
 			try {
 				URL url = new URL(requestedFile);
 				BufferedImage image = ImageIO.read(url);
-				graphics.drawImage(image, null, 0, 0);
+				images.add(image);
+				if (width < image.getWidth()) {
+					width = image.getWidth();
+				}
+				if (height < image.getHeight()) {
+					height = image.getHeight();
+				}
 			} catch (Exception e) {
 				// one of the images was not found; skip it
 			}
 		}
 		
+		BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = result.createGraphics();
+		for (BufferedImage image : images) {
+			graphics.drawImage(image, null, 0, 0);
+		}
 		graphics.dispose();
 		
 		OutputStream output = null;
