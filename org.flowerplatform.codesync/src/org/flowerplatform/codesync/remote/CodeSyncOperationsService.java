@@ -90,16 +90,15 @@ public class CodeSyncOperationsService {
 		match.setCodeSyncAlgorithm(algorithm);
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
-		algorithm.generateDiff(match);
+		algorithm.generateDiff(match, true);
 		
 		// STEP 3: sync
-		algorithm.synchronize(match);
+//		algorithm.synchronize(match);
 		
 		save(match, true);
 		save(match, false);
 	}
 	
-	// TODO
 	private void save(Match match, boolean isLeft) {
 		Object lateral = isLeft ? match.getLeft() : match.getRight();
 		AbstractModelAdapter adapter = isLeft ? match.getCodeSyncAlgorithm().getLeftModelAdapter(lateral)

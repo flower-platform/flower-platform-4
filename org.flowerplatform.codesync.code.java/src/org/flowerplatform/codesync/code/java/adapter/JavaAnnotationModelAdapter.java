@@ -31,7 +31,7 @@ import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -70,9 +70,9 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			return getAnnotationName(element);
-		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
+		} else if (FeatureProvider.TYPE.equals(feature)) {
 			return ANNOTATION;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -80,7 +80,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			if (element instanceof Annotation) {
 				Annotation annotation = (Annotation) element;
 				String name = (String) value;

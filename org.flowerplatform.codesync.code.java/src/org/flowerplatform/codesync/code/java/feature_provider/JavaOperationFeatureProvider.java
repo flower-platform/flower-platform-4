@@ -35,17 +35,20 @@ public class JavaOperationFeatureProvider extends NodeFeatureProvider {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<?> getFeatures(Object element) {
-		List features = super.getFeatures(element);
+	public List<?> getValueFeatures(Object element) {
+		List features = super.getValueFeatures(element);
 		features.addAll(Arrays.asList(
 				DOCUMENTATION,
-				MODIFIERS,
 				TYPED_ELEMENT_TYPE,
-				HAS_BODY,
-				OPERATION_PARAMETERS));
+				HAS_BODY));
 		return features;
 	}
 
+	@Override
+	public List<?> getContainmentFeatures(Object element) {
+		return Arrays.asList(MODIFIERS, OPERATION_PARAMETERS);
+	}
+	
 	@Override
 	public int getFeatureType(Object feature) {
 		if (MODIFIERS.equals(feature) || OPERATION_PARAMETERS.equals(feature)) {
@@ -53,5 +56,5 @@ public class JavaOperationFeatureProvider extends NodeFeatureProvider {
 		}
 		return super.getFeatureType(feature);
 	}
-	
+
 }

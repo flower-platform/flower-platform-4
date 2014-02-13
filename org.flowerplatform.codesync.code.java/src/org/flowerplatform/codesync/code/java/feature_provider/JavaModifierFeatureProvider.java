@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
@@ -28,9 +29,14 @@ public class JavaModifierFeatureProvider extends NodeFeatureProvider {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<?> getFeatures(Object element) {
-		List features = super.getFeatures(element);
+	public List<?> getValueFeatures(Object element) {
+		List features = super.getValueFeatures(element);
 		features.add(MODIFIER_TYPE);
 		return features;
+	}
+
+	@Override
+	public List<?> getContainmentFeatures(Object element) {
+		return Collections.emptyList();
 	}
 }
