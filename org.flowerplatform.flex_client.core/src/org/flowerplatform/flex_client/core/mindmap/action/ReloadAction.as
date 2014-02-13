@@ -40,6 +40,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		
 		public function ReloadAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.reload");
+			icon = CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png");
 			preferShowOnActionBar = true;
 			orderIndex = 100;
 		}
