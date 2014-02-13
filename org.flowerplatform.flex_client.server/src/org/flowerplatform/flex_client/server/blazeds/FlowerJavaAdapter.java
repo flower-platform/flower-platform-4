@@ -35,6 +35,8 @@ public class FlowerJavaAdapter extends JavaAdapter {
 		
 		Object object = super.invoke(message);
 		
+		remoteMethodInvocationInfo.setReturnValue(object);
+		
 		if (logger.isDebugEnabled()) {
 			long endTime, difference;
 			

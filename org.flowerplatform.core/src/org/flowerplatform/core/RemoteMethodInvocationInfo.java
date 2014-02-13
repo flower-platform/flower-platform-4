@@ -7,12 +7,14 @@ import java.util.List;
  */
 public class RemoteMethodInvocationInfo {
 	String serviceId;
-	
+
 	String methodName;
-	
+
 	List<?> parameters;
-	
+
 	long startTimestamp;
+
+	Object returnValue;
 
 	public RemoteMethodInvocationInfo(String serviceId, String methodName,
 			List<?> parameters) {
@@ -21,12 +23,12 @@ public class RemoteMethodInvocationInfo {
 		this.methodName = methodName;
 		this.parameters = parameters;
 	}
-	
+
 	public RemoteMethodInvocationInfo(String serviceId, String methodName,
 			List<?> parameters, long timestamp) {
 		this(serviceId, methodName, parameters);
 		this.startTimestamp = timestamp;
-		
+
 	}
 
 	public String getServiceId() {
@@ -60,4 +62,13 @@ public class RemoteMethodInvocationInfo {
 	public void setStartTimestamp(long startTimestamp) {
 		this.startTimestamp = startTimestamp;
 	}
+
+	public Object getReturnValue() {
+		return returnValue;
+	}
+
+	public void setReturnValue(Object returnValue) {
+		this.returnValue = returnValue;
+	}
+
 }
