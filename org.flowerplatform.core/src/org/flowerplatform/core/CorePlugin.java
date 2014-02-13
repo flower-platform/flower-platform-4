@@ -106,10 +106,16 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	 */
 	protected RemoteMethodInvocationListener remoteMethodInvocationListener;
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
 	public RemoteMethodInvocationListener getRemoteMethodInvocationListener() {
 		return remoteMethodInvocationListener;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
 	public void setRemoteMethodInvocationListener(RemoteMethodInvocationListener remoteMethodInvocationListener) {
 		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
 	}
