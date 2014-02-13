@@ -27,7 +27,7 @@ import java.util.List;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
-public class JavaTypeFeatureProvider extends NodeFeatureProvider {
+public class JavaTypeDeclarationFeatureProvider extends NodeFeatureProvider {
 	
 	public static final String TYPE_MEMBERS = "typeMembers";
 	public static final String SUPER_CLASS = "superClass";
@@ -35,18 +35,20 @@ public class JavaTypeFeatureProvider extends NodeFeatureProvider {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<?> getFeatures(Object element) {
-		List features = super.getFeatures(element);
+	public List<?> getValueFeatures(Object element) {
+		List features = super.getValueFeatures(element);
 		features.addAll(Arrays.asList(
-				TYPE_MEMBERS,
 				DOCUMENTATION,
-				MODIFIERS,
-				SUPER_CLASS,
-				SUPER_INTERFACES
+				SUPER_CLASS
 				));
 		return features;
 	}
 
+	@Override
+	public List<?> getContainmentFeatures(Object element) {
+		return Arrays.asList(MODIFIERS, SUPER_INTERFACES, TYPE_MEMBERS);
+	}
+	
 	@Override
 	public int getFeatureType(Object feature) {
 		if (TYPE_MEMBERS.equals(feature) ||

@@ -83,7 +83,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	}
 
 	@Override
-	public void allActionsPerformedForFeature(Object element, Object correspondingElement, Object feature) {
+	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 //		CodeSyncElement cse = getCodeSyncElement(element);
 //		if (cse != null) {
 //			FeatureChange change = cse.getFeatureChanges().get(feature);
@@ -174,15 +174,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
 			List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
-			Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
-			if (child != null && child instanceof Node) {
-				Node childNode = (Node) child;
-				if (result.childAdded) {
-					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED);
-				} else {
-					CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
-				}
-			}
+			processContainmentFeatureAfterActionPerformed(node, children, result, codeSyncAlgorithm);
 			break;
 		default:
 			break;
@@ -200,20 +192,6 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 			}
 		}
 		return false;
-	}
-	
-	/**
-	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
-	 */
-	private Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
-		if (matchKey == null)
-			return null;
-		for (Object existingChild : list) {
-			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
-				return existingChild;
-			}
-		}
-		return null;
 	}
 	
 }

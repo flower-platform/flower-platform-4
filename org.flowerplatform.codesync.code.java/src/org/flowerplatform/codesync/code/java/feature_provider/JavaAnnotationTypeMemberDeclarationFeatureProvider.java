@@ -34,16 +34,20 @@ public class JavaAnnotationTypeMemberDeclarationFeatureProvider extends NodeFeat
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<?> getFeatures(Object element) {
-		List features = super.getFeatures(element);
+	public List<?> getValueFeatures(Object element) {
+		List features = super.getValueFeatures(element);
 		features.addAll(Arrays.asList(
-				MODIFIERS, 
 				DOCUMENTATION, 
 				TYPED_ELEMENT_TYPE, 
 				ANNOTATION_MEMBER_DEFAULT_VALUE));
 		return features;
 	}
 
+	@Override
+	public List<?> getContainmentFeatures(Object element) {
+		return Arrays.asList(MODIFIERS);
+	}
+	
 	@Override
 	public int getFeatureType(Object feature) {
 		if (MODIFIERS.equals(feature)) {

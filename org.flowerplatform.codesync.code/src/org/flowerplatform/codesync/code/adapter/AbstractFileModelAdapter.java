@@ -26,13 +26,12 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @see FileFeatureProvider
@@ -60,9 +59,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
+		} else if (FeatureProvider.TYPE.equals(feature)) {
 			return CodeSyncCodePlugin.FILE;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -70,7 +69,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object file, Object feature, Object value) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			filesToRename.put(file, (String) value);
 		}
 	}

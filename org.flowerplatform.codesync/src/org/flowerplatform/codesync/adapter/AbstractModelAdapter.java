@@ -58,6 +58,11 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + element);
 	}
+	
+	@Override
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+		throw new IllegalArgumentException("Attempted to remove child on containment feature " + feature + " for element " + parent);
+	}
 
 	@Override
 	public void addToMap(Object element, Map<Object, Object> map) {
@@ -100,7 +105,7 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	}
 
 	@Override
-	public void allActionsPerformed(Object element, Object correspondingElement) {
+	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 	

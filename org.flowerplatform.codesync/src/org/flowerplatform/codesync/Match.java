@@ -266,7 +266,7 @@ public class Match {
 	 * <ul>
 	 * 	<li>at least one of the {@link #diffs} has a conflict (fast
 	 * 		access using {@link #diffsConflict}; OR
-	 * 	<li>this is a 1-match-l/r and parent is a 2-match
+	 * 	<li>this is a 1-match-l/r and parent is a 2-match-a-l/r
 	 * </ul>
 	 * 
 	 * 
@@ -275,8 +275,7 @@ public class Match {
 		return isDiffsConflict() ||
 			getAncestor() == null && (getLeft() == null || getRight() == null) && // this is 1-match-l/r AND
 			getParentMatch() != null && 
-				((getParentMatch().getAncestor() == null && (getParentMatch().getLeft() != null && getParentMatch().getRight() != null)) || // parent match is 2-match
-				(getParentMatch().getAncestor() != null && (getParentMatch().getLeft() == null || getParentMatch().getRight() == null)));
+					(getParentMatch().getAncestor() != null && (getParentMatch().getLeft() == null || getParentMatch().getRight() == null)); // parent match is 2-match
 		
 	}
 	

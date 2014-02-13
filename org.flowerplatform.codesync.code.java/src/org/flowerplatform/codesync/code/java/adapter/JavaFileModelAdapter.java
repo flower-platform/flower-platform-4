@@ -45,7 +45,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	@Override
 	public Object createChildOnContainmentFeature(Object file, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		CompilationUnit cu = getOrCreateCompilationUnit(file);
-		ASTNode node = (ASTNode) JavaTypeModelAdapter.createCorrespondingModelElement(cu.getAST(), (Node) correspondingChild);
+		ASTNode node = (ASTNode) JavaTypeDeclarationModelAdapter.createCorrespondingModelElement(cu.getAST(), (Node) correspondingChild);
 		cu.types().add(node);
 		return node;
 	}

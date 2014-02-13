@@ -36,19 +36,19 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.flowerplatform.codesync.FilteredIterable;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to {@link AbstractTypeDeclaration}. Children are {@link BodyDeclaration}s.
  * 
- * @see JavaTypeFeatureProvider
+ * @see JavaTypeDeclarationFeatureProvider
  * 
  * @author Mariana
  */
-public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
+public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	public static final String CLASS = "javaClass";
 	public static final String INTERFACE = "javaInterface";
@@ -114,14 +114,14 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (JavaTypeFeatureProvider.TYPE_MEMBERS.equals(feature)) {
+		if (JavaTypeDeclarationFeatureProvider.TYPE_MEMBERS.equals(feature)) {
 			return getChildren(element);
-		} else if (JavaTypeFeatureProvider.SUPER_INTERFACES.equals(feature)) {
+		} else if (JavaTypeDeclarationFeatureProvider.SUPER_INTERFACES.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
-				return getTypeNames(((TypeDeclaration) element).superInterfaceTypes());
+				return ((TypeDeclaration) element).superInterfaceTypes();
 			}
 			if (element instanceof EnumDeclaration) {
-				return getTypeNames(((EnumDeclaration) element).superInterfaceTypes());
+				return ((EnumDeclaration) element).superInterfaceTypes();
 			}
 			return Collections.emptyList();
 		}
@@ -130,9 +130,9 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
+		} else if (FeatureProvider.TYPE.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				if (((TypeDeclaration) element).isInterface()) {
 					return INTERFACE;
@@ -143,7 +143,7 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 				return ENUM;
 			}
 			return ANNOTATION_TYPE;
-		} else if (JavaTypeFeatureProvider.SUPER_CLASS.equals(feature)) {
+		} else if (JavaTypeDeclarationFeatureProvider.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				TypeDeclaration type = (TypeDeclaration) element;
 				if (type.getSuperclassType() != null) {
@@ -157,11 +157,11 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, final Object value) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			AbstractTypeDeclaration type = getAbstractTypeDeclaration(element);
 			String name = (String) value;
 			type.setName(type.getAST().newSimpleName(name));
-		} else if (JavaTypeFeatureProvider.SUPER_CLASS.equals(feature)) {
+		} else if (JavaTypeDeclarationFeatureProvider.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				String superClass = value.toString();
 				TypeDeclaration cls = (TypeDeclaration) element;
@@ -179,22 +179,21 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// declared as containment by JavaFeatureProvider 
-		if (JavaTypeFeatureProvider.SUPER_INTERFACES.equals(feature)) {
+		if (JavaTypeDeclarationFeatureProvider.SUPER_INTERFACES.equals(feature)) {
 			if (element instanceof TypeDeclaration || element instanceof EnumDeclaration) {
-				String superInterface = (String) correspondingChild;
+				Node superInterface = (Node) correspondingChild;
 				AbstractTypeDeclaration cls = (AbstractTypeDeclaration) element;
 				AST ast = cls.getAST();
-				Type type = getTypeFromString(ast, superInterface);
+				Type type = getTypeFromString(ast, (String) superInterface.getOrPopulateProperties().get(FeatureProvider.NAME));
 				if (cls instanceof TypeDeclaration) {
 					((TypeDeclaration) cls).superInterfaceTypes().add(type);
-				}
-				if (cls instanceof EnumDeclaration) {
+				} else if (cls instanceof EnumDeclaration) {
 					((EnumDeclaration) cls).superInterfaceTypes().add(type);
 				}
-				return getStringFromType(type);
+				return type;
 			}
 			return null;
-		} else if (JavaTypeFeatureProvider.TYPE_MEMBERS.equals(feature)) {
+		} else if (JavaTypeDeclarationFeatureProvider.TYPE_MEMBERS.equals(feature)) {
 			Node node = (Node) correspondingChild;
 			AbstractTypeDeclaration parent = (AbstractTypeDeclaration) element;
 			AST ast = parent.getAST();
@@ -239,12 +238,4 @@ public class JavaTypeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		return (AbstractTypeDeclaration) element;
 	}
 	
-	private List<String> getTypeNames(List types) {
-		List<String> rslt = new ArrayList<String>();
-		for (Object type : types) {
-			rslt.add(getStringFromType((Type) type));
-		}
-		return rslt;
-	}
-
 }

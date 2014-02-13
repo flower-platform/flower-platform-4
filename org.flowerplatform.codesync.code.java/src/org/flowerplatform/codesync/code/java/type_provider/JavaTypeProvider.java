@@ -26,10 +26,11 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairM
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter.OPERATION;
 import static org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter.PARAMETER;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.ANNOTATION_TYPE;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.CLASS;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.ENUM;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeModelAdapter.INTERFACE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ANNOTATION_TYPE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ENUM;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.INTERFACE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.EXPRESSION;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +40,13 @@ import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
@@ -86,6 +89,8 @@ public class JavaTypeProvider implements ITypeProvider {
 			}
 		} else if (object instanceof Annotation) {
 			return ANNOTATION;
+		} else if (object instanceof Expression || object instanceof Type) {
+			return EXPRESSION;
 		} else {
 			return directMap.get(object.getClass());
 		}
