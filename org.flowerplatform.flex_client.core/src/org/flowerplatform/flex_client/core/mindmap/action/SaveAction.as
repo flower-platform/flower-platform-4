@@ -18,12 +18,7 @@
 */
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
-	import mx.messaging.messages.ErrorMessage;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**

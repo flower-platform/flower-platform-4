@@ -16,6 +16,16 @@ public class UpdateService {
 	
 	protected static UpdateDAO updateDAO;
 	
+	public UpdateDAO getUpdateDAO() {
+		return updateDAO;
+	}
+	
+	protected static ThreadLocal<List<Update>> currentMethodInvocationUpdates = new ThreadLocal<List<Update>>();
+	
+	public static ThreadLocal<List<Update>> getCurrentMethodInvocationUpdates() {
+		return currentMethodInvocationUpdates;
+	}
+
 	public UpdateService() {
 		super();		
 	}
@@ -23,10 +33,6 @@ public class UpdateService {
 	public UpdateService(UpdateDAO updateDAO) {
 		super();
 		UpdateService.updateDAO = updateDAO;
-	}
-
-	public UpdateDAO getUpdateDAO() {
-		return updateDAO;
 	}
 	
 	public List<Update> getUpdates(Node rootNode, long timestampOfLastRequest) {

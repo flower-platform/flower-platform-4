@@ -3,7 +3,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.mx_internal;
-	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -104,7 +103,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
 				[node, true], 
-				function (result:ResultEvent):void {requestChildrenHandler(node, ArrayCollection(result.result));});	
+				function (result:Object):void {requestChildrenHandler(node, ArrayCollection(result));});	
 		}
 		
 		protected function requestChildrenHandler(node:Node, children:ArrayCollection):void {
@@ -146,9 +145,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				[Node(MindMapDiagramShell(diagramShell).getRoot()), timestampOfLastRequest], rootNodeUpdatesHandler);	
 		}
 			
-		protected function rootNodeUpdatesHandler(result:ResultEvent):void {
-			var updates:ArrayCollection = ArrayCollection(result.result);
-			
+		public function rootNodeUpdatesHandler(updates:ArrayCollection):void {
 			if (updates != null && updates.length > 0) {
 				for each (var update:Update in updates) {
 					var nodeFromRegistry:Node = nodeRegistry.getNodeById(update.node.id);	
@@ -201,8 +198,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.refresh", 
 				[getNodeWithVisibleChildren(node)], 
-				function (result:ResultEvent):void {
-					refreshHandler(node, NodeWithVisibleChildren(result.result));
+				function (result:Object):void {
+					refreshHandler(node, NodeWithVisibleChildren(result));
 					
 					MindMapDiagramShell(diagramShell).refreshRootModelChildren();
 					MindMapDiagramShell(diagramShell).refreshModelPositions(node);});

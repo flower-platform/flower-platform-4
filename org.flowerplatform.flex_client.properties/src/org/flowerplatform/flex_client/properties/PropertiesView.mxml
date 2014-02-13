@@ -14,7 +14,6 @@
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
-			import mx.rpc.events.ResultEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
@@ -90,9 +89,9 @@
 				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
 					"nodeService.getPropertyDescriptors", [node], 
-						function(result:ResultEvent):void {
+						function(result:Object):void {
 						// properties available -> add them in list
-						propertyList.dataProvider = ArrayCollection(result.result);		
+						propertyList.dataProvider = ArrayCollection(result);		
 						// get their values from node
 						nodeUpdatedHandler(new NodeUpdatedEvent(node));
 						
