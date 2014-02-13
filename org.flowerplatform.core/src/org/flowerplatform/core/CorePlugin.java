@@ -18,7 +18,6 @@
  */
 package org.flowerplatform.core;
 
-import org.flowerplatform.core.mindmap.remote.MindMapService;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -60,8 +59,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
 		
 		setFileAccessController(new PlainFileAccessController());
-		//TODO 
-		setIRemoteMethodInvocationListener(new RemoteMethodInvocationListenerTest());
+		setIRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
@@ -102,13 +100,13 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	protected IRemoteMethodInvocationListener remoteMethodInvocationListener;
+	protected RemoteMethodInvocationListener remoteMethodInvocationListener;
 	
-	public IRemoteMethodInvocationListener getRemoteMethodInvocationListener() {
+	public RemoteMethodInvocationListener getRemoteMethodInvocationListener() {
 		return remoteMethodInvocationListener;
 	}
 	
-	public void setIRemoteMethodInvocationListener(IRemoteMethodInvocationListener remoteMethodInvocationListener) {
+	public void setIRemoteMethodInvocationListener(RemoteMethodInvocationListener remoteMethodInvocationListener) {
 		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
 	}
 	
