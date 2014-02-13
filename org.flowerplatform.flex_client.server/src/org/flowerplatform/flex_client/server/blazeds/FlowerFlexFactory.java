@@ -10,6 +10,11 @@ import flex.messaging.config.ConfigMap;
  * We use this factory, instead of the default one, because only one instance of
  * the service must be used, and the default factory was creating a new instance
  * every time a method of the service was invoked.
+ * <p>
+ * Inspired form <a href=
+ * "http://www.epseelon.com/2008/04/15/flex-spring-and-blazeds-the-full-stack-part-4/"
+ * >http://www.epseelon.com/2008/04/15/flex-spring-and-blazeds-the-full-stack-
+ * part-4/</a>
  * 
  * @author Sebastian Solomon
  */
