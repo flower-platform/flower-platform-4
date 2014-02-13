@@ -21,7 +21,7 @@ public abstract class UpdateDAO extends AbstractController {
 	public void addUpdate(Node node, Update update) {		
 		doAddUpdate(node, update);
 		
-		// store update in thread local -> updates will be sent back to client with the method's result
+		// store update in thread local -> updates will be sent back to client with the remote method result
 		List<Update> updates = UpdateService.getCurrentMethodInvocationUpdates().get();
 		if (updates == null) {
 			updates = new ArrayList<Update>();

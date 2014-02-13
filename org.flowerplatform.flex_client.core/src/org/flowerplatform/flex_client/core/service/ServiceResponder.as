@@ -32,7 +32,7 @@ package org.flowerplatform.flex_client.core.service {
 		
 		public function result(data:Object):void {
 			/* this result contains 2 objects:
-			* 1. messageInvocationResult:Object -> the actual result of method invocation
+			* 1. messageInvocationResult:Object -> the actual result of method's invocation
 			* 2. updates:ArrayCollection -> all updates performed in method's execution body
 			*/
 			var result:Object = data.result;

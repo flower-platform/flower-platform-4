@@ -64,6 +64,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
 			
 		setFileAccessController(new PlainFileAccessController());
+		
+		setIRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
@@ -101,6 +103,19 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		// no messages yet
 	}
 
+	/**
+	 * @author Sebastian Solomon
+	 */
+	protected IRemoteMethodInvocationListener remoteMethodInvocationListener;
+	
+	public IRemoteMethodInvocationListener getRemoteMethodInvocationListener() {
+		return remoteMethodInvocationListener;
+	}
+	
+	public void setIRemoteMethodInvocationListener(IRemoteMethodInvocationListener remoteMethodInvocationListener) {
+		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
+	}
+
 	public UpdateService getUpdateService() {
 		return (UpdateService) serviceRegistry.getService("updateService");
 	}
@@ -108,4 +123,5 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public NodeService getNodeService() {
 		return (NodeService) serviceRegistry.getService("nodeService");
 	}
+	
 }
