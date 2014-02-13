@@ -8,6 +8,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
 	import org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer;
+	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.NumberPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;

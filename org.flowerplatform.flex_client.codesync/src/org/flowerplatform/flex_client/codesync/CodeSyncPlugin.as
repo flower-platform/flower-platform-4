@@ -20,15 +20,20 @@ package org.flowerplatform.flex_client.codesync {
 	
 	import flash.events.MouseEvent;
 	
+	import mx.collections.ArrayCollection;
 	import mx.containers.HBox;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
+	import mx.rpc.events.ResultEvent;
 	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.remote.CodeSyncOperationsService;
 	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.Utils;
 	
 	import spark.components.Button;
@@ -64,7 +69,37 @@ package org.flowerplatform.flex_client.codesync {
 				new CodeSyncOperationsService().synchronize(null);
 			});
 			hBox.addChild(btn);
-			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
+			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);
+			
+			CorePlugin.getInstance().serviceLocator.invoke(CodeSyncOperationsService.ID + ".getDropdownPropertyRenderersInfo", null, function(result:ResultEvent):void {
+				var names:ArrayCollection = result.result["names"];
+				var dataProviders:Object = result.result["dataProviders"];
+				for each (var name:String in names) {
+					PropertiesPlugin.getInstance().propertyRendererClasses[name] = new FactoryWithInitialization(DropDownListPropertyRenderer, 
+						{
+							requestDataProviderHandler: function (callbackObject:Object, callbackFunction:Function):void {
+								callbackFunction.call(callbackObject, dataProviders[name]);
+							},
+							
+							labelFunction: function (object:Object):String {
+								return object.toString();
+							},
+							
+							getItemIndexFromList: function (item:Object, list:ArrayCollection):int {
+								if (item != null) {
+									for (var i:int = 0; i < list.length; i++) {
+										var listItem:Object = list.getItemAt(i);
+										if (item == listItem) {
+											return i;
+										}
+									}
+								}
+								return -1;
+							}
+						});
+				}
+			});
+				
 		}
 		
 	}

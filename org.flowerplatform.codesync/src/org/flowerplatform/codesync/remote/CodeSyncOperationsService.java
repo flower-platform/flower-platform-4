@@ -19,6 +19,8 @@
 package org.flowerplatform.codesync.remote;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
@@ -110,5 +112,12 @@ public class CodeSyncOperationsService {
 				}
 			}
 		} 
+	}
+	
+	public Map<String, Object> getDropdownPropertyRenderersInfo() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("names", CodeSyncPlugin.getInstance().getDataProvidersForDropDownListProperties().keySet());
+		map.put("dataProviders", CodeSyncPlugin.getInstance().getDataProvidersForDropDownListProperties());
+		return map;
 	}
 }

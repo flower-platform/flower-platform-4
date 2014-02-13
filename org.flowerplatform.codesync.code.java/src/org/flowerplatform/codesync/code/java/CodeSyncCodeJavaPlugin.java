@@ -43,6 +43,7 @@ import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_ENUM_CON
 import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_FIELD;
 import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_METHOD;
 import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_MODIFIER;
+import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_PACKAGE;
 import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_PARAMETER;
 import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_SUPER_INTERFACE;
 import static org.flowerplatform.codesync.code.java.JavaConstants.LABEL_TYPE_ANNOTATION;
@@ -73,10 +74,13 @@ import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDec
 import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_INTERFACES;
 import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.TYPE_MEMBERS;
 import static org.flowerplatform.codesync.feature_provider.FeatureProvider.FEATURE_PROVIDER;
+import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.remote.AddChildDescriptor.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
+
+import java.util.Arrays;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
@@ -148,10 +152,10 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 	
 		createNodeTypeDescriptor(FOLDER, new FolderModelAdapter(), new FolderFeatureProvider())
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, childrenDescriptor)
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FOLDER).setLabelAs(FOLDER)
+		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FOLDER).setLabelAs(LABEL_PACKAGE)
 				.setIconAs(getImagePathFromPublicResources(IMG_WIZ_PACKAGE)).setOrderIndexAs(10))
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE)
-				.setIconAs(getImagePathFromPublicResources(IMG_FILE)).setLabelAs(FILE).setOrderIndexAs(20))
+		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE).setLabelAs(JavaConstants.LABEL_FILE)
+				.setIconAs(getImagePathFromPublicResources(IMG_FILE)).setOrderIndexAs(20))
 		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_PACKAGE)));
 	
 		String category_canContainTypes = "category.codesync-can-contain-types";
@@ -243,8 +247,22 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		createNodeTypeDescriptor(MEMBER_VALUE_PAIR, new JavaMemberValuePairModelAdapter(), new JavaMemberValuePairFeatureProvider())
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(ANNOTATION_VALUES));
 		
+		String modifierName = "ModifiersDropDownList";
+		CodeSyncPlugin.getInstance().addDataProviderForDropDownListProperty(modifierName, Arrays.asList(
+				"public",
+				"protected",
+				"private",
+				"static",
+				"abstract",
+				"final",
+				"native",
+				"synchronized",
+				"transient",
+				"volatile",
+				"strictfp"));
 		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new JavaModifierFeatureProvider())
-		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers);
+		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(modifierName).setReadOnlyAs(false));
 		
 		createNodeTypeDescriptor(PARAMETER, new JavaParameterModelAdapter(), new JavaParameterFeatureProvider())
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(OPERATION_PARAMETERS))
