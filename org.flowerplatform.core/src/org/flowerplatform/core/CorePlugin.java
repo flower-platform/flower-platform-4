@@ -56,7 +56,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
 		getServiceRegistry().registerService("updateService", new UpdateService(new InMemoryUpdateDAO()));
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new AllDynamicCategoryProvider());		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 				
 		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL);
