@@ -7,12 +7,14 @@ import static org.eclipse.jdt.core.dom.Modifier.isPrivate;
 import static org.eclipse.jdt.core.dom.Modifier.isProtected;
 import static org.eclipse.jdt.core.dom.Modifier.isPublic;
 import static org.eclipse.jdt.core.dom.Modifier.isStatic;
+import static org.eclipse.jdt.core.dom.Modifier.isSynchronized;
 import static org.eclipse.jdt.core.dom.Modifier.isTransient;
 import static org.eclipse.jdt.core.dom.Modifier.isVolatile;
 import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_ABSTRACT;
 import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_FINAL;
 import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_NATIVE;
 import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_STATIC;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_SYNCHRONIZED;
 import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_TRANSIENT;
 import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_VOLATILE;
 import static org.flowerplatform.codesync.code.java.JavaConstants.VISIBILITY_DEFAULT;
@@ -82,6 +84,9 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		// bottom right
 		if (isTransient(flags)) {
 			icon = append(icon, DECORATOR_TRANSIENT);
+		}
+		if (isSynchronized(flags)) {
+			icon = append(icon, DECORATOR_SYNCHRONIZED);
 		}
 		
 		node.getOrCreateProperties().put(getProperty(), icon);

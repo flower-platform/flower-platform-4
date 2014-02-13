@@ -63,6 +63,7 @@ public class JavaConstants {
 	public static final String DECORATOR_STATIC = DECORATOR + "static.gif";
 	public static final String DECORATOR_NATIVE = DECORATOR + "native.gif";
 	public static final String DECORATOR_TRANSIENT = DECORATOR + "transient.gif";
+	public static final String DECORATOR_SYNCHRONIZED = DECORATOR + "synchronized.gif";
 	
 	public static final String VISIBILITY_PRIVATE = "_private";
 	public static final String VISIBILITY_PROTECTED = "_protected";
