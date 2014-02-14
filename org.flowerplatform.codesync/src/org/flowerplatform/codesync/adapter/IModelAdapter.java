@@ -109,6 +109,6 @@ public interface IModelAdapter extends IModelAdapterUI {
 	 * 
 	 * @author Mariana
 	 */
-	public void allActionsPerformed(Object element, Object correspondingElement);
+	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 }

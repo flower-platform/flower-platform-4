@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.codesync.code.feature_provider;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.flowerplatform.codesync.adapter.IModelAdapter;
@@ -30,12 +31,9 @@ public class FileFeatureProvider extends NodeFeatureProvider {
 
 	public static final String CHILDREN = "children";
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<?> getFeatures(Object element) {
-		List features = super.getFeatures(element);
-		features.add(CHILDREN);
-		return features;
+	public List<?> getContainmentFeatures(Object element) {
+		return Arrays.asList(CHILDREN);
 	}
 
 	@Override
@@ -46,6 +44,4 @@ public class FileFeatureProvider extends NodeFeatureProvider {
 		return super.getFeatureType(feature);
 	}
 
-	
-	
 }

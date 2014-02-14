@@ -21,9 +21,11 @@ package org.flowerplatform.codesync.adapter;
 import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -62,7 +64,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.TYPE.equals(feature)) {
+		if (FeatureProvider.TYPE.equals(feature)) {
 			return getNode(element).getType();
 		}
 		return getNode(element).getOrCreateProperties().get(feature);
@@ -75,7 +77,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		if (NodeFeatureProvider.TYPE.equals(feature)) {
+		if (FeatureProvider.TYPE.equals(feature)) {
 			getNode(element).setType((String) newValue);
 		}
 		CodeSyncPlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
@@ -107,7 +109,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 					category = new Node();
 					category.setType(CodeSyncPlugin.CATEGORY);
 					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category, null);
-					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, NodeFeatureProvider.NAME, feature);
+					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, FeatureProvider.NAME, feature);
 				}
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
@@ -147,8 +149,35 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return (Node) element;
 	}
 
+	
+	protected void processContainmentFeatureAfterActionPerformed(Node node, List<Object> children, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
+		if (child != null && child instanceof Node) {
+			Node childNode = (Node) child;
+			if (result.childAdded) {
+				CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED);
+			} else {
+				CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
+			}
+		}
+	}
+	
 	protected Object getOriginalFeatureName(Object feature) {
 		return feature.toString() + CodeSyncPropertySetter.ORIGINAL;
+	}
+	
+	/**
+	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
+	 */
+	protected Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
+		if (matchKey == null)
+			return null;
+		for (Object existingChild : list) {
+			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
+				return existingChild;
+			}
+		}
+		return null;
 	}
 	
 }

@@ -28,7 +28,8 @@ import org.flowerplatform.util.Pair;
  * For the type descriptor corresponding to type "repository", we specify that it belongs to categories "category.fileSystemNode" and 
  * "category.saveableNode". In this case, when we request controllers (cf. {@link #getAdditiveControllers(String)})
  * we'll get <code>RepoChilrenProvider</code>, <code>FileSystemChildrenProvider</code>, <code>SaveableNodeChildrenProvider</code> and 
- * <code>AllChildrenProvider</code> (because "category.all" is a special category, to which belong all types).
+ * <code>AllChildrenProvider</code> (because "category.all" is a dynamic category, to which belong all types; other dynamic categories
+ * can be added cf. {@link IDynamicCategoryProvider}). 
  * 
  * <p>
  * The mechanism is similar for single controllers. However, in this case only one controller is possible for a node type (that can be defined at a category type
