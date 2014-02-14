@@ -14,7 +14,7 @@ public class UpdateService {
 
 	private final static Logger logger = LoggerFactory.getLogger(UpdateService.class);
 	
-	protected static UpdateDAO updateDAO;
+	protected UpdateDAO updateDAO;
 	
 	public UpdateService() {
 		super();		
@@ -22,7 +22,7 @@ public class UpdateService {
 	
 	public UpdateService(UpdateDAO updateDAO) {
 		super();
-		UpdateService.updateDAO = updateDAO;
+		this.updateDAO = updateDAO;
 	}
 
 	public UpdateDAO getUpdateDAO() {

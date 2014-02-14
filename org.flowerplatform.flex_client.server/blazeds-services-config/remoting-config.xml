@@ -19,7 +19,7 @@
     <destination id="updateService">
         <properties>
        		<factory>flowerFactory</factory>
-            <source>org.flowerplatform.core.node.update.remote.UpdateService</source>        	
+            <source>updateService</source>        	
         </properties>
     </destination>
     
