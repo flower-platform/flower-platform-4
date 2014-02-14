@@ -6,30 +6,15 @@ import java.util.List;
  * @author Sebastian Solomon
  */
 public class RemoteMethodInvocationInfo {
-	String serviceId;
+	private String serviceId;
 
-	String methodName;
+	private String methodName;
 
-	List<?> parameters;
+	private List<?> parameters;
 
-	long startTimestamp;
+	private long startTimestamp;
 
-	Object returnValue;
-
-	public RemoteMethodInvocationInfo(String serviceId, String methodName,
-			List<?> parameters) {
-		super();
-		this.serviceId = serviceId;
-		this.methodName = methodName;
-		this.parameters = parameters;
-	}
-
-	public RemoteMethodInvocationInfo(String serviceId, String methodName,
-			List<?> parameters, long timestamp) {
-		this(serviceId, methodName, parameters);
-		this.startTimestamp = timestamp;
-
-	}
+	private Object returnValue;
 
 	public String getServiceId() {
 		return serviceId;

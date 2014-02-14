@@ -55,7 +55,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
 		getServiceRegistry().registerService("updateService", new UpdateService(new InMemoryUpdateDAO()));
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new AllDynamicCategoryProvider());		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 				
 		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL);
@@ -64,8 +63,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
 			
 		setFileAccessController(new PlainFileAccessController());
-		
-		setIRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
+
+		setRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
@@ -106,13 +105,19 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	protected IRemoteMethodInvocationListener remoteMethodInvocationListener;
+	protected RemoteMethodInvocationListener remoteMethodInvocationListener;
 	
-	public IRemoteMethodInvocationListener getRemoteMethodInvocationListener() {
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public RemoteMethodInvocationListener getRemoteMethodInvocationListener() {
 		return remoteMethodInvocationListener;
 	}
 	
-	public void setIRemoteMethodInvocationListener(IRemoteMethodInvocationListener remoteMethodInvocationListener) {
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public void setRemoteMethodInvocationListener(RemoteMethodInvocationListener remoteMethodInvocationListener) {
 		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
 	}
 
@@ -123,5 +128,5 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public NodeService getNodeService() {
 		return (NodeService) serviceRegistry.getService("nodeService");
 	}
-	
+
 }

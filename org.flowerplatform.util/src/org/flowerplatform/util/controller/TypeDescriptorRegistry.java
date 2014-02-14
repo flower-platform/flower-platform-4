@@ -95,5 +95,10 @@ public class TypeDescriptorRegistry {
 	public void addDynamicCategoryProvider(IDynamicCategoryProvider provider) {
 		getDynamicCategoryProviders().add(provider);
 	}
+
+	public TypeDescriptorRegistry() {
+		super();
+		addDynamicCategoryProvider(new AllDynamicCategoryProvider());
+	}
 	
 }

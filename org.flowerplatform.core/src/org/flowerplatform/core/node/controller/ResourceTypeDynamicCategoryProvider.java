@@ -10,12 +10,18 @@ import org.flowerplatform.util.controller.IDynamicCategoryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
- * Provides the corresponding category based on {@link Node node}s resource type.
+ * Provides a dynamic category based on a {@link Node}'s resource type.
+ * <code>node.resource</code> must have the following format: <code>%resource_type%://%other_info%</code>. E.g.
+ * for <code>node.resource</code> = "mm://path-to-mindmap", will return "category.resource.mm". 
  * 
  * <p>
- * Resource must have the following format: %resource_type%://%other_info%. 
+ * This way we can easily implement plugins that are "persistence providers" for a certain type of resource. E.g. the
+ * FreePlane plugin would register various controllers ({@link ChildrenProvider}, {@link PropertiesProvider}, etc.) directly
+ * on the category "category.resource.mm". Each node for a "mm" resource will belong to this category, no matter its node type
+ * or the static categories assigned to the node type.
  * 
  * @author Cristina Constantinescu
+ * @author Cristian Spiescu
  */
 public class ResourceTypeDynamicCategoryProvider implements IDynamicCategoryProvider {
 
