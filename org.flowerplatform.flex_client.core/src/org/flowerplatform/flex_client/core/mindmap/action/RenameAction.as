@@ -32,6 +32,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		
 		public function RenameAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.rename");
+			icon = CorePlugin.getInstance().getResourceUrl("images/edit.png");
 			orderIndex = 30;
 		}
 		

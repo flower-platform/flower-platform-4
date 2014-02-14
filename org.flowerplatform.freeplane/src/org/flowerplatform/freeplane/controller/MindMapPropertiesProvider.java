@@ -21,7 +21,7 @@ public class MindMapPropertiesProvider extends MindMapBasicPropertiesProvider {
 		// if NOT_SET -> don't show -1, show empty data
 		node.getOrCreateProperties().put("min_width", value == NodeSizeModel.NOT_SET ? "" : value);
 			
-		value = NodeSizeModel.getModel(rawNodeData).getMinNodeWidth();		
+		value = NodeSizeModel.getModel(rawNodeData).getMaxNodeWidth();		
 		// if NOT_SET -> don't show -1, show empty data
 		node.getOrCreateProperties().put("max_width", value == NodeSizeModel.NOT_SET ? "" : value);		
 	}

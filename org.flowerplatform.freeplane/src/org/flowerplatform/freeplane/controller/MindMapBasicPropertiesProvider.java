@@ -12,6 +12,7 @@ public class MindMapBasicPropertiesProvider extends PropertiesProvider<NodeModel
 	@Override
 	public void populateWithProperties(Node node, NodeModel rawNodeData) {
 		node.getOrCreateProperties().put("body", rawNodeData.getText());
+		// TODO CC: temporary code
 		node.getOrCreateProperties().put("hasChildren", rawNodeData.hasChildren());
 	}
 

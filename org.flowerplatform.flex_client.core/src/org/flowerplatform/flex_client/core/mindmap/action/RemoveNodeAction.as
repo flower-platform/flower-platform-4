@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		public function RemoveNodeAction() {
 			super();
 			label = CorePlugin.getInstance().getMessage("mindmap.action.remove");	
+			icon = CorePlugin.getInstance().getResourceUrl("images/cancel_delete.png");
 			orderIndex = 20;
 		}
 		
