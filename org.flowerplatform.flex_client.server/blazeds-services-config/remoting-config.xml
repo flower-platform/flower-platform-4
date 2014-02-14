@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<service id="remoting-service" class="flex.messaging.services.RemotingService">
+<service id="remoting-service" class="org.flowerplatform.flex_client.server.blazeds.FlowerRemotingService">
 
     <adapters>
         <adapter-definition id="java-object" class="org.flowerplatform.flex_client.server.blazeds.FlowerJavaAdapter" default="true"/>
@@ -8,33 +8,5 @@
    	<default-channels>
         <channel ref="remoting-amf"/>
 	</default-channels>
-   
-    <destination id="nodeService">
-        <properties>
-        	<factory>flowerFactory</factory>
-            <source>nodeService</source>
-        </properties>
-    </destination>
-    
-    <destination id="updateService">
-        <properties>
-       		<factory>flowerFactory</factory>
-            <source>org.flowerplatform.core.node.update.remote.UpdateService</source>        	
-        </properties>
-    </destination>
-    
-    <destination id="codeSyncOperationsService">
-        <properties>
-        	<factory>flowerFactory</factory>
-            <source>codeSyncOperationsService</source>
-        </properties>
-    </destination>
-    
-    <destination id="freeplaneService">
-        <properties>
-        	<factory>flowerFactory</factory>
-            <source>freeplaneService</source>
-        </properties>
-    </destination>
     
 </service>
