@@ -12,5 +12,11 @@
             class="org.flowerplatform.flex_client.server.blazeds.FlowerMessageBrokerServlet">
       </servlet>
    </extension>
+   <extension
+         point="org.flowerplatform.host.servletbridge.registry.listeners">
+      <listener
+            runnable="org.flowerplatform.flex_client.server.blazeds.AddHttpFlexSessionListenerRunnable">
+      </listener>
+   </extension>
 
 </plugin>
