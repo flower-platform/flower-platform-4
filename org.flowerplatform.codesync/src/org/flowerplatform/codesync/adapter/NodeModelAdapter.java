@@ -67,12 +67,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (FeatureProvider.TYPE.equals(feature)) {
 			return getNode(element).getType();
 		}
-		return getNode(element).getOrCreateProperties().get(feature);
+		return getNode(element).getOrPopulateProperties().get(feature);
 	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrCreateProperties().get("body");
+		return getNode(element).getOrPopulateProperties().get("body");
 	}
 	
 	@Override
@@ -108,6 +108,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				if (category == null) {
 					category = new Node();
 					category.setType(CodeSyncPlugin.CATEGORY);
+
 					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category, null);
 					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, FeatureProvider.NAME, feature);
 				}

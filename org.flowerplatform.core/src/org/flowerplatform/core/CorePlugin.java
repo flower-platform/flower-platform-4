@@ -63,6 +63,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
 			
 		setFileAccessController(new PlainFileAccessController());
+
 		setRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
 	}
 
@@ -100,7 +101,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public void registerMessageBundle() throws Exception {
 		// no messages yet
 	}
-	
+
 	/**
 	 * @author Sebastian Solomon
 	 */
@@ -119,7 +120,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public void setRemoteMethodInvocationListener(RemoteMethodInvocationListener remoteMethodInvocationListener) {
 		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
 	}
-	
+
 	public UpdateService getUpdateService() {
 		return (UpdateService) serviceRegistry.getService("updateService");
 	}
@@ -127,4 +128,5 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public NodeService getNodeService() {
 		return (NodeService) serviceRegistry.getService("nodeService");
 	}
+
 }

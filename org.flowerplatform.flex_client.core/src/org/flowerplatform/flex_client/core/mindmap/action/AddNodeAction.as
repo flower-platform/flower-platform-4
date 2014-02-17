@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		public function AddNodeAction()	{
 			super();
 			label = CorePlugin.getInstance().getMessage("mindmap.action.add");	
+			icon = CorePlugin.getInstance().getResourceUrl("images/add.png");
 			orderIndex = 10;
 		}
 		

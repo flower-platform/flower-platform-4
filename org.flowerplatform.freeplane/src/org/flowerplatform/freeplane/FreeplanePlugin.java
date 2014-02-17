@@ -4,6 +4,7 @@ import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
+import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
@@ -16,6 +17,7 @@ import org.flowerplatform.freeplane.controller.FreeplanePropertiesProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertySetter;
 import org.flowerplatform.freeplane.controller.MindMapBasicAddNodeController;
 import org.flowerplatform.freeplane.controller.MindMapBasicChildrenProvider;
+import org.flowerplatform.freeplane.controller.MindMapBasicRawNodeDataProvider;
 import org.flowerplatform.freeplane.controller.MindMapBasicRemoveNodeController;
 import org.flowerplatform.freeplane.controller.MindMapPropertiesProvider;
 import org.flowerplatform.freeplane.controller.MindMapPropertySetter;
@@ -70,6 +72,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	private void addControllers(TypeDescriptor nodeTypeDescriptor) {
 		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new MindMapBasicChildrenProvider());
 		nodeTypeDescriptor.addAdditiveController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider());
+		nodeTypeDescriptor.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapBasicRawNodeDataProvider());
 		nodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapBasicRemoveNodeController());
 		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("type"));
 		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("body"));

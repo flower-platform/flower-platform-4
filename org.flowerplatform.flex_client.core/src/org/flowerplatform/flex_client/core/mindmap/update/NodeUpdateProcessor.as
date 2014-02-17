@@ -1,11 +1,14 @@
 package org.flowerplatform.flex_client.core.mindmap.update {
+	import flash.utils.Dictionary;
+	
 	import mx.collections.ArrayCollection;
 	import mx.core.mx_internal;
-	import mx.rpc.events.ResultEvent;
+	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithVisibleChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
@@ -36,7 +39,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		mx_internal function get nodeRegistry():NodeRegistry {
 			return _nodeRegistry;
 		}
-				
+					
 		private function addNode(node:Node, parent:Node = null, index:int = -1):void {			
 			nodeRegistry.registerNode(node);
 			
@@ -68,21 +71,11 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				}
 				if (parent.children.length == 0) {
 					parent.children = null;
-				}				
+				}
 			}
 		}
 		
-		public function requestChildren(node:Node):void {		
-			if (node == null) {
-				node = new Node();
-				node.type = "freeplaneNode";
-				node.resource = "mm://path_to_resource";
-			}
-			CorePlugin.getInstance().serviceLocator.invoke(
-				"nodeService.getChildren", 
-				[node, true], 
-				function (result:ResultEvent):void {setChildren(node, ArrayCollection(result.result));});	
-		}
+		/* REMOVE CHILDREN */
 		
 		public function removeChildren(node:Node, refreshChildrenAndPositions:Boolean = true):void {
 			if (node.children != null) {
@@ -99,13 +92,21 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			}			
 		}
 		
-		public function checkForUpdates():void {
+		/* REQUEST CHILDREN */
+		
+		public function requestChildren(node:Node):void {		
+			if (node == null) {
+				node = new Node();
+				node.type = "freeplaneNode";
+				node.resource = "mm://path_to_resource";
+			}
 			CorePlugin.getInstance().serviceLocator.invoke(
-				"updateService.getUpdates",	
-				[Node(MindMapDiagramShell(diagramShell).getRoot()), timestampOfLastRequest], rootNodeUpdatesHandler);	
+				"nodeService.getChildren", 
+				[node, true], 
+				function (result:Object):void {requestChildrenHandler(node, ArrayCollection(result));});	
 		}
 		
-		protected function setChildren(node:Node, children:ArrayCollection):void {
+		protected function requestChildrenHandler(node:Node, children:ArrayCollection):void {
 			if (node.id == null) {	// root node				
 				// rootModel already set, remove it from diagram
 				if (diagramShell.rootModel != null && MindMapDiagramShell(diagramShell).getDynamicObject(diagramShell.rootModel).children != null) {
@@ -135,10 +136,16 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			MindMapDiagramShell(diagramShell).refreshRootModelChildren();
 			MindMapDiagramShell(diagramShell).refreshModelPositions(node);				
 		}
+				
+		/* GET UPDATES */
 		
-		protected function rootNodeUpdatesHandler(result:ResultEvent):void {
-			var updates:ArrayCollection = ArrayCollection(result.result);
+		public function checkForUpdates():void {
+			CorePlugin.getInstance().serviceLocator.invoke(
+				"updateService.getUpdates",	
+				[Node(MindMapDiagramShell(diagramShell).getRoot()), timestampOfLastRequest], rootNodeUpdatesHandler);	
+		}
 			
+		public function rootNodeUpdatesHandler(updates:ArrayCollection):void {
 			if (updates != null && updates.length > 0) {
 				for each (var update:Update in updates) {
 					var nodeFromRegistry:Node = nodeRegistry.getNodeById(update.node.id);	
@@ -159,7 +166,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 						switch (childrenUpdate.type) {
 							case ChildrenUpdate.ADDED:													
 								if (nodeFromRegistry.children != null && nodeFromRegistry.children.contains(targetNodeInRegistry)) { // child already added, probably after refresh									
-								} else {
+								} else if (nodeFromRegistry.children != null) { // node expanded
 									var index:Number = -1; // -> add it last
 									if (childrenUpdate.targetNodeAddedBefore != null) {
 										index = nodeFromRegistry.children.getItemIndex(childrenUpdate.targetNodeAddedBefore);
@@ -184,6 +191,86 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;
 			}
 		}	
+		
+		/* REFRESH */
+		
+		public function refresh(node:Node):void {
+			CorePlugin.getInstance().serviceLocator.invoke(
+				"nodeService.refresh", 
+				[getNodeWithVisibleChildren(node)], 
+				function (result:Object):void {
+					refreshHandler(node, NodeWithVisibleChildren(result));
+					
+					MindMapDiagramShell(diagramShell).refreshRootModelChildren();
+					MindMapDiagramShell(diagramShell).refreshModelPositions(node);});
+		}
+		
+		private function getNodeWithVisibleChildren(node:Node):NodeWithVisibleChildren {
+			var nodeWithVisibleChildren:NodeWithVisibleChildren = new NodeWithVisibleChildren();
+			nodeWithVisibleChildren.node = Node(ObjectUtil.clone(node));
+			nodeWithVisibleChildren.node.properties = null; // properties not needed
+			
+			if (node.children != null) {
+				for each (var child:Node in node.children) {
+					if (nodeWithVisibleChildren.visibleChildren == null) {
+						nodeWithVisibleChildren.visibleChildren = new ArrayCollection();
+					}
+					nodeWithVisibleChildren.visibleChildren.addItem(getNodeWithVisibleChildren(child));
+				}
+			}
+			return nodeWithVisibleChildren;
+		}
+		
+		protected function refreshHandler(node:Node, nodeWithVisibleChildren:NodeWithVisibleChildren):void {
+			if (nodeWithVisibleChildren.node.properties == null) {
+				throw new Error("No properties available for node! This should NOT happen!");
+			}
+			// set new node properties and dispatch event
+			node.properties = nodeWithVisibleChildren.node.properties;
+			node.dispatchEvent(new NodeUpdatedEvent(node));	
+			
+			var newNodeToCurrentNodeIndex:Dictionary = new Dictionary();
+			var i:int;
+			var currentChildNode:Node;
+			
+			if (node.children != null) { // node has children -> merge current list with new list
+				
+				// serch for children that doesn't exist in new list
+				var currentChildren:ArrayCollection = node.children != null ? new ArrayCollection(node.children.toArray()) : new ArrayCollection();			
+				for (i = 0; i < currentChildren.length; i++) {	
+					var exists:Boolean = false;
+					currentChildNode = Node(currentChildren.getItemAt(i));
+					for each (var newChildWithVisibleChildren:NodeWithVisibleChildren in nodeWithVisibleChildren.visibleChildren) {
+						if (currentChildNode.id == newChildWithVisibleChildren.node.id) {
+							exists = true;
+							break;
+						}
+					}
+					if (exists) {
+						// child exists -> refresh its structure
+						refreshHandler(currentChildNode, newChildWithVisibleChildren);
+						// store, for the new child, its index in current list
+						newNodeToCurrentNodeIndex[newChildWithVisibleChildren.node.id] = i;
+					} else {
+						// child doesn't exist in new list -> remove it from parent
+						removeNode(currentChildNode, node);
+					}
+				}
+			}
+			
+			// perform merge 
+			
+			for (i = 0; i < nodeWithVisibleChildren.visibleChildren.length; i++) {	
+				var newChildNode:Node = NodeWithVisibleChildren(nodeWithVisibleChildren.visibleChildren.getItemAt(i)).node;
+				if (!newNodeToCurrentNodeIndex.hasOwnProperty(newChildNode.id)) { // new child doesn't exist in current list -> add it
+					addNode(newChildNode, node, i);
+				} else if (newNodeToCurrentNodeIndex[newChildNode.id] != i) { // new child exists in current list, but different indexes -> get current child and move it to new index
+					currentChildNode = nodeRegistry.getNodeById(newChildNode.id);
+					removeNode(currentChildNode, node);
+					addNode(currentChildNode, node, i);
+				}
+			}
+		}
 		
 	}
 }

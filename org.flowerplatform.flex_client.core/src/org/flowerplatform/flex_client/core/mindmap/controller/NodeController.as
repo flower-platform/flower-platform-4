@@ -17,18 +17,12 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.mindmap.controller {
-	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
-	import mx.rpc.events.ResultEvent;
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
 	
 	/**

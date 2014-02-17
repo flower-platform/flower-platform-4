@@ -2,7 +2,6 @@ package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
@@ -14,11 +13,9 @@ import java.util.List;
 
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
-import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
-import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -55,11 +52,11 @@ public class NodeService {
 		// we ask each registered provider for children
 		for (ChildrenProvider provider : providers) {
 			// we take the children ...
-			List<Pair<Node, Object>> childrenFromCurrentProvider = provider.getChildren(node);
-			for (Pair<Node, Object> currentChild : childrenFromCurrentProvider) {
+			List<Node> childrenFromCurrentProvider = provider.getChildren(node);
+			for (Node currentChild : childrenFromCurrentProvider) {
 				if (populateProperties) {
 					// ... and then populate them
-					populateNode(currentChild.a, currentChild.b);
+					currentChild.getOrPopulateProperties();
 				}
 				
 				// and add them to the result list
@@ -67,7 +64,7 @@ public class NodeService {
 					// lazy init of the list
 					children = new ArrayList<Node>();
 				}
-				children.add(currentChild.a);
+				children.add(currentChild);
 			}
 		}
 		if (children == null) {
@@ -76,20 +73,7 @@ public class NodeService {
 			return children;
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	protected void populateNode(Node node, Object rawNodeData) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return;
-		}
 		
-		List<PropertiesProvider<?>> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);
-		for (PropertiesProvider<?> provider : providers) {
-			((PropertiesProvider<Object>) provider).populateWithProperties(node, rawNodeData);
-		}
-	}
-	
 	/**
 	 * @author Mariana Gheorghe
 	 */
@@ -169,5 +153,44 @@ public class NodeService {
 		}
 		return rootNode;
 	}
+	
+	public NodeWithVisibleChildren refresh(NodeWithVisibleChildren currentNodeWithVisibleChildren) {	
+		Node currentNode = currentNodeWithVisibleChildren.getNode();
+		boolean currentNodeHasVisibleChildren = currentNodeWithVisibleChildren.getVisibleChildren() != null;
+		
+		// get new data
+		NodeWithVisibleChildren newNodeWithVisibleChildren = computeNodeWithVisibleChildren(currentNode, currentNodeHasVisibleChildren);
+		
+		if (currentNodeHasVisibleChildren) {
+			// verify if node exists in list of new visibleChildren
+			for (NodeWithVisibleChildren currentChildWithVisibleChildren : currentNodeWithVisibleChildren.getVisibleChildren()) {				
+				for (int i = 0; i < newNodeWithVisibleChildren.getVisibleChildren().size(); i++) {
+					Node newChildNode = newNodeWithVisibleChildren.getVisibleChildren().get(i).getNode();
+					if (newChildNode.getId().equals(currentChildWithVisibleChildren.getNode().getId())) {	// node exists in new list -> refresh its structure also			
+						newNodeWithVisibleChildren.getVisibleChildren().set(i, refresh(currentChildWithVisibleChildren));
+						break;
+					}
+				}
+			}
+		}
+		return newNodeWithVisibleChildren;
+	}
+		
+	private NodeWithVisibleChildren computeNodeWithVisibleChildren(Node node, boolean  populateWithChildren) {	
+		NodeWithVisibleChildren newNodeWithVisibleChildren = new NodeWithVisibleChildren();
+		newNodeWithVisibleChildren.setNode(node);
+		
+		node.getOrPopulateProperties();
+			
+		// get new visible children
+		List<NodeWithVisibleChildren> visibleChildren = new ArrayList<NodeWithVisibleChildren>();
+		if (populateWithChildren) {			
+			for (Node child : getChildren(node, false)) { // get children without properties
+				visibleChildren.add(computeNodeWithVisibleChildren(child, false)); // here we populate it
+			}
+		}
+		newNodeWithVisibleChildren.setVisibleChildren(visibleChildren);
+		return newNodeWithVisibleChildren;
+	}	
 	
 }

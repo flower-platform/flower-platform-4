@@ -14,7 +14,6 @@
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
-			import mx.rpc.events.ResultEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
@@ -70,13 +69,9 @@
 					node = Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0));
 					node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 				}
-				
-				if (event.selection.length == 0) {
-					return;
-				}
-				
-				var selectedItem:Object = event.selection.getItemAt(0);
+							
 				// if diagram is the new selected element -> clear data in properties
+				// for event.selection == null, see SelectionManager -> dispatchEvent(SelectionChangedEvent), line 116 -> active view changed, but its selection isn't populated yet
 				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).id == null) {
 					icon.source = null;
 					label.text = null;
@@ -85,14 +80,14 @@
 				}			
 				
 				// get new selected node
-				node = Node(selectedItem);
+				node = Node(event.selection.getItemAt(0));
 				
 				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
 					"nodeService.getPropertyDescriptors", [node], 
-						function(result:ResultEvent):void {
+						function(result:Object):void {
 						// properties available -> add them in list
-						propertyList.dataProvider = ArrayCollection(result.result);		
+						propertyList.dataProvider = ArrayCollection(result);		
 						// get their values from node
 						nodeUpdatedHandler(new NodeUpdatedEvent(node));
 						
@@ -109,11 +104,15 @@
 				var node:Node = event.node;
 				var properties:ArrayCollection = ArrayCollection(propertyList.dataProvider);
 				for each (var property:PropertyDescriptor in properties) {
-					if (node.properties != null 
-						&& node.properties.hasOwnProperty(property.name) 
-						&& property.value != node.properties[property.name]) { // change value only if different
-						property.value = node.properties[property.name];
-					}
+					if (node.properties != null) {
+						if (node.properties.hasOwnProperty(property.name)) {
+							if (property.value != node.properties[property.name]) { // change value only if different
+								property.value = node.properties[property.name];
+							}
+						} else {
+							property.value = null;
+						}
+					}						
 				}
 			}
 			

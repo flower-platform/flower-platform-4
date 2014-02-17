@@ -568,7 +568,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public Node getSrcDir(Node root, String name) {
 		List<Node> children = nodeService.getChildren(root, true);
 		for (Node child : children) {
-			if (name.equals(child.getOrCreateProperties().get("body"))) {
+			if (name.equals(child.getOrPopulateProperties().get("body"))) {
 				return child;
 			}
 		}
