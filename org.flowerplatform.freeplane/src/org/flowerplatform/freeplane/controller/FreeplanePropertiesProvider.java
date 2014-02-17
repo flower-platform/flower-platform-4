@@ -12,14 +12,14 @@ import org.freeplane.features.map.NodeModel;
 public class FreeplanePropertiesProvider extends MindMapBasicPropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node, NodeModel rawNodeData) {		
-		super.populateWithProperties(node, rawNodeData);
+	public void populateWithProperties(Node node) {		
+		super.populateWithProperties(node);
 		
 		// properties are populated from the attributes table
-		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(rawNodeData);
+		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(((NodeModel) node.getOrRetrieveRawNodeData()));
 		if (attributeTable != null) {
 			for (Attribute attribute : attributeTable.getAttributes()) {
-				node.getOrCreateProperties().put(attribute.getName(), attribute.getValue());
+				node.getProperties().put(attribute.getName(), attribute.getValue());
 			}
 		}
 	}

@@ -40,7 +40,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isAdded = (Boolean) getNode(candidate).getOrCreateProperties().get(ADDED);
+				Boolean isAdded = (Boolean) getNode(candidate).getOrPopulateProperties().get(ADDED);
 				if (isAdded != null && isAdded) {
 					return false;
 				}
