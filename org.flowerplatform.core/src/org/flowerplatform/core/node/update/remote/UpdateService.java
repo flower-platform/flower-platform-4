@@ -14,7 +14,7 @@ public class UpdateService {
 
 	private final static Logger logger = LoggerFactory.getLogger(UpdateService.class);
 	
-	protected static UpdateDAO updateDAO;
+	protected UpdateDAO updateDAO;
 	
 	public UpdateDAO getUpdateDAO() {
 		return updateDAO;
@@ -32,7 +32,7 @@ public class UpdateService {
 	
 	public UpdateService(UpdateDAO updateDAO) {
 		super();
-		UpdateService.updateDAO = updateDAO;
+		this.updateDAO = updateDAO;
 	}
 	
 	public List<Update> getUpdates(Node rootNode, long timestampOfLastRequest) {
