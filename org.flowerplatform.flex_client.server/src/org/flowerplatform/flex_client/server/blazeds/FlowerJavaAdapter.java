@@ -11,6 +11,7 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
  * Gives control before and after the client invokes a service method.
  * 
  * @author Sebastian Solomon
+ * @author Cristina Constantinescu
  */
 public class FlowerJavaAdapter extends JavaAdapter {
 
@@ -22,7 +23,7 @@ public class FlowerJavaAdapter extends JavaAdapter {
 		remoteMethodInvocationInfo.setParameters(remoteMessage.getParameters());
 		
 		CorePlugin.getInstance().getRemoteMethodInvocationListener().preInvoke(remoteMethodInvocationInfo);
-		
+
 		Object originalReturnValue = super.invoke(message);
 		
 		remoteMethodInvocationInfo.setReturnValue(originalReturnValue);

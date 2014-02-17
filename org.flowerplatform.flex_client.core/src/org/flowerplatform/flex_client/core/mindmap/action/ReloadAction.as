@@ -18,20 +18,8 @@
 */
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
-	import mx.messaging.messages.ErrorMessage;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeController;
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -49,7 +37,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			return true;
 		}
 		
-		private function reloadCallbackHandler(result:ResultEvent):void {			
+		private function reloadCallbackHandler(result:Object):void {			
 			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(null);
 		}
 		

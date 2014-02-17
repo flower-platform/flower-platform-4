@@ -9,8 +9,6 @@ import java.util.Map;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.RootNodeInfo;
 import org.flowerplatform.core.node.update.remote.Update;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Stores informations for each subscribed root node in {@link RootNodeInfo}, in memory.
@@ -19,17 +17,14 @@ import org.slf4j.LoggerFactory;
  */
 public class InMemoryUpdateDAO extends UpdateDAO {
 
-	private final static Logger logger = LoggerFactory.getLogger(InMemoryUpdateDAO.class);
-
 	private Map<Node, RootNodeInfo> nodeToRootNodeInfo = new HashMap<Node, RootNodeInfo>();
 
 	@Override
-	public void addUpdate(Node node, Update update) {
+	protected void doAddUpdate(Node node, Update update) {
 		if (!nodeToRootNodeInfo.containsKey(node)) {
 			nodeToRootNodeInfo.put(node, new RootNodeInfo());
 		}
-		nodeToRootNodeInfo.get(node).addUpdate(update);
-		logger.debug("UPDATE ADDED for {} : {}", node, update);
+		nodeToRootNodeInfo.get(node).addUpdate(update);		
 	}
 
 	@Override
