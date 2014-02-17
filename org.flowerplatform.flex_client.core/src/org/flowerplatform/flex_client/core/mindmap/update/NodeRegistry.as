@@ -5,7 +5,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	import mx.core.mx_internal;
 	
 	import org.flowerplatform.flex_client.core.mindmap.event.NodeRemovedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	
 	use namespace mx_internal;
