@@ -7,13 +7,13 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapBasicPropertiesProvider extends PropertiesProvider<NodeModel> {
+public class MindMapBasicPropertiesProvider extends PropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node, NodeModel rawNodeData) {
-		node.getOrCreateProperties().put("body", rawNodeData.getText());
+	public void populateWithProperties(Node node) {
+		node.getProperties().put("body", ((NodeModel) node.getOrRetrieveRawNodeData()).getText());
 		// TODO CC: temporary code
-		node.getOrCreateProperties().put("hasChildren", rawNodeData.hasChildren());
+		node.getProperties().put("hasChildren", ((NodeModel) node.getOrRetrieveRawNodeData()).hasChildren());
 	}
 
 }

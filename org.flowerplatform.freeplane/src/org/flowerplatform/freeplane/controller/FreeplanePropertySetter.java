@@ -41,7 +41,7 @@ public class FreeplanePropertySetter extends MindMapBasicPropertySetter {
 		}
 		
 		// set the property on the node instance too
-		node.getOrCreateProperties().put(property, value);
+		node.getOrPopulateProperties().put(property, value);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class FreeplanePropertySetter extends MindMapBasicPropertySetter {
 		}
 		
 		// remove the property from the node instance too
-		node.getOrCreateProperties().remove(property);
+		node.getOrPopulateProperties().remove(property);
 	}
 
 }

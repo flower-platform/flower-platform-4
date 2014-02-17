@@ -69,13 +69,9 @@
 					node = Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0));
 					node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 				}
-				
-				if (event.selection.length == 0) {
-					return;
-				}
-				
-				var selectedItem:Object = event.selection.getItemAt(0);
+							
 				// if diagram is the new selected element -> clear data in properties
+				// for event.selection == null, see SelectionManager -> dispatchEvent(SelectionChangedEvent), line 116 -> active view changed, but its selection isn't populated yet
 				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).id == null) {
 					icon.source = null;
 					label.text = null;
@@ -84,7 +80,7 @@
 				}			
 				
 				// get new selected node
-				node = Node(selectedItem);
+				node = Node(event.selection.getItemAt(0));
 				
 				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
