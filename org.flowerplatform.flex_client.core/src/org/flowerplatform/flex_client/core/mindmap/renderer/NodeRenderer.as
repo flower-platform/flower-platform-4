@@ -36,7 +36,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 			x = _diagramShell.getPropertyValue(data, "x");	
 			y = _diagramShell.getPropertyValue(data, "y");		
 			
-			labelDisplay.text = data.properties["body"];
+			nodeUpdatedHandler();
 		}
 				
 		override protected function resizeHandler(event:ResizeEvent):void {
@@ -64,8 +64,6 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 				case "y":
 					y = _diagramShell.getPropertyValue(data, "y");				
 					break;
-				case "body":
-					labelDisplay.text = data.properties["body"];
 				case "hasChildren":
 					invalidateSize();
 				case "children":
@@ -85,13 +83,22 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 			}
 		}
 		
-		protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
+		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			if (data.properties.hasOwnProperty("body")) {
 				labelDisplay.text = data.properties["body"];
 			}
 			if (data.properties.hasOwnProperty("hasChildren")) {
 				dispatchEvent(new NodeRenderer_HasChildrenChangedEvent());
 			}			
+			
+			// TODO CC: move to mindmap project
+			if (data.properties.hasOwnProperty("min_width")) {
+				minWidth = data.properties["min_width"];
+			}	
+			if (data.properties.hasOwnProperty("max_width")) {
+				maxWidth = data.properties["max_width"];
+			}	
+			
 			invalidateSize();
 			invalidateDisplayList();
 		}

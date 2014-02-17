@@ -84,7 +84,7 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
-			
+		
 //			linkHandlers = new Dictionary();			
 //			
 //			if (ExternalInterface.available) {

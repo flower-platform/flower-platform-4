@@ -1,6 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
 import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.map.NodeModel;
@@ -11,10 +12,10 @@ import org.freeplane.features.map.NodeModel;
 public class MindMapBasicPropertySetter extends PropertySetter {
 
 	@Override
-	public void setProperty(Node node, String property, Object value) {
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
 		NodeModel nodeModel = getNodeModel(node);		
 		if (property.equals("body")) {			
-			nodeModel.setText((String) value);			
+			nodeModel.setText((String) wrapper.getPropertyValue());			
 		}
 	}
 

@@ -1,5 +1,6 @@
 package org.flowerplatform.freeplane.controller;
 
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
@@ -12,11 +13,11 @@ import org.freeplane.features.map.NodeModel;
 public class FreeplanePropertySetter extends MindMapBasicPropertySetter {
 
 	@Override
-	public void setProperty(Node node, String property, Object value) {
-		super.setProperty(node, property, value);
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
+		super.setProperty(node, property, wrapper);
 		NodeModel nodeModel = getNodeModel(node);
 		if (property.equals("name")) {			
-			nodeModel.setText((String) value);				
+			nodeModel.setText((String) wrapper.getPropertyValue());				
 		}
 		
 		// persist the property value in the attributes table
@@ -30,18 +31,18 @@ public class FreeplanePropertySetter extends MindMapBasicPropertySetter {
 		for (Attribute attribute : attributeTable.getAttributes()) {
 			if (attribute.getName().equals(property)) {
 				// there was already an attribute with this value; overwrite it
-				attribute.setValue(value);
+				attribute.setValue(wrapper.getPropertyValue());
 				set = true;
 				break;
 			}
 		}
 		if (!set) {
 			// new attribute; add it
-			attributeTable.getAttributes().add(new Attribute(property, value));
+			attributeTable.getAttributes().add(new Attribute(property, wrapper.getPropertyValue()));
 		}
 		
 		// set the property on the node instance too
-		node.getOrPopulateProperties().put(property, value);
+		node.getOrPopulateProperties().put(property, wrapper.getPropertyValue());
 	}
 
 	@Override
