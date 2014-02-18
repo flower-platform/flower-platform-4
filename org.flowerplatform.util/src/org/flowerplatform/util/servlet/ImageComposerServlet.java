@@ -20,7 +20,11 @@ package org.flowerplatform.util.servlet;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,6 +34,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 
 /**
@@ -52,6 +57,16 @@ public class ImageComposerServlet extends ResourcesServlet {
 		String requestedFile = request.getPathInfo();
 		if (requestedFile.startsWith(PATH_PREFIX)) {
 			requestedFile = requestedFile.substring(PATH_PREFIX.length());
+		}
+		
+		String tempRequestedFile = requestedFile.replace('|', '#').replace('/', '$');
+		File tempFile = new File(tempFolder, tempRequestedFile);
+		
+		if (tempFile.exists()) {
+			InputStream result = new FileInputStream(tempFile);
+			OutputStream output = response.getOutputStream();
+			IOUtils.copy(result, output);
+			return;
 		}
 		
 		int indexOfSecondSlash = requestedFile.indexOf('/', 1); // 1, i.e. skip the first index
@@ -94,6 +109,13 @@ public class ImageComposerServlet extends ResourcesServlet {
 			graphics.drawImage(image, null, 0, 0);
 		}
 		graphics.dispose();
+		
+		// write image into the Temp folder
+    	if (!tempFolder.exists()) {
+    		tempFolder.mkdir();
+    	}
+    	FileOutputStream tempOutput = new FileOutputStream(tempFile);
+    	ImageIO.write(result, "png", tempOutput);
 		
 		OutputStream output = null;
 		output = response.getOutputStream();

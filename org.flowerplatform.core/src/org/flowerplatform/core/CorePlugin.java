@@ -18,6 +18,10 @@
  */
 package org.flowerplatform.core;
 
+import java.io.File;
+import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -59,6 +63,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
 		
 		setFileAccessController(new PlainFileAccessController());
+		
+		//TODO use Flower property
+		boolean isDeleteTempFolderAtStartProperty = true;
+		if (isDeleteTempFolderAtStartProperty) {
+			FileUtils.deleteDirectory(new File(System.getProperty("java.io.tmpdir"), "flower-platform"));
+		}
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

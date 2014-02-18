@@ -20,11 +20,14 @@ package org.flowerplatform.util.servlet;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -98,6 +101,10 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		return null;
 	}
 	
+	/**
+	* @author Cristian Spiescu
+	* @author Sebastian Solomon
+	*/
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestedFile = request.getPathInfo();
@@ -145,9 +152,20 @@ public class PublicResourcesServlet extends ResourcesServlet {
 			fileInsideZipArchive = file.substring(indexOfZipSeparator + 1);
 			file = file.substring(0, indexOfZipSeparator);
 		}
-		
-		requestedFile = "platform:/plugin" + plugin + "/" + AbstractFlowerJavaPlugin.PUBLIC_RESOURCES_DIR + file;
+		String requestedTempFile = null;
+//		File tempFile;
+		String fileName = file.substring(file.lastIndexOf("/") + 1);
+		// if the file is in a zip, search first in the Temp folder
+		if (fileInsideZipArchive != null) {
+			requestedTempFile = searchInTemp(fileName + "#" + fileInsideZipArchive);
+		}
 
+		if (requestedTempFile != null) { // file was found in Temp folder
+			fileInsideZipArchive = null;
+		} else {
+			requestedFile = "platform:/plugin" + plugin + "/" + AbstractFlowerJavaPlugin.PUBLIC_RESOURCES_DIR + file;
+		}
+		
 		// Get content type by filename from the file or file inside zip
 		String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);
 
@@ -173,31 +191,45 @@ public class PublicResourcesServlet extends ResourcesServlet {
         OutputStream output = null;
 
         try {
-			url = new URL(requestedFile);
-            try {
-				input = url.openConnection().getInputStream();
-				inputCloseable = input;
-            } catch (IOException e) {
-				// may fail if the resource is not available
-            	send404(request, response);
-				return;
-			}
-
-			if (fileInsideZipArchive != null) {
-				// we need to look for a file in the archive
-            	Pair<InputStream, Closeable> pair = getInputStreamForFileWithinZip(input, fileInsideZipArchive);
-            	if (pair == null) {
-            		// the file was not found; the input streams are closed in this case
-            		send404(request, response);
-            		return;
-            	}
-            	
-            	input = pair.a;
-            	inputCloseable = pair.b;
-            }
+        	if (requestedTempFile != null) { // if file was found in Temp folder
+        		input = new FileInputStream(requestedTempFile);
+        	} else {
+        		url = new URL(requestedFile);
+	            try {
+					input = url.openConnection().getInputStream();
+					inputCloseable = input;
+	            } catch (IOException e) {
+					// may fail if the resource is not available
+	            	send404(request, response);
+					return;
+				}
+	
+				if (fileInsideZipArchive != null) {
+					// we need to look for a file in the archive
+	            	Pair<InputStream, Closeable> pair = getInputStreamForFileWithinZip(input, fileInsideZipArchive);
+	            	if (pair == null) {
+	            		// the file was not found; the input streams are closed in this case
+	            		send404(request, response);
+	            		return;
+	            	}
+	            	
+	            	input = pair.a;
+	            	inputCloseable = pair.b;
+	            	
+	            	// write the found file in Temp folder
+					if (!tempFolder.exists()) {
+						tempFolder.mkdir();
+					}
+					File tempFile = new File(tempFolder, fileName + "#" + fileInsideZipArchive);
+					Files.copy(input, tempFile.toPath());
+					
+					input.close();
+					input = new FileInputStream(tempFile);
+	            }
+        	}
 
             output = response.getOutputStream();
-
+            
             // according to the doc, no need to use Buffered..., because the method buffers internally
             IOUtils.copy(input, output);
             
@@ -205,6 +237,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
             // Gently close streams.
             close(output);
             close(inputCloseable);
+            close(input);
         }
 		
 	}
