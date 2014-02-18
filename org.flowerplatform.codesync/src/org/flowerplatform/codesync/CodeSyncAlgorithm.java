@@ -83,18 +83,21 @@ public class CodeSyncAlgorithm {
 		}
 		
 		// sync
-		DiffAction action = getDiffActionToApplyForMatch(match);
 		boolean performLater = false;
-		if (action instanceof MatchActionRemoveAbstract) {
-			// remove actions must be performed after the sub-matches are computed
-			performLater = true;
-		} else if (performAction) {
-			synchronize(match, action);
+		DiffAction action = null;
+		if (performAction) {
+			action = getDiffActionToApplyForMatch(match);
+			if (action instanceof MatchActionRemoveAbstract) {
+				// remove actions must be performed after the sub-matches are computed
+				performLater = true;
+			} else {
+				synchronize(match, action);
+			}
 		}
 		
 		// iterate over containment features
 		for (Object feature : featureProvider.getContainmentFeatures(delegateAndAdapter[0])) {
-			processContainmentFeature(feature, match, !performLater);
+			processContainmentFeature(feature, match, !performLater && performAction);
 		}
 
 		if (performLater && performAction) {
