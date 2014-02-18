@@ -10,11 +10,13 @@ import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NO
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.freeplane.controller.FreeplaneAddNodeController;
+import org.flowerplatform.freeplane.controller.FreeplaneParentProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertiesProvider;
 import org.flowerplatform.freeplane.controller.FreeplanePropertySetter;
 import org.flowerplatform.freeplane.controller.MindMapBasicAddNodeController;
@@ -72,6 +74,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	}
 	
 	private void addControllers(TypeDescriptor nodeTypeDescriptor) {
+		nodeTypeDescriptor.addSingleController(PARENT_PROVIDER, new FreeplaneParentProvider());
 		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new MindMapBasicChildrenProvider());
 		nodeTypeDescriptor.addSingleController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider());
 		nodeTypeDescriptor.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapBasicRawNodeDataProvider());

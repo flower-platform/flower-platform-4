@@ -21,7 +21,9 @@ package org.flowerplatform.codesync.adapter;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.action.DiffAction;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
 /**
@@ -90,10 +92,10 @@ public interface IModelAdapter extends IModelAdapterUI {
 	 * @param element the element where the action was performed
 	 * @param feature the feature that was changed
 	 * @param result the action's result
-	 * @param codeSyncAlgorithm TODO
+	 * @param match TODO
 	 * @author Mariana
 	 */
-	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm);
+	public void actionPerformed(Object element, Object feature, ActionResult result, Match match);
 
 	/**
 	 * Called after all the {@link DiffAction}s were performed for the <code>element</code>,
@@ -110,5 +112,9 @@ public interface IModelAdapter extends IModelAdapterUI {
 	 * @author Mariana
 	 */
 	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
+	
+	public void setConflict(Object element, Object feature, Object oppositeValue);
+	
+	public void unsetConflict(Object element, Object feature);
 	
 }

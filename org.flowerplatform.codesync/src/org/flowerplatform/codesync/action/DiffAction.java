@@ -19,7 +19,6 @@
 package org.flowerplatform.codesync.action;
 
 
-import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 
@@ -34,16 +33,16 @@ public abstract class DiffAction {
 	 * @author Mariana Gheorghe
 	 */
 	public void actionPerformed(
-			CodeSyncAlgorithm codeSyncAlgorithm,
+			Match match,
 			IModelAdapter leftModelAdapter, Object left, 
 			IModelAdapter rightModelAdapter, Object right,
 			Object feature, ActionResult result) {
 		
 		if (leftModelAdapter != null) {
-			leftModelAdapter.actionPerformed(left, feature, result, codeSyncAlgorithm);
+			leftModelAdapter.actionPerformed(left, feature, result, match);
 		}
 		if (rightModelAdapter != null) {
-			rightModelAdapter.actionPerformed(right, feature, result, codeSyncAlgorithm);
+			rightModelAdapter.actionPerformed(right, feature, result, match);
 		}
 	}
 	

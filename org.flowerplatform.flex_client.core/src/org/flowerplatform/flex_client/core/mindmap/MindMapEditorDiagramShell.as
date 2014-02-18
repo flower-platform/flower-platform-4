@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.flex_client.core.mindmap {
 	
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeChildrenController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeDragController;
@@ -92,7 +93,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			nodeChildrenController = new NodeChildrenController(this);
 			rootModelChildrenController = new MindMapRootModelChildrenController(this);
 			
-			nodeRendererController = new NodeRendererController(this, NodeRenderer);
+			nodeRendererController = new NodeRendererController(this, CorePlugin.getInstance().mindmapNodeRendererControllerClass);
 				
 			registerTools([ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool, InplaceEditorTool]);
 		}

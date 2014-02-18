@@ -49,7 +49,7 @@ public class DiffActionRevert extends DiffAction {
 		match.getDiffs().remove(diffIndex);
 
 		ActionResult result = new ActionResult(false, false, false);
-		actionPerformed(match.getCodeSyncAlgorithm(), leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
+		actionPerformed(match, leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
 		
 		return result;
 	}

@@ -44,7 +44,7 @@ public class CodeSyncAddNodeController extends AddNodeController {
 			throw new RuntimeException(String.format("Property %s should be contained in map, probably added by the persistence AddNodeController!", CorePlugin.NODE_KEY));
 		}		
 		if (!child.getType().equals(CodeSyncPlugin.CATEGORY)) {
-			CorePlugin.getInstance().getNodeService().setProperty(child, NodeModelAdapter.ADDED, true);
+			CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
 		}
 	}
 
