@@ -75,8 +75,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 			send404(request, response);
 			return;
 		}
-		String separator = "\\" + SEPARATOR;
-		String[] paths = requestedFile.split(separator);
+		String[] paths = requestedFile.split("\\" + SEPARATOR);
 		
 		int width = 0;
 		int height = 0;
