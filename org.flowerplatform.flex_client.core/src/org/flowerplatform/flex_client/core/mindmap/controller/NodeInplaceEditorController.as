@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import flash.geom.Rectangle;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
@@ -60,7 +61,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			textArea.minWidth = bounds.width;
 			textArea.maxWidth = MAX_WIDTH; // needed for width auto grow
 			textArea.minHeight = bounds.height;			
-			textArea.text = Node(model).properties["body"];			
+			textArea.text = Node(model).properties[NodePropertiesConstants.TEXT];			
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
 			// select all text
@@ -73,7 +74,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function commit(model:Object):void {		
 			var textArea:AutoGrowTextArea = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model), "body", textArea.text]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, NodePropertiesConstants.TEXT, textArea.text]);
 
 			diagramShell.mainToolFinishedItsJob();
 		}

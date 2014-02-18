@@ -1,9 +1,9 @@
-package org.flowerplatform.core.node.update.remote;
+package org.flowerplatform.core.node.update;
 
 import java.util.List;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.update.UpdateDAO;
+import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

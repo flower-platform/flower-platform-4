@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
@@ -68,7 +69,7 @@ public class FreeplaneUtils {
 		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);
 		if (attributeTable != null) {
 			for (Attribute attribute : attributeTable.getAttributes()) {
-				if (attribute.getName().equals("type")) {
+				if (attribute.getName().equals(NodePropertiesConstants.TYPE)) {
 					type = (String) attribute.getValue();
 					break;
 				}

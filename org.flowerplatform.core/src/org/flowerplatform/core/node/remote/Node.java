@@ -22,25 +22,37 @@ public class Node {
 	
 	private String resource;
 	
-	private String id;
-		
+	private String idWithinResource;
+	
+	private String fullNodeId;
+	
 	private Map<String, Object> properties;
 	private boolean populated;
 
 	private Object rawNodeData;
 	private boolean rawNodeDataRetrieved;
-	
-	public Node() {
-	}
-	
-	public Node(String type, String resource, String id, Object rawNodeData) {
-		this.id = id;
+		
+	public Node(String type, String resource, String idWithinResource, Object rawNodeData) {		
 		this.type = type;
 		this.resource = resource;
+		this.idWithinResource = idWithinResource;
 		
+		calculateFullNodeId();
 		setRawNodeData(rawNodeData);
 	}
 
+	public Node(String fullNodeId) {
+		String[] tokens = fullNodeId.split("\\|");
+						
+		this.type = tokens[0];
+		this.resource = tokens[1];
+		
+		if (tokens.length == 3) {
+			this.idWithinResource = tokens[2];
+		}
+		this.fullNodeId = fullNodeId;
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -56,15 +68,24 @@ public class Node {
 	public void setResource(String resource) {
 		this.resource = resource;
 	}
-
-	public String getId() {
-		return id;
+	
+	public String getIdWithinResource() {
+		return idWithinResource;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setIdWithinResource(String idWithinResource) {
+		this.idWithinResource = idWithinResource;
+		calculateFullNodeId();
 	}
 
+	public String getFullNodeId() {
+		return fullNodeId;
+	}
+
+	private void calculateFullNodeId() {
+		this.fullNodeId = String.format("%s|%s|%s", this.idWithinResource, this.type, this.resource);
+	}
+	
 	public Map<String, Object> getProperties() {
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
@@ -110,14 +131,12 @@ public class Node {
 		this.rawNodeData = rawNodeData;
 		rawNodeDataRetrieved = true;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((resource == null) ? 0 : resource.hashCode());
+		result = prime * result	+ ((fullNodeId == null) ? 0 : fullNodeId.hashCode());
 		return result;
 	}
 
@@ -130,22 +149,17 @@ public class Node {
 		if (getClass() != obj.getClass())
 			return false;
 		Node other = (Node) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (fullNodeId == null) {
+			if (other.fullNodeId != null)
 				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (resource == null) {
-			if (other.resource != null)
-				return false;
-		} else if (!resource.equals(other.resource))
+		} else if (!fullNodeId.equals(other.fullNodeId))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Node [body = %s, type = %s]", getProperties().get("body"), type);
+		return String.format("Node [fullNodeId = %s]", fullNodeId);
 	}
 	
 }

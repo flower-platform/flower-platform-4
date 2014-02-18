@@ -18,13 +18,15 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+
 import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.controller.AbstractController;
 
@@ -118,7 +120,7 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	 */
 	protected Node getChildrenCategoryForNode(Node node, Object feature) {
 		for (Node category : getChildrenForNode(node)) {
-			if (category.getOrPopulateProperties().get("body").equals(feature)) {
+			if (category.getOrPopulateProperties().get(TEXT).equals(feature)) {
 				return category;
 			}
 		}
@@ -126,6 +128,6 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	}
 	
 	protected List<Node> getChildrenForNode(Node node) {
-		return CodeSyncPlugin.getInstance().getNodeService().getChildren(node, true);
+		return CorePlugin.getInstance().getNodeService().getChildren(node, true);
 	}
 }

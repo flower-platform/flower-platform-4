@@ -21,7 +21,6 @@ package org.flowerplatform.codesync.controller;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -41,8 +40,6 @@ public class CodeSyncPropertySetter extends PropertySetter {
 			return;
 		}
 		
-		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
-		
 		boolean isOriginalPropertySet = false;
 		Object originalValue = null;
 		String originalProperty = getOriginalPropertyName(property);
@@ -59,12 +56,12 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		if (!Utils.safeEquals(originalValue, value)) {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
-				service.setProperty(node, originalProperty, originalValue);
+				CorePlugin.getInstance().getNodeService().setProperty(node, originalProperty, originalValue);
 			}
 		} else {
 			if (isOriginalPropertySet) {
 				// trying to set the same value as the original (a revert operation); unset the original value
-				service.unsetProperty(node, originalProperty);
+				CorePlugin.getInstance().getNodeService().unsetProperty(node, originalProperty);
 			}
 		}
 	}

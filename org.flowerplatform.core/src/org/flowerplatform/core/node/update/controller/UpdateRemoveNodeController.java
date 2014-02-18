@@ -1,8 +1,6 @@
-package org.flowerplatform.core.node.controller.update;
+package org.flowerplatform.core.node.update.controller;
 
 import static org.flowerplatform.core.node.update.remote.ChildrenUpdate.REMOVED;
-
-import java.util.Date;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
@@ -12,9 +10,9 @@ import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 /**
  * @author Cristina Constantinescu
  */
-public class UpdaterRemoveNodeController extends RemoveNodeController {
+public class UpdateRemoveNodeController extends RemoveNodeController {
 
-	public UpdaterRemoveNodeController() {
+	public UpdateRemoveNodeController() {
 		// must be invoked after persistence controller 
 		setOrderIndex(100000);
 	}
@@ -24,7 +22,11 @@ public class UpdaterRemoveNodeController extends RemoveNodeController {
 		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
 		if (rootNode != null) {
 			CorePlugin.getInstance().getUpdateService().getUpdateDAO()
-				.addUpdate(rootNode, new ChildrenUpdate().setTypeAs(REMOVED).setTargetNodeAs(child).setNodeAs(node).setTimestampAs(new Date().getTime()));			
+				.addUpdate(rootNode, 
+						new ChildrenUpdate()
+							.setTypeAs(REMOVED)
+							.setTargetNodeAs(child)
+							.setFullNodeIdAs(node.getFullNodeId()));			
 		}
 	}
 

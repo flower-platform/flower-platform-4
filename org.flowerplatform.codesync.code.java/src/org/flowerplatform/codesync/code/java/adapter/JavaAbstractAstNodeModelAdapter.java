@@ -199,7 +199,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 			javadoc.tags().add(tag);
 			TextElement text = javadoc.getAST().newTextElement();
 			tag.fragments().add(text);
-			text.setText(((Node) correspondingElement).getId());
+			text.setText(((Node) correspondingElement).getIdWithinResource());
 			System.out.println(javadoc);
 		}
 	}

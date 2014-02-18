@@ -12,7 +12,7 @@ public class MindMapRootNodeProvider extends RootNodeProvider {
 
 	@Override
 	public Node getRootNode(Node node) {
-		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getId());
+		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getIdWithinResource());
 		if (nodeModel != null) {
 			return FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(nodeModel.getMap().getRootNode());
 		}

@@ -10,6 +10,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
@@ -36,7 +37,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 			x = _diagramShell.getPropertyValue(data, "x");	
 			y = _diagramShell.getPropertyValue(data, "y");		
 			
-			labelDisplay.text = data.properties["body"];
+			labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];
 		}
 				
 		override protected function resizeHandler(event:ResizeEvent):void {
@@ -64,9 +65,9 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 				case "y":
 					y = _diagramShell.getPropertyValue(data, "y");				
 					break;
-				case "body":
-					labelDisplay.text = data.properties["body"];
-				case "hasChildren":
+				case NodePropertiesConstants.TEXT:
+					labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];
+				case NodePropertiesConstants.HAS_CHILDREN:
 					invalidateSize();
 				case "children":
 					invalidateDisplayList();
@@ -86,10 +87,10 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		}
 		
 		protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
-			if (data.properties.hasOwnProperty("body")) {
-				labelDisplay.text = data.properties["body"];
+			if (data.properties.hasOwnProperty(NodePropertiesConstants.TEXT)) {
+				labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];
 			}
-			if (data.properties.hasOwnProperty("hasChildren")) {
+			if (data.properties.hasOwnProperty(NodePropertiesConstants.HAS_CHILDREN)) {
 				dispatchEvent(new NodeRenderer_HasChildrenChangedEvent());
 			}			
 			invalidateSize();
@@ -97,7 +98,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		}
 		
 		override protected function canDrawCircle(model:Object):Boolean {			
-			return model != null && Boolean(model.properties["hasChildren"]).valueOf() && !_diagramShell.getModelController(model).getExpanded(model);
+			return model != null && Boolean(model.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() && !_diagramShell.getModelController(model).getExpanded(model);
 		}
 		
 	}

@@ -40,12 +40,12 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		
 		override public function run():void {
 			// TODO MG: replace with specific actions later
-			var child:Node = new Node();
-			child.type = "freeplaneNode";
+			var properties:Object = new Object();
+			properties.type = "freeplaneNode";
 			// TODO CC: temporary code
-			child.resource = "mm://path_to_resource";
+			properties.resource = "mm://path_to_resource";
 			
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)), child, null]);		
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)).fullNodeId, properties, null]);		
 		}
 		
 	}

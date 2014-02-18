@@ -14,7 +14,7 @@ public class ChildrenUpdate extends Update {
 	
 	private Node targetNode;
 	
-	private Node targetNodeAddedBefore;
+	private String fullTargetNodeAddedBeforeId;
 
 	public String getType() {
 		return type;
@@ -28,7 +28,7 @@ public class ChildrenUpdate extends Update {
 		this.type = type;
 		return this;
 	}
-	
+		
 	public Node getTargetNode() {
 		return targetNode;
 	}
@@ -42,22 +42,22 @@ public class ChildrenUpdate extends Update {
 		return this;
 	}
 	
-	public Node getTargetNodeAddedBefore() {
-		return targetNodeAddedBefore;
+	public String getFullTargetNodeAddedBeforeId() {
+		return fullTargetNodeAddedBeforeId;
 	}
 
-	public void setTargetNodeAddedBefore(Node targetNodeAddedBefore) {
-		this.targetNodeAddedBefore = targetNodeAddedBefore;
+	public void setFullTargetNodeAddedBeforeId(String fullTargetNodeAddedBeforeId) {
+		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
 	}
-		
-	public ChildrenUpdate setTargetNodeAddedBeforeAs(Node targetNodeAddedBefore) {
-		this.targetNodeAddedBefore = targetNodeAddedBefore;
+
+	public ChildrenUpdate setFullTargetNodeAddedBeforeIdAs(String fullTargetNodeAddedBeforeId) {
+		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
 		return this;
 	}
 	
 	@Override
 	public String toString() {
-		return "ChildrenUpdate [type=" + type + " targetNode=" + targetNode + " node=" + getNode() + ", timestamp=" + getTimestamp() + "]";
+		return "ChildrenUpdate [type=" + type + " targetNode=" + targetNode + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";
 	}
 	
 }

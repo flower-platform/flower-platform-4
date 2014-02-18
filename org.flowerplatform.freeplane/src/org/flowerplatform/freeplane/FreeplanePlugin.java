@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane;
 
+import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.TYPE;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
@@ -71,11 +73,11 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	
 	private void addControllers(TypeDescriptor nodeTypeDescriptor) {
 		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new MindMapBasicChildrenProvider());
-		nodeTypeDescriptor.addAdditiveController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider());
+		nodeTypeDescriptor.addSingleController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider());
 		nodeTypeDescriptor.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapBasicRawNodeDataProvider());
 		nodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapBasicRemoveNodeController());
-		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("type"));
-		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("body"));
+		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(TYPE));
+		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(TEXT));
 	}
 	
 	public void stop(BundleContext bundleContext) throws Exception {

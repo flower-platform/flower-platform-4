@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.flowerplatform.core.node.update.remote.UpdateService;
+import org.flowerplatform.core.node.update.UpdateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,6 +16,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 			import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
@@ -72,7 +73,7 @@
 							
 				// if diagram is the new selected element -> clear data in properties
 				// for event.selection == null, see SelectionManager -> dispatchEvent(SelectionChangedEvent), line 116 -> active view changed, but its selection isn't populated yet
-				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).id == null) {
+				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).idWithinResource == null) {
 					icon.source = null;
 					label.text = null;
 					IList(propertyList.dataProvider).removeAll();
@@ -84,14 +85,14 @@
 				
 				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService.getPropertyDescriptors", [node], 
+					"nodeService.getPropertyDescriptors", [node.fullNodeId], 
 						function(result:Object):void {
 						// properties available -> add them in list
 						propertyList.dataProvider = ArrayCollection(result);		
 						// get their values from node
 						nodeUpdatedHandler(new NodeUpdatedEvent(node));
 						
-						label.text = node.properties["body"];
+						label.text = node.properties[NodePropertiesConstants.TEXT];
 						
 						// store new selection and listen for node upates
 						PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());

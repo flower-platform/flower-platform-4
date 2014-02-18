@@ -7,16 +7,16 @@ import java.util.List;
  */
 public class NodeWithVisibleChildren {
 
-	private Node node;
+	private String fullNodeId;
 	
 	private List<NodeWithVisibleChildren> visibleChildren;
 
-	public Node getNode() {
-		return node;
+	public String getFullNodeId() {
+		return fullNodeId;
 	}
 
-	public void setNode(Node node) {
-		this.node = node;
+	public void setFullNodeId(String fullNodeId) {
+		this.fullNodeId = fullNodeId;
 	}
 
 	public List<NodeWithVisibleChildren> getVisibleChildren() {

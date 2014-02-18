@@ -10,6 +10,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.remote.NodeWithVisibleChildren"/>
+    <classEntry path="org.flowerplatform.flex_client.core.NodePropertiesConstants"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

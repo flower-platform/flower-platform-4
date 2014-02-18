@@ -33,6 +33,7 @@
 			import mx.events.MoveEvent;
 			import mx.events.ResizeEvent;
 			
+			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 			import org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flexdiagram.DiagramShell;
@@ -85,7 +86,7 @@
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
-				if (Boolean(node.properties["hasChildren"]).valueOf() &&
+				if (Boolean(node.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() &&
 					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node) != null) {	
 					vLine.visible = !mindMapDiagramShell.getModelController(node).getExpanded(node);
 					diagramShell.diagramRenderer.addElement(circle);

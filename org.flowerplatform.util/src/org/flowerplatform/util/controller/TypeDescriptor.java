@@ -74,7 +74,7 @@ public class TypeDescriptor {
 	 */
 	public List<String> getCategories() {
 		if (categories == null) {
-			return new ArrayList<String>();
+			return Collections.emptyList();
 		}
 		return categories;
 	}

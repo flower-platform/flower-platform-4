@@ -31,7 +31,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		}
 		
 		public function registerNode(node:Node):void {			
-			registry[node.id] = node;
+			registry[node.fullNodeId] = node;
 		}
 		
 		public function unregisterNode(nodeId:String):void {

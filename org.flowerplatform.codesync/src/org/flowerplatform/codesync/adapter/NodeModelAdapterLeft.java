@@ -22,9 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -170,7 +170,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		int featureType = codeSyncAlgorithm.getFeatureProvider(node).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
-			CodeSyncPlugin.getInstance().getNodeService().unsetProperty(node, getOriginalFeatureName(feature).toString());
+			CorePlugin.getInstance().getNodeService().unsetProperty(node, getOriginalFeatureName(feature).toString());
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
 			List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
