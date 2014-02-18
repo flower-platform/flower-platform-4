@@ -33,7 +33,7 @@ public class InMemoryUpdateDAO extends UpdateDAO {
 		List<Update> updates = null;
 		if (nodeToRootNodeInfo.containsKey(rootNode)) {
 			updates = nodeToRootNodeInfo.get(rootNode).getUpdates();
-		}		
+		}
 		if (updates == null) {
 			return null;
 		}

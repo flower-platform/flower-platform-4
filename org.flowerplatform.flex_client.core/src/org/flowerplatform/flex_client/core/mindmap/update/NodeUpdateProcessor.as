@@ -19,8 +19,15 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	use namespace mx_internal;
 	
 	/**
+	 * Holds a node registry (fullNodeId -> Node) and handles the communication with the server. 
+	 * This class is responsible for maintaing a consistent node tree. E.g. when new nodes arrive
+	 * from server, they are added in the registry and "linked" with their parent. When nodes are
+	 * removed (e.g. node collapsed), they are removed from the registry and unlinked from their 
+	 * parents.
+	 * 
 	 * @author Cristina Constantinescu
 	 */
+	// TODO CS: niste doc pe la metode (mai mult); inclusiv la evenimente (e.g. cine asculta)
 	public class NodeUpdateProcessor {
 		
 		private var _nodeRegistry:NodeRegistry = new NodeRegistry();
@@ -54,6 +61,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 					parent.children.addItem(node);
 				}
 			} else {
+				// TODO CS: sa nu stea aici; astfel parametrii parent si index nu vor mai fi optionali
 				diagramShell.rootModel = new Node();
 				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(node, true);				
 			}
@@ -75,8 +83,9 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			}
 		}
 		
-		/* REMOVE CHILDREN */
-		
+		/**
+		 * Called from <code>removeNode()</code> or from UI: when a node is collapsed.
+		 */
 		public function removeChildren(node:Node, refreshChildrenAndPositions:Boolean = true):void {
 			if (node.children != null) {
 				for each (var child:Node in node.children) {
@@ -92,9 +101,13 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			}			
 		}
 		
-		/* REQUEST CHILDREN */
-		
-		public function requestChildren(node:Node):void {			
+		/* REQUEST CHILDREN */		
+
+		/**
+		 * Called from UI when a node is expanded.
+		 */
+		public function requestChildren(node:Node):void {		
+			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
 				[node == null ? "freeplaneNode|mm://path_to_resource|": node.fullNodeId, true], 
@@ -122,7 +135,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				// register each child
 				for each (var child:Node in children) {
 					nodeRegistry.registerNode(child);
-					child.parent = node;					
+					child.parent = node;		
+					// TODO CS: de refolosit add?
 				}
 				// set node list of children
 				node.children = children;
@@ -132,17 +146,18 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			MindMapDiagramShell(diagramShell).refreshModelPositions(node);				
 		}
 				
-		/* GET UPDATES */
-		
 		public function checkForUpdates():void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"updateService.getUpdates",	
 				[Node(Node(MindMapDiagramShell(diagramShell).getRoot()).fullNodeId), timestampOfLastRequest], rootNodeUpdatesHandler);	
+				// TODO CS: de init timestamp la subscribe
 		}
 			
 		public function rootNodeUpdatesHandler(updates:ArrayCollection):void {
-			if (updates == null) {
-				refresh(Node(Node(MindMapDiagramShell(diagramShell).getRoot())));
+			if (updates == null) {				
+				if (diagramShell.rootModel != null) {
+					refresh(Node(MindMapDiagramShell(diagramShell).getRoot()));
+				}
 				return;
 			}
 			for each (var update:Update in updates) {
@@ -157,24 +172,39 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 					} else {
 						nodeFromRegistry.properties[propertyUpdate.key] = propertyUpdate.value;
 					}
-					nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry));	
+					nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry));
+					// TODO CS: sa facem doar o notificare la sfarsit? poate sa scriem si ce proprietate?
+					// si de mutat pachetul event
+					// sa avem o lista de prop modificate; astfel, am scapa de ...HasChildrenChanged...
 				} else { // children update
 					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
 					var targetNodeInRegistry:Node = nodeRegistry.getNodeById(childrenUpdate.targetNode.fullNodeId);	
 					switch (childrenUpdate.type) {
 						case ChildrenUpdate.ADDED:													
 							if (nodeFromRegistry.children != null && nodeFromRegistry.children.contains(targetNodeInRegistry)) { // child already added, probably after refresh									
+								// child already added, probably after refresh
+								// e.g. I add a children, I expand => I get the list with the new children; when the
+								// client polls for data, this children will be received as well, and thus duplicated.
+								// NOTE: since the instant notifications for the client that executed => this doesn't apply
+								// for him; but for other clients yes
+								
+								// Nothing to do
+								
+								// TODO CS: single IF: if nodeFromReg!=null && ! contains 							
 							} else if (nodeFromRegistry.children != null) { // node expanded
 								var index:Number = -1; // -> add it last
 								if (childrenUpdate.fullTargetNodeAddedBeforeId != null) {
 									index = nodeFromRegistry.children.getItemIndex(childrenUpdate.fullTargetNodeAddedBeforeId);
+									// TODO CS: nu cred ca merge; ! equals
 								}
 								addNode(childrenUpdate.targetNode, nodeFromRegistry, index);
 							}
 							break;
 						case ChildrenUpdate.REMOVED:	
 							if (targetNodeInRegistry == null // node not registered, probably it isn't visible for this client
-								|| nodeFromRegistry.children == null || !nodeFromRegistry.children.contains(targetNodeInRegistry)) { // child already removed, probably after refresh									
+								|| nodeFromRegistry.children == null // not expanded
+								|| !nodeFromRegistry.children.contains(targetNodeInRegistry)) { // child already removed, probably after refresh									
+								// TODO CS: poate merge de facut removeNode care sa se astepte sa nu mai fie nodul; astfel am economisi o ciclare
 							} else {
 								removeNode(targetNodeInRegistry, nodeFromRegistry, -1);		
 							}
@@ -188,8 +218,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			// store last update timestamp
 			timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;		
 		}	
-		
-		/* REFRESH */
 		
 		public function refresh(node:Node):void {
 			// TODO CC: to be modified

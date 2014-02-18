@@ -17,14 +17,15 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.mindmap.remote {
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	
 	import mx.collections.ArrayCollection;
 	
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	
 	/**
+	 * Server -> client only. On the server side, the nodes are note linked together
+	 * (parent/children). But here, on the client, these links are recalculated and 
+	 * maintained by <code>NodeUpdateProcessor</code>.
+	 * 
 	 * @author Cristina Constantinescu
 	 */
 	[Bindable]
@@ -35,7 +36,7 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		public var resource:String;		
 		public var idWithinResource:String;		
 				
-		public var properties:Object = new Object();
+		public var properties:Object;
 		
 		[Transient]
 		public var parent:Node;

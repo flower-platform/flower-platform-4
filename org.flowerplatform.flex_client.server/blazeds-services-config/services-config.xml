@@ -5,7 +5,7 @@
         <service-include file-path="remoting-config.xml" />
 	</services>
 	
-	  <factories>
+	<factories>
 		<factory id="flowerFactory"
 			class="org.flowerplatform.flex_client.server.blazeds.FlowerFlexFactory" />
 	</factories>
