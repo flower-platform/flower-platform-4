@@ -30,8 +30,7 @@ public abstract class FeatureProvider extends AbstractController {
 	public static final String FEATURE_PROVIDER = "featureProvider";
 
 	public static final String NAME = "name";
-	public static final String TYPE = "type";
-	
+
 	public abstract List<?> getValueFeatures(Object element);
 	
 	public abstract List<?> getContainmentFeatures(Object element);

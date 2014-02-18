@@ -32,6 +32,7 @@ import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -69,7 +70,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.TYPE.equals(feature)) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return getNode(element).getType();
 		}
 		return getNode(element).getOrPopulateProperties().get(feature);
@@ -82,7 +83,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		if (FeatureProvider.TYPE.equals(feature)) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
 			getNode(element).setType((String) newValue);
 		}
 		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
