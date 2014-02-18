@@ -26,8 +26,9 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
+	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithVisibleChildren;
+	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
@@ -102,7 +103,8 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(Update);
 			registerClassAliasFromAnnotation(PropertyUpdate);
 			registerClassAliasFromAnnotation(ChildrenUpdate);
-			registerClassAliasFromAnnotation(NodeWithVisibleChildren);
+			registerClassAliasFromAnnotation(NodeWithChildren);
+			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
 		}
 		
 		public function getPerspective(id:String):Perspective {

@@ -34,12 +34,13 @@ public class InMemoryUpdateDAO extends UpdateDAO {
 		if (nodeToRootNodeInfo.containsKey(rootNode)) {
 			updates = nodeToRootNodeInfo.get(rootNode).getUpdates();
 		}
+		
+		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
 		if (updates == null) {
-			return null;
+			return updatesAddedAfterLastRequest;
 		}
 		
-		boolean updatesBeforeLastRequestFound = false;
-		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
+		boolean updatesBeforeLastRequestFound = false;		
 		// iterate updates reversed
 		for (int i = updates.size() - 1; i > 0; i++) {
 			Update update = updates.get(i);

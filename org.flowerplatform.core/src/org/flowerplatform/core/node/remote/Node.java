@@ -83,7 +83,7 @@ public class Node {
 	}
 
 	private void calculateFullNodeId() {
-		this.fullNodeId = String.format("%s|%s|%s", this.idWithinResource, this.type, this.resource);
+		this.fullNodeId = String.format("%s|%s|%s", this.type, this.resource, this.idWithinResource);
 	}
 
 	/**

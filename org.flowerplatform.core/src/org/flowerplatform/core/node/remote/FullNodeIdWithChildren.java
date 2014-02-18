@@ -5,11 +5,11 @@ import java.util.List;
 /**
  * @author Cristina Constantinescu
  */
-public class NodeWithVisibleChildren {
+public class FullNodeIdWithChildren {
 
 	private String fullNodeId;
 	
-	private List<NodeWithVisibleChildren> visibleChildren;
+	private List<FullNodeIdWithChildren> visibleChildren;
 
 	public String getFullNodeId() {
 		return fullNodeId;
@@ -19,12 +19,12 @@ public class NodeWithVisibleChildren {
 		this.fullNodeId = fullNodeId;
 	}
 
-	public List<NodeWithVisibleChildren> getVisibleChildren() {
+	public List<FullNodeIdWithChildren> getVisibleChildren() {
 		return visibleChildren;
 	}
 
-	public void setVisibleChildren(List<NodeWithVisibleChildren> visibleChildren) {
+	public void setVisibleChildren(List<FullNodeIdWithChildren> visibleChildren) {
 		this.visibleChildren = visibleChildren;
 	}
-		
+	
 }

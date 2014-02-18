@@ -1,5 +1,6 @@
 package org.flowerplatform.core.node.remote;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,43 +39,44 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService().getRootNode(new Node(fullNodeId));
 	}
 	
-//	public NodeWithVisibleChildren refresh(NodeWithVisibleChildren currentNodeWithVisibleChildren) {	
-//		Node currentNode = currentNodeWithVisibleChildren.getNode();
-//		boolean currentNodeHasVisibleChildren = currentNodeWithVisibleChildren.getVisibleChildren() != null;
-//		
-//		// get new data
-//		NodeWithVisibleChildren newNodeWithVisibleChildren = computeNodeWithVisibleChildren(currentNode, currentNodeHasVisibleChildren);
-//		
-//		if (currentNodeHasVisibleChildren) {
-//			// verify if node exists in list of new visibleChildren
-//			for (NodeWithVisibleChildren currentChildWithVisibleChildren : currentNodeWithVisibleChildren.getVisibleChildren()) {				
-//				for (int i = 0; i < newNodeWithVisibleChildren.getVisibleChildren().size(); i++) {
-//					Node newChildNode = newNodeWithVisibleChildren.getVisibleChildren().get(i).getNode();
-//					if (newChildNode.getIdWithinResource().equals(currentChildWithVisibleChildren.getNode().getIdWithinResource())) {	// node exists in new list -> refresh its structure also			
-//						newNodeWithVisibleChildren.getVisibleChildren().set(i, refresh(currentChildWithVisibleChildren));
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		return newNodeWithVisibleChildren;
-//	}
-//		
-//	private NodeWithVisibleChildren computeNodeWithVisibleChildren(Node node, boolean  populateWithChildren) {	
-//		NodeWithVisibleChildren newNodeWithVisibleChildren = new NodeWithVisibleChildren();
-//		newNodeWithVisibleChildren.setNode(node);
-//		
-//		node.getOrPopulateProperties();
-//			
-//		// get new visible children
-//		List<NodeWithVisibleChildren> visibleChildren = new ArrayList<NodeWithVisibleChildren>();
-//		if (populateWithChildren) {			
-//			for (Node child : getChildren(node.getFullNodeId(), false)) { // get children without properties
-//				visibleChildren.add(computeNodeWithVisibleChildren(child, false)); // here we populate it
-//			}
-//		}
-//		newNodeWithVisibleChildren.setVisibleChildren(visibleChildren);
-//		return newNodeWithVisibleChildren;
-//	}	
-//	
+	public NodeWithChildren refresh(FullNodeIdWithChildren query) {
+		NodeWithChildren response = new NodeWithChildren();
+		Node node = new Node(query.getFullNodeId());
+		response.setNode(node);
+		
+		node.getOrPopulateProperties();
+		
+		if (query.getVisibleChildren() == null) { 
+			// no visible children on client = node not expanded, so don't continue
+			// OR dummy query created for a child that isn't found in query's list of children
+			return response;
+		}
+		
+		for (Node child : getChildren(query.getFullNodeId(), false)) { // get new children list
+			// search corresponding child in query
+			FullNodeIdWithChildren childQuery = getChildQueryFromQuery(query, child.getFullNodeId());
+			if (childQuery == null) { 
+				// not found, create a dummy query and populate it only with the fullNodeId
+				// this way, only node's properties will be populated
+				childQuery = new FullNodeIdWithChildren();
+				childQuery.setFullNodeId(child.getFullNodeId());
+			}
+			NodeWithChildren childResponse = refresh(childQuery);
+			if (response.getChildren() == null) {
+				response.setChildren(new ArrayList<NodeWithChildren>());
+			}
+			response.getChildren().add(childResponse);
+		}
+		return response;
+	}
+	
+	private FullNodeIdWithChildren getChildQueryFromQuery(FullNodeIdWithChildren query, String fullChildNodeId) {
+		for (FullNodeIdWithChildren child : query.getVisibleChildren()) {
+			if (child.getFullNodeId().equals(fullChildNodeId)) {
+				return child;
+			}
+		}
+		return null;
+	}
+	
 }

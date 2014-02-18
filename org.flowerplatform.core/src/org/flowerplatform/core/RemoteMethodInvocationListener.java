@@ -2,9 +2,11 @@ package org.flowerplatform.core;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.node.update.UpdateService;
+import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +38,12 @@ public class RemoteMethodInvocationListener {
 		// compute current returnValue with list of updates performed in method's body
 		Map<String, Object> returnValue = new HashMap<String, Object>();
 		returnValue.put("messageInvocationResult", remoteMethodInvocationInfo.getReturnValue());
-		returnValue.put("updates", UpdateService.getCurrentMethodInvocationUpdates().get());
-				
+		
+		// TODO CC: temporary code
+		List<Update> updates = UpdateService.getCurrentMethodInvocationUpdates().get();
+		if (updates != null) {
+			returnValue.put("updates", updates);
+		}	
 		remoteMethodInvocationInfo.setReturnValue(returnValue);
 		
 		// reset thread local data

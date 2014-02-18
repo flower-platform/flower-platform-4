@@ -29,9 +29,9 @@ import java.util.List;
 
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 
 /**
  * Sets the icon property, depending on the element's modifiers. The base icon depends on the 
@@ -110,7 +110,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 	
 	protected List<Node> getModifiers(Node node) {
-		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		List<Node> categories = service.getChildren(node, true);
 		for (Node category : categories) {
 			if (category.getProperties().get("name").equals(JavaFeaturesConstants.MODIFIERS)) {
