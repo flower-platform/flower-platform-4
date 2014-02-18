@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.core;
 
+import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -34,6 +35,7 @@ import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.servlet.ResourcesServlet;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -65,6 +67,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		setFileAccessController(new PlainFileAccessController());
 
 		setRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
+		
+		//TODO use Flower property
+		boolean isDeleteTempFolderAtStartProperty = true;
+		if (isDeleteTempFolderAtStartProperty) {
+			FileUtils.deleteDirectory(ResourcesServlet.TEMP_FOLDER);
+		}
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
