@@ -59,8 +59,9 @@ public class ImageComposerServlet extends ResourcesServlet {
 			requestedFile = requestedFile.substring(PATH_PREFIX.length());
 		}
 		
-		String tempRequestedFile = requestedFile.replace('|', '#').replace('/', '$');
-		File tempFile = new File(tempFolder, tempRequestedFile);
+		String tempRequestedFile = requestedFile.replace(SEPARATOR, TEMP_SEPARATOR)
+												.replace('/', TEMP_FOLDER_SEPARATOR);
+		File tempFile = new File(TEMP_FOLDER, tempRequestedFile);
 		
 		if (tempFile.exists()) {
 			InputStream result = new FileInputStream(tempFile);
@@ -74,7 +75,8 @@ public class ImageComposerServlet extends ResourcesServlet {
 			send404(request, response);
 			return;
 		}
-		String[] paths = requestedFile.split("\\|");
+		String separator = "\\" + SEPARATOR;
+		String[] paths = requestedFile.split(separator);
 		
 		int width = 0;
 		int height = 0;
@@ -111,8 +113,8 @@ public class ImageComposerServlet extends ResourcesServlet {
 		graphics.dispose();
 		
 		// write image into the Temp folder
-    	if (!tempFolder.exists()) {
-    		tempFolder.mkdir();
+    	if (!TEMP_FOLDER.exists()) {
+    		TEMP_FOLDER.mkdir();
     	}
     	FileOutputStream tempOutput = new FileOutputStream(tempFile);
     	ImageIO.write(result, "png", tempOutput);

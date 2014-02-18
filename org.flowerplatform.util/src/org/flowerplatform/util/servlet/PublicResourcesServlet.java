@@ -146,18 +146,17 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		String file = requestedFile.substring(indexOfSecondSlash);
 
 		// if | is supplied => the file is a zip, and we want what's in it
-		int indexOfZipSeparator = file.indexOf('|');
+		int indexOfZipSeparator = file.indexOf(SEPARATOR);
 		String fileInsideZipArchive = null; 
 		if (indexOfZipSeparator >= 0 && indexOfZipSeparator < file.length() - 1) { // has | and | is not the last char in the string
 			fileInsideZipArchive = file.substring(indexOfZipSeparator + 1);
 			file = file.substring(0, indexOfZipSeparator);
 		}
 		String requestedTempFile = null;
-//		File tempFile;
-		String fileName = file.substring(file.lastIndexOf("/") + 1);
+		String fileName = file.replace('/', TEMP_FOLDER_SEPARATOR);
 		// if the file is in a zip, search first in the Temp folder
 		if (fileInsideZipArchive != null) {
-			requestedTempFile = searchInTemp(fileName + "#" + fileInsideZipArchive);
+			requestedTempFile = searchInTemp(fileName + TEMP_SEPARATOR + fileInsideZipArchive);
 		}
 
 		if (requestedTempFile != null) { // file was found in Temp folder
@@ -217,10 +216,10 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	            	inputCloseable = pair.b;
 	            	
 	            	// write the found file in Temp folder
-					if (!tempFolder.exists()) {
-						tempFolder.mkdir();
+					if (!TEMP_FOLDER.exists()) {
+						TEMP_FOLDER.mkdir();
 					}
-					File tempFile = new File(tempFolder, fileName + "#" + fileInsideZipArchive);
+					File tempFile = new File(TEMP_FOLDER, fileName + TEMP_SEPARATOR + fileInsideZipArchive);
 					Files.copy(input, tempFile.toPath());
 					
 					input.close();

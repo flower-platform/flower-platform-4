@@ -11,10 +11,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class ResourcesServlet extends HttpServlet {
+	/**
+	 * @see ImageComposerServlet 
+	 */
+	public static final char SEPARATOR = '|';
+	
+	/**
+	 * Used to replase {@value #SEPARATOR} 
+	 */
+	public static final char TEMP_SEPARATOR = '#';
+	
+	/**
+	 * Used to replase '/' 
+	 */
+	public static final char TEMP_FOLDER_SEPARATOR = '$';
+	
+	public static final String FLOWER_PLATFORM = "flower-platform";
+	
+	public static final File TEMP_FOLDER =  new File (System.getProperty("java.io.tmpdir"), FLOWER_PLATFORM);
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
-	
-	protected final File tempFolder =  new File (System.getProperty("java.io.tmpdir"), "flower-platform");
 	
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -29,7 +45,7 @@ public abstract class ResourcesServlet extends HttpServlet {
 	* @author Sebastian Solomon
 	*/
 	protected String searchInTemp(String requestedFile) {
-		File file = new File(tempFolder , requestedFile);
+		File file = new File(TEMP_FOLDER , requestedFile);
 		return file.exists() ? file.getAbsolutePath() : null;
 	}
 	
