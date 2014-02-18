@@ -179,9 +179,13 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				}
 			} else {
-				CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
+					CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+				}
 			}
 		}
 	}

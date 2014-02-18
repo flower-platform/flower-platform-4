@@ -18,7 +18,9 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.*;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.MODIFIERS;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.TYPED_ELEMENT_TYPE;
 
 import java.util.Arrays;
 import java.util.List;

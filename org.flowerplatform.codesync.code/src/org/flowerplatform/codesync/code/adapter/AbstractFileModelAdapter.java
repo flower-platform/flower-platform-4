@@ -29,7 +29,6 @@ import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.file.IFileAccessController;

@@ -50,8 +50,6 @@ public class CodeSyncPropertySetter extends PropertySetter {
 
 		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		
-		service.setProperty(node, "icon", "org.flowerplatform.codesync/images/folder.gif");
-		
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncPlugin.REMOVED.equals(property) || CodeSyncPlugin.ADDED.equals(property)) {
 			setSyncFalseAndPropagateToParents(node, service);

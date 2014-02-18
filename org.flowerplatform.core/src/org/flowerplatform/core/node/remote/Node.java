@@ -85,7 +85,12 @@ public class Node {
 	private void calculateFullNodeId() {
 		this.fullNodeId = String.format("%s|%s|%s", this.idWithinResource, this.type, this.resource);
 	}
-	
+
+	/**
+	 * Should be used for writing values in the map. Probably by {@link PropertiesProvider}.
+	 * 
+	 * @return The properties map (lazy initialized in here), without any other processing.
+	 */
 	public Map<String, Object> getProperties() {
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
@@ -97,6 +102,15 @@ public class Node {
 		this.properties = properties;
 	}
 
+	/**
+	 * Populates the node (if not populated). Should be used for reading values from the map.
+	 * 
+	 * <p>
+	 * <strong>WARNING:</strong> shouldn't be used for writing values. E.g. if {@link PropertiesProvider}'s try
+	 * to use this method, an infinite call loop will be created ({@link StackOverflowError}).
+	 * 
+	 * @return The properties map (populated if not already populated).
+	 */
 	public Map<String, Object> getOrPopulateProperties() {
 		if (!populated) {	
 			// lazy population
