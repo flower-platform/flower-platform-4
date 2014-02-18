@@ -18,10 +18,21 @@
  */
 package org.flowerplatform.codesync.code.java;
 
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_ANNOTATION;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_FIELD;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_FILE;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_METHOD;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_PACKAGE;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_ANNOTATION;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_CLASS;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_ENUM;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.IMG_TYPE_INTERFACE;
+import static org.flowerplatform.codesync.code.java.JavaImageConstants.getImagePath;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelAdapter.ANNOTATION;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter.ANNOTATION_MEMBER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
 import static org.flowerplatform.codesync.code.java.adapter.JavaEnumConstantDeclarationModelAdapter.ENUM_CONSTANT;
+import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.EXPRESSION;
 import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter.OPERATION;
@@ -30,7 +41,7 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationM
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ENUM;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.INTERFACE;
-import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.EXPRESSION;
+import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
@@ -42,27 +53,29 @@ import org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaEnumConstantDeclarationModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaFileModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter;
-import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
+import org.flowerplatform.codesync.code.java.controller.JavaIconPropertyProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaExpressionFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaExpressionFeatureProvider;
 import org.flowerplatform.codesync.code.java.type_provider.JavaTypeProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -74,6 +87,8 @@ import org.osgi.framework.BundleContext;
 public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 
 	public static final String TECHNOLOGY = "java";
+	
+	public static final String ICON = "icon";
 	
 	protected static CodeSyncCodeJavaPlugin INSTANCE;
 	
@@ -95,28 +110,39 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		CodeSyncPlugin.getInstance().addTypeProvider(TECHNOLOGY, new JavaTypeProvider());
 		
 		FileFeatureProvider fileFeatureProvider = new FileFeatureProvider();
-		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER, new FolderModelAdapter(), fileFeatureProvider);
-		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE, new JavaFileModelAdapter(), fileFeatureProvider);
+		createNodeTypeDescriptor(CodeSyncCodePlugin.FOLDER, new FolderModelAdapter(), fileFeatureProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_PACKAGE)));
+		createNodeTypeDescriptor(CodeSyncCodePlugin.FILE, new JavaFileModelAdapter(), fileFeatureProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_FILE)));
 		
 		PropertyDescriptor returnType = new PropertyDescriptor()
 			.setNameAs(JavaFeaturesConstants.TYPED_ELEMENT_TYPE).setReadOnlyAs(false);
 		
 		JavaTypeDeclarationModelAdapter typeModelAdapter = new JavaTypeDeclarationModelAdapter();
 		JavaTypeDeclarationFeatureProvider typeFeatureProvider = new JavaTypeDeclarationFeatureProvider();
-		createNodeTypeDescriptor(CLASS, typeModelAdapter, typeFeatureProvider);
-		createNodeTypeDescriptor(INTERFACE, typeModelAdapter, typeFeatureProvider);
-		createNodeTypeDescriptor(ENUM, typeModelAdapter, typeFeatureProvider);
-		createNodeTypeDescriptor(ANNOTATION_TYPE, typeModelAdapter, typeFeatureProvider);
+		createNodeTypeDescriptor(CLASS, typeModelAdapter, typeFeatureProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_CLASS)));
+		createNodeTypeDescriptor(INTERFACE, typeModelAdapter, typeFeatureProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_INTERFACE)));
+		createNodeTypeDescriptor(ENUM, typeModelAdapter, typeFeatureProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_ENUM)));
+		createNodeTypeDescriptor(ANNOTATION_TYPE, typeModelAdapter, typeFeatureProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_TYPE_ANNOTATION)));
 		
 		createNodeTypeDescriptor(ATTRIBUTE, new JavaAttributeModelAdapter(), new JavaAttributeFeatureProvider())
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_FIELD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		createNodeTypeDescriptor(OPERATION, new JavaOperationModelAdapter(), new JavaOperationFeatureProvider())
+			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICON, getImagePath(IMG_METHOD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
-		createNodeTypeDescriptor(ENUM_CONSTANT, new JavaEnumConstantDeclarationModelAdapter(), new JavaEnumConstantDeclarationFeatureProvider());
+		createNodeTypeDescriptor(ENUM_CONSTANT, new JavaEnumConstantDeclarationModelAdapter(), new JavaEnumConstantDeclarationFeatureProvider())
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_FIELD)));
 		createNodeTypeDescriptor(ANNOTATION_MEMBER, new JavaAnnotationTypeMemberDeclarationModelAdapter(), new JavaAnnotationTypeMemberDeclarationFeatureProvider())
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_METHOD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		
-		createNodeTypeDescriptor(ANNOTATION, new JavaAnnotationModelAdapter(), new JavaAnnotationFeatureProvider());
+		createNodeTypeDescriptor(ANNOTATION, new JavaAnnotationModelAdapter(), new JavaAnnotationFeatureProvider())
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_ANNOTATION)));
 		createNodeTypeDescriptor(MEMBER_VALUE_PAIR, new JavaMemberValuePairModelAdapter(), new JavaMemberValuePairFeatureProvider());
 		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new JavaModifierFeatureProvider());
 		createNodeTypeDescriptor(PARAMETER, new JavaParameterModelAdapter(), new JavaParameterFeatureProvider())
