@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.codesync {
 	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.remote.CodeSyncOperationsService;
+	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.Utils;
@@ -49,6 +50,8 @@ package org.flowerplatform.flex_client.codesync {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
+			
+			CorePlugin.getInstance().mindmapNodeRendererControllerClass = CodeSyncNodeRenderer;
 			
 			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);

@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
@@ -13,9 +14,11 @@ import java.util.List;
 
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
+import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -72,6 +75,21 @@ public class NodeService {
 		} else {
 			return children;
 		}
+	}
+
+	
+	public Node getParent(Node node) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
+		
+		ParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
+		Pair<Node, Object> parent = provider.getParent(node);
+		if (parent == null) {
+			return null;
+		}
+		return parent.a;
 	}
 		
 	/**

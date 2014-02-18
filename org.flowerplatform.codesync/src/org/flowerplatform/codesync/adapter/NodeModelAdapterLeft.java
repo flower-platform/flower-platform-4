@@ -19,13 +19,16 @@
 package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeService;
 
 /**
  * @author Mariana
@@ -41,7 +44,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		// filter out deleted elements
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(REMOVED);
+				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPlugin.REMOVED);
 				if (isRemoved != null && isRemoved) {
 					return false;
 				}
@@ -84,114 +87,29 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 
 	@Override
 	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
-//		CodeSyncElement cse = getCodeSyncElement(element);
-//		if (cse != null) {
-//			FeatureChange change = cse.getFeatureChanges().get(feature);
-//			if (change != null) {
-//				if (getModelAdapterFactorySet().getFeatureProvider(cse).getFeatureType(feature) == FEATURE_TYPE_CONTAINMENT) {
-//					List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
-//					List<Object> newValues = (List<Object>) change.getNewValue();
-//					
-//					// iterate through the children list; for each child not found in the new children, see if it exists in the corresponding element
-//					for (Iterator it  = children.iterator(); it.hasNext();) {
-//						Object existingChild = (Object) it .next();
-//						Object matchKey = getModelAdapterFactory().getModelAdapter(existingChild).getMatchKey(existingChild);
-//						Object newChild = findChild(newValues, matchKey);
-//						if (newChild == null) {
-//							if (!elementContainsChildWithMatchKey(correspondingElement, feature, matchKey)) {
-//								// the child doesn't exist in the corresponding element either => delete it
-//								it.remove();
-//							}
-//						}
-//					}
-//					
-//					// iterate through the new values; for each child not found in the children list, see if it exists in the corresponding element
-//					for (Object newChild : newValues) {
-//						Object matchKey = getModelAdapterFactory().getModelAdapter(newChild).getMatchKey(newChild);
-//						Object existingChild = findChild(children, matchKey);
-//						if (existingChild == null) {
-//							if (elementContainsChildWithMatchKey(correspondingElement, feature, matchKey)) {
-//								// the child exists in the corresponding element as well => add it to the children
-//								children.add(newChild instanceof EObject ? EcoreUtil.copy((EObject) newChild) : newChild);
-//							}
-//						}
-//					}
-//					
-//					// compare the new values with the existing children
-//					if (newValues.size() == children.size()) {
-//						int matches = 0;
-//						for (Object newChild : newValues) {
-//							Object existingChild = findChild(children, getModelAdapterFactory().getModelAdapter(newChild).getMatchKey(newChild));
-//							if (existingChild != null) {
-//								children.remove(existingChild);
-//								children.add(newChild instanceof EObject ? EcoreUtil.copy((EObject) newChild) : newChild);
-//								matches++;
-//							}
-//						}
-//						
-//						if (newValues.size() == matches) {
-//							// the new values list and the existing list have the same children => remove the feature change
-//							cse.getFeatureChanges().removeKey(feature);
-//						} else {
-//							// the new values list and the existing list are not identical => update the old values
-//							change.setOldValue(children);
-//						}
-//					}
-//				} else {
-//					setValueFeatureValue(element, feature, change.getNewValue());
-//					cse.getFeatureChanges().removeKey(feature);
-//				}
-//			}
-//			if (AstCacheCodePackage.eINSTANCE.getOperation_Parameters().equals(feature)) {
-//				AstCacheElement ace = cse.getAstCacheElement();
-//				if (ace != null && ace instanceof Operation) {
-//					String newName = cse.getName().substring(0, cse.getName().indexOf("("));
-//					newName += "(";
-//					for (Parameter parameter : ((Operation) ace).getParameters()) {
-//						newName += parameter.getType() + ",";
-//					}
-//					if (newName.endsWith(",")) {
-//						newName = newName.substring(0, newName.length() - 1);
-//					}
-//					newName += ")";
-//					cse.setName(newName);
-//				}
-//			}
-//		}
+		Node node = getNode(element);
+		NodeService nodeService = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		CodeSyncControllerUtils.setSyncTrueAndPropagateToParents(node, nodeService);
 	}
 
 	@Override
-	public void actionPerformed(Object element, Object feature, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public void actionPerformed(Object element, Object feature, ActionResult result, Match match) {
 		if (result == null || result.conflict) {
 			return;
 		}
 
 		Node node = getNode(element);
-		int featureType = codeSyncAlgorithm.getFeatureProvider(node).getFeatureType(feature);
+		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(node).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
-			CodeSyncPlugin.getInstance().getNodeService().unsetProperty(node, getOriginalFeatureName(feature).toString());
+			CodeSyncPlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()));
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
-			List<Object> children = (List<Object>) super.getContainmentFeatureIterable(element, feature, null);
-			processContainmentFeatureAfterActionPerformed(node, children, result, codeSyncAlgorithm);
+			processContainmentFeatureAfterActionPerformed(node, feature, result, match);
 			break;
 		default:
 			break;
 		}
-	}
-	
-	private boolean elementContainsChildWithMatchKey(CodeSyncAlgorithm codeSyncAlgorithm, Object element, Object feature, Object matchKey) {
-		if (element == null || matchKey == null) {
-			return false;
-		}
-		Iterable<?> children = codeSyncAlgorithm.getRightModelAdapter(element).getContainmentFeatureIterable(element, feature, null);
-		for (Object child : children) {
-			if (matchKey.equals(codeSyncAlgorithm.getRightModelAdapter(child).getMatchKey(child))) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 }

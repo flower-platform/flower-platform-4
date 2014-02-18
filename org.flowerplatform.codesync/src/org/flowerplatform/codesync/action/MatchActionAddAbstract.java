@@ -69,7 +69,7 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 			Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null);
 			if (!CodeSyncAlgorithm.safeEquals(value, valueOpposite)) {
 				oppositeMa.setValueFeatureValue(opposite, childFeature, value);
-				actionPerformed(match.getCodeSyncAlgorithm(), thisMa, this_, oppositeMa, opposite, childFeature, new ActionResult(false, true, true));
+				actionPerformed(match, thisMa, this_, oppositeMa, opposite, childFeature, new ActionResult(false, true, true));
 			}
 		}
 		
@@ -87,6 +87,6 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		
 		ActionResult result = new ActionResult(false, true, true, thisMa.getMatchKey(this_), true);
 		IModelAdapter thisParentMa = getThisModelAdapter(parentMatch);
-		actionPerformed(match.getCodeSyncAlgorithm(), thisParentMa, getThis(parentMatch), oppositeParentMa, getOpposite(parentMatch), match.getFeature(), result);
+		actionPerformed(parentMatch, thisParentMa, getThis(parentMatch), oppositeParentMa, getOpposite(parentMatch), match.getFeature(), result);
 	}
 }

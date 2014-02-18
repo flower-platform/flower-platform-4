@@ -20,8 +20,6 @@ package org.flowerplatform.codesync.project;
 
 import java.io.File;
 
-import org.eclipse.core.runtime.Path;
-
 /**
  * @author Mariana Gheorghe
  */

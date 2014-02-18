@@ -1,0 +1,8 @@
+images/full/obj16/table.png https://www.iconfinder.com/icons/64790/table_icon http://www.fatcow.com/
+images/full/obj16/table_select.png https://www.iconfinder.com/icons/64782/select_table_icon http://www.fatcow.com/
+images/full/obj16/table_select_row.png https://www.iconfinder.com/icons/64781/row_select_table_icon http://www.fatcow.com/
+images/full/obj16/table_select_column.png https://www.iconfinder.com/icons/64780/column_select_table_icon http://www.fatcow.com/
+images/full/obj16/application_form.png https://www.iconfinder.com/icons/35647/application_form_icon http://www.fatcow.com/
+images/full/obj16/bullet_textfield.png https://www.iconfinder.com/icons/92543/bullet_textfield_icon http://www.fatcow.com/
+images/full/obj16/time_go.png http://www.famfamfam.com/lab/icons/silk/
+images/full/obj16/arrow_right.png http://www.famfamfam.com/lab/icons/silk/

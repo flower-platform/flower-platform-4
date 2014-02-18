@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.Node;
+import org.freeplane.features.attribute.Attribute;
+import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.MapModel;

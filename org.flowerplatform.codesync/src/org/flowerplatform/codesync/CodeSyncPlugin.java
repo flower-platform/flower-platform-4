@@ -58,6 +58,13 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	protected static CodeSyncPlugin INSTANCE;
 	
 	public static final String CATEGORY = "category";
+	public static final String REMOVED = "removed";
+	public static final String ADDED = "added";
+	public static final String SYNC = "sync";
+	public static final String CHILDREN_SYNC = "childrenSync";
+	public static final String CONFLICT = "conflict";
+	public static final String CHILDREN_CONFLICT = "childrenConflict";
+	
 	
 	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
 	
@@ -132,7 +139,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	private IProjectAccessController projectAccessController;
 	
 	protected boolean useUIDs = true;
-	
+
 	public static CodeSyncPlugin getInstance() {
 		return INSTANCE;
 	}
@@ -247,8 +254,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
 		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("name").setReadOnlyAs(false));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("added"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("removed"));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFLICT));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_CONFLICT));
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		

@@ -18,6 +18,14 @@
  */
 package org.flowerplatform.codesync.controller;
 
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isCodeSyncFlagConstant;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isConflictPropertyName;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isOriginalPropertyName;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
+import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
+
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
@@ -29,19 +37,28 @@ import org.flowerplatform.util.Utils;
  */
 public class CodeSyncPropertySetter extends PropertySetter {
 
-	public static final String ORIGINAL = ".original";
-	
 	public CodeSyncPropertySetter() {
 		setOrderIndex(-100000);
 	}
 	
 	@Override
 	public void setProperty(Node node, String property, Object value) {		
-		if (isOriginalPropertyName(property)) {
-			return;
+		if (property.equals("timestamp") || property.equals("icon")) {
+			return; // TODO skipping all non-sync props
 		}
 		
 		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		
+		service.setProperty(node, "icon", "org.flowerplatform.codesync/images/folder.gif");
+		
+		// if the node is newly added or marked removed => propagate sync flag false
+		if (CodeSyncPlugin.REMOVED.equals(property) || CodeSyncPlugin.ADDED.equals(property)) {
+			setSyncFalseAndPropagateToParents(node, service);
+		}
+		
+		if (isOriginalPropertyName(property) || isConflictPropertyName(property) || isCodeSyncFlagConstant(property)) {
+			return;
+		}
 		
 		boolean isOriginalPropertySet = false;
 		Object originalValue = null;
@@ -60,21 +77,15 @@ public class CodeSyncPropertySetter extends PropertySetter {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
 				service.setProperty(node, originalProperty, originalValue);
+				setSyncFalseAndPropagateToParents(node, service);
 			}
 		} else {
 			if (isOriginalPropertySet) {
 				// trying to set the same value as the original (a revert operation); unset the original value
 				service.unsetProperty(node, originalProperty);
+				setSyncTrueAndPropagateToParents(node, service);
 			}
 		}
-	}
-
-	protected boolean isOriginalPropertyName(String property) {
-		return property.endsWith(ORIGINAL);
-	}
-	
-	protected String getOriginalPropertyName(String property) {
-		return property + ORIGINAL;
 	}
 
 	@Override
