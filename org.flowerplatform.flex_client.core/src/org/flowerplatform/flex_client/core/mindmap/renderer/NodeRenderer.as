@@ -1,32 +1,11 @@
 package org.flowerplatform.flex_client.core.mindmap.renderer {
 	
-	import flash.events.Event;
-	
-	import mx.collections.ArrayList;
-	import mx.collections.IList;
-	import mx.core.DPIClassification;
-	import mx.core.FlexGlobals;
-	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.FlowerArrayList;
-	
-	import spark.components.DataRenderer;
-	import spark.components.Label;
-	import spark.core.ContentCache;
-	import spark.layouts.HorizontalLayout;
-	import spark.primitives.BitmapImage;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -87,14 +66,13 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		}
 		
 		protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
-			if (data.properties.hasOwnProperty(NodePropertiesConstants.TEXT)) {
+			var textChanged:Boolean = event.propertiesUpdated != null ? event.propertiesUpdated.getItemIndex(NodePropertiesConstants.TEXT) != -1 : true;
+			if (textChanged) {
 				labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];
-			}
-			if (data.properties.hasOwnProperty(NodePropertiesConstants.HAS_CHILDREN)) {
-				dispatchEvent(new NodeRenderer_HasChildrenChangedEvent());
+
+				invalidateSize();
+				invalidateDisplayList();
 			}			
-			invalidateSize();
-			invalidateDisplayList();
 		}
 		
 		override protected function canDrawCircle(model:Object):Boolean {			

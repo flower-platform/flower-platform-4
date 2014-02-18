@@ -34,13 +34,10 @@
 			import mx.events.ResizeEvent;
 			
 			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
-			import org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+			import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flexdiagram.DiagramShell;
-			import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-			import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
-			import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
 			
 			import spark.primitives.Ellipse;
 						
@@ -49,40 +46,45 @@
 			
 			public var padding:int = 3;
 			
-			override public function activate(diagramShell:DiagramShell, target:IVisualElement):void {
-				super.activate(diagramShell, target);			
+			override public function activate(model:Object):void {
+				super.activate(model);			
 					
+				model.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);	
+				
 				DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
 				DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize);		
-				DisplayObject(target).addEventListener(NodeRenderer_HasChildrenChangedEvent.HAS_CHILDREN_CHANGED, handleHasChildrenChanged);		
-				
+			
 				// update position
 				handleTargetMoveResize(null);				
 			}
 			
-			override public function deactivate():void {
+			override public function deactivate(model:Object):void {
 				try {
 					diagramShell.diagramRenderer.removeElement(circle);
 				} catch (e:ArgumentError) {					
 				}				
 							
+				model.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+				
 				// remove resize listeners				
 				DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);			
 				DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);	
-				DisplayObject(target).removeEventListener(NodeRenderer_HasChildrenChangedEvent.HAS_CHILDREN_CHANGED, handleHasChildrenChanged);		
-				
-				super.deactivate();
+	
+				super.deactivate(model);
+			}
+			
+			protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
+				if (event.propertiesUpdated != null ? event.propertiesUpdated.getItemIndex(NodePropertiesConstants.HAS_CHILDREN) != -1 : true) {
+					// hasChildren changed -> update display
+					invalidateDisplayList();
+				}
 			}
 	
 			protected function handleTargetMoveResize(event:Event):void {
 				setLayoutBoundsPosition(target.x, target.y);
 				setLayoutBoundsSize(target.width, target.height);
 			}
-			
-			protected function handleHasChildrenChanged(event:NodeRenderer_HasChildrenChangedEvent):void {
-				invalidateDisplayList();
-			}
-			
+		
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
@@ -123,13 +125,13 @@
 			}
 			
 			private function get node():Node {
-				return Node(getTargetModel());
+				return Node(model);
 			}
 				
 			private function get mindMapDiagramShell():MindMapDiagramShell {
 				return MindMapDiagramShell(diagramShell);
 			}
-			
+						
 		]]>
 	</fx:Script>
 

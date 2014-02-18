@@ -17,8 +17,8 @@
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
-			import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+			import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -107,7 +107,8 @@
 				for each (var property:PropertyDescriptor in properties) {
 					if (node.properties != null) {
 						if (node.properties.hasOwnProperty(property.name)) {
-							if (property.value != node.properties[property.name]) { // change value only if different
+							var hasChanged:Boolean = event.propertiesUpdated != null ? event.propertiesUpdated.getItemIndex(property.name) != -1 : true;
+							if (hasChanged) {
 								property.value = node.properties[property.name];
 							}
 						} else {

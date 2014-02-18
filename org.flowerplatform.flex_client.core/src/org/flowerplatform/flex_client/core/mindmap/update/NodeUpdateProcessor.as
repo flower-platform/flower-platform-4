@@ -2,16 +2,16 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	import mx.core.mx_internal;
-	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithVisibleChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
+	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
@@ -47,27 +47,24 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			return _nodeRegistry;
 		}
 					
-		private function addNode(node:Node, parent:Node = null, index:int = -1):void {			
+		private function addNode(node:Node, parent:Node, index:int = -1):void {			
 			nodeRegistry.registerNode(node);
 			
-			if (parent != null) {
-				node.parent = parent;
-				if (parent.children == null) {
-					parent.children = new ArrayCollection();
-				}						
-				if (index != -1) {
-					parent.children.addItemAt(node, index);
-				} else {
-					parent.children.addItem(node);
-				}
+			node.parent = parent;
+			if (parent.children == null) {
+				parent.children = new ArrayCollection();
+			}						
+			if (index != -1) {
+				parent.children.addItemAt(node, index);
 			} else {
-				// TODO CS: sa nu stea aici; astfel parametrii parent si index nu vor mai fi optionali
-				diagramShell.rootModel = new Node();
-				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(node, true);				
+				parent.children.addItem(node);
 			}
 		}
 		
 		private function removeNode(node:Node, parent:Node = null, index:int = -1):void {
+			if (parent.children == null || !parent.children.contains(node)) { // not expanded or child already removed			
+				return;
+			}
 			removeChildren(node, false);
 			nodeRegistry.unregisterNode(node.fullNodeId);
 			
@@ -122,7 +119,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				}
 				node = Node(children.getItemAt(0));
 				
-				addNode(node);
+				diagramShell.rootModel = new Node();
+				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(node, true);	
 				
 				// by default, root node is considered expanded
 				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, true);
@@ -160,6 +158,9 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				}
 				return;
 			}
+			
+			var propertiesUpdated:ArrayList;
+			var propertiesRemoved:ArrayList;
 			for each (var update:Update in updates) {
 				var nodeFromRegistry:Node = nodeRegistry.getNodeById(update.fullNodeId);	
 				if (nodeFromRegistry == null) { // node not registered, probably it isn't visible for this client
@@ -169,44 +170,48 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 					var propertyUpdate:PropertyUpdate = PropertyUpdate(update);
 					if (propertyUpdate.isUnset) {
 						delete nodeFromRegistry.properties[propertyUpdate.key];
+						if (propertiesRemoved == null) {
+							propertiesRemoved = new ArrayList();
+						}
+						propertiesRemoved.addItem(propertyUpdate.key);
 					} else {
 						nodeFromRegistry.properties[propertyUpdate.key] = propertyUpdate.value;
-					}
-					nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry));
-					// TODO CS: sa facem doar o notificare la sfarsit? poate sa scriem si ce proprietate?
-					// si de mutat pachetul event
-					// sa avem o lista de prop modificate; astfel, am scapa de ...HasChildrenChanged...
+						if (propertiesUpdated == null) {
+							propertiesUpdated = new ArrayList();
+						}
+						propertiesUpdated.addItem(propertyUpdate.key);
+					}					
 				} else { // children update
 					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
 					var targetNodeInRegistry:Node = nodeRegistry.getNodeById(childrenUpdate.targetNode.fullNodeId);	
 					switch (childrenUpdate.type) {
-						case ChildrenUpdate.ADDED:													
-							if (nodeFromRegistry.children != null && nodeFromRegistry.children.contains(targetNodeInRegistry)) { // child already added, probably after refresh									
+						case ChildrenUpdate.ADDED:	
+							if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
+								var index:Number = -1; // -> add it last
+								if (childrenUpdate.fullTargetNodeAddedBeforeId != null) {
+									// get targetNodeAddedBefore from registry 
+									var targetNodeAddedBeforeInRegistry:Node = nodeRegistry.getNodeById(childrenUpdate.fullTargetNodeAddedBeforeId);
+									if (targetNodeAddedBeforeInRegistry != null) { // exists, get its index in children list
+										index = nodeFromRegistry.children.getItemIndex(targetNodeAddedBeforeInRegistry);	
+									}
+								}
+								addNode(childrenUpdate.targetNode, nodeFromRegistry, index);
+							} else {
 								// child already added, probably after refresh
 								// e.g. I add a children, I expand => I get the list with the new children; when the
 								// client polls for data, this children will be received as well, and thus duplicated.
 								// NOTE: since the instant notifications for the client that executed => this doesn't apply
 								// for him; but for other clients yes
 								
-								// Nothing to do
-								
-								// TODO CS: single IF: if nodeFromReg!=null && ! contains 							
-							} else if (nodeFromRegistry.children != null) { // node expanded
-								var index:Number = -1; // -> add it last
-								if (childrenUpdate.fullTargetNodeAddedBeforeId != null) {
-									index = nodeFromRegistry.children.getItemIndex(childrenUpdate.fullTargetNodeAddedBeforeId);
-									// TODO CS: nu cred ca merge; ! equals
-								}
-								addNode(childrenUpdate.targetNode, nodeFromRegistry, index);
-							}
+								// Nothing to do								
+							}			
 							break;
 						case ChildrenUpdate.REMOVED:	
-							if (targetNodeInRegistry == null // node not registered, probably it isn't visible for this client
-								|| nodeFromRegistry.children == null // not expanded
-								|| !nodeFromRegistry.children.contains(targetNodeInRegistry)) { // child already removed, probably after refresh									
-								// TODO CS: poate merge de facut removeNode care sa se astepte sa nu mai fie nodul; astfel am economisi o ciclare
+							if (targetNodeInRegistry != null) {
+								removeNode(targetNodeInRegistry, nodeFromRegistry, -1);
 							} else {
-								removeNode(targetNodeInRegistry, nodeFromRegistry, -1);		
+								// node not registered, probably it isn't visible for this client
+								// Nothing to do
 							}
 							break;
 					}
@@ -214,7 +219,12 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 					MindMapDiagramShell(diagramShell).refreshRootModelChildren();
 					MindMapDiagramShell(diagramShell).refreshModelPositions(nodeFromRegistry);						
 				}					
-			}				
+			}		
+			
+			if (propertiesUpdated != null || propertiesRemoved != null) {
+				nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry, propertiesUpdated, propertiesRemoved));
+			}
+			
 			// store last update timestamp
 			timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;		
 		}	

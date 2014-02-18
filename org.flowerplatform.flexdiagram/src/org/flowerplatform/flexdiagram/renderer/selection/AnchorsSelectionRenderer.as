@@ -49,9 +49,9 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 		
 		[Embed(source="../icons/crossCursor.gif")]
 		protected var crossCursor:Class;
-		
-		override public function activate(diagramShell:DiagramShell, target:IVisualElement):void {
-			super.activate(diagramShell, target);			
+				
+		override public function activate(model:Object):void {
+			super.activate(model);			
 			
 			// set the handler that move/resize anchors with parent renderer.
 			DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize); 
@@ -69,7 +69,7 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 		 * and also when we don't want the anchors shown.
 		 * 
 		 */
-		override public function deactivate():void {
+		override public function deactivate(model:Object):void {
 			// remove move/resize listeners
 			DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);
 			DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
@@ -77,7 +77,7 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 				DisplayObject(diagramShell.diagramRenderer).removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
 			}
 			
-			super.deactivate();
+			super.deactivate(model);
 		}
 		
 		protected function handleTargetMoveResize(event:Event):void {
