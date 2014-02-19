@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 
@@ -18,11 +19,11 @@ public class UpdaterPropertySetterController extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String key, Object value) {	
+	public void setProperty(Node node, String key, PropertyValueWrapper wrapper) {	
 		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
 		if (rootNode != null) {
 			CorePlugin.getInstance().getUpdateService().getUpdateDAO()
-				.addUpdate(rootNode, new PropertyUpdate().setKeyAs(key).setValueAs(value).setNodeAs(node).setTimestampAs(new Date().getTime()));
+				.addUpdate(rootNode, new PropertyUpdate().setKeyAs(key).setValueAs(wrapper.getPropertyValue()).setNodeAs(node).setTimestampAs(new Date().getTime()));
 		}
 	}
 

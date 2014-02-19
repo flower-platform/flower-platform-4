@@ -1,5 +1,4 @@
 package org.flowerplatform.flex_client.properties {
-	import flash.net.registerClassAlias;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.IList;

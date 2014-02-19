@@ -25,6 +25,7 @@ import org.flowerplatform.freeplane.controller.MindMapPropertiesProvider;
 import org.flowerplatform.freeplane.controller.MindMapPropertySetter;
 import org.flowerplatform.freeplane.controller.MindMapRootNodeProvider;
 import org.flowerplatform.freeplane.remote.FreeplaneService;
+import org.flowerplatform.mindmap.MindMapPlugin;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -58,14 +59,14 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		csTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FreeplanePropertiesProvider());
 		csTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FreeplaneAddNodeController());
 		csTypeDescriptor.addAdditiveController(PROPERTY_SETTER, new FreeplanePropertySetter());
+		csTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("type"));
+		csTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("body"));
 		addControllers(csTypeDescriptor);
 		
-		TypeDescriptor mmTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + "mm");		
+		TypeDescriptor mmTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(MindMapPlugin.MINDMAP_CATEGORY);		
 		mmTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider());		
 		mmTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapBasicAddNodeController());
 		mmTypeDescriptor.addAdditiveController(PROPERTY_SETTER, new MindMapPropertySetter());
-		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("min_width").setReadOnlyAs(false));
-		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("max_width").setReadOnlyAs(false));
 		addControllers(mmTypeDescriptor);
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
@@ -76,9 +77,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		nodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new MindMapBasicChildrenProvider());
 		nodeTypeDescriptor.addAdditiveController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider());
 		nodeTypeDescriptor.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapBasicRawNodeDataProvider());
-		nodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapBasicRemoveNodeController());
-		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("type"));
-		nodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("body"));
+		nodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapBasicRemoveNodeController());		
 	}
 	
 	public void stop(BundleContext bundleContext) throws Exception {
