@@ -19,6 +19,7 @@ import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
 import org.flowerplatform.util.Pair;
@@ -113,9 +114,10 @@ public class NodeService {
 			return;
 		}
 		
+		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (PropertySetter controller : controllers) {
-			controller.setProperty(node, property, value);
+			controller.setProperty(node, property, wrapper);
 		}
 	}
 	

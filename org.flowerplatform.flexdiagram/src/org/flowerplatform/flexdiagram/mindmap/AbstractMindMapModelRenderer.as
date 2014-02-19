@@ -72,7 +72,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			hLayout.paddingTop = 2;
 			hLayout.paddingLeft = 2;
 			hLayout.paddingRight = 2;
-			hLayout.verticalAlign = "middle";
+			hLayout.verticalAlign = "baseline";
 			
 			this.layout = hLayout;
 		}
@@ -142,7 +142,10 @@ package org.flowerplatform.flexdiagram.mindmap
 		override protected function createChildren():void {			
 			super.createChildren();
 			
-			labelDisplay = new Label();
+			labelDisplay = new Label();		
+			labelDisplay.percentHeight = 100;
+			labelDisplay.percentWidth = 100;
+			labelDisplay.setStyle("verticalAlign" , "middle");		
 			addElement(labelDisplay);
 		}
 		

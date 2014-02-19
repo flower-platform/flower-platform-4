@@ -28,6 +28,7 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.set
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.Utils;
@@ -42,7 +43,7 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value) {		
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {		
 		if (property.equals("timestamp") || property.equals("icon")) {
 			return; // TODO skipping all non-sync props
 		}
@@ -68,10 +69,10 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		} else if (node.getOrPopulateProperties().containsKey(property)) {
 			originalValue = node.getOrPopulateProperties().get(property);
 		} else {
-			originalValue = value;
+			originalValue = wrapper.getPropertyValue();
 		}
 		
-		if (!Utils.safeEquals(originalValue, value)) {
+		if (!Utils.safeEquals(originalValue, wrapper.getPropertyValue())) {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
 				service.setProperty(node, originalProperty, originalValue);

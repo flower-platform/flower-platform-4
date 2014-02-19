@@ -28,6 +28,8 @@ package org.flowerplatform.flex_client.properties.remote {
 
 		public var name:String;
 		
+		public var title:String;
+		
 		public var value:Object;
 		
 		public var readOnly:Boolean;
