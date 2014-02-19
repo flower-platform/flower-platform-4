@@ -200,7 +200,7 @@ public class NodeService {
 			return;
 		}
 					
-		List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, this);
+		List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);
 		for (PropertiesProvider provider : providers) {
 			provider.populateWithProperties(node);
 		}
@@ -212,7 +212,7 @@ public class NodeService {
 			return null;
 		}
 					
-		RawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, this);	
+		RawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, node);	
 		if (rawNodeDataProvider == null) {
 			return null;
 		}
