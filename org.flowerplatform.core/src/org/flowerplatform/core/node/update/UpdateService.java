@@ -20,12 +20,6 @@ public class UpdateService {
 		return updateDAO;
 	}
 	
-	protected static ThreadLocal<List<Update>> currentMethodInvocationUpdates = new ThreadLocal<List<Update>>();
-	
-	public static ThreadLocal<List<Update>> getCurrentMethodInvocationUpdates() {
-		return currentMethodInvocationUpdates;
-	}
-
 	public UpdateService() {
 		super();		
 	}

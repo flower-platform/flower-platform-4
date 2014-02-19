@@ -40,17 +40,16 @@ public class InMemoryUpdateDAO extends UpdateDAO {
 			return updatesAddedAfterLastRequest;
 		}
 		
-		boolean updatesBeforeLastRequestFound = false;		
+		boolean updatesBeforeLastRequestFound = timestampOfLastRequest == 0; // TODO CC: temporary solution (first time timestamp is 0 -> must be replaced with timestamp registered at subscribe)	
 		// iterate updates reversed
-		for (int i = updates.size() - 1; i > 0; i++) {
-			Update update = updates.get(i);
+		for (int i = updates.size() - 1; i >= 0; i--) {
+			Update update = updates.get(i);			
 			if (update.getTimestamp() <= timestampOfLastRequest) { 
 				// an update was registered before timestampOfLastRequest
 				updatesBeforeLastRequestFound = true;
 				break;
-			} else {
-				updatesAddedAfterLastRequest.add(update);
 			}
+			updatesAddedAfterLastRequest.add(0, update);
 		}						
 		// if no updates registered before -> tell client to perform full refresh
 		return updatesBeforeLastRequestFound ? updatesAddedAfterLastRequest : null;

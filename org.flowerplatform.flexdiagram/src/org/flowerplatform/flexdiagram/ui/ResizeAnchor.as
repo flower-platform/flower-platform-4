@@ -66,7 +66,7 @@ package org.flowerplatform.flexdiagram.ui {
 			var inside:uint = WHITE;
 			// outside anchor color
 			var margin:uint = BLACK;
-			if (parent != null && AnchorsSelectionRenderer(parent).isMainSelection()) {
+			if (parent != null && AnchorsSelectionRenderer(parent).isMainSelection) {
 				inside = BLACK;
 				margin = WHITE;
 			}

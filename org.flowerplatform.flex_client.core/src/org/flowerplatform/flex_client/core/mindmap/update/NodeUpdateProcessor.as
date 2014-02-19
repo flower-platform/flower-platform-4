@@ -33,9 +33,10 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		private var _nodeRegistry:NodeRegistry = new NodeRegistry();
 				
 		/**
+         * TODO CC: temporary default value -> must be replaced
 		 * @see checkForUpdates
 		 */ 
-		private var timestampOfLastRequest:Number;
+		public var timestampOfLastRequest:Number = 0;
 		
 		protected var diagramShell:DiagramShell;
 				
@@ -159,7 +160,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		public function checkForUpdates():void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"updateService.getUpdates",	
-				[Node(Node(MindMapDiagramShell(diagramShell).getRoot()).fullNodeId), timestampOfLastRequest], rootNodeUpdatesHandler);	
+				[Node(MindMapDiagramShell(diagramShell).getRoot()).fullNodeId, timestampOfLastRequest], rootNodeUpdatesHandler);	
 				// TODO CS: de init timestamp la subscribe
 		}
 			
@@ -256,8 +257,10 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry, propertiesUpdated, propertiesRemoved));
 			}
 			
-			// store last update timestamp
-			timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;		
+			if (updates.length > 0) {
+				// store last update timestamp
+				timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;	
+			}
 		}	
 		
 		/* REFRESH */	

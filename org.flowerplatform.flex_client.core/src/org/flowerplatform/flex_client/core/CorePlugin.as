@@ -18,6 +18,9 @@
  */
 package org.flowerplatform.flex_client.core {
 
+	import mx.messaging.ChannelSet;
+	import mx.messaging.channels.AMFChannel;
+	
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
@@ -33,11 +36,12 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.core.service.ServiceLocator;
+	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 	import org.flowerplatform.flexutil.layout.Perspective;
+	import org.flowerplatform.flexutil.service.ServiceLocator;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -47,7 +51,7 @@ package org.flowerplatform.flex_client.core {
 		
 		protected static var INSTANCE:CorePlugin;
 		
-		public var serviceLocator:ServiceLocator = new ServiceLocator();
+		public var serviceLocator:ServiceLocator;
 		
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
@@ -74,7 +78,11 @@ package org.flowerplatform.flex_client.core {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-				
+						
+			var channelSet:ChannelSet = new ChannelSet();
+			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
+			
+			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);
 			serviceLocator.addService("nodeService");
 			serviceLocator.addService("updateService");
 			serviceLocator.addService("freeplaneService");

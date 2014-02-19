@@ -1,4 +1,4 @@
-package org.flowerplatform.flex_client.core.service {
+package org.flowerplatform.flexutil.service {
 	import flash.utils.Dictionary;
 	
 	import mx.controls.Alert;
@@ -7,12 +7,14 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @author Cristian Spiescu
+ 	 * @author Cristina Constantinescu
 	 */
 	public class ServiceLocator {
 		
@@ -20,9 +22,8 @@ package org.flowerplatform.flex_client.core.service {
 		
 		protected var remoteObjects:Dictionary = new Dictionary();
 		
-		public function ServiceLocator() {
-			channelSet = new ChannelSet();
-			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
+		public function ServiceLocator(channelSet:ChannelSet) {
+			this.channelSet = channelSet;			
 		}
 		
 		public function addService(serviceId:String):void {
@@ -39,10 +40,20 @@ package org.flowerplatform.flex_client.core.service {
 			return remoteObject;
 		}
 		
-		public function faultHandler(event:FaultEvent):void {
-			Alert.show("Error while sending request to server: " + event.fault.faultString + "\n" + event.fault.content);
+		public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
+			if (responder.faultHandler != null) {
+				responder.faultHandler(event);
+			} else {
+				Alert.show("Error while sending request to server: " + event.fault.faultString + "\n" + event.fault.content);
+			}			
 		}
 		
+		public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {
+			if (responder.resultHandler != null) {
+				responder.resultHandler(event);
+			}
+		}
+			
 		/**
 		 * @author Cristian Spiescu
 		 * @author Cristina Constantinescu
@@ -53,9 +64,15 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			var tokens:Array = serviceIdAndMethodName.split(".");
 			
-			var operation:AbstractOperation = getRemoteObject(tokens[0]).getOperation(tokens[1]);
+			var operation:AbstractOperation = getOperation(tokens[0], tokens[1]);
+			
 			var token:AsyncToken = operation.send.apply(operation, parameters);
 			token.addResponder(new ServiceResponder(this, resultCallback, faultCallback));
 		}
+		
+		protected function getOperation(serviceId:String, name:String):AbstractOperation {
+			return getRemoteObject(serviceId).getOperation(name);
+		}
+		
 	}
 }
