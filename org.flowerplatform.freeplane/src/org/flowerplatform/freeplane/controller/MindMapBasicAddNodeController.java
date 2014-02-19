@@ -1,8 +1,11 @@
 package org.flowerplatform.freeplane.controller;
 
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.freeplane.features.attribute.Attribute;
+import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.NodeModel;
 
 /**
@@ -24,6 +27,14 @@ public class MindMapBasicAddNodeController extends AddNodeController {
 		
 		// set the id on the node instance
 		child.setIdWithinResource(newNodeModel.createID());
+		
+		// create attributes table and persist the type
+		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) newNodeModel.getExtension(NodeAttributeTableModel.class);
+		if (attributeTable == null) {
+			attributeTable = new NodeAttributeTableModel(newNodeModel);
+			newNodeModel.addExtension(attributeTable);
+		}		
+		attributeTable.getAttributes().add(new Attribute(NodePropertiesConstants.TYPE, child.getType()));
 	}
 
 }

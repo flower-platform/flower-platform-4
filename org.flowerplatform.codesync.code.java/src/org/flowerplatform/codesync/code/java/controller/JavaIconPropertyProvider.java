@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
@@ -99,7 +100,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	protected int getModifiersFlags(Node node) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node)) {
-			String keyword = (String) modifier.getOrPopulateProperties().get("name");
+			String keyword = (String) modifier.getOrPopulateProperties().get(FeatureProvider.NAME);
 			if (keyword == null) {
 				continue;
 			}

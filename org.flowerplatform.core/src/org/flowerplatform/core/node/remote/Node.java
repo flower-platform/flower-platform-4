@@ -32,7 +32,9 @@ public class Node {
 		this.idWithinResource = idWithinResource;
 		
 		calculateFullNodeId();
-		setRawNodeData(rawNodeData);
+		if (rawNodeData != null) {
+			setRawNodeData(rawNodeData);
+		}
 	}
 
 	public Node(String fullNodeId) {

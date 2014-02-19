@@ -250,16 +250,16 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 						
 					MindMapDiagramShell(diagramShell).refreshRootModelChildren();
 					MindMapDiagramShell(diagramShell).refreshModelPositions(nodeFromRegistry);						
-				}					
+				}
+				
+				if (propertiesUpdated != null || propertiesRemoved != null) {
+					nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry, propertiesUpdated, propertiesRemoved));
+				}
 			}		
-			
-			if (propertiesUpdated != null || propertiesRemoved != null) {
-				nodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(nodeFromRegistry, propertiesUpdated, propertiesRemoved));
-			}
-			
+						
 			if (updates.length > 0) {
 				// store last update timestamp
-				timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;	
+				timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;
 			}
 		}	
 		

@@ -84,9 +84,8 @@ public class FreeplaneUtils {
 		}
 		
 		// TODO CC: temporary code
-		if (FreeplanePlugin.FREEPLANE_NODE_TYPE.equals(type)) {
-			resource = "mm://path_to_resource";
-		}
+		resource = "mm://path_to_resource";		
+		
 		return new Node(type, resource, nodeModel.createID(), nodeModel);
 	}
 	
