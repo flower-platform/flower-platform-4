@@ -2,7 +2,8 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 height="182" creationComplete="creationCompleteHandler(event)"
+		 creationComplete="creationCompleteHandler(event)"
+		 height="100%"
 		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
 	<s:layout>
 		<s:VerticalLayout useVirtualLayout="true"/>
@@ -13,12 +14,14 @@
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
+			import mx.controls.TextInput;
 			import mx.events.FlexEvent;
+			
+			import spark.components.FormItem;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
@@ -28,10 +31,12 @@
 			
 			protected var _viewHost:IViewHost;
 			
-			protected function creationCompleteHandler(flexvent:FlexEvent):void {				
-				propertyList.itemRenderer = new ClassFactory(PropertyItemRenderer);
-				propertyList.dataProvider = new ArrayList();
-				// get selection from active provider to populate properties list with data
+			protected var propertiesLength:int;
+			
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+//				propertyList.itemRenderer = new ClassFactory(PropertyItemRenderer);
+//				propertyList.dataProvider = new ArrayList();
+//				// get selection from active provider to populate properties list with data
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				if (activeSelectionProvider != null) {
 					// create dummy event
@@ -40,7 +45,7 @@
 					
 					selectionChangedHandler(event);
 				}
-				// listen for selection changes
+//				// listen for selection changes
 				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
 				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
 			}
@@ -65,29 +70,44 @@
 				var node:Node;
 				
 				// if previous data in properties -> remove update listener from previous node
-				if (PropertiesPlugin.getInstance().currentSelection != null) {
-					node = Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0));
-					node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
-				}
-							
-				// if diagram is the new selected element -> clear data in properties
-				// for event.selection == null, see SelectionManager -> dispatchEvent(SelectionChangedEvent), line 116 -> active view changed, but its selection isn't populated yet
-				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).id == null) {
-					icon.source = null;
-					label.text = null;
-					IList(propertyList.dataProvider).removeAll();
-					return;
-				}			
+//				if (PropertiesPlugin.getInstance().currentSelection != null) {
+//					node = Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0));
+//					node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+//				}
+//							
+//				// if diagram is the new selected element -> clear data in properties
+//				// for event.selection == null, see SelectionManager -> dispatchEvent(SelectionChangedEvent), line 116 -> active view changed, but its selection isn't populated yet
+//				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).id == null) {
+//					icon.source = null;
+//					label.text = null;
+//					IList(propertyList.dataProvider).removeAll();
+//					return;
+//				}			
 				
 				// get new selected node
 				node = Node(event.selection.getItemAt(0));
 				
+				propertyForm.removeAllElements();
+				
 				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
 					"nodeService.getPropertyDescriptors", [node], 
-						function(result:Object):void {
+					function(result:Object):void {
+						propertiesLength = ArrayCollection(result).length;
+						for ( var x:int = 0; x < ArrayCollection(result).length; ++x ) {
+							var formItem:FormItem = new FormItem();
+							var textImput:TextInput = new TextInput();
+							
+							formItem.label = ArrayCollection(result).getItemAt(x).name
+//							textImput.text =  ArrayCollection(result).getItemAt(x).value // null
+							formItem.addElement(textImput);
+							
+							propertyForm.addElement(formItem);
+						}
+							
+							
 						// properties available -> add them in list
-						propertyList.dataProvider = ArrayCollection(result);		
+//						propertyList.dataProvider = ArrayCollection(result);		
 						// get their values from node
 						nodeUpdatedHandler(new NodeUpdatedEvent(node));
 						
@@ -102,17 +122,29 @@
 			
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
 				var node:Node = event.node;
-				var properties:ArrayCollection = ArrayCollection(propertyList.dataProvider);
-				for each (var property:PropertyDescriptor in properties) {
-					if (node.properties != null) {
-						if (node.properties.hasOwnProperty(property.name)) {
-							if (property.value != node.properties[property.name]) { // change value only if different
-								property.value = node.properties[property.name];
+//				var properties:ArrayCollection = ArrayCollection(propertyForm.);
+//				for each (var property:PropertyDescriptor in properties) {
+//					if (node.properties != null) {
+//						if (node.properties.hasOwnProperty(property.name)) {
+//							if (property.value != node.properties[property.name]) { // change value only if different
+//								property.value = node.properties[property.name];
+//							}
+//						} else {
+//							property.value = null;
+//						}
+//					}						
+//				}
+				
+				for (var i:int = 0; i < propertyForm.numElements; i++) {
+					if (propertyForm.getElementAt(i) is FormItem) {
+						var formItem:FormItem = FormItem(propertyForm.getElementAt(i));
+						if (node.properties != null) {
+							if (node.properties.hasOwnProperty(formItem.label)) {
+								TextInput(formItem.getElementAt(0)).text = node.properties[formItem.label];
+//								TextInput(formItem.getElementAt(0)).editable = 
 							}
-						} else {
-							property.value = null;
 						}
-					}						
+					}
 				}
 			}
 			
@@ -122,8 +154,18 @@
 		<s:Image id="icon" height="100%"/>
 		<s:Label id="label" height ="100%" verticalAlign="middle"/>	
 	</s:HGroup>
+	
+	
+	<s:Scroller width="100%" height="400">
+		<s:Group width="100%" height="100%" clipAndEnableScrolling="true">
+			<s:BorderContainer borderVisible="false">
+				<s:Form id="propertyForm" width="100%" height="100%">
+				</s:Form>
+			</s:BorderContainer>
+		</s:Group>
+	</s:Scroller>
+		
+	<!--<s:List id="propertyList" width="100%" height="100%">
 
-	<s:List id="propertyList" width="100%" height="100%">
-
-	</s:List>
+	</s:List>-->
 </s:Group>
