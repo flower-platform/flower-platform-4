@@ -8,6 +8,8 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
 	import org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer;
+	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
+	import org.flowerplatform.flex_client.properties.property_renderer.NumberPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
@@ -53,7 +55,8 @@ package org.flowerplatform.flex_client.properties {
 		private function registerPropertyProviders():void {
 			propertyRendererClasses[null] = new FactoryWithInitialization(StringPropertyRenderer);
 			propertyRendererClasses["String"] = new FactoryWithInitialization(StringPropertyRenderer);
-			propertyRendererClasses["Boolean"] = new FactoryWithInitialization(BooleanPropertyRenderer);	
+			propertyRendererClasses["Boolean"] = new FactoryWithInitialization(BooleanPropertyRenderer);
+			propertyRendererClasses["Number"] = new FactoryWithInitialization(NumberPropertyRenderer);
 		}
 		
 	}

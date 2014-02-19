@@ -87,7 +87,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		} else if (JavaOperationFeatureProvider.HAS_BODY.equals(feature)) {
 			// needed to create methods with empty bodies
 			MethodDeclaration method = getMethodDeclaration(element);
-			if ((boolean) value) {
+			if (value != null && (boolean) value) {
 				if (method.getBody() == null) {
 					method.setBody(method.getAST().newBlock());
 				}

@@ -27,7 +27,7 @@ import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 /**
  * @author Mariana Gheorghe
  */
-public class FileFeatureProvider extends NodeFeatureProvider {
+public class FolderFeatureProvider extends NodeFeatureProvider {
 
 	public static final String CHILDREN = "children";
 	

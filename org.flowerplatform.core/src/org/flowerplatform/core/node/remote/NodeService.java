@@ -9,8 +9,11 @@ import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
@@ -211,4 +214,18 @@ public class NodeService {
 		return newNodeWithVisibleChildren;
 	}	
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
+		Map<String, List<AddChildDescriptor>> descriptorsMap = new HashMap<String, List<AddChildDescriptor>>();
+		
+		Collection<TypeDescriptor> typeDescriptors = registry.getTypeDescriptors();
+		for (TypeDescriptor typeDescriptor : typeDescriptors) {
+			List<AddChildDescriptor> addChildDescriptors = typeDescriptor.getAdditiveControllers(AddChildDescriptor.ADD_CHILD_DESCRIPTOR, null);
+			descriptorsMap.put(typeDescriptor.getType(), addChildDescriptors);
+		}
+		
+		return descriptorsMap;
+	}
 }

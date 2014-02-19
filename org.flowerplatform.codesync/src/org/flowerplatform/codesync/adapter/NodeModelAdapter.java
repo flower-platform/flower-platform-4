@@ -18,20 +18,25 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
+
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Mariana Gheorghe
@@ -52,15 +57,31 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	/**
-	 * Get the children categories for this {@link Node}, and then return the children for the required category.
+	 * Get the children that are registered as members of this feature (via {@link MemberOfChildCategoryDescriptor}s).
 	 */
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		Node category = getChildrenCategoryForNode(getNode(element), feature);
-		if (category == null) {
-			return Collections.emptyList();
-		}
-		return getChildrenForNode(category);
+	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
+		List<Node> children = CodeSyncPlugin.getInstance().getNodeService().getChildren(getNode(element), true);
+		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
+
+			@Override
+			protected boolean isAccepted(Node candidate) {
+				TypeDescriptor candidateDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(candidate.getType());
+				if (candidateDescriptor == null) {
+					return false;
+				}
+				
+				MemberOfChildCategoryDescriptor memberOf = candidateDescriptor.getSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, candidate);
+				if (memberOf == null) {
+					return false;
+				}
+				if (feature.equals(memberOf.getChildCategory())) {
+					return true;
+				}
+				return false;
+			}
+			
+		};
 	}
 	
 	@Override
@@ -105,19 +126,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 //		
 //		if (eObject != null) {
 				Node parent = getNode(element);
-				Node category = getChildrenCategoryForNode(parent, feature);
-				if (category == null) {
-					category = new Node();
-					category.setType(CodeSyncPlugin.CATEGORY);
-
-					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category, null);
-					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, FeatureProvider.NAME, feature);
-				}
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
 				Node child = new Node();
 				child.setType(type);
-				CodeSyncPlugin.getInstance().getNodeService().addChild(category, child, null);
+				CodeSyncPlugin.getInstance().getNodeService().addChild(parent, child, null);
 				return child;
 //		}
 //		

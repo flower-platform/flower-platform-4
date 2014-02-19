@@ -22,16 +22,31 @@ package org.flowerplatform.flex_client.codesync.renderer {
 			// compose the image with decorators
 			var icon:String = node.properties.icon;
 			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
-			if (node.properties.sync == false) {
-				composedUrl = CodeSyncPlugin.getInstance().getImageComposerUrl(composedUrl, "org.flowerplatform.codesync/images/sync-markers/syncMarker_red.gif");
+			if (node.properties.conflict == true) {
+				composedUrl = append(composedUrl, "syncMarker_conflict.gif");
+			} else if (node.properties.childrenConflict == true) {
+				composedUrl = append(composedUrl, "syncMarker_childrenConflict.gif");
+			} else if (node.properties.added == true) {
+				composedUrl = append(composedUrl, "syncMarker_added.gif");
+			} else if (node.properties.removed == true) {
+				composedUrl = append(composedUrl, "syncMarker_deleted.gif");
+			} else if (node.properties.sync == false) {
+				composedUrl = append(composedUrl, "syncMarker_red.gif");
 			} else if (node.properties.childrenSync == false) {
-				composedUrl = CodeSyncPlugin.getInstance().getImageComposerUrl(composedUrl, "org.flowerplatform.codesync/images/sync-markers/syncMarker_orange.gif");
+				composedUrl = append(composedUrl, "syncMarker_orange.gif");
 			} else {
-				composedUrl = CodeSyncPlugin.getInstance().getImageComposerUrl(composedUrl, "org.flowerplatform.codesync/images/sync-markers/syncMarker_green.gif");
+				composedUrl = append(composedUrl, "syncMarker_green.gif");
 			}
 			
 			icons = new FlowerArrayList([composedUrl]);
 		}
 		
+		private function append(composedUrl:String, marker:String):String {
+			return CodeSyncPlugin.getInstance().getImageComposerUrl(composedUrl, getSyncMarkerPath(marker));
+		}
+		
+		private function getSyncMarkerPath(marker:String):String {
+			return "org.flowerplatform.codesync/images/sync-markers/" + marker;
+		}
 	}
 }

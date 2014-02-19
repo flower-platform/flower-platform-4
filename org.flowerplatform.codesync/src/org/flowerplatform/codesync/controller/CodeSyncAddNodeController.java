@@ -34,9 +34,7 @@ public class CodeSyncAddNodeController extends AddNodeController {
 	
 	@Override
 	public void addNode(Node node, Node child, Node currentChildAtInsertionPoint) {
-		if (!child.getType().equals(CodeSyncPlugin.CATEGORY)) {
-			CodeSyncPlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
-		}
+		CodeSyncPlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
 	}
 
 }
