@@ -46,6 +46,7 @@ import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
+import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
@@ -154,7 +155,7 @@ public class CodeSyncTest {
 		root = nodeService.getChildren(root, true).get(0);
 		
 		// simulate model modifications
-		simulateNonConflictingChanges(root);
+		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
 		
 		Match match = codeSyncService.generateMatch(getProject(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
 		
@@ -202,8 +203,9 @@ public class CodeSyncTest {
 							new Pair(MatchType._3MATCH, 3),					// private Test x <> private int x
 								new Pair(MatchType._3MATCH, 4),					// private
 								
-							new Pair(MatchType._1MATCH_LEFT, 3),				// private int t (added to model)
-								
+							new Pair(MatchType._1MATCH_LEFT, 3),				// public int t (added to model)
+								new Pair(MatchType._1MATCH_LEFT, 4),				// public
+							
 							new Pair(MatchType._1MATCH_LEFT, 3),				// public class InternalClsFromModel
 								
 							new Pair(MatchType._1MATCH_RIGHT, 3),				// public enum ActionType
@@ -252,7 +254,7 @@ public class CodeSyncTest {
 //		File aceLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().ACE_FILE_LOCATION);
 
 		// simulate model modifications
-		simulateNonConflictingChanges(root);
+		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
 		
 		codeSyncService.synchronize(project, dir, TECHNOLOGY, true);
 		
@@ -269,30 +271,20 @@ public class CodeSyncTest {
 //		assertEquals("ACE not in sync", expected, actual);
 	}
 
-	private void simulateNonConflictingChanges(Node root) {
+	private void simulateNonConflictingChanges(Node root, String srcDir) {
 		// change superCls, superInterfaces
-		Node cls = getChild(root, new String[] {MODIFIED_NO_CONFLICTS, SOURCE_FILE, "Test"});
+		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel");
 		Node superInterface = new Node();
 		superInterface.setType(SUPER_INTERFACE);
 		nodeService.addChild(cls, superInterface);
 		nodeService.setProperty(superInterface, NAME, "IFromModel");
-//				featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//				CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(Test, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);
-//				featureChange.setOldValue(cls.getModifiers());
-//				Modifier modifier = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createModifier();
-//				List<ExtendedModifier> modifiers = new BasicEList<ExtendedModifier>();
-//				modifier.setType(1); // public
-//				modifiers.add(modifier);
-//				Annotation a = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotation();
-//				a.setName("Deprecated");
-//				AnnotationValue value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//				value.setName("_");
-//				value.setValue("test");
-//				CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
-//				modifiers.add(a);
-//				featureChange.setNewValue(modifiers);
-////				CodeSyncCodePlugin.getInstance().getUtils().setModifiers(cls, modifiers);
+//		Node deprecated = getChild(cls, new String[] {"Deprecated"});
+//		Node val = new Node();
+//		val.setType(MEMBER_VALUE_PAIR);
+//		nodeService.addChild(deprecated, val);
+//		nodeService.setProperty(val, NAME, "_");
+//		nodeService.setProperty(val, ANNOTATION_VALUE_VALUE, "test");
 
 		// add class
 		Node internalCls = new Node();
@@ -359,7 +351,11 @@ public class CodeSyncTest {
 		nodeService.addChild(cls, t);
 		nodeService.setProperty(t, NAME, "t");
 		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int");
-//				nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
+//		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
+		publicModif = new Node();
+		publicModif.setType(MODIFIER);
+		nodeService.addChild(t, publicModif);
+		nodeService.setProperty(publicModif, NAME, "public");
 		
 		// remove element
 		Node y = getChild(cls, new String[] {"y"});
