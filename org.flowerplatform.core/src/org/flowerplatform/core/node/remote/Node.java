@@ -1,16 +1,10 @@
 package org.flowerplatform.core.node.remote;
 
-import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
-import org.flowerplatform.core.node.controller.RawNodeDataProvider;
-import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Cristian Spiescu
@@ -114,15 +108,7 @@ public class Node {
 	public Map<String, Object> getOrPopulateProperties() {
 		if (!populated) {	
 			// lazy population
-			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
-			if (descriptor == null) {
-				return null;
-			}
-			
-			List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, this);
-			for (PropertiesProvider provider : providers) {
-				provider.populateWithProperties(this);
-			}
+			CorePlugin.getInstance().getNodeService().populateNodeProperties(this);
 			populated = true;
 		}
 		return getProperties();
@@ -131,12 +117,7 @@ public class Node {
 	public Object getOrRetrieveRawNodeData() {
 		if (!rawNodeDataRetrieved) {
 			// lazy initialization
-			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
-			if (descriptor == null) {
-				return null; 
-			}		
-			RawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, this);	
-			setRawNodeData(rawNodeDataProvider.getRawNodeData(this));			
+			setRawNodeData(CorePlugin.getInstance().getNodeService().getRawNodeData(this));		
 		}
 		return rawNodeData;
 	}
