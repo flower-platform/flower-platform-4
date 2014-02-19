@@ -18,10 +18,7 @@
  */
 package org.flowerplatform.codesync.controller;
 
-import java.util.Map;
-
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.adapter.NodeModelAdapter;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
@@ -38,14 +35,8 @@ public class CodeSyncAddNodeController extends AddNodeController {
 	}
 	
 	@Override
-	public void addNode(Node node, Map<String, Object> properties, Node insertBeforeNode) {
-		Node child = (Node) properties.get(CorePlugin.NODE_KEY);
-		if (child == null) {
-			throw new RuntimeException(String.format("Property %s should be contained in map, probably added by the persistence AddNodeController!", CorePlugin.NODE_KEY));
-		}		
-		if (!child.getType().equals(CodeSyncPlugin.CATEGORY)) {
-			CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
-		}
+	public void addNode(Node node, Node child, Node insertBeforeNode) {		
+		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
 	}
 
 }

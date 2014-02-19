@@ -1,6 +1,7 @@
 package org.flowerplatform.util.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,13 @@ public class TypeDescriptorRegistry {
 	public TypeDescriptorRegistry() {
 		super();
 		addDynamicCategoryProvider(new AllDynamicCategoryProvider());
+	}
+	
+	/**
+	 * @return All the registered type descriptors.
+	 */
+	public Collection<TypeDescriptor> getTypeDescriptors() {
+		return typeDescriptors.values();
 	}
 	
 }

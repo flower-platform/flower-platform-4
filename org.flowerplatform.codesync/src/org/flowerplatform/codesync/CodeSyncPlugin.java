@@ -20,7 +20,9 @@ package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
+
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -57,7 +59,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	public static final String CATEGORY = "category";
 	public static final String REMOVED = "removed";
 	public static final String ADDED = "added";
 	public static final String SYNC = "sync";
@@ -103,7 +104,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	protected ComposedFullyQualifiedNameProvider fullyQualifiedNameProvider;
 	
 	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
-		
+
+	protected Map<String, List<String>> dataProvidersForDropDownListProperties = new HashMap<String, List<String>>();
+
 //	protected List<DependentFeature> dependentFeatures;
 //	
 //	protected List<CodeSyncElementDescriptor> codeSyncElementDescriptors;
@@ -168,6 +171,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 
 	public void setProjectAccessController(IProjectAccessController projectAccessController) {
 		this.projectAccessController = projectAccessController;
+	}
+	
+	public void addDataProviderForDropDownListProperty(String name, List<String> dataProvider) {
+		dataProvidersForDropDownListProperties.put(name, dataProvider);
+	}
+	
+	public Map<String, List<String>> getDataProvidersForDropDownListProperties() {
+		return dataProvidersForDropDownListProperties;
 	}
 	
 //	/**
@@ -246,7 +257,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.codeSync");
 		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
 		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("name").setReadOnlyAs(false));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setReadOnlyAs(false));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC));

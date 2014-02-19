@@ -36,7 +36,11 @@ import org.flowerplatform.core.NodePropertiesConstants;
  */
 public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
-	public static final String EXPRESSION = "javaExpression";
+	private String type;
+	
+	public JavaExpressionModelAdapter(String type) {
+		this.type = type;
+	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
@@ -48,7 +52,7 @@ public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter 
 		if (FeatureProvider.NAME.equals(feature)) {
 			return element.toString();
 		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return EXPRESSION;
+			return type;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}

@@ -18,19 +18,12 @@
  */
 package org.flowerplatform.codesync.adapter;
 
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
-
-import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -122,25 +115,5 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	@Override
 	public void unsetConflict(Object element, Object feature) {
 		// nothing to do
-	}
-	
-	//////////////////////////////////////////////////////////
-	// Node utils
-	//////////////////////////////////////////////////////////
-	
-	/**
-	 * Gets the category node from this node's children list, or create a new category node if it does not exist.
-	 */
-	protected Node getChildrenCategoryForNode(Node node, Object feature) {
-		for (Node category : getChildrenForNode(node)) {
-			if (category.getOrPopulateProperties().get(TEXT).equals(feature)) {
-				return category;
-			}
-		}
-		return null;
-	}
-	
-	protected List<Node> getChildrenForNode(Node node) {
-		return CorePlugin.getInstance().getNodeService().getChildren(node, true);
 	}
 }

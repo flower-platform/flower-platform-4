@@ -18,15 +18,17 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
@@ -34,8 +36,9 @@ import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.NodePropertiesConstants;
-import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Mariana Gheorghe
@@ -56,15 +59,31 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	/**
-	 * Get the children categories for this {@link Node}, and then return the children for the required category.
+	 * Get the children that are registered as members of this feature (via {@link MemberOfChildCategoryDescriptor}s).
 	 */
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		Node category = getChildrenCategoryForNode(getNode(element), feature);
-		if (category == null) {
-			return Collections.emptyList();
-		}
-		return getChildrenForNode(category);
+	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), true);
+		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
+
+			@Override
+			protected boolean isAccepted(Node candidate) {
+				TypeDescriptor candidateDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(candidate.getType());
+				if (candidateDescriptor == null) {
+					return false;
+				}
+				
+				MemberOfChildCategoryDescriptor memberOf = candidateDescriptor.getSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, candidate);
+				if (memberOf == null) {
+					return false;
+				}
+				if (feature.equals(memberOf.getChildCategory())) {
+					return true;
+				}
+				return false;
+			}
+			
+		};
 	}
 	
 	@Override
@@ -113,25 +132,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 //		
 //		if (eObject != null) {
 				Node parent = getNode(element);
-				Node category = getChildrenCategoryForNode(parent, feature);
-				if (category == null) {
-					// set new node's properties
-					Map<String, Object> properties = new HashMap<String, Object>();
-					properties.put(CorePlugin.TYPE_KEY, CodeSyncPlugin.CATEGORY);					
-					// add in parent
-					CorePlugin.getInstance().getNodeService().addChild(parent, properties, null);					
-					// get new node from properties
-					category = (Node) properties.get(CorePlugin.NODE_KEY);
-					// set name
-					CorePlugin.getInstance().getNodeService().setProperty(category, FeatureProvider.NAME, feature);
-				}
-				// set the type for the new node; needed by the action performed handler	
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(CorePlugin.TYPE_KEY, typeProvider.getType(correspondingChild));
-				// add in parent
-				CorePlugin.getInstance().getNodeService().addChild(category, properties, null);
-				// get new node from properties
-				return (Node) properties.get(CorePlugin.NODE_KEY);
+				// set the type for the new node; needed by the action performed handler
+				String type = typeProvider.getType(correspondingChild);
+						
+				Node child = new Node(type, null, null, null);
+				CorePlugin.getInstance().getNodeService().addChild(parent, child, null);
+				return child;
 //		}
 //		
 //		return null;

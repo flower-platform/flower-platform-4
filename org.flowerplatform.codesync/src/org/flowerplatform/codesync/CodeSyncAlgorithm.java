@@ -68,7 +68,7 @@ public class CodeSyncAlgorithm {
 	}
 
 	public void generateDiff(Match match, boolean performAction) {
-		logger.debug("Generate diff for " + match);
+		logger.debug("Generate diff for {}", match);
 		
 		beforeOrAfterFeaturesProcessed(match, true);
 		Object[] delegateAndAdapter = match.getDelegateAndModelAdapter(this);
@@ -151,7 +151,7 @@ public class CodeSyncAlgorithm {
 	 * 
 	 */
 	public void processContainmentFeature(Object feature, Match match, boolean performAction) {
-		logger.debug("Process containment feature " + feature + " for " + match);
+		logger.debug("Process containment feature {} for {}", feature, match);
 		
 		// cache the model adapters for children to avoid
 		// a lot of calls to the model adapter factory; we are
@@ -269,7 +269,7 @@ public class CodeSyncAlgorithm {
 	 * 
 	 */
 	public void processValueFeature(Object feature, Match match) {
-		logger.debug("Process value feature " + feature + " for " + match);
+		logger.debug("Process value feature {} for {}", feature, match);
 		
 		Diff diff = null;
 		
@@ -356,13 +356,13 @@ public class CodeSyncAlgorithm {
 	
 	public void synchronize(Match match, DiffAction action) {
 		if (match.isConflict() || match.isChildrenConflict()) {
-			logger.debug("Conflict for " + match);
+			logger.debug("Conflict for {}", match);
 			return;
 		}
 		
 		
 		
-		logger.debug("Perform sync for " + match);
+		logger.debug("Perform sync for {}", match);
 		
 		if (action == null) {
 			action = getDiffActionToApplyForMatch(match);

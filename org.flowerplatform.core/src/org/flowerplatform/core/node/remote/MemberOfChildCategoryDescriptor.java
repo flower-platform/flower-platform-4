@@ -16,17 +16,29 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code.java.feature_provider;
+package org.flowerplatform.core.node.remote;
 
-import java.util.Collections;
-import java.util.List;
+import org.flowerplatform.util.controller.AbstractController;
 
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+/**
+ * @author Mariana Gheorghe
+ */
+public class MemberOfChildCategoryDescriptor extends AbstractController {
 
-public class JavaModifierFeatureProvider extends NodeFeatureProvider {
+	public static final String MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR = "memberOfChildCategoryDescriptor";
 	
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Collections.emptyList();
+	private String childCategory;
+
+	public MemberOfChildCategoryDescriptor(String childCategory) {
+		setChildCategory(childCategory);
 	}
+	
+	public String getChildCategory() {
+		return childCategory;
+	}
+
+	public void setChildCategory(String childCategory) {
+		this.childCategory = childCategory;
+	}
+	
 }

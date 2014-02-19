@@ -28,7 +28,8 @@ public class NodeServiceRemote {
 	}
 	
 	public void addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
-		CorePlugin.getInstance().getNodeService().addChild(new Node(parentFullNodeId), properties, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null);	
+		Node child = new Node((String) properties.get(CorePlugin.TYPE_KEY), (String) properties.get(CorePlugin.RESOURCE_KEY), null, null);
+		CorePlugin.getInstance().getNodeService().addChild(new Node(parentFullNodeId), child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null);	
 	}
 	
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
@@ -37,6 +38,10 @@ public class NodeServiceRemote {
 	
 	public Node getRootNode(String fullNodeId) {			
 		return CorePlugin.getInstance().getNodeService().getRootNode(new Node(fullNodeId));
+	}
+	
+	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
+		return CorePlugin.getInstance().getNodeService().getAddChildDescriptors();
 	}
 	
 	public NodeWithChildren refresh(FullNodeIdWithChildren query) {

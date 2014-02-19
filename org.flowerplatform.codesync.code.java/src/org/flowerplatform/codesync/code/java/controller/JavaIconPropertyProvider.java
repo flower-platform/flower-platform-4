@@ -10,24 +10,23 @@ import static org.eclipse.jdt.core.dom.Modifier.isStatic;
 import static org.eclipse.jdt.core.dom.Modifier.isSynchronized;
 import static org.eclipse.jdt.core.dom.Modifier.isTransient;
 import static org.eclipse.jdt.core.dom.Modifier.isVolatile;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR_ABSTRACT;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR_FINAL;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR_NATIVE;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR_STATIC;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR_SYNCHRONIZED;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR_TRANSIENT;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.DECORATOR_VOLATILE;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.VISIBILITY_DEFAULT;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.VISIBILITY_PRIVATE;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.VISIBILITY_PROTECTED;
-import static org.flowerplatform.codesync.code.java.JavaImageConstants.getImagePath;
-import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider.MODIFIER_TYPE;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_ABSTRACT;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_FINAL;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_NATIVE;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_STATIC;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_SYNCHRONIZED;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_TRANSIENT;
+import static org.flowerplatform.codesync.code.java.JavaConstants.DECORATOR_VOLATILE;
+import static org.flowerplatform.codesync.code.java.JavaConstants.VISIBILITY_DEFAULT;
+import static org.flowerplatform.codesync.code.java.JavaConstants.VISIBILITY_PRIVATE;
+import static org.flowerplatform.codesync.code.java.JavaConstants.VISIBILITY_PROTECTED;
+import static org.flowerplatform.codesync.code.java.JavaConstants.getImagePath;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
+import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
+import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
@@ -100,25 +99,24 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	protected int getModifiersFlags(Node node) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node)) {
-			if (modifier.getType().equals(MODIFIER)) {
-				if (modifier.getProperties().containsKey(MODIFIER_TYPE)) {
-					flags |= (int) modifier.getProperties().get(MODIFIER_TYPE);
-				}
+			String keyword = (String) modifier.getOrPopulateProperties().get("name");
+			if (keyword == null) {
+				continue;
 			}
+			flags |= ModifierKeyword.toKeyword(keyword).toFlagValue();
 		}
 		return flags;
 	}
 	
 	protected List<Node> getModifiers(Node node) {
 		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
-		List<Node> categories = service.getChildren(node, true);
-		for (Node category : categories) {
-			if (category.getProperties().get("name").equals(JavaFeaturesConstants.MODIFIERS)) {
-				// found the modifiers category
-				return service.getChildren(category, true);
+		List<Node> modifiers = new ArrayList<Node>();
+		for (Node child : service.getChildren(node, true)) {
+			if (JavaModifierModelAdapter.MODIFIER.equals(child.getType())) {
+				modifiers.add(child);
 			}
 		}
-		return Collections.emptyList();
+		return modifiers;
 	}
 	
 	protected String getVisibilityPrivate() {

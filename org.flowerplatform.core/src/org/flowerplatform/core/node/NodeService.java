@@ -9,7 +9,9 @@ import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
+import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.Pair;
@@ -137,7 +140,7 @@ public class NodeService {
 		}
 	}
 	
-	public void addChild(Node node, Map<String, Object> properties, Node insertBeforeNode) {		
+	public void addChild(Node node, Node child, Node insertBeforeNode) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -145,7 +148,7 @@ public class NodeService {
 		
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
-			controller.addNode(node, properties, insertBeforeNode);
+			controller.addNode(node, child, insertBeforeNode);
 		}
 	}
 	
@@ -169,6 +172,21 @@ public class NodeService {
 		
 		RootNodeProvider provider = descriptor.getSingleController(ROOT_NODE_PROVIDER, node);		
 		return provider.getRootNode(node);
+	}
+	
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
+		Map<String, List<AddChildDescriptor>> descriptorsMap = new HashMap<String, List<AddChildDescriptor>>();
+		
+		Collection<TypeDescriptor> typeDescriptors = registry.getTypeDescriptors();
+		for (TypeDescriptor typeDescriptor : typeDescriptors) {
+			List<AddChildDescriptor> addChildDescriptors = typeDescriptor.getAdditiveControllers(AddChildDescriptor.ADD_CHILD_DESCRIPTOR, null);
+			descriptorsMap.put(typeDescriptor.getType(), addChildDescriptors);
+		}
+		
+		return descriptorsMap;
 	}
 		
 }

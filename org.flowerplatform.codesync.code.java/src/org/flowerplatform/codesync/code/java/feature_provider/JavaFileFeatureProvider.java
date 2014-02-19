@@ -18,15 +18,30 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import java.util.Collections;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.TYPE_MEMBERS;
+
+import java.util.Arrays;
 import java.util.List;
 
+import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
-public class JavaModifierFeatureProvider extends NodeFeatureProvider {
-	
+/**
+ * @author Mariana Gheorghe
+ */
+public class JavaFileFeatureProvider extends NodeFeatureProvider {
+
 	@Override
 	public List<?> getContainmentFeatures(Object element) {
-		return Collections.emptyList();
+		return Arrays.asList(TYPE_MEMBERS);
 	}
+	
+	@Override
+	public int getFeatureType(Object feature) {
+		if (TYPE_MEMBERS.equals(feature)) {
+			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
+		}
+		return super.getFeatureType(feature);
+	}
+
 }
