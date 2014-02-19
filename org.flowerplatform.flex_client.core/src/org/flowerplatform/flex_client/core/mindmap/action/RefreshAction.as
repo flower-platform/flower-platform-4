@@ -20,9 +20,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexutil.action.ActionBase;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -31,6 +29,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 						
 		public function RefreshAction() {
 			label = CorePlugin.getInstance().getMessage("mindmap.action.refresh");
+			icon = CorePlugin.getInstance().getResourceUrl("images/refresh.gif");
 			orderIndex = 40;					
 		}
 		
@@ -43,10 +42,11 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			for (var i:int = 0; i < selection.length; i++) {
 				var obj:Object = selection.getItemAt(i);
 				if (obj is Node) {
-					MindMapEditorDiagramShell(diagramShell).updateProcessor.checkForNodeUpdates(Node(obj));
+					MindMapEditorDiagramShell(diagramShell).updateProcessor.refresh(Node(obj));
 				}
-			}			
+			}
 		}
-
+	
+		
 	}
 }

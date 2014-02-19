@@ -106,7 +106,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 				AST ast = parent.getAST();
 				
 				if (JavaModifierModelAdapter.MODIFIER.equals(node.getType())) {
-					String keyword = (String) node.getOrCreateProperties().get(FeatureProvider.NAME);
+					String keyword = (String) node.getOrPopulateProperties().get(FeatureProvider.NAME);
 					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
 				} else if (JavaAnnotationModelAdapter.ANNOTATION.equals(node.getType())) {
 					int valuesCount = CodeSyncPlugin.getInstance().getNodeService().getChildren(node, false).size();

@@ -10,6 +10,6 @@ public abstract class AddNodeController extends AbstractController {
 
 	public static final String ADD_NODE_CONTROLLER = "addNodeController";
 	
-	public abstract void addNode(Node node, Node child);
+	public abstract void addNode(Node node, Node child, Node currentChildAtInsertionPoint);
 	
 }

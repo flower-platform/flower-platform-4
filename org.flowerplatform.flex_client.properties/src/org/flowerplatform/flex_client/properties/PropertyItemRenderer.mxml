@@ -33,6 +33,9 @@
 				}
 				_data = value;
 				
+				if (_data == null) {
+					return;
+				}
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
 
 				propertyName.text = data.name;

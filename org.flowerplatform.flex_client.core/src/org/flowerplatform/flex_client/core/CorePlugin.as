@@ -31,9 +31,10 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.ClientNodeStatus;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.NodeUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithVisibleChildren;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.ServiceLocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -83,7 +84,7 @@ package org.flowerplatform.flex_client.core {
 			INSTANCE = this;
 				
 			serviceLocator.addService("nodeService");
-			serviceLocator.addService("updaterService");
+			serviceLocator.addService("updateService");
 			serviceLocator.addService("freeplaneService");
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
@@ -100,8 +101,8 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorActionProviders.push(new AddChildActionProvider());
 			
 			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
-				function(result:ResultEvent):void {
-					addChildDescriptors = result.result;		
+				function(result:Object):void {
+					addChildDescriptors = result;		
 				}
 			);
 			
@@ -116,9 +117,10 @@ package org.flowerplatform.flex_client.core {
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
-			registerClassAliasFromAnnotation(ChildrenListUpdate);
-			registerClassAliasFromAnnotation(ClientNodeStatus);
-			registerClassAliasFromAnnotation(NodeUpdate);
+			registerClassAliasFromAnnotation(Update);
+			registerClassAliasFromAnnotation(PropertyUpdate);
+			registerClassAliasFromAnnotation(ChildrenUpdate);
+			registerClassAliasFromAnnotation(NodeWithVisibleChildren);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
 		}
 		

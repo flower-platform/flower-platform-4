@@ -5,9 +5,9 @@
         <service-include file-path="remoting-config.xml" />
 	</services>
 	
-	  <factories>
+	<factories>
 		<factory id="flowerFactory"
-			class="org.flowerplatform.flex_client.server.blazeds.FlowerFactory" />
+			class="org.flowerplatform.flex_client.server.blazeds.FlowerFlexFactory" />
 	</factories>
 	
    	<!-- For more details about channel definition configuration check http://livedocs.adobe.com/livecycle/8.2/programLC/programmer/lcds/help.html?content=lcconfig_3.html. -->

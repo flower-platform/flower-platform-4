@@ -20,7 +20,6 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
-	import mx.rpc.events.ResultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;

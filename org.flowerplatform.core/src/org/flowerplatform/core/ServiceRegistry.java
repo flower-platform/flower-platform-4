@@ -56,4 +56,12 @@ public class ServiceRegistry {
 	public Object getService(String id) {
 		return map.get(id);
 	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Map<String, Object> getMap() {
+		return map;
+	}
+	
 }

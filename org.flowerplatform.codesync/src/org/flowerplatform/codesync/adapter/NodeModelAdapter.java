@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
@@ -70,7 +71,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 					return false;
 				}
 				
-				MemberOfChildCategoryDescriptor memberOf = candidateDescriptor.getSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR);
+				MemberOfChildCategoryDescriptor memberOf = candidateDescriptor.getSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, candidate);
 				if (memberOf == null) {
 					return false;
 				}
@@ -88,12 +89,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (FeatureProvider.TYPE.equals(feature)) {
 			return getNode(element).getType();
 		}
-		return getNode(element).getOrCreateProperties().get(feature);
+		return getNode(element).getOrPopulateProperties().get(feature);
 	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrCreateProperties().get("name");
+		return getNode(element).getOrPopulateProperties().get("name");
 	}
 	
 	@Override
@@ -129,7 +130,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				String type = typeProvider.getType(correspondingChild);
 				Node child = new Node();
 				child.setType(type);
-				CodeSyncPlugin.getInstance().getNodeService().addChild(parent, child);
+				CodeSyncPlugin.getInstance().getNodeService().addChild(parent, child, null);
 				return child;
 //		}
 //		
@@ -180,11 +181,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				if (childNode.getOrCreateProperties().containsKey(CodeSyncPlugin.ADDED)) {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
 					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
 				}
 			} else {
-				if (childNode.getOrCreateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
 					CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
 				}
 			}
@@ -211,6 +212,19 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return null;
 	}
 
+	
+	protected void processContainmentFeatureAfterActionPerformed(Node node, List<Object> children, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
+		if (child != null && child instanceof Node) {
+			Node childNode = (Node) child;
+			if (result.childAdded) {
+				CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+			} else {
+				CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
+			}
+		}
+	}
+	
 	protected List<Object> getChildrenFromMatch(Match parentMatch, Object feature, boolean childAdded) {
 		List<Object> children = new ArrayList<Object>();
 		for (Match match : parentMatch.getSubMatches()) {
@@ -223,6 +237,20 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 			}
 		}
 		return children;
+	}
+	
+	/**
+	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
+	 */
+	protected Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
+		if (matchKey == null)
+			return null;
+		for (Object existingChild : list) {
+			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
+				return existingChild;
+			}
+		}
+		return null;
 	}
 	
 }

@@ -37,6 +37,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			super();
 			if (descriptor == null) {
 				label = CorePlugin.getInstance().getMessage("mindmap.action.add");	
+				icon = CorePlugin.getInstance().getResourceUrl("images/add.png");
 				orderIndex = 10;
 				id = ACTION_ID_NEW;
 				
@@ -60,7 +61,10 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		override public function run():void {
 			var child:Node = new Node();
 			child.type = childType;
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)), child]);		
+			// TODO CC: temporary code
+			child.resource = "mm://path_to_resource";
+			
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)), child, null]);		
 		}
 		
 	}

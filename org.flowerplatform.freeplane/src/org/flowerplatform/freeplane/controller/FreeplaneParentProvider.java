@@ -19,7 +19,7 @@ public class FreeplaneParentProvider extends ParentProvider {
 			return null;
 		}
 		return new Pair<Node, Object>(
-				FreeplanePlugin.getInstance().getFreeplaneUtils().getEmptyNode(parentNodeModel), parentNodeModel);
+				FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(parentNodeModel), parentNodeModel);
 	}
 
 }

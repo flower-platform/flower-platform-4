@@ -80,7 +80,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			var toolbarsArea:HGroup = new HGroup();
 			toolbarsArea.percentWidth = 100;
 			toolbarsArea.verticalAlign = "middle";
-			toolbarsArea.gap = 10;		
+			toolbarsArea.gap = 10;
 			toolbarsArea.paddingLeft = 5;
 			addElement(toolbarsArea);	
 									
@@ -169,9 +169,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 			return _viewHost;
 		}
 						
-		private function autoRefresh(event:TimerEvent):void {
-			var rootNode:Node = Node(MindMapEditorDiagramShell(diagramShell).getRoot());
-			MindMapEditorDiagramShell(diagramShell).updateProcessor.checkForNodeUpdates(rootNode);
+		private function autoRefresh(event:TimerEvent):void {			
+			MindMapEditorDiagramShell(diagramShell).updateProcessor.checkForUpdates();
 		}
 		
 	}

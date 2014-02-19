@@ -49,7 +49,7 @@ public class CodeSyncControllerUtils {
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
-		while ((parent = service.getParent(node, true)) != null) {
+		while ((parent = service.getParent(node)) != null) {
 			if (!isChildrenSync(parent)) {
 				// the parentSync flag has already been propagated
 				return;
@@ -73,7 +73,7 @@ public class CodeSyncControllerUtils {
 		
 		// check if it has any property.original set
 		boolean sync = true;
-		for (String property : node.getOrCreateProperties().keySet()) {
+		for (String property : node.getOrPopulateProperties().keySet()) {
 			if (isOriginalPropertyName(property)) {
 				sync = false;
 			}
@@ -90,7 +90,7 @@ public class CodeSyncControllerUtils {
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
-		while ((parent = service.getParent(node, true)) != null) {
+		while ((parent = service.getParent(node)) != null) {
 			if (!allChildrenSync(parent, service)) {
 				return;
 			}
@@ -117,7 +117,7 @@ public class CodeSyncControllerUtils {
 		
 		// propagate childrenConflict flag for parents
 		Node parent = null;
-		while ((parent = service.getParent(node, true)) != null) {
+		while ((parent = service.getParent(node)) != null) {
 			if (isChildrenConflict(parent)) {
 				// the childrenConflict flag has already been propagated
 				return;
@@ -137,7 +137,7 @@ public class CodeSyncControllerUtils {
 		
 		// check if it has any other property.conflict set
 		boolean conflict = false;
-		for (String property : node.getOrCreateProperties().keySet()) {
+		for (String property : node.getOrPopulateProperties().keySet()) {
 			if (isConflictPropertyName(property)) {
 				conflict = true;
 			}
@@ -154,7 +154,7 @@ public class CodeSyncControllerUtils {
 		
 		// propagate childrenConflict flag for parents
 		Node parent = null;
-		while ((parent = service.getParent(node, true)) != null) {
+		while ((parent = service.getParent(node)) != null) {
 			if (!noChildConflict(parent, service)) {
 				return;
 			}
@@ -211,7 +211,7 @@ public class CodeSyncControllerUtils {
 	}
 	
 	private static boolean hasFlagTrue(Node node, String flag) {
-		Boolean b = (Boolean) node.getOrCreateProperties().get(flag);
+		Boolean b = (Boolean) node.getOrPopulateProperties().get(flag);
 		return b != null && b;
 	}
 }

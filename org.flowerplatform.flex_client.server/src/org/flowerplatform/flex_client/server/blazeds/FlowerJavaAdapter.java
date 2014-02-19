@@ -1,38 +1,35 @@
 package org.flowerplatform.flex_client.server.blazeds;
 
-import java.util.Date;
-
-import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.RemoteMethodInvocationInfo;
 
 import flex.messaging.messages.Message;
 import flex.messaging.messages.RemotingMessage;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 
 /**
+ * Gives control before and after the client invokes a service method.
+ * 
  * @author Sebastian Solomon
+ * @author Cristina Constantinescu
  */
 public class FlowerJavaAdapter extends JavaAdapter {
 
-	private final static Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
-
 	public Object invoke(Message message) {
-		long startTime, endTime, difference;
-		startTime = new Date().getTime();
-
-		Object object = super.invoke(message);
-
-		endTime = new Date().getTime();
-		difference = endTime - startTime;
+		RemotingMessage remoteMessage = (RemotingMessage) message;
+		RemoteMethodInvocationInfo remoteMethodInvocationInfo = new RemoteMethodInvocationInfo();
+		remoteMethodInvocationInfo.setServiceId(remoteMessage.getDestination());
+		remoteMethodInvocationInfo.setMethodName(remoteMessage.getOperation());
+		remoteMethodInvocationInfo.setParameters(remoteMessage.getParameters());
 		
-		String destination = message.getDestination();
-		String operation = "";
-		if (message instanceof RemotingMessage) {
-			operation = ((RemotingMessage) message).getOperation();
-		}
-		logger.info("service: " + destination + ", method: " + operation + ", "
-				+ difference + "ms");
-		return object;
+		CorePlugin.getInstance().getRemoteMethodInvocationListener().preInvoke(remoteMethodInvocationInfo);
+
+		Object originalReturnValue = super.invoke(message);
+		
+		remoteMethodInvocationInfo.setReturnValue(originalReturnValue);
+		CorePlugin.getInstance().getRemoteMethodInvocationListener().postInvoke(remoteMethodInvocationInfo);
+		
+		return remoteMethodInvocationInfo.getReturnValue();
 	}
+	
 }

@@ -60,7 +60,7 @@ package org.flowerplatform.flex_client.codesync {
 			
 			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
-			
+		
 			var hBox:HBox = new HBox();
 			hBox.percentWidth = 100;
 			var btn:Button = new Button();
@@ -69,11 +69,11 @@ package org.flowerplatform.flex_client.codesync {
 				new CodeSyncOperationsService().synchronize(null);
 			});
 			hBox.addChild(btn);
-			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);
+			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 			
-			CorePlugin.getInstance().serviceLocator.invoke(CodeSyncOperationsService.ID + ".getDropdownPropertyRenderersInfo", null, function(result:ResultEvent):void {
-				var names:ArrayCollection = result.result["names"];
-				var dataProviders:Object = result.result["dataProviders"];
+			CorePlugin.getInstance().serviceLocator.invoke(CodeSyncOperationsService.ID + ".getDropdownPropertyRenderersInfo", null, function(result:Object):void {
+				var names:ArrayCollection = result["names"];
+				var dataProviders:Object = result["dataProviders"];
 				for each (var name:String in names) {
 					PropertiesPlugin.getInstance().propertyRendererClasses[name] = new FactoryWithInitialization(DropDownListPropertyRenderer, 
 						{

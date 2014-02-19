@@ -5,7 +5,7 @@ import org.flowerplatform.core.node.remote.Node;
 /**
  * @author Mariana Gheorghe
  */
-public class ConstantValuePropertyProvider extends PropertiesProvider<Object> {
+public class ConstantValuePropertyProvider extends PropertiesProvider {
 
 	private String property;
 
@@ -17,8 +17,8 @@ public class ConstantValuePropertyProvider extends PropertiesProvider<Object> {
 	}
 
 	@Override
-	public void populateWithProperties(Node node, Object rawNodeData) {
-		node.getOrCreateProperties().put(property, value);
+	public void populateWithProperties(Node node) {
+		node.getProperties().put(property, value);
 	}
 
 	public String getProperty() {

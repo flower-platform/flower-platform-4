@@ -104,7 +104,7 @@ public class CodeSyncTest {
 		
 		Node model = new Node();
 		model.setType(FOLDER);
-		nodeService.addChild(root, model);
+		nodeService.addChild(root, model, null);
 		nodeService.setProperty(model, NAME, INITIAL);
 		Match match = codeSyncService.synchronize(project, new File(project, fullyQualifiedName), TECHNOLOGY, true);
 		
@@ -277,7 +277,7 @@ public class CodeSyncTest {
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel");
 		Node superInterface = new Node();
 		superInterface.setType(SUPER_INTERFACE);
-		nodeService.addChild(cls, superInterface);
+		nodeService.addChild(cls, superInterface, null);
 		nodeService.setProperty(superInterface, NAME, "IFromModel");
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
 //		Node val = new Node();
@@ -289,7 +289,7 @@ public class CodeSyncTest {
 		// add class
 		Node internalCls = new Node();
 		internalCls.setType(CLASS);
-		nodeService.addChild(cls, internalCls);
+		nodeService.addChild(cls, internalCls, null);
 		nodeService.setProperty(internalCls, NAME, "InternalClassFromModel");
 
 		// change typed element type
@@ -300,7 +300,7 @@ public class CodeSyncTest {
 		Node test = getChild(cls, new String[] {"test(String)"});
 		Node privateModif = new Node();
 		privateModif.setType(MODIFIER);
-		nodeService.addChild(test, privateModif);
+		nodeService.addChild(test, privateModif, null);
 		nodeService.setProperty(privateModif, NAME, "private");
 		Node publicModif = getChild(test, new String[] {"public"});
 		nodeService.setProperty(publicModif, REMOVED, true);
@@ -309,7 +309,7 @@ public class CodeSyncTest {
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
 		Node orphanRemoval = new Node();
 		orphanRemoval.setType(MEMBER_VALUE_PAIR);
-		nodeService.addChild(a, orphanRemoval);
+		nodeService.addChild(a, orphanRemoval, null);
 		nodeService.setProperty(orphanRemoval, NAME, "orphanRemoval");
 		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true");
 		
@@ -317,7 +317,7 @@ public class CodeSyncTest {
 		Node getTest = getChild(cls, new String[] {"getTest()"});
 		Node param = new Node();
 		param.setType(JavaParameterModelAdapter.PARAMETER);
-		nodeService.addChild(getTest, param);
+		nodeService.addChild(getTest, param, null);
 		nodeService.setProperty(param, NAME, "a");
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int");
 		Node staticModif = getChild(getTest, new String[] {"static"});
@@ -348,13 +348,13 @@ public class CodeSyncTest {
 		// add element
 		Node t = new Node();
 		t.setType(ATTRIBUTE);
-		nodeService.addChild(cls, t);
+		nodeService.addChild(cls, t, null);
 		nodeService.setProperty(t, NAME, "t");
 		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int");
 //		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
 		publicModif = new Node();
 		publicModif.setType(MODIFIER);
-		nodeService.addChild(t, publicModif);
+		nodeService.addChild(t, publicModif, null);
 		nodeService.setProperty(publicModif, NAME, "public");
 		
 		// remove element
@@ -475,7 +475,7 @@ public class CodeSyncTest {
 		for (String name : names) {
 			List<Node> children = nodeService.getChildren(parent, true);
 			for (Node child : children) {
-				if (name.equals(child.getOrCreateProperties().get(NAME))) {
+				if (name.equals(child.getOrPopulateProperties().get(NAME))) {
 					parent = child;
 					break;
 				}

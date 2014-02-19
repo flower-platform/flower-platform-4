@@ -7,48 +7,18 @@ import flex.messaging.FlexFactory;
 import flex.messaging.config.ConfigMap;
 
 /**
- * This interface is implemented by factory components which provide instances
- * to the flex messaging framework. To configure flex data services to use this
- * factory, add the following lines to your services-config.xml file (located in
- * the WEB-INF/flex directory of your web application).
+ * We use this factory, instead of the default one, because only one instance of
+ * the service must be used, and the default factory was creating a new instance
+ * every time a method of the service was invoked.
+ * <p>
+ * Inspired form <a href=
+ * "http://www.epseelon.com/2008/04/15/flex-spring-and-blazeds-the-full-stack-part-4/"
+ * >http://www.epseelon.com/2008/04/15/flex-spring-and-blazeds-the-full-stack-
+ * part-4/</a>
  * 
- * &lt;factories&gt; &lt;factory id="Flower"
- * class="flex.samples.factories.FlowerFactory" /&gt; &lt;/factories&gt;
- * 
- * You also must configure the web application to use Flower and must copy the
- * Flower.jar file into your WEB-INF/lib directory. To configure your app server
- * to use Flower, you add the following lines to your WEB-INF/web.xml file:
- * 
- * &lt;context-param&gt;
- * &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
- * &lt;param-value&gt;/WEB-INF/applicationContext.xml&lt;/param-value&gt;
- * &lt;/context-param&gt;
- * 
- * &lt;listener&gt;
- * &lt;listener-class&gt;org.Flowerframework.web.context.ContextLoaderListener
- * &lt;/listener-class&gt; &lt;/listener&gt;
- * 
- * Then you put your Flower bean configuration in WEB-INF/applicationContext.xml
- * (as per the line above). For example:
- * 
- * &lt;?xml version="1.0" encoding="UTF-8"?&gt; &lt;!DOCTYPE beans PUBLIC
- * "-//Flower//DTD BEAN//EN"
- * "http://www.Flowerframework.org/dtd/Flower-beans.dtd"&gt;
- * 
- * &lt;beans&gt; &lt;bean name="weatherBean" class="dev.weather.WeatherService"
- * singleton="true"/&gt; &lt;/beans&gt;
- * 
- * Now you are ready to define a destination in flex that maps to this existing
- * service. To do this you'd add this to your WEB-INF/flex/remoting-config.xml:
- * 
- * &lt;destination id="WeatherService"&gt; &lt;properties&gt;
- * &lt;factory&gt;Flower&lt;/factory&gt;
- * &lt;source&gt;weatherBean&lt;/source&gt; &lt;/properties&gt;
- * &lt;/destination&gt;
- * 
- * @author Jeff Vroom
+ * @author Sebastian Solomon
  */
-public class FlowerFactory implements FlexFactory {
+public class FlowerFlexFactory implements FlexFactory {
 	private static final String SOURCE = "source";
 
 	/**
@@ -75,7 +45,7 @@ public class FlowerFactory implements FlexFactory {
 		instance.setSource(properties.getPropertyAsString(SOURCE,
 				instance.getId()));
 		return instance;
-	} // end method createFactoryInstance()
+	}
 
 	/**
 	 * Returns the instance specified by the source and properties arguments.
@@ -94,7 +64,7 @@ public class FlowerFactory implements FlexFactory {
 	}
 
 	static class FlowerFactoryInstance extends FactoryInstance {
-		FlowerFactoryInstance(FlowerFactory factory, String id,
+		FlowerFactoryInstance(FlowerFlexFactory factory, String id,
 				ConfigMap properties) {
 			super(factory, id, properties);
 		}

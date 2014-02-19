@@ -49,7 +49,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 
 	@Override
-	public void populateWithProperties(Node node, Object rawNodeData) {
+	public void populateWithProperties(Node node) {
 		int flags = getModifiersFlags(node);
 		
 		// get the icon depending on visibility
@@ -89,7 +89,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 			icon = append(icon, DECORATOR_SYNCHRONIZED);
 		}
 		
-		node.getOrCreateProperties().put(getProperty(), icon);
+		node.getProperties().put(getProperty(), icon);
 	}
 	
 	private String append(String icon, String decorator) {
@@ -99,7 +99,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	protected int getModifiersFlags(Node node) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node)) {
-			String keyword = (String) modifier.getOrCreateProperties().get("name");
+			String keyword = (String) modifier.getOrPopulateProperties().get("name");
 			if (keyword == null) {
 				continue;
 			}
