@@ -43,17 +43,16 @@ import org.apache.commons.io.FileUtils;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.Match.MatchType;
+import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeService;
-import org.flowerplatform.freeplane.remote.FreeplaneService;
+import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.tests.TestUtil;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -74,21 +73,22 @@ public class CodeSyncTest {
 	public static final String SOURCE_FILE = "Test.java";
 	public static final String MODEL_FILE = "CSE.notation";
 	
-	private NodeService nodeService = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+	private static NodeService nodeService = null;
 	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
 	@BeforeClass
-	public static void setUpBeforeClass() {
-		TestUtil.copyFilesAndCreateProject(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
-		// trigger these plugins' activation to register node controllers
-		Class cls = FreeplaneService.class; 
-		CodeSyncCodeJavaPlugin.getInstance();
-	}
-	
-	@Before
-	public void before() {
-//		nodeService.reload();
+	public static void setUpBeforeClass() throws Exception {
+		TestUtil.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
+		
+		new CorePlugin().start(null);
+		new FreeplanePlugin().start(null);
+		
+		new CodeSyncPlugin().start(null);
+		new CodeSyncCodePlugin().start(null);
+		new CodeSyncCodeJavaPlugin().start(null);
+		
+		nodeService = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
 	}
 	
 	@Test
@@ -98,9 +98,7 @@ public class CodeSyncTest {
 		
 		File project = getProject();
 		
-		Node root = new Node();
-		root.setType("freeplaneNode");
-		root = nodeService.getChildren(root, true).get(0);
+		Node root = CodeSyncPlugin.getInstance().getResource(null);
 		
 		Node model = new Node();
 		model.setType(FOLDER);
@@ -150,9 +148,7 @@ public class CodeSyncTest {
 
 		File project = getProject();
 		
-		Node root = new Node();
-		root.setType("freeplaneNode");
-		root = nodeService.getChildren(root, true).get(0);
+		Node root = CodeSyncPlugin.getInstance().getResource(null);
 		
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
@@ -238,7 +234,7 @@ public class CodeSyncTest {
 	}
 
 	@Test
-	public void testMatchNoConflictsAndPerformSync() throws IOException {
+	public void testMatchNoConflictsAndPerformSync() throws Exception {
 		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
 		
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC /*+ "/" + SOURCE_FILE*/;
@@ -246,9 +242,7 @@ public class CodeSyncTest {
 		File project = getProject();
 		File dir = new File(project, fullyQualifiedName);
 		
-		Node root = new Node();
-		root.setType("freeplaneNode");
-		root = nodeService.getChildren(root, true).get(0);
+		Node root = CodeSyncPlugin.getInstance().getResource(null);
 		
 //		File cseLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().CSE_MAPPING_FILE_LOCATION);
 //		File aceLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().ACE_FILE_LOCATION);
@@ -369,10 +363,7 @@ public class CodeSyncTest {
 
 		File project = getProject();
 		
-		Node root = new Node();
-		root.setType("freeplaneNode");
-		root = nodeService.getChildren(root, true).get(0);
-		
+		Node root = CodeSyncPlugin.getInstance().getResource(null);		
 		
 		// simulate model modifications
 		
