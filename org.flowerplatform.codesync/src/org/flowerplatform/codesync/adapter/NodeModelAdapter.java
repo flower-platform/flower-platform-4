@@ -188,6 +188,8 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 			} else {
 				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED_MARKER)) {
 					CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
+					// set childrenSync now, because after this match is synced, the parent won't be notified because this child is already removed
+					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node, CodeSyncPlugin.getInstance().getNodeService());
 				}
 			}
 		}

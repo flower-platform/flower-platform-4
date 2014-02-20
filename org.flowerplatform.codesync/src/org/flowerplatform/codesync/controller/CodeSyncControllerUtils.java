@@ -86,8 +86,11 @@ public class CodeSyncControllerUtils {
 		service.setProperty(node, SYNC_MARKER, true);
 		
 		// propagate childrenSync flag for parents
-		Node parent = null;
-		while ((parent = service.getParent(node)) != null) {
+		setChildrenSyncTrueAndPropagateToParents(service.getParent(node), service);
+	}
+	
+	public static void setChildrenSyncTrueAndPropagateToParents(Node parent, NodeService service) {
+		while (parent != null) {
 			// if childrenSync is already true for the parent, no need to go up
 			if (isChildrenSync(parent)) {
 				return;
@@ -106,7 +109,7 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			
-			node = parent;
+			parent = service.getParent(parent);
 		}
 	}
 	
