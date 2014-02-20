@@ -2,6 +2,8 @@ package org.flowerplatform.util.servlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,17 +18,11 @@ public abstract class ResourcesServlet extends HttpServlet {
 	 */
 	public static final char SEPARATOR = '|';
 	
-	/**
-	 * Used to replase {@value #SEPARATOR} 
-	 */
-	public static final char TEMP_SEPARATOR = '#';
-	
-	/**
-	 * Used to replase '/' 
-	 */
-	public static final char TEMP_FOLDER_SEPARATOR = '$';
-	
 	public static final String FLOWER_PLATFORM = "flower-platform";
+	
+	protected static Map<String, String> tempFilesMap = new HashMap<String, String>();
+	
+	protected static int counter = 0;
 	
 	public static final File TEMP_FOLDER =  new File (System.getProperty("java.io.tmpdir"), FLOWER_PLATFORM);
 
@@ -49,4 +45,17 @@ public abstract class ResourcesServlet extends HttpServlet {
 		return file.exists() ? file.getAbsolutePath() : null;
 	}
 	
+	/**
+	* @author Sebastian Solomon
+	*/
+	protected String getTempFilePath(String tempFileName) {
+		return TEMP_FOLDER + "\\" + tempFileName; 
+	}
+	
+	/**
+	* @author Sebastian Solomon
+	*/
+	protected File getTempFile(String tempFileName) {
+		return new File(TEMP_FOLDER, tempFileName); 
+	}
 }
