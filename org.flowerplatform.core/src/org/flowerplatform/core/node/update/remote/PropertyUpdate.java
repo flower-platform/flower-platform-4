@@ -52,7 +52,7 @@ public class PropertyUpdate extends Update {
 	
 	@Override
 	public String toString() {
-		return "PropertyUpdate [key=" + key + " value=" + value + " isUnset=" + isUnset + " node=" + getNode() + ", timestamp=" + getTimestamp() + "]";
+		return "PropertyUpdate [key=" + key + " value=" + value + " isUnset=" + isUnset + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";
 	}
 	
 }

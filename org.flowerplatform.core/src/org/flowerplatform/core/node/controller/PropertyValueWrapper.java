@@ -1,6 +1,6 @@
 package org.flowerplatform.core.node.controller;
 
-import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.core.node.NodeService;
 
 /**
  * The property value is wrapped to allow other {@link PropertySetter} to modify it.

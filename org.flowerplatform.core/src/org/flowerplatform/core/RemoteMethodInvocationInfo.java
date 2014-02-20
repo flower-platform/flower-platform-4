@@ -1,6 +1,7 @@
 package org.flowerplatform.core;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sebastian Solomon
@@ -16,6 +17,11 @@ public class RemoteMethodInvocationInfo {
 
 	private Object returnValue;
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	private Map<?, ?> headers;
+	
 	public String getServiceId() {
 		return serviceId;
 	}
@@ -56,4 +62,17 @@ public class RemoteMethodInvocationInfo {
 		this.returnValue = returnValue;
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public Map<?, ?> getHeaders() {
+		return headers;
+	}
+
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public void setHeaders(Map<?, ?> headers) {
+		this.headers = headers;
+	}
 }

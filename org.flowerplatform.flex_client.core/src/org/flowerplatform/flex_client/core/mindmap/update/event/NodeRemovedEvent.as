@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.core.mindmap.event {
+package org.flowerplatform.flex_client.core.mindmap.update.event {
 	import flash.events.Event;
 	
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;

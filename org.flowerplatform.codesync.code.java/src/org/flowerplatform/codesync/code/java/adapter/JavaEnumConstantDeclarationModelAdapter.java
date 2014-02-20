@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -49,7 +50,7 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getMatchKey(element);
-		} else if (FeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return ENUM_CONSTANT;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

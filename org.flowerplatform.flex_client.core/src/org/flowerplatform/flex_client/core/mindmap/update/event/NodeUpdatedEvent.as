@@ -16,8 +16,11 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.core.mindmap.event {
+package org.flowerplatform.flex_client.core.mindmap.update.event {
 	import flash.events.Event;
+	
+	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 
@@ -42,9 +45,28 @@ package org.flowerplatform.flex_client.core.mindmap.event {
 		
 		public var node:Node;
 		
-		public function NodeUpdatedEvent(node:Node) {
+		public var updatedProperties:IList;
+		public var removedProperties:IList;
+		
+		public function NodeUpdatedEvent(node:Node, updatedProperties:IList = null, removedProperties:IList = null) {
 			super(NODE_UPDATED, false, false);
 			this.node = node;
+			this.updatedProperties = updatedProperties;
+			this.removedProperties = removedProperties;
+		}
+		
+		public function addUpdatedProperty(property:String):void {
+			if (updatedProperties == null) {
+				updatedProperties = new ArrayList();
+			}
+			updatedProperties.addItem(property);
+		}
+		
+		public function addRemovedProperty(property:String):void {
+			if (removedProperties == null) {
+				removedProperties = new ArrayList();
+			}
+			removedProperties.addItem(property);
 		}
 		
 	}

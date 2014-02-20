@@ -27,10 +27,11 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 
 /**
  * Sets the icon property, depending on the element's modifiers. The base icon depends on the 
@@ -99,7 +100,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	protected int getModifiersFlags(Node node) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node)) {
-			String keyword = (String) modifier.getOrPopulateProperties().get("name");
+			String keyword = (String) modifier.getOrPopulateProperties().get(FeatureProvider.NAME);
 			if (keyword == null) {
 				continue;
 			}
@@ -109,7 +110,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 	
 	protected List<Node> getModifiers(Node node) {
-		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		List<Node> modifiers = new ArrayList<Node>();
 		for (Node child : service.getChildren(node, true)) {
 			if (JavaModifierModelAdapter.MODIFIER.equals(child.getType())) {

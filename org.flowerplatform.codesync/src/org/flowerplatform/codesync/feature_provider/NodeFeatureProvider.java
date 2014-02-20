@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * @author Mariana
@@ -32,7 +33,7 @@ public abstract class NodeFeatureProvider extends FeatureProvider {
 	public List<?> getValueFeatures(Object element) {
 		List<String> features = new ArrayList<String>();
 		features.add(NAME);
-		features.add(TYPE);
+		features.add(NodePropertiesConstants.TYPE);
 		return features;
 	}
 

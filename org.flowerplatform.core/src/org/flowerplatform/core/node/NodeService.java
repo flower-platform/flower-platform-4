@@ -1,9 +1,11 @@
-package org.flowerplatform.core.node.remote;
+package org.flowerplatform.core.node;
 
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
+import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
+import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
@@ -15,13 +17,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ParentProvider;
+import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
+import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
+import org.flowerplatform.core.node.remote.AddChildDescriptor;
+import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -47,7 +55,7 @@ public class NodeService {
 		this.registry = registry;
 	}
 
-	public List<Node> getChildren(Node node, boolean populateProperties) {
+	public List<Node> getChildren(Node node, boolean populateProperties) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
@@ -80,8 +88,11 @@ public class NodeService {
 			return children;
 		}
 	}
+		
 
-	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public Node getParent(Node node) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -95,11 +106,11 @@ public class NodeService {
 		}
 		return parent.a;
 	}
-		
+	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public List<PropertyDescriptor> getPropertyDescriptors(Node node) {
+	public List<PropertyDescriptor> getPropertyDescriptors(Node node) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return Collections.emptyList();
@@ -108,14 +119,14 @@ public class NodeService {
 		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
 	}
 	
-	public void setProperty(Node node, String property, Object value) {
+	public void setProperty(Node node, String property, Object value) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
-		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
+		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
 		for (PropertySetter controller : controllers) {
 			controller.setProperty(node, property, wrapper);
 		}
@@ -124,7 +135,7 @@ public class NodeService {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public void unsetProperty(Node node, String property) {
+	public void unsetProperty(Node node, String property) {	
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -136,7 +147,7 @@ public class NodeService {
 		}
 	}
 	
-	public void addChild(Node node, Node child, Node currentChildAtInsertionPoint) {
+	public void addChild(Node node, Node child, Node insertBeforeNode) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -144,11 +155,11 @@ public class NodeService {
 		
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
-			controller.addNode(node, child, currentChildAtInsertionPoint);
+			controller.addNode(node, child, insertBeforeNode);
 		}
 	}
 	
-	public void removeChild(Node node, Node child) {
+	public void removeChild(Node node, Node child) {	
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -166,55 +177,9 @@ public class NodeService {
 			return null;
 		}
 		
-		List<RootNodeProvider> providers = descriptor.getAdditiveControllers(ROOT_NODE_PROVIDER, node);
-		Node rootNode = null;
-		for (RootNodeProvider provider : providers) {
-			rootNode = provider.getRootNode(node);
-			if (rootNode != null) {
-				break;
-			}
-		}
-		return rootNode;
+		RootNodeProvider provider = descriptor.getSingleController(ROOT_NODE_PROVIDER, node);		
+		return provider.getRootNode(node);
 	}
-	
-	public NodeWithVisibleChildren refresh(NodeWithVisibleChildren currentNodeWithVisibleChildren) {	
-		Node currentNode = currentNodeWithVisibleChildren.getNode();
-		boolean currentNodeHasVisibleChildren = currentNodeWithVisibleChildren.getVisibleChildren() != null;
-		
-		// get new data
-		NodeWithVisibleChildren newNodeWithVisibleChildren = computeNodeWithVisibleChildren(currentNode, currentNodeHasVisibleChildren);
-		
-		if (currentNodeHasVisibleChildren) {
-			// verify if node exists in list of new visibleChildren
-			for (NodeWithVisibleChildren currentChildWithVisibleChildren : currentNodeWithVisibleChildren.getVisibleChildren()) {				
-				for (int i = 0; i < newNodeWithVisibleChildren.getVisibleChildren().size(); i++) {
-					Node newChildNode = newNodeWithVisibleChildren.getVisibleChildren().get(i).getNode();
-					if (newChildNode.getId().equals(currentChildWithVisibleChildren.getNode().getId())) {	// node exists in new list -> refresh its structure also			
-						newNodeWithVisibleChildren.getVisibleChildren().set(i, refresh(currentChildWithVisibleChildren));
-						break;
-					}
-				}
-			}
-		}
-		return newNodeWithVisibleChildren;
-	}
-		
-	private NodeWithVisibleChildren computeNodeWithVisibleChildren(Node node, boolean  populateWithChildren) {	
-		NodeWithVisibleChildren newNodeWithVisibleChildren = new NodeWithVisibleChildren();
-		newNodeWithVisibleChildren.setNode(node);
-		
-		node.getOrPopulateProperties();
-			
-		// get new visible children
-		List<NodeWithVisibleChildren> visibleChildren = new ArrayList<NodeWithVisibleChildren>();
-		if (populateWithChildren) {			
-			for (Node child : getChildren(node, false)) { // get children without properties
-				visibleChildren.add(computeNodeWithVisibleChildren(child, false)); // here we populate it
-			}
-		}
-		newNodeWithVisibleChildren.setVisibleChildren(visibleChildren);
-		return newNodeWithVisibleChildren;
-	}	
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -230,4 +195,30 @@ public class NodeService {
 		
 		return descriptorsMap;
 	}
+		
+	public void populateNodeProperties(Node node) {	
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return;
+		}
+					
+		List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);
+		for (PropertiesProvider provider : providers) {
+			provider.populateWithProperties(node);
+		}
+	}
+	
+	public Object getRawNodeData(Node node) {	
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
+					
+		RawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, node);	
+		if (rawNodeDataProvider == null) {
+			return null;
+		}
+		return rawNodeDataProvider.getRawNodeData(node);	
+	}
+	
 }

@@ -42,7 +42,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 				}
 				CorePlugin.getInstance().serviceLocator.invoke(
 					"nodeService.setProperty", 
-					[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)), data.name, getValue()]);				
+					[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, data.name, getValue()]);				
 			}
 		}
 

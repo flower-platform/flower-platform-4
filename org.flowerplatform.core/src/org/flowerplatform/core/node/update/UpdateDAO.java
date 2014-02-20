@@ -1,11 +1,9 @@
 package org.flowerplatform.core.node.update;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.Update;
-import org.flowerplatform.core.node.update.remote.UpdateService;
 import org.flowerplatform.util.controller.AbstractController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +18,6 @@ public abstract class UpdateDAO extends AbstractController {
 	
 	public void addUpdate(Node node, Update update) {		
 		doAddUpdate(node, update);
-		
-		// store update in thread local -> updates will be sent back to client with the remote method result
-		List<Update> updates = UpdateService.getCurrentMethodInvocationUpdates().get();
-		if (updates == null) {
-			updates = new ArrayList<Update>();
-		}
-		updates.add(update);
-		UpdateService.getCurrentMethodInvocationUpdates().set(updates);
 		
 		// log update
 		logger.debug("UPDATE ADDED for {} : {}", node, update);

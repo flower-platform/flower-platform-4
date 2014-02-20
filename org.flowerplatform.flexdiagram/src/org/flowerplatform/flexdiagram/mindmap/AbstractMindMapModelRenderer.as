@@ -72,7 +72,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			hLayout.paddingTop = 2;
 			hLayout.paddingLeft = 2;
 			hLayout.paddingRight = 2;
-			hLayout.verticalAlign = "baseline";
+			hLayout.verticalAlign = "middle";
 			
 			this.layout = hLayout;
 		}
@@ -171,6 +171,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			var iconDisplay:BitmapImage = new BitmapImage();
 			iconDisplay.contentLoader = imageCache;
 			iconDisplay.source = icon;
+			iconDisplay.verticalAlign = "middle";
 			
 			addElementAt(iconDisplay, numElements - 1);
 			

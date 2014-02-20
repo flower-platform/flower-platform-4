@@ -30,6 +30,7 @@ import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.file.IFileAccessController;
 
 /**
@@ -60,7 +61,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (FeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return CodeSyncCodePlugin.FILE;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

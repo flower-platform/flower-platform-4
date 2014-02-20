@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * Mapped to {@link SingleVariableDeclaration}. Children are {@link Modifier}s.
@@ -53,7 +54,7 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getVariableDeclaration(element).getName().getIdentifier();
-		} else if (FeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return PARAMETER;
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getVariableDeclaration(element).getType());

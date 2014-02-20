@@ -4,12 +4,12 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
-	[RemoteClass(alias="org.flowerplatform.core.node.remote.NodeWithVisibleChildren")]
-	public class NodeWithVisibleChildren {
-	
+	[RemoteClass(alias="org.flowerplatform.core.node.remote.NodeWithChildren")]
+	public class NodeWithChildren {
+		
 		public var node:Node;
 		
-		public var visibleChildren:ArrayCollection;
+		public var children:ArrayCollection; /* of NodeWithChildren */
 		
 	}
 }
