@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED_MARKER;
 import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
 import java.util.ArrayList;
@@ -181,11 +182,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
-					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				if (childNode.getOrPopulateProperties().containsKey(ADDED_MARKER)) {
+					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED_MARKER);
 				}
 			} else {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED_MARKER)) {
 					CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
 				}
 			}
@@ -218,7 +219,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED_MARKER);
 			} else {
 				CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
 			}

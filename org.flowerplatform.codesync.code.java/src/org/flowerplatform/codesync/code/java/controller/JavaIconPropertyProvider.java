@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
+import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -99,6 +100,10 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	protected int getModifiersFlags(Node node) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node)) {
+			if (CodeSyncControllerUtils.isRemoved(modifier)) {
+				// don't decorate if the modifier was marked removed
+				continue;
+			}
 			String keyword = (String) modifier.getOrPopulateProperties().get("name");
 			if (keyword == null) {
 				continue;

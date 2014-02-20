@@ -29,6 +29,8 @@ package org.flowerplatform.flex_client.core.plugin {
 		
 		public static const MESSAGES_FILE:String = "messages.properties";
 		
+		public static const SEPARATOR:String = "|";
+		
 		protected var _resourcesUrl:String;
 		
 		protected var _composedImagesUrl:String;
@@ -91,7 +93,7 @@ package org.flowerplatform.flex_client.core.plugin {
 			var composedUrl:String = "";
 			for each (var url:String in urls) {
 				if (url != null) {
-					composedUrl += (composedUrl.length > 0 ? "|" : "") + url;
+					composedUrl += (composedUrl.length > 0 ? SEPARATOR : "") + url;
 				}
 			}
 			if (composedUrl.length == 0) {

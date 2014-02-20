@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.codesync.controller;
 
+import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED_MARKER;
+import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED_MARKER;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isCodeSyncFlagConstant;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isConflictPropertyName;
@@ -25,7 +27,6 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isO
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
@@ -38,6 +39,8 @@ import org.flowerplatform.util.Utils;
 public class CodeSyncPropertySetter extends PropertySetter {
 
 	public CodeSyncPropertySetter() {
+		// invoked before the persistence controllers
+		// to cache the current value of the property before it is overwritten
 		setOrderIndex(-100000);
 	}
 	
@@ -50,8 +53,9 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
 		
 		// if the node is newly added or marked removed => propagate sync flag false
-		if (CodeSyncPlugin.REMOVED.equals(property) || CodeSyncPlugin.ADDED.equals(property)) {
+		if (REMOVED_MARKER.equals(property) || ADDED_MARKER.equals(property)) {
 			setSyncFalseAndPropagateToParents(node, service);
+			return;
 		}
 		
 		if (isOriginalPropertyName(property) || isConflictPropertyName(property) || isCodeSyncFlagConstant(property)) {

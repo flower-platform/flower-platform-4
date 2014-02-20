@@ -1,11 +1,11 @@
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_SYNC;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED;
-import static org.flowerplatform.codesync.CodeSyncPlugin.SYNC;
+import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED_MARKER;
+import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_CONFLICT_MARKER;
+import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_SYNC_MARKER;
+import static org.flowerplatform.codesync.CodeSyncPlugin.CONFLICT_MARKER;
+import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED_MARKER;
+import static org.flowerplatform.codesync.CodeSyncPlugin.SYNC_MARKER;
 
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeService;
@@ -16,7 +16,7 @@ import org.flowerplatform.core.node.remote.NodeService;
 public class CodeSyncControllerUtils {
 
 	public static final String ORIGINAL = ".original";
-	public static final String OTHER = ".conflict";
+	public static final String CONFLICT = ".conflict";
 	
 	public static boolean isOriginalPropertyName(String property) {
 		return property.endsWith(ORIGINAL);
@@ -27,17 +27,17 @@ public class CodeSyncControllerUtils {
 	}
 	
 	public static boolean isConflictPropertyName(String property) {
-		return property.endsWith(OTHER);
+		return property.endsWith(CONFLICT);
 	}
 	
 	public static String getConflictPropertyName(String property) {
-		return property + OTHER;
+		return property + CONFLICT;
 	}
 	
 	public static boolean isCodeSyncFlagConstant(String property) {
-		if (property.equals(SYNC) || property.equals(CHILDREN_SYNC) || 
-				property.equals(CONFLICT) || property.equals(CHILDREN_CONFLICT) ||
-				property.equals(ADDED) || property.equals(REMOVED)) {
+		if (SYNC_MARKER.equals(property) || CHILDREN_SYNC_MARKER.equals(property) || 
+				CONFLICT_MARKER.equals(property) || CHILDREN_CONFLICT_MARKER.equals(property) ||
+				ADDED_MARKER.equals(property) || REMOVED_MARKER.equals(property)) {
 			return true;
 		}
 		return false;
@@ -45,7 +45,7 @@ public class CodeSyncControllerUtils {
 	
 	public static void setSyncFalseAndPropagateToParents(Node node, NodeService service) {
 		// set sync false
-		service.setProperty(node, SYNC, false);
+		service.setProperty(node, SYNC_MARKER, false);
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
@@ -55,7 +55,7 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenSync false
-			service.setProperty(parent, CHILDREN_SYNC, false);
+			service.setProperty(parent, CHILDREN_SYNC_MARKER, false);
 			node = parent;
 		}
 	}
@@ -83,23 +83,29 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set sync true
-		service.setProperty(node, SYNC, true);
-		if (allChildrenSync(node, service)) {
-			service.setProperty(node, CHILDREN_SYNC, true);
-		}
+		service.setProperty(node, SYNC_MARKER, true);
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
 		while ((parent = service.getParent(node)) != null) {
-			if (!allChildrenSync(parent, service)) {
-				return;
-			}
 			// if childrenSync is already true for the parent, no need to go up
 			if (isChildrenSync(parent)) {
 				return;
 			}
+			
+			if (!allChildrenSync(parent, service)) {
+				return;
+			}
+			
 			// set childrenSync true
-			service.setProperty(parent, CHILDREN_SYNC, true);
+			service.setProperty(parent, CHILDREN_SYNC_MARKER, true);
+			
+			// if this parent is not sync, then its parents' childrenSync flag can't be set to true
+			// it's better to just stop now
+			if (!isSync(parent)) {
+				return;
+			}
+			
 			node = parent;
 		}
 	}
@@ -113,7 +119,7 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict true
-		service.setProperty(node, CONFLICT, true);
+		service.setProperty(node, CONFLICT_MARKER, true);
 		
 		// propagate childrenConflict flag for parents
 		Node parent = null;
@@ -123,7 +129,7 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT, true);
+			service.setProperty(parent, CHILDREN_CONFLICT_MARKER, true);
 			node = parent;
 		}
 	}
@@ -147,9 +153,9 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict false
-		service.setProperty(node, CONFLICT, false);
+		service.setProperty(node, CONFLICT_MARKER, false);
 		if (noChildConflict(node, service)) {
-			service.setProperty(node, CHILDREN_CONFLICT, false);
+			service.setProperty(node, CHILDREN_CONFLICT_MARKER, false);
 		}
 		
 		// propagate childrenConflict flag for parents
@@ -163,14 +169,14 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT, false);
+			service.setProperty(parent, CHILDREN_CONFLICT_MARKER, false);
 			node = parent;
 		}
 	}
 	
 	public static boolean allChildrenSync(Node node, NodeService service) {
-		for (Node child : service.getChildren(node, true)) {
-			if (!isSync(child) || !isChildrenSync(child) || isAdded(child) || isRemoved(child)) {
+		for (Node child : service.getChildren(node, false)) {
+			if (!isSync(child) || isAdded(child) || isRemoved(child)) {
 				return false;
 			}
 		}
@@ -187,27 +193,27 @@ public class CodeSyncControllerUtils {
 	}
 	
 	public static boolean isSync(Node node) {
-		return hasFlagTrue(node, SYNC);
+		return hasFlagTrue(node, SYNC_MARKER);
 	}
 	
 	public static boolean isChildrenSync(Node node) {
-		return hasFlagTrue(node, CHILDREN_SYNC);
+		return hasFlagTrue(node, CHILDREN_SYNC_MARKER);
 	}
 	
 	public static boolean isAdded(Node node) {
-		return hasFlagTrue(node, ADDED);
+		return hasFlagTrue(node, ADDED_MARKER);
 	}
 	
 	public static boolean isRemoved(Node node) {
-		return hasFlagTrue(node, REMOVED);
+		return hasFlagTrue(node, REMOVED_MARKER);
 	}
 	
 	public static boolean isConflict(Node node) {
-		return hasFlagTrue(node, CONFLICT);
+		return hasFlagTrue(node, CONFLICT_MARKER);
 	}
 	
 	public static boolean isChildrenConflict(Node node) {
-		return hasFlagTrue(node, CHILDREN_CONFLICT);
+		return hasFlagTrue(node, CHILDREN_CONFLICT_MARKER);
 	}
 	
 	private static boolean hasFlagTrue(Node node, String flag) {

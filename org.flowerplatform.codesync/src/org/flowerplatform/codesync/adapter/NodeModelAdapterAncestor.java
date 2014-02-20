@@ -18,11 +18,10 @@
  */
 package org.flowerplatform.codesync.adapter;
 
-import java.util.Iterator;
-import java.util.List;
+import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED_MARKER;
 
-import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import java.util.Iterator;
+
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -43,7 +42,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isAdded = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPlugin.ADDED);
+				Boolean isAdded = (Boolean) getNode(candidate).getOrPopulateProperties().get(ADDED_MARKER);
 				if (isAdded != null && isAdded) {
 					return false;
 				}

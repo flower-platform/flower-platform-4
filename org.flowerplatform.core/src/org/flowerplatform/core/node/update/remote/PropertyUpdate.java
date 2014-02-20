@@ -41,7 +41,7 @@ public class PropertyUpdate extends Update {
 		return isUnset;
 	}
 
-	public void setUnset(boolean isUnset) {
+	public void setIsUnset(boolean isUnset) {
 		this.isUnset = isUnset;
 	}
 		

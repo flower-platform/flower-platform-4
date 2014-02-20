@@ -21,7 +21,6 @@ import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
-import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -88,11 +87,11 @@ public class NodeService {
 		}
 		
 		ParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
-		Pair<Node, Object> parent = provider.getParent(node);
+		Node parent = provider.getParent(node);
 		if (parent == null) {
 			return null;
 		}
-		return parent.a;
+		return parent;
 	}
 		
 	/**
