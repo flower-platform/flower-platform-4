@@ -28,6 +28,9 @@ public abstract class ResourcesServlet extends HttpServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
 	
+	//TODO replace with flower property
+	protected static boolean useFilesFromTempProperty = false; 
+	
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
@@ -41,6 +44,9 @@ public abstract class ResourcesServlet extends HttpServlet {
 	* @author Sebastian Solomon
 	*/
 	protected String searchInTemp(String requestedFile) {
+		if (!useFilesFromTempProperty) {
+			return null;
+		}
 		File file = new File(TEMP_FOLDER , requestedFile);
 		return file.exists() ? file.getAbsolutePath() : null;
 	}
@@ -49,6 +55,9 @@ public abstract class ResourcesServlet extends HttpServlet {
 	* @author Sebastian Solomon
 	*/
 	protected String getTempFilePath(String tempFileName) {
+		if (!useFilesFromTempProperty) {
+			return null;
+		}
 		return TEMP_FOLDER + "\\" + tempFileName; 
 	}
 	
@@ -56,6 +65,9 @@ public abstract class ResourcesServlet extends HttpServlet {
 	* @author Sebastian Solomon
 	*/
 	protected File getTempFile(String tempFileName) {
+		if (!useFilesFromTempProperty) {
+			return null;
+		}
 		return new File(TEMP_FOLDER, tempFileName); 
 	}
 }

@@ -63,27 +63,35 @@ public class ImageComposerServlet extends ResourcesServlet {
 		}
 		
 		String mapValue = null;
-		String mapKey = requestedFile.intern();
+		String mapKey;
+		if (useFilesFromTempProperty) {
+			mapKey = requestedFile.intern();
+		} else {
+			mapKey = requestedFile;
+		}
+		
 		synchronized (mapKey) {
-			mapValue = tempFilesMap.get(requestedFile);
-			if (mapValue != null) {
-				if (getTempFile(mapValue).exists()) {
-					InputStream result = new FileInputStream(getTempFilePath(mapValue));
-					OutputStream output = response.getOutputStream();
-					IOUtils.copy(result, output);
-					logger.debug("File {} served from temp",  mapValue);
-					result.close();
-					output.close();
-					return;
-				} else { // the temporary file was deleted from disk. 
-					logger.debug("File {} found to be missing from temp",  mapValue);
-				}
-			} else {
-				synchronized(this) {
-					counter++;
-					mapValue = counter + "";
-					tempFilesMap.put(requestedFile, mapValue);
-					logger.debug("mapValue {} added",  mapValue);
+			if (useFilesFromTempProperty) {
+				mapValue = tempFilesMap.get(requestedFile);
+				if (mapValue != null) {
+					if (getTempFile(mapValue).exists()) {
+						InputStream result = new FileInputStream(getTempFilePath(mapValue));
+						OutputStream output = response.getOutputStream();
+						IOUtils.copy(result, output);
+						logger.debug("File {} served from temp",  mapValue);
+						result.close();
+						output.close();
+						return;
+					} else { // the temporary file was deleted from disk. 
+						logger.debug("File {} found to be missing from temp",  mapValue);
+					}
+				} else {
+					synchronized(this) {
+						counter++;
+						mapValue = counter + "";
+						tempFilesMap.put(requestedFile, mapValue);
+						logger.debug("mapValue {} added",  mapValue);
+					}
 				}
 			}
 		
@@ -131,14 +139,23 @@ public class ImageComposerServlet extends ResourcesServlet {
 	    	if (!TEMP_FOLDER.exists()) {
 	    		TEMP_FOLDER.mkdir();
 	    	}
-	    	FileOutputStream tempOutput = new FileOutputStream(getTempFilePath(mapValue));
-	    	OutputStream output = response.getOutputStream();
-	    	try {
-		    	ImageIO.write(result, "png", tempOutput);
-		    	logger.debug("file {} written in temp",  mapValue);
+	    	
+	    	FileOutputStream tempOutput = null;
+	    	if (useFilesFromTempProperty) {
+		    	tempOutput = new FileOutputStream(getTempFilePath(mapValue));
+	    	}
+		    	OutputStream output = response.getOutputStream();
+		    	
+	    	try { 
+	    		if (tempOutput != null) {
+			    	ImageIO.write(result, "png", tempOutput);
+			    	logger.debug("file {} written in temp",  mapValue);
+	    		}
 				ImageIO.write(result, "png", output);
 	    	} finally {
-	    		tempOutput.close();
+	    		if (tempOutput != null) {
+	    			tempOutput.close();
+	    		}
 	    		output.close();
 	    	}
 		}

@@ -156,33 +156,39 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		String mapValue = null;
 		String mapKey = null;
 		
+		// if the file is in a zip, search first in the Temp folder
+		if (fileInsideZipArchive != null) {
+			mapKey = creteMapKey(file, fileInsideZipArchive).intern();
+			mapValue = tempFilesMap.get(mapKey);
+		} else {
+			mapKey = creteMapKey(file, fileInsideZipArchive);
+		}
+		
 		synchronized (mapKey) {
-			// if the file is in a zip, search first in the Temp folder
-			if (fileInsideZipArchive != null) {
-				mapKey = creteMapKey(file, fileInsideZipArchive).intern();
-				mapValue = tempFilesMap.get(mapKey);
-				
-				if (mapValue != null) { // file exists in 'tempFilesMap'
-					if (getTempFile(mapValue).exists()) {
-						 response.reset();
-					     response.setBufferSize(DEFAULT_BUFFER_SIZE);
-					     response.setContentType(fileInsideZipArchive);
-					     InputStream input = new FileInputStream(getTempFilePath(mapValue));
-					     OutputStream output = response.getOutputStream();
-					     IOUtils.copy(input, output);
-					     input.close();
-					     output.close();
-					     logger.debug("File {} served from temp",  mapValue);
-					     return;
-					} else { // temporary file was deleted from disk
-						logger.debug("File {} found to be missing from temp",  mapValue);
-					}
-				} else {
-					synchronized(this) {
-						counter++;
-						mapValue = counter + "";
-						tempFilesMap.put(mapKey, mapValue);
-						logger.debug("mapValue '{}' added", mapValue );
+			if (useFilesFromTempProperty) {
+				if (fileInsideZipArchive != null) {
+					if (mapValue != null) { // file exists in 'tempFilesMap'
+						if (getTempFile(mapValue).exists()) {
+							 response.reset();
+						     response.setBufferSize(DEFAULT_BUFFER_SIZE);
+						     response.setContentType(fileInsideZipArchive);
+						     InputStream input = new FileInputStream(getTempFilePath(mapValue));
+						     OutputStream output = response.getOutputStream();
+						     IOUtils.copy(input, output);
+						     input.close();
+						     output.close();
+						     logger.debug("File {} served from temp",  mapValue);
+						     return;
+						} else { // temporary file was deleted from disk
+							logger.debug("File {} found to be missing from temp",  mapValue);
+						}
+					} else {
+						synchronized(this) {
+							counter++;
+							mapValue = counter + "";
+							tempFilesMap.put(mapKey, mapValue);
+							logger.debug("mapValue '{}' added", mapValue );
+						}
 					}
 				}
 			}
@@ -241,11 +247,13 @@ public class PublicResourcesServlet extends ResourcesServlet {
 						TEMP_FOLDER.mkdir();
 					}
 					
-					Files.copy(input, getTempFile(mapValue).toPath(), StandardCopyOption.REPLACE_EXISTING);
-					logger.debug("file '{}' was writen in temp", mapValue);
-					
-					input.close();
-					input = new FileInputStream(getTempFilePath(mapValue));
+					if (useFilesFromTempProperty) {
+						Files.copy(input, getTempFile(mapValue).toPath(), StandardCopyOption.REPLACE_EXISTING);
+						logger.debug("file '{}' was writen in temp", mapValue);
+						
+						input.close();
+						input = new FileInputStream(getTempFilePath(mapValue));
+					}
 	            }
 	
 	            output = response.getOutputStream();
@@ -269,5 +277,4 @@ public class PublicResourcesServlet extends ResourcesServlet {
     	return fileName + SEPARATOR + fileInsideZipArchive;
     }
 	
-
 }
