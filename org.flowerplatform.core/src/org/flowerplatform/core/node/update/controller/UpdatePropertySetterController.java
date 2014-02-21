@@ -12,7 +12,7 @@ import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 public class UpdatePropertySetterController extends PropertySetter {
 
 	public UpdatePropertySetterController() {
-		// must be invoked last
+		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);
 	}
 	

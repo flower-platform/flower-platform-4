@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 
 /**
+ * @see NodeService
  * @author Cristina Constantinescu
+ * @author Cristian Spiescu
  */
 public class NodeServiceRemote {
 	
@@ -44,15 +47,20 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService().getAddChildDescriptors();
 	}
 	
+	/**
+	 * Sends a subtree to the client, based on the status of the client. Status of the client (i.e. <code>query</code> parameter)
+	 * means the tree that the client is actually seeing (based on what nodes are expanded and collapsed).
+	 */
 	public NodeWithChildren refresh(FullNodeIdWithChildren query) {
 		NodeWithChildren response = new NodeWithChildren();
 		Node node = new Node(query.getFullNodeId());
 		response.setNode(node);
 		
+		// forces population of properties
 		node.getOrPopulateProperties();
 		
 		if (query.getVisibleChildren() == null) { 
-			// no visible children on client = node not expanded, so don't continue
+			// no visible children on client => node not expanded, so don't continue
 			// OR dummy query created for a child that isn't found in query's list of children
 			return response;
 		}
@@ -61,8 +69,10 @@ public class NodeServiceRemote {
 			// search corresponding child in query
 			FullNodeIdWithChildren childQuery = getChildQueryFromQuery(query, child.getFullNodeId());
 			if (childQuery == null) { 
-				// not found, create a dummy query and populate it only with the fullNodeId
-				// this way, only node's properties will be populated
+				// not found, so this node is probably newly added;
+				// create a dummy query and populate it only with the fullNodeId
+				// this way, the recursive algorithm will go only one level deep,
+				// the node's properties will be populated, and the recurssion will stop
 				childQuery = new FullNodeIdWithChildren();
 				childQuery.setFullNodeId(child.getFullNodeId());
 			}

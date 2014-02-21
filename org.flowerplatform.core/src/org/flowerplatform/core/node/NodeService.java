@@ -29,6 +29,7 @@ import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -37,6 +38,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>
+ * The methods of this service are exposed on the web by {@link NodeServiceRemote}; {@link NodeServiceRemote}
+ * has almost the same methods, but it uses <code>fullNodeId:String</code> instead of a {@link Node} instance. It 
+ * does this to forbid receiving from the client populated nodes (which don't affect the business logic, but generate
+ * unnecessary traffic).
+ * 
+ * @see NodeServiceRemote
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
  */
@@ -196,6 +204,9 @@ public class NodeService {
 		return descriptorsMap;
 	}
 		
+	/**
+	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
+	 */
 	public void populateNodeProperties(Node node) {	
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -208,6 +219,10 @@ public class NodeService {
 		}
 	}
 	
+	
+	/**
+	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
+	 */
 	public Object getRawNodeData(Node node) {	
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {

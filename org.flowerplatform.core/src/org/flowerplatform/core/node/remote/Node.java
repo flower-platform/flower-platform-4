@@ -4,13 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 
 /**
+ * <p>
+ * This is a remote class (transferable to client). But only server -> client.
+ * 
+ * @see NodeService
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
  */
 public class Node {
+	
+	public static final char FULL_NODE_ID_SEPARATOR = '|';
+	private static final String FULL_NODE_ID_SPLIT_REGEX = "\\" + FULL_NODE_ID_SEPARATOR;
 	
 	private String type;
 	
@@ -18,10 +26,10 @@ public class Node {
 	
 	private String idWithinResource;
 	
-	private String fullNodeId;
+	private String cachedFullNodeId;
 	
 	private Map<String, Object> properties;
-	private boolean populated;
+	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
 	private boolean rawNodeDataRetrieved;
@@ -31,14 +39,13 @@ public class Node {
 		this.resource = resource;
 		this.idWithinResource = idWithinResource;
 		
-		calculateFullNodeId();
 		if (rawNodeData != null) {
 			setRawNodeData(rawNodeData);
 		}
 	}
 
 	public Node(String fullNodeId) {
-		String[] tokens = fullNodeId.split("\\|");
+		String[] tokens = fullNodeId.split(FULL_NODE_ID_SPLIT_REGEX);
 						
 		this.type = tokens[0];
 		this.resource = tokens[1];
@@ -46,7 +53,7 @@ public class Node {
 		if (tokens.length == 3) {
 			this.idWithinResource = tokens[2];
 		}
-		this.fullNodeId = fullNodeId;
+		this.cachedFullNodeId = fullNodeId;
 	}
 	
 	public String getType() {
@@ -55,6 +62,7 @@ public class Node {
 
 	public void setType(String type) {
 		this.type = type;
+		cachedFullNodeId = null;
 	}
 
 	public String getResource() {
@@ -63,6 +71,7 @@ public class Node {
 
 	public void setResource(String resource) {
 		this.resource = resource;
+		cachedFullNodeId = null;
 	}
 	
 	public String getIdWithinResource() {
@@ -71,15 +80,14 @@ public class Node {
 
 	public void setIdWithinResource(String idWithinResource) {
 		this.idWithinResource = idWithinResource;
-		calculateFullNodeId();
+		cachedFullNodeId = null;
 	}
 
 	public String getFullNodeId() {
-		return fullNodeId;
-	}
-
-	private void calculateFullNodeId() {
-		this.fullNodeId = String.format("%s|%s|%s", this.type, this.resource, this.idWithinResource);
+		if (cachedFullNodeId == null) {
+			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + FULL_NODE_ID_SEPARATOR + idWithinResource;
+		}
+		return cachedFullNodeId;
 	}
 
 	/**
@@ -108,10 +116,10 @@ public class Node {
 	 * @return The properties map (populated if not already populated).
 	 */
 	public Map<String, Object> getOrPopulateProperties() {
-		if (!populated) {	
+		if (!propertiesPopulated) {	
 			// lazy population
 			CorePlugin.getInstance().getNodeService().populateNodeProperties(this);
-			populated = true;
+			propertiesPopulated = true;
 		}
 		return getProperties();
 	}
@@ -131,32 +139,17 @@ public class Node {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result	+ ((fullNodeId == null) ? 0 : fullNodeId.hashCode());
-		return result;
+		return getFullNodeId().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Node other = (Node) obj;
-		if (fullNodeId == null) {
-			if (other.fullNodeId != null)
-				return false;
-		} else if (!fullNodeId.equals(other.fullNodeId))
-			return false;
-		return true;
+		return getFullNodeId().equals(((Node) obj).getFullNodeId());
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Node [fullNodeId = %s]", fullNodeId);
+		return String.format("Node [fullNodeId = %s]", getFullNodeId());
 	}
 	
 }

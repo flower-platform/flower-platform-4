@@ -13,7 +13,7 @@ import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 public class UpdateRemoveNodeController extends RemoveNodeController {
 
 	public UpdateRemoveNodeController() {
-		// must be invoked after persistence controller 
+		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);
 	}
 	
