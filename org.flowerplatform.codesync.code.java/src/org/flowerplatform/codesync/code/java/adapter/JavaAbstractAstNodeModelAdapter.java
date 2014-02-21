@@ -46,6 +46,7 @@ import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -119,7 +120,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					ASTNode parent = (ASTNode) element;
 					AST ast = parent.getAST();
 					
-					int valuesCount = CodeSyncPlugin.getInstance().getNodeService().getChildren(node, false).size();
+					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, false).size();
 					
 					if (valuesCount == 0) {
 						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();
@@ -198,7 +199,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 			javadoc.tags().add(tag);
 			TextElement text = javadoc.getAST().newTextElement();
 			tag.fragments().add(text);
-			text.setText(((Node) correspondingElement).getId());
+			text.setText(((Node) correspondingElement).getIdWithinResource());
 			System.out.println(javadoc);
 		}
 	}

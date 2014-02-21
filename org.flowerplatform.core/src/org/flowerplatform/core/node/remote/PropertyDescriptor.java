@@ -31,6 +31,7 @@ public class PropertyDescriptor extends AbstractController {
 	private static final String DEFAULT_TYPE = "String";
 	
 	private String name;
+	private String title;
 	private String type = DEFAULT_TYPE;
 	private boolean readOnly = true;
 		
@@ -44,6 +45,19 @@ public class PropertyDescriptor extends AbstractController {
 	
 	public PropertyDescriptor setNameAs(String name) {
 		this.name = name;
+		return this;
+	}
+		
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public PropertyDescriptor setTitleAs(String title) {
+		this.title = title;
 		return this;
 	}
 	

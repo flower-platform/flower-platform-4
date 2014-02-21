@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.flowerplatform.core,
  org.flowerplatform.core.file,
+ org.flowerplatform.core.node,
  org.flowerplatform.core.node.controller,
  org.flowerplatform.core.node.remote,
  org.flowerplatform.core.node.update.remote

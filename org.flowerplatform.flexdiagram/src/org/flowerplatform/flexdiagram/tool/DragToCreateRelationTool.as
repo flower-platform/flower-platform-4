@@ -51,7 +51,7 @@ package org.flowerplatform.flexdiagram.tool {
 		
 		override public function activateAsMainTool():void {			
 			var relationAnchor:RelationAnchor = getRelationAnchorFromDisplayCoordinates();			
-			context.model = AnchorsSelectionRenderer(relationAnchor.parent).getTargetModel();
+			context.model = AnchorsSelectionRenderer(relationAnchor.parent).model;
 			
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);

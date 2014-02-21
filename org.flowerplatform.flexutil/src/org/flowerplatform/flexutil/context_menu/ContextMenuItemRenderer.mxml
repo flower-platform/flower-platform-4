@@ -114,9 +114,9 @@
 				}
 				var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
 				if (ActionUtil.isComposedAction(IAction(data))) {
-					contextMenu.list.mx_internal::setSelectedIndex(contextMenu.actions.getItemIndex(data), true);
+					contextMenu.list.setSelectedIndex(contextMenu.actions.getItemIndex(data), true);
 				} else {
-					contextMenu.list.mx_internal::setSelectedIndex(-1, true);
+					contextMenu.list.setSelectedIndex(-1, true);
 				}
 			}
 			

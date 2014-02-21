@@ -17,22 +17,20 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.mindmap.controller {
-	import flash.display.DisplayObject;
 	import flash.events.FocusEvent;
 	import flash.geom.Rectangle;
 	
+	import mx.core.IDataRenderer;
+	import mx.core.IVisualElement;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
 	import org.flowerplatform.flexdiagram.tool.controller.IInplaceEditorController;
-	import org.flowerplatform.flexutil.text.AutoGrowSkinnableTextBaseSkin;
 	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
-	
-	import spark.components.TextInput;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -52,7 +50,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		public function activate(model:Object):void {			
 			var controller:IAbsoluteLayoutRectangleController = diagramShell.getControllerProvider(model).getAbsoluteLayoutRectangleController(model);
 			var bounds:Rectangle = controller.getBounds(model);
-			
+		
 			// create text area (auto grow width & height at CTRL + ENTER) 
 			var textArea:AutoGrowTextArea = new AutoGrowTextArea();
 			textArea.x = bounds.x;
@@ -60,7 +58,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			textArea.minWidth = bounds.width;
 			textArea.maxWidth = MAX_WIDTH; // needed for width auto grow
 			textArea.minHeight = bounds.height;			
-			textArea.text = Node(model).properties["body"];			
+			textArea.text = Node(model).properties[NodePropertiesConstants.TEXT];			
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
 			// select all text
@@ -73,7 +71,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		public function commit(model:Object):void {		
 			var textArea:AutoGrowTextArea = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model), "body", textArea.text]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, NodePropertiesConstants.TEXT, textArea.text]);
 
 			diagramShell.mainToolFinishedItsJob();
 		}

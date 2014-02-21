@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mindmap
+Bundle-SymbolicName: org.flowerplatform.mindmap;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.flowerplatform.core,
+ org.flowerplatform.util,
+ org.eclipse.osgi
+Bundle-Activator: org.flowerplatform.mindmap.MindMapPlugin
+Bundle-ActivationPolicy: lazy
+Export-Package: org.flowerplatform.mindmap

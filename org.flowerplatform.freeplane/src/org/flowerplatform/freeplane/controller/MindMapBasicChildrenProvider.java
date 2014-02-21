@@ -17,7 +17,7 @@ public class MindMapBasicChildrenProvider extends ChildrenProvider {
 	@Override
 	public List<Node> getChildren(Node node) {
 		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
-		if (node.getId() == null) {
+		if (node.getIdWithinResource() == null) {
 			return Collections.singletonList(FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(nodeModel));
 		}
 		List<Node> children = new ArrayList<Node>();		

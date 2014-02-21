@@ -41,7 +41,7 @@ public class PropertyUpdate extends Update {
 		return isUnset;
 	}
 
-	public void setUnset(boolean isUnset) {
+	public void setIsUnset(boolean isUnset) {
 		this.isUnset = isUnset;
 	}
 		
@@ -52,7 +52,7 @@ public class PropertyUpdate extends Update {
 	
 	@Override
 	public String toString() {
-		return "PropertyUpdate [key=" + key + " value=" + value + " isUnset=" + isUnset + " node=" + getNode() + ", timestamp=" + getTimestamp() + "]";
+		return "PropertyUpdate [key=" + key + " value=" + value + " isUnset=" + isUnset + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";
 	}
 	
 }

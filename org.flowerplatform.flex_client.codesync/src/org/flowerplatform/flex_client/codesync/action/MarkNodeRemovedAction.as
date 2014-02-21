@@ -43,7 +43,7 @@ package org.flowerplatform.flex_client.codesync.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selection.getItemAt(0), "removed", true]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(selection.getItemAt(0)).fullNodeId, "removed", true]);
 		}
 		
 	}
