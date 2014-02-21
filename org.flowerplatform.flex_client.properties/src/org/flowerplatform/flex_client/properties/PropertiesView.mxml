@@ -95,13 +95,10 @@
 					function(result:Object):void {
 						propertiesLength = ArrayCollection(result).length;
 						for ( var x:int = 0; x < ArrayCollection(result).length; ++x ) {
-							var formItem:FormItem = new FormItem();
-							var textImput:TextInput = new TextInput();
-							
-							formItem.label = ArrayCollection(result).getItemAt(x).name
+							var formItem:PropertyItemRenderer = new PropertyItemRenderer();
+							formItem.label = ArrayCollection(result).getItemAt(x).name;
 //							textImput.text =  ArrayCollection(result).getItemAt(x).value // null
-							formItem.addElement(textImput);
-							
+//							formItem.data = ArrayCollection(result).getItemAt(x).data;
 							propertyForm.addElement(formItem);
 						}
 							
