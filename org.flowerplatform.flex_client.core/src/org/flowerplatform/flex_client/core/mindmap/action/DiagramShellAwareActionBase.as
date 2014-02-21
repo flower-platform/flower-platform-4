@@ -19,7 +19,7 @@
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
+	import org.flowerplatform.flexdiagram.IDiagramShellAware;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**

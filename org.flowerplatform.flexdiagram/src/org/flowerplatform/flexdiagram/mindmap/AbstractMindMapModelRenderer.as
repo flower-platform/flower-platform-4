@@ -9,7 +9,7 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.ResizeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
+	import org.flowerplatform.flexdiagram.IDiagramShellAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	

@@ -16,18 +16,30 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.codesync.remote {
-	import org.flowerplatform.flex_client.core.CorePlugin;
+package org.flowerplatform.flexdiagram {
+	
+	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.action.IComposedActionProviderProcessor;
 	
 	/**
+	 * Sets the <tt>diagramShell</tt> that an <tt>IDiagramShellAware</tt> will use
+	 * on execution.
+	 * 
 	 * @author Mariana Gheorghe
 	 */
-	public class CodeSyncOperationsService {
+	public class DiagramShellAwareProcessor implements IComposedActionProviderProcessor {
 		
-		public static const ID:String = "codeSyncOperationsService";
+		public var diagramShell:DiagramShell;
 		
-		public function synchronize(path:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke(ID + ".synchronize", [path]);
+		public function DiagramShellAwareProcessor(diagramShell:DiagramShell) {
+			this.diagramShell = diagramShell;
 		}
+		
+		public function processAction(action:IAction):void {
+			if (action is IDiagramShellAware) {
+				IDiagramShellAware(action).diagramShell = diagramShell;
+			}
+		}
+		
 	}
 }

@@ -17,7 +17,6 @@
     <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.DiagramRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer"/>
-    <classEntry path="org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.IWakeUpableTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.ScrollTool"/>
@@ -42,6 +41,7 @@
     <classEntry path="org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController"/>
     <classEntry path="org.flowerplatform.flexdiagram.util.MultilineLabelItemRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDragTool"/>
+    <classEntry path="org.flowerplatform.flexdiagram.DiagramShellAwareProcessor"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

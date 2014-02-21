@@ -26,9 +26,9 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.IDiagramShellAware;
 	import org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	
 	import spark.components.Label;
 	

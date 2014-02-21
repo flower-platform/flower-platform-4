@@ -57,6 +57,7 @@ package org.flowerplatform.flex_client.properties {
 			propertyRendererClasses["String"] = new FactoryWithInitialization(StringPropertyRenderer);
 			propertyRendererClasses["Boolean"] = new FactoryWithInitialization(BooleanPropertyRenderer);
 			propertyRendererClasses["Number"] = new FactoryWithInitialization(NumberPropertyRenderer);
+			propertyRendererClasses["DropDownList"] = new FactoryWithInitialization(DropDownListPropertyRenderer);
 		}
 		
 	}

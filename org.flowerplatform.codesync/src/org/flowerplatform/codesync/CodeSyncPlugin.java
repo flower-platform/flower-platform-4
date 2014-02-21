@@ -104,8 +104,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
 	
-	protected Map<String, List<String>> dataProvidersForDropDownListProperties = new HashMap<String, List<String>>();
-	
 	protected NodeService nodeService = (NodeService) CorePlugin.getInstance()
 			.getServiceRegistry().getService("nodeService");
 	
@@ -177,14 +175,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 
 	public void setProjectAccessController(IProjectAccessController projectAccessController) {
 		this.projectAccessController = projectAccessController;
-	}
-	
-	public void addDataProviderForDropDownListProperty(String name, List<String> dataProvider) {
-		dataProvidersForDropDownListProperties.put(name, dataProvider);
-	}
-	
-	public Map<String, List<String>> getDataProvidersForDropDownListProperties() {
-		return dataProvidersForDropDownListProperties;
 	}
 	
 //	/**
