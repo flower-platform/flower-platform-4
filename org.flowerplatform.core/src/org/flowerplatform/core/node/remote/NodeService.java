@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
+import org.flowerplatform.core.node.update.RootNodeInfoDAO;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -37,15 +39,22 @@ public class NodeService {
 	
 	protected TypeDescriptorRegistry registry;
 	
+	protected RootNodeInfoDAO rootNodeInfoDAO;
+	
 	public NodeService() {
 		super();		
 	}
 	
-	public NodeService(TypeDescriptorRegistry registry) {
+	public NodeService(TypeDescriptorRegistry registry, RootNodeInfoDAO rootNodeInfoDAO) {
 		super();
 		this.registry = registry;
+		this.rootNodeInfoDAO = rootNodeInfoDAO;
 	}
 
+	public RootNodeInfoDAO getRootNodeInfoDAO() {
+		return rootNodeInfoDAO;
+	}
+	
 	public List<Node> getChildren(Node node, boolean populateProperties) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -227,5 +236,17 @@ public class NodeService {
 		}
 		
 		return descriptorsMap;
+	}
+	
+	public void subscribe(Node rootNode) {
+		rootNodeInfoDAO.subscribe(CorePlugin.getInstance().getSessionId(), rootNode);
+	}
+
+	public void unsubscribe(Node rootNode) {	
+		rootNodeInfoDAO.unsubscribe(CorePlugin.getInstance().getSessionId(), rootNode);
+	}
+	
+	public void stillSubscribedPing(Node rootNode) {
+		rootNodeInfoDAO.stillSubscribedPing(CorePlugin.getInstance().getSessionId(), rootNode);
 	}
 }

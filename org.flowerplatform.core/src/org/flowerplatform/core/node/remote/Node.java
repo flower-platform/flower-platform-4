@@ -159,7 +159,7 @@ public class Node {
 
 	@Override
 	public String toString() {
-		return String.format("Node [body = %s, type = %s]", getProperties().get("body"), type);
+		return String.format("Node [body = %s, type = %s, resource = %s]", getProperties().get("body"), type, resource);
 	}
 	
 }

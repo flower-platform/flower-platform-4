@@ -17,6 +17,7 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap.controller {
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
@@ -38,8 +39,12 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		}
 		
 		public function getChildren(model:Object):IList {
+			var children:IList = MindMapDiagramShell(diagramShell).getDynamicObject(diagramShell.rootModel).children;
 			// the rootModel keeps all diagram's children in its dynamic object	
-			return MindMapDiagramShell(diagramShell).getDynamicObject(diagramShell.rootModel).children;
+			if (children == null) {
+				return new ArrayList();
+			}
+			return children;
 		}
 		
 		public function beginListeningForChanges(model:Object):void {

@@ -62,7 +62,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				}
 			} else {
 				// TODO CS: sa nu stea aici; astfel parametrii parent si index nu vor mai fi optionali
-				diagramShell.rootModel = new Node();
+//				diagramShell.rootModel = new Node();
 				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(node, true);				
 			}
 		}
@@ -107,9 +107,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		public function requestChildren(node:Node):void {		
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
 			if (node == null) {
-				node = new Node();
-				node.type = "freeplaneNode";
-				node.resource = "mm://path_to_resource";
+				node = Node(diagramShell.rootModel);
 			}
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 

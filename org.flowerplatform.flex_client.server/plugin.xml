@@ -14,5 +14,11 @@
             runnable="org.flowerplatform.flex_client.server.blazeds.AddHttpFlexSessionListenerRunnable">
       </listener>
    </extension>
+   <extension
+         point="org.flowerplatform.host.servletbridge.registry.listeners">
+      <listener
+            runnable="org.flowerplatform.core.node.update.AddRootNodeInfoHttpSessionListenerRunnable">
+      </listener>
+   </extension>
 
 </plugin>

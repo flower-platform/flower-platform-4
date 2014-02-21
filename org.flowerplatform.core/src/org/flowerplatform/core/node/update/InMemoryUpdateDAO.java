@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.node.remote.InMemoryRootNodeInfo;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.RootNodeInfo;
 import org.flowerplatform.core.node.update.remote.Update;
@@ -22,7 +23,7 @@ public class InMemoryUpdateDAO extends UpdateDAO {
 	@Override
 	protected void doAddUpdate(Node node, Update update) {
 		if (!nodeToRootNodeInfo.containsKey(node)) {
-			nodeToRootNodeInfo.put(node, new RootNodeInfo());
+			nodeToRootNodeInfo.put(node, new InMemoryRootNodeInfo());
 		}
 		nodeToRootNodeInfo.get(node).addUpdate(update);		
 	}

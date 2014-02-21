@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.update.remote;
 
 import java.util.List;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.UpdateDAO;
 import org.slf4j.Logger;
@@ -36,15 +37,8 @@ public class UpdateService {
 	}
 	
 	public List<Update> getUpdates(Node rootNode, long timestampOfLastRequest) {
+		CorePlugin.getInstance().getNodeService().stillSubscribedPing(rootNode);
 		return updateDAO.getUpdates(rootNode, timestampOfLastRequest);
 	}
 	
-	public void subscribe(Node rootNode) {	
-		// TODO CC: to be implemented
-	}
-
-	public void unsubscribe(Node rootNode) {	
-		// TODO CC: to be implemented
-	}
-
 }

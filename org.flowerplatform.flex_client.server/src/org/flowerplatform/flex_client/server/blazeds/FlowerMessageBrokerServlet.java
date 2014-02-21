@@ -2,7 +2,12 @@ package org.flowerplatform.flex_client.server.blazeds;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.flowerplatform.core.CorePlugin;
+
+import flex.messaging.FlexContext;
 import flex.messaging.MessageBrokerServlet;
 
 /**
@@ -19,6 +24,16 @@ public class FlowerMessageBrokerServlet extends MessageBrokerServlet {
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(new ServletConfigWrapper(servletConfig));
+	}
+
+	@Override
+	public void service(HttpServletRequest req, HttpServletResponse res) {
+		try {
+			CorePlugin.getInstance().setRequest(req);
+			super.service(req, res);
+		} finally {
+			CorePlugin.getInstance().clearRequest();
+		}
 	}
 
 }

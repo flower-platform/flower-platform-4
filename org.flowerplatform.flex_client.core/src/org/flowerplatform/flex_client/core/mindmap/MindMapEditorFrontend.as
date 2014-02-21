@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.core.mindmap {
 	
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -45,6 +46,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
+	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
@@ -118,13 +120,29 @@ package org.flowerplatform.flex_client.core.mindmap {
 			super.createChildren();					
 		}
 		
-		private function creationCompleteHandler(event:FlexEvent):void {			
+		private function creationCompleteHandler(event:FlexEvent):void {	
+			var root:Node = new Node();
+			root.type = "freeplaneNode";
+			root.resource = "mm://path_to_resource";
+			diagramShell.rootModel = root;
+			
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.subscribe",	[diagramShell.rootModel]);
+			
 			// TODO CC: Temporary code
 			var reloadAction:ReloadAction = new ReloadAction();
 			reloadAction.diagramShell = diagramShell;
 			reloadAction.run();
 			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
+			
+			IEventDispatcher(viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+		}
+		
+		/**
+		 * @author Mariana Gheorghe
+		 */
+		protected function viewRemovedHandler(event:ViewRemovedEvent):void {
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.unsubscribe", [diagramShell.rootModel]);
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

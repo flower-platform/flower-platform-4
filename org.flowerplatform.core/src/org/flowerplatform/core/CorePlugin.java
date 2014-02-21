@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.core;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -29,6 +31,7 @@ import org.flowerplatform.core.node.controller.update.UpdaterAddNodeController;
 import org.flowerplatform.core.node.controller.update.UpdaterPropertySetterController;
 import org.flowerplatform.core.node.controller.update.UpdaterRemoveNodeController;
 import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.core.node.update.InMemoryRootNodeInfoDAO;
 import org.flowerplatform.core.node.update.InMemoryUpdateDAO;
 import org.flowerplatform.core.node.update.remote.UpdateService;
 import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
@@ -45,6 +48,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CorePlugin INSTANCE;
 	
+	private ThreadLocal<HttpServletRequest> requests = new ThreadLocal<HttpServletRequest>();
+	
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -54,7 +59,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		super.start(context);
 		INSTANCE = this;
 				
-		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry));
+		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry, new InMemoryRootNodeInfoDAO()));
 		getServiceRegistry().registerService("updateService", new UpdateService(new InMemoryUpdateDAO()));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
@@ -137,4 +142,43 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return (NodeService) serviceRegistry.getService("nodeService");
 	}
 
+	/**
+	 * Must be called from a try/finally block to make sure that the request is cleared, i.e.
+	 * 
+	 * <pre>
+	 * try {
+	 * 	CorePlugin.getInstance().setRequest(request);
+	 * 	
+	 * 	// specific logic here
+	 * 
+	 * } finally {
+	 * 	CorePlugin.getInstance().clearRequest();
+	 * }
+	 * </pre> 
+	 * 
+	 * @see FlowerMessageBrokerServlet
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public void setRequest(HttpServletRequest request) {
+		requests.set(request);
+	}
+	
+	/**
+	 * @see #setRequest(HttpServletRequest)
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public void clearRequest() {
+		requests.remove();
+	}
+	
+	public HttpServletRequest getRequest() {
+		return requests.get();
+	}
+	
+	public String getSessionId() {
+		return getRequest().getSession().getId();
+	}
+	
 }

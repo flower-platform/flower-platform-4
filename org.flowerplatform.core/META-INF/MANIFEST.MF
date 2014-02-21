@@ -8,6 +8,7 @@ Export-Package: org.flowerplatform.core,
  org.flowerplatform.core.file,
  org.flowerplatform.core.node.controller,
  org.flowerplatform.core.node.remote,
+ org.flowerplatform.core.node.update,
  org.flowerplatform.core.node.update.remote
 Bundle-ClassPath: .
 Require-Bundle: org.flowerplatform.util,
@@ -15,3 +16,5 @@ Require-Bundle: org.flowerplatform.util,
  org.eclipse.equinox.http.registry
 Bundle-Activator: org.flowerplatform.core.CorePlugin
 Bundle-ActivationPolicy: lazy
+Import-Package: javax.servlet,
+ javax.servlet.http

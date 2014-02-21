@@ -111,7 +111,7 @@
 	
 	<session-config>
 		<!-- For the session represents the number of minutes after the session is invalidated. -->
-		<session-timeout>10</session-timeout> 
+		<session-timeout>1</session-timeout> 
 	</session-config>
 	   
 	<welcome-file-list>
