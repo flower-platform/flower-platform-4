@@ -3,10 +3,9 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 creationComplete="creationCompleteHandler(event)"
-		 height="100%"
 		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
 	<s:layout>
-		<s:VerticalLayout useVirtualLayout="true"/>
+		<s:VerticalLayout />
 	</s:layout>
 	
 	<fx:Script>
@@ -14,14 +13,14 @@
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
-			import mx.controls.TextInput;
 			import mx.events.FlexEvent;
-			
-			import spark.components.FormItem;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+			import org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
@@ -96,9 +95,7 @@
 						propertiesLength = ArrayCollection(result).length;
 						for ( var x:int = 0; x < ArrayCollection(result).length; ++x ) {
 							var formItem:PropertyItemRenderer = new PropertyItemRenderer();
-							formItem.label = ArrayCollection(result).getItemAt(x).name;
-//							textImput.text =  ArrayCollection(result).getItemAt(x).value // null
-//							formItem.data = ArrayCollection(result).getItemAt(x).data;
+							formItem.data = ArrayCollection(result).getItemAt(x);
 							propertyForm.addElement(formItem);
 						}
 							
@@ -119,7 +116,8 @@
 			
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
 				var node:Node = event.node;
-//				var properties:ArrayCollection = ArrayCollection(propertyForm.);
+				
+//				var properties:ArrayCollection = ArrayCollection(propertyList.dataProvider);
 //				for each (var property:PropertyDescriptor in properties) {
 //					if (node.properties != null) {
 //						if (node.properties.hasOwnProperty(property.name)) {
@@ -131,14 +129,20 @@
 //						}
 //					}						
 //				}
-				
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
-					if (propertyForm.getElementAt(i) is FormItem) {
-						var formItem:FormItem = FormItem(propertyForm.getElementAt(i));
+					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
+						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
 						if (node.properties != null) {
-							if (node.properties.hasOwnProperty(formItem.label)) {
-								TextInput(formItem.getElementAt(0)).text = node.properties[formItem.label];
-//								TextInput(formItem.getElementAt(0)).editable = 
+							if (node.properties.hasOwnProperty(propertyItemRenderer.label)) {
+								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.label];
+								
+								if (propertyItemRenderer.itemRenderedInstance is StringPropertyRenderer) {
+									StringPropertyRenderer(propertyItemRenderer.getElementAt(0)).propertyValue.text = node.properties[propertyItemRenderer.label];
+								} else if (propertyItemRenderer.itemRenderedInstance is BooleanPropertyRenderer) {
+									BooleanPropertyRenderer(propertyItemRenderer.getElementAt(0)).checkBox.selected = node.properties[propertyItemRenderer.label];
+								}
+//								(PropertyItemRenderer(formItem)).getElementAt(0) = node.properties[formItem.label];		
+//								TextInput(formItem.getElementAt(0)).text = node.properties[formItem.label];
 							}
 						}
 					}
@@ -153,12 +157,12 @@
 	</s:HGroup>
 	
 	
-	<s:Scroller width="100%" height="400">
-		<s:Group width="100%" height="100%" clipAndEnableScrolling="true">
-			<s:BorderContainer borderVisible="false">
+	<s:Scroller width="100%" height="100%">
+		<s:Group width="100%" height="100%">
+			<!--<s:BorderContainer borderVisible="false">-->
 				<s:Form id="propertyForm" width="100%" height="100%">
 				</s:Form>
-			</s:BorderContainer>
+			<!--</s:BorderContainer>-->
 		</s:Group>
 	</s:Scroller>
 		

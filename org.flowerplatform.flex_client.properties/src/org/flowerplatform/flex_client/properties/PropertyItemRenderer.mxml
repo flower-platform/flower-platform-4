@@ -38,9 +38,17 @@
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
 
 //				propertyName.text = data.name;
-							
+				
+				this.label = data.name;
+//				if (value.type == "Boolean" ) {
+//					this.addElement(new CheckBox());
+//				} else {
+//					this.addElement(new TextInput());
+//				}
+			
+				
 				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[data.type]);			
-
+					
 				if (itemRenderedInstance != null && itemRenderedInstance is factory.generator) {
 					trace("Reciclying item renderer");
 				} else {
@@ -49,8 +57,9 @@
 					itemRenderedInstance = factory.newInstance(false);
 					itemRenderedInstance.percentWidth = 100;
 					itemRenderedInstance.percentHeight = 100;
+					this.addElement(itemRenderedInstance);
 				}
-			
+				
 				itemRenderedInstance.data = data;
 				
 			}

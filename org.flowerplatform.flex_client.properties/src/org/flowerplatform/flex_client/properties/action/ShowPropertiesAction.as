@@ -25,7 +25,7 @@ package org.flowerplatform.flex_client.properties.action {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewIdInWorkbench(PropertiesViewProvider.ID)
 				.setWidth(500)
-				.setHeight(300)
+				.setHeight(350)
 				.show();
 		}
 	}

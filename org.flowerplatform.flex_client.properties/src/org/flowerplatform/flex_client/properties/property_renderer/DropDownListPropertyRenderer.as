@@ -75,9 +75,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.data = value;			
 			dropDownList.enabled = !PropertyDescriptor(data).readOnly;
 			
-			if (!data.readOnly) {				
-				handleListeningOnEvent(IndexChangeEvent.CHANGE, this, dropDownList);
-			}			
+//			if (!data.readOnly) {				
+//				handleListeningOnEvent(IndexChangeEvent.CHANGE, this, dropDownList);
+//			}			
 		}
 		
 		private function requestDataProviderCallbackHandler(result:ArrayCollection):void {
