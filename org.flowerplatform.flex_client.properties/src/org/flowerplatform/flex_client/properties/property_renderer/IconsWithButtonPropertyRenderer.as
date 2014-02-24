@@ -39,6 +39,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		 */ 
 		public var getNewIconsPropertyHandler:Function;
 		
+		private var currentValue:String;
+		
 		public function IconsWithButtonPropertyRenderer() {
 			super();
 			iconsArea = new IconsComponentExtension(this);
@@ -69,8 +71,10 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 
 		public function iconsChanged(value:Object):void {
-			if (value != null) {					
+			if (value != null) {
 				icons = new FlowerArrayList(String(value).split(ICONS_SEPARATOR));
+			} else {
+				icons = null;
 			}
 		}
 		
@@ -80,6 +84,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			if (data != null) {			
 				if (propertyDescriptor.value != null) {					
 					icons = new FlowerArrayList(String(propertyDescriptor.value).split(ICONS_SEPARATOR));
+				} else {
+					icons = null;
 				}
 			}			
 		}
@@ -108,29 +114,43 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			if (result == null) {
 				return;
 			}
-			var type:String = result.type;
-			var oldValue:String = propertyDescriptor.value as String;
+			var type:String = result.type;			
+			var valueChanged:Boolean = false;
 			switch (type) {
 				case ADD:
-					propertyDescriptor.value = (oldValue == null ? "" : (oldValue + ICONS_SEPARATOR)) + result.iconUrl;
+					currentValue = (currentValue == null ? "" : (currentValue + ICONS_SEPARATOR)) + result.iconUrl;
+					valueChanged = true;
 					break;
 				case REMOVE_FIRST:
-					var firstIndexOf:int = oldValue.indexOf(ICONS_SEPARATOR);
-					propertyDescriptor.value = firstIndexOf != -1 ? oldValue.substr(firstIndexOf + 1, oldValue.length) : null;
+					if (currentValue != null) {
+						var firstIndexOf:int = currentValue.indexOf(ICONS_SEPARATOR);
+						currentValue = firstIndexOf != -1 ? currentValue.substr(firstIndexOf + 1, currentValue.length) : null;
+						valueChanged = true;
+					}
 					break;
 				case REMOVE_LAST:
-					var lastIndexOf:int = oldValue.lastIndexOf(ICONS_SEPARATOR);
-					propertyDescriptor.value = lastIndexOf != -1 ? oldValue.substr(0, lastIndexOf) : null;
+					if (currentValue != null) {
+						var lastIndexOf:int = currentValue.lastIndexOf(ICONS_SEPARATOR);
+						currentValue = lastIndexOf != -1 ? currentValue.substr(0, lastIndexOf) : null;
+						valueChanged = true;
+					}
 					break;
 				case REMOVE_ALL:
-					propertyDescriptor.value = null;
+					currentValue = null;
+					valueChanged = true;
 					break;
 			}
-			sendChangedValuesToServer(null);
+			if (valueChanged) {
+				sendChangedValuesToServer(null);
+			}
 		}
 				
 		public function newIconIndex():int {			
 			return numElements - 2;
+		}
+		
+		override protected function getValue():Object {
+			return currentValue;	
 		}
 		
 		override public function validateDisplayList():void {
