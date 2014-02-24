@@ -24,24 +24,32 @@ package org.flowerplatform.flex_client.core.plugin {
 	
 	/**
 	 * @author Cristian Spiescu
+	 * @uthor Cristina Constantinescu
 	 */
 	public class AbstractFlowerFlexPlugin extends AbstractFlexPlugin {
 		
 		public static const MESSAGES_FILE:String = "messages.properties";
 		
+		public static const IMAGE_COMPOSER_PREFIX:String = "servlet/image-composer/";
+		
 		protected var _resourcesUrl:String;
 		
 		protected var _composedImagesUrl:String;
+		
+		/**
+		 * Name of the java plugin project.
+		 * If not <code>null</code>, <code>resourceUrl</code> points to this url.
+		 */ 
+		protected var correspondingJavaPlugin:String;
 
 		public function get resourcesUrl():String {
-			if (_resourcesUrl == null) {
-				const regex:RegExp = new RegExp("(.*?/)swc/");
+			if (_resourcesUrl == null) {				
+				const regex:RegExp = new RegExp("((.*?\/)+)(.*?\/)swc\/");
 				var groups:Array = regex.exec(flexPluginDescriptor.url);
-				if (groups == null || groups.length != 2) {
+				if (groups == null || groups.length != 4) {
 					throw new Error("Error getting the bundle name from the url: " + flexPluginDescriptor.url + "; tried to apply regex: " + regex);
-				} 
-				var package_:String = groups[1];
-				_resourcesUrl = groups[1];
+				}
+				_resourcesUrl = groups[1] + (correspondingJavaPlugin != null ? correspondingJavaPlugin + "/": groups[3]);
 			}
 			return _resourcesUrl;
 		}
@@ -71,8 +79,6 @@ package org.flowerplatform.flex_client.core.plugin {
 		public function getResourceUrl(resource:String):String {
 			return resourcesUrl + resource;
 		}
-
-		public const IMAGE_COMPOSER:String = "servlet/image-composer/";
 		
 		/**
 		 * Returns the request string for the image composed from the URLs. 
@@ -97,8 +103,8 @@ package org.flowerplatform.flex_client.core.plugin {
 			if (composedUrl.length == 0) {
 				return null;
 			}
-			if (composedUrl.indexOf(IMAGE_COMPOSER) < 0) {
-				composedUrl = IMAGE_COMPOSER + composedUrl;
+			if (composedUrl.indexOf(IMAGE_COMPOSER_PREFIX) < 0) {
+				composedUrl = IMAGE_COMPOSER_PREFIX + composedUrl;
 			}
 			return composedUrl;
 		}

@@ -1,6 +1,8 @@
 package org.flowerplatform.flex_client.codesync.renderer {
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flexutil.FlowerArrayList;
@@ -48,5 +50,6 @@ package org.flowerplatform.flex_client.codesync.renderer {
 		private function getSyncMarkerPath(marker:String):String {
 			return "org.flowerplatform.codesync/images/sync-markers/" + marker;
 		}
+		
 	}
 }

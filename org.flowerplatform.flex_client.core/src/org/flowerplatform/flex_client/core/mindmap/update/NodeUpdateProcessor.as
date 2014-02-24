@@ -74,7 +74,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		 * Note: parent == null -> remove root node
 		 */ 
 		private function removeNode(node:Node, parent:Node = null):void {
-			if (parent != null && parent.children == null || !parent.children.contains(node)) {
+			if (parent != null && (parent.children == null || !parent.children.contains(node))) {
 				// not expanded or child already removed
 				return;
 			}

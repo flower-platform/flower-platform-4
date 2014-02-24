@@ -3,8 +3,12 @@ package org.flowerplatform.freeplane.controller;
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
@@ -12,6 +16,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
+import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 
@@ -20,8 +25,9 @@ import org.freeplane.features.nodestyle.NodeSizeModel;
  */
 public class MindMapBasicPropertySetter extends PropertySetter {
 
+	private static final Pattern ICON_URL_PATTERN = Pattern.compile("((.*?/)+)(.*?).png");
+		
 	@Override
-
 	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
 		NodeModel nodeModel = getNodeModel(node);	
 		
@@ -46,7 +52,20 @@ public class MindMapBasicPropertySetter extends PropertySetter {
 					newMaxValue = (Integer) wrapper.getPropertyValue();
 				}
 				NodeSizeModel.createNodeSizeModel(nodeModel).setMaxNodeWidth(newMaxValue);								
-				return;		
+				return;
+			case ICONS:
+				String icons = (String) wrapper.getPropertyValue();
+				nodeModel.getIcons().clear();
+				if (icons != null) {					
+					String[] array = icons.split("\\|");
+					for (String icon : array) {
+						Matcher matcher = ICON_URL_PATTERN.matcher(icon);
+						if (matcher.find()) {
+							nodeModel.addIcon(new MindIcon(matcher.group(3)));	
+						}											
+					}
+				}				
+				return;
 		}
 		
 		// persist the property value in the attributes table

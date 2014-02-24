@@ -1,0 +1,133 @@
+package org.flowerplatform.flexutil.renderer {
+	import flash.events.Event;
+	import flash.sampler.NewObjectSample;
+	
+	import mx.collections.ArrayList;
+	import mx.collections.IList;
+	import mx.core.IVisualElement;
+	import mx.core.IVisualElementContainer;
+	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
+	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.FlowerArrayList;
+	
+	import spark.components.DataRenderer;
+	import spark.components.Group;
+	import spark.core.ContentCache;
+	import spark.layouts.HorizontalLayout;
+	import spark.primitives.BitmapImage;
+	
+	/**
+	 * An extension for components that adds multiple icons as children.
+	 * @author Cristina Constantinescu
+	 */ 
+	public class IconsComponentExtension {
+		
+		/**
+		 * Graphical list of icons (list of <code>BitmapImage</code>).
+		 */ 
+		protected var iconDisplays:IList;
+		
+		/**
+		 * Model list of icons (list of urls as <code>String</code>s).
+		 */ 
+		protected var _icons:FlowerArrayList = new FlowerArrayList();		
+		
+		/**
+		 * Represents the parent component for icons.
+		 */ 
+		protected var component:IIconsComponentExtensionProvider;
+		
+		public function IconsComponentExtension(component:IIconsComponentExtensionProvider) {
+			this.component = component;				
+		}
+				
+		public function get icons():FlowerArrayList {
+			return _icons;
+		}
+		
+		public function set icons(value:FlowerArrayList):void {
+			if (value == _icons)
+				return;
+			if (value == null) {
+				var k:int = 0;
+				if (iconDisplays != null) {
+					while (k < iconDisplays.length)  {
+						removeIconDisplay(BitmapImage(iconDisplays.getItemAt(k)));
+					}
+				}
+				_icons.removeAll();
+			} else {
+				var i:int;
+				var j:int = 0;
+				if (_icons.length > 0 && value.length > 0) {
+					while (j < value.length && j < _icons.length) {
+						BitmapImage(iconDisplays.getItemAt(j)).source = value.getItemAt(j);
+						j++;
+					}
+				}
+				if (j < _icons.length) {
+					i = j;
+					while (i < iconDisplays.length)  {
+						removeIconDisplay(BitmapImage(iconDisplays.getItemAt(i)));
+					}
+				}
+				if (j < value.length) {
+					for (i = j; i < value.length; i++) {
+						addIconDisplay(value.getItemAt(i));
+					}
+				}
+				_icons = value;
+			}			
+		}
+					
+		protected function addIconDisplay(icon:Object):void {
+			var iconDisplay:BitmapImage = new BitmapImage();
+			iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
+			iconDisplay.source = icon;
+			iconDisplay.verticalAlign = "middle";
+			
+			IVisualElementContainer(component).addElementAt(iconDisplay, component.newIconIndex());
+			
+			if (iconDisplays == null) {
+				iconDisplays = new ArrayList();
+			}
+			iconDisplays.addItem(iconDisplay);
+		}
+		
+		protected function removeIconDisplay(iconDisplay:BitmapImage):void {
+			IVisualElementContainer(component).removeElement(iconDisplay);
+			iconDisplays.removeItemAt(iconDisplays.getItemIndex(iconDisplay));
+			
+			UIComponent(component).invalidateSize();
+		}			
+		
+		public function validateDisplayList():void {			
+			if (iconDisplays && iconDisplays.length > 0) {
+				for (var i:int=0; i < iconDisplays.length; i++) {
+					var iconDisplay:BitmapImage = BitmapImage(iconDisplays.getItemAt(i));
+					iconDisplay.validateDisplayList();
+				}
+			}
+		}
+		
+		public function validateProperties():void {			
+			if (iconDisplays && iconDisplays.length > 0) {
+				for (var i:int=0; i < iconDisplays.length; i++) {
+					var iconDisplay:BitmapImage = BitmapImage(iconDisplays.getItemAt(i));
+					iconDisplay.validateProperties();
+				}
+			}
+		}
+		
+		public function validateSize():void {
+			if (iconDisplays && iconDisplays.length > 0) {
+				for (var i:int=0; i < iconDisplays.length; i++) {
+					var iconDisplay:BitmapImage = BitmapImage(iconDisplays.getItemAt(i));
+					iconDisplay.validateSize();
+				}
+			}		
+		}
+	}
+}

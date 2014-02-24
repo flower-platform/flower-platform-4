@@ -12,5 +12,6 @@ package org.flowerplatform.flex_client.core {
 		// TODO CC: move to mindmap project
 		public static const MIN_WIDTH:String = "min_width";
 		public static const MAX_WIDTH:String = "max_width";
+		public static const ICONS:String = "icons";
 	}
 }

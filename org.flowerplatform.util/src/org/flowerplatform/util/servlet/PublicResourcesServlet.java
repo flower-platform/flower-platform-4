@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -104,6 +105,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	/**
 	* @author Cristian Spiescu
 	* @author Sebastian Solomon
+	* @author Cristina Constantinescu
 	*/
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -118,8 +120,14 @@ public class PublicResourcesServlet extends ResourcesServlet {
 			return;
 		}
 
-		// Decode the file name (might contain spaces and on) and prepare file
-		// object.
+		// Decode the file name (might contain spaces and on) and prepare file object.
+		
+		// solution for: .../icons/0%.png
+		// The URL decoder expects the %to precede a character code
+		// replace(%) with %25 before decoding
+		// http://stackoverflow.com/questions/6067673/urldecoder-illegal-hex-characters-in-escape-pattern-for-input-string
+		requestedFile = requestedFile.replaceAll("%(?![0-9a-fA-F]{2})", "%25");
+			
 		requestedFile = URLDecoder.decode(requestedFile, "UTF-8");
 		if (requestedFile.startsWith(PATH_PREFIX)) {
 			requestedFile = requestedFile.substring(PATH_PREFIX.length());
