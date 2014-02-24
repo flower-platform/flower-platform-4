@@ -24,6 +24,7 @@ package org.flowerplatform.flexdiagram.controller.selection
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	import org.flowerplatform.flexdiagram.renderer.selection.AbstractSelectionRenderer;
 	
 	public class SelectionController extends ControllerBase implements ISelectionController {
@@ -56,13 +57,17 @@ package org.flowerplatform.flexdiagram.controller.selection
 				if (selectionRenderer == null) {
 					selectionRenderer = new selectionRendererClass();
 					
-					selectionRenderer.setMainSelection(isMainSelection);
-					selectionRenderer.activate(diagramShell, renderer);
+					if (selectionRenderer is IDiagramShellAware) {
+						IDiagramShellAware(selectionRenderer).diagramShell = diagramShell;
+					}
+					
+					selectionRenderer.isMainSelection = isMainSelection;
+					selectionRenderer.activate(model);
 					
 					modelExtraInfoController.getDynamicObject(model).selectionRenderer = selectionRenderer;
 				} else {
-					if (selectionRenderer.getMainSelection() != isMainSelection) {
-						selectionRenderer.setMainSelection(isMainSelection);
+					if (selectionRenderer.isMainSelection != isMainSelection) {
+						selectionRenderer.isMainSelection = isMainSelection;
 					}
 				}					
 			} else {
@@ -84,7 +89,7 @@ package org.flowerplatform.flexdiagram.controller.selection
 			var selectionRenderer:AbstractSelectionRenderer = modelExtraInfoController.getDynamicObject(model).selectionRenderer;
 			
 			if (selectionRenderer != null) {
-				selectionRenderer.deactivate();				
+				selectionRenderer.deactivate(model);				
 				delete modelExtraInfoController.getDynamicObject(model).selectionRenderer;
 			}
 		}

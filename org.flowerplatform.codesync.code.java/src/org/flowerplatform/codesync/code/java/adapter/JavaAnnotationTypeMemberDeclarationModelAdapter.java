@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * Mapped by {@link AnnotationTypeMemberDeclaration}. Children are {@link Modifier}s.
@@ -49,7 +50,7 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getMatchKey(element);
-		} else if (FeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return ANNOTATION_MEMBER;
 		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			return getStringFromExpression(getAnnotationMember(element).getDefault());

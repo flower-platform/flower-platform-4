@@ -22,57 +22,64 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	
 	/**	
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractSelectionRenderer extends UIComponent {
-		
+	public class AbstractSelectionRenderer extends UIComponent implements IDiagramShellAware {
+						
 		/**
 		 * The figure where the anchors will be shown.
 		 */
 		protected var target:IVisualElement;
+				
+		protected var _model:Object;
 		
-		protected var diagramShell:DiagramShell;
+		public function get model():Object {
+			return _model;
+		}
+		
+		protected var _diagramShell:DiagramShell;
+		
+		public function get diagramShell():DiagramShell {
+			return _diagramShell;
+		}
+		
+		public function set diagramShell(value:DiagramShell):void {
+			_diagramShell = value;
+		}
 		
 		/**
 		 * Main selection influences the aspect of the anchors.
 		 */
-		protected var isMainSelection:Boolean;
+		protected var _isMainSelection:Boolean;
 		
-		public function activate(diagramShell:DiagramShell, target:IVisualElement):void {
-			this.target = target;
-			this.diagramShell = diagramShell;
+		public function get isMainSelection():Boolean {
+			return _isMainSelection;
+		}
+		
+		public function set isMainSelection(value:Boolean):void {			
+			var oldValue:Boolean = _isMainSelection;
 			
-			diagramShell.diagramRenderer.addElement(this);
-		}
-		
-		public function deactivate():void {
-			diagramShell.diagramRenderer.removeElement(this);
-		}
-
-		public function getTargetModel():Object {
-			if (target != null) 
-				return IDataRenderer(target).data;
-			else 
-				return null;
-		}
-		
-		public function getMainSelection():Boolean {
-			return isMainSelection;
-		}
-		
-		public function setMainSelection(value:Boolean):void {
-			
-			var oldValue:Boolean = isMainSelection;
-			
-			isMainSelection = value;
+			_isMainSelection = value;
 			
 			if (oldValue != value) {
 				// announce ResizeAnchors that the value has been modified
 				invalidateActiveAnchors();
 			}
 		}		
+		
+		public function activate(model:Object):void {
+			this._model = model;			
+			this.target = diagramShell.getRendererForModel(model);
+			
+			diagramShell.diagramRenderer.addElement(this);
+		}
+		
+		public function deactivate(model:Object):void {
+			diagramShell.diagramRenderer.removeElement(this);
+		}
 		
 		/**
 		 * This can be implemented by subclasses to update anchors display.

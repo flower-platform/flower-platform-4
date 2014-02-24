@@ -31,7 +31,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
-import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
@@ -41,11 +41,12 @@ import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -106,8 +107,8 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					ASTNode parent = (ASTNode) element;
 					AST ast = parent.getAST();
 					
-					int modifierType = (int) node.getOrPopulateProperties().get(JavaModifierFeatureProvider.MODIFIER_TYPE);
-					extendedModifier = ast.newModifier(Modifier.ModifierKeyword.fromFlagValue(modifierType));
+					String keyword = (String) node.getOrPopulateProperties().get(FeatureProvider.NAME);
+					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
 					if (parent instanceof BodyDeclaration) {
 						((BodyDeclaration) parent).modifiers().add(extendedModifier);
 					} else {
@@ -119,8 +120,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					ASTNode parent = (ASTNode) element;
 					AST ast = parent.getAST();
 					
-					Node values = getChildrenCategoryForNode(node, JavaAnnotationFeatureProvider.ANNOTATION_VALUES);
-					int valuesCount = values == null ? 0 : getChildrenForNode(values).size();
+					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, false).size();
 					
 					if (valuesCount == 0) {
 						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();
@@ -199,7 +199,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 			javadoc.tags().add(tag);
 			TextElement text = javadoc.getAST().newTextElement();
 			tag.fragments().add(text);
-			text.setText(((Node) correspondingElement).getId());
+			text.setText(((Node) correspondingElement).getIdWithinResource());
 			System.out.println(javadoc);
 		}
 	}

@@ -142,7 +142,10 @@ package org.flowerplatform.flexdiagram.mindmap
 		override protected function createChildren():void {			
 			super.createChildren();
 			
-			labelDisplay = new Label();
+			labelDisplay = new Label();		
+			labelDisplay.percentHeight = 100;
+			labelDisplay.percentWidth = 100;
+			labelDisplay.setStyle("verticalAlign" , "middle");		
 			addElement(labelDisplay);
 		}
 		
@@ -168,6 +171,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			var iconDisplay:BitmapImage = new BitmapImage();
 			iconDisplay.contentLoader = imageCache;
 			iconDisplay.source = icon;
+			iconDisplay.verticalAlign = "middle";
 			
 			addElementAt(iconDisplay, numElements - 1);
 			

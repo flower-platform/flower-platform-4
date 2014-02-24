@@ -19,11 +19,13 @@
 package org.flowerplatform.codesync.controller;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana Gheorghe
+ * @author Cristina Constantinescu
  */
 public class CodeSyncAddNodeController extends AddNodeController {
 
@@ -33,10 +35,8 @@ public class CodeSyncAddNodeController extends AddNodeController {
 	}
 	
 	@Override
-	public void addNode(Node node, Node child, Node currentChildAtInsertionPoint) {
-		if (!child.getType().equals(CodeSyncPlugin.CATEGORY)) {
-			CodeSyncPlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
-		}
+	public void addNode(Node node, Node child, Node insertBeforeNode) {		
+		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
 	}
 
 }

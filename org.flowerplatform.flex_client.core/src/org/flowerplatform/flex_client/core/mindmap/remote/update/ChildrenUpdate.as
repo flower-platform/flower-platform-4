@@ -14,7 +14,7 @@ package org.flowerplatform.flex_client.core.mindmap.remote.update {
 		
 		public var targetNode:Node;
 		
-		public var targetNodeAddedBefore:Node;
+		public var fullTargetNodeAddedBeforeId:String;
 
 	}
 }

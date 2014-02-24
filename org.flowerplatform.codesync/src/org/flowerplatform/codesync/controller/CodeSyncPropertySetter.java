@@ -27,9 +27,10 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.set
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -42,12 +43,13 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value) {		
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {		
 		if (property.equals("timestamp") || property.equals("icon")) {
 			return; // TODO skipping all non-sync props
 		}
 		
-		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+
+		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncPlugin.REMOVED.equals(property) || CodeSyncPlugin.ADDED.equals(property)) {
@@ -57,7 +59,7 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		if (isOriginalPropertyName(property) || isConflictPropertyName(property) || isCodeSyncFlagConstant(property)) {
 			return;
 		}
-		
+	
 		boolean isOriginalPropertySet = false;
 		Object originalValue = null;
 		String originalProperty = getOriginalPropertyName(property);
@@ -68,10 +70,10 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		} else if (node.getOrPopulateProperties().containsKey(property)) {
 			originalValue = node.getOrPopulateProperties().get(property);
 		} else {
-			originalValue = value;
+			originalValue = wrapper.getPropertyValue();
 		}
 		
-		if (!Utils.safeEquals(originalValue, value)) {
+		if (!Utils.safeEquals(originalValue, wrapper.getPropertyValue())) {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
 				service.setProperty(node, originalProperty, originalValue);

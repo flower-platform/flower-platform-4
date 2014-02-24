@@ -4,8 +4,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	
 	import mx.core.mx_internal;
 	
-	import org.flowerplatform.flex_client.core.mindmap.event.NodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeRemovedEvent;
 	
 	use namespace mx_internal;
 		
@@ -30,7 +30,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		}
 		
 		public function registerNode(node:Node):void {			
-			registry[node.id] = node;
+			registry[node.fullNodeId] = node;
 		}
 		
 		public function unregisterNode(nodeId:String):void {

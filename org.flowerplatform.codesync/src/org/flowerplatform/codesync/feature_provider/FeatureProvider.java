@@ -20,6 +20,7 @@ package org.flowerplatform.codesync.feature_provider;
 
 import java.util.List;
 
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -29,9 +30,9 @@ public abstract class FeatureProvider extends AbstractController {
 	
 	public static final String FEATURE_PROVIDER = "featureProvider";
 
-	public static final String NAME = "name";
-	public static final String TYPE = "type";
-	
+	// TODO CC: to be removed
+	public static final String NAME = NodePropertiesConstants.TEXT;
+
 	public abstract List<?> getValueFeatures(Object element);
 	
 	public abstract List<?> getContainmentFeatures(Object element);

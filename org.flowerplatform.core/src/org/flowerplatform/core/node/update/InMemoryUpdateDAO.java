@@ -1,7 +1,6 @@
 package org.flowerplatform.core.node.update;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,30 +20,40 @@ public class InMemoryUpdateDAO extends UpdateDAO {
 
 	@Override
 	protected void doAddUpdate(Node node, Update update) {
-		if (!nodeToRootNodeInfo.containsKey(node)) {
-			nodeToRootNodeInfo.put(node, new RootNodeInfo());
+		RootNodeInfo info = nodeToRootNodeInfo.get(node);
+		if (info == null) {
+			info = new RootNodeInfo();
+			nodeToRootNodeInfo.put(node, info);
 		}
-		nodeToRootNodeInfo.get(node).addUpdate(update);		
+		info.addUpdate(update);		
 	}
 
 	@Override
 	public List<Update> getUpdates(Node rootNode, long timestampOfLastRequest) {	
-		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
 		List<Update> updates = null;
 		if (nodeToRootNodeInfo.containsKey(rootNode)) {
 			updates = nodeToRootNodeInfo.get(rootNode).getUpdates();
 		}
-		if (updates != null) {
-			for (Update update : updates) {
-				if (update.getTimestamp() > timestampOfLastRequest) {
-					updatesAddedAfterLastRequest.add(update);
-				}
-			}
+		
+		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
+		if (updates == null) {
+			return updatesAddedAfterLastRequest;
 		}
 		
-		Collections.sort(updatesAddedAfterLastRequest);
-		
-		return updatesAddedAfterLastRequest;
+		boolean updatesBeforeLastRequestFound = timestampOfLastRequest == 0; // TODO CC: temporary solution (first time timestamp is 0 -> must be replaced with timestamp registered at subscribe)	
+		// iterate updates reversed. Because last element in list is the most recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
+		for (int i = updates.size() - 1; i >= 0; i--) {
+			Update update = updates.get(i);			
+			if (update.getTimestamp() <= timestampOfLastRequest) { 
+				// an update was registered before timestampOfLastRequest
+				updatesBeforeLastRequestFound = true;
+				break;
+			}
+			updatesAddedAfterLastRequest.add(0, update);
+		}						
+		// if no updates registered before -> tell client to perform full refresh
+		return updatesBeforeLastRequestFound ? updatesAddedAfterLastRequest : null;
 	}
 
 }

@@ -19,11 +19,10 @@
 package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.collections.ArrayCollection;
 	
+	import spark.components.DropDownList;
+	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	
-	import spark.components.DropDownList;
-	import spark.events.IndexChangeEvent;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -78,12 +77,22 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 //			if (!data.readOnly) {				
 //				handleListeningOnEvent(IndexChangeEvent.CHANGE, this, dropDownList);
 //			}			
+			setSelectedIndex();
 		}
 		
 		private function requestDataProviderCallbackHandler(result:ArrayCollection):void {
 			dropDownList.dataProvider = result;		
-			if (result.length > 0) {
-				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, result);
+			setSelectedIndex();
+		}
+		
+		/**
+		 * Called after the data provider for the dropDownList is set, and after the data is set.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		private function setSelectedIndex():void {
+			if (data != null && dropDownList.dataProvider != null) {
+				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
 			}
 		}
 		

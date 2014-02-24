@@ -28,6 +28,8 @@ public class JavaEnumConstantDeclarationFeatureProvider extends NodeFeatureProvi
 	
 	public static final String ENUM_CONSTANT_ARGUMENTS = "enumConstantArguments";
 	
+	public static final String ENUM_CONSTANT_ARGUMENT = "javaEnumConstantArgument";
+	
 	@Override
 	public List<?> getContainmentFeatures(Object element) {
 		return Arrays.asList(ENUM_CONSTANT_ARGUMENTS);

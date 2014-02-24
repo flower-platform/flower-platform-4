@@ -1,26 +1,26 @@
 package org.flowerplatform.core.node.update.remote;
 
-import org.flowerplatform.core.node.remote.Node;
+import java.util.Date;
 
 /**
  * @author Cristina Constantinescu
  */
 public class Update implements Comparable<Update> {
 
-	private Node node;
+	private String fullNodeId;
 	
-	private long timestamp;
-
-	public Node getNode() {
-		return node;
+	private long timestamp = new Date().getTime();
+	
+	public String getFullNodeId() {
+		return fullNodeId;
 	}
 
-	public void setNode(Node node) {
-		this.node = node;
+	public void setFullNodeId(String fullNodeId) {
+		this.fullNodeId = fullNodeId;
 	}
 
-	public Update setNodeAs(Node node) {
-		this.node = node;
+	public Update setFullNodeIdAs(String fullNodeId) {
+		this.fullNodeId = fullNodeId;
 		return this;
 	}
 	
@@ -32,11 +32,6 @@ public class Update implements Comparable<Update> {
 		this.timestamp = timestamp;
 	}
 	
-	public Update setTimestampAs(long timestamp) {
-		this.timestamp = timestamp;
-		return this;
-	}
-
 	@Override
 	public int compareTo(Update o) {
 		return Long.compare(getTimestamp(), o.getTimestamp());
@@ -44,7 +39,7 @@ public class Update implements Comparable<Update> {
 
 	@Override
 	public String toString() {
-		return "Update [node=" + node + ", timestamp=" + timestamp + "]";
+		return "Update [node=" + fullNodeId + ", timestamp=" + timestamp + "]";
 	}
 		
 }

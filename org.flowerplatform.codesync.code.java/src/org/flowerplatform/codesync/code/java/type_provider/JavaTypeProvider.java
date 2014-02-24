@@ -22,7 +22,6 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelA
 import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter.ANNOTATION_MEMBER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
 import static org.flowerplatform.codesync.code.java.adapter.JavaEnumConstantDeclarationModelAdapter.ENUM_CONSTANT;
-import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.EXPRESSION;
 import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter.OPERATION;
@@ -31,10 +30,13 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationM
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ENUM;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.INTERFACE;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider.ENUM_CONSTANT_ARGUMENT;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_INTERFACE;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
@@ -46,6 +48,7 @@ import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
@@ -90,7 +93,15 @@ public class JavaTypeProvider implements ITypeProvider {
 		} else if (object instanceof Annotation) {
 			return ANNOTATION;
 		} else if (object instanceof Expression || object instanceof Type) {
-			return EXPRESSION;
+			ASTNode node = (ASTNode) object;
+			StructuralPropertyDescriptor descriptor = node.getLocationInParent();
+			if (descriptor.equals(TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY) ||
+					descriptor.equals(EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY)) {
+				return SUPER_INTERFACE;
+			} else if (descriptor.equals(EnumConstantDeclaration.ARGUMENTS_PROPERTY)) {
+				return ENUM_CONSTANT_ARGUMENT;
+			}
+			return null;
 		} else {
 			return directMap.get(object.getClass());
 		}

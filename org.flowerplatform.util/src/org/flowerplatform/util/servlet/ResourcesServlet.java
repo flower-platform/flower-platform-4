@@ -1,5 +1,6 @@
 package org.flowerplatform.util.servlet;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServlet;
@@ -10,6 +11,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class ResourcesServlet extends HttpServlet {
+	/**
+	 * @see ImageComposerServlet 
+	 */
+	public static final char SEPARATOR = '|';
+	
+	/**
+	 * Used to replace {@value #SEPARATOR} 
+	 */
+	public static final char TEMP_SEPARATOR = '#';
+	
+	/**
+	 * Used to replace '/' 
+	 */
+	public static final char TEMP_FOLDER_SEPARATOR = '$';
+	
+	public static final String FLOWER_PLATFORM = "flower-platform";
+	
+	public static final File TEMP_FOLDER =  new File (System.getProperty("java.io.tmpdir"), FLOWER_PLATFORM);
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
 	
@@ -20,6 +39,14 @@ public abstract class ResourcesServlet extends HttpServlet {
 			// do nothing
 		}
 		logger.warn("Resource not found; sending 404: {}", request.getPathInfo());
+	}
+	
+	/**
+	* @author Sebastian Solomon
+	*/
+	protected String searchInTemp(String requestedFile) {
+		File file = new File(TEMP_FOLDER , requestedFile);
+		return file.exists() ? file.getAbsolutePath() : null;
 	}
 	
 }
