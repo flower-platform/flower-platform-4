@@ -11,7 +11,7 @@ import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 public class UpdateAddNodeController extends AddNodeController {
 		
 	public UpdateAddNodeController() {
-		// must be invoked last
+		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);
 	}
 	

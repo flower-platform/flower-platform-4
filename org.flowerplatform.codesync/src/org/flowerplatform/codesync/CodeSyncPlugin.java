@@ -20,9 +20,8 @@ package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
-
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
+import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -478,7 +477,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			return resource;
 //		}
 		// TODO CC: temporary code
-		Node node = new Node("freeplaneNode", "mm://path_to_resource", null, null);		
+		Node node = new Node("freeplaneNode", "freePlanePersistence://path_to_resource", null, null);		
 		return CorePlugin.getInstance().getNodeService().getChildren(node, true).get(0);
 	}
 //	

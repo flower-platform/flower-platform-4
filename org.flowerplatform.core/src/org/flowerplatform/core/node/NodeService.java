@@ -1,5 +1,6 @@
 package org.flowerplatform.core.node;
 
+import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -29,6 +30,7 @@ import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -37,6 +39,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>
+ * The methods of this service are exposed on the web by {@link NodeServiceRemote}; {@link NodeServiceRemote}
+ * has almost the same methods, but it uses <code>fullNodeId:String</code> instead of a {@link Node} instance. It 
+ * does this to forbid receiving from the client populated nodes (which don't affect the business logic, but generate
+ * unnecessary traffic).
+ * 
+ * @see NodeServiceRemote
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
  */
@@ -89,7 +98,20 @@ public class NodeService {
 		}
 	}
 		
-
+	public boolean hasChildren(Node node) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return false;
+		}
+		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
+		for (ChildrenProvider provider : childrenProviders) {
+			if (provider.hasChildren(node)) {
+				return true;
+			}
+		}
+		return false;
+	}
+		
 	/**
 	 * @author Mariana Gheorghe
 	 */
@@ -196,6 +218,9 @@ public class NodeService {
 		return descriptorsMap;
 	}
 		
+	/**
+	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
+	 */
 	public void populateNodeProperties(Node node) {	
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -206,8 +231,14 @@ public class NodeService {
 		for (PropertiesProvider provider : providers) {
 			provider.populateWithProperties(node);
 		}
+		
+		node.getProperties().put(HAS_CHILDREN, hasChildren(node));
 	}
 	
+	
+	/**
+	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
+	 */
 	public Object getRawNodeData(Node node) {	
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {

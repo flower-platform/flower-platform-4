@@ -24,10 +24,7 @@ public abstract class UpdateDAO extends AbstractController {
 	}
 	
 	protected abstract void doAddUpdate(Node node, Update update);
-	
-	/**
-	 * @return a list of all {@link Update update}s registered after <code>timestampOfLastRequest</code>, sorted ascending on <code>timestamp</code>.
-	 */
+
 	public abstract List<Update> getUpdates(Node rootNode, long timestampOfLastRequest);
 	
 }

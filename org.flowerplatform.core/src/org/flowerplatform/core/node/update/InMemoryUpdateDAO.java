@@ -41,7 +41,8 @@ public class InMemoryUpdateDAO extends UpdateDAO {
 		}
 		
 		boolean updatesBeforeLastRequestFound = timestampOfLastRequest == 0; // TODO CC: temporary solution (first time timestamp is 0 -> must be replaced with timestamp registered at subscribe)	
-		// iterate updates reversed
+		// iterate updates reversed. Because last element in list is the most recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
 		for (int i = updates.size() - 1; i >= 0; i--) {
 			Update update = updates.get(i);			
 			if (update.getTimestamp() <= timestampOfLastRequest) { 

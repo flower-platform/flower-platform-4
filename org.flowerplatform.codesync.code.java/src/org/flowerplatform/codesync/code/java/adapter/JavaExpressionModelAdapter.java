@@ -51,8 +51,6 @@ public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return element.toString();
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return type;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}

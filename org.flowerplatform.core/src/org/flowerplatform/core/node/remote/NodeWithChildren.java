@@ -3,6 +3,7 @@ package org.flowerplatform.core.node.remote;
 import java.util.List;
 
 /**
+ * @see NodeServiceRemote#refresh(FullNodeIdWithChildren)
  * @author Cristina Constantinescu
  */
 public class NodeWithChildren {
