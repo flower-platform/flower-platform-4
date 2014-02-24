@@ -14,4 +14,9 @@ public abstract class ChildrenProvider extends AbstractController {
 	
 	public abstract List<Node> getChildren(Node node);
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public abstract boolean hasChildren(Node node);
+	
 }

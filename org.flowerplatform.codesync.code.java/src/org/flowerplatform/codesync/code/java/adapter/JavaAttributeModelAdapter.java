@@ -56,8 +56,6 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return ATTRIBUTE;
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getFieldDeclaration(element).getType());
 		} else if (JavaAttributeFeatureProvider.ATTRIBUTE_INITIALIZER.equals(feature)) {

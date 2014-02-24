@@ -61,8 +61,6 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return CodeSyncCodePlugin.FILE;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}

@@ -1,5 +1,6 @@
 package org.flowerplatform.core.node.update.controller;
 
+import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.node.update.remote.ChildrenUpdate.REMOVED;
 
 import org.flowerplatform.core.CorePlugin;
@@ -26,8 +27,9 @@ public class UpdateRemoveNodeController extends RemoveNodeController {
 						new ChildrenUpdate()
 							.setTypeAs(REMOVED)
 							.setTargetNodeAs(child)
-							.setFullNodeIdAs(node.getFullNodeId()));			
+							.setFullNodeIdAs(node.getFullNodeId()));		
 		}
+		CorePlugin.getInstance().getNodeService().setProperty(node, HAS_CHILDREN, CorePlugin.getInstance().getNodeService().hasChildren(node));
 	}
 
 }
