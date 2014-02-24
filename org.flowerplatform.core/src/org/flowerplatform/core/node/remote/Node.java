@@ -1,52 +1,68 @@
 package org.flowerplatform.core.node.remote;
 
-import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
-import org.flowerplatform.core.node.controller.RawNodeDataProvider;
-import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
+ * <p>
+ * This is a remote class (transferable to client). But only server -> client.
+ * 
+ * @see NodeService
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
  */
 public class Node {
 	
+	public static final char FULL_NODE_ID_SEPARATOR = '|';
+	private static final String FULL_NODE_ID_SPLIT_REGEX = "\\" + FULL_NODE_ID_SEPARATOR;
+	
 	private String type;
 	
 	private String resource;
 	
-	private String id;
-		
+	private String idWithinResource;
+	
+	private String cachedFullNodeId;
+	
 	private Map<String, Object> properties;
-	private boolean populated;
+	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
 	private boolean rawNodeDataRetrieved;
-	
-	public Node() {
-	}
-	
-	public Node(String type, String resource, String id, Object rawNodeData) {
-		this.id = id;
+		
+	public Node(String type, String resource, String idWithinResource, Object rawNodeData) {		
 		this.type = type;
 		this.resource = resource;
+		this.idWithinResource = idWithinResource;
 		
-		setRawNodeData(rawNodeData);
+		if (rawNodeData != null) {
+			setRawNodeData(rawNodeData);
+		}
 	}
 
+	public Node(String fullNodeId) {
+		String[] tokens = fullNodeId.split(FULL_NODE_ID_SPLIT_REGEX);
+						
+		this.type = tokens[0];
+		this.resource = tokens[1];
+		
+		if (tokens.length == 3) {
+			this.idWithinResource = tokens[2];
+		}
+		this.cachedFullNodeId = fullNodeId;
+	}
+	
 	public String getType() {
 		return type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
+		cachedFullNodeId = null;
 	}
 
 	public String getResource() {
@@ -55,14 +71,23 @@ public class Node {
 
 	public void setResource(String resource) {
 		this.resource = resource;
+		cachedFullNodeId = null;
+	}
+	
+	public String getIdWithinResource() {
+		return idWithinResource;
 	}
 
-	public String getId() {
-		return id;
+	public void setIdWithinResource(String idWithinResource) {
+		this.idWithinResource = idWithinResource;
+		cachedFullNodeId = null;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public String getFullNodeId() {
+		if (cachedFullNodeId == null) {
+			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + FULL_NODE_ID_SEPARATOR + idWithinResource;
+		}
+		return cachedFullNodeId;
 	}
 
 	/**
@@ -91,18 +116,10 @@ public class Node {
 	 * @return The properties map (populated if not already populated).
 	 */
 	public Map<String, Object> getOrPopulateProperties() {
-		if (!populated) {	
+		if (!propertiesPopulated) {	
 			// lazy population
-			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
-			if (descriptor == null) {
-				return null;
-			}
-			
-			List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, this);
-			for (PropertiesProvider provider : providers) {
-				provider.populateWithProperties(this);
-			}
-			populated = true;
+			CorePlugin.getInstance().getNodeService().populateNodeProperties(this);
+			propertiesPopulated = true;
 		}
 		return getProperties();
 	}
@@ -110,12 +127,7 @@ public class Node {
 	public Object getOrRetrieveRawNodeData() {
 		if (!rawNodeDataRetrieved) {
 			// lazy initialization
-			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
-			if (descriptor == null) {
-				return null; 
-			}		
-			RawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, this);	
-			setRawNodeData(rawNodeDataProvider.getRawNodeData(this));			
+			setRawNodeData(CorePlugin.getInstance().getNodeService().getRawNodeData(this));		
 		}
 		return rawNodeData;
 	}
@@ -124,42 +136,23 @@ public class Node {
 		this.rawNodeData = rawNodeData;
 		rawNodeDataRetrieved = true;
 	}
-
+	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((resource == null) ? 0 : resource.hashCode());
-		return result;
+		return getFullNodeId().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Node other = (Node) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (resource == null) {
-			if (other.resource != null)
-				return false;
-		} else if (!resource.equals(other.resource))
-			return false;
-		return true;
+		if (obj instanceof Node) {
+			return getFullNodeId().equals(((Node) obj).getFullNodeId());
+		}
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Node [body = %s, type = %s, resource = %s]", getProperties().get("body"), type, resource);
+		return String.format("Node [fullNodeId = %s]", getFullNodeId());
 	}
 	
 }

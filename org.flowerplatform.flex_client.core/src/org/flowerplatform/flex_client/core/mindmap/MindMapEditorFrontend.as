@@ -126,7 +126,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			root.resource = "mm://path_to_resource";
 			diagramShell.rootModel = root;
 			
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.subscribe",	[diagramShell.rootModel]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.subscribe",	[Node(diagramShell.rootModel).fullNodeId]);
 			
 			// TODO CC: Temporary code
 			var reloadAction:ReloadAction = new ReloadAction();
@@ -142,7 +142,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		 * @author Mariana Gheorghe
 		 */
 		protected function viewRemovedHandler(event:ViewRemovedEvent):void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.unsubscribe", [diagramShell.rootModel]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.unsubscribe", [Node(diagramShell.rootModel).fullNodeId]);
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

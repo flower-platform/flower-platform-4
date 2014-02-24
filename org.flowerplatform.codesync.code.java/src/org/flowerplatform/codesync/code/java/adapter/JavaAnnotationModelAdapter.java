@@ -33,6 +33,7 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeat
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -72,7 +73,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getAnnotationName(element);
-		} else if (FeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return ANNOTATION;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

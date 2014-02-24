@@ -31,15 +31,12 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.Node")]
 	public class Node {
-		
-		public var id:String;
+						
+		public var type:String;		
+		public var resource:String;		
+		public var idWithinResource:String;		
 				
-		public var type:String;
-		
-		public var resource:String;
-		
-		// TODO CS: nu cred ca trebuie sa initializam; mereu va veni ceva de pe server
-		public var properties:Object = new Object();
+		public var properties:Object;
 		
 		[Transient]
 		public var parent:Node;
@@ -50,5 +47,9 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		[Transient]
 		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
 			
+		public function get fullNodeId():String {
+			return type + "|" + resource + (idWithinResource == null ? "" : "|" + idWithinResource);
+		}
+		
 	}
 }

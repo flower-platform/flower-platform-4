@@ -21,8 +21,10 @@ package org.flowerplatform.codesync.adapter;
 import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
@@ -33,9 +35,9 @@ import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
@@ -61,7 +63,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
-		List<Node> children = CodeSyncPlugin.getInstance().getNodeService().getChildren(getNode(element), true);
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), true);
 		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
 
 			@Override
@@ -86,7 +88,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.TYPE.equals(feature)) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return getNode(element).getType();
 		}
 		return getNode(element).getOrPopulateProperties().get(feature);
@@ -94,17 +96,21 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrPopulateProperties().get("name");
+		return getNode(element).getOrPopulateProperties().get(FeatureProvider.NAME);
 	}
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		if (FeatureProvider.TYPE.equals(feature)) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
 			getNode(element).setType((String) newValue);
 		}
-		CodeSyncPlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 * @author Cristina Constantinescu
+	 */
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// first check if the child already exists
@@ -128,9 +134,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				Node parent = getNode(element);
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
-				Node child = new Node();
-				child.setType(type);
-				CodeSyncPlugin.getInstance().getNodeService().addChild(parent, child, null);
+						
+				Node child = new Node(type, "mm://path_to_resource", null, null);
+				CorePlugin.getInstance().getNodeService().addChild(parent, child, null);
 				return child;
 //		}
 //		
@@ -139,7 +145,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		CodeSyncPlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child));
+		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child));
 	}
 
 	@Override
@@ -161,15 +167,13 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 
 	@Override
-	public void setConflict(Object element, Object feature, Object oppositeValue) {
-		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
-		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, service);
+	public void setConflict(Object element, Object feature, Object oppositeValue) {		
+		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, CorePlugin.getInstance().getNodeService());
 	}
 	
 	@Override
-	public void unsetConflict(Object element, Object feature) {
-		NodeService service = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
-		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), service);
+	public void unsetConflict(Object element, Object feature) {		
+		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), CorePlugin.getInstance().getNodeService());
 	}
 
 	protected Node getNode(Object element) {
@@ -182,11 +186,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
 				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
-					CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
 				}
 			} else {
 				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
-					CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
+					CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
 				}
 			}
 		}
@@ -218,9 +222,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				CodeSyncPlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
 			} else {
-				CodeSyncPlugin.getInstance().getNodeService().removeChild(node, childNode);
+				CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
 			}
 		}
 	}

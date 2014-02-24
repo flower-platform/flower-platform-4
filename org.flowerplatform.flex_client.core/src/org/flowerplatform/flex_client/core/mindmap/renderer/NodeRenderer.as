@@ -1,31 +1,11 @@
 package org.flowerplatform.flex_client.core.mindmap.renderer {
 	
-	import flash.events.Event;
-	
-	import mx.collections.ArrayList;
-	import mx.collections.IList;
-	import mx.core.DPIClassification;
-	import mx.core.FlexGlobals;
-	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.FlowerArrayList;
-	
-	import spark.components.DataRenderer;
-	import spark.components.Label;
-	import spark.core.ContentCache;
-	import spark.layouts.HorizontalLayout;
-	import spark.primitives.BitmapImage;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -36,7 +16,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 			x = _diagramShell.getPropertyValue(data, "x");	
 			y = _diagramShell.getPropertyValue(data, "y");		
 			
-			labelDisplay.text = data.properties["body"];
+			nodeUpdatedHandler();
 		}
 				
 		override protected function resizeHandler(event:ResizeEvent):void {
@@ -64,8 +44,6 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 				case "y":
 					y = _diagramShell.getPropertyValue(data, "y");				
 					break;
-				case "body":
-					labelDisplay.text = data.properties["body"];
 				case "hasChildren":
 					invalidateSize();
 				case "children":
@@ -85,19 +63,29 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 			}
 		}
 		
-		protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
-			if (data.properties.hasOwnProperty("body")) {
-				labelDisplay.text = data.properties["body"];
+		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+			var textChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.TEXT) != -1 : true;
+			if (textChanged) {
+				labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];			
+			}		
+			var minWidthChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.MIN_WIDTH) != -1 : true;
+			if (minWidthChanged) {
+				minWidth = data.properties[NodePropertiesConstants.MIN_WIDTH];
+			}	
+			
+			var maxWidthChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.MAX_WIDTH) != -1 : true;
+			if (maxWidthChanged) {
+				maxWidth = data.properties[NodePropertiesConstants.MAX_WIDTH];
 			}
-			if (data.properties.hasOwnProperty("hasChildren")) {
-				dispatchEvent(new NodeRenderer_HasChildrenChangedEvent());
-			}			
-			invalidateSize();
-			invalidateDisplayList();
+			
+			if (textChanged || minWidthChanged || maxWidthChanged) {
+				invalidateSize();
+				invalidateDisplayList();
+			}
 		}
 		
 		override protected function canDrawCircle(model:Object):Boolean {			
-			return model != null && Boolean(model.properties["hasChildren"]).valueOf() && !_diagramShell.getModelController(model).getExpanded(model);
+			return model != null && Boolean(model.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() && !_diagramShell.getModelController(model).getExpanded(model);
 		}
 		
 	}

@@ -23,17 +23,19 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
-import org.flowerplatform.core.node.controller.update.UpdaterAddNodeController;
-import org.flowerplatform.core.node.controller.update.UpdaterPropertySetterController;
-import org.flowerplatform.core.node.controller.update.UpdaterRemoveNodeController;
-import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.update.InMemoryRootNodeInfoDAO;
 import org.flowerplatform.core.node.update.InMemoryUpdateDAO;
-import org.flowerplatform.core.node.update.remote.UpdateService;
+import org.flowerplatform.core.node.update.UpdateService;
+import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
+import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
+import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
+import org.flowerplatform.core.node.update.remote.UpdateServiceRemote;
 import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -43,9 +45,13 @@ import org.osgi.framework.BundleContext;
 
 /**
  * @author Cristian Spiescu
+ * @author Cristina Constantinescu
  */
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
+	public static final String RESOURCE_KEY = "resource";
+	public static final String TYPE_KEY = "type";
+	
 	protected static CorePlugin INSTANCE;
 	
 	private ThreadLocal<HttpServletRequest> requests = new ThreadLocal<HttpServletRequest>();
@@ -58,16 +64,19 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
-				
-		getServiceRegistry().registerService("nodeService", new NodeService(nodeTypeDescriptorRegistry, new InMemoryRootNodeInfoDAO()));
-		getServiceRegistry().registerService("updateService", new UpdateService(new InMemoryUpdateDAO()));
+		
+		getServiceRegistry().registerService("nodeServiceInternal", new NodeService(nodeTypeDescriptorRegistry, new InMemoryRootNodeInfoDAO()));
+		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
+		
+		getServiceRegistry().registerService("updateServiceInternal", new UpdateService(new InMemoryUpdateDAO()));
+		getServiceRegistry().registerService("updateService", new UpdateServiceRemote());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 				
 		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL);
-		updaterDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdaterAddNodeController());
-		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdaterRemoveNodeController());
-		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdaterPropertySetterController());
+		updaterDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController());
+		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController());
+		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController());
 			
 		setFileAccessController(new PlainFileAccessController());
 
@@ -135,11 +144,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	}
 
 	public UpdateService getUpdateService() {
-		return (UpdateService) serviceRegistry.getService("updateService");
+		return (UpdateService) serviceRegistry.getService("updateServiceInternal");
 	}
 	
 	public NodeService getNodeService() {
-		return (NodeService) serviceRegistry.getService("nodeService");
+		return (NodeService) serviceRegistry.getService("nodeServiceInternal");
 	}
 
 	/**

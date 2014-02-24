@@ -46,8 +46,8 @@
 			
 			public var padding:int = 3;
 			
-			override public function activate(diagramShell:DiagramShell, target:IVisualElement):void {
-				super.activate(diagramShell, target);			
+			override public function activate(model:Object):void {
+				super.activate(model);			
 					
 				DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
 				DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize);			
@@ -61,7 +61,7 @@
 			 * and also when we don't want the anchors shown.
 			 * 
 			 */
-			override public function deactivate():void {
+			override public function deactivate(model:Object):void {
 				try {
 					diagramShell.diagramRenderer.removeElement(circle);
 				} catch (e:ArgumentError) {					
@@ -70,7 +70,7 @@
 				// remove resize listeners				
 				DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);			
 				DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);			
-				super.deactivate();
+				super.deactivate(model);
 			}
 	
 			protected function handleTargetMoveResize(event:Event):void {
@@ -119,7 +119,7 @@
 			}
 			
 			private function get node():SampleMindMapModel {
-				return SampleMindMapModel(getTargetModel());
+				return SampleMindMapModel(model);
 			}
 			
 			private function getDynamicObject(model:Object):Object {

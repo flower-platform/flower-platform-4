@@ -27,7 +27,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -220,7 +222,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 						TEMP_FOLDER.mkdir();
 					}
 					File tempFile = new File(TEMP_FOLDER, fileName + TEMP_SEPARATOR + fileInsideZipArchive);
-					Files.copy(input, tempFile.toPath());
+					Files.copy(input, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					
 					input.close();
 					input = new FileInputStream(tempFile);

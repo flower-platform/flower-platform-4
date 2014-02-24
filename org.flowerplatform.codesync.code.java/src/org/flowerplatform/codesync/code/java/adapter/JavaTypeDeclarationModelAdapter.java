@@ -39,6 +39,7 @@ import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -132,7 +133,7 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (FeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				if (((TypeDeclaration) element).isInterface()) {
 					return INTERFACE;

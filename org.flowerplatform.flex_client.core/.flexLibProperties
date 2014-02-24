@@ -2,7 +2,6 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.core.service.ServiceLocator"/>
-    <classEntry path="org.flowerplatform.flex_client.core.service.ServiceResponder"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenListUpdate"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>

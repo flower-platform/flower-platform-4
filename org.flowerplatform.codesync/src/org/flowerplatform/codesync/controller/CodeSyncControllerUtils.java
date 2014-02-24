@@ -7,8 +7,8 @@ import static org.flowerplatform.codesync.CodeSyncPlugin.CONFLICT;
 import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED;
 import static org.flowerplatform.codesync.CodeSyncPlugin.SYNC;
 
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 
 /**
  * @author Mariana Gheorghe
