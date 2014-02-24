@@ -134,11 +134,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 //							entry.correctionStartingWithMe = 0;
 //							figuresToAdd++;
 						} else {
-							// TODO la ce o trebui asta?
-							// CC: am observat ca erau folosite cand se facea zoom (figurile cu label prea mare erau trunchiate)
-							// model is visible and still has a figure => position the figure correctly
-							notifyVisualChildren(UIComponent(childRenderer));
-//							
 //							AbsolutePositionEditPartUtils.setChildFigureIndex(IVisualElementContainer(getFigure()), IVisualElement(ep.getFigure()), visualIndex - figuresToAdd);
 						}
 //						visualIndex ++;
@@ -256,10 +251,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 //					AbsolutePositionEditPartUtils.setChildFigureIndex(IVisualElementContainer(getFigure()), IVisualElement(currentFigure), entry.visualIndex + currentCorrection);
 //					figToReuseEntry = null;
 //				}
-				
-				// TODO la ce servesc astea?
-				// CC: am observat ca erau folosite cand se facea zoom (figurile cu label prea mare erau trunchiate)
-				notifyVisualChildren(UIComponent(childRenderer));
 			}
 			
 //			childrenChangedFlag = false;
@@ -295,19 +286,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 				",newModels=" + logNewModels + ",renderersReused=" + logRenderersReused + ",reusableRenderersCreated=" + logReusableRenderersCreated + 
 				",nonReusableRenderersCreated=" + logNonReusableRenderersCreated + ",reusableRenderersRemoved=" + logReusableRenderersRemoved);
 		}
-		
-		/**
-		 * Recursive method used to notify all the graphical children.		
-		 */
-		private function notifyVisualChildren(child:UIComponent):void {
-			child.dispatchEvent(new ZoomPerformedEvent());
-			for (var i:int = 0; i < child.numChildren; i++) {
-				if (child.getChildAt(i) is UIComponent) {
-					notifyVisualChildren(UIComponent(child.getChildAt(i)));		
-				}
-			}
-		}
-	
 	}
 	
 }

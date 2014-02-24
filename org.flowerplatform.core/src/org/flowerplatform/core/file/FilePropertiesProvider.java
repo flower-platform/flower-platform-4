@@ -17,34 +17,40 @@ import org.flowerplatform.core.node.remote.Node;
 /**
  * @author Sebastian Solomon
  */
-public class FilePropertiesProvider extends PropertiesProvider<Object> {
+public class FilePropertiesProvider extends PropertiesProvider {
 	private static IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 
 	@Override
-	public void populateWithProperties(Node node, Object file) {
-		node.getOrCreateProperties().put("body", fileAccessController.getName(file));
-		node.getOrCreateProperties().put("hasChildren", fileAccessController.hasChildren(file));
-		node.getOrCreateProperties().put("name", fileAccessController.getName(file));
+	public void populateWithProperties(Node node) {
+		Object file;
+		try {
+			file = fileAccessController.getFile(node.getIdWithinResource());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		node.getProperties().put("text", fileAccessController.getName(file));
+		node.getProperties().put("hasChildren", fileAccessController.hasChildren(file));
+		node.getProperties().put("name", fileAccessController.getName(file));
 		
-		Path p = Paths.get(fileAccessController.getAbsolutePath(file));
+		Path path = Paths.get(fileAccessController.getAbsolutePath(file));
 		Map<String, Object> atributes = null;
 		
 		try {
-			 atributes = Files.readAttributes(p, "*");
+			 atributes = Files.readAttributes(path, "*");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
 		for (Map.Entry<String, Object> entry : atributes.entrySet()) {
 			if (entry.getKey().equals("size")) {
-				node.getOrCreateProperties().put(entry.getKey().toString(),	entry.getValue() +" bytes");
+				node.getProperties().put(entry.getKey().toString(),	entry.getValue() +" bytes");
 			} 
 			if (entry.getKey().equals("lastModifiedTime")||
 				entry.getKey().equals("creationTime")||
 				entry.getKey().equals("lastAccessTime")) {
-					node.getOrCreateProperties().put(entry.getKey().toString(),FormatFileTime((FileTime)entry.getValue()));
+					node.getProperties().put(entry.getKey().toString(),FormatFileTime((FileTime)entry.getValue()));
 			} else {
-				node.getOrCreateProperties().put(entry.getKey().toString(),	(entry.getValue() == null) ? "" : entry.getValue().toString());
+				node.getProperties().put(entry.getKey().toString(),	(entry.getValue() == null) ? "" : entry.getValue().toString());
 			}
 		}
 	}
@@ -52,5 +58,5 @@ public class FilePropertiesProvider extends PropertiesProvider<Object> {
 	private String FormatFileTime(FileTime filename) {
 		return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date(filename.toMillis()));
 	}
-	
+
 }

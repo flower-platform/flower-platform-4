@@ -17,15 +17,15 @@ public class FileSystemChildrenProvider extends ChildrenProvider {
 	}
 
 	@Override
-	public List<Pair<Node, Object>> getChildren(Node node) {
-		List<Pair<Node, Object>> children = new ArrayList<Pair<Node, Object>>();
-		children.add(new Pair<Node, Object>(getFileSystem(node), new Object()));
+	public List<Node> getChildren(Node node) {
+		List<Node> children = new ArrayList<Node>();
+		children.add(getFileSystem(node));
 		return children;	
 	}
 	
 	public Node getFileSystem(Node parentode) {
 		Node node = new Node();
-		node.setId(parentode.getId() + ".fileSystem");
+		node.setIdWithinResource(parentode.getIdWithinResource() + ".fileSystem");
 		node.setType("fileSystem");
 		return node;
 	}

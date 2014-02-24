@@ -2,6 +2,7 @@ package org.flowerplatform.core.file;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -12,7 +13,7 @@ public class FilePropertySetter extends PropertySetter {
 	private static IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 	
 	@Override
-	public void setProperty(Node node, String property, Object value) {
+	public void setProperty(Node node, String property, PropertyValueWrapper value) {
 		
 		switch (property) {
 			case "body": 
@@ -20,7 +21,7 @@ public class FilePropertySetter extends PropertySetter {
 				Object file;
 				if (!node.getProperties().get("body").equals(value)) {
 					try {
-						file = fileAccessController.getFile(node.getId());
+						file = fileAccessController.getFile(node.getIdWithinResource());
 						String parentPath = fileAccessController.getParent(file);
 						Object parent = fileAccessController.getFile(parentPath);
 						Object dest = fileAccessController.getFile(parent, value.toString());
@@ -39,7 +40,7 @@ public class FilePropertySetter extends PropertySetter {
 
 	@Override
 	public void unsetProperty(Node node, String property) {
-		node.getOrCreateProperties().remove(property);
+		node.getOrPopulateProperties().remove(property);
 	}
 	
 }

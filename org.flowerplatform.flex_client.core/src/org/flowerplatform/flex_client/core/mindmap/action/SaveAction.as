@@ -28,6 +28,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		
 		public function SaveAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.save");
+			icon = CorePlugin.getInstance().getResourceUrl("images/save_edit.gif");
 			preferShowOnActionBar = true;
 			orderIndex = 110;
 		}

@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 	import flash.events.MouseEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -32,6 +33,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		
 		public function RenameAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.rename");
+			icon = CorePlugin.getInstance().getResourceUrl("images/edit.png");
 			orderIndex = 30;
 		}
 		
@@ -67,10 +69,10 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var messageBox:IMessageBox = askForTextInput(node.properties["body"], "Rename", "Rename",
+			var messageBox:IMessageBox = askForTextInput(node.properties[NodePropertiesConstants.TEXT], "Rename", "Rename",
 				function(name:String):void {
-					CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node, "body", name]);
-				});		
+					CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, NodePropertiesConstants.TEXT, name]);
+			});		
 		}
 				
 	}

@@ -26,16 +26,15 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
-import org.flowerplatform.codesync.code.feature_provider.FileFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.core.node.remote.Node;
 
 /**
- * @see FileFeatureProvider
+ * @see FolderFeatureProvider
  * 
  * @author Mariana Gheorghe
  * @author Sebastian Solomon
@@ -60,9 +59,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return CodeSyncCodePlugin.FILE;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -70,7 +69,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object file, Object feature, Object value) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			filesToRename.put(file, (String) value);
 		}
 	}
@@ -97,14 +96,6 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	@Override
 	public boolean hasChildren(Object modelElement) {
 		return true;
-	}
-	
-	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (FileFeatureProvider.CHILDREN.equals(feature)) {
-			return getChildren(element);
-		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
 	/**

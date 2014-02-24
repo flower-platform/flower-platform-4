@@ -18,47 +18,33 @@
  */
 package org.flowerplatform.codesync.adapter;
 
-import java.util.Collections;
-import java.util.List;
+import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Mariana Gheorghe
  */
 public class NodeModelAdapter extends AbstractModelAdapter {
 
-	public static final String ADDED = "added";
-	public static final String REMOVED = "removed";
-	
-	protected ModelAdapterFactory modelAdapterFactory;
-	
-	protected ModelAdapterFactory oppositeModelAdapterFactory;
-	
-	public NodeModelAdapter setModelAdapterFactory(ModelAdapterFactory modelAdapterFactory) {
-		this.modelAdapterFactory = modelAdapterFactory;
-		return this;
-	}
-	
-	public ModelAdapterFactory getModelAdapterFactory() {
-		return modelAdapterFactory;
-	}
-	
-	/**
-	 * @see #createChildOnContainmentFeature(Object, Object, Object)
-	 */
-	public NodeModelAdapter setOppositeModelAdapterFactory(ModelAdapterFactory codeSyncElementConverter) {
-		this.oppositeModelAdapterFactory = codeSyncElementConverter;
-		return this;
-	}
-	
-	public ModelAdapterFactory getOppositeModelAdapterFactory() {
-		return oppositeModelAdapterFactory;
-	}
-	
 	/**
 	 * Checks for a {@link FeatureChange} on the name feature first.
 	 */
@@ -73,40 +59,60 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	/**
-	 * Get the children categories for this {@link Node}, and then return the children for the required category.
+	 * Get the children that are registered as members of this feature (via {@link MemberOfChildCategoryDescriptor}s).
 	 */
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		Node category = getChildrenCategoryForNode(getNode(element), feature);
-		if (category == null) {
-			return Collections.emptyList();
-		}
-		return getChildrenForNode(category);
+	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), true);
+		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
+
+			@Override
+			protected boolean isAccepted(Node candidate) {
+				TypeDescriptor candidateDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(candidate.getType());
+				if (candidateDescriptor == null) {
+					return false;
+				}
+				
+				MemberOfChildCategoryDescriptor memberOf = candidateDescriptor.getSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, candidate);
+				if (memberOf == null) {
+					return false;
+				}
+				if (feature.equals(memberOf.getChildCategory())) {
+					return true;
+				}
+				return false;
+			}
+			
+		};
 	}
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.TYPE.equals(feature)) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return getNode(element).getType();
 		}
-		return getNode(element).getOrCreateProperties().get(feature);
+		return getNode(element).getOrPopulateProperties().get(feature);
 	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrCreateProperties().get("body");
+		return getNode(element).getOrPopulateProperties().get(FeatureProvider.NAME);
 	}
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		if (NodeFeatureProvider.TYPE.equals(feature)) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
 			getNode(element).setType((String) newValue);
 		}
-		CodeSyncPlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 * @author Cristina Constantinescu
+	 */
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// first check if the child already exists
 //		Iterable<?> children = super.getContainmentFeatureIterable(eObject, feature, null);
 //		IModelAdapter adapter = codeSyncElementConverter.getModelAdapter(correspondingChild);
@@ -126,18 +132,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 //		
 //		if (eObject != null) {
 				Node parent = getNode(element);
-				Node category = getChildrenCategoryForNode(parent, feature);
-				if (category == null) {
-					category = new Node();
-					category.setType(CodeSyncPlugin.CATEGORY);
-					CodeSyncPlugin.getInstance().getNodeService().addChild(parent, category);
-					CodeSyncPlugin.getInstance().getNodeService().setProperty(category, NodeFeatureProvider.NAME, feature);
-				}
 				// set the type for the new node; needed by the action performed handler
-				String type = getOppositeModelAdapterFactory().getModelAdapter(correspondingChild).getType();
-				Node child = new Node();
-				child.setType(type);
-				CodeSyncPlugin.getInstance().getNodeService().addChild(category, child);
+				String type = typeProvider.getType(correspondingChild);
+						
+				Node child = new Node(type, null, null, null);
+				CorePlugin.getInstance().getNodeService().addChild(parent, child, null);
 				return child;
 //		}
 //		
@@ -146,7 +145,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		CodeSyncPlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child));
+		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child));
 	}
 
 	@Override
@@ -167,12 +166,95 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return false;
 	}
 
+	@Override
+	public void setConflict(Object element, Object feature, Object oppositeValue) {		
+		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, CorePlugin.getInstance().getNodeService());
+	}
+	
+	@Override
+	public void unsetConflict(Object element, Object feature) {		
+		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), CorePlugin.getInstance().getNodeService());
+	}
+
 	protected Node getNode(Object element) {
 		return (Node) element;
 	}
+	
+	protected void processContainmentFeatureAfterActionPerformed(Node node, Object feature, ActionResult result, Match match) {
+		Object child = findChild(match, feature, result.childAdded, result.childMatchKey);
+		if (child != null && child instanceof Node) {
+			Node childNode = (Node) child;
+			if (result.childAdded) {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				}
+			} else {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
+					CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
+	 * @param matchKey 
+	 * @param childMatchKey 
+	 */
+	protected Object findChild(Match parentMatch, Object feature, boolean childAdded, Object matchKey) {
+		if (matchKey == null)
+			return null;
+		for (Object existingChild : getChildrenFromMatch(parentMatch, feature, childAdded)) {
+			if (existingChild == null) {
+				continue;
+			}
+			Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(existingChild).getMatchKey(existingChild);
+			if (matchKey.equals(childMatchKey)) {
+				return existingChild;
+			}
+		}
+		return null;
+	}
 
-	protected Object getOriginalFeatureName(Object feature) {
-		return feature.toString() + CodeSyncPropertySetter.ORIGINAL;
+	
+	protected void processContainmentFeatureAfterActionPerformed(Node node, List<Object> children, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
+		if (child != null && child instanceof Node) {
+			Node childNode = (Node) child;
+			if (result.childAdded) {
+				CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+			} else {
+				CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+			}
+		}
+	}
+	
+	protected List<Object> getChildrenFromMatch(Match parentMatch, Object feature, boolean childAdded) {
+		List<Object> children = new ArrayList<Object>();
+		for (Match match : parentMatch.getSubMatches()) {
+			if (match.getFeature().equals(feature)) {
+				if (childAdded) {
+					children.add(match.getLeft());
+				} else {
+					children.add(match.getAncestor());
+				}
+			}
+		}
+		return children;
+	}
+	
+	/**
+	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
+	 */
+	protected Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
+		if (matchKey == null)
+			return null;
+		for (Object existingChild : list) {
+			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
+				return existingChild;
+			}
+		}
+		return null;
 	}
 	
 }

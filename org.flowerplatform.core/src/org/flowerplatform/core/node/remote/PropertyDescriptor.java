@@ -18,19 +18,20 @@
  */
 package org.flowerplatform.core.node.remote;
 
-import org.flowerplatform.util.type_descriptor.OrderedElement;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
  */
-public class PropertyDescriptor extends OrderedElement {
+public class PropertyDescriptor extends AbstractController {
 	
 	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	
 	private static final String DEFAULT_TYPE = "String";
 	
 	private String name;
+	private String title;
 	private String type = DEFAULT_TYPE;
 	private boolean readOnly = true;
 		
@@ -44,6 +45,19 @@ public class PropertyDescriptor extends OrderedElement {
 	
 	public PropertyDescriptor setNameAs(String name) {
 		this.name = name;
+		return this;
+	}
+		
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public PropertyDescriptor setTitleAs(String title) {
+		this.title = title;
 		return this;
 	}
 	

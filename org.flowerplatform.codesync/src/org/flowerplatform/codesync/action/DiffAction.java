@@ -33,15 +33,16 @@ public abstract class DiffAction {
 	 * @author Mariana Gheorghe
 	 */
 	public void actionPerformed(
+			Match match,
 			IModelAdapter leftModelAdapter, Object left, 
 			IModelAdapter rightModelAdapter, Object right,
 			Object feature, ActionResult result) {
 		
 		if (leftModelAdapter != null) {
-			leftModelAdapter.actionPerformed(left, feature, result);
+			leftModelAdapter.actionPerformed(left, feature, result, match);
 		}
 		if (rightModelAdapter != null) {
-			rightModelAdapter.actionPerformed(right, feature, result);
+			rightModelAdapter.actionPerformed(right, feature, result, match);
 		}
 	}
 	

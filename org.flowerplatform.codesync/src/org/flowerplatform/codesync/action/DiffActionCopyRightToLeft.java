@@ -31,8 +31,8 @@ public class DiffActionCopyRightToLeft extends DiffAction {
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Diff diff = match.getDiffs().get(diffIndex);
-		IModelAdapter leftModelAdapter = match.getModelAdapterFactorySet().getLeftFactory().getModelAdapter(match.getLeft());
-		IModelAdapter rightModelAdapter = match.getModelAdapterFactorySet().getRightFactory().getModelAdapter(match.getRight());
+		IModelAdapter leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
+		IModelAdapter rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
 		
 		Object value = rightModelAdapter.getValueFeatureValue(match.getRight(), diff.getFeature(), null);
 		leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value);
@@ -40,7 +40,7 @@ public class DiffActionCopyRightToLeft extends DiffAction {
 		diff.setLeftModified(true);
 		
 		ActionResult result = new ActionResult(false, true, diff.isRightModified());
-		actionPerformed(leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
+		actionPerformed(match, leftModelAdapter, match.getLeft(), rightModelAdapter, match.getRight(), diff.getFeature(), result);
 	
 		return result;
 	}

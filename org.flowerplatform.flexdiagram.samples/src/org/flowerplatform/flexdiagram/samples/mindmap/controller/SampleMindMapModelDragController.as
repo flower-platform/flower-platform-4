@@ -55,100 +55,100 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		}
 		
 		public function drag(model:Object, deltaX:Number, deltaY:Number):void {
-			getDynamicObject(model).finalX = getDynamicObject(model).initialX + deltaX;
-			getDynamicObject(model).finalY = getDynamicObject(model).initialY + deltaY;
-			
-			var point:Point = new Point(getDynamicObject(model).finalX, getDynamicObject(model).finalY);
-			var renderer:IVisualElement = getRendererFromCoordinates(point);			
-			var dropModel:Object = IDataRenderer(renderer).data;
-						
-			if (renderer is DiagramRenderer || !dragModelIsParentForDropModel(model, dropModel)) {
-				deletePlaceHolder(model);
-				return;
-			}
-			
-			var placeHolder:MoveResizePlaceHolder = getPlaceHolder(model);
-			// set default values
-			var rect:Rectangle = diagramShell.getControllerProvider(dropModel).getAbsoluteLayoutRectangleController(dropModel).getBounds(dropModel);
-			placeHolder.x = rect.x;
-			placeHolder.y = rect.y;
-			placeHolder.width = rect.width;
-			placeHolder.height = rect.height;		
-			placeHolder.colors = [0x000000, 0xFFFFFF];
-			
-			var side:int = MindMapDiagramShell.NONE;
-			if (dropModel.side == MindMapDiagramShell.LEFT) { 
-				if (new Rectangle(rect.x, rect.y, rect.width / 2, rect.height).containsPoint(point)) {	// set styles for left rectangle			
-					placeHolder.width = rect.width / 2;
-					placeHolder.gradientBoxRotation = 0;
-					side =  MindMapDiagramShell.LEFT;
-				} else { // set styles for top rectangle
-					placeHolder.gradientBoxRotation = Math.PI / 2;
-				}
-			} else if (dropModel.side == MindMapDiagramShell.RIGHT) { 
-				if (new Rectangle(rect.x + rect.width / 2, rect.y, rect.width, rect.height).containsPoint(point)) {	// set styles for right rectangle
-					placeHolder.x = rect.x + rect.width / 2;
-					placeHolder.width = rect.width / 2;
-					placeHolder.colors = [0xFFFFFF, 0x000000];
-					placeHolder.gradientBoxRotation = 0;
-					side =  MindMapDiagramShell.RIGHT;
-				} else {	// set styles for top rectangle			
-					placeHolder.gradientBoxRotation = Math.PI / 2;
-				}
-			} else { // root model
-				if (new Rectangle(rect.x, rect.y, rect.width / 2, rect.height).containsPoint(point)) {	 // set styles for left rectangle
-					placeHolder.x = rect.x;
-					placeHolder.width = rect.width / 2;					
-					placeHolder.gradientBoxRotation = 0;
-					side =  MindMapDiagramShell.LEFT;
-				} else { // set styles for right rectangle					
-					placeHolder.x = rect.x + rect.width / 2;
-					placeHolder.width = rect.width / 2;
-					placeHolder.colors = [0xFFFFFF, 0x000000];
-					side =  MindMapDiagramShell.RIGHT;
-				}				
-			}
-			getDynamicObject(model).side = side;
+//			getDynamicObject(model).finalX = getDynamicObject(model).initialX + deltaX;
+//			getDynamicObject(model).finalY = getDynamicObject(model).initialY + deltaY;
+//			
+//			var point:Point = new Point(getDynamicObject(model).finalX, getDynamicObject(model).finalY);
+//			var renderer:IVisualElement = getRendererFromCoordinates(point);			
+//			var dropModel:Object = IDataRenderer(renderer).data;
+//						
+//			if (renderer is DiagramRenderer || !dragModelIsParentForDropModel(model, dropModel)) {
+//				deletePlaceHolder(model);
+//				return;
+//			}
+//			
+//			var placeHolder:MoveResizePlaceHolder = getPlaceHolder(model);
+//			// set default values
+//			var rect:Rectangle = diagramShell.getControllerProvider(dropModel).getAbsoluteLayoutRectangleController(dropModel).getBounds(dropModel);
+//			placeHolder.x = rect.x;
+//			placeHolder.y = rect.y;
+//			placeHolder.width = rect.width;
+//			placeHolder.height = rect.height;		
+//			placeHolder.colors = [0x000000, 0xFFFFFF];
+//			
+//			var side:int = MindMapDiagramShell.NONE;
+//			if (dropModel.side == MindMapDiagramShell.LEFT) { 
+//				if (new Rectangle(rect.x, rect.y, rect.width / 2, rect.height).containsPoint(point)) {	// set styles for left rectangle			
+//					placeHolder.width = rect.width / 2;
+//					placeHolder.gradientBoxRotation = 0;
+//					side =  MindMapDiagramShell.LEFT;
+//				} else { // set styles for top rectangle
+//					placeHolder.gradientBoxRotation = Math.PI / 2;
+//				}
+//			} else if (dropModel.side == MindMapDiagramShell.RIGHT) { 
+//				if (new Rectangle(rect.x + rect.width / 2, rect.y, rect.width, rect.height).containsPoint(point)) {	// set styles for right rectangle
+//					placeHolder.x = rect.x + rect.width / 2;
+//					placeHolder.width = rect.width / 2;
+//					placeHolder.colors = [0xFFFFFF, 0x000000];
+//					placeHolder.gradientBoxRotation = 0;
+//					side =  MindMapDiagramShell.RIGHT;
+//				} else {	// set styles for top rectangle			
+//					placeHolder.gradientBoxRotation = Math.PI / 2;
+//				}
+//			} else { // root model
+//				if (new Rectangle(rect.x, rect.y, rect.width / 2, rect.height).containsPoint(point)) {	 // set styles for left rectangle
+//					placeHolder.x = rect.x;
+//					placeHolder.width = rect.width / 2;					
+//					placeHolder.gradientBoxRotation = 0;
+//					side =  MindMapDiagramShell.LEFT;
+//				} else { // set styles for right rectangle					
+//					placeHolder.x = rect.x + rect.width / 2;
+//					placeHolder.width = rect.width / 2;
+//					placeHolder.colors = [0xFFFFFF, 0x000000];
+//					side =  MindMapDiagramShell.RIGHT;
+//				}				
+//			}
+//			getDynamicObject(model).side = side;
 		}
 		
 		public function drop(model:Object):void {
-			var dropPoint:Point = new Point(getDynamicObject(model).finalX, getDynamicObject(model).finalY);
-			var renderer:IVisualElement = getRendererFromCoordinates(dropPoint);
-			
-			var dropModel:Object = IDataRenderer(renderer).data;
-			if (renderer is DiagramRenderer || !dragModelIsParentForDropModel(model, dropModel)) { // don't drop over diagram or same model
-				return;
-			}
-			
-			deletePlaceHolder(model);
-						
-			var side:int = getDynamicObject(model).side;
-			
-			// remove model from current parent
-			var dragParentModel:Object = diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model);;		
-			ArrayList(getModelController(dragParentModel).getChildren(dragParentModel)).removeItem(model);	
-			SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(model)).getMindMapModelController(model)).disposeModelHandlerRecursive(model, true);			
-			SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(dragParentModel)).getMindMapModelController(dragParentModel)).updateModelHandler(dragParentModel);
-			
-			// calculate new parent and position based on side
-			var dropParentModel:Object = (side != MindMapDiagramShell.NONE) ? dropModel : diagramShell.getControllerProvider(dropModel).getModelChildrenController(dropModel).getParent(dropModel);	
-			var children:ArrayList = ArrayList(getModelController(dropParentModel).getChildren(dropParentModel));	
-			var index:Number = (side != MindMapDiagramShell.NONE) ? children.length : children.getItemIndex(dropModel);
-			
-			// add model in new parent
-			ArrayList(getModelController(dropParentModel).getChildren(dropParentModel)).addItemAt(model, index);
-			dropParentModel.hasChildren = true;
-			getModelController(model).setSide(model, (side != MindMapDiagramShell.NONE) ? side : getModelController(dropModel).getSide(dropModel));
-			SampleMindMapModelController(getModelController(model)).setParent(model, dropParentModel);	
-			SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(dropParentModel)).getMindMapModelController(dropParentModel)).updateModelHandler(dropParentModel);
-						
-			// select model or parent 
-			diagramShell.selectedItems.removeAll();
-			if (getModelController(dropParentModel).getExpanded(dropParentModel)) {
-				diagramShell.selectedItems.addItem(model);
-			} else {
-				diagramShell.selectedItems.addItem(dropParentModel);
-			}
+//			var dropPoint:Point = new Point(getDynamicObject(model).finalX, getDynamicObject(model).finalY);
+//			var renderer:IVisualElement = getRendererFromCoordinates(dropPoint);
+//			
+//			var dropModel:Object = IDataRenderer(renderer).data;
+//			if (renderer is DiagramRenderer || !dragModelIsParentForDropModel(model, dropModel)) { // don't drop over diagram or same model
+//				return;
+//			}
+//			
+//			deletePlaceHolder(model);
+//						
+//			var side:int = getDynamicObject(model).side;
+//			
+//			// remove model from current parent
+//			var dragParentModel:Object = diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model);;		
+//			ArrayList(getModelController(dragParentModel).getChildren(dragParentModel)).removeItem(model);	
+//			SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(model)).getMindMapModelController(model)).disposeModelHandlerRecursive(model, true);			
+//			SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(dragParentModel)).getMindMapModelController(dragParentModel)).updateModelHandler(dragParentModel);
+//			
+//			// calculate new parent and position based on side
+//			var dropParentModel:Object = (side != MindMapDiagramShell.NONE) ? dropModel : diagramShell.getControllerProvider(dropModel).getModelChildrenController(dropModel).getParent(dropModel);	
+//			var children:ArrayList = ArrayList(getModelController(dropParentModel).getChildren(dropParentModel));	
+//			var index:Number = (side != MindMapDiagramShell.NONE) ? children.length : children.getItemIndex(dropModel);
+//			
+//			// add model in new parent
+//			ArrayList(getModelController(dropParentModel).getChildren(dropParentModel)).addItemAt(model, index);
+//			dropParentModel.hasChildren = true;
+//			getModelController(model).setSide(model, (side != MindMapDiagramShell.NONE) ? side : getModelController(dropModel).getSide(dropModel));
+//			SampleMindMapModelController(getModelController(model)).setParent(model, dropParentModel);	
+//			SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(dropParentModel)).getMindMapModelController(dropParentModel)).updateModelHandler(dropParentModel);
+//						
+//			// select model or parent 
+//			diagramShell.selectedItems.removeAll();
+//			if (getModelController(dropParentModel).getExpanded(dropParentModel)) {
+//				diagramShell.selectedItems.addItem(model);
+//			} else {
+//				diagramShell.selectedItems.addItem(dropParentModel);
+//			}
 		}
 		
 		public function deactivate(model:Object):void {

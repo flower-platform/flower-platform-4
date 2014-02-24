@@ -16,13 +16,13 @@ public class FileChildrenProvider extends ChildrenProvider {
 			.getInstance().getFileAccessController();
 
 	@Override
-	public List<Pair<Node, Object>> getChildren(Node node) {
+	public List<Node> getChildren(Node node) {
 		String path;
 
 		if (node.getType().equals("fileSystem")) {
 			path = "d:/temp/fileSystemNode";
 		} else {
-			path = node.getId();
+			path = node.getIdWithinResource();
 		}
 
 		Object file = null;
@@ -32,16 +32,16 @@ public class FileChildrenProvider extends ChildrenProvider {
 			throw new RuntimeException(e);
 		}
 		Object[] files = fileAccessController.listFiles(file);
-		List<Pair<Node, Object>> children = new ArrayList<Pair<Node, Object>>();
+		List<Node> children = new ArrayList<Node>();
 		for (Object object : files) {
-			children.add(new Pair<Node, Object>(getNode(object), object));
+			children.add(getNode(object));
 		}
 		return children;
 	}
 
 	private Node getNode(Object file) {
 		Node node = new Node();
-		node.setId(fileAccessController.getAbsolutePath(file));
+		node.setIdWithinResource(fileAccessController.getAbsolutePath(file));
 		node.setType("fileNode");
 		return node;
 	}

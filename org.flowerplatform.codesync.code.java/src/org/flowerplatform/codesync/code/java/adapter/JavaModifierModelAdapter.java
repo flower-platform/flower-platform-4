@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Modifier;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaModifierFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * Mapped to {@link Modifier}.
@@ -53,29 +54,14 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return MODIFIER;
-		} else if (JavaModifierFeatureProvider.MODIFIER_TYPE.equals(feature)) {
-			return getModifierType(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
-	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (JavaModifierFeatureProvider.MODIFIER_TYPE.equals(feature)) {
-			if (element instanceof Modifier) {
-				Modifier modifier = (Modifier) element;
-				int flag = (int) value;
-				modifier.setKeyword(Modifier.ModifierKeyword.fromFlagValue(flag));
-			}
-			return;
-		}
-		super.setValueFeatureValue(element, feature, value);
-	}
-
 	private Integer getModifierType(Object element) {
 		if (element instanceof Modifier) {
 			return ((Modifier) element).getKeyword().toFlagValue();

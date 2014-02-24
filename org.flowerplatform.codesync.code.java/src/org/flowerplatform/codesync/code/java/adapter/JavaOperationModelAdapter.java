@@ -28,7 +28,9 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * Mapped to {@link MethodDeclaration}. Children are {@link Modifier}s and parameters (i.e. {@link SingleVariableDeclaration}).
@@ -56,9 +58,9 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return OPERATION;
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getMethodDeclaration(element).getReturnType2());
@@ -70,7 +72,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			MethodDeclaration method = getMethodDeclaration(element);
 			String name = (String) value;
 			int index = name.indexOf("(");
@@ -86,7 +88,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		} else if (JavaOperationFeatureProvider.HAS_BODY.equals(feature)) {
 			// needed to create methods with empty bodies
 			MethodDeclaration method = getMethodDeclaration(element);
-			if ((boolean) value) {
+			if (value != null && (boolean) value) {
 				if (method.getBody() == null) {
 					method.setBody(method.getAST().newBlock());
 				}
@@ -98,7 +100,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (JavaOperationFeatureProvider.OPERATION_PARAMETERS.equals(feature)) {
 			MethodDeclaration method = (MethodDeclaration) element;
 			AST ast = method.getAST();
@@ -106,7 +108,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			method.parameters().add(parameter);
 			return parameter;
 		}
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild);
+		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 	
 	private MethodDeclaration getMethodDeclaration(Object element) {

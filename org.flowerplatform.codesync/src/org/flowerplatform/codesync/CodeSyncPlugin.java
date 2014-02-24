@@ -18,26 +18,35 @@
  */
 package org.flowerplatform.codesync;
 
+import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
+import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
+
+import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
+import org.flowerplatform.codesync.adapter.NodeModelAdapterLeft;
 import org.flowerplatform.codesync.controller.CodeSyncAddNodeController;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
+import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +59,13 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	public static final String CATEGORY = "category";
+	public static final String REMOVED = "removed";
+	public static final String ADDED = "added";
+	public static final String SYNC = "sync";
+	public static final String CHILDREN_SYNC = "childrenSync";
+	public static final String CONFLICT = "conflict";
+	public static final String CHILDREN_CONFLICT = "childrenConflict";
+	
 	
 	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
 	
@@ -88,11 +103,10 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 
 	protected ComposedFullyQualifiedNameProvider fullyQualifiedNameProvider;
 	
-	protected ComposedCodeSyncAlgorithmRunner codeSyncAlgorithmRunner;
-	
-	protected NodeService nodeService = (NodeService) CorePlugin.getInstance()
-			.getServiceRegistry().getService("nodeService");
-	
+	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
+
+	protected Map<String, List<String>> dataProvidersForDropDownListProperties = new HashMap<String, List<String>>();
+
 //	protected List<DependentFeature> dependentFeatures;
 //	
 //	protected List<CodeSyncElementDescriptor> codeSyncElementDescriptors;
@@ -125,7 +139,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	private IProjectAccessController projectAccessController;
 	
 	protected boolean useUIDs = true;
-	
+
 	public static CodeSyncPlugin getInstance() {
 		return INSTANCE;
 	}
@@ -138,14 +152,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return fullyQualifiedNameProvider;
 	}
 	
-	public ComposedCodeSyncAlgorithmRunner getCodeSyncAlgorithmRunner() {
-		return codeSyncAlgorithmRunner;
+	public void addTypeProvider(String technology, ITypeProvider typeProvider) {
+		typeProviders.put(technology, typeProvider);
 	}
 	
-	public NodeService getNodeService() {
-		return nodeService;
+	public ITypeProvider getTypeProvider(String technology) {
+		return typeProviders.get(technology);
 	}
-	
+		
 	/**
 	 * Platform-dependent.
 	 * 
@@ -157,6 +171,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 
 	public void setProjectAccessController(IProjectAccessController projectAccessController) {
 		this.projectAccessController = projectAccessController;
+	}
+	
+	public void addDataProviderForDropDownListProperty(String name, List<String> dataProvider) {
+		dataProvidersForDropDownListProperties.put(name, dataProvider);
+	}
+	
+	public Map<String, List<String>> getDataProvidersForDropDownListProperties() {
+		return dataProvidersForDropDownListProperties;
 	}
 	
 //	/**
@@ -228,12 +250,22 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		super.start(context);
 		INSTANCE = this;
 		
-		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateNodeTypeDescriptor("category.codeSync");
-		codeSyncDescriptor.addControllerToList(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
-		codeSyncDescriptor.addControllerToList(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
-		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("name").setReadOnlyAs(false));
-		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("added"));
-		codeSyncDescriptor.addControllerToList(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("removed"));
+		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncOperationsService", new CodeSyncOperationsService());
+		
+		addTypeProvider("node", new NodeTypeProvider());
+		
+		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.codeSync");
+		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
+		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setReadOnlyAs(false));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFLICT));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_CONFLICT));
+		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());
+		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());
@@ -344,9 +376,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			}
 //		});
 
-		// give the codeSyncExtension the signal to register their own runnable descriptors
-		initializeExtensionPoint_codeSyncAlgorithmRunner();
-		
 //		// needs custom descriptor because it uses the builder template (i.e. setters return the instance)
 //		new CustomSerializationDescriptor(CodeSyncElementDescriptor.class)
 //			.addDeclaredProperty("codeSyncType")
@@ -383,19 +412,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			.addDeclaredProperty("targetLabel")
 //			.addDeclaredProperty("targetIconUrl")
 //			.register();
-	}
-	
-	private void initializeExtensionPoint_codeSyncAlgorithmRunner() throws CoreException {
-		codeSyncAlgorithmRunner = new ComposedCodeSyncAlgorithmRunner();
-		IConfigurationElement[] configurationElements = 
-				Platform.getExtensionRegistry().getConfigurationElementsFor("org.flowerplatform.codesync.codeSyncAlgorithmRunner");
-		for (IConfigurationElement configurationElement : configurationElements) {
-			String id = configurationElement.getAttribute("id");
-			String technology = configurationElement.getAttribute("technology");
-			Object instance = configurationElement.createExecutableExtension("codeSyncAlgorithmRunnerClass");
-			codeSyncAlgorithmRunner.addRunner(technology, (ICodeSyncAlgorithmRunner) instance);
-			logger.debug("Added CodeSync algorithm runner with id = {} with class = {}", id, instance.getClass());
-		}
 	}
 	
 //	/**
@@ -461,9 +477,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			resource.unload();
 //			return resource;
 //		}
-		Node node = new Node();
-		node.setType("freeplaneNode");
-		return getNodeService().getChildren(node, true).get(0);
+		// TODO CC: temporary code
+		Node node = new Node("freeplaneNode", "mm://path_to_resource", null, null);		
+		return CorePlugin.getInstance().getNodeService().getChildren(node, true).get(0);
 	}
 //	
 //	/**
@@ -563,9 +579,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	 * @author Mariana
 	 */
 	public Node getSrcDir(Node root, String name) {
-		List<Node> children = nodeService.getChildren(root, true);
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(root, true);
 		for (Node child : children) {
-			if (name.equals(child.getOrCreateProperties().get("body"))) {
+			if (name.equals(child.getOrPopulateProperties().get(TEXT))) {
 				return child;
 			}
 		}

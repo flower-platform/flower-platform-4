@@ -18,45 +18,25 @@
  */
 package org.flowerplatform.codesync.adapter;
 
-import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * Convenience implementation.
  * 
  * @author Mariana Gheorghe
  */
-public abstract class AbstractModelAdapter implements IModelAdapter {
+public abstract class AbstractModelAdapter extends AbstractController implements IModelAdapter {
 
-	protected String type;
+	public static final String MODEL_ADAPTER_ANCESTOR = "modelAdapterAncestor";
+	public static final String MODEL_ADAPTER_LEFT = "modelAdapterLeft";
+	public static final String MODEL_ADAPTER_RIGHT = "modelAdapterRight";
 	
-	private ModelAdapterFactorySet modelAdapterFactorySet;
-	
-	@Override
-	public String getType() {
-		return type;
-	}
-
-	@Override
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	@Override
-	public ModelAdapterFactorySet getModelAdapterFactorySet() {
-		return modelAdapterFactorySet;
-	}
-	
-	@Override
-	public IModelAdapter setModelAdapterFactorySet(ModelAdapterFactorySet modelAdapterFactorySet) {
-		this.modelAdapterFactorySet = modelAdapterFactorySet;
-		return this;
-	}
-
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		throw new IllegalArgumentException("Attempted to acces value feature " + feature + " for element " + element);
@@ -73,8 +53,13 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild) {
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + element);
+	}
+	
+	@Override
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+		throw new IllegalArgumentException("Attempted to remove child on containment feature " + feature + " for element " + parent);
 	}
 
 	@Override
@@ -108,7 +93,7 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 
 	@Override
-	public void actionPerformed(Object element, Object feature, ActionResult result) {
+	public void actionPerformed(Object element, Object feature, ActionResult result, Match match) {
 		// nothing to do
 	}
 
@@ -118,27 +103,17 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 
 	@Override
-	public void allActionsPerformed(Object element, Object correspondingElement) {
+	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 	
-	//////////////////////////////////////////////////////////
-	// Node utils
-	//////////////////////////////////////////////////////////
-	
-	/**
-	 * Gets the category node from this node's children list, or create a new category node if it does not exist.
-	 */
-	protected Node getChildrenCategoryForNode(Node node, Object feature) {
-		for (Node category : getChildrenForNode(node)) {
-			if (category.getOrCreateProperties().get("body").equals(feature)) {
-				return category;
-			}
-		}
-		return null;
+	@Override
+	public void setConflict(Object element, Object feature, Object oppositeValue) {
+		// nothing to do
 	}
 	
-	protected List<Node> getChildrenForNode(Node node) {
-		return CodeSyncPlugin.getInstance().getNodeService().getChildren(node, true);
+	@Override
+	public void unsetConflict(Object element, Object feature) {
+		// nothing to do
 	}
 }

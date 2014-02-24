@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * Mapped to {@link MemberValuePair}.
@@ -48,9 +49,9 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			return ((MemberValuePair) element).getName().getIdentifier();
-		} else if (NodeFeatureProvider.TYPE.equals(feature)) {
+		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return MEMBER_VALUE_PAIR;
 		} else if (JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE.equals(feature)) {
 			return getStringFromExpression(((MemberValuePair) element).getValue());
@@ -60,7 +61,7 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (FeatureProvider.NAME.equals(feature)) {
 			MemberValuePair pair = (MemberValuePair) element;
 			String name = (String) value;
 			pair.setName(pair.getAST().newSimpleName(name));

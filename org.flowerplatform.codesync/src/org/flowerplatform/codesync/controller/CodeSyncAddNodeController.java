@@ -19,25 +19,24 @@
 package org.flowerplatform.codesync.controller;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.adapter.NodeModelAdapter;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana Gheorghe
+ * @author Cristina Constantinescu
  */
 public class CodeSyncAddNodeController extends AddNodeController {
 
 	public CodeSyncAddNodeController() {
-		// must be invoked after the persistence controller
-		setOrderIndex(50000);
+		// must be invoked after the persistence controller and update controller
+		setOrderIndex(500000);
 	}
 	
 	@Override
-	public void addNode(Node node, Node child) {
-		if (!child.getType().equals(CodeSyncPlugin.CATEGORY)) {
-			CodeSyncPlugin.getInstance().getNodeService().setProperty(child, NodeModelAdapter.ADDED, true);
-		}
+	public void addNode(Node node, Node child, Node insertBeforeNode) {		
+		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
 	}
 
 }

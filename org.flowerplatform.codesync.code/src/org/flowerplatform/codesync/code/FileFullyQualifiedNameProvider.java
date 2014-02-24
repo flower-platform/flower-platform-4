@@ -18,9 +18,6 @@
  */
 package org.flowerplatform.codesync.code;
 
-import java.io.File;
-
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.IFullyQualifiedNameProvider;
 
 /**

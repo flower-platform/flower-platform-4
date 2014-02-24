@@ -18,81 +18,35 @@
 */
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
-	import flash.events.IEventDispatcher;
-	
-	import mx.collections.ArrayCollection;
-	import mx.rpc.events.ResultEvent;
-	import mx.utils.DescribeTypeCache;
-	import mx.utils.ObjectUtil;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.Diagram;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexutil.action.ActionBase;
 		
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class RefreshAction extends ActionBase {
-		
-		private var recursive:Boolean;
-		
-		private var editorFrontend:MindMapEditorFrontend;
-				
-		public function RefreshAction(editorFrontend:MindMapEditorFrontend, recursive:Boolean = false) {
-			this.editorFrontend = editorFrontend;
-			this.recursive = recursive;
-			if (recursive) {
-				label = CorePlugin.getInstance().getMessage("mindmap.action.refresh.recursive");
-				orderIndex = 50;
-			} else {
-				label = CorePlugin.getInstance().getMessage("mindmap.action.refresh");
-				orderIndex = 40;
-			}			
+	public class RefreshAction extends DiagramShellAwareActionBase {
+						
+		public function RefreshAction() {
+			label = CorePlugin.getInstance().getMessage("mindmap.action.refresh");
+			icon = CorePlugin.getInstance().getResourceUrl("images/refresh.gif");
+			orderIndex = 40;					
 		}
 		
 		override public function get visible():Boolean {			
-			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node;
+			return selection != null;
 		}
 		
 		override public function run():void {
-//			refresh(Node(selection.getItemAt(0)));
+			// refresh each node from selection
+			for (var i:int = 0; i < selection.length; i++) {
+				var obj:Object = selection.getItemAt(i);
+				if (obj is Node) {
+					MindMapEditorDiagramShell(diagramShell).updateProcessor.refresh(Node(obj));
+				}
+			}
 		}
+	
 		
-//		private function refresh(node:Node):void {			
-//			if (recursive) {
-//				for each (var child:Node in node.children) {
-//					refresh(child);
-//				}
-//			}
-//			CorePlugin.getInstance().mindMapService.refresh(node.id, refreshCallbackHandler);
-//		}
-//		
-//		private function refreshCallbackHandler(result:ResultEvent):void {
-//			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(editorFrontend.diagramShell);
-//			
-//			var oldNode:Node = CorePlugin.getInstance().mindMapService.getNodeFromId(Node(Diagram(diagramShell.rootModel).rootNode), result.result[0]);
-//			var newNode:Node = result.result[1];
-//			copyProperties(newNode, oldNode, false);			
-//		}
-//		
-//		// TODO CC: temporary code (to be refactored when update mechanism implemented)
-//		protected function copyProperties(source:IEventDispatcher, dest:IEventDispatcher, postProcessOnly:Boolean):void {			
-//			var classInfo:XML = DescribeTypeCache.describeType(dest).typeDescription;
-//			for each (var v:XML in classInfo..accessor) {
-//				if (v.@name != null && v.@access != 'readonly' && !ObjectUtil.hasMetadata(dest, v.@name, 'Transient')) {
-//					copyProperty(source, dest, v.@name, postProcessOnly);
-//				}
-//			}
-//		}
-//		
-//		// TODO CC: temporary code (to be refactored when update mechanism implemented)
-//		protected function copyProperty(source:Object, dest:Object, propertyName:String, postProcessOnly:Boolean):void {
-//			if (!postProcessOnly && dest[propertyName] != source[propertyName]) {
-//				dest[propertyName] = source[propertyName];
-//			}
-//		}
 	}
 }

@@ -16,7 +16,7 @@ public class FileRemoveNodeController extends RemoveNodeController {
 
 		try {
 			fileAccessController.deleteFolderContent(fileAccessController
-					.getFile(child.getId()));
+					.getFile(child.getIdWithinResource()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
