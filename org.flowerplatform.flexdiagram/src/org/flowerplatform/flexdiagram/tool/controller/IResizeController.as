@@ -17,16 +17,17 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool.controller {
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
 	public interface IResizeController {
 		
-		function activate(model:Object):void;
-		function drag(model:Object, deltaX:Number, deltaY:Number, type:String):void;
-		function drop(model:Object):void;
-		function deactivate(model:Object):void;
+		function activate(context:DiagramShellContext, model:Object):void;
+		function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number, type:String):void;
+		function drop(context:DiagramShellContext, model:Object):void;
+		function deactivate(context:DiagramShellContext, model:Object):void;
 	
 	}
 }

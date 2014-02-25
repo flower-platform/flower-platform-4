@@ -25,6 +25,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.renderer.IRendererController;
 	
@@ -37,26 +38,25 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		
 		public var removeRendererIfModelIsDisposed:Boolean;
 		
-		public function ClassReferenceRendererController(diagramShell:DiagramShell, rendererClass:Class = null) {
-			super(diagramShell);
+		public function ClassReferenceRendererController(rendererClass:Class = null) {		
 			this.rendererClass = rendererClass;
 		}
 		
-		public function geUniqueKeyForRendererToRecycle(model:Object):Object {
+		public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
 			return rendererClass;
 		}
 		
-		public function createRenderer(model:Object):IVisualElement {
+		public function createRenderer(context:DiagramShellContext, model:Object):IVisualElement {
 			return new rendererClass();
 		}
 		
-		public function associatedModelToRenderer(model:Object, renderer:IVisualElement):void {
+		public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
 		}
 		
 		/**
 		 * @author Mariana Gheorghe
 		 */
-		public function unassociatedModelFromRenderer(model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
+		public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
 			if (modelIsDisposed && removeRendererIfModelIsDisposed) {
 				if (renderer != null) {
 					IVisualElementContainer(renderer.parent).removeElement(renderer);

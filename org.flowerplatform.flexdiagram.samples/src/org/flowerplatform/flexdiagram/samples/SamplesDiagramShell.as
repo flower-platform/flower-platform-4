@@ -89,30 +89,30 @@ package org.flowerplatform.flexdiagram.samples {
 		private var connectionModelRendererController:ClassReferenceRendererController;
 		
 		public function SamplesDiagramShell() {
-			lightweightModelExtraInfoController = new LightweightModelExtraInfoController(this);
-			dynamicModelExtraInfoController = new DynamicModelExtraInfoController(this);
+			lightweightModelExtraInfoController = new LightweightModelExtraInfoController();
+			dynamicModelExtraInfoController = new DynamicModelExtraInfoController();
 			
-			absoluteLayoutVisualChildrenController = new AbsoluteLayoutVisualChildrenController(this);
-			arrayListModelChildrenController = new ParentAwareArrayListModelChildrenController(this, true);
+			absoluteLayoutVisualChildrenController = new AbsoluteLayoutVisualChildrenController();
+			arrayListModelChildrenController = new ParentAwareArrayListModelChildrenController(true);
 			
-			basicModelAbsoluteLayoutRectangleController = new BasicModelAbsoluteLayoutRectangleController(this);
-			basicModelRendererController = new BasicModelRendererController(this);
-			basicModelModelChildrenController = new BasicModelModelChildrenController(this);
-			sequentialLayoutVisualChildrenController = new SequentialLayoutVisualChildrenController(this);
+			basicModelAbsoluteLayoutRectangleController = new BasicModelAbsoluteLayoutRectangleController();
+			basicModelRendererController = new BasicModelRendererController();
+			basicModelModelChildrenController = new BasicModelModelChildrenController();
+			sequentialLayoutVisualChildrenController = new SequentialLayoutVisualChildrenController();
 			
-			basicSubModelRendererController = new ClassReferenceRendererController(this, SubModelIconItemRenderer);
+			basicSubModelRendererController = new ClassReferenceRendererController(SubModelIconItemRenderer);
 			
-			basicModelSelectionController = new SelectionController(this, StandardAnchorsSelectionRenderer);		
-			basicSubModelSelectionController = new BasicSubModelSelectionController(this);
+			basicModelSelectionController = new SelectionController(StandardAnchorsSelectionRenderer);		
+			basicSubModelSelectionController = new BasicSubModelSelectionController();
 			
-			basicSubModelInplaceEditorController = new BasicSubModelInplaceEditorController(this);
-			basicModelResizeController = new BasicModelResizeController(this);
-			basicModelDragToCreateRelationController = new BasicModelDragToCreateRelationController(this);
-			basicModelDragController = new BasicModelDragController(this);
-			selectOrgDragToCreateElementgController = new SelectOrDragToCreateElementController(this);
+			basicSubModelInplaceEditorController = new BasicSubModelInplaceEditorController();
+			basicModelResizeController = new BasicModelResizeController();
+			basicModelDragToCreateRelationController = new BasicModelDragToCreateRelationController();
+			basicModelDragController = new BasicModelDragController();
+			selectOrgDragToCreateElementgController = new SelectOrDragToCreateElementController();
 					
 			// connections
-			connectionModelRendererController = new BasicConnectionRendererController(this, ConnectionRenderer);
+			connectionModelRendererController = new BasicConnectionRendererController(ConnectionRenderer);
 		}
 		
 		public function getAbsoluteLayoutRectangleController(model:Object):IAbsoluteLayoutRectangleController {

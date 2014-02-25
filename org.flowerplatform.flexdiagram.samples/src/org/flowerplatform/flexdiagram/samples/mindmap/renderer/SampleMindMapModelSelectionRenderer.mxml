@@ -82,7 +82,7 @@
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
 				if (node.hasChildren && 
-					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node) is SampleMindMapModel) {	
+					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(diagramShell.context, node) is SampleMindMapModel) {	
 					vLine.visible = !node.expanded;
 					diagramShell.diagramRenderer.addElement(circle);
 				} else if (!node.hasChildren) {
@@ -105,7 +105,7 @@
 			}
 			
 			protected function circle_mouseClickHandler(event:MouseEvent):void {
-				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, !node.expanded);
+				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(diagramShell.context, node, !node.expanded);
 				
 				vLine.visible = !node.expanded;
 	
@@ -123,7 +123,7 @@
 			}
 			
 			private function getDynamicObject(model:Object):Object {
-				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(diagramShell.context, model);
 			}
 					
 		]]>

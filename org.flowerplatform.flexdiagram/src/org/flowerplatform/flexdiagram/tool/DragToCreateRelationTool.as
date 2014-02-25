@@ -27,6 +27,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.renderer.selection.AnchorsSelectionRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.IDragToCreateRelationController;
@@ -61,7 +62,7 @@ package org.flowerplatform.flexdiagram.tool {
 				diagramShell.mainToolFinishedItsJob();
 				return;
 			}
-			controller.activate(context.model);
+			controller.activate(new DiagramShellContext(diagramShell), context.model);
 			
 			super.activateAsMainTool();
 		}
@@ -72,7 +73,7 @@ package org.flowerplatform.flexdiagram.tool {
 			
 			var controller:IDragToCreateRelationController = diagramShell.getControllerProvider(context.model).getDragToCreateRelationController(context.model);
 			if (controller != null) {
-				controller.deactivate(context.model);
+				controller.deactivate(new DiagramShellContext(diagramShell), context.model);
 			}
 			delete context.model;
 			
@@ -90,7 +91,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var deltaY:int = mousePoint.y;
 				
 				diagramShell.getControllerProvider(context.model).
-					getDragToCreateRelationController(context.model).drag(context.model, deltaX, deltaY);
+					getDragToCreateRelationController(context.model).drag(new DiagramShellContext(diagramShell), context.model, deltaX, deltaY);
 			} else {
 				mouseUpHandler();
 			}
@@ -106,7 +107,7 @@ package org.flowerplatform.flexdiagram.tool {
 			if (controller) {
 				var renderer:IVisualElement = getRendererFromDisplayCoordinates(true);
 				var model:Object = getModelWithDragToCreateRelationController(renderer);				
-				controller.drop(context.model, model);
+				controller.drop(new DiagramShellContext(diagramShell), context.model, model);
 			}
 		}
 		

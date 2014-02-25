@@ -123,7 +123,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 			
 			if (canDrawCircle(data)) {
-				var side:int = _diagramShell.getModelController(data).getSide(data);
+				var side:int = _diagramShell.getModelController(data).getSide(_diagramShell.context, data);
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					graphics.drawCircle(-circleRadius, height/2, circleRadius);
 				} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						

@@ -18,14 +18,16 @@
  */
 package org.flowerplatform.flexdiagram.controller.selection {
 	import mx.core.IVisualElement;
+	
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
 	public interface ISelectionController {
-		function setSelectedState(model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void;
-		function associatedModelToSelectionRenderer(model:Object, renderer:IVisualElement):void;
-		function unassociatedModelFromSelectionRenderer(model:Object, renderer:IVisualElement):void;
+		function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void;
+		function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void;
+		function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void;
 	}
 	
 }

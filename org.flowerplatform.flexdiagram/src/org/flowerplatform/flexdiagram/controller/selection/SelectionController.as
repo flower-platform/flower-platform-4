@@ -22,6 +22,7 @@ package org.flowerplatform.flexdiagram.controller.selection
 	import mx.events.DynamicEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
@@ -31,19 +32,18 @@ package org.flowerplatform.flexdiagram.controller.selection
 		
 		public var selectionRendererClass:Class;
 		
-		public function SelectionController(diagramShell:DiagramShell, selectionRendererClass:Class = null) {
-			super(diagramShell);
+		public function SelectionController(selectionRendererClass:Class = null) {		
 			this.selectionRendererClass = selectionRendererClass;
 		}
 		
-		public function setSelectedState(model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
+		public function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
 			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
+				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
 			
-			var dynamicObject:Object = modelExtraInfoController.getDynamicObject(model);
+			var dynamicObject:Object = modelExtraInfoController.getDynamicObject(context, model);
 			
-			if (modelExtraInfoController.getDynamicObject(model).selected != isSelected) {
-				modelExtraInfoController.getDynamicObject(model).selected = isSelected;
+			if (dynamicObject.selected != isSelected) {
+				dynamicObject.selected = isSelected;
 			}
 			
 			if (renderer == null) {
@@ -53,44 +53,44 @@ package org.flowerplatform.flexdiagram.controller.selection
 			// add/delete selectionRenderer
 			
 			if (isSelected) {		
-				var selectionRenderer:AbstractSelectionRenderer = modelExtraInfoController.getDynamicObject(model).selectionRenderer;				
+				var selectionRenderer:AbstractSelectionRenderer = dynamicObject.selectionRenderer;				
 				if (selectionRenderer == null) {
 					selectionRenderer = new selectionRendererClass();
 					
 					if (selectionRenderer is IDiagramShellAware) {
-						IDiagramShellAware(selectionRenderer).diagramShell = diagramShell;
+						IDiagramShellAware(selectionRenderer).diagramShell = context.diagramShell;
 					}
 					
 					selectionRenderer.isMainSelection = isMainSelection;
 					selectionRenderer.activate(model);
 					
-					modelExtraInfoController.getDynamicObject(model).selectionRenderer = selectionRenderer;
+					dynamicObject.selectionRenderer = selectionRenderer;
 				} else {
 					if (selectionRenderer.isMainSelection != isMainSelection) {
 						selectionRenderer.isMainSelection = isMainSelection;
 					}
 				}					
 			} else {
-				unassociatedModelFromSelectionRenderer(model, renderer);
+				unassociatedModelFromSelectionRenderer(context, model, renderer);
 			}
 		}
 		
-		public function associatedModelToSelectionRenderer(model:Object, renderer:IVisualElement):void {	
+		public function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {	
 			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
+				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
 			
-			setSelectedState(model, renderer, modelExtraInfoController.getDynamicObject(model).selected, diagramShell.mainSelectedItem == model);			
+			setSelectedState(context, model, renderer, modelExtraInfoController.getDynamicObject(context, model).selected, context.diagramShell.mainSelectedItem == model);			
 		}
 		
-		public function unassociatedModelFromSelectionRenderer(model:Object, renderer:IVisualElement):void {
+		public function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
 			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
+				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
 			
-			var selectionRenderer:AbstractSelectionRenderer = modelExtraInfoController.getDynamicObject(model).selectionRenderer;
+			var selectionRenderer:AbstractSelectionRenderer = modelExtraInfoController.getDynamicObject(context, model).selectionRenderer;
 			
 			if (selectionRenderer != null) {
 				selectionRenderer.deactivate(model);				
-				delete modelExtraInfoController.getDynamicObject(model).selectionRenderer;
+				delete modelExtraInfoController.getDynamicObject(context, model).selectionRenderer;
 			}
 		}
 	}

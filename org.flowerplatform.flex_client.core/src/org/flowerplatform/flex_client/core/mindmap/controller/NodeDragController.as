@@ -25,6 +25,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -37,21 +38,18 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	 * @author Cristina Constantinescu
 	 */
 	public class NodeDragController extends ControllerBase implements IDragController {
-		
-		public function NodeDragController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function activate(model:Object, initialX:Number, initialY:Number):void {		
-			if (MindMapDiagramShell(diagramShell).getModelController(model).isRoot(model)) { 
+				
+		public function activate(context:DiagramShellContext, model:Object, initialX:Number, initialY:Number):void {		
+			if (MindMapDiagramShell(context.diagramShell).getModelController(model).isRoot(context, model)) { 
 				// don't drag the root node
 				return;
 			}
-			getDynamicObject(model).initialX = initialX;
-			getDynamicObject(model).initialY = initialY;
+			var dynamicObject:Object = getDynamicObject(context, model);
+			dynamicObject.initialX = initialX;
+			dynamicObject.initialY = initialY;
 		}
 		
-		public function drag(model:Object, deltaX:Number, deltaY:Number):void {
+		public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number):void {
 //			getDynamicObject(model).finalX = getDynamicObject(model).initialX + deltaX;
 //			getDynamicObject(model).finalY = getDynamicObject(model).initialY + deltaY;
 //			
@@ -107,7 +105,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 //			getDynamicObject(model).side = side;
 		}
 		
-		public function drop(model:Object):void {
+		public function drop(context:DiagramShellContext, model:Object):void {
 //			var dropPoint:Point = new Point(getDynamicObject(model).finalX, getDynamicObject(model).finalY);
 //			var renderer:IVisualElement = getRendererFromCoordinates(dropPoint);
 //			
@@ -170,50 +168,51 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 //				result.getItemAt(1));
 		}
 		
-		public function deactivate(model:Object):void {
-			delete getDynamicObject(model).initialX;
-			delete getDynamicObject(model).initialY;
-			delete getDynamicObject(model).finalX;
-			delete getDynamicObject(model).finalY;
-			delete getDynamicObject(model).side;
+		public function deactivate(context:DiagramShellContext, model:Object):void {
+			delete getDynamicObject(context, model).initialX;
+			delete getDynamicObject(context, model).initialY;
+			delete getDynamicObject(context, model).finalX;
+			delete getDynamicObject(context, model).finalY;
+			delete getDynamicObject(context, model).side;
 		}
 		
-		private function getDynamicObject(model:Object):Object {
-			return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+		private function getDynamicObject(context:DiagramShellContext, model:Object):Object {
+			return DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(context, model);
 		}
 		
-		private function getModelController(model:Object):IMindMapModelController {
-			return MindMapDiagramShell(diagramShell).getModelController(model);
+		private function getModelController(context:DiagramShellContext, model:Object):IMindMapModelController {
+			return MindMapDiagramShell(context.diagramShell).getModelController(model);
 		}
 		
-		private function deletePlaceHolder(model:Object):void {
-			var placeHolder:MoveResizePlaceHolder = getDynamicObject(model).placeHolder;
+		private function deletePlaceHolder(context:DiagramShellContext, model:Object):void {
+			var placeHolder:MoveResizePlaceHolder = getDynamicObject(context, model).placeHolder;
 			if (placeHolder != null) {
-				diagramShell.diagramRenderer.removeElement(placeHolder);
-				delete getDynamicObject(model).placeHolder;		
+				context.diagramShell.diagramRenderer.removeElement(placeHolder);
+				delete getDynamicObject(context, model).placeHolder;		
 			}
 		}
 		
-		private function getPlaceHolder(model:Object):MoveResizePlaceHolder {
-			var placeHolder:MoveResizePlaceHolder = getDynamicObject(model).placeHolder;
+		private function getPlaceHolder(context:DiagramShellContext, model:Object):MoveResizePlaceHolder {
+			var dynamicObject:Object = getDynamicObject(context, model);
+			var placeHolder:MoveResizePlaceHolder = dynamicObject.placeHolder;
 			if (placeHolder == null) {
 				placeHolder = new MoveResizePlaceHolder();				
 				placeHolder.alphas = [0.4, 0.4];
 				placeHolder.ratios = [0, 255];				
-				getDynamicObject(model).placeHolder = placeHolder;
-				diagramShell.diagramRenderer.addElement(placeHolder);
+				dynamicObject.placeHolder = placeHolder;
+				context.diagramShell.diagramRenderer.addElement(placeHolder);
 			}
 			return placeHolder;
 		}
 		
-		protected function getRendererFromCoordinates(point:Point):IVisualElement {
-			var stage:Stage = DisplayObject(diagramShell.diagramRenderer).stage;
+		protected function getRendererFromCoordinates(context:DiagramShellContext, point:Point):IVisualElement {
+			var stage:Stage = DisplayObject(context.diagramShell.diagramRenderer).stage;
 			var arr:Array = stage.getObjectsUnderPoint(new Point(stage.mouseX, stage.mouseY));
 			
 			var renderer:IVisualElement;
 			var i:int;
 			for (i = arr.length - 1; i >= 0;  i--) {
-				renderer = getRendererFromDisplay(arr[i]);
+				renderer = getRendererFromDisplay(context, arr[i]);
 				if (renderer != null) {					
 					return renderer;
 				}
@@ -221,7 +220,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			return null;
 		}
 		
-		protected function getRendererFromDisplay(obj:Object):IVisualElement {			
+		protected function getRendererFromDisplay(context:DiagramShellContext, obj:Object):IVisualElement {			
 			// in order for us to traverse its hierrarchy
 			// it has to be a DisplayObject
 			if (!(obj is DisplayObject) || obj is MoveResizePlaceHolder) {
@@ -233,7 +232,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 				if (obj is DiagramRenderer) {
 					return IVisualElement(obj);
 				}
-				if (obj is IDataRenderer && diagramShell.modelToExtraInfoMap[IDataRenderer(obj).data] != null) {
+				if (obj is IDataRenderer && context.diagramShell.modelToExtraInfoMap[IDataRenderer(obj).data] != null) {
 					// found it
 					return IVisualElement(obj);					
 				}
@@ -244,22 +243,22 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			return null;
 		}
 		
-		private function isDropAccepted(renderer:Object, dragModel:Object, dropModel:Object):Boolean {
+		private function isDropAccepted(context:DiagramShellContext, renderer:Object, dragModel:Object, dropModel:Object):Boolean {
 			if (renderer is DiagramRenderer // don't drop over diagram 
-				|| !dragModelIsParentForDropModel(dragModel, dropModel)) { // or children structure 				
+				|| !dragModelIsParentForDropModel(context, dragModel, dropModel)) { // or children structure 				
 				return false;
 			}
 			return true;
 		}
 		
-		private function dragModelIsParentForDropModel(dragModel:Object, dropModel:Object):Boolean {
+		private function dragModelIsParentForDropModel(context:DiagramShellContext, dragModel:Object, dropModel:Object):Boolean {
 			if (dragModel == dropModel) {
 				return false;
 			}
-			if (diagramShell.getControllerProvider(dropModel).getModelChildrenController(dropModel).getParent(dropModel) == null) {
+			if (context.diagramShell.getControllerProvider(dropModel).getModelChildrenController(dropModel).getParent(context, dropModel) == null) {
 				return true;
 			}
-			return dragModelIsParentForDropModel(dragModel, diagramShell.getControllerProvider(dropModel).getModelChildrenController(dropModel).getParent(dropModel));
+			return dragModelIsParentForDropModel(context, dragModel, context.diagramShell.getControllerProvider(dropModel).getModelChildrenController(dropModel).getParent(context, dropModel));
 		}
 	}
 }

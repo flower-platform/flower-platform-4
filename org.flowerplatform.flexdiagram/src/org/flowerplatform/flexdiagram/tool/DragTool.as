@@ -32,6 +32,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.drag.IDragController;
@@ -77,7 +78,7 @@ package org.flowerplatform.flexdiagram.tool {
 			for (var i:int = 0; i < acceptedDraggableModels.length; i++) {					
 				var model:Object = acceptedDraggableModels.getItemAt(i);				
 				diagramShell.getControllerProvider(model).getDragController(model)
-					.activate(model, context.initialMousePoint.x, context.initialMousePoint.y);					
+					.activate(new DiagramShellContext(diagramShell), model, context.initialMousePoint.x, context.initialMousePoint.y);					
 			}
 			context.draggableItems = acceptedDraggableModels;		
 			
@@ -90,7 +91,7 @@ package org.flowerplatform.flexdiagram.tool {
 			
 			for (var i:int = 0; i < ArrayList(context.draggableItems).length; i++) {
 				var model:Object = ArrayList(context.draggableItems).getItemAt(i);
-				diagramShell.getControllerProvider(model).getDragController(model).deactivate(model);												
+				diagramShell.getControllerProvider(model).getDragController(model).deactivate(new DiagramShellContext(diagramShell), model);												
 			}		
 			
 			delete context.initialMousePoint;			
@@ -112,7 +113,7 @@ package org.flowerplatform.flexdiagram.tool {
 				
 				for (var i:int = 0; i < ArrayList(context.draggableItems).length; i++) {
 					var model:Object = ArrayList(context.draggableItems).getItemAt(i);
-					diagramShell.getControllerProvider(model).getDragController(model).drag(model, deltaX, deltaY);										
+					diagramShell.getControllerProvider(model).getDragController(model).drag(new DiagramShellContext(diagramShell), model, deltaX, deltaY);										
 				}
 			} else {				
 				diagramShell.mainToolFinishedItsJob();
@@ -122,7 +123,7 @@ package org.flowerplatform.flexdiagram.tool {
 		protected function mouseUpHandler(event:MouseEvent):void {
 			for (var i:int = 0; i < ArrayList(context.draggableItems).length; i++) {
 				var model:Object = ArrayList(context.draggableItems).getItemAt(i);
-				diagramShell.getControllerProvider(model).getDragController(model).drop(model);				
+				diagramShell.getControllerProvider(model).getDragController(model).drop(new DiagramShellContext(diagramShell), model);				
 			}
 			diagramShell.mainToolFinishedItsJob();
 		}

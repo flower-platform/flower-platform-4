@@ -26,6 +26,7 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
 	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
@@ -215,7 +216,7 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 		 */
 		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent):void {
 			var controller:ConnectionRendererController = ConnectionRendererController(diagramShell.getControllerProvider(data).getRendererController(data));
-			controller.updateConnectionEnds(data, event.target);
+			controller.updateConnectionEnds(new DiagramShellContext(diagramShell), data, event.target);
 		}
 		
 		public function get sourceEndType():String {

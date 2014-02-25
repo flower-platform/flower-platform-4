@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
 	
@@ -29,40 +30,32 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	 * @author Cristina Constantinescu
 	 */
 	public class NodeController extends ControllerBase implements IMindMapModelController {
-		
-		public function NodeController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		private function get mindMapDiagramShell():MindMapEditorDiagramShell {
-			return MindMapEditorDiagramShell(diagramShell);
-		}
-				
-		public function getChildren(model:Object):IList {			
+								
+		public function getChildren(context:DiagramShellContext, model:Object):IList {			
 			return Node(model).children;
 		}
 					
-		public function getExpanded(model:Object):Boolean {
+		public function getExpanded(context:DiagramShellContext, model:Object):Boolean {
 			return Node(model).children != null && Node(model).children.length > 0;
 		}
 		
-		public function setExpanded(model:Object, value:Boolean):void {
+		public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
 			if (value) {
-				MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(Node(model));
+				MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(Node(model));
 			} else {				
-				MindMapEditorDiagramShell(diagramShell).updateProcessor.removeChildren(Node(model));
+				MindMapEditorDiagramShell(context.diagramShell).updateProcessor.removeChildren(Node(model));
 			}		
 		}
 		
-		public function getSide(model:Object):int {
+		public function getSide(context:DiagramShellContext, model:Object):int {
 			return Node(model).side;
 		}
 		
-		public function setSide(model:Object, value:int):void {
+		public function setSide(context:DiagramShellContext, model:Object, value:int):void {
 //			Node(model).side = value;
 		}
 
-		public function isRoot(model:Object):Boolean {			
+		public function isRoot(context:DiagramShellContext, model:Object):Boolean {			
 			return Node(model).parent == null;
 		}
 	

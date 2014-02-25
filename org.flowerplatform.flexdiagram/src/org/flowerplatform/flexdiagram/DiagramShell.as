@@ -122,7 +122,7 @@ package org.flowerplatform.flexdiagram {
 				if (_mainSelectedItem != null &&
 					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem) != null) {				
 					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem).
-						setSelectedState(_mainSelectedItem, getRendererForModel(_mainSelectedItem), true, false);
+						setSelectedState(context, _mainSelectedItem, getRendererForModel(_mainSelectedItem), true, false);
 				}
 				// mark the new main selection 
 				_mainSelectedItem = value;
@@ -130,7 +130,7 @@ package org.flowerplatform.flexdiagram {
 				if (_mainSelectedItem != null &&
 					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem) != null) {
 					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem).
-						setSelectedState(_mainSelectedItem, getRendererForModel(_mainSelectedItem), true, true);			
+						setSelectedState(context, _mainSelectedItem, getRendererForModel(_mainSelectedItem), true, true);			
 				}
 			}
 		}
@@ -187,7 +187,7 @@ package org.flowerplatform.flexdiagram {
 				controllerProvider = getControllerProvider(model);
 			}
 			if (modelToExtraInfoMap[model] == null && controllerProvider.getModelExtraInfoController(model) != null) {
-				var extraInfo:Object = controllerProvider.getModelExtraInfoController(model).createExtraInfo(model);
+				var extraInfo:Object = controllerProvider.getModelExtraInfoController(model).createExtraInfo(context, model);
 				modelToExtraInfoMap[model] = extraInfo;
 				return true;
 			}
@@ -201,7 +201,7 @@ package org.flowerplatform.flexdiagram {
 			
 			// update the renderer in model map
 			if (controllerProvider.getModelExtraInfoController(model) != null) {
-				controllerProvider.getModelExtraInfoController(model).setRenderer(model, modelToExtraInfoMap[model], renderer);
+				controllerProvider.getModelExtraInfoController(model).setRenderer(context, model, modelToExtraInfoMap[model], renderer);
 			}
 			
 			if (renderer is IInvalidating) {
@@ -222,18 +222,18 @@ package org.flowerplatform.flexdiagram {
 			var rendererController:IRendererController = controllerProvider.getRendererController(model);
 			if (rendererController != null) {
 				// is null just for the diagram
-				rendererController.associatedModelToRenderer(model, renderer);
+				rendererController.associatedModelToRenderer(context, model, renderer);
 			}
 			
 			var modelChildrenController:IModelChildrenController = controllerProvider.getModelChildrenController(model);
 			if (modelChildrenController != null) {
 				// "leaf" models don't have children, i.e. no provider
-				modelChildrenController.beginListeningForChanges(model);
+				modelChildrenController.beginListeningForChanges(context, model);
 			}
 			
 			var selectionController:ISelectionController = controllerProvider.getSelectionController(model);
 			if (selectionController != null) {
-				selectionController.associatedModelToSelectionRenderer(model, renderer);
+				selectionController.associatedModelToSelectionRenderer(context, model, renderer);
 			}
 			
 			// connection related
@@ -257,18 +257,18 @@ package org.flowerplatform.flexdiagram {
 			
 			var modelChildrenController:IModelChildrenController = controllerProvider.getModelChildrenController(model);
 			if (modelChildrenController != null) {
-				var children:IList = modelChildrenController.getChildren(model);
+				var children:IList = modelChildrenController.getChildren(context, model);
 				for (var i:int = 0; i < children.length; i++) {
 					var childModel:Object = children.getItemAt(i);
 					unassociateModelFromRenderer(childModel, getRendererForModel(childModel), modelIsDisposed);
 				}
 				// "leaf" models don't have children, i.e. no provider
-				modelChildrenController.endListeningForChanges(model);
+				modelChildrenController.endListeningForChanges(context, model);
 			}
 		
 			// update the renderer in model map
 			if (controllerProvider.getModelExtraInfoController(model) != null) {
-				controllerProvider.getModelExtraInfoController(model).setRenderer(model, modelToExtraInfoMap[model], null);
+				controllerProvider.getModelExtraInfoController(model).setRenderer(context, model, modelToExtraInfoMap[model], null);
 			}
 			
 			if (renderer != null) {
@@ -286,12 +286,12 @@ package org.flowerplatform.flexdiagram {
 			var rendererController:IRendererController = controllerProvider.getRendererController(model);
 			if (rendererController != null) {
 				// is null just for the diagram
-				rendererController.unassociatedModelFromRenderer(model, renderer, modelIsDisposed);
+				rendererController.unassociatedModelFromRenderer(context, model, renderer, modelIsDisposed);
 			}
 						
 			var selectionController:ISelectionController = controllerProvider.getSelectionController(model);
 			if (selectionController != null) {
-				selectionController.unassociatedModelFromSelectionRenderer(model, renderer);
+				selectionController.unassociatedModelFromSelectionRenderer(context, model, renderer);
 			}
 			
 			if (modelIsDisposed) {
@@ -318,7 +318,7 @@ package org.flowerplatform.flexdiagram {
 			// sigur e o problema! vad ca se intra de multe ori pe aici, si in CoReCo.getEstimate....: cam la orice operatiune. De asemenea, la display de diag initial,
 			// linia e un pic decalata
 			// UPDATE: am rezolvat un pic, caci se trimitea de multe ori pentru ca era inregitrat si pentru diagrama
-			var children:IList = controller.getChildren(model);
+			var children:IList = controller.getChildren(context, model);
 			if (children != null) {
 				for (var i:int = 0; i < children.length; i++) {
 					moveResizeHandler(null, children.getItemAt(i));
@@ -328,7 +328,7 @@ package org.flowerplatform.flexdiagram {
 		
 		public function getRendererForModel(model:Object):IVisualElement {
 			if (getControllerProvider(model).getModelExtraInfoController(model) != null) {
-				return getControllerProvider(model).getModelExtraInfoController(model).getRenderer(modelToExtraInfoMap[model]);
+				return getControllerProvider(model).getModelExtraInfoController(model).getRenderer(context, modelToExtraInfoMap[model]);
 			}
 			return null;
 		}
@@ -381,7 +381,7 @@ package org.flowerplatform.flexdiagram {
 					if (event.kind == CollectionEventKind.REPLACE) {
 						model = PropertyChangeEvent(event.items[0]).oldValue;	
 					}				
-					selectionController.setSelectedState(model, getRendererForModel(model), false, false);
+					selectionController.setSelectedState(context, model, getRendererForModel(model), false, false);
 				}
 			}
 		}
@@ -428,5 +428,10 @@ package org.flowerplatform.flexdiagram {
 				contentPoint.x, contentPoint.y, 
 				rectangle.width * toComponent.scaleX, rectangle.height * toComponent.scaleY);
 		}
+		
+		public function get context():DiagramShellContext {
+			return new DiagramShellContext(this);
+		}
+		
 	}
 }

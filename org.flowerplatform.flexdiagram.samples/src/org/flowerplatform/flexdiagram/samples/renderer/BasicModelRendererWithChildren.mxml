@@ -94,7 +94,7 @@
 			
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
 				if (visualChildrenController != null) {
-					visualChildrenController.refreshVisualChildren(data);
+					visualChildrenController.refreshVisualChildren(diagramShell.context, data);
 				}
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				

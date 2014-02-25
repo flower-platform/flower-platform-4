@@ -29,6 +29,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import mx.events.FlexEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.IInplaceEditorController;
 	
@@ -91,8 +92,8 @@ package org.flowerplatform.flexdiagram.tool {
 			
 			var inplaceEditorController:IInplaceEditorController = diagramShell.getControllerProvider(context.model).getInplaceEditorController(context.model);
 			if (inplaceEditorController != null) {
-				if (inplaceEditorController.canActivate(context.model)) {
-					inplaceEditorController.activate(context.model);
+				if (inplaceEditorController.canActivate(new DiagramShellContext(diagramShell), context.model)) {
+					inplaceEditorController.activate(new DiagramShellContext(diagramShell), context.model);
 					if (context.wakedByMouseDownEvent) {
 						diagramRenderer.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);	
 					}
@@ -104,7 +105,7 @@ package org.flowerplatform.flexdiagram.tool {
 		override public function deactivateAsMainTool():void {
 			var inplaceEditorController:IInplaceEditorController = diagramShell.getControllerProvider(context.model).getInplaceEditorController(context.model);
 			if (inplaceEditorController != null) {
-				inplaceEditorController.deactivate(context.model);
+				inplaceEditorController.deactivate(new DiagramShellContext(diagramShell), context.model);
 				if (context.wakedByMouseDownEvent) {
 					diagramRenderer.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);	
 				}
@@ -131,13 +132,13 @@ package org.flowerplatform.flexdiagram.tool {
 				case Keyboard.ENTER: // commit value			
 					if (!event.ctrlKey && this == diagramShell.mainTool) {
 						diagramShell.getControllerProvider(context.model).
-							getInplaceEditorController(context.model).commit(context.model);
+							getInplaceEditorController(context.model).commit(new DiagramShellContext(diagramShell), context.model);
 					}					
 					break;
 				case Keyboard.ESCAPE: // abort
 					if (this == diagramShell.mainTool) {
 						diagramShell.getControllerProvider(context.model).
-							getInplaceEditorController(context.model).abort(context.model);
+							getInplaceEditorController(context.model).abort(new DiagramShellContext(diagramShell), context.model);
 					}
 					break;
 			}
@@ -147,9 +148,9 @@ package org.flowerplatform.flexdiagram.tool {
 			var renderer:IVisualElement = getRendererFromDisplayCoordinates(true);
 			if (renderer == null || IDataRenderer(renderer).data != context.model) { // abort if click somewhere else
 				if (diagramShell.getControllerProvider(context.model).
-					getInplaceEditorController(context.model).canActivate(context.model)) {
+					getInplaceEditorController(context.model).canActivate(new DiagramShellContext(diagramShell), context.model)) {
 					diagramShell.getControllerProvider(context.model).
-						getInplaceEditorController(context.model).commit(context.model);
+						getInplaceEditorController(context.model).commit(new DiagramShellContext(diagramShell), context.model);
 				}
 			}
 		}

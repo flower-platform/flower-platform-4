@@ -20,6 +20,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	import flash.geom.Rectangle;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -30,12 +31,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	 */
 	public class MindMapAbsoluteLayoutRectangleController extends ControllerBase implements IAbsoluteLayoutRectangleController {
 		
-		public function MindMapAbsoluteLayoutRectangleController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function getBounds(model:Object):Rectangle {
-			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
+		public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
+			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
 			return new Rectangle(
 				diagramShell.getPropertyValue(model, "x"), 
 				diagramShell.getPropertyValue(model, "y"), 

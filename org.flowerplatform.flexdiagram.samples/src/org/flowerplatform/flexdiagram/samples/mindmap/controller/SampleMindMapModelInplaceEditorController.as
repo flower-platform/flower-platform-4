@@ -22,6 +22,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller
 	import flash.geom.Rectangle;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexdiagram.tool.controller.IInplaceEditorController;
@@ -33,21 +34,17 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller
 	 */
 	public class SampleMindMapModelInplaceEditorController extends ControllerBase implements IInplaceEditorController {
 		
-		public function SampleMindMapModelInplaceEditorController(diagramShell:DiagramShell)	{
-			super(diagramShell);
-		}
-				
-		public function canActivate(model:Object):Boolean	{		
+		public function canActivate(context:DiagramShellContext, model:Object):Boolean	{		
 			return true;
 		}
 		
-		public function activate(model:Object):void {
-			var renderer:DisplayObject = DisplayObject(diagramShell.getRendererForModel(model));
+		public function activate(context:DiagramShellContext, model:Object):void {
+			var renderer:DisplayObject = DisplayObject(context.diagramShell.getRendererForModel(model));
 			var textField:TextInput = new TextInput();
 			
-			diagramShell.diagramRenderer.addElement(textField);
+			context.diagramShell.diagramRenderer.addElement(textField);
 			
-			var bounds:Rectangle = renderer.getBounds(DisplayObject(diagramShell.diagramRenderer));
+			var bounds:Rectangle = renderer.getBounds(DisplayObject(context.diagramShell.diagramRenderer));
 			textField.x = bounds.x + 2;
 			textField.y = bounds.y;
 			textField.width = bounds.width;
@@ -55,26 +52,26 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller
 			textField.text = SampleMindMapModel(model).text;
 			textField.callLater(textField.setFocus);
 			
-			diagramShell.modelToExtraInfoMap[model].inplaceEditor = textField;
+			context.diagramShell.modelToExtraInfoMap[model].inplaceEditor = textField;
 		}
 		
-		public function commit(model:Object):void {		
-			var textField:TextInput = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
+		public function commit(context:DiagramShellContext, model:Object):void {		
+			var textField:TextInput = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			SampleMindMapModel(model).text = textField.text;
 			
-			diagramShell.mainToolFinishedItsJob();
+			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
-		public function abort(model:Object):void {
+		public function abort(context:DiagramShellContext, model:Object):void {
 			// here can be placed a warning
-			diagramShell.mainToolFinishedItsJob();
+			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
-		public function deactivate(model:Object):void {
-			var textField:TextInput = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			diagramShell.diagramRenderer.removeElement(textField);
+		public function deactivate(context:DiagramShellContext, model:Object):void {
+			var textField:TextInput = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
+			context.diagramShell.diagramRenderer.removeElement(textField);
 			
-			delete diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
+			delete context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
 		}
 	}
 	

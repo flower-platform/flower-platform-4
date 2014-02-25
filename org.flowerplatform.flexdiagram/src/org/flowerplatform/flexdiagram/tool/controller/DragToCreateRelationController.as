@@ -24,6 +24,7 @@ package org.flowerplatform.flexdiagram.tool.controller {
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.event.ExecuteDragToCreateEvent;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
@@ -34,56 +35,52 @@ package org.flowerplatform.flexdiagram.tool.controller {
 	 */
 	public class DragToCreateRelationController extends ControllerBase implements IDragToCreateRelationController {
 	
-		public function DragToCreateRelationController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function activate(model:Object):void {
+		public function activate(context:DiagramShellContext, model:Object):void {
 			// create temp connection
 			var connection:ConnectionRenderer = new ConnectionRenderer();
-			var modelRenderer:IVisualElement = diagramShell.getRendererForModel(model);
-			var rect:Rectangle = DisplayObject(modelRenderer).getBounds(DisplayObject(diagramShell.diagramRenderer));
+			var modelRenderer:IVisualElement = context.diagramShell.getRendererForModel(model);
+			var rect:Rectangle = DisplayObject(modelRenderer).getBounds(DisplayObject(context.diagramShell.diagramRenderer));
 			var x:int = rect.x + rect.width / 2;
 			var y:int = rect.y + rect.height / 2;
 			connection._sourcePoint.x = connection._targetPoint.x = x;
 			connection._sourcePoint.y = connection._targetPoint.y = y;
 			
 			// add to map
-			diagramShell.modelToExtraInfoMap[model].tempConnection = connection;
+			context.diagramShell.modelToExtraInfoMap[model].tempConnection = connection;
 			
 			// add to diagram
-			diagramShell.diagramRenderer.addElement(connection);
+			context.diagramShell.diagramRenderer.addElement(connection);
 		}
 		
-		public function drag(model:Object, deltaX:Number, deltaY:Number):void {
-			var connection:ConnectionRenderer = diagramShell.modelToExtraInfoMap[model].tempConnection;
+		public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number):void {
+			var connection:ConnectionRenderer = context.diagramShell.modelToExtraInfoMap[model].tempConnection;
 			
 			connection._targetPoint.x = deltaX; 
 			connection._targetPoint.y = deltaY;
 		}
 		
-		public function drop(sourceModel:Object, targetModel:Object):void {
+		public function drop(context:DiagramShellContext, sourceModel:Object, targetModel:Object):void {
 			if (targetModel != null) {				
 				// the tool will be deactivated later, so wait until then
-				diagramShell.modelToExtraInfoMap[sourceModel].waitingToDeactivateDragTool = true;
+				context.diagramShell.modelToExtraInfoMap[sourceModel].waitingToDeactivateDragTool = true;
 				
 				// create context
-				var context:Object = new Object();
-				context.sourceModel = sourceModel;
-				context.targetModel =  targetModel;	
+				var toolContext:Object = new Object();
+				toolContext.sourceModel = sourceModel;
+				toolContext.targetModel =  targetModel;	
 				// dispatch event in order to let others implement the creation behavior
-				diagramShell.dispatchEvent(new ExecuteDragToCreateEvent(context, true));
+				context.diagramShell.dispatchEvent(new ExecuteDragToCreateEvent(toolContext, true));
 			} else {
-				diagramShell.mainToolFinishedItsJob();
+				context.diagramShell.mainToolFinishedItsJob();
 			}
 		}
 		
-		public function deactivate(model:Object):void {
-			var connection:ConnectionRenderer = diagramShell.modelToExtraInfoMap[model].tempConnection;
-			diagramShell.diagramRenderer.removeElement(connection);
+		public function deactivate(context:DiagramShellContext, model:Object):void {
+			var connection:ConnectionRenderer = context.diagramShell.modelToExtraInfoMap[model].tempConnection;
+			context.diagramShell.diagramRenderer.removeElement(connection);
 			
-			delete diagramShell.modelToExtraInfoMap[model].tempConnection;
-			delete diagramShell.modelToExtraInfoMap[model].waitingToDeactivateDragTool;
+			delete context.diagramShell.modelToExtraInfoMap[model].tempConnection;
+			delete context.diagramShell.modelToExtraInfoMap[model].waitingToDeactivateDragTool;
 		}
 	}
 }

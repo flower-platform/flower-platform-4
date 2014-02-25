@@ -20,6 +20,7 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
 	
@@ -27,18 +28,18 @@ package org.flowerplatform.flexdiagram.samples.controller {
 
 		private const children:ArrayList = new ArrayList();
 		
-		public function getParent(model:Object):Object {
+		public function getParent(context:DiagramShellContext, model:Object):Object {
 			return BasicSubModel(model).parent;
 		}
 		
-		public function getChildren(model:Object):IList {
+		public function getChildren(context:DiagramShellContext, model:Object):IList {
 			return children;
 		}
 		
-		public function beginListeningForChanges(model:Object):void {
+		public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
 		}
 		
-		public function endListeningForChanges(model:Object):void {
+		public function endListeningForChanges(context:DiagramShellContext, model:Object):void {
 		}
 	}
 }

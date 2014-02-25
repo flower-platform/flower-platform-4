@@ -135,7 +135,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(node, true);	
 				
 				// by default, root node is considered expanded
-				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, true);
+				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(diagramShell.context, node, true);
 			} else {				
 				// register each child
 				for each (var child:Node in children) {

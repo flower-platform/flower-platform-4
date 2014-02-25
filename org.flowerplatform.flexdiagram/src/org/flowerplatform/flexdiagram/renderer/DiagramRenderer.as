@@ -25,6 +25,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.visual_children.IVisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;
@@ -115,7 +116,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
 			if (visualChildrenController != null) {
-				visualChildrenController.refreshVisualChildren(data);
+				visualChildrenController.refreshVisualChildren(new DiagramShellContext(diagramShell), data);
 			}
 			
 			// resize/move the grid (depending on the viewport dimensions)

@@ -20,11 +20,13 @@ package org.flowerplatform.flexdiagram.controller {
 	import flash.geom.Rectangle;
 	
 	import mx.core.IVisualElement;
+	
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 
 	/**
 	 * @author Cristian Spiescu
 	 */
 	public interface IAbsoluteLayoutRectangleController {
-		function getBounds(model:Object):Rectangle;		
+		function getBounds(context:DiagramShellContext, model:Object):Rectangle;		
 	}
 }

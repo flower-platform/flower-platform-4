@@ -19,21 +19,23 @@
 package org.flowerplatform.flexdiagram.mindmap.controller {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
+	
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public interface IMindMapModelController {
 		
-		function getChildren(model:Object):IList;		
+		function getChildren(context:DiagramShellContext, model:Object):IList;		
 
-		function getExpanded(model:Object):Boolean;		
-		function setExpanded(model:Object, value:Boolean):void;
+		function getExpanded(context:DiagramShellContext, model:Object):Boolean;		
+		function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void;
 		
-		function getSide(model:Object):int;
-		function setSide(model:Object, value:int):void;
+		function getSide(context:DiagramShellContext, model:Object):int;
+		function setSide(context:DiagramShellContext, model:Object, value:int):void;
 		
-		function isRoot(model:Object):Boolean;
+		function isRoot(context:DiagramShellContext, model:Object):Boolean;
 		
 	}
 }

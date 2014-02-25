@@ -27,6 +27,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.controller.IControllerProvider;
@@ -42,12 +43,12 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 		
 		public var preferredMaxNumberOfRenderers:int = 150;
 		
-		public function AbsoluteLayoutVisualChildrenController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
+//		public function AbsoluteLayoutVisualChildrenController(diagramShell:DiagramShell) {
+//			super(diagramShell);
+//		}
 		
 		// TODO the commented code was code that handled the order (i.e. depth), in the previous FD implementation/Flex 3
-		public function refreshVisualChildren(parentModel:Object):void {			
+		public function refreshVisualChildren(context:DiagramShellContext, parentModel:Object):void {			
 			// log related
 			var logTsStart:Number = new Date().time;
 			var logNewModels:int = 0;
@@ -58,8 +59,8 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			
 			// I have preffixed the variables with "parent" and "child", to avoid making mistakes and
 			// using one instead of the other. It helped!
-			var parentControllerProvider:IControllerProvider = diagramShell.getControllerProvider(parentModel);
-			var parentRenderer:IVisualElementContainer = IVisualElementContainer(parentControllerProvider.getModelExtraInfoController(parentModel).getRenderer(diagramShell.modelToExtraInfoMap[parentModel]));
+			var parentControllerProvider:IControllerProvider = context.diagramShell.getControllerProvider(parentModel);
+			var parentRenderer:IVisualElementContainer = IVisualElementContainer(parentControllerProvider.getModelExtraInfoController(parentModel).getRenderer(context, context.diagramShell.modelToExtraInfoMap[parentModel]));
 
 			var scrollRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).getViewportRect();
 			var noNeedToRefreshRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).noNeedToRefreshRect;
@@ -89,23 +90,23 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			
 //			var figuresToAdd:int = 0;
 //			var visualIndex:int = 0;
-			var children:IList = parentControllerProvider.getModelChildrenController(parentModel).getChildren(parentModel);
+			var children:IList = parentControllerProvider.getModelChildrenController(parentModel).getChildren(context, parentModel);
 			
 			for (var i:int = 0; i < children.length; i++) {
 				var childModel:Object = children.getItemAt(i);
-				var childControllerProvider:IControllerProvider = diagramShell.getControllerProvider(childModel);
+				var childControllerProvider:IControllerProvider = context.diagramShell.getControllerProvider(childModel);
 				var childAbsoluteLayoutRectangleController:IAbsoluteLayoutRectangleController = childControllerProvider.getAbsoluteLayoutRectangleController(childModel);
 				var childRendererController:IRendererController = childControllerProvider.getRendererController(childModel);
-				var childRenderer:IVisualElement = childControllerProvider.getModelExtraInfoController(childModel).getRenderer(diagramShell.modelToExtraInfoMap[childModel]);
+				var childRenderer:IVisualElement = childControllerProvider.getModelExtraInfoController(childModel).getRenderer(context, context.diagramShell.modelToExtraInfoMap[childModel]);
 
-				var childModelIsNew:Boolean = diagramShell.addInModelMapIfNecesssary(childModel, childControllerProvider);
+				var childModelIsNew:Boolean = context.diagramShell.addInModelMapIfNecesssary(childModel, childControllerProvider);
 				if (childModelIsNew) {
 					logNewModels++;
 				}
 				
 				if (childAbsoluteLayoutRectangleController != null) {
 					// a child that participates to renderer recycling logic
-					var crtRect:Rectangle = childAbsoluteLayoutRectangleController.getBounds(childModel);
+					var crtRect:Rectangle = childAbsoluteLayoutRectangleController.getBounds(context, childModel);
 					
 					// updates the new scroll bounds, based on the dimensions of the current child
 					if (crtRect.x + crtRect.width > horizontalScrollPositionMax) {
@@ -156,11 +157,11 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 						
 						if (childRenderer != null) {
 							// the model may not be visible (and it is currently) => the renderer is reusable
-							var renderersToRemove:Vector.<IVisualElement> = renderersToReuse[childRendererController.geUniqueKeyForRendererToRecycle(childModel)];
+							var renderersToRemove:Vector.<IVisualElement> = renderersToReuse[childRendererController.geUniqueKeyForRendererToRecycle(context, childModel)];
 							// lazy init the collection
 							if (renderersToRemove == null) {
 								renderersToRemove = new Vector.<IVisualElement>();
-								renderersToReuse[childRendererController.geUniqueKeyForRendererToRecycle(childModel)] = renderersToRemove;
+								renderersToReuse[childRendererController.geUniqueKeyForRendererToRecycle(context, childModel)] = renderersToRemove;
 							}
 							renderersToRemove.push(childRenderer);
 						
@@ -176,16 +177,16 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 						} else if (childModelIsNew) {
 							// we are dealing with a freshly added model, which is not visible. Give a chance to
 							// the controller to start listening for position change
-							diagramShell.unassociateModelFromRenderer(childModel, null, false, childControllerProvider);
+							context.diagramShell.unassociateModelFromRenderer(childModel, null, false, childControllerProvider);
 						}
 					}
 				} else {
 					// no IAbsoluteLayoutRectangleController available =>
 					// it doesn't participate to renderer recycling logic
 					if (childRenderer == null && childRendererController != null) {
-						childRenderer = childRendererController.createRenderer(childModel);
+						childRenderer = childRendererController.createRenderer(context, childModel);
 						parentRenderer.addElement(childRenderer);
-						diagramShell.associateModelToRenderer(childModel, childRenderer, childControllerProvider);
+						context.diagramShell.associateModelToRenderer(childModel, childRenderer, childControllerProvider);
 						logNonReusableRenderersCreated++;
 					}
 //						AbsolutePositionEditPartUtils.addChildFigureAtIndex(IVisualElementContainer(getFigure()), IVisualElement(currentFigure), visualIndex - figuresToAdd);	
@@ -213,25 +214,25 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			// for each model to add, try to reuse a renderer that is not visible any more if possible, or create a new one
 			for (i = 0; i < modelsToAdd.length; i++) {				
 				childModel = modelsToAdd[i];
-				childControllerProvider = diagramShell.getControllerProvider(childModel);
+				childControllerProvider = context.diagramShell.getControllerProvider(childModel);
 				childRendererController = childControllerProvider.getRendererController(childModel);
 
-				renderersToRemove = renderersToReuse[childRendererController.geUniqueKeyForRendererToRecycle(childModel)];
+				renderersToRemove = renderersToReuse[childRendererController.geUniqueKeyForRendererToRecycle(context, childModel)];
 //				currentCorrection += entry.correctionStartingWithMe;
 				
 				if (renderersToRemove != null && renderersToRemove.length > 0) {
 					// recycle a renderer that is ready for recycling
 					childRenderer = renderersToRemove.pop();
-					diagramShell.unassociateModelFromRenderer(IDataRenderer(childRenderer).data, childRenderer, false);
+					context.diagramShell.unassociateModelFromRenderer(IDataRenderer(childRenderer).data, childRenderer, false);
 					logRenderersReused++;
 				} else {
 					// no recycling possible => create a renderer
-					childRenderer = childRendererController.createRenderer(childModel);
+					childRenderer = childRendererController.createRenderer(context, childModel);
 					parentRenderer.addElement(childRenderer);
 					logReusableRenderersCreated++;
 //					AbsolutePositionEditPartUtils.addChildFigureAtIndex(IVisualElementContainer(getFigure()), IVisualElement(currentFigure), entry.visualIndex + currentCorrection);
 				}
-				diagramShell.associateModelToRenderer(childModel, childRenderer, childControllerProvider);
+				context.diagramShell.associateModelToRenderer(childModel, childRenderer, childControllerProvider);
 
 				
 //				if (figToReuseEntry != null) { 
@@ -269,7 +270,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 						if (visibleModelsCounter > preferredMaxNumberOfRenderers) {
 							childRenderer = renderersToRemove[i];
 							childModel = IDataRenderer(childRenderer).data;
-							diagramShell.unassociateModelFromRenderer(childModel, childRenderer, false);
+							context.diagramShell.unassociateModelFromRenderer(childModel, childRenderer, false);
 							
 							parentRenderer.removeElement(childRenderer);
 							logReusableRenderersRemoved++;

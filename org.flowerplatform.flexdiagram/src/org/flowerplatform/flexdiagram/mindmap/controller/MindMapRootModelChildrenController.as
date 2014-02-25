@@ -20,6 +20,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -29,23 +30,19 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	 */
 	public class MindMapRootModelChildrenController extends ControllerBase implements IModelChildrenController {
 		
-		public function MindMapRootModelChildrenController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function getParent(model:Object):Object {
+		public function getParent(context:DiagramShellContext, model:Object):Object {
 			return null;
 		}
 		
-		public function getChildren(model:Object):IList {
+		public function getChildren(context:DiagramShellContext, model:Object):IList {
 			// the rootModel keeps all diagram's children in its dynamic object	
-			return MindMapDiagramShell(diagramShell).getDynamicObject(diagramShell.rootModel).children;
+			return MindMapDiagramShell(context.diagramShell).getDynamicObject(context.diagramShell.rootModel).children;
 		}
 		
-		public function beginListeningForChanges(model:Object):void {
+		public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
 		}
 		
-		public function endListeningForChanges(model:Object):void {	
+		public function endListeningForChanges(context:DiagramShellContext, model:Object):void {	
 		}
 		
 	}

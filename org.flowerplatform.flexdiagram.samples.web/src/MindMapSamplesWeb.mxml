@@ -55,7 +55,7 @@
 					ScrollTool, SelectOnClickTool, ZoomTool, InplaceEditorTool, DragTool]);
 				
 				diagramShell.addModelInRootModelChildrenList(rootModel.getItemAt(0));
-				DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {diagramShell.getMindMapModelController(rootModel.getItemAt(0)).setExpanded(rootModel.getItemAt(0), true)});
+				DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {diagramShell.getMindMapModelController(rootModel.getItemAt(0)).setExpanded(diagramShell.context, rootModel.getItemAt(0), true)});
 			}
 			
 		

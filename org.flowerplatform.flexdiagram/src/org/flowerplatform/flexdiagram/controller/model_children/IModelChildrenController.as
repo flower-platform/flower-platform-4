@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.flexdiagram.controller.model_children {
 	import mx.collections.IList;
+	
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 
 	/**
 	 * Should be provided even by elements that have no children, if they are connectable
@@ -26,9 +28,9 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 	 * @author Cristian Spiescu
 	 */
 	public interface IModelChildrenController {
-		function getParent(model:Object):Object;
-		function getChildren(model:Object):IList;
-		function beginListeningForChanges(model:Object):void;
-		function endListeningForChanges(model:Object):void;
+		function getParent(context:DiagramShellContext, model:Object):Object;
+		function getChildren(context:DiagramShellContext, model:Object):IList;
+		function beginListeningForChanges(context:DiagramShellContext, model:Object):void;
+		function endListeningForChanges(context:DiagramShellContext, model:Object):void;
 	}
 }

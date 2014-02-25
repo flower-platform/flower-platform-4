@@ -21,8 +21,10 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
+	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.IControllerProvider;
 	import org.flowerplatform.flexdiagram.controller.renderer.IRendererController;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
@@ -31,15 +33,12 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	 * @author Cristian Spiescu
 	 */
 	public class SequentialLayoutVisualChildrenController extends ControllerBase implements IVisualChildrenController {
-		public function SequentialLayoutVisualChildrenController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
 		
 		protected function getVisualElementsToSkip(model:Object):int {
 			return 0;
 		}
 		
-		public function refreshVisualChildren(parentModel:Object):void {
+		public function refreshVisualChildren(context:DiagramShellContext, parentModel:Object):void {
 			// log related
 			var logSameModelAndRenderer:int = 0;
 			var logRenderersReused:int = 0;
@@ -48,23 +47,23 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			
 			// I have preffixed the variables with "parent" and "child", to avoid making mistakes and
 			// using one instead of the other. It helped!
-			var parentControllerProvider:IControllerProvider = diagramShell.getControllerProvider(parentModel);
-			var parentRenderer:IVisualElementContainer = IVisualElementContainer(parentControllerProvider.getModelExtraInfoController(parentModel).getRenderer(diagramShell.modelToExtraInfoMap[parentModel]));
+			var parentControllerProvider:IControllerProvider = context.diagramShell.getControllerProvider(parentModel);
+			var parentRenderer:IVisualElementContainer = IVisualElementContainer(parentControllerProvider.getModelExtraInfoController(parentModel).getRenderer(context, context.diagramShell.modelToExtraInfoMap[parentModel]));
 			
 			if (!IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren) {
 				return;
 			}
 			
 			var visualElementsToSkip:int = getVisualElementsToSkip(parentModel);
-			var children:IList = parentControllerProvider.getModelChildrenController(parentModel).getChildren(parentModel);
+			var children:IList = parentControllerProvider.getModelChildrenController(parentModel).getChildren(context, parentModel);
 			
 			for (var i:int = 0; i < children.length; i++) {
 				var childRendererCandidate:IVisualElement = null;
 				var childModel:Object = children.getItemAt(i);
-				var childControllerProvider:IControllerProvider = diagramShell.getControllerProvider(childModel);
+				var childControllerProvider:IControllerProvider = context.diagramShell.getControllerProvider(childModel);
 				var childRendererController:IRendererController = childControllerProvider.getRendererController(childModel);
 				
-				diagramShell.addInModelMapIfNecesssary(childModel, childControllerProvider);
+				context.diagramShell.addInModelMapIfNecesssary(childModel, childControllerProvider);
 				
 				if (i + visualElementsToSkip < parentRenderer.numElements) {
 					// we still have renderer candidates
@@ -78,9 +77,9 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 						if (modelRendererCandidate != null) {
 							// the model is null if the entire parent renderer is reused. So it has several child renderers
 							// that don't have any model
-							diagramShell.unassociateModelFromRenderer(modelRendererCandidate, childRendererCandidate, true);
+							context.diagramShell.unassociateModelFromRenderer(modelRendererCandidate, childRendererCandidate, true);
 						}
-						if (Object(childRendererCandidate).constructor != childRendererController.geUniqueKeyForRendererToRecycle(modelRendererCandidate)) {
+						if (Object(childRendererCandidate).constructor != childRendererController.geUniqueKeyForRendererToRecycle(context, modelRendererCandidate)) {
 							// the candidate renderer are not compatible => remove it
 							// Remark: we don't have the renderer controller of the renderer candidate, because we don't know it's model.
 							// Hence, the constraint that geUniqueKeyForRendererToRecycle SHOULD return the renderer class as key
@@ -97,7 +96,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 				if (childRendererCandidate == null) {
 					// i.e. either we have reached numElements,
 					// or the candidate was not compatible/recyclable so it was removed
-					childRendererCandidate = childRendererController.createRenderer(childModel);
+					childRendererCandidate = childRendererController.createRenderer(context, childModel);
 					parentRenderer.addElementAt(childRendererCandidate, i + visualElementsToSkip);
 					logRenderersAdded++;
 				}
@@ -106,16 +105,16 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 				// special case: the childModel already has a renderer associated
 				// in while (line 115), the old renderer will be unassoc and the model deleted from diagramShell map
 				// -> problems
-				if (diagramShell.getRendererForModel(childModel) != null) {
-					diagramShell.unassociateModelFromRenderer(childModel, diagramShell.getRendererForModel(childModel), false);
+				if (context.diagramShell.getRendererForModel(childModel) != null) {
+					context.diagramShell.unassociateModelFromRenderer(childModel, context.diagramShell.getRendererForModel(childModel), false);
 				}
-				diagramShell.associateModelToRenderer(childModel, childRendererCandidate, childControllerProvider);
+				context.diagramShell.associateModelToRenderer(childModel, childRendererCandidate, childControllerProvider);
 			}
 			
 			// this loop happens if the number of models < number of renderers in the (probably recycled) parent renderer
 			while (parentRenderer.numElements > children.length + visualElementsToSkip) {
 				childRendererCandidate = parentRenderer.getElementAt(parentRenderer.numElements - 1);
-				diagramShell.unassociateModelFromRenderer(IDataRenderer(childRendererCandidate).data, childRendererCandidate, true);
+				context.diagramShell.unassociateModelFromRenderer(IDataRenderer(childRendererCandidate).data, childRendererCandidate, true);
 				parentRenderer.removeElementAt(parentRenderer.numElements - 1);
 				logRenderersRemoved++;
 			}

@@ -31,7 +31,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 			}
 			
 			if (refresh) {				
-				var parent:Object = _diagramShell.getControllerProvider(data).getModelChildrenController(data).getParent(data);
+				var parent:Object = _diagramShell.getControllerProvider(data).getModelChildrenController(data).getParent(_diagramShell.context, data);
 				_diagramShell.refreshModelPositions(parent != null ? parent : data);
 			}
 		}						
@@ -85,7 +85,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		}
 		
 		override protected function canDrawCircle(model:Object):Boolean {			
-			return model != null && Boolean(model.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() && !_diagramShell.getModelController(model).getExpanded(model);
+			return model != null && Boolean(model.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() && !_diagramShell.getModelController(model).getExpanded(_diagramShell.context, model);
 		}
 		
 	}

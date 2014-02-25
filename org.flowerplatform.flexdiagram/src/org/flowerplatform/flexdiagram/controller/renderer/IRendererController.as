@@ -19,6 +19,9 @@
 package org.flowerplatform.flexdiagram.controller.renderer {
 	import mx.core.IVisualElement;
 	
+	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	
 	/**
 	 * @author Cristian Spiescu
 	 */
@@ -27,9 +30,9 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		 * This usually returns the Class of the renderer. For Sequential Layout mechanism the method
 		 * MUST return the Class of the renderer as key.
 		 */
-		function geUniqueKeyForRendererToRecycle(model:Object):Object;
-		function createRenderer(model:Object):IVisualElement;
-		function associatedModelToRenderer(model:Object, renderer:IVisualElement):void;
-		function unassociatedModelFromRenderer(model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void;
+		function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object;
+		function createRenderer(context:DiagramShellContext, model:Object):IVisualElement;
+		function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void;
+		function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void;
 	}
 }

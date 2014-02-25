@@ -82,26 +82,26 @@ package org.flowerplatform.flex_client.core.mindmap {
 			
 			updateProcessor = new NodeUpdateProcessor(this);
 			
-			nodeController = new NodeController(this);
-			nodeAbsoluteRectangleController = new MindMapAbsoluteLayoutRectangleController(this);
-			nodeDragController = new NodeDragController(this);
-			nodeSelectionController = new SelectionController(this, NodeSelectionRenderer);
-			nodeExtraInfoController = new DynamicModelExtraInfoController(this);
-			nodeInplaceEditorController = new NodeInplaceEditorController(this);
-			absoluteLayoutVisualChildrenController = new AbsoluteLayoutVisualChildrenController(this);
+			nodeController = new NodeController();
+			nodeAbsoluteRectangleController = new MindMapAbsoluteLayoutRectangleController();
+			nodeDragController = new NodeDragController();
+			nodeSelectionController = new SelectionController(NodeSelectionRenderer);
+			nodeExtraInfoController = new DynamicModelExtraInfoController();
+			nodeInplaceEditorController = new NodeInplaceEditorController();
+			absoluteLayoutVisualChildrenController = new AbsoluteLayoutVisualChildrenController();
 			
-			nodeChildrenController = new NodeChildrenController(this);
-			rootModelChildrenController = new MindMapRootModelChildrenController(this);
+			nodeChildrenController = new NodeChildrenController();
+			rootModelChildrenController = new MindMapRootModelChildrenController();
 			
-			nodeRendererController = new NodeRendererController(this, CorePlugin.getInstance().mindmapNodeRendererControllerClass);
+			nodeRendererController = new NodeRendererController(CorePlugin.getInstance().mindmapNodeRendererControllerClass);
 				
 			registerTools([ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool, InplaceEditorTool]);
 		}
-				
+						
 		override public function getControllerProvider(model:Object):IControllerProvider {
 			return this;
-		}		
-				
+		}	
+
 		public function getMindMapModelController(model:Object):IMindMapModelController {
 			return nodeController;
 		}

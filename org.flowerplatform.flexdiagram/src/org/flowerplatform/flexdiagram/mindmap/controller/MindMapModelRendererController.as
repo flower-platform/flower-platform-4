@@ -23,6 +23,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapConnector;
@@ -33,65 +34,64 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	 */
 	public class MindMapModelRendererController extends ClassReferenceRendererController {
 			
-		public function MindMapModelRendererController(diagramShell:DiagramShell, rendererClass:Class) {
-			super(diagramShell, rendererClass);
+		public function MindMapModelRendererController(rendererClass:Class) {
+			super(rendererClass);
 			removeRendererIfModelIsDisposed = true;
 		}
 		
-		override public function associatedModelToRenderer(model:Object, renderer:IVisualElement):void {			
+		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {			
 		}
 		
-		override public function unassociatedModelFromRenderer(model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {		
+		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {		
 			if (isModelDisposed) {
-				removeConnector(model);
+				removeConnector(context, model);
 			}
-			super.unassociatedModelFromRenderer(model, renderer, isModelDisposed);
+			super.unassociatedModelFromRenderer(context, model, renderer, isModelDisposed);
 		}
 				
-		private function removeConnector(model:Object):void {		
-			var connector:MindMapConnector = mindMapDiagramShell.getDynamicObject(model).connector;
+		private function removeConnector(context:DiagramShellContext, model:Object):void {		
+			var dynamicObject:Object = MindMapDiagramShell(context.diagramShell).getDynamicObject(model);
+			var connector:MindMapConnector = dynamicObject.connector;
 			if (connector != null) {
-				diagramShell.diagramRenderer.removeElement(connector);
-				delete mindMapDiagramShell.getDynamicObject(model).connector;
+				context.diagramShell.diagramRenderer.removeElement(connector);
+				delete dynamicObject.connector;
 			}
 		}
 		
-		private function addConnector(model:Object):void {
-			var modelParent:Object = diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model);
+		private function addConnector(context:DiagramShellContext, model:Object):void {
+			var modelParent:Object = context.diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(context, model);
 			if (modelParent == null) { // root node, no connectors
 				return;
 			}
 			var connector:MindMapConnector = new MindMapConnector().setSource(model).setTarget(modelParent);
-			mindMapDiagramShell.getDynamicObject(model).connector = connector;
-			diagramShell.diagramRenderer.addElementAt(connector, 0);			
+			MindMapDiagramShell(context.diagramShell).getDynamicObject(model).connector = connector;
+			context.diagramShell.diagramRenderer.addElementAt(connector, 0);			
 		}
 		
-		public function updateConnectors(model:Object):void {			
-			if (mindMapDiagramShell.getDynamicObject(model).connector == null) {
-				addConnector(model);				
+		public function updateConnectors(context:DiagramShellContext, model:Object):void {			
+			var dynamicObject:Object = MindMapDiagramShell(context.diagramShell).getDynamicObject(model);
+			if (dynamicObject.connector == null) {
+				addConnector(context, model);				
 			}
 						
 			// refresh connector to parent
-			if (diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model) != null) {	
-				if (mindMapDiagramShell.getDynamicObject(model).connector != null) {
-					mindMapDiagramShell.getDynamicObject(model).connector.invalidateDisplayList();
+			if (context.diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(context, model) != null) {	
+				if (dynamicObject.connector != null) {
+					dynamicObject.connector.invalidateDisplayList();
 				}
 			}
 			// refresh connectors to children
-			var children:IList = MindMapDiagramShell(diagramShell).getModelController(model).getChildren(model);
+			var children:IList = MindMapDiagramShell(context.diagramShell).getModelController(model).getChildren(context, model);
 			if (children != null) {
 				for (var i:int = 0; i < children.length; i++) {
-					var child:Object = children.getItemAt(i);						
-					if (mindMapDiagramShell.getDynamicObject(child).connector != null) {
-						mindMapDiagramShell.getDynamicObject(child).connector.invalidateDisplayList();
+					var child:Object = children.getItemAt(i);			
+					var childDynamicObject:Object = MindMapDiagramShell(context.diagramShell).getDynamicObject(child);
+					if (childDynamicObject.connector != null) {
+						childDynamicObject.connector.invalidateDisplayList();
 					}
 				}
 			}
 		}
-		
-		private function get mindMapDiagramShell():MindMapDiagramShell {
-			return MindMapDiagramShell(diagramShell);
-		}
-		
+			
 	}
 }

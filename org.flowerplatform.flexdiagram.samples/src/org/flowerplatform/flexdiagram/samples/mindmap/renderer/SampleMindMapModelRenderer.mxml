@@ -96,7 +96,7 @@
 					case "expanded":	
 					case "hasChildren":	
 						invalidateDisplayList();			
-						var selectionRenderer:UIComponent = UIComponent(DynamicModelExtraInfoController(diagramShell.getControllerProvider(data).getModelExtraInfoController(data)).getDynamicObject(data).selectionRenderer);
+						var selectionRenderer:UIComponent = UIComponent(DynamicModelExtraInfoController(diagramShell.getControllerProvider(data).getModelExtraInfoController(data)).getDynamicObject(diagramShell.context, data).selectionRenderer);
 						if (selectionRenderer != null) {
 							selectionRenderer.invalidateDisplayList();
 						}
@@ -122,14 +122,14 @@
 			}
 							
 			private function getDynamicObject(model:Object):Object {
-				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(diagramShell.context, model);
 			}
 									
 			private function resizeHandler(value:Number):void {
 				if (data != null) {
 					getDynamicObject(node).width = this.width;
 					getDynamicObject(node).height = this.height;
-					var parent:Object = diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node);
+					var parent:Object = diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(diagramShell.context, node);
 					if (parent is SampleMindMapModel) {						
 						MindMapDiagramShell(diagramShell).refreshModelPositions(parent);	
 					}

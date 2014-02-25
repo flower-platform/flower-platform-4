@@ -20,7 +20,8 @@ package org.flowerplatform.flex_client.core {
 
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
-	import mx.rpc.events.ResultEvent;	
+	import mx.rpc.events.ResultEvent;
+	
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
@@ -30,8 +31,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
-	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
+	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
@@ -43,6 +44,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 	import org.flowerplatform.flexutil.action.IActionProvider;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	
@@ -63,6 +65,8 @@ package org.flowerplatform.flex_client.core {
 		public var mindmapEditorActionProviders:Vector.<IActionProvider> = new Vector.<IActionProvider>();
 		
 		public var addChildDescriptors:Object = new Object();
+		
+//		private var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 		
 		// TODO MG: remove
 		public var mindmapNodeRendererControllerClass:Class;
@@ -112,6 +116,9 @@ package org.flowerplatform.flex_client.core {
 					addChildDescriptors = result;		
 				}
 			);
+			
+//			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("mindmap")
+//				.addSingleController(
 			
 //			linkHandlers = new Dictionary();			
 //			

@@ -17,19 +17,20 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool.controller {
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
 	public interface IInplaceEditorController {
 		
-		function canActivate(model:Object):Boolean;
+		function canActivate(context:DiagramShellContext, model:Object):Boolean;
 		
-		function activate(model:Object):void;
+		function activate(context:DiagramShellContext, model:Object):void;
 		
-		function commit(model:Object):void;
-		function abort(model:Object):void;
+		function commit(context:DiagramShellContext, model:Object):void;
+		function abort(context:DiagramShellContext, model:Object):void;
 		
-		function deactivate(model:Object):void;
+		function deactivate(context:DiagramShellContext, model:Object):void;
 	}
 }

@@ -27,6 +27,7 @@ package org.flowerplatform.flexdiagram.tool.controller {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.event.ExecuteDragToCreateEvent;
@@ -103,33 +104,29 @@ package org.flowerplatform.flexdiagram.tool.controller {
 		public function set dragToCreateMinHeight(value:int):void {
 			_dragToCreateMinHeight = value;
 		}
-		
-		public function SelectOrDragToCreateElementController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function activate(model:Object, initialX:Number, initialY:Number, mode:String):void {
+				
+		public function activate(context:DiagramShellContext, model:Object, initialX:Number, initialY:Number, mode:String):void {
 			// create placeholder
 			var selectDragToCreatePlaceHolder:MoveResizePlaceHolder = new MoveResizePlaceHolder();
 			selectDragToCreatePlaceHolder.x = initialX;
 			selectDragToCreatePlaceHolder.y = initialY;
 			
 			// put placeholder in model's extra info
-			diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder = selectDragToCreatePlaceHolder;
-			diagramShell.modelToExtraInfoMap[model].selectDragToCreateMode = mode;
+			context.diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder = selectDragToCreatePlaceHolder;
+			context.diagramShell.modelToExtraInfoMap[model].selectDragToCreateMode = mode;
 			
 			// add it to diagram
-			diagramShell.diagramRenderer.addElement(selectDragToCreatePlaceHolder);			
+			context.diagramShell.diagramRenderer.addElement(selectDragToCreatePlaceHolder);			
 		}
 		
-		public function drag(model:Object, deltaX:Number, deltaY:Number):void {	
+		public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number):void {	
 			// update placeholder dimensions
-			var selectDragToCreatePlaceHolder:MoveResizePlaceHolder = diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;
+			var selectDragToCreatePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;
 			
 			selectDragToCreatePlaceHolder.width = deltaX;
 			selectDragToCreatePlaceHolder.height = deltaY;
 			
-			var models:IList = getModelsUnderPlaceHolder(model, selectDragToCreatePlaceHolder);
+			var models:IList = getModelsUnderPlaceHolder(context, model, selectDragToCreatePlaceHolder);
 				
 			if (models.length != 0 || 
 				selectDragToCreatePlaceHolder.width < _dragToCreateMinWidth || 
@@ -144,65 +141,65 @@ package org.flowerplatform.flexdiagram.tool.controller {
 			}			
 		}
 		
-		public function drop(model:Object):void	{
-			var selectDragToCreatePlaceHolder:MoveResizePlaceHolder = diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;			
-			var mode:String = diagramShell.modelToExtraInfoMap[model].selectDragToCreateMode;
+		public function drop(context:DiagramShellContext, model:Object):void	{
+			var selectDragToCreatePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;			
+			var mode:String = context.diagramShell.modelToExtraInfoMap[model].selectDragToCreateMode;
 			
-			var models:IList = getModelsUnderPlaceHolder(model, selectDragToCreatePlaceHolder);
+			var models:IList = getModelsUnderPlaceHolder(context, model, selectDragToCreatePlaceHolder);
 			
 			if (models.length == 0) {
 				// the tool will be deactivated later, so wait until then
-				diagramShell.modelToExtraInfoMap[model].waitingToDeactivateDragTool = true;
+				context.diagramShell.modelToExtraInfoMap[model].waitingToDeactivateDragTool = true;
 				
 				// create context
-				var context:Object = new Object();
-				context.rectangle = selectDragToCreatePlaceHolder.getRect(DisplayObject(diagramShell.diagramRenderer));				
+				var toolContext:Object = new Object();
+				toolContext.rectangle = selectDragToCreatePlaceHolder.getRect(DisplayObject(context.diagramShell.diagramRenderer));				
 				// get rectangle relative to application
-				context.rectangle = diagramShell.convertCoordinates(context.rectangle, UIComponent(diagramShell.diagramRenderer), UIComponent(FlexGlobals.topLevelApplication));
+				toolContext.rectangle = context.diagramShell.convertCoordinates(toolContext.rectangle, UIComponent(context.diagramShell.diagramRenderer), UIComponent(FlexGlobals.topLevelApplication));
 				// dispatch event in order to let others implement the creation behavior
-				diagramShell.dispatchEvent(new ExecuteDragToCreateEvent(context, true));
+				context.diagramShell.dispatchEvent(new ExecuteDragToCreateEvent(toolContext, true));
 			} else {
 				// select/deselect models
 				for (var i:int = 0; i < models.length; i++) {
 					var obj:Object = models.getItemAt(i);
 					if (mode == SelectOrDragToCreateElementTool.SELECT_MODE_ADD) {
-						diagramShell.selectedItems.addItem(obj);
+						context.diagramShell.selectedItems.addItem(obj);
 					} else if (mode == SelectOrDragToCreateElementTool.SELECT_MODE_SUBSTRACT) {
-						if (diagramShell.selectedItems.getItemIndex(obj) != -1) {
-							diagramShell.selectedItems.removeItem(obj);
+						if (context.diagramShell.selectedItems.getItemIndex(obj) != -1) {
+							context.diagramShell.selectedItems.removeItem(obj);
 						} else {
-							diagramShell.selectedItems.addItem(obj);
+							context.diagramShell.selectedItems.addItem(obj);
 						}
 					}
 				}
 				// done
-				diagramShell.mainToolFinishedItsJob();
+				context.diagramShell.mainToolFinishedItsJob();
 			}			
 		}
 		
-		public function deactivate(model:Object):void {	
-			var selectDragToCreatePlaceHolder:MoveResizePlaceHolder = diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;
+		public function deactivate(context:DiagramShellContext, model:Object):void {	
+			var selectDragToCreatePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;
 			if (selectDragToCreatePlaceHolder != null) {
 				// remove placeholder from diagram
-				diagramShell.diagramRenderer.removeElement(diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder);
+				context.diagramShell.diagramRenderer.removeElement(context.diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder);
 				
 				// remove placeholder from model's extra info
-				delete diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;
-				delete diagramShell.modelToExtraInfoMap[model].selectDragToCreateMode;
-				delete diagramShell.modelToExtraInfoMap[model].waitingToDeactivateDragTool;
+				delete context.diagramShell.modelToExtraInfoMap[model].selectDragToCreatePlaceHolder;
+				delete context.diagramShell.modelToExtraInfoMap[model].selectDragToCreateMode;
+				delete context.diagramShell.modelToExtraInfoMap[model].waitingToDeactivateDragTool;
 			}
 		}
 		
-		private function getModelsUnderPlaceHolder(model:Object, selectDragToCreatePlaceHolder:MoveResizePlaceHolder):IList {
+		private function getModelsUnderPlaceHolder(context:DiagramShellContext, model:Object, selectDragToCreatePlaceHolder:MoveResizePlaceHolder):IList {
 			var models:ArrayList = new ArrayList();
-			var children:IList = diagramShell.getControllerProvider(model).getModelChildrenController(model).getChildren(model);
+			var children:IList = context.diagramShell.getControllerProvider(model).getModelChildrenController(model).getChildren(context, model);
 			for (var i:int = 0; i < children.length; i++) {
 				var child:Object = children.getItemAt(i);
 				var absLayoutRectangleController:IAbsoluteLayoutRectangleController = 
-					diagramShell.getControllerProvider(child).getAbsoluteLayoutRectangleController(child);
+					context.diagramShell.getControllerProvider(child).getAbsoluteLayoutRectangleController(child);
 				if (absLayoutRectangleController != null) {
-					var placeHolderBounds:Rectangle = selectDragToCreatePlaceHolder.getBounds(DisplayObject(diagramShell.diagramRenderer));
-					if (placeHolderBounds.intersects(absLayoutRectangleController.getBounds(child))) { 
+					var placeHolderBounds:Rectangle = selectDragToCreatePlaceHolder.getBounds(DisplayObject(context.diagramShell.diagramRenderer));
+					if (placeHolderBounds.intersects(absLayoutRectangleController.getBounds(context, child))) { 
 						// intersects hit area
 						models.addItem(child);
 					}

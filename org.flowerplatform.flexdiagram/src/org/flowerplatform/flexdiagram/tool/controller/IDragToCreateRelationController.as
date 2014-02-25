@@ -17,16 +17,18 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool.controller {
+	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
 	public interface IDragToCreateRelationController {
 		
-		function activate(model:Object):void;
-		function drag(model:Object, deltaX:Number, deltaY:Number):void;
-		function drop(sourceModel:Object, targetModel:Object):void;
-		function deactivate(model:Object):void;
+		function activate(context:DiagramShellContext, model:Object):void;
+		function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number):void;
+		function drop(context:DiagramShellContext, sourceModel:Object, targetModel:Object):void;
+		function deactivate(context:DiagramShellContext, model:Object):void;
 		
 	}	
 }

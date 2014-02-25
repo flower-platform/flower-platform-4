@@ -89,8 +89,8 @@
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
 				if (Boolean(node.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() &&
-					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node) != null) {	
-					vLine.visible = !mindMapDiagramShell.getModelController(node).getExpanded(node);
+					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(diagramShell.context, node) != null) {	
+					vLine.visible = !mindMapDiagramShell.getModelController(node).getExpanded(diagramShell.context, node);
 					diagramShell.diagramRenderer.addElement(circle);
 				} else {
 					if (circle.parent != null) {
@@ -112,7 +112,7 @@
 			}
 			
 			protected function circle_mouseClickHandler(event:MouseEvent):void {
-				mindMapDiagramShell.getModelController(node).setExpanded(node, !mindMapDiagramShell.getModelController(node).getExpanded(node));
+				mindMapDiagramShell.getModelController(node).setExpanded(diagramShell.context, node, !mindMapDiagramShell.getModelController(node).getExpanded(diagramShell.context, node));
 				vLine.visible = !vLine.visible;
 	
 				event.preventDefault();

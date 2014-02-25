@@ -22,6 +22,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import flash.geom.Point;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	
 	/**
@@ -65,7 +66,7 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);	
 			
 			diagramShell.getControllerProvider(diagramShell.rootModel).
-				getSelectOrDragToCreateElementController(diagramShell.rootModel).deactivate(diagramShell.rootModel);
+				getSelectOrDragToCreateElementController(diagramShell.rootModel).deactivate(new DiagramShellContext(diagramShell), diagramShell.rootModel);
 			
 			delete context.wakedUp;
 			delete context.initialMousePoint;			
@@ -82,7 +83,7 @@ package org.flowerplatform.flexdiagram.tool {
 			context.initialMousePoint = globalToDiagram(Math.ceil(diagramRenderer.stage.mouseX), Math.ceil(diagramRenderer.stage.mouseY));			
 											
 			diagramShell.getControllerProvider(diagramShell.rootModel).
-				getSelectOrDragToCreateElementController(diagramShell.rootModel).activate(diagramShell.rootModel, context.initialMousePoint.x, context.initialMousePoint.y, getMode());
+				getSelectOrDragToCreateElementController(diagramShell.rootModel).activate(new DiagramShellContext(diagramShell), diagramShell.rootModel, context.initialMousePoint.x, context.initialMousePoint.y, getMode());
 		}
 		
 		private function mouseMoveHandler(event:MouseEvent):void {	
@@ -96,7 +97,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var deltaY:int = mousePoint.y - context.initialMousePoint.y;
 				
 				diagramShell.getControllerProvider(diagramShell.rootModel).
-					getSelectOrDragToCreateElementController(diagramShell.rootModel).drag(diagramShell.rootModel, deltaX, deltaY);				
+					getSelectOrDragToCreateElementController(diagramShell.rootModel).drag(new DiagramShellContext(diagramShell), diagramShell.rootModel, deltaX, deltaY);				
 			} else {				
 				diagramShell.mainToolFinishedItsJob();
 			}
@@ -108,7 +109,7 @@ package org.flowerplatform.flexdiagram.tool {
 				return;
 			}
 			diagramShell.getControllerProvider(diagramShell.rootModel).
-				getSelectOrDragToCreateElementController(diagramShell.rootModel).drop(diagramShell.rootModel);
+				getSelectOrDragToCreateElementController(diagramShell.rootModel).drop(new DiagramShellContext(diagramShell), diagramShell.rootModel);
 		}
 		
 		private function getMode():String {

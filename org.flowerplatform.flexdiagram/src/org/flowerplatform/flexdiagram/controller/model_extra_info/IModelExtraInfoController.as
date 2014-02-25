@@ -18,13 +18,15 @@
  */
 package org.flowerplatform.flexdiagram.controller.model_extra_info {
 	import mx.core.IVisualElement;
+	
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 
 	/**
 	 * @author Cristian Spiescu
 	 */
 	public interface IModelExtraInfoController {
-		function getRenderer(extraInfo:Object):IVisualElement;
-		function setRenderer(model:Object, extraInfo:Object, renderer:IVisualElement):void;
-		function createExtraInfo(model:Object):Object;		
+		function getRenderer(context:DiagramShellContext, extraInfo:Object):IVisualElement;
+		function setRenderer(context:DiagramShellContext, model:Object, extraInfo:Object, renderer:IVisualElement):void;
+		function createExtraInfo(context:DiagramShellContext, model:Object):Object;		
 	}
 }

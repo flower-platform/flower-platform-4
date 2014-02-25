@@ -22,6 +22,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
@@ -36,30 +37,26 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	public class SampleMindMapModelChildrenController extends ControllerBase implements IModelChildrenController {
 		
 		private static const EMPTY_LIST:ArrayList = new ArrayList();
-		
-		public function SampleMindMapModelChildrenController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}		
-		
-		public function getParent(model:Object):Object {
+				
+		public function getParent(context:DiagramShellContext, model:Object):Object {
 			return SampleMindMapModel(model).parent;
 		}
 		
-		public function getChildren(model:Object):IList	{
+		public function getChildren(context:DiagramShellContext, model:Object):IList	{
 			// no children; this controller is used only to dispatch events
 			return EMPTY_LIST;
 		}
 		
-		public function beginListeningForChanges(model:Object):void {			
-			SampleMindMapModel(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, updateConnectionEndsHandler);
+		public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {			
+			SampleMindMapModel(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});
 		}
 		
-		public function endListeningForChanges(model:Object):void {			
-			SampleMindMapModel(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, updateConnectionEndsHandler);
+		public function endListeningForChanges(context:DiagramShellContext, model:Object):void {			
+			SampleMindMapModel(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});
 		}
 				
-		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent):void {
-			MindMapModelRendererController(MindMapDiagramShell(diagramShell).getControllerProvider(event.target).getRendererController(event.target)).updateConnectors(event.target);
+		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent, context:DiagramShellContext):void {
+			MindMapModelRendererController(MindMapDiagramShell(context.diagramShell).getControllerProvider(event.target).getRendererController(event.target)).updateConnectors(context, event.target);
 		}
 
 	}

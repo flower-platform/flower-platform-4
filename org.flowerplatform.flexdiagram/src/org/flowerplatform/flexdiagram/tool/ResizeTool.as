@@ -64,7 +64,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var model:Object = diagramShell.selectedItems.getItemAt(i);
 				var resizeController:IResizeController = diagramShell.getControllerProvider(model).getResizeController(model);
 				if (resizeController != null) {
-					resizeController.activate(model);
+					resizeController.activate(diagramShell.context, model);
 				}				
 			}	
 			super.activateAsMainTool();
@@ -78,7 +78,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var model:Object = diagramShell.selectedItems.getItemAt(i);
 				var resizeController:IResizeController = diagramShell.getControllerProvider(model).getResizeController(model);
 				if (resizeController != null) {
-					resizeController.deactivate(model);
+					resizeController.deactivate(diagramShell.context, model);
 				}				
 			}	
 			
@@ -104,7 +104,7 @@ package org.flowerplatform.flexdiagram.tool {
 					var model:Object = diagramShell.selectedItems.getItemAt(i);
 					var resizeController:IResizeController = diagramShell.getControllerProvider(model).getResizeController(model);
 					if (resizeController != null) {
-						resizeController.drag(model, deltaX, deltaY, context.resizeType);
+						resizeController.drag(diagramShell.context, model, deltaX, deltaY, context.resizeType);
 					}				
 				}				
 			} else {
@@ -117,7 +117,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var model:Object = diagramShell.selectedItems.getItemAt(i);
 				var resizeController:IResizeController = diagramShell.getControllerProvider(model).getResizeController(model);
 				if (resizeController != null) {
-					resizeController.drop(model);
+					resizeController.drop(diagramShell.context, model);
 				}				
 			}		
 			diagramShell.mainToolFinishedItsJob();

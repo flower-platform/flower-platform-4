@@ -17,11 +17,13 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.visual_children {
+	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
 	public interface IVisualChildrenController {
-		function refreshVisualChildren(model:Object):void;		
+		function refreshVisualChildren(context:DiagramShellContext, model:Object):void;		
 	}
 }

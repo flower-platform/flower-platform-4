@@ -27,6 +27,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import mx.olap.aggregators.MaxAggregator;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
@@ -57,7 +58,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		public function getRoot():Object {
-			var children:IList = getControllerProvider(rootModel).getModelChildrenController(rootModel).getChildren(rootModel);
+			var children:IList = getControllerProvider(rootModel).getModelChildrenController(rootModel).getChildren(context, rootModel);
 			if (children == null || children.length == 0) {
 				throw new Error("No root provided!");
 			}
@@ -86,8 +87,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		protected function addModelInRootModelChildrenListRecursive(model:Object, asRoot:Boolean = false):void {			
-			if (getModelController(model).getExpanded(model)) {
-				var children:IList = getModelController(model).getChildren(model);
+			if (getModelController(model).getExpanded(context, model)) {
+				var children:IList = getModelController(model).getChildren(context, model);
 				for (var i:int = 0; i < children.length; i++) {
 					addModelInRootModelChildrenListRecursive(children.getItemAt(i));
 				}
@@ -100,7 +101,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		public function getDynamicObject(model:Object):Object {
-			return DynamicModelExtraInfoController(getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+			return DynamicModelExtraInfoController(getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(context, model);
 		}
 		
 		private function getInitialPropertyValue(model:Object, property:String):Object {
@@ -134,15 +135,15 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected function getChildrenBasedOnSide(model:Object, side:int = 0):IList {
 			if (side == 0) {
-				side = getModelController(model).getSide(model);
+				side = getModelController(model).getSide(context, model);
 			}
 			
 			var list:ArrayList = new ArrayList();	
-			var children:IList = getModelController(model).getChildren(model);
+			var children:IList = getModelController(model).getChildren(context, model);
 			if (children != null) {
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
-					if (side == 0 || side == getModelController(child).getSide(child)) {
+					if (side == 0 || side == getModelController(child).getSide(context, child)) {
 						list.addItem(child);
 					}
 				}
@@ -155,8 +156,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var oldExpandedHeightLeft:Number = getPropertyValue(model, "expandedHeightLeft");		
 			var oldExpandedHeightRight:Number = getPropertyValue(model, "expandedHeightRight");
 			
-			var side:int = getModelController(model).getSide(model);
-			var isRoot:Boolean = getModelController(model).isRoot(model);			
+			var side:int = getModelController(model).getSide(context, model);
+			var isRoot:Boolean = getModelController(model).isRoot(context, model);			
 			
 			calculateRootExpandedHeight(side);
 			
@@ -183,7 +184,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 */ 
 		private function calculateRootExpandedHeight(side:int):void {
 			var model:Object = getRoot();
-			var isRoot:Boolean = getModelController(model).isRoot(model);			
+			var isRoot:Boolean = getModelController(model).isRoot(context, model);			
 			
 			if (isRoot || side == POSITION_LEFT) {
 				calculateExpandedHeight(model, POSITION_LEFT);
@@ -198,7 +199,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		private function calculateExpandedHeight(model:Object, side:int):Number {			
 			var expandedHeight:Number = 0;
 			var children:IList = getChildrenBasedOnSide(model, side);
-			if (getModelController(model).getExpanded(model)) {				
+			if (getModelController(model).getExpanded(context, model)) {				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
 					var childExpandedHeight:Number = calculateExpandedHeight(child, side);
@@ -241,7 +242,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}		
 		
 		private function changeChildrenCoordinates(model:Object, side:int):void {					
-			if (getModelController(model).getExpanded(model)) {
+			if (getModelController(model).getExpanded(context, model)) {
 				var children:IList = getChildrenBasedOnSide(model, side);				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
@@ -251,7 +252,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 						var previousChild:Object = children.getItemAt(i - 1);
 						setPropertyValue(child, "y", getPropertyValue(previousChild, "y") + getModelBottomHeight(previousChild) + verticalPadding + getDeltaBetweenExpandedHeightAndHeight(child, true)/2);
 					}								
-					if (getModelController(child).getSide(child) == POSITION_LEFT) {
+					if (getModelController(child).getSide(context, child) == POSITION_LEFT) {
 						setPropertyValue(child, "x", getPropertyValue(model, "x") - getPropertyValue(child, "width") - horizontalPadding);							
 					} else {	
 						setPropertyValue(child, "x", getPropertyValue(model, "x") + getPropertyValue(model, "width") + horizontalPadding);															
@@ -262,7 +263,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		private function changeSiblingsCoordinates(model:Object, delta:Number, side:int, onlyBottomSiblings:Boolean = false):void {			
-			var parent:Object = getControllerProvider(model).getModelChildrenController(model).getParent(model);
+			var parent:Object = getControllerProvider(model).getModelChildrenController(model).getParent(context, model);
 			if (parent != null) {				
 				var children:IList = getChildrenBasedOnSide(parent, side);				
 				for (var i:int = 0; i < children.length; i++) {
