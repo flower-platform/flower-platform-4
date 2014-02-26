@@ -36,7 +36,7 @@ public class MatchActionAddAncestorToRight extends MatchActionAddAncestorAbstrac
 	}
 
 	protected IModelAdapter getOppositeModelAdapter(Match match) {
-		return match.getCodeSyncAlgorithm().getRightModelAdapter(getOpposite(match));
+		return match.getCodeSyncAlgorithm().getRightModelAdapter(match, getOpposite(match));
 	}
 	
 	protected void setOpposite(Match match, Object elment) {

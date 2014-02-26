@@ -25,7 +25,6 @@ import java.util.Map;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -96,22 +95,6 @@ public class CodeSyncOperationsService {
 		
 		// STEP 3: sync
 //		algorithm.synchronize(match);
-		
-		save(match, true);
-		save(match, false);
-	}
-	
-	private void save(Match match, boolean isLeft) {
-		Object lateral = isLeft ? match.getLeft() : match.getRight();
-		AbstractModelAdapter adapter = isLeft ? match.getCodeSyncAlgorithm().getLeftModelAdapter(lateral)
-				: match.getCodeSyncAlgorithm().getRightModelAdapter(lateral);
-		if (lateral != null) {
-			if (adapter.save(lateral)) {
-				for (Match subMatch : match.getSubMatches()) {
-					save(subMatch, isLeft);
-				}
-			}
-		} 
 	}
 	
 	public Map<String, Object> getDropdownPropertyRenderersInfo() {

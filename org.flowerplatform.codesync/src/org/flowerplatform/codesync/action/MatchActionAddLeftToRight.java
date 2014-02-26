@@ -40,11 +40,11 @@ public class MatchActionAddLeftToRight extends MatchActionAddLateralAbstract {
 	}
 	
 	protected IModelAdapter getThisModelAdapter(Match match) {
-		return match.getCodeSyncAlgorithm().getLeftModelAdapter(getThis(match));
+		return match.getCodeSyncAlgorithm().getLeftModelAdapter(match, getThis(match));
 	}
 	
 	protected IModelAdapter getOppositeModelAdapter(Match match) {
-		return match.getCodeSyncAlgorithm().getRightModelAdapter(getOpposite(match));
+		return match.getCodeSyncAlgorithm().getRightModelAdapter(match, getOpposite(match));
 	}
 	
 	protected void setOpposite(Match match, Object elment) {

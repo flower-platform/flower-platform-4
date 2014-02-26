@@ -37,6 +37,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	/**
 	 * Filters out deleted {@link Node}s from the containment list for <code>feature</code>.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(final Object element, Object feature, Iterable<?> correspondingIterable) {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
@@ -97,7 +98,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		}
 
 		Node node = getNode(element);
-		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(node).getFeatureType(feature);
+		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(match).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
 			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()));

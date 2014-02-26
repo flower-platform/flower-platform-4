@@ -25,10 +25,12 @@ public class MindMapBasicPropertySetter extends PropertySetter {
 	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
 		NodeModel nodeModel = getNodeModel(node);	
 		
+		boolean addToAttributesTable = false;
+		
 		switch (property) {
 			case TEXT:
 				nodeModel.setText((String) wrapper.getPropertyValue());	
-				return;
+				break;
 			case MIN_WIDTH:
 				Integer newMinValue = NodeSizeModel.NOT_SET;
 				if (wrapper.getPropertyValue() == null) {
@@ -37,7 +39,7 @@ public class MindMapBasicPropertySetter extends PropertySetter {
 					newMinValue = (Integer) wrapper.getPropertyValue();
 				}
 				NodeSizeModel.createNodeSizeModel(nodeModel).setMinNodeWidth(newMinValue);				
-				return;
+				break;
 			case MAX_WIDTH:	
 				Integer newMaxValue = NodeSizeModel.NOT_SET;
 				if (wrapper.getPropertyValue() == null) {
@@ -46,31 +48,36 @@ public class MindMapBasicPropertySetter extends PropertySetter {
 					newMaxValue = (Integer) wrapper.getPropertyValue();
 				}
 				NodeSizeModel.createNodeSizeModel(nodeModel).setMaxNodeWidth(newMaxValue);								
-				return;		
+				break;
+			default:
+				// not a special property; will add it to the attributes table
+				addToAttributesTable = true;
 		}
 		
-		// persist the property value in the attributes table
-		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);		
-		if (attributeTable == null) {
-			attributeTable = new NodeAttributeTableModel(nodeModel);
-			nodeModel.addExtension(attributeTable);
-		}		
-		
-		boolean set = false;
-		for (Attribute attribute : attributeTable.getAttributes()) {
-			if (attribute.getName().equals(property)) {
-				// there was already an attribute with this value; overwrite it
-				attribute.setValue(wrapper.getPropertyValue());
-				set = true;
-				break;
+		if (addToAttributesTable) {
+			// persist the property value in the attributes table
+			NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);		
+			if (attributeTable == null) {
+				attributeTable = new NodeAttributeTableModel(nodeModel);
+				nodeModel.addExtension(attributeTable);
+			}		
+			
+			boolean set = false;
+			for (Attribute attribute : attributeTable.getAttributes()) {
+				if (attribute.getName().equals(property)) {
+					// there was already an attribute with this value; overwrite it
+					attribute.setValue(wrapper.getPropertyValue());
+					set = true;
+					break;
+				}
+			}
+			if (!set) {
+				// new attribute; add it
+				attributeTable.getAttributes().add(new Attribute(property, wrapper.getPropertyValue()));
 			}
 		}
-		if (!set) {
-			// new attribute; add it
-			attributeTable.getAttributes().add(new Attribute(property, wrapper.getPropertyValue()));
-		}
 		
-		// set the property on the node instance too
+		// set the property on the node instance too; has to be set even for special properties
 		node.getOrPopulateProperties().put(property, wrapper.getPropertyValue());
 	}
 	

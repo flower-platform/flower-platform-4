@@ -19,9 +19,7 @@
 package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
-import java.util.List;
 
-import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
@@ -37,6 +35,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 	/**
 	 * Filters out added {@link Node}s. from the containment list for <code>feature</code>.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		// first get the children from the FeatureChange, if it exists
