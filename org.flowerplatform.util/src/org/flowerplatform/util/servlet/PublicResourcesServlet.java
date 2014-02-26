@@ -20,7 +20,6 @@ package org.flowerplatform.util.servlet;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +27,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -152,47 +152,77 @@ public class PublicResourcesServlet extends ResourcesServlet {
 			fileInsideZipArchive = file.substring(indexOfZipSeparator + 1);
 			file = file.substring(0, indexOfZipSeparator);
 		}
-		String requestedTempFile = null;
-		String fileName = file.replace('/', TEMP_FOLDER_SEPARATOR);
+		
+		String mapValue = null;
+		String mapKey = null;
+		
 		// if the file is in a zip, search first in the Temp folder
 		if (fileInsideZipArchive != null) {
-			requestedTempFile = searchInTemp(fileName + TEMP_SEPARATOR + fileInsideZipArchive);
-		}
-
-		if (requestedTempFile != null) { // file was found in Temp folder
-			fileInsideZipArchive = null;
+			mapKey = createMapKey(file, fileInsideZipArchive).intern();
+			if (useFilesFromTempProperty) {
+				mapValue = tempFilesMap.get(mapKey);
+			}
 		} else {
-			requestedFile = "platform:/plugin" + plugin + "/" + AbstractFlowerJavaPlugin.PUBLIC_RESOURCES_DIR + file;
+			// we don't need synchronization if the file is not inside archive (so we don't use .intern)
+			mapKey = createMapKey(file, fileInsideZipArchive);
 		}
 		
-		// Get content type by filename from the file or file inside zip
-		String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);
-
-		// If content type is unknown, then set the default value.
-		// For all content types, see:
-		// http://www.w3schools.com/media/media_mimeref.asp
-		// To add new content types, add new mime-mapping entry in web.xml.
-		if (contentType == null) {
-			contentType = "application/octet-stream";
-		}
-
-        // Init servlet response.
-        response.reset();
-        response.setBufferSize(DEFAULT_BUFFER_SIZE);
-        response.setContentType(contentType);
-//        response.setHeader("Content-Length", String.valueOf(file.length()));
-//        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-
-        // Prepare streams.
-        URL url;
-        InputStream input = null;
-        Closeable inputCloseable = null;
-        OutputStream output = null;
-
-        try {
-        	if (requestedTempFile != null) { // if file was found in Temp folder
-        		input = new FileInputStream(requestedTempFile);
-        	} else {
+		synchronized (mapKey) {
+			if (useFilesFromTempProperty) {
+				if (fileInsideZipArchive != null) {
+					if (mapValue != null) { // file exists in 'tempFilesMap'
+						if (getTempFile(mapValue).exists()) {
+							 response.reset();
+						     response.setBufferSize(DEFAULT_BUFFER_SIZE);
+						     response.setContentType(fileInsideZipArchive);
+						     InputStream input = new FileInputStream(getTempFilePath(mapValue));
+						     OutputStream output = response.getOutputStream();
+						     IOUtils.copy(input, output);
+						     input.close();
+						     output.close();
+						     logger.debug("File {} served from temp",  mapValue);
+						     return;
+						} else { // temporary file was deleted from disk
+							logger.debug("File {} found to be missing from temp",  mapValue);
+						}
+					} else {
+						synchronized(this) {
+							counter++;
+							mapValue = counter + "";
+							tempFilesMap.put(mapKey, mapValue);
+							logger.debug("mapValue '{}' added", mapValue );
+						}
+					}
+				}
+			}
+				
+			requestedFile = "platform:/plugin" + plugin + "/" + AbstractFlowerJavaPlugin.PUBLIC_RESOURCES_DIR + file;
+			
+			// Get content type by filename from the file or file inside zip
+			String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);
+	
+			// If content type is unknown, then set the default value.
+			// For all content types, see:
+			// http://www.w3schools.com/media/media_mimeref.asp
+			// To add new content types, add new mime-mapping entry in web.xml.
+			if (contentType == null) {
+				contentType = "application/octet-stream";
+			}
+	
+	        // Init servlet response.
+	        response.reset();
+	        response.setBufferSize(DEFAULT_BUFFER_SIZE);
+	        response.setContentType(contentType);
+	//        response.setHeader("Content-Length", String.valueOf(file.length()));
+	//        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+	
+	        // Prepare streams.
+	        URL url;
+	        InputStream input = null;
+	        Closeable inputCloseable = null;
+	        OutputStream output = null;
+	
+	        try {
         		url = new URL(requestedFile);
 	            try {
 					input = url.openConnection().getInputStream();
@@ -215,30 +245,39 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	            	input = pair.a;
 	            	inputCloseable = pair.b;
 	            	
-	            	// write the found file in Temp folder
-					if (!TEMP_FOLDER.exists()) {
-						TEMP_FOLDER.mkdir();
+					if (useFilesFromTempProperty) {
+						// write the file from archive in Temp folder
+						if (!TEMP_FOLDER.exists()) {
+							TEMP_FOLDER.mkdir();
+						}
+						
+						Files.copy(input, getTempFile(mapValue).toPath(), StandardCopyOption.REPLACE_EXISTING);
+						logger.debug("file '{}' was writen in temp", mapValue);
+						
+						input.close();
+						input = new FileInputStream(getTempFilePath(mapValue));
 					}
-					File tempFile = new File(TEMP_FOLDER, fileName + TEMP_SEPARATOR + fileInsideZipArchive);
-					Files.copy(input, tempFile.toPath());
-					
-					input.close();
-					input = new FileInputStream(tempFile);
 	            }
-        	}
-
-            output = response.getOutputStream();
-            
-            // according to the doc, no need to use Buffered..., because the method buffers internally
-            IOUtils.copy(input, output);
-            
-         } finally {
-            // Gently close streams.
-            close(output);
-            close(inputCloseable);
-            close(input);
-        }
-		
+	
+	            output = response.getOutputStream();
+	            
+	            // according to the doc, no need to use Buffered..., because the method buffers internally
+	            IOUtils.copy(input, output);
+	            
+	         } finally {
+	            // Gently close streams.
+	            close(output);
+	            close(inputCloseable);
+	            close(input);
+	        }
+		}
 	}
-
+	
+	/**
+	* @author Sebastian Solomon
+	*/
+	private String createMapKey(String fileName, String fileInsideZipArchive) {
+    	return fileName + SEPARATOR + fileInsideZipArchive;
+    }
+	
 }
