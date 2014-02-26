@@ -23,6 +23,8 @@
 			
 			public var parentNode:Node;
 			
+			public var isDir:Boolean;
+			
 			public function set viewHost(value:IViewHost):void {
 				_viewHost = value;
 			}
@@ -44,12 +46,13 @@
 			
 			protected function createFile(evt:MouseEvent = null):void {
 				var child:Node = new Node();
+				var properties:Object = new Object();
+
+				properties.type = "fileNode";
+				properties.text = fileName.text;
+				properties.isDirectory = isDir;
 				
-				child.properties = new Object();
-				child.properties.body = fileName.text;
-				child.properties.isDirectory = isDir.selected;
-				
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild",[parentNode, child]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
 				cancel();
 			}
 			
@@ -66,11 +69,6 @@
 	<s:HGroup width="100%" verticalAlign="middle">
 		<s:Label text="Name" />
 		<s:TextInput id="fileName"  width="80%" />
-	</s:HGroup>
-	
-	<s:HGroup width="100%" verticalAlign="middle">
-		<s:Label text="isDirectory" />
-		<s:CheckBox id="isDir"/>
 	</s:HGroup>
 	
 	<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">

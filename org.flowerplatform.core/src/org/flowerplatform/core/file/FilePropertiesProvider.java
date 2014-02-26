@@ -1,5 +1,6 @@
 package org.flowerplatform.core.file;
 
+import static org.flowerplatform.core.NodePropertiesConstants.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,9 +29,8 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		node.getProperties().put("text", fileAccessController.getName(file));
-		node.getProperties().put("hasChildren", fileAccessController.hasChildren(file));
-		node.getProperties().put("name", fileAccessController.getName(file));
+		node.getProperties().put(TEXT, fileAccessController.getName(file));
+		node.getProperties().put(HAS_CHILDREN, fileAccessController.hasChildren(file));
 		
 		Path path = Paths.get(fileAccessController.getAbsolutePath(file));
 		Map<String, Object> atributes = null;
@@ -42,12 +42,12 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		}
 
 		for (Map.Entry<String, Object> entry : atributes.entrySet()) {
-			if (entry.getKey().equals("size")) {
+			if (entry.getKey().equals(SIZE)) {
 				node.getProperties().put(entry.getKey().toString(),	entry.getValue() +" bytes");
 			} 
-			if (entry.getKey().equals("lastModifiedTime")||
-				entry.getKey().equals("creationTime")||
-				entry.getKey().equals("lastAccessTime")) {
+			if (entry.getKey().equals(LAST_ACCESS_TIME)||
+				entry.getKey().equals(LAST_MODIFIED_TIME)||
+				entry.getKey().equals(CREATION_TIME)) {
 					node.getProperties().put(entry.getKey().toString(),FormatFileTime((FileTime)entry.getValue()));
 			} else {
 				node.getProperties().put(entry.getKey().toString(),	(entry.getValue() == null) ? "" : entry.getValue().toString());

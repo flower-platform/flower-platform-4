@@ -19,8 +19,8 @@ public class FileChildrenProvider extends ChildrenProvider {
 	public List<Node> getChildren(Node node) {
 		String path;
 
-		if (node.getType().equals("fileSystem")) {
-			path = "d:/temp/fileSystemNode";
+		if (node.getType().equals(CorePlugin.FILE_SYSTEM_NODE_TYPE)) {
+			path = CorePlugin.FILE_SYSTEM_PATH;
 		} else {
 			path = node.getIdWithinResource();
 		}
@@ -40,9 +40,7 @@ public class FileChildrenProvider extends ChildrenProvider {
 	}
 
 	private Node getNode(Object file) {
-		Node node = new Node();
-		node.setIdWithinResource(fileAccessController.getAbsolutePath(file));
-		node.setType("fileNode");
+		Node node = new Node(CorePlugin.FILE_NODE_TYPE, null, fileAccessController.getAbsolutePath(file), null);
 		return node;
 	}
 

@@ -3,9 +3,9 @@ package org.flowerplatform.core.fileSystem;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.Pair;
 
 /**
  * @author Sebastian Solomon
@@ -23,10 +23,8 @@ public class FileSystemChildrenProvider extends ChildrenProvider {
 		return children;	
 	}
 	
-	public Node getFileSystem(Node parentode) {
-		Node node = new Node();
-		node.setIdWithinResource(parentode.getIdWithinResource() + ".fileSystem");
-		node.setType("fileSystem");
+	public Node getFileSystem(Node parentnode) {
+		Node node = new Node(CorePlugin.FILE_SYSTEM_NODE_TYPE, CorePlugin.FILE_SYSTEM_PATH, null, null);
 		return node;
 	}
 

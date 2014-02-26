@@ -35,6 +35,8 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		
 		public var childType:String;
 		
+		public var descriptorProperties:Object;
+		
 		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
 			super();
 			if (descriptor == null) {
@@ -49,6 +51,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 				
 				label = descriptor.label;
 				icon = descriptor.icon;
+				descriptorProperties = descriptor.properties;
 				orderIndex = descriptor.orderIndex;
 				parentId = ACTION_ID_NEW;
 				
@@ -73,13 +76,23 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)).fullNodeId, properties, null]);
 			} else {
 				var view:CreateFileDialogView = new CreateFileDialogView();
+				view.isDir = Boolean(descriptorProperties.isDirectory);
 				view.setParentNode(Node(selection.getItemAt(0)));
-				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-					.setTitle("New file/directory")
-					.setWidth(300)
-					.setHeight(150)
-					.setViewContent(view)
-					.show();
+				if (view.isDir) {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setTitle("New directory")
+						.setWidth(300)
+						.setHeight(100)
+						.setViewContent(view)
+						.show();
+				} else {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setTitle("New file")
+						.setWidth(300)
+						.setHeight(100)
+						.setViewContent(view)
+						.show();
+				}
 			}
 		}
 		

@@ -30,25 +30,6 @@ public class Node {
 	
 	private Map<String, Object> properties;
 	
-	public Node() {
-			}
-//	
-//	/**
-//	 * @author Sebastian Solomon
-//	 */
-//	public Node(String type, String resource, String id) {
-//		this.type = type;
-//		this.resource = resource;
-//		this.id = id;
-//	}
-//	
-//	/**
-//	 * @author Sebastian Solomon
-//	 */
-//	public Node(String type, String resource, String id, Map<String, Object> properties) {
-//		this(type, resource, id);
-//		this.properties = properties;
-//	}
 	private boolean propertiesPopulated;
 
 
