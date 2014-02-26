@@ -12,7 +12,7 @@ public class MindMapBasicRawNodeDataProvider extends RawNodeDataProvider<NodeMod
 
 	@Override
 	public NodeModel getRawNodeData(Node node) {
-		return FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getIdWithinResource());
+		return FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node);
 	}
 
 }

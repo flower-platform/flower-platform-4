@@ -15,10 +15,10 @@ public class MindMapBasicAddNodeController extends AddNodeController {
 
 	@Override
 	public void addNode(Node node, Node child, Node insertBeforeNode) {
-		NodeModel parentModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getIdWithinResource());
+		NodeModel parentModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node);
 		NodeModel currentModelAtInsertionPoint = null;
 		if (insertBeforeNode != null) {
-			currentModelAtInsertionPoint = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(insertBeforeNode.getIdWithinResource());
+			currentModelAtInsertionPoint = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(insertBeforeNode);
 		}
 		NodeModel newNodeModel = new NodeModel("", parentModel.getMap());
 		newNodeModel.setLeft(false);

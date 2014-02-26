@@ -59,10 +59,12 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
+			var parent:Node = Node(selection.getItemAt(0));
+			
 			var properties:Object = new Object();
 			properties.type = childType;
 			// TODO CC: temporary code
-			properties.resource = "mm://path_to_resource";
+			properties.resource = parent.resource;
 			
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)).fullNodeId, properties, null]);		
 		}

@@ -48,13 +48,13 @@ public class CodeSyncOperationsService {
 //		File srcDir = CodeSyncPlugin.getInstance().getProjectsProvider().getFile(project, "js");
 //		CodeSyncPlugin.getInstance().getCodeSyncAlgorithmRunner().runCodeSyncAlgorithm(project, srcDir, technology, context.getCommunicationChannel(), true);
 	
+		// find model file
+		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(path);
+		
 		// TODO test
 		path = "D:/temp/";
 		File project = new File(path);
 		File file = new File(path, "sync_test");
-		
-		// find model file
-		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(project);
 		
 		// find containing SrcDir
 		Node srcDir = null;

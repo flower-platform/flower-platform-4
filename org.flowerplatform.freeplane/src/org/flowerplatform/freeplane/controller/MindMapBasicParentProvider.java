@@ -13,7 +13,7 @@ public class MindMapBasicParentProvider extends ParentProvider {
 
 	@Override
 	public Pair<Node, Object> getParent(Node node) {
-		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getIdWithinResource());
+		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node);
 		NodeModel parentNodeModel = nodeModel.getParentNode();
 		if (parentNodeModel == null) {
 			return null;

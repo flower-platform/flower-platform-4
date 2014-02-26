@@ -12,7 +12,7 @@ public class MindMapBasicRemoveNodeController extends RemoveNodeController {
 
 	@Override
 	public void removeNode(Node node, Node child) {
-		NodeModel childModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(child.getIdWithinResource());
+		NodeModel childModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(child);
 		childModel.removeFromParent();
 		childModel.getMap().unregistryNodes(childModel);
 	}

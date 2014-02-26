@@ -18,9 +18,14 @@
  */
 package org.flowerplatform.flex_client.core {
 
+	import flash.external.ExternalInterface;
+	import flash.utils.Dictionary;
+	
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
-	import mx.rpc.events.ResultEvent;	
+	
+	import org.flowerplatform.flex_client.core.link.ILinkHandler;
+	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
@@ -30,8 +35,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
-	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
+	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
@@ -64,6 +69,8 @@ package org.flowerplatform.flex_client.core {
 		
 		public var addChildDescriptors:Object = new Object();
 		
+		public var fullRootNodeIdToDiagramShell:Dictionary = new Dictionary;
+		
 		// TODO MG: remove
 		public var mindmapNodeRendererControllerClass:Class;
 		
@@ -73,11 +80,11 @@ package org.flowerplatform.flex_client.core {
 				
 //		public static const VERSION:String = "2.0.0.M2_2013-06-04";
 //				
-//		/**
-//		 * key = command name as String (e.g. "openResources")
-//		 * value = parameters as String (e.g. text://file1,file2,file3)
-//		 */ 
-//		public var linkHandlers:Dictionary;
+		/**
+		 * key = command name as String (e.g. "openResources")
+		 * value = parameters as String (e.g. text://file1,file2,file3)
+		 */ 
+		public var linkHandlers:Dictionary;
 		
 		override public function preStart():void {
 			super.preStart();
@@ -113,12 +120,13 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 			
-//			linkHandlers = new Dictionary();			
-//			
-//			if (ExternalInterface.available) {
-//				// on mobile, it's not available
-//				ExternalInterface.addCallback("handleLink", handleLink);
-//			}
+			linkHandlers = new Dictionary();
+			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
+			
+			if (ExternalInterface.available) {
+				// on mobile, it's not available
+				ExternalInterface.addCallback("handleLink", handleLink);
+			}
 		}
 				
 		override protected function registerClassAliases():void {		
@@ -141,67 +149,71 @@ package org.flowerplatform.flex_client.core {
 			return null;
 		}
 		
-//		/**
-//		 * @author Cristina Constantinescu
-//		 */
-//		public function handleLink(queryString:String):void {			
-//			var commands:Object = parseQueryStringParameters(queryString); // map command -> parameters
-//			for (var object:String in commands) {	
-//				var linkHandler:ILinkHandler = ILinkHandler(linkHandlers[object]);
-//				if (linkHandler != null) {	
-//					linkHandler.handleLink(object, commands[object]);					
-//				}
-//			}
-//		}
-//		
-//		/**
-//		 * @author Cristina Constantinescu
-//		 */
-//		public function handleLinkWithQueryStringDecoded(queryStringDecoded:Object):void {			
-//			for (var object:String in queryStringDecoded) {	
-//				var linkHandler:ILinkHandler = ILinkHandler(linkHandlers[object]);
-//				if (linkHandler != null) {	
-//					linkHandler.handleLink(object, queryStringDecoded[object]);					
-//				}
-//			}
-//		}
-//		
-//		/**
-//		 * @author Cristina Constantinescu
-//		 */
-//		public function parseQueryStringParameters(url:String):Object {
-//			var query:String;
-//			if (url.indexOf("?") != -1) { // no parameters passed in the url
-//				query = url.substr(url.indexOf("?") + 1);
-//			} else {
-//				query = url;
-//			}			
-//			
-//			var parameters:Object = new Object();
-//			for each (var parameterWithValue:String in query.split("&")) { // spliting by group separator p1=v1&p2=v2
-//				var parameter:String = null;
-//				var value:String = null;
-//				
-//				var indexOfEqualSign:int = parameterWithValue.indexOf("=");
-//				if (indexOfEqualSign < 0) { // No value, just key
-//					parameter = parameterWithValue;
-//					value = null;
-//				} else {
-//					parameter = parameterWithValue.substring(0, indexOfEqualSign);
-//					value = parameterWithValue.substring(indexOfEqualSign + 1); // the rest represents the value, even though it contains an = character 
-//				}
-//				parameters[parameter] = value;
-//			}
-//			return parameters;
-//		}
-//			
-//		public function getBrowserURLWithoutQuery():String {
-//			if (ExternalInterface.available) {
-//				var browserURL:String = ExternalInterface.call("getURL");
-//				return browserURL.split("?")[0];
-//			}
-//			 return null;
-//		}
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function handleLink(queryString:String):void {			
+			var commands:Object = parseQueryStringParameters(queryString); // map command -> parameters
+			for (var object:String in commands) {	
+				handleLinkForCommand(object, commands[object]);
+			}
+		}
+		
+		public function handleLinkForCommand(command:String, parameters:String):void {
+			var linkHandler:ILinkHandler = ILinkHandler(linkHandlers[command]);
+			if (linkHandler != null) {	
+				linkHandler.handleLink(command, parameters);					
+			}
+		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function handleLinkWithQueryStringDecoded(queryStringDecoded:Object):void {			
+			for (var object:String in queryStringDecoded) {	
+				var linkHandler:ILinkHandler = ILinkHandler(linkHandlers[object]);
+				if (linkHandler != null) {	
+					linkHandler.handleLink(object, queryStringDecoded[object]);					
+				}
+			}
+		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function parseQueryStringParameters(url:String):Object {
+			var query:String;
+			if (url.indexOf("?") != -1) { // no parameters passed in the url
+				query = url.substr(url.indexOf("?") + 1);
+			} else {
+				query = url;
+			}			
+			
+			var parameters:Object = new Object();
+			for each (var parameterWithValue:String in query.split("&")) { // spliting by group separator p1=v1&p2=v2
+				var parameter:String = null;
+				var value:String = null;
+				
+				var indexOfEqualSign:int = parameterWithValue.indexOf("=");
+				if (indexOfEqualSign < 0) { // No value, just key
+					parameter = parameterWithValue;
+					value = null;
+				} else {
+					parameter = parameterWithValue.substring(0, indexOfEqualSign);
+					value = parameterWithValue.substring(indexOfEqualSign + 1); // the rest represents the value, even though it contains an = character 
+				}
+				parameters[parameter] = value;
+			}
+			return parameters;
+		}
+			
+		public function getBrowserURLWithoutQuery():String {
+			if (ExternalInterface.available) {
+				var browserURL:String = ExternalInterface.call("getURL");
+				return browserURL.split("?")[0];
+			}
+			 return null;
+		}
 	
 	}
 }

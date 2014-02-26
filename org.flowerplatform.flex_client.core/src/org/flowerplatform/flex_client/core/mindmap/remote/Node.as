@@ -48,7 +48,11 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
 			
 		public function get fullNodeId():String {
-			return type + "|" + resource + (idWithinResource == null ? "" : "|" + idWithinResource);
+			return type + "|" + resource + "|" + (idWithinResource == null ? "" : idWithinResource);
+		}
+		
+		public function toString():String {
+			return fullNodeId;
 		}
 		
 	}

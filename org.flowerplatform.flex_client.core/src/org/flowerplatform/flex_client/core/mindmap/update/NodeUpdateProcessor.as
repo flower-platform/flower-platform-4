@@ -32,12 +32,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		
 		private var _nodeRegistry:NodeRegistry = new NodeRegistry();
 				
-		/**
-         * TODO CC: temporary default value -> must be replaced
-		 * @see checkForUpdates
-		 */ 
-		public var timestampOfLastRequest:Number = 0;
-		
 		protected var diagramShell:DiagramShell;
 				
 		public function NodeUpdateProcessor(diagramShell:DiagramShell) {
@@ -119,7 +113,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? "freeplaneNode|mm://path_to_resource|": node.fullNodeId, true], 
+				[node == null ? Node(diagramShell.rootModel).fullNodeId : node.fullNodeId, true], 
 				function (result:Object):void {requestChildrenHandler(node, ArrayCollection(result));});	
 		}
 		
@@ -131,7 +125,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				}
 				node = Node(children.getItemAt(0));
 				
-//				diagramShell.rootModel = new Node();
 				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(node, true);	
 				
 				// by default, root node is considered expanded
@@ -160,8 +153,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		public function checkForUpdates():void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"updateService.getUpdates",	
-				[Node(MindMapDiagramShell(diagramShell).getRoot()).fullNodeId, timestampOfLastRequest], rootNodeUpdatesHandler);	
-				// TODO CS: de init timestamp la subscribe
+				[Node(MindMapDiagramShell(diagramShell).getRoot()).fullNodeId], rootNodeUpdatesHandler);	
 		}
 			
 		/**
@@ -253,10 +245,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			for (var key:String in nodeToNodeUpdatedEvent) {
 				var event:NodeUpdatedEvent = NodeUpdatedEvent(nodeToNodeUpdatedEvent[key]);
 				event.node.dispatchEvent(event);				
-			}
-			if (updates.length > 0) {
-				// store last update timestamp
-				timestampOfLastRequest = Update(updates.getItemAt(updates.length - 1)).timestamp;
 			}
 		}	
 		

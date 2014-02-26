@@ -1,14 +1,17 @@
 package org.flowerplatform.freeplane;
 
+import static org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider.RESOURCE_PATTERN;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.mindmap.MindMapPlugin;
 import org.freeplane.features.attribute.Attribute;
@@ -23,43 +26,31 @@ import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
 
 /**
  * @author Cristina Constantinescu
+ * @author Mariana Gheorghe
  */
 public class FreeplaneUtils {
 
 	// TODO CC: temporary code
 	public static Map<String, MapModel> maps = new HashMap<String, MapModel>();
 				
-	// TODO CC: temporary code
-	private static final String TEST_PATH = "D:/temp/FAP-FlowerPlatform4.mm";
-			
 	static {
 		// configure Freeplane starter
 		new FreeplaneHeadlessStarter().createController().setMapViewManager(new HeadlessMapViewController());		
 		HeadlessMModeControllerFactory.createModeController();	
 	}
 	
-	// TODO CC: temporary code
-	private URL getTestingURL() {
-		try {
-			return new File(TEST_PATH).toURI().toURL();
-		} catch (MalformedURLException e) {
-			return null;
-		}
-	}
-	
-	public NodeModel getNodeModel(String nodeId) {		
-		if (nodeId == null) {
-			if (!maps.containsKey(getTestingURL().toString())) {
+	public NodeModel getNodeModel(Node node) {		
+		if (node.getIdWithinResource() == null) {
+			if (!maps.containsKey(node.getResource())) {
 				try {
-					load(null);
+					load(node.getResource());
 				} catch (Exception e) {	
-					// TODO CC: To log
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			}
-			return maps.get(getTestingURL().toString()).getRootNode();
+			return maps.get(node.getResource()).getRootNode();
 		} 
-		return maps.get(getTestingURL().toString()).getNodeForID(nodeId);		
+		return maps.get(node.getResource()).getNodeForID(node.getIdWithinResource());		
 	}
 	
 	public Node getStandardNode(NodeModel nodeModel) {
@@ -82,13 +73,22 @@ public class FreeplaneUtils {
 		}
 		
 		// TODO CC: temporary code
-		resource = "mm://path_to_resource";		
+		resource = "mm:/" + nodeModel.getMap().getURL().getPath();
+			
 		
 		return new Node(type, resource, nodeModel.createID(), nodeModel);
 	}
 	
-	public void load(URL url) throws Exception {
-		url = getTestingURL();
+	/**
+	 * @param path matches {@link ResourceTypeDynamicCategoryProvider#RESOURCE_PATTERN} (e.g. mm://path-to-resource)
+	 * @throws Exception
+	 */
+	public void load(String path) throws Exception {
+		URL url = null;
+		Matcher matcher = RESOURCE_PATTERN.matcher(path);
+		if (matcher.find()) {
+			url = new File(matcher.group(2)).toURI().toURL();
+		}
 		
 		InputStreamReader urlStreamReader = null;
 		try {
@@ -98,7 +98,7 @@ public class FreeplaneUtils {
 			newModel.setURL(url);
 				
 			Controller.getCurrentModeController().getMapController().getMapReader().createNodeTreeFromXml(newModel, urlStreamReader, Mode.FILE);		
-			maps.put(newModel.getURL().toString(), newModel);
+			maps.put(path, newModel);
 		} finally {
 			if (urlStreamReader != null) {
 				urlStreamReader.close();
@@ -107,8 +107,8 @@ public class FreeplaneUtils {
 	}
 		
 	@SuppressWarnings("deprecation")
-	public void save() throws IOException {
-		MapModel newModel = maps.get(getTestingURL().toString());
-		((MFileManager) UrlManager.getController()).writeToFile(newModel, newModel.getFile());		
+	public void save(String resource) throws IOException {
+		MapModel newModel = maps.get(resource);
+		((MFileManager) UrlManager.getController()).writeToFile(newModel, newModel.getFile());	
 	}
 }

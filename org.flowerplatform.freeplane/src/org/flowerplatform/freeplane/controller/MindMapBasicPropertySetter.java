@@ -75,7 +75,7 @@ public class MindMapBasicPropertySetter extends PropertySetter {
 	}
 	
 	protected NodeModel getNodeModel(Node node) {
-		return FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node.getIdWithinResource());
+		return FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel(node);
 	}
 
 	@Override

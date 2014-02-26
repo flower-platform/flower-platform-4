@@ -1,8 +1,13 @@
 package org.flowerplatform.core.node.update;
 
+import static org.flowerplatform.core.node.update.SessionUnsubscriber.LAST_PING_TIMESTAMP;
+import static org.flowerplatform.core.node.update.UpdateService.TIMESTAMP_OF_LAST_REQUEST;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +27,10 @@ public abstract class RootNodeInfoDAO extends AbstractController {
 	
 	protected List<RootNodeSubscriptionListener> subscriptionListeners = new ArrayList<RootNodeSubscriptionListener>();
 	
+	public RootNodeInfoDAO() {
+		new SessionUnsubscriber(this).start();
+	}
+	
 	/**
 	 * Subscribes the client with this <code>sessionId</code> to the <code>rootNode</code>. 
 	 * Notifies all registered subscription listeners if this is the first client to subscribe
@@ -38,6 +47,8 @@ public abstract class RootNodeInfoDAO extends AbstractController {
 			}
 		}
 		info.addSession(sessionId);
+		
+		updateSessionProperty(sessionId, TIMESTAMP_OF_LAST_REQUEST, new Date().getTime());
 	}
 	
 	/**
@@ -59,7 +70,7 @@ public abstract class RootNodeInfoDAO extends AbstractController {
 	}
 	
 	public void stillSubscribedPing(String sessionid, Node rootNode) {
-		
+		updateSessionProperty(sessionid, LAST_PING_TIMESTAMP, new Date().getTime());
 	}
 	
 	public void sessionCreated(String sessionId) {
@@ -71,18 +82,22 @@ public abstract class RootNodeInfoDAO extends AbstractController {
 		updateSessionProperty(sessionId, "ip", ipAddress);
 	}
 	
-	public abstract void updateSessionProperty(String sessionId, String property, Object value);
-	
 	public void sessionRemoved(String sessionId) {
-		Collection<Node> rootNodes = getRootNodesForSession(sessionId);
+		Collection<Node> rootNodes = new CopyOnWriteArrayList<Node>(getRootNodesForSession(sessionId));
 		for (Node rootNode : rootNodes) {
-			CorePlugin.getInstance().getNodeService().getRootNodeInfoDAO().unsubscribe(sessionId, rootNode);
+			unsubscribe(sessionId, rootNode);
 		}
 	}
+	
+	public abstract void updateSessionProperty(String sessionId, String property, Object value);
+	
+	public abstract Object getSessionProperty(String sessionId, String property);
 	
 	public void addRootNodeInfoSubscriptionListener(RootNodeSubscriptionListener listener) {
 		subscriptionListeners.add(listener);
 	}
+	
+	public abstract Collection<String> getSubscribedSessions();
 	
 	public abstract Collection<Node> getRootNodesForSession(String sessionId);
 

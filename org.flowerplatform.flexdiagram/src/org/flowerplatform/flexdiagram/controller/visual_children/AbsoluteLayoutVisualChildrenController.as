@@ -122,6 +122,10 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 					}
 
 					if (scrollRect.intersects(crtRect)) {
+						trace ("intersects parent = " + parentModel + " child = " + childModel);
+						trace ("scrollRect width = " + scrollRect.width + " height = " + scrollRect.height + " x = " + scrollRect.x + " y = " + scrollRect.y + " left = " + scrollRect.left + " right = " + scrollRect.right + " top = " + scrollRect.top + " bottom = " + scrollRect.bottom);
+						trace ("crtRect width = " + crtRect.width + " height = " + crtRect.height + " x = " + crtRect.x + " y = " + crtRect.y + " left = " + crtRect.left + " right = " + crtRect.right + " top = " + crtRect.top + " bottom = " + crtRect.bottom);
+						
 						// the model should be visible
 						visibleModelsCounter++;
 						
@@ -139,6 +143,10 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 //						visualIndex ++;
 					} else {
 						// the model is not in the viewable area;
+						trace ("does not intersect parent = " + parentModel + " child = " + childModel);
+						trace ("scrollRect width = " + scrollRect.width + " height = " + scrollRect.height + " x = " + scrollRect.x + " y = " + scrollRect.y + " left = " + scrollRect.left + " right = " + scrollRect.right + " top = " + scrollRect.top + " bottom = " + scrollRect.bottom);
+						trace ("crtRect width = " + crtRect.width + " height = " + crtRect.height + " x = " + crtRect.x + " y = " + crtRect.y + " left = " + crtRect.left + " right = " + crtRect.right + " top = " + crtRect.top + " bottom = " + crtRect.bottom);
+						
 						
 						// update the "no scroll rect"
 						if (crtRect.right <= scrollRect.left && crtRect.right > horizontalNoNeedToRefreshLeft) {

@@ -10,8 +10,8 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class UpdateServiceRemote {
 
-	public List<Update> getUpdates(String rootFullNodeId, long timestampOfLastRequest) {
-		return CorePlugin.getInstance().getUpdateService().getUpdates(new Node(rootFullNodeId), timestampOfLastRequest);
+	public List<Update> getUpdates(String rootFullNodeId) {
+		return CorePlugin.getInstance().getUpdateService().getUpdates(new Node(rootFullNodeId));
 	}
 	
 	public void subscribe(Node rootNode) {	

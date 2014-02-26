@@ -85,8 +85,8 @@ public class Node {
 
 	public String getFullNodeId() {
 		if (cachedFullNodeId == null) {
-			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + (
-					idWithinResource == null ? "" : FULL_NODE_ID_SEPARATOR + idWithinResource);
+			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + FULL_NODE_ID_SEPARATOR + (
+					idWithinResource == null ? "" : idWithinResource);
 		}
 		return cachedFullNodeId;
 	}

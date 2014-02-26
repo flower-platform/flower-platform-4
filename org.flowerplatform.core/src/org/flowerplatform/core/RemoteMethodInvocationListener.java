@@ -1,5 +1,8 @@
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.node.update.UpdateService.TIMESTAMP_OF_LAST_REQUEST;
+
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +37,7 @@ public class RemoteMethodInvocationListener {
 	 * Changes {@link RemoteMethodInvocationInfo#getReturnValue()} to a map containing:
 	 * <ul>
 	 * 	<li> {@link #MESSAGE_RESULT} -> message invocation result
-	 *  <li> {@link #UPDATES} -> list of recently updates = all updates registered after {@link #LAST_UPDATE_TIMESTAMP}
+	 *  <li> {@link #UPDATES} -> map from fullRootNodeId to a list of recent updates = all updates registered after {@link #LAST_UPDATE_TIMESTAMP}
 	 * </ul>
 	 * 
 	 */
@@ -50,19 +53,19 @@ public class RemoteMethodInvocationListener {
 		// prepare result
 		Map<String, Object> returnValue = new HashMap<String, Object>();
 		returnValue.put(MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-				
-		Object timestampOfLastRequest = remoteMethodInvocationInfo.getHeaders().get(LAST_UPDATE_TIMESTAMP);
-		Object fullRootNodeId = remoteMethodInvocationInfo.getHeaders().get(FULL_ROOT_NODE_ID);
 		
-		if (fullRootNodeId != null) { // client requested the latest updates
-			List<Update> updates = CorePlugin.getInstance().getUpdateService().getUpdates(
-							new Node((String) fullRootNodeId), 
-							// this instance verification is only temporary (correct timestamp will be seen as Double)
-							// TODO CC: remove verification when properly timestamp
-							((timestampOfLastRequest instanceof Double) ? ((Double) timestampOfLastRequest).longValue() : ((Integer) timestampOfLastRequest).longValue()));
-			if (updates != null) {
-				returnValue.put(UPDATES, updates);	
-			}
+		Map<String, List<Update>> rootNodeIdToUpdates = new HashMap<String, List<Update>>();
+		
+		String sessionId = CorePlugin.getInstance().getSessionId();
+		Collection<Node> rootNodes = CorePlugin.getInstance().getNodeService().getRootNodeInfoDAO().getRootNodesForSession(sessionId);
+		for (Node rootNode : rootNodes) {
+			List<Update> updates = CorePlugin.getInstance().getUpdateService().getUpdates(rootNode);
+			rootNodeIdToUpdates.put(rootNode.getFullNodeId(), updates);
+		}
+		// update the timestamp
+		CorePlugin.getInstance().getNodeService().getRootNodeInfoDAO().updateSessionProperty(sessionId, TIMESTAMP_OF_LAST_REQUEST, new Date().getTime());
+		if (rootNodeIdToUpdates.size() > 0) {
+			returnValue.put(UPDATES, rootNodeIdToUpdates);
 		}
 		
 		remoteMethodInvocationInfo.setReturnValue(returnValue);	

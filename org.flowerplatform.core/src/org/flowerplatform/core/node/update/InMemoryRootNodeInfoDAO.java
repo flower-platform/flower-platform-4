@@ -1,5 +1,6 @@
 package org.flowerplatform.core.node.update;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,8 +8,11 @@ import java.util.Set;
 
 import org.flowerplatform.core.node.remote.InMemoryRootNodeInfo;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.RootNodeInfo;
 
 /**
+ * Keeps in-memory maps of {@link RootNodeInfo}s and information about subscribed clients (sessions).
+ * 
  * @author Mariana Gheorghe
  */
 public class InMemoryRootNodeInfoDAO extends RootNodeInfoDAO {
@@ -35,10 +39,25 @@ public class InMemoryRootNodeInfoDAO extends RootNodeInfoDAO {
 		super.unsubscribe(sessionId, rootNode);
 		
 		getRootNodesForSession(sessionId).remove(rootNode);
+		if (getRootNodesForSession(sessionId).size() == 0) {
+			// remove this key from the maps
+			sessionIdToRootNodes.remove(sessionId);
+			sessionProperties.remove(sessionId);
+		}
 	}
 	
 	public void updateSessionProperty(String sessionId, String property, Object value) {
 		getSessionProperties(sessionId).put(property, value);
+	}
+	
+	@Override
+	public Object getSessionProperty(String sessionId, String property) {
+		return getSessionProperties(sessionId).get(property);
+	}
+	
+	@Override
+	public Collection<String> getSubscribedSessions() {
+		return sessionIdToRootNodes.keySet();
 	}
 	
 	@Override
@@ -69,4 +88,5 @@ public class InMemoryRootNodeInfoDAO extends RootNodeInfoDAO {
 		}
 		return properties;
 	}
+
 }

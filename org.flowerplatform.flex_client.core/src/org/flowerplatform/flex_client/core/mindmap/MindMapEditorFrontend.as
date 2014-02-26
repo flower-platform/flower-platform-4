@@ -20,26 +20,19 @@ package org.flowerplatform.flex_client.core.mindmap {
 	
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
 	import mx.collections.IList;
-	import mx.containers.VBox;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.FlexEvent;
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
@@ -52,9 +45,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
-	import spark.components.Button;
 	import spark.components.CheckBox;
-	import spark.components.Group;
 	import spark.components.HGroup;
 	import spark.components.VGroup;
 
@@ -62,6 +53,9 @@ package org.flowerplatform.flex_client.core.mindmap {
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+		
+		// TODO MG: temp; move to a super class EditorFrontend
+		public var editorInput:String;
 		
 		public var diagramShell:DiagramShell;
 			
@@ -123,8 +117,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 		private function creationCompleteHandler(event:FlexEvent):void {	
 			var root:Node = new Node();
 			root.type = "freeplaneNode";
-			root.resource = "mm://path_to_resource";
+			root.resource = editorInput;
 			diagramShell.rootModel = root;
+			
+			CorePlugin.getInstance().fullRootNodeIdToDiagramShell[root.fullNodeId] = diagramShell;
 			
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.subscribe",	[Node(diagramShell.rootModel).fullNodeId]);
 			

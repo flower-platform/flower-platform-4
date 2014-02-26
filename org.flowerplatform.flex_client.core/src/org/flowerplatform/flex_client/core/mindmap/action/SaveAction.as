@@ -19,12 +19,12 @@
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class SaveAction extends ActionBase {
+	public class SaveAction extends DiagramShellAwareActionBase {
 		
 		public function SaveAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.save");
@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.save");
+			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.save", [Node(diagramShell.rootModel).resource]);
 		}
 				
 	}
