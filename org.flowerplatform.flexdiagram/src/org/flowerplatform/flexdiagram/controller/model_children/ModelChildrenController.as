@@ -20,17 +20,37 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 
 	/**
 	 * Should be provided even by elements that have no children, if they are connectable
 	 * with connectors!
 	 * 
 	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
-	public interface IModelChildrenController {
-		function getParent(context:DiagramShellContext, model:Object):Object;
-		function getChildren(context:DiagramShellContext, model:Object):IList;
-		function beginListeningForChanges(context:DiagramShellContext, model:Object):void;
-		function endListeningForChanges(context:DiagramShellContext, model:Object):void;
+	public class ModelChildrenController extends AbstractController {
+		
+		public static const TYPE:String = "ModelChildrenController";
+		
+		public function ModelChildrenController(orderIndex:int = 0) {
+			super(orderIndex);
+		}
+		
+		public function getParent(context:DiagramShellContext, model:Object):Object {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function getChildren(context:DiagramShellContext, model:Object):IList {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function endListeningForChanges(context:DiagramShellContext, model:Object):void {
+			throw new Error("This method needs to be implemented.");
+		}
 	}
 }

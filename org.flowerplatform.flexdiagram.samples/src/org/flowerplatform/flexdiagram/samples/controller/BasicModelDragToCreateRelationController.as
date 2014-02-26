@@ -19,26 +19,25 @@
 package org.flowerplatform.flexdiagram.samples.controller {
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.tool.controller.IDragToCreateRelationController;
+	import org.flowerplatform.flexdiagram.tool.controller.DragToCreateRelationController;
 	
-	public class BasicModelDragToCreateRelationController extends ControllerBase implements IDragToCreateRelationController	{
+	public class BasicModelDragToCreateRelationController extends DragToCreateRelationController {
 				
-		public function activate(context:DiagramShellContext, model:Object):void {
+		override public function activate(context:DiagramShellContext, model:Object):void {
 			trace("startDragging");
 		}
 		
-		public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number):void {
+		override public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number):void {
 			trace("update");
 		}
 		
-		public function drop(context:DiagramShellContext, sourceModel:Object, targetModel:Object):void {
+		override public function drop(context:DiagramShellContext, sourceModel:Object, targetModel:Object):void {
 			trace("endDragging");		
 			
 			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
-		public function deactivate(context:DiagramShellContext, model:Object):void {
+		override public function deactivate(context:DiagramShellContext, model:Object):void {
 			trace("deactivate");
 			
 		}

@@ -23,10 +23,10 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.renderer.connection.BindablePoint;
 	import org.flowerplatform.flexdiagram.renderer.connection.ClipUtils;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionEnd;
@@ -56,8 +56,8 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		
 		protected static const ALMOST_HORIZONTAL_LINE:int = 0;
 
-		public function ConnectionRendererController(rendererClass:Class=null) {
-			super(rendererClass);
+		public function ConnectionRendererController(rendererClass:Class=null, orderIndex:int = 0) {
+			super(rendererClass, orderIndex);
 		}
 		
 		/**
@@ -76,7 +76,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		 * This is invoked by the renderer. See comment there to see why.
 		 */
 		public function updateConnectionEnds(context:DiagramShellContext, connectionModel:Object, modifiedEnd:Object):void {
-			var connectionRenderer:ConnectionRenderer = ConnectionRenderer(context.diagramShell.getRendererForModel(connectionModel));
+			var connectionRenderer:ConnectionRenderer = ConnectionRenderer(context.diagramShell.getRendererForModel(context, connectionModel));
 			var sourceRect:Array;
 			var targetRect:Array;
 			var sourceModel:Object = getSourceModel(connectionModel);
@@ -121,7 +121,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		}
 		
 		protected function getEndRectForClipCalculation(context:DiagramShellContext, endModel:Object):Array {
-			var endRenderer:IVisualElement = context.diagramShell.getRendererForModel(endModel);
+			var endRenderer:IVisualElement = context.diagramShell.getRendererForModel(context, endModel);
 			if (endRenderer == null) {
 				// the renderer is not on the screen; => provide estimates
 				return getEstimatedRectForElementNotVisible(context, endModel);
@@ -138,13 +138,13 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 				throw new Error("No parent that has a IAbsoluteLayoutRectangleController has been found!");
 			}
 			
-			var controller:IAbsoluteLayoutRectangleController = context.diagramShell.getControllerProvider(model).getAbsoluteLayoutRectangleController(model);
+			var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);
 			if (controller != null) {
 				var rect:Rectangle = controller.getBounds(context, model);
 				return [rect.x, rect.y, rect.width, rect.height];
 			} else {
 				// look to find the parent that is child of the diagram, i.e. has IAbsoluteLayoutRectangleController
-				var childrenController:IModelChildrenController = context.diagramShell.getControllerProvider(model).getModelChildrenController(model);
+				var childrenController:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
 				if (childrenController == null) {
 					throw new Error("Cannot find a IModelChildrenController for model = " + model + ". Elements should provide IModelChildrenController is they need to be connectable, even if they don't have children!");
 				}

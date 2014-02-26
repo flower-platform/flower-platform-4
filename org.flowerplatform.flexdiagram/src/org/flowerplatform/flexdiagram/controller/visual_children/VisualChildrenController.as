@@ -16,16 +16,26 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.renderer {
-	import mx.core.IDataRenderer;
-	import mx.core.IVisualElement;
+package org.flowerplatform.flexdiagram.controller.visual_children {
 	import org.flowerplatform.flexdiagram.DiagramShell;
-
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexutil.controller.AbstractController;
+	
 	/**
 	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
-	public interface IDiagramShellAware {
-		function get diagramShell():DiagramShell;
-		function set diagramShell(value:DiagramShell):void;
+	public class VisualChildrenController extends AbstractController {
+		
+		public static const TYPE:String = "VisualChildrenController";
+		
+		public function VisualChildrenController(orderIndex:int = 0) {
+			super(orderIndex);
+		}
+		
+		public function refreshVisualChildren(context:DiagramShellContext, model:Object):void {
+			throw new Error("This method needs to be implemented.");
+		}
+		
 	}
 }

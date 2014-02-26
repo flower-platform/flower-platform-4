@@ -19,20 +19,16 @@
 package org.flowerplatform.flexdiagram.samples.controller {
 	import flash.geom.Rectangle;
 	
-	import mx.core.IVisualElement;
-	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.samples.model.BasicModel;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class BasicModelAbsoluteLayoutRectangleController extends ControllerBase implements IAbsoluteLayoutRectangleController {
+	public class BasicModelAbsoluteLayoutRectangleController extends AbsoluteLayoutRectangleController {
 		
-		public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
+		override public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
 			var basicModel:BasicModel = BasicModel(model);
 			return new Rectangle(basicModel.x, basicModel.y, basicModel.width, basicModel.height);
 		}

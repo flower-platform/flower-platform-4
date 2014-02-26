@@ -19,25 +19,26 @@
 package org.flowerplatform.flexdiagram.mindmap.controller {
 	import flash.geom.Rectangle;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapAbsoluteLayoutRectangleController extends ControllerBase implements IAbsoluteLayoutRectangleController {
+	public class MindMapAbsoluteLayoutRectangleController extends AbsoluteLayoutRectangleController {
 		
-		public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
+		public function MindMapAbsoluteLayoutRectangleController(orderIndex:int = 0) {
+			super(orderIndex);
+		}
+		
+		override public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
 			return new Rectangle(
-				diagramShell.getPropertyValue(model, "x"), 
-				diagramShell.getPropertyValue(model, "y"), 
-				diagramShell.getPropertyValue(model, "width"), 
-				diagramShell.getPropertyValue(model, "height"));
+				diagramShell.getPropertyValue(context, model, "x"), 
+				diagramShell.getPropertyValue(context, model, "y"), 
+				diagramShell.getPropertyValue(context, model, "width"), 
+				diagramShell.getPropertyValue(context, model, "height"));
 		}
 		
 	}

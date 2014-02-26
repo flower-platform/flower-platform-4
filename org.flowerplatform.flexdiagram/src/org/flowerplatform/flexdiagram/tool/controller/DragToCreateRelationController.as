@@ -17,70 +17,36 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool.controller {
-
-	import flash.display.DisplayObject;
-	import flash.geom.Rectangle;
-	
-	import mx.core.IVisualElement;
-	
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.event.ExecuteDragToCreateEvent;
-	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
-	 * @author Mariana Gheorghe
 	 * @author Cristina Constantinescu
-	 */
-	public class DragToCreateRelationController extends ControllerBase implements IDragToCreateRelationController {
-	
+	 */ 
+	public class DragToCreateRelationController extends AbstractController {
+		
+		public static const TYPE:String = "DragToCreateRelationController";
+		
+		public function DragToCreateRelationController(orderIndex:int = 0) {
+			super(orderIndex);
+		}
+		
 		public function activate(context:DiagramShellContext, model:Object):void {
-			// create temp connection
-			var connection:ConnectionRenderer = new ConnectionRenderer();
-			var modelRenderer:IVisualElement = context.diagramShell.getRendererForModel(model);
-			var rect:Rectangle = DisplayObject(modelRenderer).getBounds(DisplayObject(context.diagramShell.diagramRenderer));
-			var x:int = rect.x + rect.width / 2;
-			var y:int = rect.y + rect.height / 2;
-			connection._sourcePoint.x = connection._targetPoint.x = x;
-			connection._sourcePoint.y = connection._targetPoint.y = y;
-			
-			// add to map
-			context.diagramShell.modelToExtraInfoMap[model].tempConnection = connection;
-			
-			// add to diagram
-			context.diagramShell.diagramRenderer.addElement(connection);
+			throw new Error("This method needs to be implemented.");
 		}
 		
 		public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number):void {
-			var connection:ConnectionRenderer = context.diagramShell.modelToExtraInfoMap[model].tempConnection;
-			
-			connection._targetPoint.x = deltaX; 
-			connection._targetPoint.y = deltaY;
+			throw new Error("This method needs to be implemented.");
 		}
 		
 		public function drop(context:DiagramShellContext, sourceModel:Object, targetModel:Object):void {
-			if (targetModel != null) {				
-				// the tool will be deactivated later, so wait until then
-				context.diagramShell.modelToExtraInfoMap[sourceModel].waitingToDeactivateDragTool = true;
-				
-				// create context
-				var toolContext:Object = new Object();
-				toolContext.sourceModel = sourceModel;
-				toolContext.targetModel =  targetModel;	
-				// dispatch event in order to let others implement the creation behavior
-				context.diagramShell.dispatchEvent(new ExecuteDragToCreateEvent(toolContext, true));
-			} else {
-				context.diagramShell.mainToolFinishedItsJob();
-			}
+			throw new Error("This method needs to be implemented.");
 		}
 		
 		public function deactivate(context:DiagramShellContext, model:Object):void {
-			var connection:ConnectionRenderer = context.diagramShell.modelToExtraInfoMap[model].tempConnection;
-			context.diagramShell.diagramRenderer.removeElement(connection);
-			
-			delete context.diagramShell.modelToExtraInfoMap[model].tempConnection;
-			delete context.diagramShell.modelToExtraInfoMap[model].waitingToDeactivateDragTool;
+			throw new Error("This method needs to be implemented.");
 		}
-	}
+		
+	}	
 }

@@ -28,8 +28,8 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	
 	public class BasicConnectionRendererController extends ConnectionRendererController {
 		
-		public function BasicConnectionRendererController(rendererClass:Class=null) {
-			super(rendererClass);
+		public function BasicConnectionRendererController(rendererClass:Class=null, orderIndex:int = 0) {
+			super(rendererClass, orderIndex);
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {

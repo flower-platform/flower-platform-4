@@ -16,21 +16,20 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.tool.controller {
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
+package org.flowerplatform.flexdiagram.renderer {
+	import mx.core.IDataRenderer;
+	import mx.core.IVisualElement;
 	
+	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+
 	/**
-	 * @author Cristina Constantinescu
-	 */ 
-	public interface IInplaceEditorController {
+	 * @author Cristian Spiescu
+	 */
+	public interface IDiagramShellContextAware {
+				
+		function get diagramShellContext():DiagramShellContext;
+		function set diagramShellContext(value:DiagramShellContext):void;
 		
-		function canActivate(context:DiagramShellContext, model:Object):Boolean;
-		
-		function activate(context:DiagramShellContext, model:Object):void;
-		
-		function commit(context:DiagramShellContext, model:Object):void;
-		function abort(context:DiagramShellContext, model:Object):void;
-		
-		function deactivate(context:DiagramShellContext, model:Object):void;
 	}
 }

@@ -16,18 +16,27 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller.selection {
-	import mx.core.IVisualElement;
+package org.flowerplatform.flexdiagram.controller {
+	import flash.geom.Rectangle;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 
 	/**
+	 * @author Cristian Spiescu
 	 * @author Cristina Constantinescu
-	 */ 
-	public interface ISelectionController {
-		function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void;
-		function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void;
-		function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void;
+	 */
+	public class AbsoluteLayoutRectangleController extends AbstractController {
+		
+		public static const TYPE:String = "AbsoluteLayoutRectangleController";
+		
+		public function AbsoluteLayoutRectangleController(orderIndex:int = 0) {
+			super(orderIndex);
+		}
+		
+		public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
+			throw new Error("This method needs to be implemented.");
+		}
+		
 	}
-	
 }

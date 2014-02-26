@@ -19,28 +19,20 @@
 package org.flowerplatform.flex_client.core.mindmap {
 	
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
 	import mx.collections.IList;
-	import mx.containers.VBox;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.FlexEvent;
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
@@ -50,9 +42,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
-	import spark.components.Button;
 	import spark.components.CheckBox;
-	import spark.components.Group;
 	import spark.components.HGroup;
 	import spark.components.VGroup;
 
@@ -113,6 +103,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
 							
 			diagramShell = new MindMapEditorDiagramShell();
+			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
 			diagramShell.diagramRenderer = diagramRenderer;
 			
 			super.createChildren();					
@@ -121,7 +112,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		private function creationCompleteHandler(event:FlexEvent):void {			
 			// TODO CC: Temporary code
 			var reloadAction:ReloadAction = new ReloadAction();
-			reloadAction.diagramShell = diagramShell;
+			reloadAction.diagramShellContext = diagramShell.getNewDiagramShellContext();
 			reloadAction.run();
 			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
@@ -146,8 +137,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 
 				if (actions != null) {
 					for each (var action:IAction in actions) {
-						if (action is IDiagramShellAware) {
-							IDiagramShellAware(action).diagramShell = diagramShell;
+						if (action is IDiagramShellContextAware) {
+							IDiagramShellContextAware(action).diagramShellContext = diagramShell.getNewDiagramShellContext();
 						}
 						result.push(action);
 					}

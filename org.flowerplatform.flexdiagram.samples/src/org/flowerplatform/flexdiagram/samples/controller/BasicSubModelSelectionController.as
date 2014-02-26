@@ -19,21 +19,20 @@
 package org.flowerplatform.flexdiagram.samples.controller {
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.selection.ISelectionController;
+	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class BasicSubModelSelectionController extends ControllerBase implements ISelectionController {
+	public class BasicSubModelSelectionController extends SelectionController {
 				
-		public function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
+		override public function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
 			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
+				DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model));
 			
 			if (modelExtraInfoController.getDynamicObject(context, model).selected != isSelected) {
 				modelExtraInfoController.getDynamicObject(context, model).selected = isSelected;
@@ -49,16 +48,16 @@ package org.flowerplatform.flexdiagram.samples.controller {
 			}
 		}
 		
-		public function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {		
+		override public function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {		
 			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
+				DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model));
 			
 			setSelectedState(context, model, renderer, 
 				modelExtraInfoController.getDynamicObject(context, model).selected, 
 				context.diagramShell.mainSelectedItem == model);
 		}
 		
-		public function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+		override public function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
 			
 		}
 	}

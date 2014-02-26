@@ -16,82 +16,34 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller.selection
-{
+package org.flowerplatform.flexdiagram.controller.selection {
 	import mx.core.IVisualElement;
-	import mx.events.DynamicEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
-	import org.flowerplatform.flexdiagram.renderer.selection.AbstractSelectionRenderer;
-	
-	public class SelectionController extends ControllerBase implements ISelectionController {
+	import org.flowerplatform.flexutil.controller.AbstractController;
+
+	/**
+	 * @author Cristina Constantinescu
+	 */ 
+	public class SelectionController extends AbstractController {
 		
-		public var selectionRendererClass:Class;
+		public static const TYPE:String = "SelectionController";
 		
-		public function SelectionController(selectionRendererClass:Class = null) {		
-			this.selectionRendererClass = selectionRendererClass;
+		public function SelectionController(orderIndex:int = 0) {
+			super(orderIndex);
 		}
 		
 		public function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
-			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
-			
-			var dynamicObject:Object = modelExtraInfoController.getDynamicObject(context, model);
-			
-			if (dynamicObject.selected != isSelected) {
-				dynamicObject.selected = isSelected;
-			}
-			
-			if (renderer == null) {
-				return;
-			}
-			
-			// add/delete selectionRenderer
-			
-			if (isSelected) {		
-				var selectionRenderer:AbstractSelectionRenderer = dynamicObject.selectionRenderer;				
-				if (selectionRenderer == null) {
-					selectionRenderer = new selectionRendererClass();
-					
-					if (selectionRenderer is IDiagramShellAware) {
-						IDiagramShellAware(selectionRenderer).diagramShell = context.diagramShell;
-					}
-					
-					selectionRenderer.isMainSelection = isMainSelection;
-					selectionRenderer.activate(model);
-					
-					dynamicObject.selectionRenderer = selectionRenderer;
-				} else {
-					if (selectionRenderer.isMainSelection != isMainSelection) {
-						selectionRenderer.isMainSelection = isMainSelection;
-					}
-				}					
-			} else {
-				unassociatedModelFromSelectionRenderer(context, model, renderer);
-			}
+			throw new Error("This method needs to be implemented.");
 		}
 		
-		public function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {	
-			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
-			
-			setSelectedState(context, model, renderer, modelExtraInfoController.getDynamicObject(context, model).selected, context.diagramShell.mainSelectedItem == model);			
+		public function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+			throw new Error("This method needs to be implemented.");
 		}
 		
 		public function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
-			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(context.diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
-			
-			var selectionRenderer:AbstractSelectionRenderer = modelExtraInfoController.getDynamicObject(context, model).selectionRenderer;
-			
-			if (selectionRenderer != null) {
-				selectionRenderer.deactivate(model);				
-				delete modelExtraInfoController.getDynamicObject(context, model).selectionRenderer;
-			}
+			throw new Error("This method needs to be implemented.");
 		}
-	}
+		
+	}	
 }

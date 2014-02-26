@@ -12,8 +12,8 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	 */
 	public class NodeRendererController extends MindMapModelRendererController {
 		
-		public function NodeRendererController(rendererClass:Class) {
-			super(rendererClass);
+		public function NodeRendererController(rendererClass:Class, orderIndex:int = 0) {
+			super(rendererClass, orderIndex);
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {				
@@ -28,7 +28,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		}
 		
 		protected function nodeRemovedHandler(event:NodeRemovedEvent, context:DiagramShellContext):void {			
-			context.diagramShell.unassociateModelFromRenderer(event.node, context.diagramShell.getRendererForModel(event.node), true);			
+			context.diagramShell.unassociateModelFromRenderer(context, event.node, context.diagramShell.getRendererForModel(context, event.node), true);			
 		}
 		
 	}

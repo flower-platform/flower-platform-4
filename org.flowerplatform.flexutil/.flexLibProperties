@@ -28,6 +28,12 @@
     <classEntry path="org.flowerplatform.flexutil.action.VectorActionProvider"/>
     <classEntry path="org.flowerplatform.flexutil.layout.ITitleDecorator"/>
     <classEntry path="org.flowerplatform.flexutil.layout.AbstractViewProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.TypeDescriptor"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.TypeDescriptorRegistry"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.IDynamicCategoryProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.AbstractController"/>
+    <classEntry path="org.flowerplatform.flexutil.Pair"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

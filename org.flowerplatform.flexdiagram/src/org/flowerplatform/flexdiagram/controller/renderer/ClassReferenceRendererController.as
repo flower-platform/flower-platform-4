@@ -17,46 +17,40 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.renderer {
-	import flash.events.IEventDispatcher;
-	
-	import mx.core.IInvalidating;
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
-	import mx.events.PropertyChangeEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.renderer.IRendererController;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class ClassReferenceRendererController extends ControllerBase implements IRendererController {
+	public class ClassReferenceRendererController extends RendererController {
 		
 		public var rendererClass:Class;
 		
 		public var removeRendererIfModelIsDisposed:Boolean;
 		
-		public function ClassReferenceRendererController(rendererClass:Class = null) {		
+		public function ClassReferenceRendererController(rendererClass:Class = null, orderIndex:int = 0) {	
+			super(orderIndex);
 			this.rendererClass = rendererClass;
 		}
 		
-		public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
+		override public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
 			return rendererClass;
 		}
 		
-		public function createRenderer(context:DiagramShellContext, model:Object):IVisualElement {
+		override public function createRenderer(context:DiagramShellContext, model:Object):IVisualElement {
 			return new rendererClass();
 		}
 		
-		public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
 		}
 		
 		/**
 		 * @author Mariana Gheorghe
 		 */
-		public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
+		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
 			if (modelIsDisposed && removeRendererIfModelIsDisposed) {
 				if (renderer != null) {
 					IVisualElementContainer(renderer.parent).removeElement(renderer);

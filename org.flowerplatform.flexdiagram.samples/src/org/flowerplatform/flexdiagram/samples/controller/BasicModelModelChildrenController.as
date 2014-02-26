@@ -26,8 +26,8 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	 */
 	public class BasicModelModelChildrenController extends ParentAwareArrayListModelChildrenController {
 				
-		public function BasicModelModelChildrenController() {			
-			super(false);
+		public function BasicModelModelChildrenController(orderIndex:int = 0) {			
+			super(false, orderIndex);
 		}
 		
 		override protected function getParentAwareArrayList(model:Object):ParentAwareArrayList {

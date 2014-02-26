@@ -17,16 +17,15 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap {
-	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
 	
-	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	
 	/**
@@ -38,6 +37,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public var target:Object;
 				
+		private var context:DiagramShellContext;
+		
 		public function setSource(value:Object):MindMapConnector {
 			this.source = value;
 			return this;
@@ -48,8 +49,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 			return this;
 		}
 		
-		private function getDiagramShell():MindMapDiagramShell {
-			return MindMapDiagramShell(DiagramRenderer(this.parent).diagramShell);
+		public function setContext(value:DiagramShellContext):MindMapConnector {
+			this.context = value;
+			return this;
+		}
+		
+		private function get diagramShell():MindMapDiagramShell {
+			return MindMapDiagramShell(context.diagramShell);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
@@ -64,7 +70,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var sourcePoint:Point;
 			var targetPoint:Point;
 			
-			if (getDiagramShell().getModelController(source).getSide(getDiagramShell().context, source) == MindMapDiagramShell.POSITION_LEFT) {
+			if (diagramShell.getModelController(context, source).getSide(context, source) == MindMapDiagramShell.POSITION_LEFT) {
 				sourcePoint = new Point(sourceBounds[0] + sourceBounds[2], sourceBounds[1] + sourceBounds[3]/2);
 				targetPoint = new Point(targetBounds[0], targetBounds[1] + targetBounds[3]/2);
 				graphics.moveTo(sourcePoint.x, sourcePoint.y);
@@ -115,31 +121,31 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		private function getLeftTopControlPoint(x:Number, y:Number):Point {
-			return new Point(x - getDiagramShell().horizontalPadding/2, y);
+			return new Point(x - diagramShell.horizontalPadding/2, y);
 		}
 		
 		private function getRightTopControlPoint(x:Number, y:Number):Point {
-			return new Point(x + getDiagramShell().horizontalPadding/2, y);
+			return new Point(x + diagramShell.horizontalPadding/2, y);
 		}
 		
 		private function getLeftBottomControlPoint(x:Number, y:Number):Point {
-			return new Point(x + getDiagramShell().horizontalPadding/2, y);
+			return new Point(x + diagramShell.horizontalPadding/2, y);
 		}
 		
 		private function getRightBottomControlPoint(x:Number, y:Number):Point {
-			return new Point(x - getDiagramShell().horizontalPadding/2, y);
+			return new Point(x - diagramShell.horizontalPadding/2, y);
 		}
 		
 		protected function getEndBounds(model:Object):Array {
-			var endRenderer:IVisualElement = getDiagramShell().getRendererForModel(model);
+			var endRenderer:IVisualElement = diagramShell.getRendererForModel(context, model);
 			if (endRenderer == null) {
 				// the renderer is not on the screen; => provide estimates
-				var controller:IAbsoluteLayoutRectangleController = getDiagramShell().getControllerProvider(model).getAbsoluteLayoutRectangleController(model);				
-				var rect:Rectangle = controller.getBounds(getDiagramShell().context, model);
+				var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);				
+				var rect:Rectangle = controller.getBounds(context, model);
 				return [rect.x, rect.y, rect.width, rect.height];
 			} else {
 				// renderer on screen => provide real data from renderer							
-				return [getDiagramShell().getPropertyValue(model, "x"), getDiagramShell().getPropertyValue(model, "y"), getDiagramShell().getPropertyValue(model, "width"), getDiagramShell().getPropertyValue(model, "height")];
+				return [diagramShell.getPropertyValue(context, model, "x"), diagramShell.getPropertyValue(context, model, "y"), diagramShell.getPropertyValue(context, model, "width"), diagramShell.getPropertyValue(context, model, "height")];
 			}
 		}
 	}

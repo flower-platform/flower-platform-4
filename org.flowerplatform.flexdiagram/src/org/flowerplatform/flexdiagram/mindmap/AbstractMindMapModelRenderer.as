@@ -6,8 +6,8 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
@@ -20,11 +20,11 @@ package org.flowerplatform.flexdiagram.mindmap
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellAware, IIconsComponentExtensionProvider {
+	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider {
 						
 		protected static const circleRadius:int = 3;
 		
-		protected var _diagramShell:MindMapDiagramShell;
+		protected var _context:DiagramShellContext;
 			
 		protected var labelDisplay:Label;
 		
@@ -67,13 +67,13 @@ package org.flowerplatform.flexdiagram.mindmap
 			this.layout = hLayout;
 		}
 		
-		public function get diagramShell():DiagramShell {
-			return _diagramShell;
+		public function get diagramShellContext():DiagramShellContext {			
+			return _context;
 		}
 		
-		public function set diagramShell(value:DiagramShell):void {
-			_diagramShell = MindMapDiagramShell(value);
-		}
+		public function set diagramShellContext(value:DiagramShellContext):void {
+			this._context = value;
+		}		
 				
 		public function get icons():FlowerArrayList	{			
 			return iconsExtension.icons;
@@ -123,7 +123,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 			
 			if (canDrawCircle(data)) {
-				var side:int = _diagramShell.getModelController(data).getSide(_diagramShell.context, data);
+				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					graphics.drawCircle(-circleRadius, height/2, circleRadius);
 				} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						

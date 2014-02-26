@@ -76,6 +76,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			} else {
 				icons = null;
 			}
+			currentValue = String(propertyDescriptor.value);
 		}
 		
 		override public function set data(value:Object):void {

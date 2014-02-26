@@ -21,18 +21,39 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
 	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
-	public interface IRendererController {
+	public class RendererController extends AbstractController {
+		
+		public static const TYPE:String = "RendererController";
+		
+		public function RendererController(orderIndex:int = 0) {
+			super(orderIndex);
+		}
+		
 		/**
 		 * This usually returns the Class of the renderer. For Sequential Layout mechanism the method
 		 * MUST return the Class of the renderer as key.
 		 */
-		function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object;
-		function createRenderer(context:DiagramShellContext, model:Object):IVisualElement;
-		function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void;
-		function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void;
+		public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function createRenderer(context:DiagramShellContext, model:Object):IVisualElement {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
+			throw new Error("This method needs to be implemented.");
+		}
+		
 	}
 }

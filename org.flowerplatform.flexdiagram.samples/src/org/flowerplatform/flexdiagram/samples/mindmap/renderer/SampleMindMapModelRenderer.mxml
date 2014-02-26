@@ -26,7 +26,7 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 				
 				xmlns:model="org.flowerplatform.flexdiagram.samples.mindmap.model.*"
-				implements="org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"
+				implements="org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware"
 				creationComplete="creationCompleteHandler(event)" initialize="initializeHandler(event)"
 				paddingTop="2" paddingBottom="2" paddingLeft="2" paddingRight="2"
 				verticalAlign="middle">
@@ -38,24 +38,24 @@
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			
+			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-			import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
-			import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelController;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 
 			private static const circleRadius:int = 3;
 								
-			private var _diagramShell:DiagramShell;
+			protected var _context:DiagramShellContext;
 			
-			public function get diagramShell():DiagramShell {
-				return _diagramShell;
+			public function get diagramShellContext():DiagramShellContext {			
+				return _context;
 			}
 			
-			public function set diagramShell(value:DiagramShell):void {
-				_diagramShell = value;
-			}
+			public function set diagramShellContext(value:DiagramShellContext):void {
+				this._context = value;
+			}	
 			
 			private function get node():SampleMindMapModel {
 				return SampleMindMapModel(data);
@@ -96,7 +96,7 @@
 					case "expanded":	
 					case "hasChildren":	
 						invalidateDisplayList();			
-						var selectionRenderer:UIComponent = UIComponent(DynamicModelExtraInfoController(diagramShell.getControllerProvider(data).getModelExtraInfoController(data)).getDynamicObject(diagramShell.context, data).selectionRenderer);
+						var selectionRenderer:UIComponent = UIComponent(DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(diagramShellContext, data)).getDynamicObject(diagramShellContext, data).selectionRenderer);
 						if (selectionRenderer != null) {
 							selectionRenderer.invalidateDisplayList();
 						}
@@ -122,16 +122,16 @@
 			}
 							
 			private function getDynamicObject(model:Object):Object {
-				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(diagramShell.context, model);
+				return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(diagramShellContext, model)).getDynamicObject(diagramShellContext, model);
 			}
 									
 			private function resizeHandler(value:Number):void {
 				if (data != null) {
 					getDynamicObject(node).width = this.width;
 					getDynamicObject(node).height = this.height;
-					var parent:Object = diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(diagramShell.context, node);
+					var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, node).getParent(diagramShellContext, node);
 					if (parent is SampleMindMapModel) {						
-						MindMapDiagramShell(diagramShell).refreshModelPositions(parent);	
+						MindMapDiagramShell(diagramShellContext.diagramShell).refreshModelPositions(diagramShellContext, parent);	
 					}
 				}
 			}

@@ -19,18 +19,18 @@
 package org.flowerplatform.flexdiagram.tool {
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.renderer.selection.AnchorsSelectionRenderer;
-	import org.flowerplatform.flexdiagram.tool.controller.IDragToCreateRelationController;
+	import org.flowerplatform.flexdiagram.tool.controller.DragToCreateRelationController;
 	import org.flowerplatform.flexdiagram.ui.RelationAnchor;
 	
 	/**
@@ -53,16 +53,17 @@ package org.flowerplatform.flexdiagram.tool {
 		override public function activateAsMainTool():void {			
 			var relationAnchor:RelationAnchor = getRelationAnchorFromDisplayCoordinates();			
 			context.model = AnchorsSelectionRenderer(relationAnchor.parent).model;
+			context.shellContext = diagramShell.getNewDiagramShellContext();
 			
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			
-			var controller:IDragToCreateRelationController = diagramShell.getControllerProvider(context.model).getDragToCreateRelationController(context.model);
+			var controller:DragToCreateRelationController = ControllerUtils.getDragToCreateRelationController(context.shellContext, context.model);
 			if (controller == null) {
 				diagramShell.mainToolFinishedItsJob();
 				return;
 			}
-			controller.activate(new DiagramShellContext(diagramShell), context.model);
+			controller.activate(context.shellContext, context.model);
 			
 			super.activateAsMainTool();
 		}
@@ -71,11 +72,12 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			
-			var controller:IDragToCreateRelationController = diagramShell.getControllerProvider(context.model).getDragToCreateRelationController(context.model);
+			var controller:DragToCreateRelationController = ControllerUtils.getDragToCreateRelationController(context.shellContext, context.model);
 			if (controller != null) {
-				controller.deactivate(new DiagramShellContext(diagramShell), context.model);
+				controller.deactivate(context.shellContext, context.model);
 			}
 			delete context.model;
+			delete context.shellContext;
 			
 			super.deactivateAsMainTool();
 		}
@@ -90,8 +92,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var deltaX:int = mousePoint.x;
 				var deltaY:int = mousePoint.y;
 				
-				diagramShell.getControllerProvider(context.model).
-					getDragToCreateRelationController(context.model).drag(new DiagramShellContext(diagramShell), context.model, deltaX, deltaY);
+				ControllerUtils.getDragToCreateRelationController(context.shellContext, context.model).drag(context.shellContext, context.model, deltaX, deltaY);
 			} else {
 				mouseUpHandler();
 			}
@@ -102,12 +103,11 @@ package org.flowerplatform.flexdiagram.tool {
 				// don't do nothing, tool waits to be deactivated
 				return;
 			}
-			var controller:IDragToCreateRelationController = diagramShell.getControllerProvider(context.model).
-				getDragToCreateRelationController(context.model);
+			var controller:DragToCreateRelationController = ControllerUtils.getDragToCreateRelationController(context.shellContext, context.model);
 			if (controller) {
 				var renderer:IVisualElement = getRendererFromDisplayCoordinates(true);
-				var model:Object = getModelWithDragToCreateRelationController(renderer);				
-				controller.drop(new DiagramShellContext(diagramShell), context.model, model);
+				var model:Object = getModelWithDragToCreateRelationController(renderer);			
+				controller.drop(context.shellContext, context.model, model);
 			}
 		}
 		
@@ -150,7 +150,7 @@ package org.flowerplatform.flexdiagram.tool {
 				if (renderer is DiagramRenderer) {
 					return model;
 				}				
-				if (diagramShell.getControllerProvider(model).getDragToCreateRelationController(model) != null) {
+				if (ControllerUtils.getDragToCreateRelationController(context.shellContext, model) != null) {
 					return model;
 				}				
 			}	

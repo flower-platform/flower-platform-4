@@ -18,17 +18,15 @@
  */
 package org.flowerplatform.flexdiagram.samples.controller {
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.samples.model.BasicModel;
-	import org.flowerplatform.flexdiagram.tool.controller.IResizeController;
+	import org.flowerplatform.flexdiagram.tool.controller.ResizeController;
 	import org.flowerplatform.flexdiagram.ui.MoveResizePlaceHolder;
 	import org.flowerplatform.flexdiagram.ui.ResizeAnchor;
 	
-	public class BasicModelResizeController extends ControllerBase implements IResizeController {
+	public class BasicModelResizeController extends ResizeController {
 		
-		public function activate(context:DiagramShellContext, model:Object):void {
+		override public function activate(context:DiagramShellContext, model:Object):void {
 			var resizePlaceHolder:MoveResizePlaceHolder = new MoveResizePlaceHolder();
 			resizePlaceHolder.x = BasicModel(model).x;
 			resizePlaceHolder.y = BasicModel(model).y;
@@ -44,7 +42,7 @@ package org.flowerplatform.flexdiagram.samples.controller {
 			context.diagramShell.modelToExtraInfoMap[model].initialHeight = resizePlaceHolder.height;
 		}
 			
-		public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number, type:String):void {	
+		override public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number, type:String):void {	
 			var resizePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
 			
 			var newX:int = resizePlaceHolder.x, newY:int = resizePlaceHolder.y;
@@ -111,7 +109,7 @@ package org.flowerplatform.flexdiagram.samples.controller {
 			resizePlaceHolder.height = newHeight;
 		}
 		
-		public function drop(context:DiagramShellContext, model:Object):void {	
+		override public function drop(context:DiagramShellContext, model:Object):void {	
 			var resizePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
 			
 			BasicModel(model).x = resizePlaceHolder.x;
@@ -120,7 +118,7 @@ package org.flowerplatform.flexdiagram.samples.controller {
 			BasicModel(model).height = resizePlaceHolder.height;
 		}
 		
-		public function deactivate(context:DiagramShellContext, model:Object):void {
+		override public function deactivate(context:DiagramShellContext, model:Object):void {
 			context.diagramShell.diagramRenderer.removeElement(context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder);			
 			delete context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
 			

@@ -21,25 +21,20 @@ package org.flowerplatform.flexdiagram.samples.controller
 	import flash.display.DisplayObject;
 	import flash.geom.Rectangle;
 	
-	import mx.core.IDataRenderer;
-	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
-	import org.flowerplatform.flexdiagram.tool.controller.IInplaceEditorController;
+	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
 	
 	import spark.components.TextInput;
-	import spark.components.supportClasses.StyleableTextField;
 	
-	public class BasicSubModelInplaceEditorController extends ControllerBase implements IInplaceEditorController {
+	public class BasicSubModelInplaceEditorController extends InplaceEditorController {
 		
-		public function canActivate(context:DiagramShellContext, model:Object):Boolean	{		
+		override public function canActivate(context:DiagramShellContext, model:Object):Boolean	{		
 			return true;
 		}
 		
-		public function activate(context:DiagramShellContext, model:Object):void {
-			var renderer:DisplayObject = DisplayObject(context.diagramShell.getRendererForModel(model));
+		override public function activate(context:DiagramShellContext, model:Object):void {
+			var renderer:DisplayObject = DisplayObject(context.diagramShell.getRendererForModel(context, model));
 			var textField:TextInput = new TextInput();
 						
 			context.diagramShell.diagramRenderer.addElement(textField);
@@ -55,19 +50,19 @@ package org.flowerplatform.flexdiagram.samples.controller
 			context.diagramShell.modelToExtraInfoMap[model].inplaceEditor = textField;
 		}
 		
-		public function commit(context:DiagramShellContext, model:Object):void {		
+		override public function commit(context:DiagramShellContext, model:Object):void {		
 			var textField:TextInput = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			BasicSubModel(model).name = textField.text;
 			
 			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
-		public function abort(context:DiagramShellContext, model:Object):void {
+		override public function abort(context:DiagramShellContext, model:Object):void {
 			// here can be placed a warning
 			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
-		public function deactivate(context:DiagramShellContext, model:Object):void {
+		override public function deactivate(context:DiagramShellContext, model:Object):void {
 			var textField:TextInput = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			context.diagramShell.diagramRenderer.removeElement(textField);
 			

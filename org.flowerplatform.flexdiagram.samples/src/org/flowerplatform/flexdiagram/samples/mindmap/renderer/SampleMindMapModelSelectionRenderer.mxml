@@ -29,14 +29,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.core.IVisualElement;
 			import mx.events.MoveEvent;
 			import mx.events.ResizeEvent;
 			
-			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-			import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 			
 			import spark.primitives.Ellipse;
@@ -46,8 +45,8 @@
 			
 			public var padding:int = 3;
 			
-			override public function activate(model:Object):void {
-				super.activate(model);			
+			override public function activate(context:DiagramShellContext, model:Object):void {
+				super.activate(context, model);			
 					
 				DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
 				DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize);			
@@ -61,16 +60,16 @@
 			 * and also when we don't want the anchors shown.
 			 * 
 			 */
-			override public function deactivate(model:Object):void {
+			override public function deactivate(context:DiagramShellContext, model:Object):void {
 				try {
-					diagramShell.diagramRenderer.removeElement(circle);
+					context.diagramShell.diagramRenderer.removeElement(circle);
 				} catch (e:ArgumentError) {					
 				}				
 							
 				// remove resize listeners				
 				DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);			
 				DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);			
-				super.deactivate(model);
+				super.deactivate(context, model);
 			}
 	
 			protected function handleTargetMoveResize(event:Event):void {
@@ -82,12 +81,12 @@
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
 				if (node.hasChildren && 
-					diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(diagramShell.context, node) is SampleMindMapModel) {	
+					ControllerUtils.getModelChildrenController(context, node).getParent(context, node) is SampleMindMapModel) {	
 					vLine.visible = !node.expanded;
-					diagramShell.diagramRenderer.addElement(circle);
+					context.diagramShell.diagramRenderer.addElement(circle);
 				} else if (!node.hasChildren) {
 					if (circle.parent != null) {
-						diagramShell.diagramRenderer.removeElement(circle);
+						context.diagramShell.diagramRenderer.removeElement(circle);
 					}					
 				}
 							
@@ -105,7 +104,7 @@
 			}
 			
 			protected function circle_mouseClickHandler(event:MouseEvent):void {
-				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(diagramShell.context, node, !node.expanded);
+				ControllerUtils.getMindMapModelController(context, node).setExpanded(context, node, !node.expanded);
 				
 				vLine.visible = !node.expanded;
 	
@@ -123,7 +122,7 @@
 			}
 			
 			private function getDynamicObject(model:Object):Object {
-				return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(diagramShell.context, model);
+				return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model)).getDynamicObject(context, model);
 			}
 					
 		]]>

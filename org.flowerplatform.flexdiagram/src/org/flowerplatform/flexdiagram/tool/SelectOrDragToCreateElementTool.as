@@ -21,6 +21,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
@@ -65,13 +66,13 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);	
 			
-			diagramShell.getControllerProvider(diagramShell.rootModel).
-				getSelectOrDragToCreateElementController(diagramShell.rootModel).deactivate(new DiagramShellContext(diagramShell), diagramShell.rootModel);
+			ControllerUtils.getSelectOrDragToCreateElementController(context.shellContext, diagramShell.rootModel).deactivate(context.shellContext, diagramShell.rootModel);
 			
 			delete context.wakedUp;
 			delete context.initialMousePoint;			
 			delete context.ctrlPressed;
 			delete context.shiftPressed;
+			delete context.shellContext;
 			
 			super.deactivateAsMainTool();
 		}		
@@ -81,9 +82,9 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 				
 			context.initialMousePoint = globalToDiagram(Math.ceil(diagramRenderer.stage.mouseX), Math.ceil(diagramRenderer.stage.mouseY));			
-											
-			diagramShell.getControllerProvider(diagramShell.rootModel).
-				getSelectOrDragToCreateElementController(diagramShell.rootModel).activate(new DiagramShellContext(diagramShell), diagramShell.rootModel, context.initialMousePoint.x, context.initialMousePoint.y, getMode());
+			context.shellContext = diagramShell.getNewDiagramShellContext();
+			
+			ControllerUtils.getSelectOrDragToCreateElementController(context.shellContext, diagramShell.rootModel).activate(context.shellContext, diagramShell.rootModel, context.initialMousePoint.x, context.initialMousePoint.y, getMode());
 		}
 		
 		private function mouseMoveHandler(event:MouseEvent):void {	
@@ -96,8 +97,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var deltaX:int = mousePoint.x - context.initialMousePoint.x;
 				var deltaY:int = mousePoint.y - context.initialMousePoint.y;
 				
-				diagramShell.getControllerProvider(diagramShell.rootModel).
-					getSelectOrDragToCreateElementController(diagramShell.rootModel).drag(new DiagramShellContext(diagramShell), diagramShell.rootModel, deltaX, deltaY);				
+				ControllerUtils.getSelectOrDragToCreateElementController(context.shellContext, diagramShell.rootModel).drag(context.shellContext, diagramShell.rootModel, deltaX, deltaY);				
 			} else {				
 				diagramShell.mainToolFinishedItsJob();
 			}
@@ -108,8 +108,7 @@ package org.flowerplatform.flexdiagram.tool {
 				// don't do nothing, tool waits to be deactivated
 				return;
 			}
-			diagramShell.getControllerProvider(diagramShell.rootModel).
-				getSelectOrDragToCreateElementController(diagramShell.rootModel).drop(new DiagramShellContext(diagramShell), diagramShell.rootModel);
+			ControllerUtils.getSelectOrDragToCreateElementController(context.shellContext, diagramShell.rootModel).drop(context.shellContext, diagramShell.rootModel);
 		}
 		
 		private function getMode():String {

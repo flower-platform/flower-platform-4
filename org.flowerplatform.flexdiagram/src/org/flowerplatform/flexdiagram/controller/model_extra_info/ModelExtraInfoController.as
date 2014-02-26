@@ -20,13 +20,27 @@ package org.flowerplatform.flexdiagram.controller.model_extra_info {
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 
 	/**
 	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
-	public interface IModelExtraInfoController {
-		function getRenderer(context:DiagramShellContext, extraInfo:Object):IVisualElement;
-		function setRenderer(context:DiagramShellContext, model:Object, extraInfo:Object, renderer:IVisualElement):void;
-		function createExtraInfo(context:DiagramShellContext, model:Object):Object;		
+	public class ModelExtraInfoController extends AbstractController {
+		
+		public static const TYPE:String = "ModelExtraInfoController";
+		
+		public function getRenderer(context:DiagramShellContext, extraInfo:Object):IVisualElement {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function setRenderer(context:DiagramShellContext, model:Object, extraInfo:Object, renderer:IVisualElement):void {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function createExtraInfo(context:DiagramShellContext, model:Object):Object {
+			throw new Error("This method needs to be implemented.");
+		}
+		
 	}
 }

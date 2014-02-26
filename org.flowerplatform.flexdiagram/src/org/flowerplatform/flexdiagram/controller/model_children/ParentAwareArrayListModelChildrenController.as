@@ -17,15 +17,12 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.model_children {
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.PropertyChangeEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	
 	/**
@@ -35,20 +32,22 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 	 * in <code>stopTrackUpdates()</code>. 
 	 * 
 	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
-	public class ParentAwareArrayListModelChildrenController extends ControllerBase implements IModelChildrenController {
+	public class ParentAwareArrayListModelChildrenController extends ModelChildrenController {
 		
 		protected var shouldListenForRemovedElements:Boolean;
 		
-		public function ParentAwareArrayListModelChildrenController(shouldListenForRemovedElements:Boolean) {			
+		public function ParentAwareArrayListModelChildrenController(shouldListenForRemovedElements:Boolean, orderIndex:int = 0) {
+			super(orderIndex);
 			this.shouldListenForRemovedElements = shouldListenForRemovedElements;
 		}
 		
-		public function getParent(context:DiagramShellContext, model:Object):Object {
+		override public function getParent(context:DiagramShellContext, model:Object):Object {
 			return getParentAwareArrayList(model).parent;
 		}
 		
-		public function getChildren(context:DiagramShellContext, model:Object):IList {
+		override public function getChildren(context:DiagramShellContext, model:Object):IList {
 			return getParentAwareArrayList(model);
 		}
 		
@@ -56,11 +55,11 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 			return ParentAwareArrayList(model);
 		}
 		
-		public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
+		override public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
 			getParentAwareArrayList(model).addEventListener(CollectionEvent.COLLECTION_CHANGE, function (event:CollectionEvent):void {collectionChangeHandler(event, context)}); 	
 		}
 		
-		public function endListeningForChanges(context:DiagramShellContext, model:Object):void {
+		override public function endListeningForChanges(context:DiagramShellContext, model:Object):void {
 			getParentAwareArrayList(model).removeEventListener(CollectionEvent.COLLECTION_CHANGE, function (event:CollectionEvent):void {collectionChangeHandler(event, context)});
 		}
 		
@@ -70,7 +69,7 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 			if (event.kind != CollectionEventKind.UPDATE) {
 				// we don't want "UPDATE" because it's actually a property change event
 				// of a child
-				context.diagramShell.shouldRefreshVisualChildren(parentModel);
+				context.diagramShell.shouldRefreshVisualChildren(context, parentModel);
 			}
 			
 			if (shouldListenForRemovedElements) {
@@ -81,7 +80,7 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 					removedElement = PropertyChangeEvent(event.items[0]).oldValue;
 				}
 				if (removedElement != null) {
-					context.diagramShell.unassociateModelFromRenderer(removedElement, context.diagramShell.getRendererForModel(removedElement), true);
+					context.diagramShell.unassociateModelFromRenderer(context, removedElement, context.diagramShell.getRendererForModel(context, removedElement), true);
 				}
 			}
 		}

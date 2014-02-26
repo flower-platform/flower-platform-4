@@ -19,6 +19,8 @@
     <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.MindMapConnector"/>
     <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicConnectionRendererController"/>
     <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicSubModelChildrenProvider"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicTypeProvider"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

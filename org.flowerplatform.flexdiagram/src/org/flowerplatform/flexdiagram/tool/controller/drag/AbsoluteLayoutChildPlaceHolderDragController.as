@@ -19,6 +19,7 @@
 package org.flowerplatform.flexdiagram.tool.controller.drag {
 	import flash.geom.Rectangle;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
@@ -28,7 +29,7 @@ package org.flowerplatform.flexdiagram.tool.controller.drag {
 	public class AbsoluteLayoutChildPlaceHolderDragController extends AbstractPlaceHolderDragController {
 
 		override protected function getInitialBounds(context:DiagramShellContext, model:Object):Rectangle {
-			return context.diagramShell.getControllerProvider(model).getAbsoluteLayoutRectangleController(model).getBounds(context, model);
+			return ControllerUtils.getAbsoluteLayoutRectangleController(context, model).getBounds(context, model);
 		}
 		
 	}

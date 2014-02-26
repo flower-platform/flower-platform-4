@@ -19,19 +19,16 @@
 package org.flowerplatform.flexdiagram.controller.model_extra_info {
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.IModelExtraInfoController;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
-	public class DynamicModelExtraInfoController extends ControllerBase implements IModelExtraInfoController {
+	public class DynamicModelExtraInfoController extends ModelExtraInfoController {
 	
 		protected static const NO_RENDERER_ASSOCIATED_MARKER:Object = new Object();
 				
-		public function getRenderer(context:DiagramShellContext, extraInfo:Object):IVisualElement {
+		override public function getRenderer(context:DiagramShellContext, extraInfo:Object):IVisualElement {
 			if (extraInfo == null || extraInfo.renderer == NO_RENDERER_ASSOCIATED_MARKER) {
 				return null;
 			} else {
@@ -39,7 +36,7 @@ package org.flowerplatform.flexdiagram.controller.model_extra_info {
 			}
 		}
 		
-		public function setRenderer(context:DiagramShellContext, model:Object, extraInfo:Object, renderer:IVisualElement):void {
+		override public function setRenderer(context:DiagramShellContext, model:Object, extraInfo:Object, renderer:IVisualElement):void {
 			if (renderer == null) {
 				getDynamicObject(context, model).renderer = NO_RENDERER_ASSOCIATED_MARKER;	
 			} else {
@@ -47,13 +44,13 @@ package org.flowerplatform.flexdiagram.controller.model_extra_info {
 			}
 		}
 		
-		public function createExtraInfo(context:DiagramShellContext, model:Object):Object {
+		override public function createExtraInfo(context:DiagramShellContext, model:Object):Object {
 			return new Object();
 		}	
 		
 		public function getDynamicObject(context:DiagramShellContext, model:Object):Object {
 			if (context.diagramShell.modelToExtraInfoMap[model] == null) {
-				context.diagramShell.addInModelMapIfNecesssary(model, context.diagramShell.getControllerProvider(model));
+				context.diagramShell.addInModelMapIfNecesssary(context, model);
 			}
 			return context.diagramShell.modelToExtraInfoMap[model];
 		}

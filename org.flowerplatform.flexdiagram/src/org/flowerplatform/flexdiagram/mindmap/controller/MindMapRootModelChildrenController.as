@@ -19,30 +19,32 @@
 package org.flowerplatform.flexdiagram.mindmap.controller {
 	import mx.collections.IList;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
+	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapRootModelChildrenController extends ControllerBase implements IModelChildrenController {
+	public class MindMapRootModelChildrenController extends ModelChildrenController {
 		
-		public function getParent(context:DiagramShellContext, model:Object):Object {
+		public function MindMapRootModelChildrenController(orderIndex:int = 0) {
+			super(orderIndex);
+		}
+		
+		override public function getParent(context:DiagramShellContext, model:Object):Object {
 			return null;
 		}
 		
-		public function getChildren(context:DiagramShellContext, model:Object):IList {
+		override public function getChildren(context:DiagramShellContext, model:Object):IList {
 			// the rootModel keeps all diagram's children in its dynamic object	
-			return MindMapDiagramShell(context.diagramShell).getDynamicObject(context.diagramShell.rootModel).children;
+			return context.diagramShell.getDynamicObject(context, context.diagramShell.rootModel).children;
 		}
 		
-		public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
+		override public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
 		}
 		
-		public function endListeningForChanges(context:DiagramShellContext, model:Object):void {	
+		override public function endListeningForChanges(context:DiagramShellContext, model:Object):void {	
 		}
 		
 	}
