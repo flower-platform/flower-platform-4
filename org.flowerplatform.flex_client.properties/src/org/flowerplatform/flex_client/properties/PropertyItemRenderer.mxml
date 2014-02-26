@@ -41,11 +41,8 @@
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
 
 
-			
+				this.label = data.name;
 				
-				// set title as text if exists, otherwise set the name
-				// propertyName.text = propertyDescriptor.title == null ? propertyDescriptor.name : propertyDescriptor.title;
-							
 				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);			
 					
 				if (itemRenderedInstance != null && itemRenderedInstance is factory.generator) {

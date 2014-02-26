@@ -29,14 +29,11 @@
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-			
 			protected var _viewHost:IViewHost;
 			
 			protected var propertiesLength:int;
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
-//				propertyList.itemRenderer = new ClassFactory(PropertyItemRenderer);
-//				propertyList.dataProvider = new ArrayList();
 //				// get selection from active provider to populate properties list with data
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				if (activeSelectionProvider != null) {
@@ -70,21 +67,6 @@
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				var node:Node;
 				
-				// if previous data in properties -> remove update listener from previous node
-//				if (PropertiesPlugin.getInstance().currentSelection != null) {
-//					node = Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0));
-//					node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
-//				}
-//							
-//				// if diagram is the new selected element -> clear data in properties
-//				// for event.selection == null, see SelectionManager -> dispatchEvent(SelectionChangedEvent), line 116 -> active view changed, but its selection isn't populated yet
-//				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).id == null) {
-//					icon.source = null;
-//					label.text = null;
-//					IList(propertyList.dataProvider).removeAll();
-//					return;
-//				}			
-				
 				// get new selected node
 				node = Node(event.selection.getItemAt(0));
 				
@@ -101,13 +83,10 @@
 							propertyForm.addElement(formItem);
 						}
 							
-							
-						// properties available -> add them in list
-//						propertyList.dataProvider = ArrayCollection(result);		
 						// get their values from node
 						nodeUpdatedHandler(new NodeUpdatedEvent(node));
 						
-						label.text = node.properties[NodePropertiesConstants.TEXT];
+						label.text = node == null? null :node.properties[NodePropertiesConstants.TEXT];
 						
 						// store new selection and listen for node upates
 						PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
@@ -119,18 +98,6 @@
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
 				var node:Node = event.node;
 				
-//				var properties:ArrayCollection = ArrayCollection(propertyList.dataProvider);
-//				for each (var property:PropertyDescriptor in properties) {
-//					if (node.properties != null) {
-//						if (node.properties.hasOwnProperty(property.name)) {
-//							if (property.value != node.properties[property.name]) { // change value only if different
-//								property.value = node.properties[property.name];
-//							}
-//						} else {
-//							property.value = null;
-//						}
-//					}						
-//				}
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
@@ -143,8 +110,6 @@
 								} else if (propertyItemRenderer.itemRenderedInstance is BooleanPropertyRenderer) {
 									BooleanPropertyRenderer(propertyItemRenderer.getElementAt(0)).checkBox.selected = node.properties[propertyItemRenderer.label];
 								}
-//								(PropertyItemRenderer(formItem)).getElementAt(0) = node.properties[formItem.label];		
-//								TextInput(formItem.getElementAt(0)).text = node.properties[formItem.label];
 							}
 						}
 					}
@@ -161,14 +126,8 @@
 	
 	<s:Scroller width="100%" height="100%">
 		<s:Group width="100%" height="100%">
-			<!--<s:BorderContainer borderVisible="false">-->
-				<s:Form id="propertyForm" width="100%" height="100%">
-				</s:Form>
-			<!--</s:BorderContainer>-->
+			<s:Form id="propertyForm" width="100%" height="100%">
+			</s:Form>
 		</s:Group>
 	</s:Scroller>
-		
-	<!--<s:List id="propertyList" width="100%" height="100%">
-
-	</s:List>-->
 </s:Group>
