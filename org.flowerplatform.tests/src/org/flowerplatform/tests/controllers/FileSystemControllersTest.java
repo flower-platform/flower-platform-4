@@ -28,10 +28,11 @@ import org.flowerplatform.core.file.FilePropertySetter;
 import org.flowerplatform.core.file.FileRemoveNodeController;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
-import org.flowerplatform.util.type_descriptor.TypeDescriptor;
-import org.flowerplatform.util.type_descriptor.TypeDescriptorRegistry;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,15 +65,17 @@ public class FileSystemControllersTest {
 		
 		TypeDescriptorRegistry descriptorRegistry = new TypeDescriptorRegistry();
 		nodeService = new NodeService(descriptorRegistry);
+		when(mockCorePlugin.getNodeService()).thenReturn(nodeService);
 		
+		when(mockCorePlugin.getNodeTypeDescriptorRegistry()).thenReturn(descriptorRegistry);
 		TypeDescriptor fileNodeTypeDescriptor = descriptorRegistry
-								.getOrCreateNodeTypeDescriptor("fileNode");
+								.getOrCreateTypeDescriptor("fileNode");
 		
-		fileNodeTypeDescriptor.addControllerToList(CHILDREN_PROVIDER, new FileChildrenProvider());
-		fileNodeTypeDescriptor.addControllerToList(PROPERTIES_PROVIDER, new FilePropertiesProvider());
-		fileNodeTypeDescriptor.addControllerToList(ADD_NODE_CONTROLLER, new FileAddNodeController());
-		fileNodeTypeDescriptor.addControllerToList(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
-		fileNodeTypeDescriptor.addControllerToList(PROPERTY_SETTER, new FilePropertySetter());
+		fileNodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new FileChildrenProvider());
+		fileNodeTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FilePropertiesProvider());
+		fileNodeTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FileAddNodeController());
+		fileNodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
+		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_SETTER, new FilePropertySetter());
 	}
 	
 	@Before
@@ -92,56 +95,64 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void testGetChildren() {
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode), false), Arrays.asList(
-								new Node("fileNode", null, fileSystemNode + "\\1"),
-								new Node("fileNode", null, fileSystemNode + "\\A"),
-								new Node("fileNode", null, fileSystemNode + "\\B")));
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode, null), false), Arrays.asList(
+								new Node("fileNode", null, fileSystemNode + "\\1", null),
+								new Node("fileNode", null, fileSystemNode + "\\A", null),
+								new Node("fileNode", null, fileSystemNode + "\\B", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A"), false), Arrays.asList(
-								new Node("fileNode", null, fileSystemNode + "\\A\\file1"),
-								new Node("fileNode", null, fileSystemNode + "\\A\\Folder1"),
-								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2")));
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A", null), false), Arrays.asList(
+								new Node("fileNode", null, fileSystemNode + "\\A\\file1", null),
+								new Node("fileNode", null, fileSystemNode + "\\A\\Folder1", null),
+								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder1"), false), Arrays.asList(
-								new Node("fileNode", null, fileSystemNode + "\\A\\Folder1\\oneFile")));
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder1", null), false), Arrays.asList(
+								new Node("fileNode", null, fileSystemNode + "\\A\\Folder1\\oneFile", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2"), false), Arrays.asList(
-								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder")));
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), false), Arrays.asList(
+								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder"), false),
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null), false),
 								Arrays.asList());
 	}
 	
 	@Test
 	public void addChild() {
+		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 		//add file
 		HashMap<String, Object> fileProperties = new HashMap<String, Object>();
-		fileProperties.put("body", "newFile");
+		fileProperties.put("type", CorePlugin.FILE_NODE_TYPE);
+		fileProperties.put("text", "newFile");
 		fileProperties.put("isDirectory", false);
+		
+		String fullNodeId = new Node("fileNode", null, fileSystemNode + "\\A\\Folder1", null).getFullNodeId();
 	        
-		nodeService.addChild(new Node("fileNode", null, fileSystemNode + "\\A\\Folder1"),
-							 new Node("fileNode", null, null, fileProperties));
+		nodeServiceRemote.addChild(fullNodeId, fileProperties, null);
+							 
 		Object newFile;
 		try {
 			newFile = fileAccessController.getFile(fileSystemNode + "\\A\\Folder1\\newFile");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		// test if the needed file was created on disk
 		assertEquals(fileAccessController.exists(newFile), true);
 		assertEquals(fileAccessController.isDirectory(newFile), false);
 		
 		//add folder
 		HashMap<String, Object> folderProperties = new HashMap<String, Object>();
-		folderProperties.put("body", "newFolder");
+		folderProperties.put("type", CorePlugin.FILE_NODE_TYPE);
+		folderProperties.put("text", "newFolder");
 		folderProperties.put("isDirectory", true);
-		nodeService.addChild(new Node("fileNode",null , fileSystemNode + "\\A\\Folder1"),
-				 			 new Node("fileNode", null, null, folderProperties));
+		
+		fullNodeId = new Node("fileNode",null , fileSystemNode + "\\A\\Folder1", null).getFullNodeId();
+		nodeServiceRemote.addChild(fullNodeId, folderProperties, null);
 		Object newFolder;
 		try {
 			newFolder = fileAccessController.getFile(fileSystemNode + "\\A\\Folder1\\newFolder");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		// test if the needed directory was created on disk
 		assertEquals(fileAccessController.exists(newFolder), true);
 		assertEquals(fileAccessController.isDirectory(newFolder), true);
 	}
@@ -149,11 +160,18 @@ public class FileSystemControllersTest {
 	@Test
 	public void removeNode() {
 		//delete oneFolder
-		nodeService.removeChild(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2"), 
-								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder"));
+		nodeService.removeChild(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), 
+								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2"), false), 
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), false), 
 								Arrays.asList());
+		Object newFolder;
+		try {
+			newFolder = fileAccessController.getFile(fileSystemNode + "\\A\\Folder2\\oneFolder");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		assertEquals(fileAccessController.exists(newFolder), false);
 	}
 
 	public void copyDirectory(File srcPath, File dstPath) throws IOException {
