@@ -67,6 +67,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 		if (useFilesFromTempProperty) {
 			mapKey = requestedFile.intern();
 		} else {
+			// we don't need synchronization if useFilesFromTempProperty is false (so we don't use .intern)
 			mapKey = requestedFile;
 		}
 		

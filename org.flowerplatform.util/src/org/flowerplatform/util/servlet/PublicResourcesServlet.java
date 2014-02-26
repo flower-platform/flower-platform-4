@@ -158,10 +158,13 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		
 		// if the file is in a zip, search first in the Temp folder
 		if (fileInsideZipArchive != null) {
-			mapKey = creteMapKey(file, fileInsideZipArchive).intern();
-			mapValue = tempFilesMap.get(mapKey);
+			mapKey = createMapKey(file, fileInsideZipArchive).intern();
+			if (useFilesFromTempProperty) {
+				mapValue = tempFilesMap.get(mapKey);
+			}
 		} else {
-			mapKey = creteMapKey(file, fileInsideZipArchive);
+			// we don't need synchronization if the file is not inside archive (so we don't use .intern)
+			mapKey = createMapKey(file, fileInsideZipArchive);
 		}
 		
 		synchronized (mapKey) {
@@ -242,12 +245,12 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	            	input = pair.a;
 	            	inputCloseable = pair.b;
 	            	
-	            	// write the file from archive in Temp folder
-					if (!TEMP_FOLDER.exists()) {
-						TEMP_FOLDER.mkdir();
-					}
-					
 					if (useFilesFromTempProperty) {
+						// write the file from archive in Temp folder
+						if (!TEMP_FOLDER.exists()) {
+							TEMP_FOLDER.mkdir();
+						}
+						
 						Files.copy(input, getTempFile(mapValue).toPath(), StandardCopyOption.REPLACE_EXISTING);
 						logger.debug("file '{}' was writen in temp", mapValue);
 						
@@ -273,7 +276,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	/**
 	* @author Sebastian Solomon
 	*/
-	private String creteMapKey(String fileName, String fileInsideZipArchive) {
+	private String createMapKey(String fileName, String fileInsideZipArchive) {
     	return fileName + SEPARATOR + fileInsideZipArchive;
     }
 	

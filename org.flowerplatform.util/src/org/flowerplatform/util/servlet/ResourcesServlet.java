@@ -43,21 +43,7 @@ public abstract class ResourcesServlet extends HttpServlet {
 	/**
 	* @author Sebastian Solomon
 	*/
-	protected String searchInTemp(String requestedFile) {
-		if (!useFilesFromTempProperty) {
-			return null;
-		}
-		File file = new File(TEMP_FOLDER , requestedFile);
-		return file.exists() ? file.getAbsolutePath() : null;
-	}
-	
-	/**
-	* @author Sebastian Solomon
-	*/
 	protected String getTempFilePath(String tempFileName) {
-		if (!useFilesFromTempProperty) {
-			return null;
-		}
 		return TEMP_FOLDER + "\\" + tempFileName; 
 	}
 	
@@ -65,9 +51,6 @@ public abstract class ResourcesServlet extends HttpServlet {
 	* @author Sebastian Solomon
 	*/
 	protected File getTempFile(String tempFileName) {
-		if (!useFilesFromTempProperty) {
-			return null;
-		}
 		return new File(TEMP_FOLDER, tempFileName); 
 	}
 }
