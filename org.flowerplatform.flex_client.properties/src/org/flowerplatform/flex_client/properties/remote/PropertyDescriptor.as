@@ -35,6 +35,11 @@ package org.flowerplatform.flex_client.properties.remote {
 		public var readOnly:Boolean;
 		
 		public var type:String;
+
+	    /**
+	     * @author Sebastian Solomon
+	     */
+		public var category:String;
 		
 	}
 }

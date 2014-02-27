@@ -2,6 +2,7 @@
 <s:FormItem xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   fontWeight="normal"
 				   implements="mx.core.IDataRenderer, mx.managers.IFocusManagerComponent">
 	<fx:Script>
 		<![CDATA[
@@ -39,7 +40,6 @@
 					return;
 				}
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
-
 
 				this.label = data.name;
 				

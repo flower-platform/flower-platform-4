@@ -21,6 +21,7 @@
 			import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.remote.CategoryItem;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -77,8 +78,17 @@
 					"nodeService.getPropertyDescriptors", [node.fullNodeId], 
 					function(result:Object):void {
 						propertiesLength = ArrayCollection(result).length;
-						for ( var x:int = 0; x < ArrayCollection(result).length; ++x ) {
+						var curentCategory:String;
+						for ( var x:int = 0; x < propertiesLength; ++x ) {
 							var formItem:PropertyItemRenderer = new PropertyItemRenderer();
+							if (result.getItemAt(x)["category"] != curentCategory) {
+								var categoryItem:CategoryItem = new CategoryItem();
+								
+								curentCategory = result.getItemAt(x)["category"];
+								categoryItem.label = curentCategory;
+								propertyForm.addElement(categoryItem);
+							}
+							
 							formItem.data = ArrayCollection(result).getItemAt(x);
 							propertyForm.addElement(formItem);
 						}
@@ -86,7 +96,7 @@
 						// get their values from node
 						nodeUpdatedHandler(new NodeUpdatedEvent(node));
 						
-						label.text = node == null? null :node.properties[NodePropertiesConstants.TEXT];
+						label.text = (node.properties == null)? null :node.properties[NodePropertiesConstants.TEXT];
 						
 						// store new selection and listen for node upates
 						PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());

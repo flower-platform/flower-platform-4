@@ -45,8 +45,9 @@ public abstract class ResourcesServlet extends HttpServlet {
 	* @author Sebastian Solomon
 	*/
 	protected String searchInTemp(String requestedFile) {
-		File file = new File(TEMP_FOLDER , requestedFile);
-		return file.exists() ? file.getAbsolutePath() : null;
+		return null;
+//		File file = new File(TEMP_FOLDER , requestedFile);
+//		return file.exists() ? file.getAbsolutePath() : null;
 	}
 	
 }
