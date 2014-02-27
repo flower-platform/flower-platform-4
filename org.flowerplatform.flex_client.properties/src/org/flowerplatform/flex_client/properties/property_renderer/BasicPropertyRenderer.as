@@ -2,17 +2,16 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	
-	import mx.collections.IList;
 	import mx.events.FlexEvent;
+	
+	import spark.components.DataRenderer;
+	import spark.layouts.HorizontalLayout;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	
-	import spark.components.DataRenderer;
-	import spark.layouts.HorizontalLayout;
 
 	/**
 	 * @author Razvan Tache
@@ -54,13 +53,13 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		 * Registers the objectToListen to the Event event, and removes the listner when the parentRenderer is removed
 		 * 
 		 */
-		protected function handleListeningOnEvent(event:String, parentRenderer:BasicPropertyRenderer, objectToListen:Object):void {
-			objectToListen.addEventListener(event, sendChangedValuesToServer);		
-			parentRenderer.addEventListener(FlexEvent.REMOVE, function(flexEvent:FlexEvent):void {
-				objectToListen.removeEventListener(event, sendChangedValuesToServer);
-				trace("Listener removed");
-			});
-		}
+//		protected function handleListeningOnEvent(event:String, parentRenderer:BasicPropertyRenderer, objectToListen:Object):void {
+//			objectToListen.addEventListener(event, sendChangedValuesToServer);		
+//			parentRenderer.addEventListener(FlexEvent.REMOVE, function(flexEvent:FlexEvent):void {
+//				objectToListen.removeEventListener(event, sendChangedValuesToServer);
+//				trace("Listener removed");
+//			});
+//		}
 		
 	}
 }

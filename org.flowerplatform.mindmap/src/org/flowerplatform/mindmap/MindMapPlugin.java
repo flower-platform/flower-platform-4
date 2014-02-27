@@ -4,6 +4,7 @@ import static org.flowerplatform.core.node.remote.AddChildDescriptor.ADD_CHILD_D
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.NODE_SHAPE;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
@@ -32,8 +33,8 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 		
 		TypeDescriptor mmTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MINDMAP_NODE_TYPE);		
-		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs("Number").setNameAs(MIN_WIDTH).setTitleAs(getMessage("mindmap.min_width.title")).setReadOnlyAs(false));
-		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs("Number").setNameAs(MAX_WIDTH).setTitleAs(getMessage("mindmap.max_width.title")).setReadOnlyAs(false));		
+		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs("Number").setNameAs(MIN_WIDTH).setTitleAs(getMessage("mindmap.min_width.title")).setReadOnlyAs(false).setCategoryAs(NODE_SHAPE));
+		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs("Number").setNameAs(MAX_WIDTH).setTitleAs(getMessage("mindmap.max_width.title")).setReadOnlyAs(false).setCategoryAs(NODE_SHAPE));		
 		mmTypeDescriptor.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE).setLabelAs(getMessage("mindmap.add")));
 	}	
 	

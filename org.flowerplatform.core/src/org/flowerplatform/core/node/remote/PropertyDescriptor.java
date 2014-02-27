@@ -29,10 +29,13 @@ public class PropertyDescriptor extends AbstractController {
 	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	
 	private static final String DEFAULT_TYPE = "String";
+	private static final String DEFAULT_CATEGORY = "";
 	
 	private String name;
 	private String title;
 	private String type = DEFAULT_TYPE;
+	private String category = DEFAULT_CATEGORY;
+
 	private boolean readOnly = true;
 		
 	public String getName() {
@@ -74,6 +77,28 @@ public class PropertyDescriptor extends AbstractController {
 		return this;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public String getCategory() {
+		return category;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public PropertyDescriptor setCategoryAs (String category) {
+		this.category = category;
+		return this;
+	}
+	
 	public boolean getReadOnly() {
 		return readOnly;
 	}
@@ -86,5 +111,5 @@ public class PropertyDescriptor extends AbstractController {
 		this.readOnly = readOnly;
 		return this;
 	}
-		
+	
 }

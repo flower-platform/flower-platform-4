@@ -10,30 +10,23 @@
 			import mx.events.FlexEvent;
 						
 			override protected function getValue():Object {
-				return propertyValue.text;	
+				return checkBox.selected;	
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
-				BindingUtils.bindProperty(data, "value", propertyValue, "text");
+				BindingUtils.bindProperty(data, "value", checkBox, "selected");
 			}
 			
 			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
 				sendChangedValuesToServer(null);
 			}
 			
-			private function keyHandler(event:KeyboardEvent):void {
-				if (event.keyCode == Keyboard.ENTER) {
-					sendChangedValuesToServer(null);
-				}
-			}
-			
 		]]>
 	</fx:Script>
 	
-	<s:TextInput id="propertyValue"  width="100%" height="100%"
-				 text="{data.value}"
-				 editable="{!data.readOnly}" 
-				 focusOut="propertyValue_focusOutHandler(event)"
-				 keyUp="keyHandler(event)"/>
+	<s:CheckBox id="checkBox"  
+				selected="{data.value}"
+				enabled="{!data.readOnly}" 
+				focusOut="propertyValue_focusOutHandler(event)" />
 	
 </ns:BasicPropertyRenderer>

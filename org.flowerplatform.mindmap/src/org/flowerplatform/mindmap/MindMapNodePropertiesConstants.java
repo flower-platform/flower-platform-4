@@ -2,6 +2,7 @@ package org.flowerplatform.mindmap;
 
 /**
  * @author Cristina Constantinescu
+ * @author Sebastian Solomon
  */
 public class MindMapNodePropertiesConstants {
 
@@ -10,5 +11,6 @@ public class MindMapNodePropertiesConstants {
 	
 	public static final String MIN_WIDTH = "min_width";
 	public static final String MAX_WIDTH = "max_width";
+	public static final String NODE_SHAPE= "Node shape";
 	
 }

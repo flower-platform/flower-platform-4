@@ -19,11 +19,10 @@
 package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.collections.ArrayCollection;
 	
+	import spark.components.DropDownList;
+	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	
-	import spark.components.DropDownList;
-	import spark.events.IndexChangeEvent;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -75,10 +74,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.data = value;			
 			dropDownList.enabled = !PropertyDescriptor(data).readOnly;
 			
-			if (!data.readOnly) {				
-				handleListeningOnEvent(IndexChangeEvent.CHANGE, this, dropDownList);
-			}
-			
+//			if (!data.readOnly) {				
+//				handleListeningOnEvent(IndexChangeEvent.CHANGE, this, dropDownList);
+//			}			
 			setSelectedIndex();
 		}
 		

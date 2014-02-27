@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:FormItem xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   borderColor="#696969" borderVisible="true" borderWeight="1"
+				   fontWeight="normal"
 				   implements="mx.core.IDataRenderer, mx.managers.IFocusManagerComponent">
 	<fx:Script>
 		<![CDATA[
@@ -41,44 +41,26 @@
 				}
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
 
-				// set title as text if exists, otherwise set the name
-				propertyName.text = propertyDescriptor.title == null ? propertyDescriptor.name : propertyDescriptor.title;
-							
+				this.label = data.name;
+				
 				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);			
-
+					
 				if (itemRenderedInstance != null && itemRenderedInstance is factory.generator) {
 					trace("Reciclying item renderer");
 				} else {
 					if (itemRenderedInstance != null) {
-						hGroup.removeElement(itemRenderedInstance);
 					}
 					itemRenderedInstance = factory.newInstance(false);
-					itemRenderedInstance.percentWidth = 50;
+					itemRenderedInstance.percentWidth = 100;
 					itemRenderedInstance.percentHeight = 100;
-					hGroup.addElement(itemRenderedInstance);
+					this.addElement(itemRenderedInstance);
 				}
-			
+				
 				itemRenderedInstance.data = propertyDescriptor;
 				
 			}
 
 		]]>
 	</fx:Script>
-	<s:HGroup id="hGroup" width="100%" height="100%" gap="0" verticalAlign="middle">
-		<s:Group width="50%" height="100%">
-			<s:Rect width="100%" height="100%">
-				<s:fill>
-					<s:SolidColor color="#9C9C9C"/>
-				</s:fill>
-			</s:Rect>
-			<s:HGroup width="100%" height="100%" verticalAlign="middle" paddingLeft="5">
-				<s:Label id = "propertyName"/>
-			</s:HGroup>
-		</s:Group>
-		<s:Line height="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="#696969"/>
-			</s:stroke>
-		</s:Line>
-	</s:HGroup>  
-</s:BorderContainer>
+	
+</s:FormItem>
