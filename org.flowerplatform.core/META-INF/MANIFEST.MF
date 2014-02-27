@@ -1,14 +1,18 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core
-Bundle-SymbolicName: org.flowerplatform.core
+Bundle-SymbolicName: org.flowerplatform.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.flowerplatform.core,
+ org.flowerplatform.core.file,
  org.flowerplatform.core.node,
  org.flowerplatform.core.node.controller,
- org.flowerplatform.core.node.remote
+ org.flowerplatform.core.node.remote,
+ org.flowerplatform.core.node.update.remote
 Bundle-ClassPath: .
 Require-Bundle: org.flowerplatform.util,
- org.eclipse.osgi
+ org.eclipse.osgi,
+ org.eclipse.equinox.http.registry
 Bundle-Activator: org.flowerplatform.core.CorePlugin
+Bundle-ActivationPolicy: lazy

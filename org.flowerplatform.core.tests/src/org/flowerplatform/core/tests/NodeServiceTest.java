@@ -8,11 +8,9 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
-import org.flowerplatform.core.node.NodeTypeDescriptor;
-import org.flowerplatform.core.node.NodeTypeDescriptorRegistry;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.util.Pair;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +28,7 @@ public class NodeServiceTest {
 	public void testPriority() {
 		
 		class MockChildProvider extends ChildrenProvider {
-			public List<Pair<Node, Object>> getChildren(Node node) {
+			public List<Node> getChildren(Node node) {
 				return null;
 			}
 		}
@@ -42,11 +40,11 @@ public class NodeServiceTest {
 		ChildrenProvider spyProviderAll = spy(new MockChildProvider());
 		
 		// setPrioritys
-		spyProviderForTypeA.setPriority(-100);
-		spyProviderForTypeB.setPriority(0);
-		spyProviderForTypeC.setPriority(100);
-		spyProviderForTypeFileSystem.setPriority(200);
-		spyProviderAll.setPriority(Integer.MAX_VALUE);
+		spyProviderForTypeA.setOrderIndex(-100);
+		spyProviderForTypeB.setOrderIndex(0);
+		spyProviderForTypeC.setOrderIndex(100);
+		spyProviderForTypeFileSystem.setOrderIndex(200);
+		spyProviderAll.setOrderIndex(Integer.MAX_VALUE);
 		
 		NodeTypeDescriptorRegistry descriptorRegistry = new NodeTypeDescriptorRegistry();
 		NodeService nodeService = new NodeService(descriptorRegistry);

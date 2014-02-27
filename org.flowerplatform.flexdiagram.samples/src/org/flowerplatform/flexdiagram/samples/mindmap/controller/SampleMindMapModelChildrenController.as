@@ -61,9 +61,6 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent):void {
 			MindMapModelRendererController(MindMapDiagramShell(diagramShell).getControllerProvider(event.target).getRendererController(event.target)).updateConnectors(event.target);
 		}
-		
-		private function getDynamicObject(model:Object):Object {
-			return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
-		}
+
 	}
 }

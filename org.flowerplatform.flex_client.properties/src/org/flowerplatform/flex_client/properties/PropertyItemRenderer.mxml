@@ -9,6 +9,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
 
 			
@@ -18,11 +19,13 @@
 			private var _data:Object;
 			
 			// Make the data property bindable.
-			[Bindable("dataChange")]
-			
-			// Define the getter method.
+			[Bindable("dataChange")]					
 			public function get data():Object {
 				return _data;
+			}
+			
+			public function get propertyDescriptor():PropertyDescriptor {
+				return PropertyDescriptor(data);
 			}
 			
 			public function set data(value:Object):void {
@@ -33,13 +36,15 @@
 				}
 				_data = value;
 				
+				if (_data == null) {
+					return;
+				}
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
 
-				propertyName.text = data.name;
-				
-				
-				
-				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[data.type]);			
+				// set title as text if exists, otherwise set the name
+				propertyName.text = propertyDescriptor.title == null ? propertyDescriptor.name : propertyDescriptor.title;
+							
+				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);			
 
 				if (itemRenderedInstance != null && itemRenderedInstance is factory.generator) {
 					trace("Reciclying item renderer");
@@ -53,7 +58,7 @@
 					hGroup.addElement(itemRenderedInstance);
 				}
 			
-				itemRenderedInstance.data = data;
+				itemRenderedInstance.data = propertyDescriptor;
 				
 			}
 

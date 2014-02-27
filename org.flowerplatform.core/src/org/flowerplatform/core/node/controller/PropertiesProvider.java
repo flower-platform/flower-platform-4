@@ -1,22 +1,16 @@
 package org.flowerplatform.core.node.controller;
 
-import java.util.List;
-
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.Property;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Cristian Spiescu
- *
- * @param <RAW_NODE_DATA_TYPE>
+ * @author Cristina Constantinescu
  */
-public abstract class PropertiesProvider<RAW_NODE_DATA_TYPE> extends NodeController {
+public abstract class PropertiesProvider extends AbstractController {
 	
-	public abstract void populateWithProperties(Node node, RAW_NODE_DATA_TYPE rawNodeData);
+	public static final String PROPERTIES_PROVIDER = "propertiesProvider";
 	
-	/**
-	 * @author Cristina Constantinescu
-	 */
-	public abstract List<Property> getPropertiesToDisplay(Node node);
+	public abstract void populateWithProperties(Node node);
 	
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:BasicPropertyRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flex_client.properties.property_renderer.*" 
+						  width="400" height="300"
+						  creationComplete="creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.events.FlexEvent;
+						
+			override protected function getValue():Object {
+				return propertyValue.text;	
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				BindingUtils.bindProperty(data, "value", propertyValue, "text");
+			}
+			
+			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
+				sendChangedValuesToServer(null);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:TextInput id="propertyValue"  width="100%" height="100%"
+				 text="{data.value}"
+				 editable="{!data.readOnly}" 
+				 focusOut="propertyValue_focusOutHandler(event)" />
+	
+</ns:BasicPropertyRenderer>

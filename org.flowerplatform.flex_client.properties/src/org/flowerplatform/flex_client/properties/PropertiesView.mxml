@@ -14,16 +14,15 @@
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
-			import mx.rpc.events.ResultEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.mindmap.Diagram;
+			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-			import org.flowerplatform.flex_client.properties.remote.Property;
+			import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
+			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
-			import org.flowerplatform.flexutil.selection.ISelectionForServerProvider;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
@@ -64,30 +63,59 @@
 			}
 						
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
-				// I did this, because the selection system, sends an empty selection when the diagram is opened
-				// so in case the event.selectionForServer is an empty array we stop the logic.								
-				if (event.selection == null || event.selection.length == 0 || event.selection.getItemAt(0) is Diagram) {
+				var node:Node;
+				
+				// if previous data in properties -> remove update listener from previous node
+				if (PropertiesPlugin.getInstance().currentSelection != null) {
+					node = Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0));
+					node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+				}
+							
+				// if diagram is the new selected element -> clear data in properties
+				// for event.selection == null, see SelectionManager -> dispatchEvent(SelectionChangedEvent), line 116 -> active view changed, but its selection isn't populated yet
+				if (event.selection == null || event.selection.length == 0 || Node(event.selection.getItemAt(0)).idWithinResource == null) {
 					icon.source = null;
 					label.text = null;
 					IList(propertyList.dataProvider).removeAll();
 					return;
-				}	
+				}			
 				
-				var node:Node = Node(event.selection.getItemAt(0));
+				// get new selected node
+				node = Node(event.selection.getItemAt(0));
+				
+				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService.getPropertiesToDisplay", [node], 
-					function(result:ResultEvent):void {
-						var properties:ArrayCollection = ArrayCollection(result.result);
-						for each (var property:Property in properties) {
-							if (node.properties != null && node.properties.hasOwnProperty(property.name)) {
-								property.value = node.properties[property.name];
-							}
-						}
-						propertyList.dataProvider = properties;		
-						label.text = node.properties["body"];
-						PropertiesPlugin.getInstance().currentSelection = event.selection;
+					"nodeService.getPropertyDescriptors", [node.fullNodeId], 
+						function(result:Object):void {
+						// properties available -> add them in list
+						propertyList.dataProvider = ArrayCollection(result);		
+						// get their values from node
+						nodeUpdatedHandler(new NodeUpdatedEvent(node));
+						
+						label.text = node.properties[NodePropertiesConstants.TEXT];
+						
+						// store new selection and listen for node upates
+						PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+						node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 					}
 				);		
+			}
+			
+			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
+				var node:Node = event.node;
+				var properties:ArrayCollection = ArrayCollection(propertyList.dataProvider);
+				for each (var property:PropertyDescriptor in properties) {
+					if (node.properties != null) {
+						if (node.properties.hasOwnProperty(property.name)) {
+							var hasChanged:Boolean = event.updatedProperties != null ? event.updatedProperties.getItemIndex(property.name) != -1 : true;
+							if (hasChanged) {
+								property.value = node.properties[property.name];
+							}
+						} else {
+							property.value = null;
+						}
+					}						
+				}
 			}
 			
 		]]>

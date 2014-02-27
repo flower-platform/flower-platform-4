@@ -296,6 +296,11 @@ package org.flowerplatform.flexdiagram {
 			
 			if (modelIsDisposed) {
 				delete modelToExtraInfoMap[model];
+				
+				// remove model from selection if exists
+				if (selectedItems.getItemIndex(model) != -1) {
+					selectedItems.removeItem(model);
+				}
 			}
 		}
 		

@@ -22,16 +22,20 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	
 	/**
+	 * Server -> client only. On the server side, the nodes are note linked together
+	 * (parent/children). But here, on the client, these links are recalculated and 
+	 * maintained by <code>NodeUpdateProcessor</code>.
+	 * 
 	 * @author Cristina Constantinescu
 	 */
 	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.Node")]
 	public class Node {
-		
-		public var id:String;
+						
+		public var type:String;		
+		public var resource:String;		
+		public var idWithinResource:String;		
 				
-		public var type:String;
-		
 		public var properties:Object;
 		
 		[Transient]
@@ -41,7 +45,11 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		public var children:ArrayCollection;
 		
 		[Transient]
-		public var side:int = MindMapDiagramShell.RIGHT;
+		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
 			
+		public function get fullNodeId():String {
+			return type + "|" + resource + "|" + idWithinResource;
+		}
+		
 	}
 }

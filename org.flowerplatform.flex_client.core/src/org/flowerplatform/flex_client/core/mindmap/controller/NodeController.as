@@ -17,20 +17,12 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.mindmap.controller {
-	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
-	import mx.events.PropertyChangeEvent;
-	import mx.rpc.events.ResultEvent;
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.Diagram;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
 	
 	/**
@@ -45,149 +37,34 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		private function get mindMapDiagramShell():MindMapEditorDiagramShell {
 			return MindMapEditorDiagramShell(diagramShell);
 		}
-		
-		public function getChildren(model:Object):IList {
+				
+		public function getChildren(model:Object):IList {			
 			return Node(model).children;
 		}
-		
-		public function getChildrenBasedOnSide(model:Object, side:int = 0):IList /* of Node */ {
-			if (side == 0) {
-				side = getSide(model);
-			}
-			
-			var list:ArrayList = new ArrayList();	
-			if (getChildren(model) != null) {
-				for (var i:int = 0; i < getChildren(model).length; i++) {
-					var child:Node = Node(getChildren(model).getItemAt(i));
-					if (side == 0 || side == getSide(child)) {
-						list.addItem(child);
-					}
-				}
-			}
-			return list;
-		}
-						
-		public function getX(model:Object):Number {
-			if (getDynamicObject(model).x == null) {
-				getDynamicObject(model).x = 0;
-			}
-			return getDynamicObject(model).x;			
-		}
-		
-		public function setX(model:Object, value:Number):void {	
-			var oldValue:Number = getDynamicObject(model).x;
-			
-			getDynamicObject(model).x = value;
-			
-			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "x", oldValue, value));
-		}
-		
-		public function getY(model:Object):Number {
-			if (getDynamicObject(model).y == null) {
-				getDynamicObject(model).y = 0;
-			}
-			return getDynamicObject(model).y;			
-		}
-		
-		public function setY(model:Object, value:Number):void {	
-			var oldValue:Number = getDynamicObject(model).y;
-			
-			getDynamicObject(model).y = value;	
-			
-			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "y", oldValue, value));
-		}
-		
-		public function getWidth(model:Object):Number {	
-			if (getDynamicObject(model).width == null) {
-				getDynamicObject(model).width = 10;
-			}
-			return getDynamicObject(model).width;
-		}
-		
-		public function setWidth(model:Object, value:Number):void {	
-			var oldValue:Number = getDynamicObject(model).width;
-			
-			getDynamicObject(model).width = value;
-			
-			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "width", oldValue, value));
-		}
-		
-		public function getHeight(model:Object):Number {
-			if (getDynamicObject(model).height == null) {
-				getDynamicObject(model).height = 10;
-			}
-			return getDynamicObject(model).height;			
-		}
-		
-		public function setHeight(model:Object, value:Number):void {
-			var oldValue:Number = getDynamicObject(model).height;
-			
-			getDynamicObject(model).height = value;
-			
-			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "height", oldValue, value));
-		}
-		
+					
 		public function getExpanded(model:Object):Boolean {
 			return Node(model).children != null && Node(model).children.length > 0;
 		}
 		
 		public function setExpanded(model:Object, value:Boolean):void {
 			if (value) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [Node(model), true], function(result:ResultEvent):void {				
-					getChildrenForNodeIdCallbackHandler(Node(model), result);
-				});					
+				MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(Node(model));
 			} else {				
-				disposeModel(model);				
+				MindMapEditorDiagramShell(diagramShell).updateProcessor.removeChildren(Node(model));
 			}		
 		}
 		
-		public function getSide(model:Object):int {		
+		public function getSide(model:Object):int {
 			return Node(model).side;
 		}
 		
 		public function setSide(model:Object, value:int):void {
-			Node(model).side = value;
+//			Node(model).side = value;
 		}
-		
-		private function getDynamicObject(model:Object):Object {
-			return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
+
+		public function isRoot(model:Object):Boolean {			
+			return Node(model).parent == null;
 		}
-		
-		private function getChildrenForNodeIdCallbackHandler(node:Node, result:ResultEvent):void {
-			for each (var child:Node in ArrayCollection(result.result)) {
-				child.parent = node;
-			}
-			node.children = ArrayCollection(result.result);
-			
-			MindMapDiagramShell(diagramShell).refreshDiagramChildren();
-			MindMapDiagramShell(diagramShell).refreshNodePositions(node);
-		}
-		
-		public function disposeModel(model:Object, disposeModel:Boolean = false):void {
-			disposeModelHandlerRecursive(model, disposeModel);
-			Node(model).children = null;
-			mindMapDiagramShell.refreshDiagramChildren();
-			
-			if (diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model) is Node) {
-				MindMapDiagramShell(diagramShell).refreshNodePositions(
-					diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model));
-			} else {
-				mindMapDiagramShell.refreshNodePositions(Diagram(mindMapDiagramShell.rootModel).rootNode);
-			}
-			
-			MindMapDiagramShell(diagramShell).shouldRefreshVisualChildren(diagramShell.rootModel);
-		}
-		
-		private function disposeModelHandlerRecursive(model:Object, disposeModel:Boolean = false):void {
-			if (Node(model).properties["hasChildren"] && Node(model).children != null) {
-				for (var i:int=0; i < Node(model).children.length; i++) {
-					disposeModelHandlerRecursive(Node(model).children.getItemAt(i), true);
-				}		
-			}
-			if (disposeModel) {
-				diagramShell.unassociateModelFromRenderer(model, diagramShell.getRendererForModel(model), true);
-			}
-		}		
-		
+	
 	}
 }

@@ -90,7 +90,7 @@
 						break;
 					case "text":
 						label = data.text;
-						SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(data)).getMindMapModelController(data)).updateModelHandler(data);
+//						SampleMindMapModelController(IMindMapControllerProvider(diagramShell.getControllerProvider(data)).getMindMapModelController(data)).updateModelHandler(data);
 						break;
 					case "parent":						
 					case "expanded":	
@@ -113,9 +113,9 @@
 				graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 				
 				if (node != null && node.hasChildren && node.expanded == false) {
-					if (node.side == MindMapDiagramShell.LEFT) {
+					if (node.side == MindMapDiagramShell.POSITION_LEFT) {
 						graphics.drawCircle(-circleRadius, height/2, circleRadius);
-					} else if (data.side == MindMapDiagramShell.RIGHT) {						
+					} else if (data.side == MindMapDiagramShell.POSITION_RIGHT) {						
 						graphics.drawCircle(width + circleRadius, height/2, circleRadius);
 					}
 				}
@@ -131,7 +131,7 @@
 					getDynamicObject(node).height = this.height;
 					var parent:Object = diagramShell.getControllerProvider(node).getModelChildrenController(node).getParent(node);
 					if (parent is SampleMindMapModel) {						
-						MindMapDiagramShell(diagramShell).refreshNodePositions(parent);	
+						MindMapDiagramShell(diagramShell).refreshModelPositions(parent);	
 					}
 				}
 			}
@@ -150,7 +150,7 @@
 			}			
 			
 			protected function initializeHandler(event:FlexEvent):void {
-//				minHeight = 22; // only for desktop version
+				minHeight = 22; // only for desktop version
 			}
 			
 		]]>

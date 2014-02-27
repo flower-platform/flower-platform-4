@@ -19,18 +19,39 @@
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flexutil.action.ComposedAction;
 	
 	/**
 	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
-	public class AddNodeAction extends ActionBase {
+	public class AddNodeAction extends ComposedAction {
 		
-		public function AddNodeAction()	{
+		public const ACTION_ID_NEW:String = "new";
+		
+		public var childType:String;
+		
+		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
 			super();
-			label = CorePlugin.getInstance().getMessage("mindmap.action.add");	
-			orderIndex = 10;
+			if (descriptor == null) {
+				label = CorePlugin.getInstance().getMessage("mindmap.action.add");	
+				icon = CorePlugin.getInstance().getResourceUrl("images/add.png");
+				orderIndex = 10;
+				id = ACTION_ID_NEW;
+				
+				actAsNormalAction = false;
+			} else {
+				childType = descriptor.childType;
+				
+				label = descriptor.label;
+				icon = descriptor.icon;
+				orderIndex = descriptor.orderIndex;
+				parentId = ACTION_ID_NEW;
+				
+				actAsNormalAction = true;
+			}
 		}
 		
 		override public function get visible():Boolean {			
@@ -38,7 +59,12 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)), new Node()]);		
+			var properties:Object = new Object();
+			properties.type = childType;
+			// TODO CC: temporary code
+			properties.resource = "mm://path_to_resource";
+			
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)).fullNodeId, properties, null]);		
 		}
 		
 	}

@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		public function RemoveNodeAction() {
 			super();
 			label = CorePlugin.getInstance().getMessage("mindmap.action.remove");	
+			icon = CorePlugin.getInstance().getResourceUrl("images/cancel_delete.png");
 			orderIndex = 20;
 		}
 		
@@ -38,7 +39,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.removeChild", [Node(selection.getItemAt(0)).parent, Node(selection.getItemAt(0))]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.removeChild", [Node(selection.getItemAt(0)).parent.fullNodeId, Node(selection.getItemAt(0)).fullNodeId]);
 		}
 	}
 }

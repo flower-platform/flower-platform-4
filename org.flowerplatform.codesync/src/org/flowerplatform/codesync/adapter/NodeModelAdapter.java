@@ -1,0 +1,260 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *   Crispico - Initial API and implementation
+ *
+ * license-end
+ */
+package org.flowerplatform.codesync.adapter;
+
+import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
+import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.controller.TypeDescriptor;
+
+/**
+ * @author Mariana Gheorghe
+ */
+public class NodeModelAdapter extends AbstractModelAdapter {
+
+	/**
+	 * Checks for a {@link FeatureChange} on the name feature first.
+	 */
+	@Override
+	public String getLabel(Object modelElement) {
+		return (String) getMatchKey(modelElement);
+	}
+
+	@Override
+	public List<String> getIconUrls(Object modelElement) {
+		return null;
+	}
+	
+	/**
+	 * Get the children that are registered as members of this feature (via {@link MemberOfChildCategoryDescriptor}s).
+	 */
+	@Override
+	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), true);
+		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
+
+			@Override
+			protected boolean isAccepted(Node candidate) {
+				TypeDescriptor candidateDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(candidate.getType());
+				if (candidateDescriptor == null) {
+					return false;
+				}
+				
+				MemberOfChildCategoryDescriptor memberOf = candidateDescriptor.getSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, candidate);
+				if (memberOf == null) {
+					return false;
+				}
+				if (feature.equals(memberOf.getChildCategory())) {
+					return true;
+				}
+				return false;
+			}
+			
+		};
+	}
+	
+	@Override
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
+			return getNode(element).getType();
+		}
+		return getNode(element).getOrPopulateProperties().get(feature);
+	}
+	
+	@Override
+	public Object getMatchKey(Object element) {
+		return getNode(element).getOrPopulateProperties().get(FeatureProvider.NAME);
+	}
+	
+	@Override
+	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
+		if (NodePropertiesConstants.TYPE.equals(feature)) {
+			getNode(element).setType((String) newValue);
+		}
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
+	}
+	
+	/**
+	 * @author Mariana Gheorghe
+	 * @author Cristina Constantinescu
+	 */
+	@Override
+	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
+		// first check if the child already exists
+//		Iterable<?> children = super.getContainmentFeatureIterable(eObject, feature, null);
+//		IModelAdapter adapter = codeSyncElementConverter.getModelAdapter(correspondingChild);
+//		Object matchKey = null;
+//		if (adapter != null) {
+//			matchKey = adapter.getMatchKey(correspondingChild);
+//		} else {
+//			matchKey = getMatchKey(correspondingChild);
+//		}
+//		if (matchKey != null) {
+//			for (Object child : children) {
+//				if (matchKey.equals(modelAdapterFactory.getModelAdapter(child).getMatchKey(child))) {
+//					return child;
+//				}
+//			}
+//		}
+//		
+//		if (eObject != null) {
+				Node parent = getNode(element);
+				// set the type for the new node; needed by the action performed handler
+				String type = typeProvider.getType(correspondingChild);
+						
+				Node child = new Node(type, null, null, null);
+				CorePlugin.getInstance().getNodeService().addChild(parent, child, null);
+				return child;
+//		}
+//		
+//		return null;
+	}
+	
+	@Override
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child));
+	}
+
+	@Override
+	public boolean hasChildren(Object modelElement) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<?> getChildren(Object modelElement) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public boolean save(Object element) {
+//		CodeSyncPlugin.getInstance().getNodeService().save();
+		return false;
+	}
+
+	@Override
+	public void setConflict(Object element, Object feature, Object oppositeValue) {		
+		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, CorePlugin.getInstance().getNodeService());
+	}
+	
+	@Override
+	public void unsetConflict(Object element, Object feature) {		
+		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), CorePlugin.getInstance().getNodeService());
+	}
+
+	protected Node getNode(Object element) {
+		return (Node) element;
+	}
+	
+	protected void processContainmentFeatureAfterActionPerformed(Node node, Object feature, ActionResult result, Match match) {
+		Object child = findChild(match, feature, result.childAdded, result.childMatchKey);
+		if (child != null && child instanceof Node) {
+			Node childNode = (Node) child;
+			if (result.childAdded) {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				}
+			} else {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
+					CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
+	 * @param matchKey 
+	 * @param childMatchKey 
+	 */
+	protected Object findChild(Match parentMatch, Object feature, boolean childAdded, Object matchKey) {
+		if (matchKey == null)
+			return null;
+		for (Object existingChild : getChildrenFromMatch(parentMatch, feature, childAdded)) {
+			if (existingChild == null) {
+				continue;
+			}
+			Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(existingChild).getMatchKey(existingChild);
+			if (matchKey.equals(childMatchKey)) {
+				return existingChild;
+			}
+		}
+		return null;
+	}
+
+	
+	protected void processContainmentFeatureAfterActionPerformed(Node node, List<Object> children, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
+		if (child != null && child instanceof Node) {
+			Node childNode = (Node) child;
+			if (result.childAdded) {
+				CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+			} else {
+				CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+			}
+		}
+	}
+	
+	protected List<Object> getChildrenFromMatch(Match parentMatch, Object feature, boolean childAdded) {
+		List<Object> children = new ArrayList<Object>();
+		for (Match match : parentMatch.getSubMatches()) {
+			if (match.getFeature().equals(feature)) {
+				if (childAdded) {
+					children.add(match.getLeft());
+				} else {
+					children.add(match.getAncestor());
+				}
+			}
+		}
+		return children;
+	}
+	
+	/**
+	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
+	 */
+	protected Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
+		if (matchKey == null)
+			return null;
+		for (Object existingChild : list) {
+			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
+				return existingChild;
+			}
+		}
+		return null;
+	}
+	
+}

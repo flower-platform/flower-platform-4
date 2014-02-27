@@ -18,25 +18,17 @@
 */
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
-	import mx.rpc.events.ResultEvent;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeController;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
-	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class ReloadAction extends ActionBase {
+	public class ReloadAction extends DiagramShellAwareActionBase {
 		
-		private var editorFrontend:MindMapEditorFrontend;
-		
-		public function ReloadAction(editorFrontend:MindMapEditorFrontend) {
-			this.editorFrontend = editorFrontend;
+		public function ReloadAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.reload");
+			icon = CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png");
 			preferShowOnActionBar = true;
 			orderIndex = 100;
 		}
@@ -45,19 +37,13 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			return true;
 		}
 		
-		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, reloadCallbackHandler);			
+		private function reloadCallbackHandler(result:Object):void {			
+			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(null);
 		}
 		
-		private function reloadCallbackHandler(result:ResultEvent):void {
-			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(editorFrontend.diagramShell);
-			
-			// TODO CC: temporary code (to be refactored when update mechanism implemented)
-			var rootModel:Object = diagramShell.getControllerProvider(diagramShell.rootModel).getModelChildrenController(diagramShell.rootModel).getChildren(diagramShell.rootModel).getItemAt(0);
-			NodeController(IMindMapControllerProvider(diagramShell.getControllerProvider(rootModel)).getMindMapModelController(rootModel)).disposeModel(rootModel);
-			
-			editorFrontend.requestRootModel();
-		}
+		override public function run():void {
+			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, reloadCallbackHandler);			
+		}			
 		
 	}
 }
