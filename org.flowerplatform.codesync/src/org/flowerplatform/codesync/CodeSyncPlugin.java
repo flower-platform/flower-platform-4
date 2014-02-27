@@ -20,9 +20,7 @@ package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
-
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
-import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -59,25 +57,17 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	public static final String REMOVED = "removed";
-	public static final String ADDED = "added";
-	public static final String SYNC = "sync";
-	public static final String CHILDREN_SYNC = "childrenSync";
-	public static final String CONFLICT = "conflict";
-	public static final String CHILDREN_CONFLICT = "childrenConflict";
-	
-	
-	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
-	
-	public static final String VIEW = "view";
-	public static final String PARENT_CODE_SYNC_ELEMENT = "parentCodeSyncElement";
-	public static final String PARENT_VIEW = "parentView";
-
-	public static final String SOURCE = "source";
-	public static final String TARGET = "target";
-	
-	public static final String WIZARD_ELEMENT = "wizardElement";
-	public static final String WIZARD_ATTRIBUTE = "wizardAttribute";
+//	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
+//	
+//	public static final String VIEW = "view";
+//	public static final String PARENT_CODE_SYNC_ELEMENT = "parentCodeSyncElement";
+//	public static final String PARENT_VIEW = "parentView";
+//
+//	public static final String SOURCE = "source";
+//	public static final String TARGET = "target";
+//	
+//	public static final String WIZARD_ELEMENT = "wizardElement";
+//	public static final String WIZARD_ATTRIBUTE = "wizardAttribute";
 	
 	/**
 	 * The location of the CSE mapping file, relative to the project. May be
@@ -257,13 +247,13 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.codeSync");
 		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
 		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setReadOnlyAs(false));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFLICT));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_CONFLICT));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.NAME).setReadOnlyAs(false));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.ADDED));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.REMOVED));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.SYNC));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_SYNC));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CONFLICT));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_CONFLICT));
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		

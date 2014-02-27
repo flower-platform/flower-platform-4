@@ -18,17 +18,18 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
 import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.NodePropertiesConstants;
@@ -92,7 +93,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrPopulateProperties().get(FeatureProvider.NAME);
+		return getNode(element).getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME);
 	}
 	
 	@Override
@@ -181,11 +182,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
-					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				if (childNode.getOrPopulateProperties().containsKey(ADDED)) {
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED);
 				}
 			} else {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
+				if (childNode.getOrPopulateProperties().containsKey(REMOVED)) {
 					CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
 				}
 			}

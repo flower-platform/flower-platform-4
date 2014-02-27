@@ -21,7 +21,7 @@ package org.flowerplatform.codesync.adapter;
 import java.util.Iterator;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -44,7 +44,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		// filter out deleted elements
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPlugin.REMOVED);
+				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPropertiesConstants.REMOVED);
 				if (isRemoved != null && isRemoved) {
 					return false;
 				}

@@ -23,19 +23,19 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.Type;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaExpressionFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * Mapped to {@link Expression} and {@link Type}.
  * 
- * @see JavaExpressionFeatureProvider
- * 
  * @author Mariana Gheorghe
  */
 public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	public static final String SUPER_INTERFACE = "superInterface";
+	public static final String ENUM_CONSTANT_ARGUMENT = "javaEnumConstantArgument";
+	
 	private String type;
 	
 	public JavaExpressionModelAdapter(String type) {
@@ -49,7 +49,7 @@ public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter 
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
 			return element.toString();
 		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
 			return type;

@@ -18,47 +18,18 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.DOCUMENTATION;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.MODIFIERS;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaTypeDeclarationFeatureProvider extends NodeFeatureProvider {
 	
-	public static final String TYPE_MEMBERS = "typeMembers";
-	public static final String SUPER_CLASS = "superClass";
-	public static final String SUPER_INTERFACES = "superInterfaces";
-	
-	public static final String SUPER_INTERFACE = "superInterface";
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		List features = super.getValueFeatures(element);
-		features.addAll(Arrays.asList(
-				DOCUMENTATION,
-				SUPER_CLASS
-				));
-		return features;
-	}
-
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(MODIFIERS, SUPER_INTERFACES, TYPE_MEMBERS);
-	}
-	
-	@Override
-	public int getFeatureType(Object feature) {
-		if (TYPE_MEMBERS.equals(feature) ||
-				MODIFIERS.equals(feature) ||
-				SUPER_INTERFACES.equals(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		}
-		return super.getFeatureType(feature);
+	public JavaTypeDeclarationFeatureProvider() {
+		valueFeatures.add(JavaPropertiesConstants.DOCUMENTATION);
+		valueFeatures.add(JavaPropertiesConstants.SUPER_CLASS);
+		
+		containmentFeatures.add(JavaPropertiesConstants.MODIFIERS);
+		containmentFeatures.add(JavaPropertiesConstants.SUPER_INTERFACES);
+		containmentFeatures.add(JavaPropertiesConstants.TYPE_MEMBERS);
 	}
 	
 }

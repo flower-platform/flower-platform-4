@@ -41,10 +41,9 @@ import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
@@ -64,7 +63,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		// handle modifiers here to avoid using the same code in multiple adapters
-		if (JavaFeaturesConstants.MODIFIERS.equals(feature)) {
+		if (JavaPropertiesConstants.MODIFIERS.equals(feature)) {
 			if (element instanceof BodyDeclaration) {
 				return ((BodyDeclaration) element).modifiers();
 			}
@@ -79,7 +78,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (JavaFeaturesConstants.DOCUMENTATION.equals(feature)) {
+		if (JavaPropertiesConstants.DOCUMENTATION.equals(feature)) {
 			return getJavaDoc(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -87,7 +86,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (JavaFeaturesConstants.DOCUMENTATION.equals(feature)) {
+		if (JavaPropertiesConstants.DOCUMENTATION.equals(feature)) {
 			setJavaDoc(element, (String) value);
 		}
 	}
@@ -95,7 +94,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// handle modifiers here to avoid using the same code in multiple adapters
-		if (JavaFeaturesConstants.MODIFIERS.equals(feature)) {
+		if (JavaPropertiesConstants.MODIFIERS.equals(feature)) {
 			if (!(element instanceof BodyDeclaration || element instanceof SingleVariableDeclaration)) {
 				return null;
 			} else {
@@ -107,7 +106,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					ASTNode parent = (ASTNode) element;
 					AST ast = parent.getAST();
 					
-					String keyword = (String) node.getOrPopulateProperties().get(FeatureProvider.NAME);
+					String keyword = (String) node.getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME);
 					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
 					if (parent instanceof BodyDeclaration) {
 						((BodyDeclaration) parent).modifiers().add(extendedModifier);

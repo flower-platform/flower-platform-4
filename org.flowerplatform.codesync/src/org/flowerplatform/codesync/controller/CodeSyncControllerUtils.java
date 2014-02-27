@@ -1,11 +1,11 @@
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_SYNC;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED;
-import static org.flowerplatform.codesync.CodeSyncPlugin.SYNC;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_SYNC;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.SYNC;
 
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
