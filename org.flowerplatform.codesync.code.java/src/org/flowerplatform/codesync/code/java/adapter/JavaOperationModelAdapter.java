@@ -30,7 +30,6 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConsta
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.core.NodePropertiesConstants;
 
 /**
  * Mapped to {@link MethodDeclaration}. Children are {@link Modifier}s and parameters (i.e. {@link SingleVariableDeclaration}).
@@ -60,8 +59,6 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return OPERATION;
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getMethodDeclaration(element).getReturnType2());
 		} else if (JavaOperationFeatureProvider.HAS_BODY.equals(feature)) {

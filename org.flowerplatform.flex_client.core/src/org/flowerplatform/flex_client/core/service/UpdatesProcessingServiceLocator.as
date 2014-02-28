@@ -50,12 +50,10 @@ package org.flowerplatform.flex_client.core.service {
 		/**
 		 * Uses <code>UpdatesProcessingRemoteObject</code> to instantiate the remoteObject.
 		 */ 
-		override public function addService(serviceId:String):void {
-			var remoteObject:RemoteObject = new UpdatesProcessingRemoteObject(serviceId);
-			remoteObject.channelSet = channelSet;
-			remoteObjects[serviceId] = remoteObject;
+		override protected function createRemoteObject(serviceId:String):RemoteObject {
+			return new UpdatesProcessingRemoteObject(serviceId);
 		}
-			
+					
 		/**
 		 * Adds specific headers to operation.
 		 */

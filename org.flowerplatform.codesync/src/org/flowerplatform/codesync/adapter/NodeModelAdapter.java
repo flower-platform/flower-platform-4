@@ -21,10 +21,8 @@ package org.flowerplatform.codesync.adapter;
 import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
@@ -35,7 +33,6 @@ import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -87,10 +84,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return getNode(element).getType();
-		}
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {		
 		return getNode(element).getOrPopulateProperties().get(feature);
 	}
 	
@@ -100,10 +94,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object newValue) {
-		if (NodePropertiesConstants.TYPE.equals(feature)) {
-			getNode(element).setType((String) newValue);
-		}
+	public void setValueFeatureValue(Object element, Object feature, Object newValue) {		
 		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
 	}
 	
@@ -135,7 +126,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
 						
-				Node child = new Node(type, null, null, null);
+				Node child = new Node(type, "freePlanePersistence://path_to_resource", null, null);
 				CorePlugin.getInstance().getNodeService().addChild(parent, child, null);
 				return child;
 //		}
