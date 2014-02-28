@@ -1,5 +1,6 @@
 package org.flowerplatform.codesync.github;
 
+import org.eclipse.egit.github.core.client.GitHubClient;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
@@ -59,9 +60,19 @@ public class CodeSyncGitHubPlugin extends AbstractFlowerJavaPlugin {
 		descriptor.addSingleController(FeatureProvider.FEATURE_PROVIDER, featureProvider);
 	}
 
+	public GitHubClient getClient() {
+		GitHubClient client = new GitHubClient();
+		client.setOAuth2Token(getOAuth2Token());
+		return client;
+	}
+	
+	private String getOAuth2Token() {
+		return null; // get from properties?
+	}
+	
 	@Override
 	public void registerMessageBundle() throws Exception {
 		// nothing yet
 	}
-	
+
 }

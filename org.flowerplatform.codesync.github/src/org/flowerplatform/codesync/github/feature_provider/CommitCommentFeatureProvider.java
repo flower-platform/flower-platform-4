@@ -7,9 +7,7 @@ import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.POSIT
 import java.util.Arrays;
 import java.util.List;
 
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
-
-public class CommitCommentFeatureProvider extends NodeFeatureProvider {
+public class CommitCommentFeatureProvider extends CommentFeatureProvider {
 
 	@SuppressWarnings("unchecked")
 	@Override

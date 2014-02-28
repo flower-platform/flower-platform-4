@@ -2,10 +2,10 @@ package org.flowerplatform.codesync.github.remote;
 
 import static org.flowerplatform.codesync.github.CodeSyncGitHubPlugin.GITHUB;
 
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
+import org.flowerplatform.codesync.github.CodeSyncGitHubPlugin;
 import org.flowerplatform.codesync.github.type_provider.GitHubTypeProvider;
 import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
@@ -43,7 +43,7 @@ public class GitHubOperationsService {
 		match.setLeft(client);
 		
 		// right: github
-		match.setRight(new GitHubClient());
+		match.setRight(CodeSyncGitHubPlugin.getInstance().getClient());
 		
 		// initialize the algorithm
 		ITypeProvider typeProvider = new ComposedTypeProvider()

@@ -32,6 +32,7 @@ import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.github.CodeSyncGitHubPlugin;
 import org.flowerplatform.codesync.github.feature_provider.PullRequestFeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
@@ -94,7 +95,7 @@ public class PullRequestModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		PullRequestService service = new PullRequestService(/* client ??? */);
+		PullRequestService service = new PullRequestService(CodeSyncGitHubPlugin.getInstance().getClient());
 		IRepositoryIdProvider repository = new RepositoryId("flower-platform", "flower-platform-4");
 		int id = getPullRequest(element).getNumber();
 		if (COMMIT_FILES.equals(feature)) {
@@ -107,7 +108,7 @@ public class PullRequestModelAdapter extends AbstractModelAdapter {
 			List<Comment> comments = new ArrayList<Comment>();
 			try {
 				comments.addAll(service.getComments(repository, id));
-				comments.addAll(new IssueService().getComments(repository, id));
+				comments.addAll(new IssueService(CodeSyncGitHubPlugin.getInstance().getClient()).getComments(repository, id));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

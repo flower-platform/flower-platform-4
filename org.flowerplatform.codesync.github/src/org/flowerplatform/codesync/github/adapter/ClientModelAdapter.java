@@ -1,15 +1,18 @@
 package org.flowerplatform.codesync.github.adapter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.egit.github.core.IRepositoryIdProvider;
+import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.github.CodeSyncGitHubPlugin;
 import org.flowerplatform.codesync.github.GitHubPropertiesConstants;
 
 /**
@@ -28,18 +31,22 @@ public class ClientModelAdapter extends AbstractModelAdapter {
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (GitHubPropertiesConstants.PULL_REQUESTS.equals(feature)) {
-			PullRequestService service = new PullRequestService(getClient(element));
+			PullRequestService service = new PullRequestService(CodeSyncGitHubPlugin.getInstance().getClient());
 			IRepositoryIdProvider repository = new RepositoryId("flower-platform", "flower-platform-4");
-			// test with just one
-			int id = 82;
+			
 			try {
+				// test with just one
+				int id = 82;
 				return Arrays.asList(service.getPullRequest(repository, id));
+//				List<PullRequest> pullRequests = new ArrayList<PullRequest>();
+//				pullRequests.addAll(service.getPullRequests(repository, "open"));
+//				pullRequests.addAll(service.getPullRequests(repository, "closed"));
+//				return pullRequests;
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
-		return super.getContainmentFeatureIterable(element, feature,
-				correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 
 	@Override

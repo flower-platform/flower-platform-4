@@ -22,7 +22,7 @@ public class GitHubTypeProvider extends ClassTypeProvider {
 		classToTypeMap.put(GitHubClient.class, CLIENT);
 		classToTypeMap.put(PullRequest.class, PULL_REQUEST);
 		classToTypeMap.put(CommitFile.class, COMMIT_FILE);
-		classToTypeMap.put(CommitComment.class, COMMENT);
+		classToTypeMap.put(CommitComment.class, COMMIT_COMMENT);
 		classToTypeMap.put(Comment.class, COMMENT);
 	}
 

@@ -31,7 +31,7 @@ public class CommentModelAdapter extends AbstractModelAdapter {
 		} else if (UPDATED_AT.equals(feature)) {
 			return comment.getUpdatedAt();
 		} else if (NodeFeatureProvider.NAME.equals(feature)) {
-			return comment.getBody();
+			return String.valueOf(getComment(element).getId());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
@@ -44,7 +44,7 @@ public class CommentModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public Object getMatchKey(Object element) {
-		return getComment(element).getBody();
+		return String.valueOf(getComment(element).getId());
 	}
 
 	@Override
