@@ -33,10 +33,10 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			propertyValue.text = data.value;
 			propertyValue.editable = !data.readOnly;
 			
-			if (!data.readOnly) {
-				BindingUtils.bindProperty( data, "value", propertyValue, "text" );
-				handleListeningOnEvent(FocusEvent.FOCUS_OUT, this, propertyValue);
-			}
+//			if (!data.readOnly) {
+//				BindingUtils.bindProperty( data, "value", propertyValue, "text" );
+//				handleListeningOnEvent(FocusEvent.FOCUS_OUT, this, propertyValue);
+//			}
 			
 		}
 		

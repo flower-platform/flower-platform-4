@@ -10,11 +10,11 @@
 			import mx.events.FlexEvent;
 						
 			override protected function getValue():Object {
-				return propertyValue.text;	
+				return numericStepperProperty.value;	
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
-				BindingUtils.bindProperty(data, "value", propertyValue, "text");
+				BindingUtils.bindProperty(data, "value", numericStepperProperty, "text");
 			}
 			
 			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
@@ -29,11 +29,9 @@
 			
 		]]>
 	</fx:Script>
-	
-	<s:TextInput id="propertyValue"  width="100%" height="100%"
-				 text="{data.value}"
-				 editable="{!data.readOnly}" 
-				 focusOut="propertyValue_focusOutHandler(event)"
-				 keyUp="keyHandler(event)"/>
-	
+	<s:NumericStepper id="numericStepperProperty"
+					  value="{data.value}"
+					  stepSize="1" 
+					  focusOut="propertyValue_focusOutHandler(event)"
+					  keyUp="keyHandler(event)"/>
 </ns:BasicPropertyRenderer>

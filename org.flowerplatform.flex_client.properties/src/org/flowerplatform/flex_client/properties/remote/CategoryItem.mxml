@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<mx:FormItem xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" width="100%" fontWeight="normal" paddingTop="10" paddingBottom="5">
+	
+	<mx:HRule width="100%"/>
+	
+</mx:FormItem>

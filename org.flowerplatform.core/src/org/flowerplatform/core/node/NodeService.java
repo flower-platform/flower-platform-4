@@ -131,14 +131,16 @@ public class NodeService {
 	
 	/**
 	 * @author Mariana Gheorghe
+	 * @author Sebastian Solomon
 	 */
 	public List<PropertyDescriptor> getPropertyDescriptors(Node node) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return Collections.emptyList();
 		}
-		
-		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
+		List<PropertyDescriptor> propertyDescriptorList  = descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
+		Collections.sort(propertyDescriptorList, new CategoryComparator());
+		return propertyDescriptorList;
 	}
 	
 	public void setProperty(Node node, String property, Object value) {		
