@@ -144,7 +144,10 @@ public class Node {
 
 	@Override
 	public boolean equals(Object obj) {
-		return getFullNodeId().equals(((Node) obj).getFullNodeId());
+		if (obj instanceof Node) {
+			return getFullNodeId().equals(((Node) obj).getFullNodeId());
+		}
+		return false;
 	}
 
 	@Override

@@ -33,9 +33,6 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationM
 import static org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider.ENUM_CONSTANT_ARGUMENT;
 import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_INTERFACE;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
@@ -52,27 +49,25 @@ import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.codesync.type_provider.ClassTypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
 
 /**
  * @author Mariana Gheorghe
  */
-public class JavaTypeProvider implements ITypeProvider {
+public class JavaTypeProvider extends ClassTypeProvider {
 
-	private Map<Class<?>, String> directMap = new HashMap<Class<?>, String>();
-	
 	public JavaTypeProvider() {
-		directMap.put(EnumDeclaration.class, ENUM);
-		directMap.put(AnnotationTypeDeclaration.class, ANNOTATION_TYPE);
-		directMap.put(FieldDeclaration.class, ATTRIBUTE);
-		directMap.put(MethodDeclaration.class, OPERATION);
-		directMap.put(SingleVariableDeclaration.class, PARAMETER);
-		directMap.put(Modifier.class, MODIFIER);
-		directMap.put(MemberValuePair.class, MEMBER_VALUE_PAIR);
-		directMap.put(EnumConstantDeclaration.class, ENUM_CONSTANT);
-		directMap.put(AnnotationTypeMemberDeclaration.class, ANNOTATION_MEMBER);
+		classToTypeMap.put(EnumDeclaration.class, ENUM);
+		classToTypeMap.put(AnnotationTypeDeclaration.class, ANNOTATION_TYPE);
+		classToTypeMap.put(FieldDeclaration.class, ATTRIBUTE);
+		classToTypeMap.put(MethodDeclaration.class, OPERATION);
+		classToTypeMap.put(SingleVariableDeclaration.class, PARAMETER);
+		classToTypeMap.put(Modifier.class, MODIFIER);
+		classToTypeMap.put(MemberValuePair.class, MEMBER_VALUE_PAIR);
+		classToTypeMap.put(EnumConstantDeclaration.class, ENUM_CONSTANT);
+		classToTypeMap.put(AnnotationTypeMemberDeclaration.class, ANNOTATION_MEMBER);
 	}
 	
 	@Override
@@ -103,7 +98,7 @@ public class JavaTypeProvider implements ITypeProvider {
 			}
 			return null;
 		} else {
-			return directMap.get(object.getClass());
+			return super.getType(object);
 		}
 	}
 

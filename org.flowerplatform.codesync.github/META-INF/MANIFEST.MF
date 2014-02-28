@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Github
+Bundle-SymbolicName: org.flowerplatform.codesync.github
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.flowerplatform.codesync.github.CodeSyncGitHubPlugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.flowerplatform.util,
+ org.flowerplatform.codesync
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: lib/org.eclipse.egit.github.core-2.1.5.jar,
+ .,
+ lib/gson-2.2.4.jar

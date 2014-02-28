@@ -19,6 +19,7 @@
 package org.flowerplatform.codesync.feature_provider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.codesync.adapter.IModelAdapter;
@@ -33,8 +34,12 @@ public abstract class NodeFeatureProvider extends FeatureProvider {
 	public List<?> getValueFeatures(Object element) {
 		List<String> features = new ArrayList<String>();
 		features.add(NAME);
-		features.add(NodePropertiesConstants.TYPE);
 		return features;
+	}
+	
+	@Override
+	public List<?> getContainmentFeatures(Object element) {
+		return Collections.emptyList();
 	}
 
 	@Override

@@ -59,6 +59,7 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().mindmapNodeRendererControllerClass = CodeSyncNodeRenderer;
 			
 			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
+			CorePlugin.getInstance().serviceLocator.addService("gitHubOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 		
 			var hBox:HBox = new HBox();
@@ -69,6 +70,14 @@ package org.flowerplatform.flex_client.codesync {
 				new CodeSyncOperationsService().synchronize(null);
 			});
 			hBox.addChild(btn);
+			
+			btn = new Button();
+			btn.label = "GitHub";
+			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
+				CorePlugin.getInstance().serviceLocator.invoke("gitHubOperationsService.synchronize");
+			});
+			hBox.addChild(btn);
+			
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 			
 			CorePlugin.getInstance().serviceLocator.invoke(CodeSyncOperationsService.ID + ".getDropdownPropertyRenderersInfo", null, function(result:Object):void {
