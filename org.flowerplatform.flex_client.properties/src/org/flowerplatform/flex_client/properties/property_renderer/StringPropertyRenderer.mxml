@@ -18,13 +18,7 @@
 			}
 			
 			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
-				sendChangedValuesToServer(null);
-			}
-			
-			private function keyHandler(event:KeyboardEvent):void {
-				if (event.keyCode == Keyboard.ENTER) {
-					sendChangedValuesToServer(null);
-				}
+				saveProperty(null);
 			}
 			
 		]]>

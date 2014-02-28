@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Sebastian Solomon
+-->
 <s:FormItem xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   fontWeight="normal"
 				   implements="mx.core.IDataRenderer, mx.managers.IFocusManagerComponent">
+	
 	<fx:Script>
 		<![CDATA[
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
@@ -42,6 +47,8 @@
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
 
 				this.label = data.name;
+
+				UIComponent(labelDisplay).setStyle("fontWeight", "normal");
 				
 				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);			
 					
@@ -57,7 +64,6 @@
 				}
 				
 				itemRenderedInstance.data = propertyDescriptor;
-				
 			}
 
 		]]>

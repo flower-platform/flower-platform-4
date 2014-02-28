@@ -18,8 +18,10 @@
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.collections.ArrayCollection;
+	import mx.events.FlexEvent;
 	
 	import spark.components.DropDownList;
+	import spark.events.DropDownEvent;
 	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -51,6 +53,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super();
 		}
 		
+		private function creationCompleteHandler(event:FlexEvent):void {			
+			dropDownList.addEventListener(DropDownEvent.CLOSE, dropDownEventHandler);
+		}
+		
+		protected function dropDownEventHandler(e:DropDownEvent):void {
+			saveProperty(null);
+		}
+		
 		override protected function createChildren():void {			
 			super.createChildren();
 			
@@ -63,7 +73,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			dropDownList.percentWidth = 100;
 			dropDownList.percentHeight = 100;		
 			dropDownList.labelFunction = labelFunction;
-			
+
 			//get data to fill dropDownList
 			requestDataProviderHandler(this, requestDataProviderCallbackHandler);
 			
@@ -74,12 +84,11 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.data = value;			
 			dropDownList.enabled = !PropertyDescriptor(data).readOnly;
 			
-//			if (!data.readOnly) {				
-//				handleListeningOnEvent(IndexChangeEvent.CHANGE, this, dropDownList);
-//			}			
 			setSelectedIndex();
+			
+			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
 		}
-		
+
 		private function requestDataProviderCallbackHandler(result:ArrayCollection):void {
 			dropDownList.dataProvider = result;		
 			setSelectedIndex();
