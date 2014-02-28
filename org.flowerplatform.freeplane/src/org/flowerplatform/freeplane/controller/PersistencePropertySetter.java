@@ -24,7 +24,7 @@ public class PersistencePropertySetter extends PropertySetter {
 		}
 		
 		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
-			throw new RuntimeException(String.format("Property with name %s shouldn't be set!", property));
+			throw new RuntimeException(String.format("Property with name %s shouldn't be set because it's reserved. Please use another key!", property));
 		}
 		
 		// persist the property value in the attributes table

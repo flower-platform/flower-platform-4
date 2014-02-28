@@ -1,3 +1,5 @@
 # Project Description
 
-Equinox plugin.
+"Abstract" Equinox plugin. 
+
+Contains the core/generic CodeSync algorithm and API.

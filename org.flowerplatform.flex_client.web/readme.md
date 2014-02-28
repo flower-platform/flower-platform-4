@@ -1,3 +1,3 @@
 # Project Description
 
-Flex Client plugin.
+Equinox plugin and Flex Client plugin.
