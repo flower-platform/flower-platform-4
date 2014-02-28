@@ -12,7 +12,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapBasicChildrenProvider extends ChildrenProvider {
+public class MindMapChildrenProvider extends ChildrenProvider {
 			
 	@Override
 	public List<Node> getChildren(Node node) {
@@ -25,6 +25,12 @@ public class MindMapBasicChildrenProvider extends ChildrenProvider {
 			children.add(FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(childNodeModel));
 		}			
 		return children;		
+	}
+
+	@Override
+	public boolean hasChildren(Node node) {
+		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
+		return nodeModel.hasChildren();
 	}
 
 }

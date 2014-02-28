@@ -59,8 +59,6 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return CodeSyncCodePlugin.FOLDER;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}

@@ -74,7 +74,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		 * Note: parent == null -> remove root node
 		 */ 
 		private function removeNode(node:Node, parent:Node = null):void {
-			if (parent != null && parent.children == null || !parent.children.contains(node)) {
+			if (parent != null && (parent.children == null || !parent.children.contains(node))) {
 				// not expanded or child already removed
 				return;
 			}
@@ -119,7 +119,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? "freeplaneNode|mm://path_to_resource|": node.fullNodeId, true], 
+				[node == null ? "freeplaneNode|freePlanePersistence://path_to_resource|": node.fullNodeId, true], 
 				function (result:Object):void {requestChildrenHandler(node, ArrayCollection(result));});	
 		}
 		

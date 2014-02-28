@@ -8,7 +8,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapBasicRawNodeDataProvider extends RawNodeDataProvider<NodeModel> {
+public class MindMapRawNodeDataProvider extends RawNodeDataProvider<NodeModel> {
 
 	@Override
 	public NodeModel getRawNodeData(Node node) {

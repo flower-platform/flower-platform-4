@@ -50,8 +50,6 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getMatchKey(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return ANNOTATION_MEMBER;
 		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			return getStringFromExpression(getAnnotationMember(element).getDefault());
 		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {

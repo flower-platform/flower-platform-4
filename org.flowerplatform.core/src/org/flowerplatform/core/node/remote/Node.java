@@ -3,6 +3,7 @@ package org.flowerplatform.core.node.remote;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
@@ -17,7 +18,7 @@ import org.flowerplatform.core.node.controller.PropertiesProvider;
  */
 public class Node {
 	
-	public static final char FULL_NODE_ID_SEPARATOR = '|';
+	public static final String FULL_NODE_ID_SEPARATOR = "|";
 	private static final String FULL_NODE_ID_SPLIT_REGEX = "\\" + FULL_NODE_ID_SEPARATOR;
 	
 	private String type;
@@ -45,8 +46,11 @@ public class Node {
 	}
 
 	public Node(String fullNodeId) {
+		if (StringUtils.countMatches(fullNodeId, FULL_NODE_ID_SEPARATOR) != 2) { 
+			throw new RuntimeException("fullNodeId must have the following format: <type>|<resource>|<id>!");
+		}
 		String[] tokens = fullNodeId.split(FULL_NODE_ID_SPLIT_REGEX);
-						
+		
 		this.type = tokens[0];
 		this.resource = tokens[1];
 		
@@ -144,6 +148,9 @@ public class Node {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (!(obj instanceof Node)) {
+			return false;
+		}
 		return getFullNodeId().equals(((Node) obj).getFullNodeId());
 	}
 

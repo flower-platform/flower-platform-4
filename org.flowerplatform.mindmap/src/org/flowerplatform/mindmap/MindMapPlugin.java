@@ -19,9 +19,15 @@ import org.osgi.framework.BundleContext;
  */
 public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 
-	public static final String MINDMAP_NODE_TYPE = "freeplaneNode";
-	public static final String MINDMAP_CATEGORY = ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + "mm";
+	public static final String FREEPLANE_PERSISTENCE_NODE_TYPE_KEY = "nodeType";
 	
+	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "freePlaneMindMap";
+	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "freePlanePersistence";
+	
+	public static final String MINDMAP_NODE_TYPE = "freeplaneNode";
+	public static final String FREEPLANE_MINDMAP_CATEGORY = ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
+	public static final String FREEPLANE_PERSISTENCE_CATEGORY = ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
+		
 	protected static MindMapPlugin INSTANCE;
 	
 	public static MindMapPlugin getInstance() {

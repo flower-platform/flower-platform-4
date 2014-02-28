@@ -50,7 +50,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public static final String TYPE_KEY = "type";
 	
 	protected static CorePlugin INSTANCE;
-	
+		
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -59,11 +59,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
-				
-		getServiceRegistry().registerService("nodeServiceInternal", new NodeService(nodeTypeDescriptorRegistry));
-		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		
-		getServiceRegistry().registerService("updateServiceInternal", new UpdateService(new InMemoryUpdateDAO()));
+		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("updateService", new UpdateServiceRemote());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
@@ -137,13 +134,23 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public void setRemoteMethodInvocationListener(RemoteMethodInvocationListener remoteMethodInvocationListener) {
 		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
 	}
-
-	public UpdateService getUpdateService() {
-		return (UpdateService) serviceRegistry.getService("updateServiceInternal");
-	}
+	
+	protected NodeService nodeService;
 	
 	public NodeService getNodeService() {
-		return (NodeService) serviceRegistry.getService("nodeServiceInternal");
+		if (nodeService == null) {
+			nodeService = new NodeService(nodeTypeDescriptorRegistry);
+		}
+		return nodeService;
 	}
-
+	
+	protected UpdateService updateService;
+	
+	public UpdateService getUpdateService() {
+		if (updateService == null) {
+			updateService = new UpdateService(new InMemoryUpdateDAO());
+		}
+		return updateService;
+	}
+	
 }

@@ -73,8 +73,6 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getAnnotationName(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return ANNOTATION;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
