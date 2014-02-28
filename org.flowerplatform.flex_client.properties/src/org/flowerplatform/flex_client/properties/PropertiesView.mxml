@@ -88,7 +88,7 @@
 					"nodeService.getPropertyDescriptors", [node.fullNodeId], 
 						function(result:Object):void {
 						// properties available -> add them in list
-						propertyList.dataProvider = ArrayCollection(result);		
+						propertyList.dataProvider = getPropertyDescriptors(node, ArrayCollection(result));		
 						// get their values from node
 						nodeUpdatedHandler(new NodeUpdatedEvent(node));
 						
@@ -99,6 +99,28 @@
 						node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 					}
 				);		
+			}
+			
+			/**
+			 * Adds dummy <code>PropertyDescriptor</code>s (read-only, displayed as String)
+			 * for all the properties of this node, <b>ONLY</b> in debug mode.
+			 * 
+			 * @author Mariana Gheorghe
+			 */
+			private function getPropertyDescriptors(node:Node, descriptors:ArrayCollection):ArrayCollection {
+				if (CorePlugin.getInstance().getDebug()) {
+					// debug mode
+					for (var property:String in node.properties) {
+						var descriptor:PropertyDescriptor = new PropertyDescriptor();
+						descriptor.name = property;
+						descriptor.value = node.properties[property];
+						descriptor.title = "[debug] " + property;
+						descriptor.readOnly = true;
+						descriptor.type = "String";
+						descriptors.addItem(descriptor);
+					}
+				}
+				return descriptors;
 			}
 			
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {

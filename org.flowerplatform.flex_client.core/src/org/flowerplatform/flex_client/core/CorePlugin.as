@@ -20,7 +20,8 @@ package org.flowerplatform.flex_client.core {
 
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
-	import mx.rpc.events.ResultEvent;	
+	import mx.rpc.events.ResultEvent;
+	
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
@@ -30,8 +31,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
-	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
+	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
@@ -139,6 +140,10 @@ package org.flowerplatform.flex_client.core {
 				}
 			}
 			return null;
+		}
+		
+		public function getDebug():Boolean {
+			return true;
 		}
 		
 //		/**
