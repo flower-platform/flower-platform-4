@@ -133,17 +133,6 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			if (element instanceof TypeDeclaration) {
-				if (((TypeDeclaration) element).isInterface()) {
-					return INTERFACE;
-				}
-				return CLASS;
-			}
-			if (element instanceof EnumDeclaration) {
-				return ENUM;
-			}
-			return ANNOTATION_TYPE;
 		} else if (JavaTypeDeclarationFeatureProvider.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				TypeDeclaration type = (TypeDeclaration) element;

@@ -1,5 +1,6 @@
 package org.flowerplatform.core.node;
 
+import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -97,7 +98,20 @@ public class NodeService {
 		}
 	}
 		
-
+	public boolean hasChildren(Node node) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return false;
+		}
+		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
+		for (ChildrenProvider provider : childrenProviders) {
+			if (provider.hasChildren(node)) {
+				return true;
+			}
+		}
+		return false;
+	}
+		
 	/**
 	 * @author Mariana Gheorghe
 	 */
@@ -217,6 +231,8 @@ public class NodeService {
 		for (PropertiesProvider provider : providers) {
 			provider.populateWithProperties(node);
 		}
+		
+		node.getProperties().put(HAS_CHILDREN, hasChildren(node));
 	}
 	
 	

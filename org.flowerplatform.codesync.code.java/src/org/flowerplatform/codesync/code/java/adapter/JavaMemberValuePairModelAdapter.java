@@ -51,8 +51,6 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (FeatureProvider.NAME.equals(feature)) {
 			return ((MemberValuePair) element).getName().getIdentifier();
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return MEMBER_VALUE_PAIR;
 		} else if (JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE.equals(feature)) {
 			return getStringFromExpression(((MemberValuePair) element).getValue());
 		}

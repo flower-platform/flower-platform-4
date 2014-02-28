@@ -85,5 +85,9 @@ package org.flowerplatform.flexutil {
 			return simpleClassName;
 		}
 		
+		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
+			return str == null ? defaultStr : str;
+		}
+		
 	}
 }
