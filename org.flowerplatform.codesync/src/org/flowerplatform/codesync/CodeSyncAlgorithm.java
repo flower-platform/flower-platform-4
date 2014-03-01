@@ -360,9 +360,9 @@ public class CodeSyncAlgorithm {
 			return;
 		}
 		
-		
-		
 		logger.debug("Perform sync for {}", match);
+		
+		// sync match
 		
 		if (action == null) {
 			action = getDiffActionToApplyForMatch(match);
@@ -371,16 +371,6 @@ public class CodeSyncAlgorithm {
 		if (action != null) {
 			action.execute(match, -1);
 		}
-		
-		List<Match> subMatches = new ArrayList<Match>();
-		subMatches.addAll(match.getSubMatches());
-		
-		for (Match subMatch : subMatches) {
-			synchronize(subMatch);
-		}
-		
-		ActionSynchronize syncAction = new ActionSynchronize();
-		syncAction.execute(match);
 		
 		if (action == null) {
 			// no action performed; inform the ancestor
@@ -393,6 +383,11 @@ public class CodeSyncAlgorithm {
 			}
 		}
 		
+		ActionSynchronize syncAction = new ActionSynchronize();
+		syncAction.execute(match);
+		
+		// update sync flags
+		
 		if (match.getAncestor() != null) {
 			getAncestorModelAdapter(match.getAncestor()).allActionsPerformed(match.getAncestor(), null, this);
 		}
@@ -402,6 +397,16 @@ public class CodeSyncAlgorithm {
 		if (match.getRight() != null) {
 			getRightModelAdapter(match.getRight()).allActionsPerformed(match.getRight(), match.getLeft(), this);
 		}
+		
+		// recurse
+		
+		List<Match> subMatches = new ArrayList<Match>();
+		subMatches.addAll(match.getSubMatches());
+		
+		for (Match subMatch : subMatches) {
+			synchronize(subMatch);
+		}
+		
 	}
 	
 	protected DiffAction getDiffActionToApplyForMatch(Match match) {

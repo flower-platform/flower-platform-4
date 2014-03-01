@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.renderer {
+package org.flowerplatform.flexdiagram {
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	import org.flowerplatform.flexdiagram.DiagramShell;

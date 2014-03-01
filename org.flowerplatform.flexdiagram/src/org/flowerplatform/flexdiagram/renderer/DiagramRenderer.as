@@ -25,6 +25,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.IDiagramShellAware;
 	import org.flowerplatform.flexdiagram.controller.visual_children.IVisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;

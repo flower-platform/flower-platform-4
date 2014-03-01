@@ -16,33 +16,20 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.properties.remote {
-	import mx.collections.ArrayCollection;
-
+package org.flowerplatform.flexutil.action {
+	
 	/**
-	 * @author Razvan Tache
-	 * @author Cristina Constantinescu
+	 * Called by a <tt>ComposedActionProvider</tt> before returning the action for the selection.
+	 * Used to set any attributes the action may need when it will be executed.
+	 * 
+	 * @see ComposedActionProvider
+	 * @see DiagramShellAwareProcessor
+	 * 
+	 * @author Mariana Gheorghe
 	 */
-	[Bindable]
-	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
-	public class PropertyDescriptor {
-
-		public var name:String;
+	public interface IComposedActionProviderProcessor {
 		
-		public var title:String;
-		
-		public var value:Object;
-		
-		public var readOnly:Boolean;
-		
-		public var type:String;
-
-	    /**
-	     * @author Sebastian Solomon
-	     */
-		public var category:String;
-		
-		public var possibleValues:ArrayCollection;
+		function processAction(action:IAction):void;
 		
 	}
 }

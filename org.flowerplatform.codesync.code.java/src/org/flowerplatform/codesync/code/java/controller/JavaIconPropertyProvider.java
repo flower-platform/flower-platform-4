@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
+import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -94,12 +96,16 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 	
 	private String append(String icon, String decorator) {
-		return icon + "|" + getImagePath(decorator);
+		return CodeSyncCodeJavaPlugin.getInstance().getImageComposerUrl(icon, getImagePath(decorator));
 	}
 
 	protected int getModifiersFlags(Node node) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node)) {
+			if (CodeSyncControllerUtils.isRemoved(modifier)) {
+				// don't decorate if the modifier was marked removed
+				continue;
+			}
 			String keyword = (String) modifier.getOrPopulateProperties().get(FeatureProvider.NAME);
 			if (keyword == null) {
 				continue;
