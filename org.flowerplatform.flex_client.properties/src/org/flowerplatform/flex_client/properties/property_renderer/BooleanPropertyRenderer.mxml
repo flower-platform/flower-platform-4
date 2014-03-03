@@ -31,5 +31,8 @@
 				selected="{data.value}"
 				enabled="{!data.readOnly}" 
 				click="clickHandler(event)"/>
+	<s:CheckBox id="changeCheckBox" 
+				visible="{data.hasChangeCheckbox}"
+				enabled="{changeCheckBox.selected}"/>
 	
 </ns:BasicPropertyRenderer>

@@ -31,4 +31,7 @@
 					  stepSize="1" 
 					  focusOut="propertyValue_focusOutHandler(event)"
 					  keyUp="keyHandler(event)"/>
+	<s:CheckBox id="changeCheckBox" 
+				visible="{data.hasChangeCheckbox}"
+				enabled="{changeCheckBox.selected}"/>
 </ns:BasicPropertyRenderer>

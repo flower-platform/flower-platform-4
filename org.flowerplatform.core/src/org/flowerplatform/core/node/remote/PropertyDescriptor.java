@@ -35,6 +35,7 @@ public class PropertyDescriptor extends AbstractController {
 	private String title;
 	private String type = DEFAULT_TYPE;
 	private String category = DEFAULT_CATEGORY;
+	private Boolean hasChangeCheckbox = true;
 
 	private boolean readOnly = true;
 		
@@ -96,6 +97,28 @@ public class PropertyDescriptor extends AbstractController {
 	 */
 	public PropertyDescriptor setCategoryAs (String category) {
 		this.category = category;
+		return this;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Boolean getHasChangeCheckbox() {
+		return hasChangeCheckbox;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public void setHasChangeCheckbox(Boolean hasChangeCheckbox) {
+		this.hasChangeCheckbox = hasChangeCheckbox;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public PropertyDescriptor setHasChangeCheckboxAs(Boolean hasChangeCheckbox) {
+		this.hasChangeCheckbox = hasChangeCheckbox;
 		return this;
 	}
 	

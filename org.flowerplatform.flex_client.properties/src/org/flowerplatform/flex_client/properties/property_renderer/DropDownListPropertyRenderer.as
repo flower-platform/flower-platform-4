@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.collections.ArrayCollection;
 	import mx.events.FlexEvent;
 	
+	import spark.components.CheckBox;
 	import spark.components.DropDownList;
 	import spark.events.DropDownEvent;
 	
@@ -33,6 +34,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		[Bindable]
 		public var dropDownList:spark.components.DropDownList;
+		
+		[Bindable]
+		public var changeCheckBox:CheckBox;
 		
 		/**
 		 * Signature: function getDataProviderHandler(callbackObject:Object, callbackFunction:Function):void		 
@@ -61,6 +65,11 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			saveProperty(null);
 		}
 		
+		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Sebastian Solomon
+		 */
 		override protected function createChildren():void {			
 			super.createChildren();
 			
@@ -77,7 +86,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			//get data to fill dropDownList
 			requestDataProviderHandler(this, requestDataProviderCallbackHandler);
 			
-			addElement(dropDownList);			
+			addElement(dropDownList);	
+			changeCheckBox = new CheckBox();
+			addElement(changeCheckBox);
 		}
 		
 		override public function set data(value:Object):void {
@@ -85,6 +96,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			dropDownList.enabled = !PropertyDescriptor(data).readOnly;
 			
 			setSelectedIndex();
+			
+			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
+			changeCheckBox.enabled = changeCheckBox.selected;
 			
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
 		}
