@@ -48,9 +48,6 @@ public class CodeSyncOperationsService {
 			performSync(match);
 		}
 		
-		save(match, true);
-		save(match, false);
-		
 		return match;
 	}
 	

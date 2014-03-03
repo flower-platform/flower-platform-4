@@ -18,18 +18,17 @@
  */
 package org.flowerplatform.tests.codesync;
 
-import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.NAME;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
 import static org.flowerplatform.codesync.code.CodeSyncCodePlugin.FOLDER;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin.TECHNOLOGY;
+import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.ANNOTATION_VALUE_VALUE;
+import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.SUPER_CLASS;
+import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.TYPED_ELEMENT_TYPE;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
 import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.TYPED_ELEMENT_TYPE;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_CLASS;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_INTERFACE;
-import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -45,8 +44,13 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
+import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
+import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeService;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.tests.TestUtil;
 import org.junit.BeforeClass;
@@ -96,8 +100,7 @@ public class CodeSyncTest {
 		
 		Node root = CodeSyncPlugin.getInstance().getResource(null);
 		
-		Node model = new Node();
-		model.setType(FOLDER);
+		Node model = new Node(FOLDER, root.getResource(), null, null);
 		nodeService.addChild(root, model, null);
 		nodeService.setProperty(model, NAME, INITIAL);
 		Match match = codeSyncService.synchronize(project, new File(project, fullyQualifiedName), TECHNOLOGY, true);
@@ -265,8 +268,7 @@ public class CodeSyncTest {
 		// change superCls, superInterfaces
 		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel");
-		Node superInterface = new Node();
-		superInterface.setType(SUPER_INTERFACE);
+		Node superInterface = new Node(JavaExpressionModelAdapter.SUPER_INTERFACE, root.getResource(), null, null);
 		nodeService.addChild(cls, superInterface, null);
 		nodeService.setProperty(superInterface, NAME, "IFromModel");
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
@@ -277,19 +279,17 @@ public class CodeSyncTest {
 //		nodeService.setProperty(val, ANNOTATION_VALUE_VALUE, "test");
 
 		// add class
-		Node internalCls = new Node();
-		internalCls.setType(CLASS);
+		Node internalCls = new Node(CLASS, root.getResource(), null, null);
 		nodeService.addChild(cls, internalCls, null);
 		nodeService.setProperty(internalCls, NAME, "InternalClassFromModel");
 
 		// change typed element type
 		Node x = getChild(cls, new String[] {"x"});
-		nodeService.setProperty(x, JavaFeaturesConstants.TYPED_ELEMENT_TYPE, "Test");
+		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test");
 		
 		// change modifiers + annotations
 		Node test = getChild(cls, new String[] {"test(String)"});
-		Node privateModif = new Node();
-		privateModif.setType(MODIFIER);
+		Node privateModif = new Node(MODIFIER, root.getResource(), null, null);
 		nodeService.addChild(test, privateModif, null);
 		nodeService.setProperty(privateModif, NAME, "private");
 		Node publicModif = getChild(test, new String[] {"public"});
@@ -297,16 +297,14 @@ public class CodeSyncTest {
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
-		Node orphanRemoval = new Node();
-		orphanRemoval.setType(MEMBER_VALUE_PAIR);
+		Node orphanRemoval = new Node(MEMBER_VALUE_PAIR, root.getResource(), null, null);
 		nodeService.addChild(a, orphanRemoval, null);
 		nodeService.setProperty(orphanRemoval, NAME, "orphanRemoval");
 		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true");
 		
 		// change parameters
 		Node getTest = getChild(cls, new String[] {"getTest()"});
-		Node param = new Node();
-		param.setType(JavaParameterModelAdapter.PARAMETER);
+		Node param = new Node(JavaParameterModelAdapter.PARAMETER, root.getResource(), null, null);
 		nodeService.addChild(getTest, param, null);
 		nodeService.setProperty(param, NAME, "a");
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int");
@@ -336,14 +334,12 @@ public class CodeSyncTest {
 ////				CodeSyncCodePlugin.getInstance().getUtils().setModifiers(op, modifiers);
 
 		// add element
-		Node t = new Node();
-		t.setType(ATTRIBUTE);
+		Node t = new Node(ATTRIBUTE, root.getResource(), null, null);
 		nodeService.addChild(cls, t, null);
 		nodeService.setProperty(t, NAME, "t");
 		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int");
 //		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
-		publicModif = new Node();
-		publicModif.setType(MODIFIER);
+		publicModif = new Node(MODIFIER, root.getResource(), null, null);
 		nodeService.addChild(t, publicModif, null);
 		nodeService.setProperty(publicModif, NAME, "public");
 		
@@ -369,19 +365,18 @@ public class CodeSyncTest {
 		
 //		// change typed element type
 		Node x = getChild(cls, new String[] {"x"});
-		nodeService.setProperty(x, JavaFeaturesConstants.TYPED_ELEMENT_TYPE, "Test");
+		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test");
 		
 //		// change typed element type
 		Node y = getChild(cls, new String[] {"y"});
-		nodeService.setProperty(y, JavaFeaturesConstants.TYPED_ELEMENT_TYPE, "Test");
+		nodeService.setProperty(y, TYPED_ELEMENT_TYPE, "Test");
 		
 		// change modifiers + annotations
 		Node test = getChild(cls, new String[] {"test(String)"});
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
-		Node orphanRemoval = new Node();
-		orphanRemoval.setType(MEMBER_VALUE_PAIR);
+		Node orphanRemoval = new Node(MEMBER_VALUE_PAIR, root.getResource(), null, null);
 
 		Match match = codeSyncService.generateMatch(getProject(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
 		
