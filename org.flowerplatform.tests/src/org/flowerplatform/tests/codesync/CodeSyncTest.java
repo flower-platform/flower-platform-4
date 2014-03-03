@@ -18,6 +18,18 @@
  */
 package org.flowerplatform.tests.codesync;
 
+import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED;
+import static org.flowerplatform.codesync.code.CodeSyncCodePlugin.FOLDER;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin.TECHNOLOGY;
+import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
+import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
+import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
+import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.TYPED_ELEMENT_TYPE;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider.ANNOTATION_VALUE_VALUE;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_CLASS;
+import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_INTERFACE;
+import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,6 +37,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.codesync.CodeSyncPlugin;
@@ -33,8 +46,9 @@ import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeService;
+import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.tests.TestUtil;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -55,30 +69,38 @@ public class CodeSyncTest {
 	public static final String SOURCE_FILE = "Test.java";
 	public static final String MODEL_FILE = "CSE.notation";
 	
-	private MindMapService mindMapService = new MindMapService();
+	private static NodeService nodeService = null;
+	
+	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
 	@BeforeClass
-	public static void setUpBeforeClass() {
-		TestUtil.copyFilesAndCreateProject(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
-	}
-	
-	@Before
-	public void before() {
-		mindMapService.reload();
+	public static void setUpBeforeClass() throws Exception {
+		TestUtil.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
+		
+		new CorePlugin().start(null);
+		new FreeplanePlugin().start(null);
+		
+		new CodeSyncPlugin().start(null);
+		new CodeSyncCodePlugin().start(null);
+		new CodeSyncCodeJavaPlugin().start(null);
+		
+		nodeService = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
 	}
 	
 	@Test
-	public void testMatchWhenSync() {
+	public void testMatchWhenSync() throws IOException {
 		CodeSyncPlugin.getInstance().addSrcDir(INITIAL);
 		String fullyQualifiedName = PROJECT + "/" + INITIAL /*+ "/" + SOURCE_FILE*/;
 		
 		File project = getProject();
 		
-		Node root = mindMapService.getNode(null);
-		Node model = mindMapService.addNode(root.getId(), CodeSyncPlugin.FOLDER);
-		mindMapService.setProperty(model.getId(), Node.NAME, INITIAL);
-		model = mindMapService.getNode(model.getId());
-		Match match = CodeSyncCodePlugin.getInstance().runCodeSyncAlgorithm(model, project, fullyQualifiedName, null, CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
+		Node root = CodeSyncPlugin.getInstance().getResource(null);
+		
+		Node model = new Node();
+		model.setType(FOLDER);
+		nodeService.addChild(root, model, null);
+		nodeService.setProperty(model, NAME, INITIAL);
+		Match match = codeSyncService.synchronize(project, new File(project, fullyQualifiedName), TECHNOLOGY, true);
 		
 		assertEquals(1, match.getSubMatches().size());
 		
@@ -87,46 +109,9 @@ public class CodeSyncTest {
 					new Pair(MatchType._3MATCH, 1),				// Test.java
 						new Pair(MatchType._3MATCH, 2),				// @Deprecated public class Test
 						
-							new Pair(MatchType._3MATCH, 3),				// @OneToMany(mappedBy="test") public int test(String st)
-								new Pair(MatchType._3MATCH, 4),				// public
-								new Pair(MatchType._3MATCH, 4),				// @OneToMany
-									new Pair(MatchType._3MATCH, 5),				// mappedBy = test
-								new Pair(MatchType._3MATCH, 4),				// String st
-							
-							new Pair(MatchType._3MATCH, 3),				// @OverrideAnnotationOf(mappedBy="test") public static Test getTest()
-								new Pair(MatchType._3MATCH, 4),				// public	
-								new Pair(MatchType._3MATCH, 4),				// @OverrideAnnotationOf
-									new Pair(MatchType._3MATCH, 5),				// x+y
-								new Pair(MatchType._3MATCH, 4),				// static
-								
-							new Pair(MatchType._3MATCH, 3),				// private int y
-								new Pair(MatchType._3MATCH, 4),				// private
-								
-							new Pair(MatchType._3MATCH, 3), 				// private int x
-								new Pair(MatchType._3MATCH, 4),				// private
-								
 							new Pair(MatchType._3MATCH, 3),				// @Deprecated
 							new Pair(MatchType._3MATCH, 3),				// public
-							new Pair(MatchType._3MATCH, 3),					// ITest
-				};
-		testMatchTree(match, typeList, true);
-	}
-	
-//	@Test
-	public void testMatchCacheDeleted() {
-		CodeSyncPlugin.getInstance().addSrcDir(CACHE_DELETED);
-		String fullyQualifiedName = PROJECT + "/" + CACHE_DELETED + "/" + SOURCE_FILE;
-
-		File file = getFile(fullyQualifiedName);
-//		CodeSyncCodeJavaPlugin.getInstance().getFolderModelAdapter().setLimitedPath(file.getFullPath().toString());
-		CodeSyncCodePlugin.getInstance().getNode(getProject(), file, CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
-		Node root = new MindMapService().getNode(null);
-		Match match = CodeSyncCodePlugin.getInstance().runCodeSyncAlgorithm(root, getProject(), file.getName(), file.getName(), CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
-		
-		Pair[] typeList = {
-				new Pair(MatchType._3MATCH, 0),				// src
-					new Pair(MatchType._3MATCH, 1),				// Test.java
-						new Pair(MatchType._3MATCH, 2),				// @Deprecated public class Test
+							new Pair(MatchType._3MATCH, 3),				// ITest
 						
 							new Pair(MatchType._3MATCH, 3),				// @OneToMany(mappedBy="test") public int test(String st)
 								new Pair(MatchType._3MATCH, 4),				// public
@@ -135,186 +120,52 @@ public class CodeSyncTest {
 								new Pair(MatchType._3MATCH, 4),				// String st
 							
 							new Pair(MatchType._3MATCH, 3),				// @OverrideAnnotationOf(mappedBy="test") public static Test getTest()
-								new Pair(MatchType._3MATCH, 4),				// public
+								new Pair(MatchType._3MATCH, 4),				// static	
 								new Pair(MatchType._3MATCH, 4),				// @OverrideAnnotationOf
 									new Pair(MatchType._3MATCH, 5),				// x+y
-								new Pair(MatchType._3MATCH, 4),				// static
+								new Pair(MatchType._3MATCH, 4),				// public
 								
 							new Pair(MatchType._3MATCH, 3),				// private int y
 								new Pair(MatchType._3MATCH, 4),				// private
 								
-							new Pair(MatchType._3MATCH, 3), 				// private int x
+							new Pair(MatchType._3MATCH, 3), 			// private int x
 								new Pair(MatchType._3MATCH, 4),				// private
 								
-							new Pair(MatchType._3MATCH, 3),				// @Deprecated
-							new Pair(MatchType._3MATCH, 3),				// public
-							new Pair(MatchType._3MATCH, 3),					// ITest
+							
+							
 				};
 		testMatchTree(match, typeList, true);
 	}
 	
-//	@Test
+	@Test
 	public void testMatchNoConflicts() {
 		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS);
-		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS + "/" + SOURCE_FILE;
+		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS /*+ "/" + SOURCE_FILE*/;
 
-		File file = getFile(fullyQualifiedName);
-//		CodeSyncCodeJavaPlugin.getInstance().getFolderModelAdapter().setLimitedPath(file.getFullPath().toString());
-		CodeSyncCodePlugin.getInstance().getNode(getProject(), file, CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
-		Node root = new MindMapService().getNode(null);
-		Match match = CodeSyncCodePlugin.getInstance().runCodeSyncAlgorithm(root, getProject(), file.getName(), file.getName(), CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
+		File project = getProject();
 		
-//		// create FeatureChanges to simulate model modifications
-//		IProject project = getProject(PROJECT);
-//		CodeSyncElement srcDir = CodeSyncCodePlugin.getInstance().getSrcDir(CodeSyncCodePlugin.getInstance().getCodeSyncMapping(project), MODIFIED_NO_CONFLICTS);
-//		FeatureChange featureChange = null;
-//		
-//		// change superCls, superInterfaces
-//		CodeSyncElement Test = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test"});
-//		com.crispico.flower.mp.model.astcache.code.Class cls = (com.crispico.flower.mp.model.astcache.code.Class) Test.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(Test, AstCacheCodePackage.eINSTANCE.getClass_SuperClasses(), featureChange);
-//		featureChange.setOldValue(cls.getSuperClasses());
-//		List<String> superClasses = Collections.singletonList("SuperClassFromModel");
-//		featureChange.setNewValue(superClasses);
-////		CodeSyncCodePlugin.getInstance().getUtils().setSuperClasses(cls, superClasses);
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(Test, AstCacheCodePackage.eINSTANCE.getClass_SuperInterfaces(), featureChange);
-//		featureChange.setOldValue(cls.getSuperInterfaces());
-//		List<String> superInterfaces = new ArrayList<String>();
-//		superInterfaces.add("IFromModel");
-//		superInterfaces.add("ITest");
-//		featureChange.setNewValue(superInterfaces);
-////		CodeSyncCodePlugin.getInstance().getUtils().setSuperInterfaces(cls, superInterfaces);
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(Test, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);
-//		featureChange.setOldValue(cls.getModifiers());
-//		Modifier modifier = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createModifier();
-//		List<ExtendedModifier> modifiers = new BasicEList<ExtendedModifier>();
-//		modifier.setType(1); // public
-//		modifiers.add(modifier);
-//		Annotation a = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotation();
-//		a.setName("Deprecated");
-//		AnnotationValue value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//		value.setName("_");
-//		value.setValue("test");
-//		CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
-//		modifiers.add(a);
-//		featureChange.setNewValue(modifiers);
-////		CodeSyncCodePlugin.getInstance().getUtils().setModifiers(cls, modifiers);
-//		
-//		// add class
-//		CodeSyncElement InternalCls = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createCodeSyncElement();
-//		InternalCls.setAdded(true);
-//		InternalCls.setName("InternalClassFromModel");
-//		InternalCls.setType("Class");
-//		com.crispico.flower.mp.model.astcache.code.Class internalCls = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createClass();
-//		InternalCls.setAstCacheElement(internalCls);
-//		CodeSyncCodePlugin.getInstance().getUtils().addChild(Test, InternalCls);
-//		CodeSyncCodePlugin.getInstance().getUtils().addToResource(project, internalCls);
-//		
-//		// change typed element type
-//		CodeSyncElement x = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test", "x"});
-//		TypedElement attr = (TypedElement) x.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(x, AstCacheCodePackage.eINSTANCE.getTypedElement_Type(), featureChange);
-//		featureChange.setOldValue(attr.getType());
-//		featureChange.setNewValue("Test");
-////		attr.setType("Test");
-//		
-//		// change modifiers + annotations
-//		CodeSyncElement test = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test", "test(String)"});
-//		Operation op = (Operation) test.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(test, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);
-//		featureChange.setOldValue(op.getModifiers());
-//		modifier = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createModifier();
-//		modifiers = new BasicEList<ExtendedModifier>();
-//		modifier.setType(2); // private
-//		modifiers.add(modifier);
-//		a = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotation();
-//		a.setName("OneToMany");
-//		value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//		value.setName("mappedBy");
-//		value.setValue("\"modified_by_model\"");
-//		CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
-//		value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//		value.setName("orphanRemoval");
-//		value.setValue("true");
-//		CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
-//		modifiers.add(a);
-//		featureChange.setNewValue(modifiers);
-////		CodeSyncCodePlugin.getInstance().getUtils().setModifiers(op, modifiers);
-//		
-//		// change parameters
-//		CodeSyncElement getTest = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test", "getTest()"});
-//		op = (Operation) getTest.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(getTest, AstCacheCodePackage.eINSTANCE.getOperation_Parameters(), featureChange);
-//		featureChange.setOldValue(op.getParameters());
-//		Parameter param = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createParameter();
-//		param.setName("a");
-//		param.setType("int");
-//		List<Parameter> params = new BasicEList<Parameter>();
-//		params.add(param);
-//		featureChange.setNewValue(params);
-////		CodeSyncCodePlugin.getInstance().getUtils().setParams(op, params);
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(getTest, AstCacheCodePackage.eINSTANCE.getDocumentableElement_Documentation(), featureChange);
-//		featureChange.setOldValue(op.getDocumentation());
-//		String doc = "modified from model\n@author test";
-//		featureChange.setNewValue(doc);
-////		op.setDocumentation(doc);
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(getTest, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);
-//		featureChange.setOldValue(op.getModifiers());
-//		modifiers = new BasicEList<ExtendedModifier>();
-//		modifier = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createModifier();
-//		modifier.setType(1); // public
-//		modifiers.add(modifier);
-//		a = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotation();
-//		a.setName("OverrideAnnotationOf");
-//		value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//		value.setName("value1");
-//		value.setValue("true");
-//		CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
-//		value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//		value.setName("value2");
-//		value.setValue("false");
-//		CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
-//		modifiers.add(a);
-//		featureChange.setNewValue(modifiers);
-////		CodeSyncCodePlugin.getInstance().getUtils().setModifiers(op, modifiers);
-//		
-//		// add element
-//		CodeSyncElement newCSE = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createCodeSyncElement();
-//		newCSE.setAdded(true);
-//		newCSE.setName("t");
-//		newCSE.setType("Attribute");
-//		Attribute t = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAttribute();
-//		t.setDocumentation("doc from model @author test");
-//		t.setType("int");
-//		modifier = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createModifier();
-//		modifier.setType(1);
-//		CodeSyncCodePlugin.getInstance().getUtils().setModifiers(t, Collections.singletonList((ExtendedModifier) modifier));
-//		newCSE.setAstCacheElement(t);
-//		CodeSyncCodePlugin.getInstance().getUtils().addChild(Test, newCSE);
-//		CodeSyncCodePlugin.getInstance().getUtils().addToResource(project, t);
-//		
-//		// remove element
-//		CodeSyncElement y = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test", "y"});
-//		y.setDeleted(true);
-//		
-//		CodeSyncMergePlugin.getInstance().saveResource(CodeSyncCodePlugin.getInstance().getCodeSyncMapping(project));
-//		CodeSyncMergePlugin.getInstance().discardResource(CodeSyncCodePlugin.getInstance().getCodeSyncMapping(project));
-//		CodeSyncEditorStatefulService service = (CodeSyncEditorStatefulService) CommunicationPlugin.getInstance().getServiceRegistry().getService(CodeSyncEditorStatefulService.SERVICE_ID);
-//		service.unsubscribeAllClientsForcefully(project.getFullPath().toString(), false);
-//		CodeSyncCodePlugin.getInstance().getCodeSyncElement(project, getFile(fullyQualifiedName), CodeSyncCodeJavaPlugin.TECHNOLOGY, communicationChannel);
+		Node root = CodeSyncPlugin.getInstance().getResource(null);
+		
+		// simulate model modifications
+		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
+		
+		Match match = codeSyncService.generateMatch(getProject(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
 		
 		Pair[] typeList = {
 				new Pair(MatchType._3MATCH, 0),					// src
 					new Pair(MatchType._3MATCH, 1),					// Test.java
 						new Pair(MatchType._3MATCH, 2),					// @Deprecated public class Test
+						
+//							new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 3),		// @Deprecated (removed from model)
+//							new Pair(MatchType._3MATCH, 3),						// public
+//							new Pair(MatchType._1MATCH_LEFT, 3),				// @Deprecated(test) (added to model)
+//								new Pair(MatchType._1MATCH_LEFT, 4),				// test
+						
+							new Pair(MatchType._3MATCH, 3),						// @Deprecated
+							new Pair(MatchType._3MATCH, 3),						// public
+							new Pair(MatchType._2MATCH_ANCESTOR_LEFT, 3),		// ITest
+							new Pair(MatchType._1MATCH_LEFT, 3),				// IFromModel
+							new Pair(MatchType._1MATCH_RIGHT, 3),				// IFromSource
 						
 							new Pair(MatchType._3MATCH, 3),					// @OneToMany(mappedBy="test") public int test(String st) {
 								new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 4),		// removed public from model
@@ -327,13 +178,15 @@ public class CodeSyncTest {
 									new Pair(MatchType._1MATCH_RIGHT, 5),				// final (added to source)
 								
 							new Pair(MatchType._3MATCH, 3),					// @OverrideAnnotationOf(x+y) public static Test getTest() {
-								new Pair(MatchType._3MATCH, 4),					// public
-								new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 4),		// @OverrideAnnotationOf(x+y) (removed from model)
-									new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 5),		// x+y
 								new Pair(MatchType._1MATCH_ANCESTOR, 4),			// removed static from model and source
-								new Pair(MatchType._1MATCH_LEFT, 4),				// @overrideAnnotationOf(valu1=true, value2=false) (added to model)
-									new Pair(MatchType._1MATCH_LEFT, 5),				// value1 (added to model)
-									new Pair(MatchType._1MATCH_LEFT, 5),				// value2 (added to model)
+								new Pair(MatchType._3MATCH, 4),						// @OverrideAnnotationOf
+									new Pair(MatchType._3MATCH, 5),						// x+y
+//								new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 4),		// @OverrideAnnotationOf(x+y) (removed from model)
+//									new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 5),		// x+y
+//								new Pair(MatchType._1MATCH_LEFT, 4),				// @overrideAnnotationOf(valu1=true, value2=false) (added to model)
+//									new Pair(MatchType._1MATCH_LEFT, 5),				// value1 (added to model)
+//									new Pair(MatchType._1MATCH_LEFT, 5),				// value2 (added to model)
+								new Pair(MatchType._3MATCH, 4),						// public
 								new Pair(MatchType._1MATCH_LEFT, 4),				// added param to model
 								
 							new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 3),		// private int y (removed from model)
@@ -342,12 +195,13 @@ public class CodeSyncTest {
 							new Pair(MatchType._3MATCH, 3),					// private Test x <> private int x
 								new Pair(MatchType._3MATCH, 4),					// private
 								
-							new Pair(MatchType._1MATCH_LEFT, 3),				// private int t (added to model)
-								new Pair(MatchType._1MATCH_LEFT, 4),				// private
-								
-							new Pair(MatchType._1MATCH_LEFT, 3),				// class InternalClassFromModel
+							new Pair(MatchType._1MATCH_LEFT, 3),				// public int t (added to model)
+								new Pair(MatchType._1MATCH_LEFT, 4),				// public
+							
+							new Pair(MatchType._1MATCH_LEFT, 3),				// public class InternalClsFromModel
 								
 							new Pair(MatchType._1MATCH_RIGHT, 3),				// public enum ActionType
+								new Pair(MatchType._1MATCH_RIGHT, 4),				// public
 								new Pair(MatchType._1MATCH_RIGHT, 4),				// public Object diffAction
 									new Pair(MatchType._1MATCH_RIGHT, 5), 				// public
 								new Pair(MatchType._1MATCH_RIGHT, 4),				// private ActionType(Object action)
@@ -357,12 +211,11 @@ public class CodeSyncTest {
 									new Pair(MatchType._1MATCH_RIGHT, 5),				// new Test()
 								new Pair(MatchType._1MATCH_RIGHT, 4), 				// ACTION_TYPE_COPY_RIGHT_LEFT(new InternalClsFromSource());
 									new Pair(MatchType._1MATCH_RIGHT, 5),				// new InternalClsFromSource()
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// public
 								
 							new Pair(MatchType._1MATCH_RIGHT, 3),				// public class InternalClsFromSource
+								new Pair(MatchType._1MATCH_RIGHT, 4),				// public
 								new Pair(MatchType._1MATCH_RIGHT, 4),				// public int x
 									new Pair(MatchType._1MATCH_RIGHT, 5), 				// public
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// public
 								
 							new Pair(MatchType._1MATCH_RIGHT, 3),				// public @interface AnnotationTest
 								new Pair(MatchType._1MATCH_RIGHT, 4), 				// boolean value1() default true
@@ -371,121 +224,175 @@ public class CodeSyncTest {
 								
 							new Pair(MatchType._1MATCH_RIGHT, 3),				// private int z (added to source)
 								new Pair(MatchType._1MATCH_RIGHT, 4), 				// private
-								
-							new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 3),		// @Deprecated (removed from model)
-							new Pair(MatchType._3MATCH, 3),					// public
-							new Pair(MatchType._1MATCH_LEFT, 3),				// @Deprecated(test) (added to model)
-								new Pair(MatchType._1MATCH_LEFT, 4),				// test
-							new Pair(MatchType._2MATCH_ANCESTOR_LEFT, 3),		// ITest
-							new Pair(MatchType._1MATCH_LEFT, 3),				// IFromModel
-							new Pair(MatchType._1MATCH_RIGHT, 3),				// IFromSource
 		};
 		testMatchTree(match, typeList, false);
 		assertFalse("Conflicts not expected!", match.isChildrenConflict());
 	}
-	
-//	@Test
-	public void testMatchNoConflictsAndPerformSync() throws IOException {
-		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
-		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/" + SOURCE_FILE;
-		File project = getProject();
-		File cseLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().CSE_MAPPING_FILE_LOCATION);
-		File aceLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().ACE_FILE_LOCATION);
 
+	@Test
+	public void testMatchNoConflictsAndPerformSync() throws Exception {
+		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
 		
-		File file = getFile(fullyQualifiedName);
-//		CodeSyncCodeJavaPlugin.getInstance().getFolderModelAdapter().setLimitedPath(file.getFullPath().toString());
-		CodeSyncCodePlugin.getInstance().getNode(project, file, CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
-		Node root = new MindMapService().getNode(null);
-		Match match = CodeSyncCodePlugin.getInstance().runCodeSyncAlgorithm(root, getProject(), file.getName(), file.getName(), CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
-//		
-//		CodeSyncEditorStatefulService service = (CodeSyncEditorStatefulService) CommunicationPlugin.getInstance().getServiceRegistry().getService(CodeSyncEditorStatefulService.SERVICE_ID);
-//		service.synchronize(new StatefulServiceInvocationContext(communicationChannel), EditorPlugin.getInstance().getFileAccessController().getPath(project));
-//		service.applySelectedActions(new StatefulServiceInvocationContext(communicationChannel), EditorPlugin.getInstance().getFileAccessController().getPath(project), true);
+		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC /*+ "/" + SOURCE_FILE*/;
+
+		File project = getProject();
+		File dir = new File(project, fullyQualifiedName);
+		
+		Node root = CodeSyncPlugin.getInstance().getResource(null);
+		
+//		File cseLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().CSE_MAPPING_FILE_LOCATION);
+//		File aceLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().ACE_FILE_LOCATION);
+
+		// simulate model modifications
+		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
+		
+		codeSyncService.synchronize(project, dir, TECHNOLOGY, true);
 		
 		String expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/" + SOURCE_FILE);
-		String actual = FileUtils.readFileToString(file);
+		String actual = FileUtils.readFileToString(new File(dir, SOURCE_FILE));
 		assertEquals("Source not in sync", expected, actual);
 		
-		expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/CSE.notation");
-		actual = FileUtils.readFileToString(cseLocation);
-		assertEquals("CSE not in sync", expected, actual);
-		
-		expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/ACE.notation");
-		actual = FileUtils.readFileToString(aceLocation);
-		assertEquals("ACE not in sync", expected, actual);
-		
-//		Resource expectedCSE = CodeSyncMergePlugin.getInstance().getResource(null, new File(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/CSE.notation"));
-//		Resource actualCSE = CodeSyncMergePlugin.getInstance().getResource(null, project.getFile(CodeSyncCodePlugin.getInstance().CSE_MAPPING_FILE_LOCATION));
+//		expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/CSE.notation");
+//		actual = FileUtils.readFileToString(cseLocation);
+//		assertEquals("CSE not in sync", expected, actual);
 //		
-//		assertTrue(CodeSyncCodePlugin.getInstance().getUtils().testEquality(expectedCSE, actualCSE, MODIFIED_NO_CONFLICTS_PERFORM_SYNC));
+//		expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/ACE.notation");
+//		actual = FileUtils.readFileToString(aceLocation);
+//		assertEquals("ACE not in sync", expected, actual);
+	}
+
+	private void simulateNonConflictingChanges(Node root, String srcDir) {
+		// change superCls, superInterfaces
+		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
+		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel");
+		Node superInterface = new Node();
+		superInterface.setType(SUPER_INTERFACE);
+		nodeService.addChild(cls, superInterface, null);
+		nodeService.setProperty(superInterface, NAME, "IFromModel");
+//		Node deprecated = getChild(cls, new String[] {"Deprecated"});
+//		Node val = new Node();
+//		val.setType(MEMBER_VALUE_PAIR);
+//		nodeService.addChild(deprecated, val);
+//		nodeService.setProperty(val, NAME, "_");
+//		nodeService.setProperty(val, ANNOTATION_VALUE_VALUE, "test");
+
+		// add class
+		Node internalCls = new Node();
+		internalCls.setType(CLASS);
+		nodeService.addChild(cls, internalCls, null);
+		nodeService.setProperty(internalCls, NAME, "InternalClassFromModel");
+
+		// change typed element type
+		Node x = getChild(cls, new String[] {"x"});
+		nodeService.setProperty(x, JavaFeaturesConstants.TYPED_ELEMENT_TYPE, "Test");
+		
+		// change modifiers + annotations
+		Node test = getChild(cls, new String[] {"test(String)"});
+		Node privateModif = new Node();
+		privateModif.setType(MODIFIER);
+		nodeService.addChild(test, privateModif, null);
+		nodeService.setProperty(privateModif, NAME, "private");
+		Node publicModif = getChild(test, new String[] {"public"});
+		nodeService.setProperty(publicModif, REMOVED, true);
+		Node a = getChild(test, new String[] {"OneToMany"});
+		Node mappedBy = getChild(a, new String[] {"mappedBy"});
+		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
+		Node orphanRemoval = new Node();
+		orphanRemoval.setType(MEMBER_VALUE_PAIR);
+		nodeService.addChild(a, orphanRemoval, null);
+		nodeService.setProperty(orphanRemoval, NAME, "orphanRemoval");
+		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true");
+		
+		// change parameters
+		Node getTest = getChild(cls, new String[] {"getTest()"});
+		Node param = new Node();
+		param.setType(JavaParameterModelAdapter.PARAMETER);
+		nodeService.addChild(getTest, param, null);
+		nodeService.setProperty(param, NAME, "a");
+		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int");
+		Node staticModif = getChild(getTest, new String[] {"static"});
+		nodeService.setProperty(staticModif, REMOVED, true);
+//				nodeService.setProperty(getTest, DOCUMENTATION, "modified from model\n@author test");
+		
+//				featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
+//				CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(getTest, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);
+//				featureChange.setOldValue(op.getModifiers());
+//				modifiers = new BasicEList<ExtendedModifier>();
+//				modifier = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createModifier();
+//				modifier.setType(1); // public
+//				modifiers.add(modifier);
+//				a = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotation();
+//				a.setName("OverrideAnnotationOf");
+//				value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
+//				value.setName("value1");
+//				value.setValue("true");
+//				CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
+//				value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
+//				value.setName("value2");
+//				value.setValue("false");
+//				CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
+//				modifiers.add(a);
+//				featureChange.setNewValue(modifiers);
+////				CodeSyncCodePlugin.getInstance().getUtils().setModifiers(op, modifiers);
+
+		// add element
+		Node t = new Node();
+		t.setType(ATTRIBUTE);
+		nodeService.addChild(cls, t, null);
+		nodeService.setProperty(t, NAME, "t");
+		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int");
+//		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
+		publicModif = new Node();
+		publicModif.setType(MODIFIER);
+		nodeService.addChild(t, publicModif, null);
+		nodeService.setProperty(publicModif, NAME, "public");
+		
+		// remove element
+		Node y = getChild(cls, new String[] {"y"});
+		nodeService.setProperty(y, REMOVED, true);
 	}
 	
-//	@Test
+	@Test
 	public void testMatchConflicts() {
 		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_CONFLICTS);
-		String fullyQualifiedName = PROJECT + "/" + MODIFIED_CONFLICTS + "/" + SOURCE_FILE;
+		String fullyQualifiedName = PROJECT + "/" + MODIFIED_CONFLICTS /*+ "/" + SOURCE_FILE*/;
 
-		File file = getFile(fullyQualifiedName);
-		Node root = new MindMapService().getNode(null);
-		Match match = CodeSyncCodePlugin.getInstance().runCodeSyncAlgorithm(root, getProject(), file.getName(), file.getName(), CodeSyncCodeJavaPlugin.TECHNOLOGY, true);
+		File project = getProject();
 		
-//		// create FeatureChanges to simulate model modifications
-//		IProject project = getProject(PROJECT);
-//		CodeSyncElement srcDir = CodeSyncCodePlugin.getInstance().getSrcDir(CodeSyncCodePlugin.getInstance().getCodeSyncMapping(project), MODIFIED_CONFLICTS);
-//		FeatureChange featureChange = null;
-//		
-//		// change super class
-//		CodeSyncElement Test = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test"});
-//		com.crispico.flower.mp.model.astcache.code.Class cls = (com.crispico.flower.mp.model.astcache.code.Class) Test.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(Test, AstCacheCodePackage.eINSTANCE.getClass_SuperClasses(), featureChange);
-//		featureChange.setOldValue(cls.getSuperClasses());
-//		List<String> superClasses = Collections.singletonList("SuperClassFromModel");
-//		featureChange.setNewValue(superClasses);
+		Node root = CodeSyncPlugin.getInstance().getResource(null);		
+		
+		// simulate model modifications
+		
+		// change super class
+		Node cls = getChild(root, new String[] {MODIFIED_CONFLICTS, SOURCE_FILE, "Test"});
+		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel");
+		
 //		// change typed element type
-//		CodeSyncElement x = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test", "x"});
-//		TypedElement attr = (TypedElement) x.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(x, AstCacheCodePackage.eINSTANCE.getTypedElement_Type(), featureChange);
-//		featureChange.setOldValue(attr.getType());
-//		featureChange.setNewValue("Test");
+		Node x = getChild(cls, new String[] {"x"});
+		nodeService.setProperty(x, JavaFeaturesConstants.TYPED_ELEMENT_TYPE, "Test");
+		
 //		// change typed element type
-//		CodeSyncElement y = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test", "y"});
-//		TypedElement attry = (TypedElement) y.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(y, AstCacheCodePackage.eINSTANCE.getTypedElement_Type(), featureChange);
-//		featureChange.setOldValue(attry.getType());
-//		featureChange.setNewValue("Test");
-//		// change modifiers + annotations
-//		CodeSyncElement test = CodeSyncCodePlugin.getInstance().getCodeSyncElement(srcDir, new String[] {SOURCE_FILE, "Test", "test(String)"});
-//		Operation op = (Operation) test.getAstCacheElement();
-//		featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(test, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);
-//		featureChange.setOldValue(op.getModifiers());
-//		Modifier modifier = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createModifier();
-//		List<ExtendedModifier> modifiers = new BasicEList<ExtendedModifier>();
-//		modifier.setType(1); // public
-//		modifiers.add(modifier);
-//		Annotation a = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotation();
-//		a.setName("OneToMany");
-//		AnnotationValue value = AstCacheCodePackage.eINSTANCE.getAstCacheCodeFactory().createAnnotationValue();
-//		value.setName("mappedBy");
-//		value.setValue("\"modified_by_model\"");
-//		CodeSyncCodePlugin.getInstance().getUtils().addAnnotationValue(a, value);
-//		modifiers.add(a);
-//		featureChange.setNewValue(modifiers);
-//		
-//		CodeSyncMergePlugin.getInstance().saveResource(CodeSyncCodePlugin.getInstance().getCodeSyncMapping(project));
-//		CodeSyncMergePlugin.getInstance().discardResource(CodeSyncCodePlugin.getInstance().getCodeSyncMapping(project));
-//		CodeSyncEditorStatefulService service = (CodeSyncEditorStatefulService) CommunicationPlugin.getInstance().getServiceRegistry().getService(CodeSyncEditorStatefulService.SERVICE_ID);
-//		service.unsubscribeAllClientsForcefully(project.getFullPath().toString(), false);
-//		CodeSyncCodePlugin.getInstance().getCodeSyncElement(project, getFile(fullyQualifiedName), CodeSyncCodeJavaPlugin.TECHNOLOGY, communicationChannel);
+		Node y = getChild(cls, new String[] {"y"});
+		nodeService.setProperty(y, JavaFeaturesConstants.TYPED_ELEMENT_TYPE, "Test");
+		
+		// change modifiers + annotations
+		Node test = getChild(cls, new String[] {"test(String)"});
+		Node a = getChild(test, new String[] {"OneToMany"});
+		Node mappedBy = getChild(a, new String[] {"mappedBy"});
+		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
+		Node orphanRemoval = new Node();
+		orphanRemoval.setType(MEMBER_VALUE_PAIR);
 
+		Match match = codeSyncService.generateMatch(getProject(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
+		
 		Pair[] typeList = {
 				new Pair(MatchType._3MATCH, 0),				// src
 					new Pair(MatchType._3MATCH, 1),				// Test.java
 						new Pair(MatchType._3MATCH, 2),				// @Deprecated public class Test
+						
+							new Pair(MatchType._3MATCH, 3),				// @Deprecated
+							new Pair(MatchType._3MATCH, 3),				// public
+							new Pair(MatchType._3MATCH, 3),				// ITest
 						
 							new Pair(MatchType._3MATCH, 3),				// @OneToMany(mappedBy="test") public int test(String st)
 								new Pair(MatchType._3MATCH, 4),				// public
@@ -504,10 +411,6 @@ public class CodeSyncTest {
 								
 							new Pair(MatchType._3MATCH, 3), 				// private int x
 								new Pair(MatchType._3MATCH, 4),				// private
-								
-							new Pair(MatchType._3MATCH, 3),				// @Deprecated
-							new Pair(MatchType._3MATCH, 3),				// public
-							new Pair(MatchType._3MATCH, 3)				// ITest
 				};
 		boolean[] conflicts = {
 				false,
@@ -515,71 +418,32 @@ public class CodeSyncTest {
 						true,			// superClass changed on model and source
 						
 							false,
+							false,
+							false,
+							
+							false,
 								false,
 								false,
 									true,	// annotation value changed on model and source
 								false,
 							
-						false,
 							false,
 								false,
-							false,
-							false,
+								false,
+									false,
+								false,
 							
-						true,			// type changed on model and source
-							false,
+							true,			// type changed on model and source
+								false,
 							
-						false,			
-							false,
-							
-						false,
-						false,
-							false
+							false,			
+								false,
 			};
 		assertTrue("Conflicts expected!", match.isChildrenConflict());
 		testMatchTree(match, typeList, false);
 		testConflicts(match, conflicts);
 	}
 	
-//	@Test
-//	public void testValueAsString() throws CoreException {
-//		// STEP 1 : create FeatureChange
-//		CodeSyncElement expectedCSE = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createCodeSyncElement();
-//		FeatureChange expectedChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
-//		expectedCSE.getFeatureChanges().put(AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), expectedChange); 
-//		EList<ExtendedModifier> modifiers = new BasicEList<ExtendedModifier>();
-//		Modifier modifier = AstCacheCodeFactory.eINSTANCE.createModifier();
-//		modifier.setType(3);
-//		modifiers.add(modifier);
-//		expectedChange.setOldValue(modifiers);
-//		
-//		// STEP 2 : put FC in resource and save
-//		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("test");
-//		if (!project.exists()) {
-//			project.create(null);
-//		}
-//		project.open(null);
-//		ResourceSet resourceSet = CodeSyncPlugin.getInstance().getOrCreateResourceSet(CodeSyncTestSuite.getProject("test"), "diagramEditorStatefulService");
-//		File codeSyncElementsFile = CodeSyncTestSuite.getFile("test/CSE.notation");
-//		Resource resource = null;
-//		if (!codeSyncElementsFile.exists()) {
-//			resource = CodeSyncPlugin.getInstance().getResource(resourceSet, codeSyncElementsFile);
-//			resource.getContents().add(expectedCSE);
-//			CodeSyncPlugin.getInstance().saveResource(resource);
-//		}
-//		
-//		CodeSyncPlugin.getInstance().discardResource(resource);
-//		
-//		// STEP 3 : get value from resource
-//		resource = CodeSyncPlugin.getInstance().getResource(resourceSet, codeSyncElementsFile);
-//		assertEquals(1, resource.getContents().size());
-//		CodeSyncElement actualCSE = (CodeSyncElement) resource.getContents().get(0);
-//		FeatureChange actualChange = actualCSE.getFeatureChanges().get(AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers());
-//		assertNotNull(actualChange);
-//		EList<ExtendedModifier> actual = (EList<ExtendedModifier>) actualChange.getOldValue();
-//		assertEquals(1, actual.size());
-//		assertEquals(3, ((Modifier) actual.get(0)).getType());
-//	}
 	
 	/////////////////////////////
 	// Utils
@@ -591,6 +455,20 @@ public class CodeSyncTest {
 	
 	private File getFile(String path) {
 		return CodeSyncTestSuite.getFile(path);
+	}
+	
+	private Node getChild(Node node, String[] names) {
+		Node parent = node;
+		for (String name : names) {
+			List<Node> children = nodeService.getChildren(parent, true);
+			for (Node child : children) {
+				if (name.equals(child.getOrPopulateProperties().get(NAME))) {
+					parent = child;
+					break;
+				}
+			}
+		}
+		return parent;
 	}
 	
 	private Pair[] typeList;

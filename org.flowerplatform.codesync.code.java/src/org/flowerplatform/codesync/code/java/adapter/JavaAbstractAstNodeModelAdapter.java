@@ -102,25 +102,14 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 				
 				Node node = (Node) correspondingChild;
 				
+				ASTNode parent = (ASTNode) element;
+				AST ast = parent.getAST();
+				
 				if (JavaModifierModelAdapter.MODIFIER.equals(node.getType())) {
-					ASTNode parent = (ASTNode) element;
-					AST ast = parent.getAST();
-					
 					String keyword = (String) node.getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME);
 					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
-					if (parent instanceof BodyDeclaration) {
-						((BodyDeclaration) parent).modifiers().add(extendedModifier);
-					} else {
-						((SingleVariableDeclaration) parent).modifiers().add(extendedModifier);
-					}
-				}
-				
-				if (JavaAnnotationModelAdapter.ANNOTATION.equals(node.getType())) {
-					ASTNode parent = (ASTNode) element;
-					AST ast = parent.getAST();
-					
+				} else if (JavaAnnotationModelAdapter.ANNOTATION.equals(node.getType())) {
 					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, false).size();
-					
 					if (valuesCount == 0) {
 						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();
 						extendedModifier = markerAnnotation;
@@ -131,17 +120,22 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 						NormalAnnotation normalAnnotation = ast.newNormalAnnotation();
 						extendedModifier = normalAnnotation;
 					}
-					if (parent instanceof BodyDeclaration) {
-						((BodyDeclaration) parent).modifiers().add(extendedModifier);
-					} else {
-						((SingleVariableDeclaration) parent).modifiers().add(extendedModifier);
-					}
 				}
+				
+				addModifier(parent, extendedModifier);
 				return extendedModifier;
 			}
 		}
 		
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
+	}
+	
+	protected void addModifier(ASTNode parent, IExtendedModifier modifier) {
+		if (parent instanceof BodyDeclaration) {
+			((BodyDeclaration) parent).modifiers().add(modifier);
+		} else {
+			((SingleVariableDeclaration) parent).modifiers().add(modifier);
+		}
 	}
 
 	@Override

@@ -16,17 +16,25 @@
  *
  * license-end
  */
-package org.flowerplatform.tests;
+import javax.persistence.OneToMany;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
-@RunWith(Suite.class)
-@SuiteClasses({ 
-//	SecurityPermissionsTests.class,
-//	ListenerTestSuite.class,
-//	ChangesProcessorTest.class
-})
-public class EclipseDependentTestSuite extends EclipseDependentTestSuiteBase {
+@Deprecated
+public class Test extends TestSource implements ITest {
+
+	private Test x;
+	
+	private TestSource y;
+	
+	@OneToMany(mappedBy="test_source")
+	public int test(String st) {
+		return x;
+	}
+
+	@OverrideAnnotationOf(x+y)
+	public static Test getTest() {
+		return x;
+	}
+	
 }
