@@ -1,18 +1,21 @@
 package org.flowerplatform.codesync.github.adapter;
 
-import static org.flowerplatform.codesync.github.GitHubConstants.BODY;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_BODY;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_CREATED_AT;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_ID;
-import static org.flowerplatform.codesync.github.GitHubConstants.CREATED_AT;
-import static org.flowerplatform.codesync.github.GitHubConstants.UPDATED_AT;
-import static org.flowerplatform.codesync.github.GitHubConstants.USER;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_UPDATED_AT;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_USER;
 
 import java.util.List;
 
 import org.eclipse.egit.github.core.Comment;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
+import org.flowerplatform.codesync.github.feature_provider.GitHubCommentFeatureProvider;
 
 /**
+ * @see GitHubCommentFeatureProvider
+ * 
  * @author Mariana Gheorghe
  */
 public class GitHubCommentModelAdapter extends AbstractModelAdapter {
@@ -22,13 +25,13 @@ public class GitHubCommentModelAdapter extends AbstractModelAdapter {
 		Comment comment = getComment(element);
 		if (COMMENT_ID.equals(feature)) {
 			return comment.getId();
-		} else if (BODY.equals(feature)) {
+		} else if (COMMENT_BODY.equals(feature)) {
 			return comment.getBody();
-		} else if (USER.equals(feature)) {
+		} else if (COMMENT_USER.equals(feature)) {
 			return comment.getUser() == null ? "" : comment.getUser().getLogin();
-		} else if (CREATED_AT.equals(feature)) {
+		} else if (COMMENT_CREATED_AT.equals(feature)) {
 			return comment.getCreatedAt();
-		} else if (UPDATED_AT.equals(feature)) {
+		} else if (COMMENT_UPDATED_AT.equals(feature)) {
 			return comment.getUpdatedAt();
 		} else if (NodeFeatureProvider.NAME.equals(feature)) {
 			return String.valueOf(getComment(element).getId());

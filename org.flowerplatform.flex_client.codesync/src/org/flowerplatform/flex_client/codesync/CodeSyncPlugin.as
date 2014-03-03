@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.codesync {
 	import mx.core.IVisualElementContainer;
 	import mx.rpc.events.ResultEvent;
 	
+	import org.flowerplatform.flex_client.codesync.action.GitHubSynchronizeAction;
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.remote.CodeSyncOperationsService;
 	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
@@ -61,6 +62,7 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
 			CorePlugin.getInstance().serviceLocator.addService("gitHubOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
+			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(GitHubSynchronizeAction);
 		
 			var hBox:HBox = new HBox();
 			hBox.percentWidth = 100;
@@ -70,14 +72,6 @@ package org.flowerplatform.flex_client.codesync {
 				new CodeSyncOperationsService().synchronize(null);
 			});
 			hBox.addChild(btn);
-			
-			btn = new Button();
-			btn.label = "GitHub";
-			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().serviceLocator.invoke("gitHubOperationsService.synchronize");
-			});
-			hBox.addChild(btn);
-			
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 			
 			CorePlugin.getInstance().serviceLocator.invoke(CodeSyncOperationsService.ID + ".getDropdownPropertyRenderersInfo", null, function(result:Object):void {
