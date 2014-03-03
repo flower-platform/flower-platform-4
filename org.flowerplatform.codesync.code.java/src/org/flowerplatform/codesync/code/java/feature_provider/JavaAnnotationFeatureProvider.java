@@ -18,27 +18,13 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaAnnotationFeatureProvider extends NodeFeatureProvider {
 	
-	public static final String ANNOTATION_VALUES = "annotationValues";
-	
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(ANNOTATION_VALUES);
-	}
-	
-	@Override
-	public int getFeatureType(Object feature) {
-		if (ANNOTATION_VALUES.equals(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		}
-		return super.getFeatureType(feature);
+	public JavaAnnotationFeatureProvider() {
+		containmentFeatures.add(JavaPropertiesConstants.ANNOTATION_VALUES);
 	}
 	
 }

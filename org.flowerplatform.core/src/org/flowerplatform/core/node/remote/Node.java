@@ -151,7 +151,10 @@ public class Node {
 		if (!(obj instanceof Node)) {
 			return false;
 		}
-		return getFullNodeId().equals(((Node) obj).getFullNodeId());
+		if (obj instanceof Node) {
+			return getFullNodeId().equals(((Node) obj).getFullNodeId());
+		}
+		return false;
 	}
 
 	@Override

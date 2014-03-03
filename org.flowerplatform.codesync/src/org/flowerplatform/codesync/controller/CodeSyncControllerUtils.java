@@ -1,11 +1,12 @@
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED_MARKER;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_CONFLICT_MARKER;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_SYNC_MARKER;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CONFLICT_MARKER;
-import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED_MARKER;
-import static org.flowerplatform.codesync.CodeSyncPlugin.SYNC_MARKER;
+
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_SYNC;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.SYNC;
 
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
@@ -15,29 +16,29 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class CodeSyncControllerUtils {
 
-	public static final String ORIGINAL = ".original";
-	public static final String CONFLICT = ".conflict";
+	public static final String ORIGINAL_SUFFIX = ".original";
+	public static final String CONFLICT_SUFFIX = ".conflict";
 	
 	public static boolean isOriginalPropertyName(String property) {
-		return property.endsWith(ORIGINAL);
+		return property.endsWith(ORIGINAL_SUFFIX);
 	}
 	
 	public static String getOriginalPropertyName(String property) {
-		return property + ORIGINAL;
+		return property + ORIGINAL_SUFFIX;
 	}
 	
 	public static boolean isConflictPropertyName(String property) {
-		return property.endsWith(CONFLICT);
+		return property.endsWith(CONFLICT_SUFFIX);
 	}
 	
 	public static String getConflictPropertyName(String property) {
-		return property + CONFLICT;
+		return property + CONFLICT_SUFFIX;
 	}
 	
 	public static boolean isCodeSyncFlagConstant(String property) {
-		if (SYNC_MARKER.equals(property) || CHILDREN_SYNC_MARKER.equals(property) || 
-				CONFLICT_MARKER.equals(property) || CHILDREN_CONFLICT_MARKER.equals(property) ||
-				ADDED_MARKER.equals(property) || REMOVED_MARKER.equals(property)) {
+		if (SYNC.equals(property) || CHILDREN_SYNC.equals(property) || 
+				CONFLICT.equals(property) || CHILDREN_CONFLICT.equals(property) ||
+				ADDED.equals(property) || REMOVED.equals(property)) {
 			return true;
 		}
 		return false;
@@ -45,7 +46,7 @@ public class CodeSyncControllerUtils {
 	
 	public static void setSyncFalseAndPropagateToParents(Node node, NodeService service) {
 		// set sync false
-		service.setProperty(node, SYNC_MARKER, false);
+		service.setProperty(node, SYNC, false);
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
@@ -55,7 +56,7 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenSync false
-			service.setProperty(parent, CHILDREN_SYNC_MARKER, false);
+			service.setProperty(parent, CHILDREN_SYNC, false);
 			node = parent;
 		}
 	}
@@ -83,7 +84,7 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set sync true
-		service.setProperty(node, SYNC_MARKER, true);
+		service.setProperty(node, SYNC, true);
 		
 		// propagate childrenSync flag for parents
 		setChildrenSyncTrueAndPropagateToParents(service.getParent(node), service);
@@ -101,7 +102,7 @@ public class CodeSyncControllerUtils {
 			}
 			
 			// set childrenSync true
-			service.setProperty(parent, CHILDREN_SYNC_MARKER, true);
+			service.setProperty(parent, CHILDREN_SYNC, true);
 			
 			// if this parent is not sync, then its parents' childrenSync flag can't be set to true
 			// it's better to just stop now
@@ -122,7 +123,7 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict true
-		service.setProperty(node, CONFLICT_MARKER, true);
+		service.setProperty(node, CONFLICT, true);
 		
 		// propagate childrenConflict flag for parents
 		Node parent = null;
@@ -132,7 +133,7 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT_MARKER, true);
+			service.setProperty(parent, CHILDREN_CONFLICT, true);
 			node = parent;
 		}
 	}
@@ -156,9 +157,9 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict false
-		service.setProperty(node, CONFLICT_MARKER, false);
+		service.setProperty(node, CONFLICT, false);
 		if (noChildConflict(node, service)) {
-			service.setProperty(node, CHILDREN_CONFLICT_MARKER, false);
+			service.setProperty(node, CHILDREN_CONFLICT, false);
 		}
 		
 		// propagate childrenConflict flag for parents
@@ -172,7 +173,7 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT_MARKER, false);
+			service.setProperty(parent, CHILDREN_CONFLICT, false);
 			node = parent;
 		}
 	}
@@ -196,27 +197,27 @@ public class CodeSyncControllerUtils {
 	}
 	
 	public static boolean isSync(Node node) {
-		return hasFlagTrue(node, SYNC_MARKER);
+		return hasFlagTrue(node, SYNC);
 	}
 	
 	public static boolean isChildrenSync(Node node) {
-		return hasFlagTrue(node, CHILDREN_SYNC_MARKER);
+		return hasFlagTrue(node, CHILDREN_SYNC);
 	}
 	
 	public static boolean isAdded(Node node) {
-		return hasFlagTrue(node, ADDED_MARKER);
+		return hasFlagTrue(node, ADDED);
 	}
 	
 	public static boolean isRemoved(Node node) {
-		return hasFlagTrue(node, REMOVED_MARKER);
+		return hasFlagTrue(node, REMOVED);
 	}
 	
 	public static boolean isConflict(Node node) {
-		return hasFlagTrue(node, CONFLICT_MARKER);
+		return hasFlagTrue(node, CONFLICT);
 	}
 	
 	public static boolean isChildrenConflict(Node node) {
-		return hasFlagTrue(node, CHILDREN_CONFLICT_MARKER);
+		return hasFlagTrue(node, CHILDREN_CONFLICT);
 	}
 	
 	private static boolean hasFlagTrue(Node node, String flag) {

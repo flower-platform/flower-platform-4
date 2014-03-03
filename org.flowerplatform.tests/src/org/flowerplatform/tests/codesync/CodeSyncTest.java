@@ -32,7 +32,6 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
-import org.flowerplatform.core.mindmap.remote.MindMapService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.tests.TestUtil;
 import org.junit.Before;

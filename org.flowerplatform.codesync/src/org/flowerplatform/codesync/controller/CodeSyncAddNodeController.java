@@ -18,9 +18,7 @@
  */
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED_MARKER;
-
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
@@ -39,7 +37,7 @@ public class CodeSyncAddNodeController extends AddNodeController {
 	
 	@Override
 	public void addNode(Node node, Node child, Node insertBeforeNode) {		
-		CorePlugin.getInstance().getNodeService().setProperty(child, ADDED_MARKER, true);
+		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncPropertiesConstants.ADDED, true);
 	}
 
 }

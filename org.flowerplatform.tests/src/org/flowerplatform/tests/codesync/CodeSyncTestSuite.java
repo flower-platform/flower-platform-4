@@ -20,7 +20,6 @@ package org.flowerplatform.tests.codesync;
 
 import java.io.File;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.tests.EclipseDependentTestSuiteBase;
 import org.flowerplatform.tests.TestUtil;

@@ -1,7 +1,8 @@
 package org.flowerplatform.core.node;
 
-import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import java.util.Comparator;
+
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 
 /**
  * @author Sebastian Solomon

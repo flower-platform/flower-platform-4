@@ -26,13 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.FilteredIterable;
-import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -57,7 +55,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
 			return getLabel(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -70,24 +68,24 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object folder, Object feature, Object value) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
 			filesToRename.put(folder, (String) value);
 		}
 	}
 
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		if (FolderFeatureProvider.CHILDREN.equals(feature)) {
+		if (CodeSyncPropertiesConstants.CHILDREN.equals(feature)) {
 			Node node = (Node) correspondingChild;
 			return CorePlugin.getInstance().getFileAccessController()
-					.getFile(element, (String) node.getOrPopulateProperties().get(FeatureProvider.NAME));
+					.getFile(element, (String) node.getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME));
 		}
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		if (FolderFeatureProvider.CHILDREN.equals(feature)) {
+		if (CodeSyncPropertiesConstants.CHILDREN.equals(feature)) {
 			filesToDelete.add(child);
 		}
 	}
@@ -119,7 +117,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (FolderFeatureProvider.CHILDREN.equals(feature)) {
+		if (CodeSyncPropertiesConstants.CHILDREN.equals(feature)) {
 			return new FilteredIterable(getChildren(element).iterator()) {
 	
 				@Override

@@ -3,7 +3,6 @@ package org.flowerplatform.freeplane.controller;
 import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
-import org.flowerplatform.util.Pair;
 import org.freeplane.features.map.NodeModel;
 
 /**
