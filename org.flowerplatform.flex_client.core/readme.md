@@ -1,5 +1,5 @@
 # Project Description
 
-Flex Client plugin.
+Equinox plugin and "semi-abstract" Flex Client plugin. 
 
-Contains the mindmap editor.
+Contains the general mindmap editor and other core logic.

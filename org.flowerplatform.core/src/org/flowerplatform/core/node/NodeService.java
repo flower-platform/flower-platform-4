@@ -33,7 +33,6 @@ import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
-import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -123,11 +122,11 @@ public class NodeService {
 		}
 		
 		ParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
-		Pair<Node, Object> parent = provider.getParent(node);
+		Node parent = provider.getParent(node);
 		if (parent == null) {
 			return null;
 		}
-		return parent.a;
+		return parent;
 	}
 	
 	/**

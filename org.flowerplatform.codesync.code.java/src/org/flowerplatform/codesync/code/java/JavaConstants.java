@@ -6,30 +6,6 @@ package org.flowerplatform.codesync.code.java;
 public class JavaConstants {
 
 	////////////////////////////////////////////
-	// Label constants
-	////////////////////////////////////////////
-	
-	public static final String LABEL_PACKAGE = "Package";
-	public static final String LABEL_FILE = "File";
-	
-	public static final String LABEL_TYPE_CLASS = "Class";
-	public static final String LABEL_TYPE_INTERFACE = "Interface";
-	public static final String LABEL_TYPE_ENUM = "Enum";
-	public static final String LABEL_TYPE_ANNOTATION = "Annotation";
-	
-	public static final String LABEL_FIELD = "Field";
-	public static final String LABEL_METHOD = "Method";
-	public static final String LABEL_PARAMETER = "Parameter";
-	
-	public static final String LABEL_ENUM_CONSTANT = "Enum Constant";
-	public static final String LABEL_ENUM_CONSTANT_ARGUMENT = "Enum Constant Argument";
-	
-	public static final String LABEL_MODIFIER = "Modifier";
-	public static final String LABEL_ANNOTATION = "Annotation";
-	
-	public static final String LABEL_SUPER_INTERFACE = "Super Interface";
-	
-	////////////////////////////////////////////
 	// Icon and decorator constants
 	////////////////////////////////////////////
 	

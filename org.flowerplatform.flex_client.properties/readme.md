@@ -1,5 +1,5 @@
 # Project Description
 
-Flex Client plugin.
+Equinox plugin and Flex Client plugin.
 
 Contains the properties view.

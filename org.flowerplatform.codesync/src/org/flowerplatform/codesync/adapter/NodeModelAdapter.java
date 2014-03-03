@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED_MARKER;
 import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
 import java.util.ArrayList;
@@ -176,12 +177,14 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
-					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED_MARKER)) {
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED_MARKER);
 				}
 			} else {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
+				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED_MARKER)) {
 					CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+					// set childrenSync now, because after this match is synced, the parent won't be notified because this child is already removed
+					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node, CorePlugin.getInstance().getNodeService());
 				}
 			}
 		}
@@ -213,7 +216,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED_MARKER);
 			} else {
 				CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
 			}

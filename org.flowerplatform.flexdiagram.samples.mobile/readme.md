@@ -1,3 +1,5 @@
 # Project Description
 
-This project is not an Equinox plugin. It's a Flex SWC project.
+Flex mobile app. 
+
+Sample for mobile. The actual code is contained in ``flexdiagram.samples``; this project provides some wrappers for the code in the samples lib. 

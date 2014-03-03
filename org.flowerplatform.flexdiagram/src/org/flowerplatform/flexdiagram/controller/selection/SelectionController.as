@@ -19,12 +19,11 @@
 package org.flowerplatform.flexdiagram.controller.selection
 {
 	import mx.core.IVisualElement;
-	import mx.events.DynamicEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.IDiagramShellAware;
 	import org.flowerplatform.flexdiagram.controller.ControllerBase;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	import org.flowerplatform.flexdiagram.renderer.selection.AbstractSelectionRenderer;
 	
 	public class SelectionController extends ControllerBase implements ISelectionController {

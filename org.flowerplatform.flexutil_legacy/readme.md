@@ -1,6 +1,6 @@
 # Project Description
 
-This project is not an Equinox plugin. It's a Flex SWC project.
+Flex library.
 
 Older version of FlexUtil project: Utility classes and UI components for Flex.
 

@@ -19,42 +19,33 @@
 package org.flowerplatform.flex_client.core.mindmap {
 	
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
 	import mx.collections.IList;
-	import mx.containers.VBox;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.FlexEvent;
 	import mx.managers.IFocusManagerComponent;
 	
+	import spark.components.CheckBox;
+	import spark.components.HGroup;
+	import spark.components.VGroup;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
+	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
+	import org.flowerplatform.flexdiagram.DiagramShellAwareProcessor;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
-	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
-	
-	import spark.components.Button;
-	import spark.components.CheckBox;
-	import spark.components.Group;
-	import spark.components.HGroup;
-	import spark.components.VGroup;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -62,7 +53,9 @@ package org.flowerplatform.flex_client.core.mindmap {
 	public class MindMapEditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
 		
 		public var diagramShell:DiagramShell;
-			
+		
+		public var actionProvider:ComposedActionProvider;
+		
 		protected var _viewHost:IViewHost;
 		
 		/**
@@ -72,7 +65,11 @@ package org.flowerplatform.flex_client.core.mindmap {
 		protected var autoRefreshTimer:Timer;
 			
 		public function MindMapEditorFrontend() {
-			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);		
+			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);	
+			
+			actionProvider = new ComposedActionProvider();
+			actionProvider.actionProviders.push(CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider);
+			actionProvider.actionProviders.push(new AddChildActionProvider());
 		}
 		
 		override protected function createChildren():void {	
@@ -115,6 +112,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 			diagramShell = new MindMapEditorDiagramShell();
 			diagramShell.diagramRenderer = diagramRenderer;
 			
+			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));
+			
 			super.createChildren();					
 		}
 		
@@ -139,22 +138,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		 * @author Mariana Gheorghe
 		 */
 		public function getActions(selection:IList):Vector.<IAction> {
-			var result:Vector.<IAction> = new Vector.<IAction>();
-			
-			for each (var provider:IActionProvider in CorePlugin.getInstance().mindmapEditorActionProviders) {
-				var actions:Vector.<IAction> = provider.getActions(selection);	
-
-				if (actions != null) {
-					for each (var action:IAction in actions) {
-						if (action is IDiagramShellAware) {
-							IDiagramShellAware(action).diagramShell = diagramShell;
-						}
-						result.push(action);
-					}
-				}
-			}
-			
-			return result;
+			return actionProvider.getActions(selection);
 		}
 		
 		public function getSelection():IList {			

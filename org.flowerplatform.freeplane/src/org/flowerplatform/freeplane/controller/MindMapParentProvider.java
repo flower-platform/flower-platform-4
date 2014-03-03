@@ -12,13 +12,13 @@ import org.freeplane.features.map.NodeModel;
 public class MindMapParentProvider extends ParentProvider {
 
 	@Override
-	public Pair<Node, Object> getParent(Node node) {
+	public Node getParent(Node node) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());		
 		NodeModel parentNodeModel = rawNodeData.getParentNode();
 		if (parentNodeModel == null) {
 			return null;
 		}
-		return new Pair<Node, Object>(FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(parentNodeModel), parentNodeModel);
+		return FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(parentNodeModel);
 	}
 
 }

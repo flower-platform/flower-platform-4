@@ -58,12 +58,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	public static final String REMOVED = "removed";
-	public static final String ADDED = "added";
-	public static final String SYNC = "sync";
-	public static final String CHILDREN_SYNC = "childrenSync";
-	public static final String CONFLICT = "conflict";
-	public static final String CHILDREN_CONFLICT = "childrenConflict";
+	public static final String REMOVED_MARKER = "removed";
+	public static final String ADDED_MARKER = "added";
+	public static final String SYNC_MARKER = "sync";
+	public static final String CHILDREN_SYNC_MARKER = "childrenSync";
+	public static final String CONFLICT_MARKER = "conflict";
+	public static final String CHILDREN_CONFLICT_MARKER = "childrenConflict";
 	
 	
 	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
@@ -172,14 +172,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		this.projectAccessController = projectAccessController;
 	}
 	
-	public void addDataProviderForDropDownListProperty(String name, List<String> dataProvider) {
-		dataProvidersForDropDownListProperties.put(name, dataProvider);
-	}
-	
-	public Map<String, List<String>> getDataProvidersForDropDownListProperties() {
-		return dataProvidersForDropDownListProperties;
-	}
-	
 //	/**
 //	 * A list of feature to be deleted in case an object is deleted 
 //	 * (e.g. an edge that starts or ends in a deleted view).
@@ -257,12 +249,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
 		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setReadOnlyAs(false));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED).setTypeAs("Boolean"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC).setTypeAs("Boolean"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC).setTypeAs("Boolean"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFLICT));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_CONFLICT));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED_MARKER).setTypeAs("Boolean"));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED_MARKER));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC_MARKER).setTypeAs("Boolean"));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC_MARKER).setTypeAs("Boolean"));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFLICT_MARKER));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_CONFLICT_MARKER));
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		

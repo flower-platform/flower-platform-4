@@ -43,7 +43,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		// filter out deleted elements
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPlugin.REMOVED);
+				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPlugin.REMOVED_MARKER);
 				if (isRemoved != null && isRemoved) {
 					return false;
 				}

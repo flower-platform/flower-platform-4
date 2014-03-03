@@ -3,6 +3,7 @@ package org.flowerplatform.flex_client.codesync.renderer {
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
+	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	
 	/**
@@ -12,14 +13,21 @@ package org.flowerplatform.flex_client.codesync.renderer {
 		
 		override public function set data(value:Object):void {
 			super.data = value;
-			
-			if (value == null) {
+			composeIconWithSyncMarkers();			
+		}
+		
+		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+			super.nodeUpdatedHandler(event);
+			composeIconWithSyncMarkers();
+		}
+		
+		protected function composeIconWithSyncMarkers():void {
+			if (data == null) {
 				return;
 			}
 			
-			var node:Node = Node(value);
+			var node:Node = Node(data);
 			
-			// compose the image with decorators
 			var icon:String = node.properties.icon;
 			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
 			if (node.properties.conflict == true) {
@@ -48,5 +56,6 @@ package org.flowerplatform.flex_client.codesync.renderer {
 		private function getSyncMarkerPath(marker:String):String {
 			return "org.flowerplatform.codesync/images/sync-markers/" + marker;
 		}
+		
 	}
 }

@@ -283,5 +283,10 @@ public class TypeDescriptor {
 		}
 		return pair;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s [type = %s]", this.getClass().getSimpleName(), type);
+	}
 			
 }
