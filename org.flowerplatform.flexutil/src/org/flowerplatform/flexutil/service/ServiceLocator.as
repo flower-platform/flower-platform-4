@@ -27,9 +27,13 @@ package org.flowerplatform.flexutil.service {
 		}
 		
 		public function addService(serviceId:String):void {
-			var remoteObject:RemoteObject = new RemoteObject(serviceId);
+			var remoteObject:RemoteObject = createRemoteObject(serviceId);
 			remoteObject.channelSet = channelSet;
 			remoteObjects[serviceId] = remoteObject;
+		}
+		
+		protected function createRemoteObject(serviceId:String):RemoteObject {
+			return new RemoteObject(serviceId);
 		}
 		
 		public function getRemoteObject(serviceId:String):RemoteObject {

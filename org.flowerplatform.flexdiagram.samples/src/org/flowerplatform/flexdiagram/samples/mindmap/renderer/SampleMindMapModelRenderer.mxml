@@ -26,7 +26,7 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 				
 				xmlns:model="org.flowerplatform.flexdiagram.samples.mindmap.model.*"
-				implements="org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"
+				implements="org.flowerplatform.flexdiagram.IDiagramShellAware"
 				creationComplete="creationCompleteHandler(event)" initialize="initializeHandler(event)"
 				paddingTop="2" paddingBottom="2" paddingLeft="2" paddingRight="2"
 				verticalAlign="middle">

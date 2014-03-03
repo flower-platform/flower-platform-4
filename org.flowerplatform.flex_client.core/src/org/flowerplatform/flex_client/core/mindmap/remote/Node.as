@@ -18,8 +18,10 @@
 */
 package org.flowerplatform.flex_client.core.mindmap.remote {
 	import mx.collections.ArrayCollection;
+	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexutil.Utils;
 	
 	/**
 	 * Server -> client only. On the server side, the nodes are note linked together
@@ -32,9 +34,13 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.Node")]
 	public class Node {
 						
-		public var type:String;		
-		public var resource:String;		
-		public var idWithinResource:String;		
+		public static const FULL_NODE_ID_SEPARATOR:String = "|";
+		
+		private var cachedFullNodeId:String;
+		
+		private var _type:String;		
+		private var _resource:String;		
+		private var _idWithinResource:String;		
 				
 		public var properties:Object;
 		
@@ -46,9 +52,39 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		
 		[Transient]
 		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
-			
+				
+		public function get type():String {
+			return _type;
+		}
+
+		public function set type(value:String):void {
+			_type = value;
+			cachedFullNodeId = null;
+		}
+
+		public function get resource():String {
+			return _resource;
+		}
+		
+		public function set resource(value:String):void {
+			_resource = value;
+			cachedFullNodeId = null;
+		}
+		
+		public function get idWithinResource():String {
+			return _idWithinResource;
+		}
+		
+		public function set idWithinResource(value:String):void {
+			_idWithinResource = value;
+			cachedFullNodeId = null;
+		}
+				
 		public function get fullNodeId():String {
-			return type + "|" + resource + "|" + (idWithinResource == null ? "" : idWithinResource);
+			if (cachedFullNodeId == null) {
+				cachedFullNodeId = Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource);
+			}
+			return cachedFullNodeId;
 		}
 		
 		public function toString():String {

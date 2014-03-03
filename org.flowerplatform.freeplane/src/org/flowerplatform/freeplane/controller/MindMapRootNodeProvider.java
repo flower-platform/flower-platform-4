@@ -7,7 +7,7 @@ import org.flowerplatform.mindmap.MindMapPlugin;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapBasicRootNodeProvider extends RootNodeProvider {
+public class MindMapRootNodeProvider extends RootNodeProvider {
 
 	@Override
 	public Node getRootNode(Node node) {

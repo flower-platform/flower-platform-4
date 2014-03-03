@@ -18,33 +18,15 @@
  */
 package org.flowerplatform.codesync.feature_provider;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.flowerplatform.codesync.adapter.IModelAdapter;
-import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 
 /**
  * @author Mariana
  */
-public abstract class NodeFeatureProvider extends FeatureProvider {
+public class NodeFeatureProvider extends FeatureProvider {
 
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		List<String> features = new ArrayList<String>();
-		features.add(NAME);
-		features.add(NodePropertiesConstants.TYPE);
-		return features;
-	}
-
-	@Override
-	public int getFeatureType(Object feature) {
-		return IModelAdapter.FEATURE_TYPE_VALUE;
-	}
-
-	@Override
-	public String getFeatureName(Object feature) {
-		return feature.toString();
+	public NodeFeatureProvider() {
+		valueFeatures.add(CodeSyncPropertiesConstants.NAME);
 	}
 
 }

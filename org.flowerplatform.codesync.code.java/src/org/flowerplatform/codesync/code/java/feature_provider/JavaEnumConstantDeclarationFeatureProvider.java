@@ -18,29 +18,13 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaEnumConstantDeclarationFeatureProvider extends NodeFeatureProvider {
 	
-	public static final String ENUM_CONSTANT_ARGUMENTS = "enumConstantArguments";
-	
-	public static final String ENUM_CONSTANT_ARGUMENT = "javaEnumConstantArgument";
-	
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(ENUM_CONSTANT_ARGUMENTS);
-	}
-
-	@Override
-	public int getFeatureType(Object feature) {
-		if (ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		}
-		return super.getFeatureType(feature);
+	public JavaEnumConstantDeclarationFeatureProvider() {
+		containmentFeatures.add(JavaPropertiesConstants.ENUM_CONSTANT_ARGUMENTS);
 	}
 	
 }

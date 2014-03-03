@@ -18,7 +18,6 @@
  */
 package org.flowerplatform.tests;
 
-import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -26,7 +25,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 //	SecurityPermissionsTests.class,
-	CodeSyncTestSuite.class,
 //	ListenerTestSuite.class,
 //	ChangesProcessorTest.class
 })

@@ -66,7 +66,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			// TODO CC: temporary code
 			properties.resource = parent.resource;
 			
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)).fullNodeId, properties, null]);		
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parent.fullNodeId, properties, null]);		
 		}
 		
 	}

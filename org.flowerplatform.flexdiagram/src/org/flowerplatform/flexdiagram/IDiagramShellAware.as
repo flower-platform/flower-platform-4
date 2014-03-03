@@ -16,17 +16,16 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.code.java.feature_provider;
+package org.flowerplatform.flexdiagram {
+	import mx.core.IDataRenderer;
+	import mx.core.IVisualElement;
+	import org.flowerplatform.flexdiagram.DiagramShell;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
-
-public class JavaModifierFeatureProvider extends NodeFeatureProvider {
-	
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Collections.emptyList();
+	/**
+	 * @author Cristian Spiescu
+	 */
+	public interface IDiagramShellAware {
+		function get diagramShell():DiagramShell;
+		function set diagramShell(value:DiagramShell):void;
 	}
 }

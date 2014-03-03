@@ -29,6 +29,10 @@ package org.flowerplatform.flex_client.core.plugin {
 		
 		public static const MESSAGES_FILE:String = "messages.properties";
 		
+		public const IMAGE_COMPOSER:String = "servlet/image-composer/";
+		
+		public static const SEPARATOR:String = "|";
+		
 		protected var _resourcesUrl:String;
 		
 		protected var _composedImagesUrl:String;
@@ -72,8 +76,6 @@ package org.flowerplatform.flex_client.core.plugin {
 			return resourcesUrl + resource;
 		}
 
-		public const IMAGE_COMPOSER:String = "servlet/image-composer/";
-		
 		/**
 		 * Returns the request string for the image composed from the URLs. 
 		 * E.g. <tt>servlet/image-composer/url1|url2|url3</tt>
@@ -82,16 +84,18 @@ package org.flowerplatform.flex_client.core.plugin {
 		 * Checks if the first URL already contains the image-composer prefix; 
 		 * this way it can be used to append images to the same string.
 		 * 
+		 * @see AbstractFlowerJavaPlugin#getImageComposerUrl()
+		 * 
 		 * @author Mariana Gheorghe
 		 */
-		public function getImageComposerUrl(... urls:Array):String {
-			if (urls.length == 0) {
+		public function getImageComposerUrl(... resources:Array):String {
+			if (resources.length == 0) {
 				return null;
 			}
 			var composedUrl:String = "";
-			for each (var url:String in urls) {
-				if (url != null) {
-					composedUrl += (composedUrl.length > 0 ? "|" : "") + url;
+			for each (var resource:String in resources) {
+				if (resource != null) {
+					composedUrl += (composedUrl.length > 0 ? SEPARATOR : "") + resource;
 				}
 			}
 			if (composedUrl.length == 0) {

@@ -47,7 +47,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
-	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	
@@ -64,8 +63,6 @@ package org.flowerplatform.flex_client.core {
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
 		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
-		
-		public var mindmapEditorActionProviders:Vector.<IActionProvider> = new Vector.<IActionProvider>();
 		
 		public var addChildDescriptors:Object = new Object();
 		
@@ -111,9 +108,6 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
 		
-			mindmapEditorActionProviders.push(mindmapEditorClassFactoryActionProvider);
-			mindmapEditorActionProviders.push(new AddChildActionProvider());
-			
 			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
 				function(result:Object):void {
 					addChildDescriptors = result;		

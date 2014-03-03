@@ -64,11 +64,10 @@ package org.flowerplatform.flex_client.web {
 			var btn:Button = new Button();
 			btn.label = "Open Editor";
 			var textInput:TextInput = new TextInput();
-			textInput.width = 200;
-			textInput.text = "D:/temp/FAP-FlowerPlatform4.mm";
+			textInput.width = 400;
+			textInput.text = "freePlanePersistence://D:/temp/FAP-FlowerPlatform4.mm";
 			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES,
-					"mm://" + textInput.text);
+				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, textInput.text);
 			});
 			hBox.addChild(btn);
 			hBox.addChild(textInput);

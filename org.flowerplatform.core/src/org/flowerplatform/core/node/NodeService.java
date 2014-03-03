@@ -1,5 +1,6 @@
 package org.flowerplatform.core.node;
 
+import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -13,6 +14,7 @@ import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DE
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,6 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.update.RootNodeInfoDAO;
-import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -105,7 +106,20 @@ public class NodeService {
 		}
 	}
 		
-
+	public boolean hasChildren(Node node) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return false;
+		}
+		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
+		for (ChildrenProvider provider : childrenProviders) {
+			if (provider.hasChildren(node)) {
+				return true;
+			}
+		}
+		return false;
+	}
+		
 	/**
 	 * @author Mariana Gheorghe
 	 */
@@ -116,23 +130,30 @@ public class NodeService {
 		}
 		
 		ParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
-		Pair<Node, Object> parent = provider.getParent(node);
+		Node parent = provider.getParent(node);
 		if (parent == null) {
 			return null;
 		}
-		return parent.a;
+		return parent;
 	}
 	
 	/**
 	 * @author Mariana Gheorghe
+	 * @author Sebastian Solomon
 	 */
 	public List<PropertyDescriptor> getPropertyDescriptors(Node node) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return Collections.emptyList();
 		}
+		List<PropertyDescriptor> propertyDescriptorList  = descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
+		Collections.sort(propertyDescriptorList, new Comparator<PropertyDescriptor>() {
+			public int compare(PropertyDescriptor o1, PropertyDescriptor o2) {
+				return o1.getCategory().compareTo(o2.getCategory());
+			}
+		});
 		
-		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
+		return propertyDescriptorList;
 	}
 	
 	public void setProperty(Node node, String property, Object value) {		
@@ -237,6 +258,8 @@ public class NodeService {
 		for (PropertiesProvider provider : providers) {
 			provider.populateWithProperties(node);
 		}
+		
+		node.getProperties().put(HAS_CHILDREN, hasChildren(node));
 	}
 	
 	

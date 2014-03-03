@@ -18,17 +18,12 @@
 */
 package org.flowerplatform.flex_client.codesync {
 	
-	import mx.collections.ArrayCollection;
 	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
-	import org.flowerplatform.flex_client.codesync.remote.CodeSyncOperationsService;
 	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
-	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -51,39 +46,9 @@ package org.flowerplatform.flex_client.codesync {
 			
 			CorePlugin.getInstance().mindmapNodeRendererControllerClass = CodeSyncNodeRenderer;
 			
-			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
+			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(SynchronizeAction);
-			
-			CorePlugin.getInstance().serviceLocator.invoke(CodeSyncOperationsService.ID + ".getDropdownPropertyRenderersInfo", null, function(result:Object):void {
-				var names:ArrayCollection = result["names"];
-				var dataProviders:Object = result["dataProviders"];
-				for each (var name:String in names) {
-					PropertiesPlugin.getInstance().propertyRendererClasses[name] = new FactoryWithInitialization(DropDownListPropertyRenderer, 
-						{
-							requestDataProviderHandler: function (callbackObject:Object, callbackFunction:Function):void {
-								callbackFunction.call(callbackObject, dataProviders[name]);
-							},
-							
-							labelFunction: function (object:Object):String {
-								return object.toString();
-							},
-							
-							getItemIndexFromList: function (item:Object, list:ArrayCollection):int {
-								if (item != null) {
-									for (var i:int = 0; i < list.length; i++) {
-										var listItem:Object = list.getItemAt(i);
-										if (item == listItem) {
-											return i;
-										}
-									}
-								}
-								return -1;
-							}
-						});
-				}
-			});
-				
 		}
 		
 	}

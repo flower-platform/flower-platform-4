@@ -35,11 +35,11 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -115,9 +115,9 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (JavaTypeDeclarationFeatureProvider.TYPE_MEMBERS.equals(feature)) {
+		if (JavaPropertiesConstants.TYPE_MEMBERS.equals(feature)) {
 			return getChildren(element);
-		} else if (JavaTypeDeclarationFeatureProvider.SUPER_INTERFACES.equals(feature)) {
+		} else if (JavaPropertiesConstants.SUPER_INTERFACES.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				return ((TypeDeclaration) element).superInterfaceTypes();
 			}
@@ -131,20 +131,9 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			if (element instanceof TypeDeclaration) {
-				if (((TypeDeclaration) element).isInterface()) {
-					return INTERFACE;
-				}
-				return CLASS;
-			}
-			if (element instanceof EnumDeclaration) {
-				return ENUM;
-			}
-			return ANNOTATION_TYPE;
-		} else if (JavaTypeDeclarationFeatureProvider.SUPER_CLASS.equals(feature)) {
+		} else if (JavaPropertiesConstants.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				TypeDeclaration type = (TypeDeclaration) element;
 				if (type.getSuperclassType() != null) {
@@ -158,11 +147,11 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, final Object value) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
 			AbstractTypeDeclaration type = getAbstractTypeDeclaration(element);
 			String name = (String) value;
 			type.setName(type.getAST().newSimpleName(name));
-		} else if (JavaTypeDeclarationFeatureProvider.SUPER_CLASS.equals(feature)) {
+		} else if (JavaPropertiesConstants.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				String superClass = value.toString();
 				TypeDeclaration cls = (TypeDeclaration) element;
@@ -180,12 +169,12 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// declared as containment by JavaFeatureProvider 
-		if (JavaTypeDeclarationFeatureProvider.SUPER_INTERFACES.equals(feature)) {
+		if (JavaPropertiesConstants.SUPER_INTERFACES.equals(feature)) {
 			if (element instanceof TypeDeclaration || element instanceof EnumDeclaration) {
 				Node superInterface = (Node) correspondingChild;
 				AbstractTypeDeclaration cls = (AbstractTypeDeclaration) element;
 				AST ast = cls.getAST();
-				Type type = getTypeFromString(ast, (String) superInterface.getOrPopulateProperties().get(FeatureProvider.NAME));
+				Type type = getTypeFromString(ast, (String) superInterface.getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME));
 				if (cls instanceof TypeDeclaration) {
 					((TypeDeclaration) cls).superInterfaceTypes().add(type);
 				} else if (cls instanceof EnumDeclaration) {
@@ -194,7 +183,7 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 				return type;
 			}
 			return null;
-		} else if (JavaTypeDeclarationFeatureProvider.TYPE_MEMBERS.equals(feature)) {
+		} else if (JavaPropertiesConstants.TYPE_MEMBERS.equals(feature)) {
 			Node node = (Node) correspondingChild;
 			AbstractTypeDeclaration parent = (AbstractTypeDeclaration) element;
 			AST ast = parent.getAST();

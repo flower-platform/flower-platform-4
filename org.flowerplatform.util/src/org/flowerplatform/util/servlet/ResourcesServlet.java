@@ -2,6 +2,8 @@ package org.flowerplatform.util.servlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,22 +17,19 @@ public abstract class ResourcesServlet extends HttpServlet {
 	 * @see ImageComposerServlet 
 	 */
 	public static final char SEPARATOR = '|';
-	
-	/**
-	 * Used to replace {@value #SEPARATOR} 
-	 */
-	public static final char TEMP_SEPARATOR = '#';
-	
-	/**
-	 * Used to replace '/' 
-	 */
-	public static final char TEMP_FOLDER_SEPARATOR = '$';
-	
+
 	public static final String FLOWER_PLATFORM = "flower-platform";
+	
+	protected static Map<String, String> tempFilesMap = new HashMap<String, String>();
+	
+	protected static int counter = 0;
 	
 	public static final File TEMP_FOLDER =  new File (System.getProperty("java.io.tmpdir"), FLOWER_PLATFORM);
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
+	
+	//TODO replace with flower property
+	protected static boolean useFilesFromTempProperty = false; 
 	
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -44,10 +43,14 @@ public abstract class ResourcesServlet extends HttpServlet {
 	/**
 	* @author Sebastian Solomon
 	*/
-	protected String searchInTemp(String requestedFile) {
-//		File file = new File(TEMP_FOLDER , requestedFile);
-//		return file.exists() ? file.getAbsolutePath() : null;
-		return null;
+	protected String getTempFilePath(String tempFileName) {
+		return TEMP_FOLDER + "\\" + tempFileName; 
 	}
 	
+	/**
+	* @author Sebastian Solomon
+	*/
+	protected File getTempFile(String tempFileName) {
+		return new File(TEMP_FOLDER, tempFileName); 
+	}
 }

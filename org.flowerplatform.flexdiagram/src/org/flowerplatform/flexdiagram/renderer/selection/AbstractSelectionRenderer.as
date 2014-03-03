@@ -17,12 +17,11 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.renderer.selection {
-	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
+	import org.flowerplatform.flexdiagram.IDiagramShellAware;
 	
 	/**	
 	 * @author Cristina Constantinescu

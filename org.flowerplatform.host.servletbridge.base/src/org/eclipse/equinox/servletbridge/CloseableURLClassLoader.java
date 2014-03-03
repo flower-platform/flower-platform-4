@@ -24,12 +24,38 @@
 
 package org.eclipse.equinox.servletbridge;
 
-import java.io.*;
-import java.net.*;
-import java.security.*;
-import java.util.*;
-import java.util.jar.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.CodeSource;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+
+import org.eclipse.equinox.servletbridge.flower.FlowerFrameworkLauncher;
 
 //MODIF_FROM_ORIGINAL begin
 /**

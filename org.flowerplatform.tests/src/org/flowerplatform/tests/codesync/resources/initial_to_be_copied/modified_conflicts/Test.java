@@ -16,16 +16,25 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.renderer {
-	import mx.core.IDataRenderer;
-	import mx.core.IVisualElement;
-	import org.flowerplatform.flexdiagram.DiagramShell;
+import javax.persistence.OneToMany;
 
-	/**
-	 * @author Cristian Spiescu
-	 */
-	public interface IDiagramShellAware {
-		function get diagramShell():DiagramShell;
-		function set diagramShell(value:DiagramShell):void;
+import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
+
+@Deprecated
+public class Test extends TestSource implements ITest {
+
+	private Test x;
+	
+	private TestSource y;
+	
+	@OneToMany(mappedBy="test_source")
+	public int test(String st) {
+		return x;
 	}
+
+	@OverrideAnnotationOf(x+y)
+	public static Test getTest() {
+		return x;
+	}
+	
 }

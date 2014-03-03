@@ -3,32 +3,33 @@ package org.flowerplatform.codesync.code.java;
 /**
  * @author Mariana Gheorghe
  */
-public class JavaConstants {
+public class JavaPropertiesConstants {
+	
+	////////////////////////////////////////////
+	// Properties constants
+	////////////////////////////////////////////
+	
+	public static final String ICON = "icon";
+	
+	// Value features
+	
+	public static final String MODIFIERS = "modifiers";
+	public static final String DOCUMENTATION = "documentation";
+	public static final String TYPED_ELEMENT_TYPE = "typedElementType";
+	public static final String SUPER_CLASS = "superClass";
+	public static final String ATTRIBUTE_INITIALIZER = "attributeInitializer";
+	public static final String OPERATION_HAS_BODY = "hasBody";
+	public static final String ANNOTATION_VALUE_VALUE = "annotationValueValue";
+	public static final String ANNOTATION_MEMBER_DEFAULT_VALUE = "annotationMemberDefaultValue";
+	
+	// Containment features
+	
+	public static final String TYPE_MEMBERS = "typeMembers";
+	public static final String OPERATION_PARAMETERS = "operationParameters";
+	public static final String ANNOTATION_VALUES = "annotationValues";
+	public static final String SUPER_INTERFACES = "superInterfaces";
+	public static final String ENUM_CONSTANT_ARGUMENTS = "enumConstantArguments";
 
-	////////////////////////////////////////////
-	// Label constants
-	////////////////////////////////////////////
-	
-	public static final String LABEL_PACKAGE = "Package";
-	public static final String LABEL_FILE = "File";
-	
-	public static final String LABEL_TYPE_CLASS = "Class";
-	public static final String LABEL_TYPE_INTERFACE = "Interface";
-	public static final String LABEL_TYPE_ENUM = "Enum";
-	public static final String LABEL_TYPE_ANNOTATION = "Annotation";
-	
-	public static final String LABEL_FIELD = "Field";
-	public static final String LABEL_METHOD = "Method";
-	public static final String LABEL_PARAMETER = "Parameter";
-	
-	public static final String LABEL_ENUM_CONSTANT = "Enum Constant";
-	public static final String LABEL_ENUM_CONSTANT_ARGUMENT = "Enum Constant Argument";
-	
-	public static final String LABEL_MODIFIER = "Modifier";
-	public static final String LABEL_ANNOTATION = "Annotation";
-	
-	public static final String LABEL_SUPER_INTERFACE = "Super Interface";
-	
 	////////////////////////////////////////////
 	// Icon and decorator constants
 	////////////////////////////////////////////
@@ -76,4 +77,5 @@ public class JavaConstants {
 	public static String getImagePathFromPublicResources(String image) {
 		return CodeSyncCodeJavaPlugin.getInstance().getResourceUrl("/images/" + image);
 	}
+	
 }
