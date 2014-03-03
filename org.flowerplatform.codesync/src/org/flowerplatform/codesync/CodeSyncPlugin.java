@@ -252,7 +252,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED_MARKER).setTypeAs("Boolean"));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED_MARKER));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC_MARKER).setTypeAs("Boolean"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC_MARKER).setTypeAs("Boolean").setReadOnlyAs(false));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC_MARKER).setTypeAs("Boolean"));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFLICT_MARKER));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_CONFLICT_MARKER));
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());

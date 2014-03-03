@@ -107,7 +107,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 				continue;
 			}
 			String keyword = (String) modifier.getOrPopulateProperties().get(FeatureProvider.NAME);
-			if (keyword == null) {
+			if (keyword == null || keyword.isEmpty()) {
 				continue;
 			}
 			flags |= ModifierKeyword.toKeyword(keyword).toFlagValue();

@@ -1,13 +1,12 @@
 package org.flowerplatform.flex_client.properties.property_renderer {
-	import flash.events.FocusEvent;
 	import flash.events.MouseEvent;
 	
 	import mx.binding.utils.BindingUtils;
 	
-	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
-	
 	import spark.components.Button;
 	import spark.components.TextInput;
+	
+	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
 	public class StringWithButtonPropertyRenderer extends BasicPropertyRenderer implements IDialogResultHandler {
 		
@@ -33,10 +32,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			propertyValue.text = data.value;
 			propertyValue.editable = !data.readOnly;
 			
-//			if (!data.readOnly) {
-//				BindingUtils.bindProperty( data, "value", propertyValue, "text" );
-//				handleListeningOnEvent(FocusEvent.FOCUS_OUT, this, propertyValue);
-//			}
+			if (!data.readOnly) {
+				BindingUtils.bindProperty( data, "value", propertyValue, "text" );
+			}
 			
 		}
 		
@@ -65,6 +63,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		public function handleDialogResult(result:Object):void {
 			// set new value after closing dialog
 			propertyValue.text = getNewPropertyValueHandler(result);
+			saveProperty(null);			
 		}
 		
 		
