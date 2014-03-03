@@ -1,12 +1,12 @@
 package org.flowerplatform.codesync.github.adapter;
 
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.ADDITIONS;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.BLOB_URL;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.CHANGES;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.DELETIONS;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.FILENAME;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.PATCH;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.STATUS;
+import static org.flowerplatform.codesync.github.GitHubConstants.ADDITIONS;
+import static org.flowerplatform.codesync.github.GitHubConstants.BLOB_URL;
+import static org.flowerplatform.codesync.github.GitHubConstants.CHANGES;
+import static org.flowerplatform.codesync.github.GitHubConstants.DELETIONS;
+import static org.flowerplatform.codesync.github.GitHubConstants.FILENAME;
+import static org.flowerplatform.codesync.github.GitHubConstants.PATCH;
+import static org.flowerplatform.codesync.github.GitHubConstants.STATUS;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
  * 
  * @author Mariana Gheorghe
  */
-public class CommitFileModelAdapter extends AbstractModelAdapter {
+public class GitHubCommitFileModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {

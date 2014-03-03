@@ -1,13 +1,16 @@
 package org.flowerplatform.codesync.github.feature_provider;
 
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.LINE;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.PATH;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.POSITION;
+import static org.flowerplatform.codesync.github.GitHubConstants.LINE;
+import static org.flowerplatform.codesync.github.GitHubConstants.PATH;
+import static org.flowerplatform.codesync.github.GitHubConstants.POSITION;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class CommitCommentFeatureProvider extends CommentFeatureProvider {
+/**
+ * @author Mariana Gheorghe
+ */
+public class GitHubCommitCommentFeatureProvider extends GitHubCommentFeatureProvider {
 
 	@SuppressWarnings("unchecked")
 	@Override

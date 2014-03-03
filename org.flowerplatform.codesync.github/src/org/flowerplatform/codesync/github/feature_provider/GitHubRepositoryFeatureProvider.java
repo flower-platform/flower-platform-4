@@ -4,13 +4,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
-import org.flowerplatform.codesync.github.GitHubPropertiesConstants;
+import org.flowerplatform.codesync.github.GitHubConstants;
 
-public class ClientFeatureProvider extends NodeFeatureProvider {
+/**
+ * @author Mariana Gheorghe
+ */
+public class GitHubRepositoryFeatureProvider extends NodeFeatureProvider {
 
 	@Override
 	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(GitHubPropertiesConstants.PULL_REQUESTS);
+		return Arrays.asList(GitHubConstants.PULL_REQUESTS);
 	}
 	
 }

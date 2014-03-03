@@ -1,7 +1,20 @@
 package org.flowerplatform.codesync.github;
 
-public class GitHubPropertiesConstants {
+/**
+ * @author Mariana Gheorghe
+ */
+public class GitHubConstants {
 
+	/////////////////////////////////////
+	// Types Constants
+	/////////////////////////////////////
+	
+	public static final String REPOSITORY = "gitHubRepository";
+	public static final String PULL_REQUEST = "gitHubPullRequest";
+	public static final String COMMIT_FILE = "gitHubCommitFile";
+	public static final String COMMIT_COMMENT = "gitHubCommitComment";
+	public static final String COMMENT = "gitHubComment";
+	
 	/////////////////////////////////////
 	// Node Properties Constants
 	/////////////////////////////////////
@@ -50,5 +63,7 @@ public class GitHubPropertiesConstants {
 	public static final String PATH = "path";
 	public static final String LINE = "line";
 	public static final String POSITION = "position";
+
+	public static final String GITHUB = "gitHub";
 	
 }

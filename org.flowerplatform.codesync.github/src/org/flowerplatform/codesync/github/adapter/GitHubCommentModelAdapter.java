@@ -1,10 +1,10 @@
 package org.flowerplatform.codesync.github.adapter;
 
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.BODY;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.COMMENT_ID;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.CREATED_AT;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.UPDATED_AT;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.USER;
+import static org.flowerplatform.codesync.github.GitHubConstants.BODY;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_ID;
+import static org.flowerplatform.codesync.github.GitHubConstants.CREATED_AT;
+import static org.flowerplatform.codesync.github.GitHubConstants.UPDATED_AT;
+import static org.flowerplatform.codesync.github.GitHubConstants.USER;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 /**
  * @author Mariana Gheorghe
  */
-public class CommentModelAdapter extends AbstractModelAdapter {
+public class GitHubCommentModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {

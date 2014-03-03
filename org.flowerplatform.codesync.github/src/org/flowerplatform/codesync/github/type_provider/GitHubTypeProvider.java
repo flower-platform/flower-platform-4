@@ -1,10 +1,17 @@
 package org.flowerplatform.codesync.github.type_provider;
 
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_COMMENT;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE;
+import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST;
+import static org.flowerplatform.codesync.github.GitHubConstants.REPOSITORY;
+
 import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.CommitComment;
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.PullRequest;
-import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.RepositoryId;
 import org.flowerplatform.codesync.type_provider.ClassTypeProvider;
 
 /**
@@ -12,14 +19,9 @@ import org.flowerplatform.codesync.type_provider.ClassTypeProvider;
  */
 public class GitHubTypeProvider extends ClassTypeProvider {
 
-	public static final String CLIENT = "gitHubClient";
-	public static final String PULL_REQUEST = "gitHubPullRequest";
-	public static final String COMMIT_FILE = "gitHubCommitFile";
-	public static final String COMMIT_COMMENT = "gitHubCommitComment";
-	public static final String COMMENT = "gitHubComment";
-	
 	public GitHubTypeProvider() {
-		classToTypeMap.put(GitHubClient.class, CLIENT);
+		classToTypeMap.put(Repository.class, REPOSITORY);
+		classToTypeMap.put(RepositoryId.class, REPOSITORY);
 		classToTypeMap.put(PullRequest.class, PULL_REQUEST);
 		classToTypeMap.put(CommitFile.class, COMMIT_FILE);
 		classToTypeMap.put(CommitComment.class, COMMIT_COMMENT);

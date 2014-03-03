@@ -1,24 +1,20 @@
 package org.flowerplatform.codesync.github.adapter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.egit.github.core.IRepositoryIdProvider;
-import org.eclipse.egit.github.core.PullRequest;
-import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.codesync.github.CodeSyncGitHubPlugin;
-import org.flowerplatform.codesync.github.GitHubPropertiesConstants;
+import org.flowerplatform.codesync.github.GitHubConstants;
 
 /**
  * @author Mariana Gheorghe
  */
-public class ClientModelAdapter extends AbstractModelAdapter {
+public class GitHubRepositoryModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
@@ -30,13 +26,13 @@ public class ClientModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (GitHubPropertiesConstants.PULL_REQUESTS.equals(feature)) {
+		if (GitHubConstants.PULL_REQUESTS.equals(feature)) {
 			PullRequestService service = new PullRequestService(CodeSyncGitHubPlugin.getInstance().getClient());
-			IRepositoryIdProvider repository = new RepositoryId("flower-platform", "flower-platform-4");
+			IRepositoryIdProvider repository = getRepository(element);
 			
 			try {
 				// test with just one
-				int id = 82;
+				int id = 73;
 				return Arrays.asList(service.getPullRequest(repository, id));
 //				List<PullRequest> pullRequests = new ArrayList<PullRequest>();
 //				pullRequests.addAll(service.getPullRequests(repository, "open"));
@@ -79,8 +75,8 @@ public class ClientModelAdapter extends AbstractModelAdapter {
 		return null;
 	}
 	
-	protected GitHubClient getClient(Object object) {
-		return (GitHubClient) object;
+	protected IRepositoryIdProvider getRepository(Object element) {
+		return (IRepositoryIdProvider) element;
 	}
 
 }

@@ -1,14 +1,17 @@
 package org.flowerplatform.codesync.github.adapter;
 
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.LINE;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.PATH;
-import static org.flowerplatform.codesync.github.GitHubPropertiesConstants.POSITION;
+import static org.flowerplatform.codesync.github.GitHubConstants.LINE;
+import static org.flowerplatform.codesync.github.GitHubConstants.PATH;
+import static org.flowerplatform.codesync.github.GitHubConstants.POSITION;
 
 import java.util.List;
 
 import org.eclipse.egit.github.core.CommitComment;
 
-public class CommitCommentModelAdapter extends CommentModelAdapter {
+/**
+ * @author Mariana Gheorghe
+ */
+public class GitHubCommitCommentModelAdapter extends GitHubCommentModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {

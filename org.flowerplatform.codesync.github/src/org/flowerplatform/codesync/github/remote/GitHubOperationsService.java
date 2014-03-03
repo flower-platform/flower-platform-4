@@ -1,12 +1,10 @@
 package org.flowerplatform.codesync.github.remote;
 
-import static org.flowerplatform.codesync.github.CodeSyncGitHubPlugin.GITHUB;
-
+import org.eclipse.egit.github.core.RepositoryId;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.github.CodeSyncGitHubPlugin;
-import org.flowerplatform.codesync.github.type_provider.GitHubTypeProvider;
+import org.flowerplatform.codesync.github.GitHubConstants;
 import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -23,7 +21,7 @@ public class GitHubOperationsService {
 		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(null);
 		Node client = null;
 		for (Node child : CorePlugin.getInstance().getNodeService().getChildren(root, true)) {
-			if (GitHubTypeProvider.CLIENT.equals(child.getType())) {
+			if (GitHubConstants.REPOSITORY.equals(child.getType())) {
 				client = child;
 				break;
 			}
@@ -43,12 +41,12 @@ public class GitHubOperationsService {
 		match.setLeft(client);
 		
 		// right: github
-		match.setRight(CodeSyncGitHubPlugin.getInstance().getClient());
+		match.setRight(new RepositoryId("flower-platform", "flower-platform-4"));
 		
 		// initialize the algorithm
 		ITypeProvider typeProvider = new ComposedTypeProvider()
 		.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider("node"))
-		.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider(GITHUB));
+		.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider(GitHubConstants.GITHUB));
 		TypeDescriptorRegistry typeDescriptorRegistry = CorePlugin.getInstance().getNodeTypeDescriptorRegistry();
 		
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm(typeDescriptorRegistry, typeProvider);
