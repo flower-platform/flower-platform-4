@@ -54,7 +54,7 @@ public class Node {
 		this.type = tokens[0];
 		this.resource = tokens[1];
 		
-		if (tokens.length == 3) {
+		if (tokens.length == 3) { // needed because if fullNodeId is "type|resource|" (without id), there will be two tokens ("type", "resource")
 			this.idWithinResource = tokens[2];
 		}
 		this.cachedFullNodeId = fullNodeId;

@@ -240,10 +240,10 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
 		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.NAME).setReadOnlyAs(false));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.ADDED));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.ADDED).setTypeAs("Boolean"));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.REMOVED));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.SYNC));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_SYNC));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.SYNC).setTypeAs("Boolean"));
+		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_SYNC).setTypeAs("Boolean"));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CONFLICT));
 		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_CONFLICT));
 		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());

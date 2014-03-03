@@ -14,6 +14,7 @@ import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DE
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +139,12 @@ public class NodeService {
 			return Collections.emptyList();
 		}
 		List<PropertyDescriptor> propertyDescriptorList  = descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
-		Collections.sort(propertyDescriptorList, new CategoryComparator());
+		Collections.sort(propertyDescriptorList, new Comparator<PropertyDescriptor>() {
+			public int compare(PropertyDescriptor o1, PropertyDescriptor o2) {
+				return o1.getCategory().compareTo(o2.getCategory());
+			}
+		});
+		
 		return propertyDescriptorList;
 	}
 	
