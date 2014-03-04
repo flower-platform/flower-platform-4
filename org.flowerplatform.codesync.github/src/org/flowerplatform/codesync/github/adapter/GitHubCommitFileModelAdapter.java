@@ -7,12 +7,12 @@ import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_CHA
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_DELETIONS;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_NAME;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_PATCH;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_SHA;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_STATUS;
 
 import java.util.List;
 
 import org.eclipse.egit.github.core.CommitFile;
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.github.feature_provider.GitHubCommitFileFeatureProvider;
 
 /**
@@ -22,13 +22,15 @@ import org.flowerplatform.codesync.github.feature_provider.GitHubCommitFileFeatu
  * 
  * @author Mariana Gheorghe
  */
-public class GitHubCommitFileModelAdapter extends AbstractModelAdapter {
+public class GitHubCommitFileModelAdapter extends GitHubAbstractModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		CommitFile file = getCommitFile(element);
 		if (COMMIT_FILE_NAME.equals(feature)) {
 			return file.getFilename();
+		} else if (COMMIT_FILE_SHA.equals(feature)) {
+			return file.getSha();
 		} else if (COMMIT_FILE_STATUS.equals(feature)) {
 			return file.getStatus();
 		} else if (COMMIT_FILE_BLOB_URL.equals(feature)) {
@@ -45,11 +47,6 @@ public class GitHubCommitFileModelAdapter extends AbstractModelAdapter {
 			return file.getFilename();
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
-	}
-
-	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		// TODO
 	}
 
 	@Override

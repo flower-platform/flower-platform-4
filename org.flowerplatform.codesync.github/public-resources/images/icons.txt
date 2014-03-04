@@ -1,1 +1,2 @@
 images/arrow_merge.png https://www.iconfinder.com/icons/4987/arrow_merge_icon http://www.famfamfam.com/about/
+images/comment.png https://www.iconfinder.com/icons/5186/comment_icon http://www.famfamfam.com/about/

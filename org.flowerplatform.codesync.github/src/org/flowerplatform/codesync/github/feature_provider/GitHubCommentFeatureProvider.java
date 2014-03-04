@@ -6,9 +6,6 @@ import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_ID;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_UPDATED_AT;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_USER;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.codesync.github.adapter.GitHubCommentModelAdapter;
 
@@ -19,15 +16,12 @@ import org.flowerplatform.codesync.github.adapter.GitHubCommentModelAdapter;
  */
 public class GitHubCommentFeatureProvider extends NodeFeatureProvider {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		@SuppressWarnings("rawtypes")
-		List features = super.getValueFeatures(element);
-		features.addAll(Arrays.asList(
-				COMMENT_ID, COMMENT_BODY, COMMENT_USER,
-				COMMENT_CREATED_AT, COMMENT_UPDATED_AT));
-		return features;
+	public GitHubCommentFeatureProvider() {
+		valueFeatures.add(COMMENT_ID);
+		valueFeatures.add(COMMENT_BODY);
+		valueFeatures.add(COMMENT_USER);
+		valueFeatures.add(COMMENT_CREATED_AT);
+		valueFeatures.add(COMMENT_UPDATED_AT);
 	}
 	
 }

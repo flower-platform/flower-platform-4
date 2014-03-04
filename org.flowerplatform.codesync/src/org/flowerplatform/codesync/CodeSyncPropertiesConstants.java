@@ -15,5 +15,7 @@ public class CodeSyncPropertiesConstants {
 	
 	public static final String NAME = "text";
 	public static final String CHILDREN = "children";
+	
+	public static final String ICON = "icon";
 
 }

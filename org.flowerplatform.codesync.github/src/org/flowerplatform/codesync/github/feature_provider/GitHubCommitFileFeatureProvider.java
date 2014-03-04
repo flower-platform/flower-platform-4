@@ -6,10 +6,8 @@ import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_CHA
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_DELETIONS;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_NAME;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_PATCH;
+import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_SHA;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_STATUS;
-
-import java.util.Arrays;
-import java.util.List;
 
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.codesync.github.adapter.GitHubCommitFileModelAdapter;
@@ -21,15 +19,15 @@ import org.flowerplatform.codesync.github.adapter.GitHubCommitFileModelAdapter;
  */
 public class GitHubCommitFileFeatureProvider extends NodeFeatureProvider {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		@SuppressWarnings("rawtypes")
-		List features = super.getValueFeatures(element);
-		features.addAll(Arrays.asList(
-				COMMIT_FILE_NAME, COMMIT_FILE_STATUS, COMMIT_FILE_BLOB_URL,
-				COMMIT_FILE_PATCH, COMMIT_FILE_CHANGES, COMMIT_FILE_ADDITIONS, COMMIT_FILE_DELETIONS));
-		return features;
+	public GitHubCommitFileFeatureProvider() {
+		valueFeatures.add(COMMIT_FILE_NAME);
+		valueFeatures.add(COMMIT_FILE_SHA);
+		valueFeatures.add(COMMIT_FILE_STATUS);
+		valueFeatures.add(COMMIT_FILE_BLOB_URL);
+		valueFeatures.add(COMMIT_FILE_PATCH);
+		valueFeatures.add(COMMIT_FILE_CHANGES);
+		valueFeatures.add(COMMIT_FILE_ADDITIONS);
+		valueFeatures.add(COMMIT_FILE_DELETIONS);
 	}
 
 }

@@ -20,7 +20,6 @@ public class PersistencePropertySetter extends PropertySetter {
 						
 		if (NodePropertiesConstants.TEXT.equals(property)) {
 			rawNodeData.setText((String) wrapper.getPropertyValue());	
-			return;
 		}
 		
 		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {

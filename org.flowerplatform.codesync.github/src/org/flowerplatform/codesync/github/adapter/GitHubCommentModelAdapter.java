@@ -7,10 +7,12 @@ import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_ID;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_UPDATED_AT;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_USER;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.egit.github.core.Comment;
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
+import org.eclipse.egit.github.core.IRepositoryIdProvider;
+import org.eclipse.egit.github.core.RepositoryId;
 import org.flowerplatform.codesync.github.feature_provider.GitHubCommentFeatureProvider;
 
 /**
@@ -18,7 +20,7 @@ import org.flowerplatform.codesync.github.feature_provider.GitHubCommentFeatureP
  * 
  * @author Mariana Gheorghe
  */
-public class GitHubCommentModelAdapter extends AbstractModelAdapter {
+public class GitHubCommentModelAdapter extends GitHubAbstractModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
@@ -41,8 +43,18 @@ public class GitHubCommentModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		// TODO
-		
+		if (COMMENT_BODY.equals(feature) || NAME.equals(feature)) {
+			Comment comment = getComment(element);
+			comment.setBody((String) value);
+			IRepositoryIdProvider repository = RepositoryId.createFromId(getRepositoryIdFromURL(comment.getUrl()));
+			try {
+				getIssueService().editComment(repository, comment);
+				return;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		super.setValueFeatureValue(element, feature, value);
 	}
 
 	@Override

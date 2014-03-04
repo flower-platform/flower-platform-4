@@ -26,13 +26,25 @@ public class GitHubConstants {
 	public static final String CONTAINMENT_PULL_REQUESTS = "pullRequests";
 	
 	public static final String PULL_REQUEST_NUMBER = "number";
+	public static final String PULL_REQUEST_TITLE = "title";
 	public static final String PULL_REQUEST_BODY = "body";
 	public static final String PULL_REQUEST_HTML_URL = "htmlUrl";
+	public static final String PULL_REQUEST_MILESTONE = "milestone";
+	
+	public static final String PULL_REQUEST_BASE = "base";
+	public static final String PULL_REQUEST_HEAD = "head";
 	
 	public static final String PULL_REQUEST_STATE = "state";
+	
+		public static final String PULL_REQUEST_STATE_OPEN = "open";
+		public static final String PULL_REQUEST_STATE_CLOSED = "closed";
+	
 	public static final String PULL_REQUEST_CLOSED_AT = "closedAt";
 	public static final String PULL_REQUEST_MERGED_AT = "mergedAt";
 	public static final String PULL_REQUEST_UPDATED_AT = "updatedAt";
+	
+	public static final String PULL_REQUEST_MERGED = "merged";
+	public static final String PULL_REQUEST_MERGEABLE = "mergeable";
 	
 	public static final String PULL_REQUEST_ADDITIONS = "additions";
 	public static final String PULL_REQUEST_DELETIONS = "deletions";
@@ -50,6 +62,7 @@ public class GitHubConstants {
 	
 	public static final String COMMIT_FILE_NAME = "fileName";
 	public static final String COMMIT_FILE_BLOB_URL = "blobURL";
+	public static final String COMMIT_FILE_SHA = "sha";
 	public static final String COMMIT_FILE_STATUS = "status";
 
 		public static final String COMMIT_FILE_STATUS_ADDED = "added";
@@ -75,7 +88,6 @@ public class GitHubConstants {
 	
 	public static final String COMMIT_COMMENT_COMMIT_ID = "commitId";
 	public static final String COMMIT_COMMENT_PATH = "path";
-	public static final String COMMIT_COMMENT_LINE = "line";
 	public static final String COMMIT_COMMENT_POSITION = "position";
 
 	////////////////////////////////////////////

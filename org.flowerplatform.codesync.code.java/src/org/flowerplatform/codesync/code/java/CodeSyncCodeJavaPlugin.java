@@ -18,11 +18,11 @@
  */
 package org.flowerplatform.codesync.code.java;
 
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.ICON;
 import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.NAME;
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_RIGHT;
 import static org.flowerplatform.codesync.code.CodeSyncCodePlugin.FILE;
 import static org.flowerplatform.codesync.code.CodeSyncCodePlugin.FOLDER;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.ICON;
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.IMG_ANNOTATION;
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.IMG_FIELD;
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.IMG_FILE;
