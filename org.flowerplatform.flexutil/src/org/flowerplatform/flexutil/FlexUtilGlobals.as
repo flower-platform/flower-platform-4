@@ -30,6 +30,8 @@ package org.flowerplatform.flexutil {
 	import org.flowerplatform.flexutil.popup.IProgressMonitorFactory;
 	import org.flowerplatform.flexutil.selection.SelectionManager;
 	import org.flowerplatform.flexutil.shortcut.KeyBindings;
+	
+	import spark.core.ContentCache;
 
 	public class FlexUtilGlobals {
 
@@ -76,6 +78,11 @@ package org.flowerplatform.flexutil {
 		public var selectionManager:SelectionManager = new SelectionManager();
 		
 		public var flexPluginManager:FlexPluginManager = new FlexPluginManager();
+		
+		/**
+		 * @author Cristina Contantinescu
+		 */
+		public var imageContentCache:ContentCache;
 		
 		public function createAbsoluteUrl(url:String):String {
 			if (rootUrl.length > 0) {

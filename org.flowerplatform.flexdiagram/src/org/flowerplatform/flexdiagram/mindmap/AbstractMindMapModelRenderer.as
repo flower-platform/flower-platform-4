@@ -1,50 +1,39 @@
 package org.flowerplatform.flexdiagram.mindmap
 {
-	import mx.collections.ArrayList;
-	import mx.collections.IList;
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.IDiagramShellAware;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.FlowerArrayList;
-	
 	import spark.components.DataRenderer;
 	import spark.components.Label;
-	import spark.core.ContentCache;
 	import spark.layouts.HorizontalLayout;
-	import spark.primitives.BitmapImage;
+	
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
+	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellAware {
-				
-		protected static var imageCache:ContentCache;
+	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider {
+						
 		protected static const circleRadius:int = 3;
 		
-		protected var _diagramShell:MindMapDiagramShell;
-		
-		protected var iconDisplays:IList;
-		protected var _icons:FlowerArrayList = new FlowerArrayList();		
-		
+		protected var _context:DiagramShellContext;
+			
 		protected var labelDisplay:Label;
 		
+		protected var iconsExtension:IconsComponentExtension;
+		
 		public function AbstractMindMapModelRenderer() {
+			super();
 			addEventListener(FlexEvent.INITIALIZE, initializeHandler);	
-			setStyle("verticalGap", 0);
-			setStyle("iconsGap", 1);
-			
-			if (imageCache == null) {
-				imageCache = new ContentCache();
-				imageCache.enableCaching = true;
-				imageCache.maxCacheEntries = 200;
-			}
-			
+									
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				minHeight = 22;
 				minWidth = 10;
@@ -66,6 +55,7 @@ package org.flowerplatform.flexdiagram.mindmap
 				}
 			}
 			
+			iconsExtension = new IconsComponentExtension(this);
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;
 			hLayout.paddingBottom = 2;
@@ -77,14 +67,22 @@ package org.flowerplatform.flexdiagram.mindmap
 			this.layout = hLayout;
 		}
 		
-		public function get diagramShell():DiagramShell {
-			return _diagramShell;
+		public function get diagramShellContext():DiagramShellContext {			
+			return _context;
 		}
 		
-		public function set diagramShell(value:DiagramShell):void {
-			_diagramShell = MindMapDiagramShell(value);
-		}
+		public function set diagramShellContext(value:DiagramShellContext):void {
+			this._context = value;
+		}		
 				
+		public function get icons():FlowerArrayList	{			
+			return iconsExtension.icons;
+		}
+		
+		public function set icons(value:FlowerArrayList):void {
+			iconsExtension.icons = value;
+		}
+		
 		override public function set data(value:Object):void {
 			if (super.data != null) {
 				data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
@@ -101,40 +99,7 @@ package org.flowerplatform.flexdiagram.mindmap
 		public function get applicationDPI():Number	{
 			return FlexGlobals.topLevelApplication.applicationDPI;
 		}
-		
-		public function get icons():FlowerArrayList {
-			return _icons;
-		}
-		
-		public function set icons(value:FlowerArrayList):void {
-			if (value == _icons)
-				return;
-			if (value == null) {
-				_icons.removeAll();
-			} else {
-				var i:int;
-				var j:int = 0;
-				if (_icons.length > 0 && value.length > 0) {
-					while (j < value.length && j < _icons.length) {
-						BitmapImage(iconDisplays.getItemAt(j)).source = value.getItemAt(j);
-						j++;
-					}
-				}
-				if (j < _icons.length) {
-					i = j;
-					while (i < iconDisplays.length)  {
-						removeIconDisplay(BitmapImage(iconDisplays.getItemAt(i)));
-					}
-				}
-				if (j < value.length) {
-					for (i = j; i < value.length; i++) {
-						addIconDisplay(value.getItemAt(i));
-					}
-				}
-				_icons = value;
-			}			
-		}
-			
+					
 		protected function initializeHandler(event:FlexEvent):void {				
 			addEventListener(ResizeEvent.RESIZE, resizeHandler);			
 		}
@@ -158,7 +123,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 			
 			if (canDrawCircle(data)) {
-				var side:int = _diagramShell.getModelController(data).getSide(data);
+				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					graphics.drawCircle(-circleRadius, height/2, circleRadius);
 				} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
@@ -166,60 +131,7 @@ package org.flowerplatform.flexdiagram.mindmap
 				}
 			}
 		}
-		
-		protected function addIconDisplay(icon:Object):void {
-			var iconDisplay:BitmapImage = new BitmapImage();
-			iconDisplay.contentLoader = imageCache;
-			iconDisplay.source = icon;
-			iconDisplay.verticalAlign = "middle";
-			
-			addElementAt(iconDisplay, numElements - 1);
-			
-			if (iconDisplays == null) {
-				iconDisplays = new ArrayList();
-			}
-			iconDisplays.addItem(iconDisplay);
-		}
-		
-		protected function removeIconDisplay(iconDisplay:BitmapImage):void {
-			removeElement(iconDisplay);
-			iconDisplays.removeItemAt(iconDisplays.getItemIndex(iconDisplay));
-			
-			invalidateSize();
-		}			
 				
-		override public function validateDisplayList():void {
-			super.validateDisplayList();
-			
-			if (iconDisplays && iconDisplays.length > 0) {
-				for (var i:int=0; i < iconDisplays.length; i++) {
-					var iconDisplay:BitmapImage = BitmapImage(iconDisplays.getItemAt(i));
-					iconDisplay.validateDisplayList();
-				}
-			}
-		}
-		
-		override public function validateProperties():void {
-			super.validateProperties();
-			
-			if (iconDisplays && iconDisplays.length > 0) {
-				for (var i:int=0; i < iconDisplays.length; i++) {
-					var iconDisplay:BitmapImage = BitmapImage(iconDisplays.getItemAt(i));
-					iconDisplay.validateProperties();
-				}
-			}
-		}
-		
-		override public function validateSize(recursive:Boolean = false):void {
-			if (iconDisplays && iconDisplays.length > 0) {
-				for (var i:int=0; i < iconDisplays.length; i++) {
-					var iconDisplay:BitmapImage = BitmapImage(iconDisplays.getItemAt(i));
-					iconDisplay.validateSize();
-				}
-			}				
-			super.validateSize(recursive);
-		}
-		
 		protected function canDrawCircle(model:Object):Boolean {
 			throw new Error("This method needs to be implemented.");
 		}
@@ -236,5 +148,24 @@ package org.flowerplatform.flexdiagram.mindmap
 			throw new Error("This method needs to be implemented.");
 		}
 		
+		public function newIconIndex():int {			
+			return numElements - 1; // add icon before label
+		}
+				
+		override public function validateDisplayList():void {
+			super.validateDisplayList();			
+			iconsExtension.validateDisplayList();
+		}
+		
+		override public function validateProperties():void {
+			super.validateProperties();
+			iconsExtension.validateProperties();
+		}
+		
+		override public function validateSize(recursive:Boolean=false):void	{
+			iconsExtension.validateSize();
+			super.validateSize(recursive);
+		}
+				
 	}
 }

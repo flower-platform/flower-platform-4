@@ -18,12 +18,10 @@
  */
 package org.flowerplatform.flexdiagram.tool {
 	
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
-	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.FlexGlobals;
@@ -31,10 +29,11 @@ package org.flowerplatform.flexdiagram.tool {
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.tool.controller.drag.IDragController;
+	import org.flowerplatform.flexdiagram.tool.controller.drag.DragController;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -50,14 +49,15 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 		
 		public function wakeUp(eventType:String, initialEvent:MouseEvent):Boolean {
+			context.shellContext = diagramShell.getNewDiagramShellContext();
+			
 			var renderer:IVisualElement = getRendererFromDisplayCoordinates();
 			if (renderer is DiagramRenderer) {
 				return false;
 			}
 			if (renderer is IDataRenderer) {
 				var model:Object = getModelWithDragController(renderer);
-				return diagramShell.getControllerProvider(model).getDragController(model) != null &&
-					   (diagramShell.selectedItems.getItemIndex(model) != -1);						
+				return ControllerUtils.getDragController(context.shellContext, model) != null && (diagramShell.selectedItems.getItemIndex(model) != -1);						
 			}
 			return false;
 		}
@@ -76,8 +76,7 @@ package org.flowerplatform.flexdiagram.tool {
 			var acceptedDraggableModels:IList = getAcceptedDraggableModelsFromSelection(diagramShell.selectedItems);
 			for (var i:int = 0; i < acceptedDraggableModels.length; i++) {					
 				var model:Object = acceptedDraggableModels.getItemAt(i);				
-				diagramShell.getControllerProvider(model).getDragController(model)
-					.activate(model, context.initialMousePoint.x, context.initialMousePoint.y);					
+				ControllerUtils.getDragController(context.shellContext, model).activate(context.shellContext, model, context.initialMousePoint.x, context.initialMousePoint.y);					
 			}
 			context.draggableItems = acceptedDraggableModels;		
 			
@@ -90,11 +89,12 @@ package org.flowerplatform.flexdiagram.tool {
 			
 			for (var i:int = 0; i < ArrayList(context.draggableItems).length; i++) {
 				var model:Object = ArrayList(context.draggableItems).getItemAt(i);
-				diagramShell.getControllerProvider(model).getDragController(model).deactivate(model);												
+				ControllerUtils.getDragController(context.shellContext, model).deactivate(context.shellContext, model);												
 			}		
 			
 			delete context.initialMousePoint;			
 			delete context.draggableItems;
+			delete context.shellContext;
 			
 			super.deactivateAsMainTool();
 		}
@@ -112,7 +112,7 @@ package org.flowerplatform.flexdiagram.tool {
 				
 				for (var i:int = 0; i < ArrayList(context.draggableItems).length; i++) {
 					var model:Object = ArrayList(context.draggableItems).getItemAt(i);
-					diagramShell.getControllerProvider(model).getDragController(model).drag(model, deltaX, deltaY);										
+					ControllerUtils.getDragController(context.shellContext, model).drag(context.shellContext, model, deltaX, deltaY);										
 				}
 			} else {				
 				diagramShell.mainToolFinishedItsJob();
@@ -122,7 +122,7 @@ package org.flowerplatform.flexdiagram.tool {
 		protected function mouseUpHandler(event:MouseEvent):void {
 			for (var i:int = 0; i < ArrayList(context.draggableItems).length; i++) {
 				var model:Object = ArrayList(context.draggableItems).getItemAt(i);
-				diagramShell.getControllerProvider(model).getDragController(model).drop(model);				
+				ControllerUtils.getDragController(context.shellContext, model).drop(context.shellContext, model);				
 			}
 			diagramShell.mainToolFinishedItsJob();
 		}
@@ -131,7 +131,7 @@ package org.flowerplatform.flexdiagram.tool {
 			var acceptedDraggableModels:ArrayList = new ArrayList();
 			for (var i:int = 0; i < selection.length; i++) {					
 				var model:Object = selection.getItemAt(i);					
-				var dragController:IDragController = diagramShell.getControllerProvider(model).getDragController(model);
+				var dragController:DragController = ControllerUtils.getDragController(context.shellContext, model);
 				if (dragController != null) {
 					acceptedDraggableModels.addItem(model);								
 				}
@@ -145,7 +145,7 @@ package org.flowerplatform.flexdiagram.tool {
 				if (renderer is DiagramRenderer) {
 					return model;
 				}				
-				if (diagramShell.getControllerProvider(model).getDragController(model) != null) {
+				if (ControllerUtils.getDragController(context.shellContext, model) != null) {
 					return model;
 				}				
 			}	

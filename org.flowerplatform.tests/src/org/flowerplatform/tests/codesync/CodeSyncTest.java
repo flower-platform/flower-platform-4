@@ -44,7 +44,6 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;

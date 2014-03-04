@@ -2,10 +2,15 @@ package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
 
+import java.util.List;
+
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.mindmap.MindMapPlugin;
+import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 
@@ -13,7 +18,7 @@ import org.freeplane.features.nodestyle.NodeSizeModel;
  * @author Cristina Constantinescu
  */
 public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
-
+	
 	@Override
 	public void populateWithProperties(Node node) {
 		super.populateWithProperties(node);
@@ -30,6 +35,18 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			node.getProperties().put(MAX_WIDTH, nodeSizeModel.getMaxNodeWidth());
 		} else { // otherwise, use default value
 			node.getProperties().put(MAX_WIDTH, DEFAULT_MAX_WIDTH);
+		}
+		
+		List<MindIcon> icons = rawNodeData.getIcons();
+		if (icons != null) {
+			StringBuilder sb = new StringBuilder();
+			for (MindIcon icon : icons) {
+				sb.append(MindMapPlugin.getInstance().getResourceUrl(icon.getPath()));
+				sb.append("|");
+			}
+			if (sb.length() > 0) { // remove last "|"
+				node.getProperties().put(ICONS, sb.substring(0, sb.length() - 1));
+			}
 		}
 	}
 

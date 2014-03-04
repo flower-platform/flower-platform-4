@@ -38,13 +38,17 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 					oldValue = getValue();
 					CorePlugin.getInstance().serviceLocator.invoke(
 						"nodeService.setProperty", 
-						[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, data.name, getValue()]);
+						[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, propertyDescriptor.name, getValue()]);
 				}
 			}
 		}
 
 		protected function getValue():Object {
-			return PropertyDescriptor(data).value;	
+			return propertyDescriptor.value;	
+		}
+		
+		protected function get propertyDescriptor():PropertyDescriptor {
+			return PropertyDescriptor(data);	
 		}
 		
 		protected function keyHandler(event:KeyboardEvent):void {

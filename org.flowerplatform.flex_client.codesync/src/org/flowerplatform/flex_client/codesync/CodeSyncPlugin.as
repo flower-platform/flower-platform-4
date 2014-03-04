@@ -24,13 +24,16 @@ package org.flowerplatform.flex_client.codesync {
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	
+	import spark.components.Button;
+	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
+	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexutil.Utils;
-	
-	import spark.components.Button;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -43,6 +46,10 @@ package org.flowerplatform.flex_client.codesync {
 			return INSTANCE;
 		}
 		
+		/**
+		 * @author Mariana Gheorghe
+		 * @author Cristina Constantinescu
+		 */
 		override public function start():void {
 			super.start();
 			if (INSTANCE != null) {
@@ -50,11 +57,13 @@ package org.flowerplatform.flex_client.codesync {
 			}
 			INSTANCE = this;
 			
-			CorePlugin.getInstance().mindmapNodeRendererControllerClass = CodeSyncNodeRenderer;
-			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
-		
+					
+			// controllers for code sync nodes
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(MindMapPlugin.FREEPLANE_PERSISTENCE_CATEGORY)
+				.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer));
+				
 			var hBox:HBox = new HBox();
 			hBox.percentWidth = 100;
 			var btn:Button = new Button();

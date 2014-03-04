@@ -20,13 +20,12 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.IDiagramShellAware;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**	
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractSelectionRenderer extends UIComponent implements IDiagramShellAware {
+	public class AbstractSelectionRenderer extends UIComponent {
 						
 		/**
 		 * The figure where the anchors will be shown.
@@ -35,18 +34,10 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 				
 		protected var _model:Object;
 		
+		protected var context:DiagramShellContext;
+		
 		public function get model():Object {
 			return _model;
-		}
-		
-		protected var _diagramShell:DiagramShell;
-		
-		public function get diagramShell():DiagramShell {
-			return _diagramShell;
-		}
-		
-		public function set diagramShell(value:DiagramShell):void {
-			_diagramShell = value;
 		}
 		
 		/**
@@ -69,15 +60,16 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 			}
 		}		
 		
-		public function activate(model:Object):void {
-			this._model = model;			
-			this.target = diagramShell.getRendererForModel(model);
+		public function activate(context:DiagramShellContext, model:Object):void {
+			this._model = model;	
+			this.context = context;
+			this.target = context.diagramShell.getRendererForModel(context, model);
 			
-			diagramShell.diagramRenderer.addElement(this);
+			context.diagramShell.diagramRenderer.addElement(this);
 		}
 		
-		public function deactivate(model:Object):void {
-			diagramShell.diagramRenderer.removeElement(this);
+		public function deactivate(context:DiagramShellContext, model:Object):void {
+			context.diagramShell.diagramRenderer.removeElement(this);
 		}
 		
 		/**

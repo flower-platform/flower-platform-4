@@ -19,110 +19,99 @@
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import flash.events.IEventDispatcher;
 	
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class SampleMindMapModelController extends ControllerBase implements IMindMapModelController {
+	public class SampleMindMapModelController extends MindMapModelController {
 		
-		public function SampleMindMapModelController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-
-		public function setParent(model:Object, value:Object):void {
+		public function setParent(context:DiagramShellContext, model:Object, value:Object):void {
 			var oldParent:Object = model.parent;
 			var newParent:SampleMindMapModel = SampleMindMapModel(value);
-			if (!isRoot(newParent) && newParent.side != SampleMindMapModel(model).side) {
-				setSide(model, newParent.side);				
+			if (!isRoot(context, newParent) && newParent.side != SampleMindMapModel(model).side) {
+				setSide(context, model, newParent.side);				
 			}
 			SampleMindMapModel(model).parent = newParent;
 			IEventDispatcher(model).dispatchEvent(PropertyChangeEvent.createUpdateEvent(model, "parent", oldParent, newParent));
-			diagramShell.shouldRefreshVisualChildren(diagramShell.rootModel);
+			context.diagramShell.shouldRefreshVisualChildren(context, context.diagramShell.rootModel);
 		}
 				
-		public function getChildren(model:Object):IList {			
+		override public function getChildren(context:DiagramShellContext, model:Object):IList {			
 			return SampleMindMapModel(model).children;
 		}
 				
-		public function getExpanded(model:Object):Boolean {
+		override public function getExpanded(context:DiagramShellContext, model:Object):Boolean {
 			return SampleMindMapModel(model).expanded;
 		}
 		
-		public function setExpanded(model:Object, value:Boolean):void {
+		override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
 			SampleMindMapModel(model).expanded = value;
 			if (value) {
-				updateModelHandler(model);
+				updateModelHandler(context, model);
 			} else {
-				disposeModelHandlerRecursive(model);
+				disposeModelHandlerRecursive(context, model);
 			}
 		}
 		
-		public function getSide(model:Object):int {
+		override public function getSide(context:DiagramShellContext, model:Object):int {
 			return SampleMindMapModel(model).side;
 		}
 		
-		public function setSide(model:Object, value:int):void {
+		override public function setSide(context:DiagramShellContext, model:Object, value:int):void {
 			SampleMindMapModel(model).side = value;
-			for (var i:int = 0; i < getChildren(model).length; i++) {
-				setSide(getChildren(model).getItemAt(i), model.side);
+			for (var i:int = 0; i < getChildren(context, model).length; i++) {
+				setSide(context, getChildren(context, model).getItemAt(i), model.side);
 			}
 		}
 		
-		public function isRoot(model:Object):Boolean {			
+		override public function isRoot(context:DiagramShellContext, model:Object):Boolean {			
 			return SampleMindMapModel(model).parent == null;
 		}
-		
-		private function getDynamicObject(model:Object):Object {
-			return DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model)).getDynamicObject(model);
-		}
-		
-		public function updateModelHandler(model:Object):void {
-			MindMapDiagramShell(diagramShell).refreshRootModelChildren();
-			if (diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model) != null) {
-				MindMapDiagramShell(diagramShell).refreshModelPositions(model);
+				
+		public function updateModelHandler(context:DiagramShellContext, model:Object):void {
+			MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(context);
+			if (ControllerUtils.getModelChildrenController(context, model).getParent(context, model) != null) {
+				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, model);
 			} else {
-				var rootModel:Object = MindMapDiagramShell(diagramShell).getRoot();
-				MindMapDiagramShell(diagramShell).refreshModelPositions(rootModel);
+				var rootModel:Object = MindMapDiagramShell(context.diagramShell).getRoot(context);
+				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, rootModel);
 			}
-			MindMapDiagramShell(diagramShell).shouldRefreshVisualChildren(diagramShell.rootModel);
+			MindMapDiagramShell(context.diagramShell).shouldRefreshVisualChildren(context, context.diagramShell.rootModel);
 		}
 		
-		public function disposeModelHandlerRecursive(model:Object, disposeModel:Boolean = false):void {
+		public function disposeModelHandlerRecursive(context:DiagramShellContext, model:Object, disposeModel:Boolean = false):void {
 			if (SampleMindMapModel(model).hasChildren) {
 				for (var i:int=0; i < SampleMindMapModel(model).children.length; i++) {
-					disposeModelHandlerRecursive(SampleMindMapModel(model).children.getItemAt(i), true);
+					disposeModelHandlerRecursive(context, SampleMindMapModel(model).children.getItemAt(i), true);
 				}
 			}
 			if (disposeModel) {
-				disposeModelHandler(model);
+				disposeModelHandler(context, model);
 			}
 		}
 		
-		private function disposeModelHandler(model:Object):void {			
-			diagramShell.unassociateModelFromRenderer(model, diagramShell.getRendererForModel(model), true);
+		private function disposeModelHandler(context:DiagramShellContext, model:Object):void {			
+			context.diagramShell.unassociateModelFromRenderer(context, model, context.diagramShell.getRendererForModel(context, model), true);
 			
-			MindMapDiagramShell(diagramShell).refreshRootModelChildren();
+			MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(context);
 			
-			if (diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model) is SampleMindMapModel) {
-				MindMapDiagramShell(diagramShell).refreshModelPositions(diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model));
+			if (ControllerUtils.getModelChildrenController(context, model).getParent(context, model) is SampleMindMapModel) {
+				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, ControllerUtils.getModelChildrenController(context, model).getParent(context, model));
 			} else {
-				var rootModel:Object = diagramShell.getControllerProvider(diagramShell.rootModel).getModelChildrenController(diagramShell.rootModel).getChildren(diagramShell.rootModel).getItemAt(0);
-				MindMapDiagramShell(diagramShell).refreshModelPositions(rootModel);
+				var rootModel:Object = ControllerUtils.getModelChildrenController(context, context.diagramShell.rootModel).getChildren(context, context.diagramShell.rootModel).getItemAt(0);
+				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, rootModel);
 			}
 			
-			MindMapDiagramShell(diagramShell).shouldRefreshVisualChildren(diagramShell.rootModel);
+			MindMapDiagramShell(context.diagramShell).shouldRefreshVisualChildren(context, context.diagramShell.rootModel);
 		}
 		
 	}

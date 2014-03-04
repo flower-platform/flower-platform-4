@@ -2,11 +2,16 @@ package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 
@@ -15,8 +20,9 @@ import org.freeplane.features.nodestyle.NodeSizeModel;
  */
 public class MindMapPropertySetter extends PersistencePropertySetter {
 
+	private static final Pattern ICON_URL_PATTERN = Pattern.compile("((.*?/)+)(.*?).png");
+	
 	@Override
-
 	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
@@ -41,7 +47,21 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				}
 				NodeSizeModel.createNodeSizeModel(rawNodeData).setMaxNodeWidth(newMaxValue);	
 				isPropertySet = true;
-				break;		
+				break;
+			case ICONS:
+				String icons = (String) wrapper.getPropertyValue();
+				rawNodeData.getIcons().clear();
+				if (icons != null) {					
+					String[] array = icons.split("\\|");
+					for (String icon : array) {
+						Matcher matcher = ICON_URL_PATTERN.matcher(icon);
+						if (matcher.find()) {
+							rawNodeData.addIcon(new MindIcon(matcher.group(3)));	
+						}											
+					}
+				}
+				isPropertySet = true;
+				break;
 		}
 				
 		if (!isPropertySet) {

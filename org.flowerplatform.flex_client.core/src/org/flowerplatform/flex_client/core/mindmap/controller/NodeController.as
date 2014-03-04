@@ -21,48 +21,39 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class NodeController extends ControllerBase implements IMindMapModelController {
-		
-		public function NodeController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		private function get mindMapDiagramShell():MindMapEditorDiagramShell {
-			return MindMapEditorDiagramShell(diagramShell);
-		}
-				
-		public function getChildren(model:Object):IList {			
+	public class NodeController extends MindMapModelController {
+								
+		override public function getChildren(context:DiagramShellContext, model:Object):IList {			
 			return Node(model).children;
 		}
 					
-		public function getExpanded(model:Object):Boolean {
+		override public function getExpanded(context:DiagramShellContext, model:Object):Boolean {
 			return Node(model).children != null && Node(model).children.length > 0;
 		}
 		
-		public function setExpanded(model:Object, value:Boolean):void {
+		override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
 			if (value) {
-				MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(Node(model));
+				MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, Node(model));
 			} else {				
-				MindMapEditorDiagramShell(diagramShell).updateProcessor.removeChildren(Node(model));
+				MindMapEditorDiagramShell(context.diagramShell).updateProcessor.removeChildren(context, Node(model));
 			}		
 		}
 		
-		public function getSide(model:Object):int {
+		override public function getSide(context:DiagramShellContext, model:Object):int {
 			return Node(model).side;
 		}
 		
-		public function setSide(model:Object, value:int):void {
+		override public function setSide(context:DiagramShellContext, model:Object, value:int):void {
 //			Node(model).side = value;
 		}
 
-		public function isRoot(model:Object):Boolean {			
+		override public function isRoot(context:DiagramShellContext, model:Object):Boolean {			
 			return Node(model).parent == null;
 		}
 	

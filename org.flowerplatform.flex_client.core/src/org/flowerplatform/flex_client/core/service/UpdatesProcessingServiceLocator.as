@@ -64,7 +64,7 @@ package org.flowerplatform.flex_client.core.service {
 			if (diagramShell != null && diagramShell.rootModel != null) {
 				var headers:Dictionary = new Dictionary();
 				headers[LAST_UPDATE_TIMESTAMP] = diagramShell.updateProcessor.timestampOfLastRequest;				
-				headers[FULL_ROOT_NODE_ID] = Node(diagramShell.getRoot()).fullNodeId;
+				headers[FULL_ROOT_NODE_ID] = Node(diagramShell.getRoot(diagramShell.getNewDiagramShellContext())).fullNodeId;
 				operation.messageHeaders = headers;
 			}
 			return operation;
@@ -84,7 +84,7 @@ package org.flowerplatform.flex_client.core.service {
 					
 				var diagramShell:MindMapEditorDiagramShell = getFirstMindMapEditorDiagramShell();
 				if (diagramShell != null) {
-					diagramShell.updateProcessor.rootNodeUpdatesHandler(updates);
+					diagramShell.updateProcessor.rootNodeUpdatesHandler(diagramShell.getNewDiagramShellContext(), updates);
 				}
 			}
 		}

@@ -18,6 +18,7 @@
 */
 package org.flowerplatform.flexdiagram {
 	
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IComposedActionProviderProcessor;
 	
@@ -29,15 +30,15 @@ package org.flowerplatform.flexdiagram {
 	 */
 	public class DiagramShellAwareProcessor implements IComposedActionProviderProcessor {
 		
-		public var diagramShell:DiagramShell;
+		protected var diagramShellContext:DiagramShellContext;
 		
 		public function DiagramShellAwareProcessor(diagramShell:DiagramShell) {
-			this.diagramShell = diagramShell;
+			diagramShellContext = diagramShell.getNewDiagramShellContext();
 		}
 		
 		public function processAction(action:IAction):void {
-			if (action is IDiagramShellAware) {
-				IDiagramShellAware(action).diagramShell = diagramShell;
+			if (action is IDiagramShellContextAware) {
+				IDiagramShellContextAware(action).diagramShellContext = diagramShellContext;
 			}
 		}
 		

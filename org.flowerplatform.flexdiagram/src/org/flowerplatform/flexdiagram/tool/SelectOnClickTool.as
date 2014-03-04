@@ -28,6 +28,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	
@@ -52,6 +53,7 @@ package org.flowerplatform.flexdiagram.tool {
 		public function wakeUp(eventType:String, initialEvent:MouseEvent):Boolean {
 			context.ctrlPressed = initialEvent.ctrlKey;
 			context.shiftPressed = initialEvent.shiftKey;
+			context.shellContext = diagramShell.getNewDiagramShellContext();
 			var renderer:IVisualElement = getRendererFromDisplayCoordinates();	
 						
 			if (eventType == WakeUpTool.MOUSE_DOWN && context.ctrlPressed && renderer is DiagramRenderer) {
@@ -68,7 +70,7 @@ package org.flowerplatform.flexdiagram.tool {
 				
 				if (renderer is IDataRenderer) {
 					var model:Object = getModelWithSelectionController(renderer);
-					if (!(diagramShell.getRendererForModel(model) is DiagramRenderer)) {						
+					if (!(diagramShell.getRendererForModel(context.shellContext, model) is DiagramRenderer)) {						
 						context.wakedByMouseDownEvent = (diagramShell.selectedItems.length > 1 || diagramShell.selectedItems.getItemIndex(model) == -1) || context.ctrlPressed || context.shiftPressed;
 					}				
 				}				
@@ -145,7 +147,7 @@ package org.flowerplatform.flexdiagram.tool {
 				if (renderer is DiagramRenderer) {
 					return model;
 				}				
-				if (diagramShell.getControllerProvider(model).getSelectionController(model) != null) {
+				if (ControllerUtils.getSelectionController(context.shellContext, model) != null) {
 					return model;
 				}				
 			}	

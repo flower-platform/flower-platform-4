@@ -26,6 +26,7 @@ package org.flowerplatform.flexdiagram {
 	import flash.ui.MultitouchInputMode;
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IDataRenderer;
 	import mx.core.IInvalidating;
@@ -38,19 +39,24 @@ package org.flowerplatform.flexdiagram {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.controller.IControllerProvider;
-	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
-	import org.flowerplatform.flexdiagram.controller.renderer.IRendererController;
-	import org.flowerplatform.flexdiagram.controller.selection.ISelectionController;
+	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
+	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
+	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
 	import org.flowerplatform.flexdiagram.tool.IWakeUpableTool;
 	import org.flowerplatform.flexdiagram.tool.Tool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
 	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
 	public class DiagramShell extends EventDispatcher {
 		
@@ -64,12 +70,34 @@ package org.flowerplatform.flexdiagram {
 		private var _selectedItems:ParentAwareArrayList = new ParentAwareArrayList(null);
 		
 		private var _defaultTool:Tool;
-		
 		private var _mainTool:Tool;
-		
 		private var _tools:Dictionary = new Dictionary();
-		
 		private var _toolsActivated:Boolean = false;
+		
+		public var registry:TypeDescriptorRegistry;
+		
+		private var _typeProviders:IList;
+			
+		public function addTypeProvider(provider:ITypeProvider):void {
+			if (_typeProviders == null) {
+				_typeProviders = new ArrayList();
+			}
+			_typeProviders.addItem(provider);
+		}
+		
+		/**
+		 * @see ControllerUtils
+		 */ 
+		public function getType(context:DiagramShellContext, model:Object):String {
+			for (var i:int = 0; i < _typeProviders.length; i++) {
+				var typeProvider:ITypeProvider = ITypeProvider(_typeProviders.getItemAt(i));
+				var type:String = typeProvider.getType(context, model);
+				if (type != null) {
+					return type;
+				}
+			}
+			throw new Error("Cannot provide type for " + model);
+		}
 		
 		public function get modelToExtraInfoMap():Dictionary {
 			return _modelToExtraInfoMap;
@@ -80,13 +108,14 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function set rootModel(value:Object):void {
+			var context:DiagramShellContext = getNewDiagramShellContext();
 			if (rootModel != null) {			
-				unassociateModelFromRenderer(rootModel, IVisualElement(diagramRenderer), true);
+				unassociateModelFromRenderer(context, rootModel, IVisualElement(diagramRenderer), true);
 			}
 			_rootModel = value;
 			if (rootModel != null) {
-				addInModelMapIfNecesssary(rootModel);
-				associateModelToRenderer(rootModel, IVisualElement(diagramRenderer), null);				
+				addInModelMapIfNecesssary(context, rootModel);
+				associateModelToRenderer(context, rootModel, IVisualElement(diagramRenderer));				
 			}
 		}
 		
@@ -117,20 +146,24 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function set mainSelectedItem(value:Object):void {
-			if (_mainSelectedItem != value) {			
-				if (_mainSelectedItem != null &&
-					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem) != null) {				
-					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem).
-						setSelectedState(_mainSelectedItem, getRendererForModel(_mainSelectedItem), true, false);
+			var context:DiagramShellContext = getNewDiagramShellContext();
+			if (_mainSelectedItem != value) {	
+				var selectionController:SelectionController;
+				if (_mainSelectedItem != null) {
+					selectionController = ControllerUtils.getSelectionController(context, _mainSelectedItem);
+					if (selectionController != null) {
+						selectionController.setSelectedState(context, _mainSelectedItem, getRendererForModel(context, _mainSelectedItem), true, false);
+					}
 				}
 				// mark the new main selection 
 				_mainSelectedItem = value;
 							
-				if (_mainSelectedItem != null &&
-					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem) != null) {
-					getControllerProvider(_mainSelectedItem).getSelectionController(_mainSelectedItem).
-						setSelectedState(_mainSelectedItem, getRendererForModel(_mainSelectedItem), true, true);			
-				}
+				if (_mainSelectedItem != null) {
+					selectionController = ControllerUtils.getSelectionController(context, _mainSelectedItem);
+					if (selectionController != null) {
+						selectionController.setSelectedState(context, _mainSelectedItem, getRendererForModel(context, _mainSelectedItem), true, true);
+					}
+				}				
 			}
 		}
 		
@@ -176,31 +209,21 @@ package org.flowerplatform.flexdiagram {
 				tools[toolClasses[i]] = new toolClasses[i](this);
 			}
 		}
-		
-		public function getControllerProvider(model:Object):IControllerProvider {
-			throw new Error("Should be implemented by subclass");
-		}
-		
-		public function addInModelMapIfNecesssary(model:Object, controllerProvider:IControllerProvider = null):Boolean {
-			if (controllerProvider == null) {
-				controllerProvider = getControllerProvider(model);
-			}
-			if (modelToExtraInfoMap[model] == null && controllerProvider.getModelExtraInfoController(model) != null) {
-				var extraInfo:Object = controllerProvider.getModelExtraInfoController(model).createExtraInfo(model);
+				
+		public function addInModelMapIfNecesssary(context:DiagramShellContext, model:Object):Boolean {
+			if (modelToExtraInfoMap[model] == null && ControllerUtils.getModelExtraInfoController(context, model) != null) {
+				var extraInfo:Object = ControllerUtils.getModelExtraInfoController(context, model).createExtraInfo(context, model);
 				modelToExtraInfoMap[model] = extraInfo;
 				return true;
 			}
 			return false;
 		}
 		
-		public function associateModelToRenderer(model:Object, renderer:IVisualElement, controllerProvider:IControllerProvider = null):void {
-			if (controllerProvider == null) {
-				controllerProvider = getControllerProvider(model);
-			}
-			
+		public function associateModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {			
 			// update the renderer in model map
-			if (controllerProvider.getModelExtraInfoController(model) != null) {
-				controllerProvider.getModelExtraInfoController(model).setRenderer(model, modelToExtraInfoMap[model], renderer);
+			var modelExtraInfoController:ModelExtraInfoController = ControllerUtils.getModelExtraInfoController(context, model);
+			if (modelExtraInfoController != null) {
+				modelExtraInfoController.setRenderer(context, model, modelToExtraInfoMap[model], renderer);
 			}
 			
 			if (renderer is IInvalidating) {
@@ -212,27 +235,27 @@ package org.flowerplatform.flexdiagram {
 			if (renderer is IVisualChildrenRefreshable) {
 				IVisualChildrenRefreshable(renderer).shouldRefreshVisualChildren = true;
 			}
-			if (renderer is IDiagramShellAware) {
-				IDiagramShellAware(renderer).diagramShell = this;
+			if (renderer is IDiagramShellContextAware) {
+				IDiagramShellContextAware(renderer).diagramShellContext = context;
 			}
 
 			IDataRenderer(renderer).data = model;
 			
-			var rendererController:IRendererController = controllerProvider.getRendererController(model);
+			var rendererController:RendererController = ControllerUtils.getRendererController(context, model);
 			if (rendererController != null) {
 				// is null just for the diagram
-				rendererController.associatedModelToRenderer(model, renderer);
+				rendererController.associatedModelToRenderer(context, model, renderer);
 			}
 			
-			var modelChildrenController:IModelChildrenController = controllerProvider.getModelChildrenController(model);
+			var modelChildrenController:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
 			if (modelChildrenController != null) {
 				// "leaf" models don't have children, i.e. no provider
-				modelChildrenController.beginListeningForChanges(model);
+				modelChildrenController.beginListeningForChanges(context, model);
 			}
 			
-			var selectionController:ISelectionController = controllerProvider.getSelectionController(model);
+			var selectionController:SelectionController = ControllerUtils.getSelectionController(context, model);
 			if (selectionController != null) {
-				selectionController.associatedModelToSelectionRenderer(model, renderer);
+				selectionController.associatedModelToSelectionRenderer(context, model, renderer);
 			}
 			
 			// connection related
@@ -245,35 +268,32 @@ package org.flowerplatform.flexdiagram {
 			}
 		}
 		
-		public function unassociateModelFromRenderer(model:Object, renderer:IVisualElement, modelIsDisposed:Boolean, controllerProvider:IControllerProvider = null):void {
+		public function unassociateModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
 			if (model == null) {
 				return;
 			}
 			
-			if (controllerProvider == null) {
-				controllerProvider = getControllerProvider(model);
-			}
-			
-			var modelChildrenController:IModelChildrenController = controllerProvider.getModelChildrenController(model);
+			var modelChildrenController:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
 			if (modelChildrenController != null) {
-				var children:IList = modelChildrenController.getChildren(model);
+				var children:IList = modelChildrenController.getChildren(context, model);
 				for (var i:int = 0; i < children.length; i++) {
 					var childModel:Object = children.getItemAt(i);
-					unassociateModelFromRenderer(childModel, getRendererForModel(childModel), modelIsDisposed);
+					unassociateModelFromRenderer(context, childModel, getRendererForModel(context, childModel), modelIsDisposed);
 				}
 				// "leaf" models don't have children, i.e. no provider
-				modelChildrenController.endListeningForChanges(model);
+				modelChildrenController.endListeningForChanges(context, model);
 			}
 		
 			// update the renderer in model map
-			if (controllerProvider.getModelExtraInfoController(model) != null) {
-				controllerProvider.getModelExtraInfoController(model).setRenderer(model, modelToExtraInfoMap[model], null);
+			var modelExtraInfoController:ModelExtraInfoController = ControllerUtils.getModelExtraInfoController(context, model);
+			if (modelExtraInfoController != null) {
+				modelExtraInfoController.setRenderer(context, model, modelToExtraInfoMap[model], null);
 			}
 			
 			if (renderer != null) {
 				IDataRenderer(renderer).data = null;
-				if (renderer is IDiagramShellAware) {
-					IDiagramShellAware(renderer).diagramShell = null;
+				if (renderer is IDiagramShellContextAware) {
+					IDiagramShellContextAware(renderer).diagramShellContext = null;
 				}
 				// connection related
 				if (renderer != diagramRenderer) {
@@ -282,15 +302,15 @@ package org.flowerplatform.flexdiagram {
 				}
 			}
 
-			var rendererController:IRendererController = controllerProvider.getRendererController(model);
+			var rendererController:RendererController = ControllerUtils.getRendererController(context, model);
 			if (rendererController != null) {
 				// is null just for the diagram
-				rendererController.unassociatedModelFromRenderer(model, renderer, modelIsDisposed);
+				rendererController.unassociatedModelFromRenderer(context, model, renderer, modelIsDisposed);
 			}
 						
-			var selectionController:ISelectionController = controllerProvider.getSelectionController(model);
+			var selectionController:SelectionController = ControllerUtils.getSelectionController(context, model);
 			if (selectionController != null) {
-				selectionController.unassociatedModelFromSelectionRenderer(model, renderer);
+				selectionController.unassociatedModelFromSelectionRenderer(context, model, renderer);
 			}
 			
 			if (modelIsDisposed) {
@@ -309,7 +329,8 @@ package org.flowerplatform.flexdiagram {
 			}
 			model.dispatchEvent(new UpdateConnectionEndsEvent());
 			
-			var controller:IModelChildrenController = getControllerProvider(model).getModelChildrenController(model);
+			var context:DiagramShellContext = getNewDiagramShellContext();
+			var controller:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
 			if (controller == null) {
 				return;
 			}
@@ -317,7 +338,7 @@ package org.flowerplatform.flexdiagram {
 			// sigur e o problema! vad ca se intra de multe ori pe aici, si in CoReCo.getEstimate....: cam la orice operatiune. De asemenea, la display de diag initial,
 			// linia e un pic decalata
 			// UPDATE: am rezolvat un pic, caci se trimitea de multe ori pentru ca era inregitrat si pentru diagrama
-			var children:IList = controller.getChildren(model);
+			var children:IList = controller.getChildren(context, model);
 			if (children != null) {
 				for (var i:int = 0; i < children.length; i++) {
 					moveResizeHandler(null, children.getItemAt(i));
@@ -325,15 +346,15 @@ package org.flowerplatform.flexdiagram {
 			}
 		}
 		
-		public function getRendererForModel(model:Object):IVisualElement {
-			if (getControllerProvider(model).getModelExtraInfoController(model) != null) {
-				return getControllerProvider(model).getModelExtraInfoController(model).getRenderer(modelToExtraInfoMap[model]);
+		public function getRendererForModel(context:DiagramShellContext, model:Object):IVisualElement {
+			if (ControllerUtils.getModelExtraInfoController(context, model) != null) {
+				return ControllerUtils.getModelExtraInfoController(context, model).getRenderer(context, modelToExtraInfoMap[model]);
 			}
 			return null;
 		}
 		
-		public function shouldRefreshVisualChildren(model:Object):void {
-			var renderer:IVisualElement = getRendererForModel(model);
+		public function shouldRefreshVisualChildren(context:DiagramShellContext, model:Object):void {
+			var renderer:IVisualElement = getRendererForModel(context, model);
 			if (renderer == null) {
 				return;
 			}
@@ -364,7 +385,8 @@ package org.flowerplatform.flexdiagram {
 			if (model is PropertyChangeEvent) {
 				model = PropertyChangeEvent(model).source;
 			}
-			var selectionController:ISelectionController = getControllerProvider(model).getSelectionController(model);
+			var context:DiagramShellContext = getNewDiagramShellContext();
+			var selectionController:SelectionController = ControllerUtils.getSelectionController(context, model);
 			
 			if (selectedItems.getItemIndex(mainSelectedItem) == -1) {
 				// set main selected item to last item from list
@@ -380,7 +402,7 @@ package org.flowerplatform.flexdiagram {
 					if (event.kind == CollectionEventKind.REPLACE) {
 						model = PropertyChangeEvent(event.items[0]).oldValue;	
 					}				
-					selectionController.setSelectedState(model, getRendererForModel(model), false, false);
+					selectionController.setSelectedState(context, model, getRendererForModel(context, model), false, false);
 				}
 			}
 		}
@@ -414,9 +436,6 @@ package org.flowerplatform.flexdiagram {
 			}
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 */  
 		public function convertCoordinates(rectangle:Rectangle, fromComponent:UIComponent, toComponent:UIComponent):Rectangle {					
 			var fromGlobalPoint:Point = fromComponent.contentToGlobal(rectangle.topLeft);
 			
@@ -427,5 +446,14 @@ package org.flowerplatform.flexdiagram {
 				contentPoint.x, contentPoint.y, 
 				rectangle.width * toComponent.scaleX, rectangle.height * toComponent.scaleY);
 		}
+		
+		public function getNewDiagramShellContext():DiagramShellContext {
+			return new DiagramShellContext(this);
+		}
+		
+		public function getDynamicObject(context:DiagramShellContext, model:Object):Object {
+			return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model)).getDynamicObject(context, model);
+		}
+		
 	}
 }

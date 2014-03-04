@@ -18,74 +18,69 @@
  */
 package org.flowerplatform.flexdiagram.samples.controller {
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.samples.model.BasicModel;
-	import org.flowerplatform.flexdiagram.tool.controller.IResizeController;
+	import org.flowerplatform.flexdiagram.tool.controller.ResizeController;
 	import org.flowerplatform.flexdiagram.ui.MoveResizePlaceHolder;
 	import org.flowerplatform.flexdiagram.ui.ResizeAnchor;
 	
-	public class BasicModelResizeController extends ControllerBase implements IResizeController {
+	public class BasicModelResizeController extends ResizeController {
 		
-		public function BasicModelResizeController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function activate(model:Object):void {
+		override public function activate(context:DiagramShellContext, model:Object):void {
 			var resizePlaceHolder:MoveResizePlaceHolder = new MoveResizePlaceHolder();
 			resizePlaceHolder.x = BasicModel(model).x;
 			resizePlaceHolder.y = BasicModel(model).y;
 			resizePlaceHolder.width = BasicModel(model).width;
 			resizePlaceHolder.height = BasicModel(model).height;
 			
-			diagramShell.modelToExtraInfoMap[model].resizePlaceHolder = resizePlaceHolder;
-			diagramShell.diagramRenderer.addElement(resizePlaceHolder);
+			context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder = resizePlaceHolder;
+			context.diagramShell.diagramRenderer.addElement(resizePlaceHolder);
 			
-			diagramShell.modelToExtraInfoMap[model].initialX = resizePlaceHolder.x;
-			diagramShell.modelToExtraInfoMap[model].initialY = resizePlaceHolder.y;
-			diagramShell.modelToExtraInfoMap[model].initialWidth = resizePlaceHolder.width;
-			diagramShell.modelToExtraInfoMap[model].initialHeight = resizePlaceHolder.height;
+			context.diagramShell.modelToExtraInfoMap[model].initialX = resizePlaceHolder.x;
+			context.diagramShell.modelToExtraInfoMap[model].initialY = resizePlaceHolder.y;
+			context.diagramShell.modelToExtraInfoMap[model].initialWidth = resizePlaceHolder.width;
+			context.diagramShell.modelToExtraInfoMap[model].initialHeight = resizePlaceHolder.height;
 		}
 			
-		public function drag(model:Object, deltaX:Number, deltaY:Number, type:String):void {	
-			var resizePlaceHolder:MoveResizePlaceHolder = diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
+		override public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number, type:String):void {	
+			var resizePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
 			
 			var newX:int = resizePlaceHolder.x, newY:int = resizePlaceHolder.y;
 			var newWidth:int = resizePlaceHolder.width, newHeight:int = resizePlaceHolder.height;
 			switch(type) {
 				case ResizeAnchor.LEFT_UP: 
-					newX = diagramShell.modelToExtraInfoMap[model].initialX + deltaX;
-					newY = diagramShell.modelToExtraInfoMap[model].initialY + deltaY;					
-					newWidth = diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - diagramShell.modelToExtraInfoMap[model].initialX);
-					newHeight = diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - diagramShell.modelToExtraInfoMap[model].initialY);
+					newX = context.diagramShell.modelToExtraInfoMap[model].initialX + deltaX;
+					newY = context.diagramShell.modelToExtraInfoMap[model].initialY + deltaY;					
+					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - context.diagramShell.modelToExtraInfoMap[model].initialX);
+					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - context.diagramShell.modelToExtraInfoMap[model].initialY);
 					break;
 				case ResizeAnchor.LEFT_MIDDLE:
-					newX = diagramShell.modelToExtraInfoMap[model].initialX + deltaX;
-					newWidth = diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - diagramShell.modelToExtraInfoMap[model].initialX);
+					newX = context.diagramShell.modelToExtraInfoMap[model].initialX + deltaX;
+					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - context.diagramShell.modelToExtraInfoMap[model].initialX);
 					break;
 				case ResizeAnchor.LEFT_DOWN:
-					newX = diagramShell.modelToExtraInfoMap[model].initialX + deltaX; 
-					newWidth = diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - diagramShell.modelToExtraInfoMap[model].initialX);
-					newHeight = diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
+					newX = context.diagramShell.modelToExtraInfoMap[model].initialX + deltaX; 
+					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - context.diagramShell.modelToExtraInfoMap[model].initialX);
+					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
 					break;
 				case ResizeAnchor.MIDDLE_DOWN:
-					newHeight = diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
+					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
 					break;
 				case ResizeAnchor.MIDDLE_UP:
-					newY = diagramShell.modelToExtraInfoMap[model].initialY + deltaY;
-					newHeight = diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - diagramShell.modelToExtraInfoMap[model].initialY);
+					newY = context.diagramShell.modelToExtraInfoMap[model].initialY + deltaY;
+					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - context.diagramShell.modelToExtraInfoMap[model].initialY);
 					break;
 				case ResizeAnchor.RIGHT_DOWN:
-					newWidth = diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
-					newHeight = diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
+					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
+					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
 					break;
 				case ResizeAnchor.RIGHT_MIDDLE:
-					newWidth = diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
+					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
 					break;
 				case ResizeAnchor.RIGHT_UP:
-					newY = diagramShell.modelToExtraInfoMap[model].initialY + deltaY;
-					newWidth = diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
-					newHeight = diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - diagramShell.modelToExtraInfoMap[model].initialY);
+					newY = context.diagramShell.modelToExtraInfoMap[model].initialY + deltaY;
+					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
+					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - context.diagramShell.modelToExtraInfoMap[model].initialY);
 					break;
 			}
 //			var fig:IDraggableAndResizableFigure = IDraggableAndResizableFigure(editPart.getFigure());
@@ -114,8 +109,8 @@ package org.flowerplatform.flexdiagram.samples.controller {
 			resizePlaceHolder.height = newHeight;
 		}
 		
-		public function drop(model:Object):void {	
-			var resizePlaceHolder:MoveResizePlaceHolder = diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
+		override public function drop(context:DiagramShellContext, model:Object):void {	
+			var resizePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
 			
 			BasicModel(model).x = resizePlaceHolder.x;
 			BasicModel(model).y = resizePlaceHolder.y;
@@ -123,14 +118,14 @@ package org.flowerplatform.flexdiagram.samples.controller {
 			BasicModel(model).height = resizePlaceHolder.height;
 		}
 		
-		public function deactivate(model:Object):void {
-			diagramShell.diagramRenderer.removeElement(diagramShell.modelToExtraInfoMap[model].resizePlaceHolder);			
-			delete diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
+		override public function deactivate(context:DiagramShellContext, model:Object):void {
+			context.diagramShell.diagramRenderer.removeElement(context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder);			
+			delete context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
 			
-			delete diagramShell.modelToExtraInfoMap[model].initialX;
-			delete diagramShell.modelToExtraInfoMap[model].initialY;
-			delete diagramShell.modelToExtraInfoMap[model].initialWidth;
-			delete diagramShell.modelToExtraInfoMap[model].initialHeight;
+			delete context.diagramShell.modelToExtraInfoMap[model].initialX;
+			delete context.diagramShell.modelToExtraInfoMap[model].initialY;
+			delete context.diagramShell.modelToExtraInfoMap[model].initialWidth;
+			delete context.diagramShell.modelToExtraInfoMap[model].initialHeight;
 		}
 	}
 }

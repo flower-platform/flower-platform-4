@@ -5,7 +5,9 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 	
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -13,36 +15,36 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 	public class NodeRenderer extends AbstractMindMapModelRenderer {
 				
 		override protected function assignData():void {
-			x = _diagramShell.getPropertyValue(data, "x");	
-			y = _diagramShell.getPropertyValue(data, "y");		
+			x = MindMapDiagramShell(diagramShellContext.diagramShell).getPropertyValue(diagramShellContext, data, "x");	
+			y = MindMapDiagramShell(diagramShellContext.diagramShell).getPropertyValue(diagramShellContext, data, "y");		
 			
 			nodeUpdatedHandler();
 		}
 				
 		override protected function resizeHandler(event:ResizeEvent):void {
 			var refresh:Boolean = false;
-			if (_diagramShell.getPropertyValue(data, "width") != width) {
-				_diagramShell.setPropertyValue(data, "width", width);
+			if (MindMapDiagramShell(diagramShellContext.diagramShell).getPropertyValue(diagramShellContext, data, "width") != width) {
+				MindMapDiagramShell(diagramShellContext.diagramShell).setPropertyValue(diagramShellContext, data, "width", width);
 				refresh = true;
 			}
-			if (_diagramShell.getPropertyValue(data, "height") != height) {			
-				_diagramShell.setPropertyValue(data, "height", height);
+			if (MindMapDiagramShell(diagramShellContext.diagramShell).getPropertyValue(diagramShellContext, data, "height") != height) {			
+				MindMapDiagramShell(diagramShellContext.diagramShell).setPropertyValue(diagramShellContext, data, "height", height);
 				refresh = true;
 			}
 			
 			if (refresh) {				
-				var parent:Object = _diagramShell.getControllerProvider(data).getModelChildrenController(data).getParent(data);
-				_diagramShell.refreshModelPositions(parent != null ? parent : data);
+				var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, data).getParent(diagramShellContext, data);
+				MindMapDiagramShell(diagramShellContext.diagramShell).refreshModelPositions(diagramShellContext, parent != null ? parent : data);
 			}
 		}						
 		
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			switch (event.property) {
 				case "x":
-					x = _diagramShell.getPropertyValue(data, "x");					
+					x = MindMapDiagramShell(diagramShellContext.diagramShell).getPropertyValue(diagramShellContext, data, "x");					
 					break;
 				case "y":
-					y = _diagramShell.getPropertyValue(data, "y");				
+					y = MindMapDiagramShell(diagramShellContext.diagramShell).getPropertyValue(diagramShellContext, data, "y");				
 					break;
 				case "hasChildren":
 					invalidateSize();
@@ -66,26 +68,14 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			var textChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.TEXT) != -1 : true;
 			if (textChanged) {
-				labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];			
-			}		
-			var minWidthChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.MIN_WIDTH) != -1 : true;
-			if (minWidthChanged) {
-				minWidth = data.properties[NodePropertiesConstants.MIN_WIDTH];
-			}	
-			
-			var maxWidthChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.MAX_WIDTH) != -1 : true;
-			if (maxWidthChanged) {
-				maxWidth = data.properties[NodePropertiesConstants.MAX_WIDTH];
-			}
-			
-			if (textChanged || minWidthChanged || maxWidthChanged) {
+				labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];
 				invalidateSize();
 				invalidateDisplayList();
 			}
 		}
 		
 		override protected function canDrawCircle(model:Object):Boolean {			
-			return model != null && Boolean(model.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() && !_diagramShell.getModelController(model).getExpanded(model);
+			return model != null && Boolean(model.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() && !MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, model).getExpanded(diagramShellContext, model);
 		}
 		
 	}

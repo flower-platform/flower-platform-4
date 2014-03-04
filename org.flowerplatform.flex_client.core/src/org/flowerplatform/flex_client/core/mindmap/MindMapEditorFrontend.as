@@ -110,6 +110,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
 							
 			diagramShell = new MindMapEditorDiagramShell();
+			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
 			diagramShell.diagramRenderer = diagramRenderer;
 			
 			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));
@@ -120,7 +121,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		private function creationCompleteHandler(event:FlexEvent):void {			
 			// TODO CC: Temporary code
 			var reloadAction:ReloadAction = new ReloadAction();
-			reloadAction.diagramShell = diagramShell;
+			reloadAction.diagramShellContext = diagramShell.getNewDiagramShellContext();
 			reloadAction.run();
 			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);

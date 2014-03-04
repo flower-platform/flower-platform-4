@@ -21,22 +21,24 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
 	
 	public class BasicConnectionRendererController extends ConnectionRendererController {
-		public function BasicConnectionRendererController(diagramShell:DiagramShell, rendererClass:Class=null) {
-			super(diagramShell, rendererClass);
+		
+		public function BasicConnectionRendererController(rendererClass:Class=null, orderIndex:int = 0) {
+			super(rendererClass, orderIndex);
 		}
 		
-		override public function associatedModelToRenderer(model:Object, renderer:IVisualElement):void {
-			super.associatedModelToRenderer(model, renderer);
+		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+			super.associatedModelToRenderer(context, model, renderer);
 			ConnectionRenderer(renderer).middleConnectionLabel.text = "Connection Label";
 		}
 		
-		override public function unassociatedModelFromRenderer(model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {
-			super.unassociatedModelFromRenderer(model, renderer, isModelDisposed);
+		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {
+			super.unassociatedModelFromRenderer(context, model, renderer, isModelDisposed);
 			if (isModelDisposed && renderer != null) {
 					IVisualElementContainer(renderer.parent).removeElement(renderer);
 			}

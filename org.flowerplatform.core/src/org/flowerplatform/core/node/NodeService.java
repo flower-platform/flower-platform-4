@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -225,6 +226,10 @@ public class NodeService {
 		return descriptorsMap;
 	}
 		
+	public Set<String> getRegisteredTypes() {
+		return registry.getRegisteredTypes();
+	}
+	
 	/**
 	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
 	 */

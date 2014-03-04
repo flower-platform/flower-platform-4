@@ -20,36 +20,29 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import flash.events.FocusEvent;
 	import flash.geom.Rectangle;
 	
-	import mx.core.IDataRenderer;
-	import mx.core.IVisualElement;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.tool.controller.IInplaceEditorController;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
 	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class NodeInplaceEditorController extends ControllerBase implements IInplaceEditorController {
+	public class NodeInplaceEditorController extends InplaceEditorController {
 		
 		private static const MAX_WIDTH:int = 1000;
 		
-		public function NodeInplaceEditorController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function canActivate(model:Object):Boolean {		
+		override public function canActivate(context:DiagramShellContext, model:Object):Boolean {		
 			return model is Node;
 		}
 				
-		public function activate(model:Object):void {			
-			var controller:IAbsoluteLayoutRectangleController = diagramShell.getControllerProvider(model).getAbsoluteLayoutRectangleController(model);
-			var bounds:Rectangle = controller.getBounds(model);
+		override public function activate(context:DiagramShellContext, model:Object):void {			
+			var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);
+			var bounds:Rectangle = controller.getBounds(context, model);
 		
 			// create text area (auto grow width & height at CTRL + ENTER) 
 			var textArea:AutoGrowTextArea = new AutoGrowTextArea();
@@ -65,27 +58,27 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			textArea.addEventListener(FocusEvent.FOCUS_IN, function(event:FocusEvent):void {event.currentTarget.selectAll()});
 			
 			// add to diagram
-			diagramShell.diagramRenderer.addElement(textArea);			
-			diagramShell.modelToExtraInfoMap[model].inplaceEditor = textArea;
+			context.diagramShell.diagramRenderer.addElement(textArea);			
+			context.diagramShell.modelToExtraInfoMap[model].inplaceEditor = textArea;
 		}
 		
-		public function commit(model:Object):void {		
-			var textArea:AutoGrowTextArea = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
+		override public function commit(context:DiagramShellContext, model:Object):void {		
+			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, NodePropertiesConstants.TEXT, textArea.text]);
 
-			diagramShell.mainToolFinishedItsJob();
+			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
-		public function abort(model:Object):void {
+		override public function abort(context:DiagramShellContext, model:Object):void {
 			// here can be placed a warning
-			diagramShell.mainToolFinishedItsJob();
+			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
-		public function deactivate(model:Object):void {
-			var textArea:AutoGrowTextArea = diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			diagramShell.diagramRenderer.removeElement(textArea);
+		override public function deactivate(context:DiagramShellContext, model:Object):void {
+			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
+			context.diagramShell.diagramRenderer.removeElement(textArea);
 			
-			delete diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
+			delete context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
 		}
 		
 	}
