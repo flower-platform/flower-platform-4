@@ -21,7 +21,9 @@ package org.flowerplatform.flexdiagram.renderer {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import mx.binding.utils.BindingUtils;
 	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
@@ -105,7 +107,10 @@ package org.flowerplatform.flexdiagram.renderer {
 			return new Rectangle(horizontalScrollPosition - viewPortRectOffsetTowardOutside, verticalScrollPosition - viewPortRectOffsetTowardOutside, width + 2 * viewPortRectOffsetTowardOutside, height + 2 * viewPortRectOffsetTowardOutside);
 		}
 		
-		public function setContentRect(rect:Rectangle):void {
+		public function setContentRect(rect:Rectangle):void {		
+			if (contentRect != null && rect.equals(contentRect)) {		
+				return;
+			}
 			contentRect = rect;
 		}
 		
@@ -170,9 +175,9 @@ package org.flowerplatform.flexdiagram.renderer {
 			
 				// add it
 				addElement(grid);
-			}
+			}			
 		}
-		
+			
 		/**
 		 * Size the grid based on scroll position and width/height.
 		 * <p>
@@ -202,5 +207,6 @@ package org.flowerplatform.flexdiagram.renderer {
 				}
 			}
 		}
+
 	}
 }

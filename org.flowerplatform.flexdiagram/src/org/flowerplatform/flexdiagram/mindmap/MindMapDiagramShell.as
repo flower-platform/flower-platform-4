@@ -230,8 +230,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				if (delta != 0) {
 					changeSiblingsCoordinates(context, model, delta, side);
 				}
-			}					
-			getDynamicObject(context, model).shouldRefreshPosition = false;
+			}			
 		}		
 		
 		private function changeChildrenCoordinates(context:DiagramShellContext, model:Object, side:int):void {					
