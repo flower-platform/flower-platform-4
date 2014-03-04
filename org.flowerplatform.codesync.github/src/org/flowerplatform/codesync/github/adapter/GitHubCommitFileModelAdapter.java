@@ -1,5 +1,6 @@
 package org.flowerplatform.codesync.github.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.NAME;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_ADDITIONS;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_BLOB_URL;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMIT_FILE_CHANGES;
@@ -12,7 +13,6 @@ import java.util.List;
 
 import org.eclipse.egit.github.core.CommitFile;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.codesync.github.feature_provider.GitHubCommitFileFeatureProvider;
 
 /**
@@ -41,7 +41,7 @@ public class GitHubCommitFileModelAdapter extends AbstractModelAdapter {
 			return file.getAdditions();
 		} else if (COMMIT_FILE_DELETIONS.equals(feature)) {
 			return file.getDeletions();
-		} else if (NodeFeatureProvider.NAME.equals(feature)) {
+		} else if (NAME.equals(feature)) {
 			return file.getFilename();
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

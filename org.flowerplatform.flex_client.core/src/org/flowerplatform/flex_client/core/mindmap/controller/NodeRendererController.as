@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeRemovedEvent;
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	
 	/**
@@ -11,23 +12,23 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	 */
 	public class NodeRendererController extends MindMapModelRendererController {
 		
-		public function NodeRendererController(diagramShell:DiagramShell, rendererClass:Class) {
-			super(diagramShell, rendererClass);
+		public function NodeRendererController(rendererClass:Class, orderIndex:int = 0) {
+			super(rendererClass, orderIndex);
 		}
 		
-		override public function associatedModelToRenderer(model:Object, renderer:IVisualElement):void {				
-			Node(model).addEventListener(NodeRemovedEvent.NODE_REMOVED, nodeRemovedHandler);			
+		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {				
+			Node(model).addEventListener(NodeRemovedEvent.NODE_REMOVED, function (event:NodeRemovedEvent):void {nodeRemovedHandler(event, context);});			
 		}
 		
-		override public function unassociatedModelFromRenderer(model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {		
+		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {		
 			if (isModelDisposed) {			
-				Node(model).removeEventListener(NodeRemovedEvent.NODE_REMOVED, nodeRemovedHandler);				
+				Node(model).removeEventListener(NodeRemovedEvent.NODE_REMOVED, function (event:NodeRemovedEvent):void {nodeRemovedHandler(event, context);});				
 			}
-			super.unassociatedModelFromRenderer(model, renderer, isModelDisposed);	
+			super.unassociatedModelFromRenderer(context, model, renderer, isModelDisposed);	
 		}
 		
-		protected function nodeRemovedHandler(event:NodeRemovedEvent):void {			
-			diagramShell.unassociateModelFromRenderer(event.node, diagramShell.getRendererForModel(event.node), true);			
+		protected function nodeRemovedHandler(event:NodeRemovedEvent, context:DiagramShellContext):void {			
+			context.diagramShell.unassociateModelFromRenderer(context, event.node, context.diagramShell.getRendererForModel(context, event.node), true);			
 		}
 		
 	}

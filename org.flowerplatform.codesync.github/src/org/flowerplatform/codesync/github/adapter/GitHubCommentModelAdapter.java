@@ -1,5 +1,6 @@
 package org.flowerplatform.codesync.github.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.NAME;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_BODY;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_CREATED_AT;
 import static org.flowerplatform.codesync.github.GitHubConstants.COMMENT_ID;
@@ -10,7 +11,6 @@ import java.util.List;
 
 import org.eclipse.egit.github.core.Comment;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.codesync.github.feature_provider.GitHubCommentFeatureProvider;
 
 /**
@@ -33,7 +33,7 @@ public class GitHubCommentModelAdapter extends AbstractModelAdapter {
 			return comment.getCreatedAt();
 		} else if (COMMENT_UPDATED_AT.equals(feature)) {
 			return comment.getUpdatedAt();
-		} else if (NodeFeatureProvider.NAME.equals(feature)) {
+		} else if (NAME.equals(feature)) {
 			return String.valueOf(getComment(element).getId());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

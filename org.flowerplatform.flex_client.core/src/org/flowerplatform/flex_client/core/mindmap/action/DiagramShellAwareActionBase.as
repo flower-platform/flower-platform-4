@@ -19,27 +19,32 @@
 package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class DiagramShellAwareActionBase extends ActionBase implements IDiagramShellAware {
+	public class DiagramShellAwareActionBase extends ActionBase implements IDiagramShellContextAware {
 		
-		private var _diagramShell:DiagramShell;
+		private var _context:DiagramShellContext;
 		
 		public function DiagramShellAwareActionBase() {
 			super();
 		}
 		
 		public function get diagramShell():DiagramShell {		
-			return _diagramShell;
-		}
-		
-		public function set diagramShell(value:DiagramShell):void {
-			_diagramShell = value;
+			return _context.diagramShell;
 		}
 				
+		public function get diagramShellContext():DiagramShellContext {			
+			return _context;
+		}
+		
+		public function set diagramShellContext(value:DiagramShellContext):void	{
+			this._context = value;
+		}		
+		
 	}
 }

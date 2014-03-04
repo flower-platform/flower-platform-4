@@ -27,6 +27,7 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 	import mx.events.ResizeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.tool.ResizeTool;
 	import org.flowerplatform.flexdiagram.ui.ResizeAnchor;
 
@@ -50,14 +51,14 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 		[Embed(source="../icons/crossCursor.gif")]
 		protected var crossCursor:Class;
 				
-		override public function activate(model:Object):void {
-			super.activate(model);			
+		override public function activate(context:DiagramShellContext, model:Object):void {
+			super.activate(context, model);			
 			
 			// set the handler that move/resize anchors with parent renderer.
 			DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize); 
 			DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
 			if(!Multitouch.supportsGestureEvents) {  // don't add cursor on touch screen
-				DisplayObject(diagramShell.diagramRenderer).addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+				DisplayObject(context.diagramShell.diagramRenderer).addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
 			}
 			// update position
 			handleTargetMoveResize(null);
@@ -69,15 +70,15 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 		 * and also when we don't want the anchors shown.
 		 * 
 		 */
-		override public function deactivate(model:Object):void {
+		override public function deactivate(context:DiagramShellContext, model:Object):void {
 			// remove move/resize listeners
 			DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);
 			DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
 			if(!Multitouch.supportsGestureEvents) { // don't add cursor on touch screen
-				DisplayObject(diagramShell.diagramRenderer).removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+				DisplayObject(context.diagramShell.diagramRenderer).removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
 			}
 			
-			super.deactivate(model);
+			super.deactivate(context, model);
 		}
 		
 		protected function handleTargetMoveResize(event:Event):void {
@@ -116,7 +117,7 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 				}
 				cursorManager.removeAllCursors();
 				cursorManager.setCursor(currentCursor, 2, -16, -16);		
-			} else if (!(diagramShell.mainTool is ResizeTool)) {
+			} else if (!(context.diagramShell.mainTool is ResizeTool)) {
 				cursorManager.removeAllCursors();
 			}				
 		}

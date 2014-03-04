@@ -1,5 +1,7 @@
 package org.flowerplatform.codesync.github.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.NAME;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,6 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.codesync.github.CodeSyncGitHubPlugin;
 import org.flowerplatform.codesync.github.GitHubConstants;
 import org.flowerplatform.codesync.github.feature_provider.GitHubRepositoryFeatureProvider;
@@ -27,7 +28,7 @@ public class GitHubRepositoryModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (NodeFeatureProvider.NAME.equals(feature)) {
+		if (NAME.equals(feature)) {
 			return getRepository(element).generateId();
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

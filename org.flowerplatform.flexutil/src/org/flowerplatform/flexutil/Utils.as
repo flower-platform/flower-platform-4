@@ -85,5 +85,12 @@ package org.flowerplatform.flexutil {
 			return simpleClassName;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
+			return str == null ? defaultStr : str;
+		}
+		
 	}
 }

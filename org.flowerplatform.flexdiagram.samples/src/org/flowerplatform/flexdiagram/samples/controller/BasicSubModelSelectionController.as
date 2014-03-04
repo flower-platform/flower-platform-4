@@ -19,27 +19,23 @@
 package org.flowerplatform.flexdiagram.samples.controller {
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.selection.ISelectionController;
+	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class BasicSubModelSelectionController extends ControllerBase implements ISelectionController {
-		
-		public function BasicSubModelSelectionController(diagramShell:DiagramShell)	{
-			super(diagramShell);
-		}
-		
-		public function setSelectedState(model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
+	public class BasicSubModelSelectionController extends SelectionController {
+				
+		override public function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
 			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
+				DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model));
 			
-			if (modelExtraInfoController.getDynamicObject(model).selected != isSelected) {
-				modelExtraInfoController.getDynamicObject(model).selected = isSelected;
+			if (modelExtraInfoController.getDynamicObject(context, model).selected != isSelected) {
+				modelExtraInfoController.getDynamicObject(context, model).selected = isSelected;
 			}
 			
 			if (renderer == null) {
@@ -52,16 +48,16 @@ package org.flowerplatform.flexdiagram.samples.controller {
 			}
 		}
 		
-		public function associatedModelToSelectionRenderer(model:Object, renderer:IVisualElement):void {		
+		override public function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {		
 			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
+				DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model));
 			
-			setSelectedState(model, renderer, 
-				modelExtraInfoController.getDynamicObject(model).selected, 
-				diagramShell.mainSelectedItem == model);
+			setSelectedState(context, model, renderer, 
+				modelExtraInfoController.getDynamicObject(context, model).selected, 
+				context.diagramShell.mainSelectedItem == model);
 		}
 		
-		public function unassociatedModelFromSelectionRenderer(model:Object, renderer:IVisualElement):void {
+		override public function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
 			
 		}
 	}

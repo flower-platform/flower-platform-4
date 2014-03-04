@@ -19,13 +19,10 @@
 package org.flowerplatform.codesync.remote;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
 import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -37,22 +34,24 @@ import org.flowerplatform.util.controller.TypeDescriptorRegistry;
  */
 public class CodeSyncOperationsService {
 
-	public void synchronize(String path) {
-//		File diagram;
-//		try {
-//			diagram = (File) EditorPlugin.getInstance().getFileAccessController().getFile(path);
-//		} catch (Exception e) {
-//			throw new RuntimeException(path);
-//		}
-//		File project = CodeSyncPlugin.getInstance().getProjectsProvider().getContainingProjectForFile(diagram);
-//		File srcDir = CodeSyncPlugin.getInstance().getProjectsProvider().getFile(project, "js");
-//		CodeSyncPlugin.getInstance().getCodeSyncAlgorithmRunner().runCodeSyncAlgorithm(project, srcDir, technology, context.getCommunicationChannel(), true);
-	
+	public Match synchronize(String path) {
 		// TODO test
 		path = "D:/temp/";
 		File project = new File(path);
 		File file = new File(path, "sync_test");
+		return synchronize(project, file, "java", true);
+	}
 		
+	public Match synchronize(File project, File file, String technology, boolean oneStepSync) {
+		Match match = generateMatch(project, file, technology, oneStepSync);
+		if (!oneStepSync) {
+			performSync(match);
+		}
+		
+		return match;
+	}
+	
+	public Match generateMatch(File project, File file, String technology, boolean oneStepSync) {
 		// find model file
 		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(project);
 		
@@ -66,8 +65,6 @@ public class CodeSyncOperationsService {
 		if (srcDir == null) {
 			throw new RuntimeException("File " + file + " is not contained in a SrcDir!");
 		}
-		
-		String technology = "java";
 		
 		// START THE ALGORITHM
 		
@@ -92,32 +89,15 @@ public class CodeSyncOperationsService {
 		match.setCodeSyncAlgorithm(algorithm);
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
-		algorithm.generateDiff(match, true);
+		algorithm.generateDiff(match, oneStepSync);
 		
+		return match;
+	}
+		
+	public Match performSync(Match match) {
 		// STEP 3: sync
-//		algorithm.synchronize(match);
-		
-		save(match, true);
-		save(match, false);
+		match.getCodeSyncAlgorithm().synchronize(match);
+		return match;
 	}
 	
-	private void save(Match match, boolean isLeft) {
-		Object lateral = isLeft ? match.getLeft() : match.getRight();
-		AbstractModelAdapter adapter = isLeft ? match.getCodeSyncAlgorithm().getLeftModelAdapter(lateral)
-				: match.getCodeSyncAlgorithm().getRightModelAdapter(lateral);
-		if (lateral != null) {
-			if (adapter.save(lateral)) {
-				for (Match subMatch : match.getSubMatches()) {
-					save(subMatch, isLeft);
-				}
-			}
-		} 
-	}
-	
-	public Map<String, Object> getDropdownPropertyRenderersInfo() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("names", CodeSyncPlugin.getInstance().getDataProvidersForDropDownListProperties().keySet());
-		map.put("dataProviders", CodeSyncPlugin.getInstance().getDataProvidersForDropDownListProperties());
-		return map;
-	}
 }

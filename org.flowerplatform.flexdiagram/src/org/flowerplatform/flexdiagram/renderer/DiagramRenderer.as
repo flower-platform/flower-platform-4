@@ -21,21 +21,24 @@ package org.flowerplatform.flexdiagram.renderer {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import mx.binding.utils.BindingUtils;
 	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
 	import mx.managers.IFocusManagerComponent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.visual_children.IVisualChildrenController;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class DiagramRenderer extends InfiniteDataRenderer implements IDiagramShellAware, IVisualChildrenRefreshable, IAbsoluteLayoutRenderer, IFocusManagerComponent {
+	public class DiagramRenderer extends InfiniteDataRenderer implements IDiagramShellContextAware, IVisualChildrenRefreshable, IAbsoluteLayoutRenderer, IFocusManagerComponent {
 
-		private var _diagramShell:DiagramShell;
-		protected var visualChildrenController:IVisualChildrenController;
+		protected var _context:DiagramShellContext;
+		protected var visualChildrenController:VisualChildrenController;
 		private var _shouldRefreshVisualChildren:Boolean;
 		private var _noNeedToRefreshRect:Rectangle;
 		
@@ -55,13 +58,13 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */
 		public var useGrid:Boolean = true;
 		
-		public function get diagramShell():DiagramShell {
-			return _diagramShell;
+		public function get diagramShellContext():DiagramShellContext {			
+			return _context;
 		}
 		
-		public function set diagramShell(value:DiagramShell):void {
-			_diagramShell = value;
-		}
+		public function set diagramShellContext(value:DiagramShellContext):void {
+			this._context = value;
+		}	
 		
 		public function get shouldRefreshVisualChildren():Boolean {
 			return _shouldRefreshVisualChildren;
@@ -96,7 +99,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			if (data == null) {
 				visualChildrenController = null;
 			} else {
-				visualChildrenController = diagramShell.getControllerProvider(data).getVisualChildrenController(data);
+				visualChildrenController = ControllerUtils.getVisualChildrenController(diagramShellContext, data);
 			}
 		}
 		
@@ -104,7 +107,10 @@ package org.flowerplatform.flexdiagram.renderer {
 			return new Rectangle(horizontalScrollPosition - viewPortRectOffsetTowardOutside, verticalScrollPosition - viewPortRectOffsetTowardOutside, width + 2 * viewPortRectOffsetTowardOutside, height + 2 * viewPortRectOffsetTowardOutside);
 		}
 		
-		public function setContentRect(rect:Rectangle):void {
+		public function setContentRect(rect:Rectangle):void {		
+			if (contentRect != null && rect.equals(contentRect)) {		
+				return;
+			}
 			contentRect = rect;
 		}
 		
@@ -115,7 +121,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
 			if (visualChildrenController != null) {
-				visualChildrenController.refreshVisualChildren(data);
+				visualChildrenController.refreshVisualChildren(diagramShellContext, data);
 			}
 			
 			// resize/move the grid (depending on the viewport dimensions)
@@ -135,10 +141,10 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */ 
 		override protected function focusInHandler(event:FocusEvent):void {
 			super.focusInHandler(event);		
-			if (diagramShell != null && stage != null) { 
+			if (diagramShellContext.diagramShell != null && stage != null) { 
 				// stage == null -> save dialog closes, the focusManager tries to put focus on diagram,
 				// but it will be removed shortly, so don't take this in consideration
-				diagramShell.activateTools();
+				diagramShellContext.diagramShell.activateTools();
 			}
 		}
 		
@@ -150,7 +156,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 			var point:Point = globalToContent(new Point(stage.mouseX, stage.mouseY));			
 			if (!getViewportRect().containsPoint(point)) { // if outside diagram area
-				diagramShell.deactivateTools();	
+				diagramShellContext.diagramShell.deactivateTools();	
 			}							
 		}		
 		
@@ -169,9 +175,9 @@ package org.flowerplatform.flexdiagram.renderer {
 			
 				// add it
 				addElement(grid);
-			}
+			}			
 		}
-		
+			
 		/**
 		 * Size the grid based on scroll position and width/height.
 		 * <p>
@@ -201,5 +207,6 @@ package org.flowerplatform.flexdiagram.renderer {
 				}
 			}
 		}
+
 	}
 }

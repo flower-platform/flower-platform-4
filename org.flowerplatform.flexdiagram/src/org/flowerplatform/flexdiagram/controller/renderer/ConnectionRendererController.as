@@ -23,9 +23,10 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.renderer.connection.BindablePoint;
 	import org.flowerplatform.flexdiagram.renderer.connection.ClipUtils;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionEnd;
@@ -55,16 +56,16 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		
 		protected static const ALMOST_HORIZONTAL_LINE:int = 0;
 
-		public function ConnectionRendererController(diagramShell:DiagramShell, rendererClass:Class=null) {
-			super(diagramShell, rendererClass);
+		public function ConnectionRendererController(rendererClass:Class=null, orderIndex:int = 0) {
+			super(rendererClass, orderIndex);
 		}
 		
 		/**
 		 * @author Cristian Spiescu
 		 * @author Cristina Constantinescu
 		 */ 
-		override public function associatedModelToRenderer(model:Object, renderer:IVisualElement):void {
-			updateConnectionEnds(model, null);
+		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+			updateConnectionEnds(context, model, null);
 			
 			var connectionRenderer:ConnectionRenderer = ConnectionRenderer(renderer);
 			connectionRenderer.sourceEndType = getSourceEndFigureType(model);
@@ -74,8 +75,8 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		/**
 		 * This is invoked by the renderer. See comment there to see why.
 		 */
-		public function updateConnectionEnds(connectionModel:Object, modifiedEnd:Object):void {
-			var connectionRenderer:ConnectionRenderer = ConnectionRenderer(diagramShell.getRendererForModel(connectionModel));
+		public function updateConnectionEnds(context:DiagramShellContext, connectionModel:Object, modifiedEnd:Object):void {
+			var connectionRenderer:ConnectionRenderer = ConnectionRenderer(context.diagramShell.getRendererForModel(context, connectionModel));
 			var sourceRect:Array;
 			var targetRect:Array;
 			var sourceModel:Object = getSourceModel(connectionModel);
@@ -87,7 +88,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 					// shouldn't normally happen
 					sourceRect = [0, 0, 0, 0];					
 				} else {
-					sourceRect = getEndRectForClipCalculation(sourceModel);
+					sourceRect = getEndRectForClipCalculation(context, sourceModel);
 				}
 //			}
 //			if (modifiedEnd == null || modifiedEnd == targetModel) {
@@ -96,7 +97,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 					// shouldn't normally happen
 					targetRect = [50, 50, 50, 50];		
 				} else {
-					targetRect = getEndRectForClipCalculation(targetModel);
+					targetRect = getEndRectForClipCalculation(context, targetModel);
 				}
 //			}
 			
@@ -116,38 +117,38 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 			connectionRenderer._targetPoint.x = clippedPoint[0];
 			connectionRenderer._targetPoint.y = clippedPoint[1];
 			
-			updateLabelPosition(connectionModel, connectionRenderer, connectionRenderer.middleConnectionLabel, MIDDLE_UP);
+			updateLabelPosition(context, connectionModel, connectionRenderer, connectionRenderer.middleConnectionLabel, MIDDLE_UP);
 		}
 		
-		protected function getEndRectForClipCalculation(endModel:Object):Array {
-			var endRenderer:IVisualElement = diagramShell.getRendererForModel(endModel);
+		protected function getEndRectForClipCalculation(context:DiagramShellContext, endModel:Object):Array {
+			var endRenderer:IVisualElement = context.diagramShell.getRendererForModel(context, endModel);
 			if (endRenderer == null) {
 				// the renderer is not on the screen; => provide estimates
-				return getEstimatedRectForElementNotVisible(endModel);
+				return getEstimatedRectForElementNotVisible(context, endModel);
 			} else {
 				// renderer on screen => provide real data from renderer				
-				var rectRelativeToDiagram:Rectangle = DisplayObject(endRenderer).getBounds(DisplayObject(diagramShell.diagramRenderer));
+				var rectRelativeToDiagram:Rectangle = DisplayObject(endRenderer).getBounds(DisplayObject(context.diagramShell.diagramRenderer));
 				// bounds width/height aren't the right ones, use renderer's width/height instead
 				return [rectRelativeToDiagram.x, rectRelativeToDiagram.y, endRenderer.width, endRenderer.height];
 			}
 		}
 		
-		protected function getEstimatedRectForElementNotVisible(model:Object):Array {
+		protected function getEstimatedRectForElementNotVisible(context:DiagramShellContext, model:Object):Array {
 			if (model == null) {
 				throw new Error("No parent that has a IAbsoluteLayoutRectangleController has been found!");
 			}
 			
-			var controller:IAbsoluteLayoutRectangleController = diagramShell.getControllerProvider(model).getAbsoluteLayoutRectangleController(model);
+			var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);
 			if (controller != null) {
-				var rect:Rectangle = controller.getBounds(model);
+				var rect:Rectangle = controller.getBounds(context, model);
 				return [rect.x, rect.y, rect.width, rect.height];
 			} else {
 				// look to find the parent that is child of the diagram, i.e. has IAbsoluteLayoutRectangleController
-				var childrenController:IModelChildrenController = diagramShell.getControllerProvider(model).getModelChildrenController(model);
+				var childrenController:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
 				if (childrenController == null) {
 					throw new Error("Cannot find a IModelChildrenController for model = " + model + ". Elements should provide IModelChildrenController is they need to be connectable, even if they don't have children!");
 				}
-				return getEstimatedRectForElementNotVisible(childrenController.getParent(model));
+				return getEstimatedRectForElementNotVisible(context, childrenController.getParent(context, model));
 			}
 		}
 		
@@ -203,7 +204,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		 * </ul>
 		 * 
 		 */
-		protected function updateLabelPosition(connectionModel:Object, connectionRenderer:ConnectionRenderer, connectionLabel:Label, posType:int):void {
+		protected function updateLabelPosition(context:DiagramShellContext, connectionModel:Object, connectionRenderer:ConnectionRenderer, connectionLabel:Label, posType:int):void {
 			if (connectionLabel == null || getSourceModel(connectionModel) == null || getTargetModel(connectionModel) == null) {
 				return;
 			}
@@ -225,28 +226,28 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 					isTopOrLeft = true;
 					refPoint = connectionRenderer._sourcePoint;
 					array = ClipUtils.computeEdgeIntersectionProperty(
-						getEndRectForClipCalculation(getSourceModel(connectionModel)), refPoint);
+						getEndRectForClipCalculation(context, getSourceModel(connectionModel)), refPoint);
 					break;
 				case SOURCE_DOWN:
 					segmId = 0;
 					isTopOrLeft = false;
 					refPoint = connectionRenderer._sourcePoint;
 					array = ClipUtils.computeEdgeIntersectionProperty(
-						getEndRectForClipCalculation(getSourceModel(connectionModel)), refPoint);
+						getEndRectForClipCalculation(context, getSourceModel(connectionModel)), refPoint);
 					break;
 				case TARGET_UP:
 					segmId = connectionRenderer.getNumberOfSegments() - 1;
 					isTopOrLeft = true;
 					refPoint = connectionRenderer._targetPoint;
 					array = ClipUtils.computeEdgeIntersectionProperty(
-						getEndRectForClipCalculation(getTargetModel(connectionModel)), refPoint);
+						getEndRectForClipCalculation(context, getTargetModel(connectionModel)), refPoint);
 					break;
 				case TARGET_DOWN:
 					segmId = connectionRenderer.getNumberOfSegments() - 1;
 					isTopOrLeft = false;
 					refPoint = connectionRenderer._targetPoint;
 					array = ClipUtils.computeEdgeIntersectionProperty(
-						getEndRectForClipCalculation(getTargetModel(connectionModel)), refPoint);
+						getEndRectForClipCalculation(context, getTargetModel(connectionModel)), refPoint);
 					break;
 				case MIDDLE_UP:
 					var arr:Array = connectionRenderer.getPointFromDistance() as Array;

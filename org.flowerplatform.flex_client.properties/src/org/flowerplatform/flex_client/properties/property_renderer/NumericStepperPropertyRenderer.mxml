@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Sebastian Solomon
+-->
+<ns:BasicPropertyRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flex_client.properties.property_renderer.*" 
+						  creationComplete="creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.events.FlexEvent;
+						
+			override protected function getValue():Object {
+				return numericStepperProperty.value;	
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				BindingUtils.bindProperty(data, "value", numericStepperProperty, "text");
+			}
+			
+			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
+				saveProperty(null);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:NumericStepper id="numericStepperProperty"
+					  value="{data.value}"
+					  stepSize="1" 
+					  focusOut="propertyValue_focusOutHandler(event)"
+					  keyUp="keyHandler(event)"/>
+</ns:BasicPropertyRenderer>

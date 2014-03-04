@@ -22,6 +22,8 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelA
 import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter.ANNOTATION_MEMBER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
 import static org.flowerplatform.codesync.code.java.adapter.JavaEnumConstantDeclarationModelAdapter.ENUM_CONSTANT;
+import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.ENUM_CONSTANT_ARGUMENT;
+import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.SUPER_INTERFACE;
 import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter.OPERATION;
@@ -30,8 +32,6 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationM
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ENUM;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.INTERFACE;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider.ENUM_CONSTANT_ARGUMENT;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider.SUPER_INTERFACE;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;

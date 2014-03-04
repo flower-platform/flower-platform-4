@@ -3,9 +3,6 @@
   <includeClasses>
     <classEntry path="org.flowerplatform.flexdiagram.DiagramShell"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.ComposedControllerProvider"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.ControllerBase"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.IControllerProvider"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_extra_info.IModelExtraInfoController"/>

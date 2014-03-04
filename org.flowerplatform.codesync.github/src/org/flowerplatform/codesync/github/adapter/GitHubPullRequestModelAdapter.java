@@ -1,5 +1,8 @@
 package org.flowerplatform.codesync.github.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.NAME;
+import static org.flowerplatform.codesync.github.GitHubConstants.CONTAINMENT_COMMENTS;
+import static org.flowerplatform.codesync.github.GitHubConstants.CONTAINMENT_COMMIT_FILES;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_ADDITIONS;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_ASSIGNEE;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_BODY;
@@ -7,8 +10,6 @@ import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_CH
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_CLOSED_AT;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_COMMENTS;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_COMMITS;
-import static org.flowerplatform.codesync.github.GitHubConstants.CONTAINMENT_COMMENTS;
-import static org.flowerplatform.codesync.github.GitHubConstants.CONTAINMENT_COMMIT_FILES;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_DELETIONS;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_HTML_URL;
 import static org.flowerplatform.codesync.github.GitHubConstants.PULL_REQUEST_MERGED_AT;
@@ -32,7 +33,6 @@ import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.codesync.github.CodeSyncGitHubPlugin;
 import org.flowerplatform.codesync.github.GitHubConstants;
 import org.flowerplatform.codesync.github.feature_provider.GitHubPullRequestFeatureProvider;
@@ -82,7 +82,7 @@ public class GitHubPullRequestModelAdapter extends AbstractModelAdapter {
 			return getLogin(pull.getAssignee());
 		} else if (PULL_REQUEST_MERGED_BY.equals(feature)) {
 			return getLogin(pull.getMergedBy());
-		} else if (NodeFeatureProvider.NAME.equals(feature)) {
+		} else if (NAME.equals(feature)) {
 			return pull.toString();
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -149,7 +149,7 @@ public class GitHubPullRequestModelAdapter extends AbstractModelAdapter {
 			
 			// set the node's id
 			CorePlugin.getInstance().getNodeService().setProperty(node, GitHubConstants.COMMENT_ID, comment.getId());
-			CorePlugin.getInstance().getNodeService().setProperty(node, NodeFeatureProvider.NAME, String.valueOf(comment.getId()));
+			CorePlugin.getInstance().getNodeService().setProperty(node, NAME, String.valueOf(comment.getId()));
 			
 			return comment;
 		}

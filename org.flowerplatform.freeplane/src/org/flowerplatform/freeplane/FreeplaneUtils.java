@@ -1,5 +1,8 @@
 package org.flowerplatform.freeplane;
 
+import static org.flowerplatform.mindmap.MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY;
+import static org.flowerplatform.mindmap.MindMapPlugin.MINDMAP_NODE_TYPE;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,9 +11,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.mindmap.MindMapPlugin;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.MapModel;
@@ -70,7 +71,7 @@ public class FreeplaneUtils {
 		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);
 		if (attributeTable != null) {
 			for (Attribute attribute : attributeTable.getAttributes()) {
-				if (attribute.getName().equals(NodePropertiesConstants.TYPE)) {
+				if (attribute.getName().equals(FREEPLANE_PERSISTENCE_NODE_TYPE_KEY)) {
 					type = (String) attribute.getValue();
 					break;
 				}
@@ -78,12 +79,13 @@ public class FreeplaneUtils {
 		}
 		if (type == null) { 
 			// no type provided, maybe this node is provided by a random .mm file, so set type to freeplaneNode
-			type = MindMapPlugin.MINDMAP_NODE_TYPE;			
+			type = MINDMAP_NODE_TYPE;	
+			// TODO CC: temporary code
+			resource = "freePlaneMindMap://path_to_resource";	
+		} else {		
+			// TODO CC: temporary code
+			resource = "freePlanePersistence://path_to_resource";		
 		}
-		
-		// TODO CC: temporary code
-		resource = "mm://path_to_resource";		
-		
 		return new Node(type, resource, nodeModel.createID(), nodeModel);
 	}
 	

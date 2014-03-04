@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		private function reloadCallbackHandler(result:Object):void {			
-			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(null);
+			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(diagramShellContext, null);
 		}
 		
 		override public function run():void {

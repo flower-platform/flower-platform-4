@@ -50,12 +50,10 @@ package org.flowerplatform.flex_client.core.service {
 		/**
 		 * Uses <code>UpdatesProcessingRemoteObject</code> to instantiate the remoteObject.
 		 */ 
-		override public function addService(serviceId:String):void {
-			var remoteObject:RemoteObject = new UpdatesProcessingRemoteObject(serviceId);
-			remoteObject.channelSet = channelSet;
-			remoteObjects[serviceId] = remoteObject;
+		override protected function createRemoteObject(serviceId:String):RemoteObject {
+			return new UpdatesProcessingRemoteObject(serviceId);
 		}
-			
+					
 		/**
 		 * Adds specific headers to operation.
 		 */
@@ -66,7 +64,7 @@ package org.flowerplatform.flex_client.core.service {
 			if (diagramShell != null && diagramShell.rootModel != null) {
 				var headers:Dictionary = new Dictionary();
 				headers[LAST_UPDATE_TIMESTAMP] = diagramShell.updateProcessor.timestampOfLastRequest;				
-				headers[FULL_ROOT_NODE_ID] = Node(diagramShell.getRoot()).fullNodeId;
+				headers[FULL_ROOT_NODE_ID] = Node(diagramShell.getRoot(diagramShell.getNewDiagramShellContext())).fullNodeId;
 				operation.messageHeaders = headers;
 			}
 			return operation;
@@ -86,7 +84,7 @@ package org.flowerplatform.flex_client.core.service {
 					
 				var diagramShell:MindMapEditorDiagramShell = getFirstMindMapEditorDiagramShell();
 				if (diagramShell != null) {
-					diagramShell.updateProcessor.rootNodeUpdatesHandler(updates);
+					diagramShell.updateProcessor.rootNodeUpdatesHandler(diagramShell.getNewDiagramShellContext(), updates);
 				}
 			}
 		}
