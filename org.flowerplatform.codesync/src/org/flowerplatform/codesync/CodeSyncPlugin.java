@@ -22,7 +22,6 @@ import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADA
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,18 +55,6 @@ import org.slf4j.LoggerFactory;
 public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
-		
-//	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
-//	
-//	public static final String VIEW = "view";
-//	public static final String PARENT_CODE_SYNC_ELEMENT = "parentCodeSyncElement";
-//	public static final String PARENT_VIEW = "parentView";
-//
-//	public static final String SOURCE = "source";
-//	public static final String TARGET = "target";
-//	
-//	public static final String WIZARD_ELEMENT = "wizardElement";
-//	public static final String WIZARD_ATTRIBUTE = "wizardAttribute";
 	
 	/**
 	 * The location of the CSE mapping file, relative to the project. May be
@@ -442,27 +429,10 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		URI uri = EditorModelPlugin.getInstance().getModelAccessController().getURIFromFile(file);
 //		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
 //		return getResource(resourceSet, uri, fileExists);
-		return getResource(null, true);
-	}
-	
-	/**
-	 * @author Mariana
-	 */
-	public Node getResource(URI uri, boolean fileExists) {
-//		if (fileExists) {
-//			return resourceSet.getResource(uri, true);
-//		} else {
-//			Resource resource =	resourceSet.getResource(uri, false);
-//			if (resource == null) {
-//				resource = resourceSet.createResource(uri);
-//			}
-//			resource.unload();
-//			return resource;
-//		}
-		// TODO CC: temporary code
-		Node node = new Node("freeplaneNode", "freePlanePersistence://path_to_resource", null, null);		
+		Node node = new Node("freeplaneNode", file.toString(), null, null);		
 		return CorePlugin.getInstance().getNodeService().getChildren(node, true).get(0);
 	}
+	
 //	
 //	/**
 //	 * Saves all the resources from the {@link ResourceSet} where <code>resourceToSave</code>
@@ -506,8 +476,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //	}
 	
 	public Node getCodeSyncMappingRoot(Object project) {
-		Object codeSyncElementMappingFile = null;//CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CSE_MAPPING_FILE_LOCATION); 
-		Node root = CodeSyncPlugin.getInstance().getResource(codeSyncElementMappingFile);
+		Node root = getResource(project);
 //		if (!EditorPlugin.getInstance().getFileAccessController().exists(codeSyncElementMappingFile)) {
 //			// first clear the resource in case the mapping file was deleted 
 //			// after it has been loaded at a previous moment

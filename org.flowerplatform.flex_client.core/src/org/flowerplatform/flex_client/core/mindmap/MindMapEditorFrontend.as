@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.core.mindmap {
 	
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
@@ -28,13 +29,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import mx.events.FlexEvent;
 	import mx.managers.IFocusManagerComponent;
 	
-	import spark.components.CheckBox;
-	import spark.components.HGroup;
-	import spark.components.VGroup;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellAwareProcessor;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
@@ -42,15 +40,24 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
+	
+	import spark.components.CheckBox;
+	import spark.components.HGroup;
+	import spark.components.VGroup;
+
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+		
+		// TODO MG: temp; move to a super class EditorFrontend
+		public var editorInput:String;
 		
 		public var diagramShell:DiagramShell;
 		
@@ -118,13 +125,31 @@ package org.flowerplatform.flex_client.core.mindmap {
 			super.createChildren();					
 		}
 		
-		private function creationCompleteHandler(event:FlexEvent):void {			
+		private function creationCompleteHandler(event:FlexEvent):void {	
+			var root:Node = new Node();
+			root.type = "freeplaneNode";
+			root.resource = editorInput;
+			diagramShell.rootModel = root;
+			
+			CorePlugin.getInstance().fullRootNodeIdToDiagramShell[root.fullNodeId] = diagramShell;
+			
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.subscribe",	[Node(diagramShell.rootModel).fullNodeId]);
+			
 			// TODO CC: Temporary code
 			var reloadAction:ReloadAction = new ReloadAction();
 			reloadAction.diagramShellContext = diagramShell.getNewDiagramShellContext();
 			reloadAction.run();
 			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
+			
+			IEventDispatcher(viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+		}
+		
+		/**
+		 * @author Mariana Gheorghe
+		 */
+		protected function viewRemovedHandler(event:ViewRemovedEvent):void {
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.unsubscribe", [Node(diagramShell.rootModel).fullNodeId]);
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

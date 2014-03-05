@@ -89,7 +89,8 @@ public class Node {
 
 	public String getFullNodeId() {
 		if (cachedFullNodeId == null) {
-			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + FULL_NODE_ID_SEPARATOR + idWithinResource;
+			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + FULL_NODE_ID_SEPARATOR + (
+					idWithinResource == null ? "" : idWithinResource);
 		}
 		return cachedFullNodeId;
 	}
@@ -148,9 +149,6 @@ public class Node {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Node)) {
-			return false;
-		}
 		if (obj instanceof Node) {
 			return getFullNodeId().equals(((Node) obj).getFullNodeId());
 		}

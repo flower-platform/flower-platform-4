@@ -17,13 +17,9 @@
  * license-end
  */
 package org.flowerplatform.flexutil {
-	import flash.display.DisplayObject;
 	import flash.utils.getQualifiedClassName;
 	
-	import mx.controls.TextInput;
 	import mx.core.ITextInput;
-	import mx.core.UIComponent;
-	import mx.utils.DescribeTypeCache;
 	
 	import spark.components.TextInput;
 	import spark.components.supportClasses.SkinnableTextBase;

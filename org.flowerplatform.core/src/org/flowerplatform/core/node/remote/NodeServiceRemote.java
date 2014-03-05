@@ -52,6 +52,18 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService().getRegisteredTypes();
 	}
 	
+	public void subscribe(String fullNodeId) {
+		CorePlugin.getInstance().getNodeService().subscribe(new Node(fullNodeId));
+	}
+	
+	public void unsubscribe(String fullNodeId) {
+		CorePlugin.getInstance().getNodeService().unsubscribe(new Node(fullNodeId));
+	}
+	
+	public void stillSubscribedPing(String fullNodeId) {
+		CorePlugin.getInstance().getNodeService().stillSubscribedPing(new Node(fullNodeId));
+	}
+	
 	/**
 	 * Sends a subtree to the client, based on the status of the client. Status of the client (i.e. <code>query</code> parameter)
 	 * means the tree that the client is actually seeing (based on what nodes are expanded and collapsed).

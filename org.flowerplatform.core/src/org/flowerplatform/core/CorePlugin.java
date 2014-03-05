@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.core;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -27,6 +29,7 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.core.node.update.InMemoryRootNodeInfoDAO;
 import org.flowerplatform.core.node.update.InMemoryUpdateDAO;
 import org.flowerplatform.core.node.update.UpdateService;
 import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
@@ -60,9 +63,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
-	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
+	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry, new InMemoryRootNodeInfoDAO());
 	protected UpdateService updateService = new UpdateService(new InMemoryUpdateDAO());
 
+	private ThreadLocal<HttpServletRequest> requests = new ThreadLocal<HttpServletRequest>();
+	
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -127,6 +132,45 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void registerMessageBundle() throws Exception {
 		// no messages yet
+	}
+	
+	/**
+	 * Must be called from a try/finally block to make sure that the request is cleared, i.e.
+	 * 
+	 * <pre>
+	 * try {
+	 * 	CorePlugin.getInstance().setRequest(request);
+	 * 	
+	 * 	// specific logic here
+	 * 
+	 * } finally {
+	 * 	CorePlugin.getInstance().clearRequest();
+	 * }
+	 * </pre> 
+	 * 
+	 * @see FlowerMessageBrokerServlet
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public void setRequest(HttpServletRequest request) {
+		requests.set(request);
+	}
+	
+	/**
+	 * @see #setRequest(HttpServletRequest)
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public void clearRequest() {
+		requests.remove();
+	}
+	
+	public HttpServletRequest getRequest() {
+		return requests.get();
+	}
+	
+	public String getSessionId() {
+		return getRequest().getSession().getId();
 	}
 	
 }

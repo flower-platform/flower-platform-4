@@ -13,9 +13,9 @@ public class FreeplaneService {
 		}
 	}
 	
-	public void save() {
+	public void save(String resource) {
 		try {
-			FreeplanePlugin.getInstance().getFreeplaneUtils().save();
+			FreeplanePlugin.getInstance().getFreeplaneUtils().save(resource);
 		} catch (Exception e) {
 			// TODO CC: to log
 			e.printStackTrace();

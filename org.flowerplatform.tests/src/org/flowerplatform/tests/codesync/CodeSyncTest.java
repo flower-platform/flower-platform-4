@@ -102,7 +102,7 @@ public class CodeSyncTest {
 		Node model = new Node(FOLDER, root.getResource(), null, null);
 		nodeService.addChild(root, model, null);
 		nodeService.setProperty(model, NAME, INITIAL);
-		Match match = codeSyncService.synchronize(project, new File(project, fullyQualifiedName), TECHNOLOGY, true);
+		Match match = codeSyncService.synchronize(root.getFullNodeId(), new File(project, fullyQualifiedName), TECHNOLOGY, true);
 		
 		assertEquals(1, match.getSubMatches().size());
 		
@@ -151,7 +151,7 @@ public class CodeSyncTest {
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
 		
-		Match match = codeSyncService.generateMatch(getProject(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
+		Match match = codeSyncService.generateMatch(root.getFullNodeId(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
 		
 		Pair[] typeList = {
 				new Pair(MatchType._3MATCH, 0),					// src
@@ -248,7 +248,7 @@ public class CodeSyncTest {
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
 		
-		codeSyncService.synchronize(project, dir, TECHNOLOGY, true);
+		codeSyncService.synchronize(root.getFullNodeId(), dir, TECHNOLOGY, true);
 		
 		String expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/" + SOURCE_FILE);
 		String actual = FileUtils.readFileToString(new File(dir, SOURCE_FILE));
@@ -377,7 +377,7 @@ public class CodeSyncTest {
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
 		Node orphanRemoval = new Node(MEMBER_VALUE_PAIR, root.getResource(), null, null);
 
-		Match match = codeSyncService.generateMatch(getProject(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
+		Match match = codeSyncService.generateMatch(root.getFullNodeId(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
 		
 		Pair[] typeList = {
 				new Pair(MatchType._3MATCH, 0),				// src

@@ -87,5 +87,9 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 			return cachedFullNodeId;
 		}
 		
+		public function toString():String {
+			return fullNodeId;
+		}
+		
 	}
 }

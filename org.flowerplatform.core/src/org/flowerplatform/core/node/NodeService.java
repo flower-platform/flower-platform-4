@@ -34,6 +34,7 @@ import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.core.node.update.RootNodeInfoDAO;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -56,13 +57,20 @@ public class NodeService {
 	
 	protected TypeDescriptorRegistry registry;
 	
+	protected RootNodeInfoDAO rootNodeInfoDAO;
+	
 	public NodeService() {
 		super();		
 	}
 	
-	public NodeService(TypeDescriptorRegistry registry) {
+	public NodeService(TypeDescriptorRegistry registry, RootNodeInfoDAO rootNodeInfoDAO) {
 		super();
 		this.registry = registry;
+		this.rootNodeInfoDAO = rootNodeInfoDAO;
+	}
+	
+	public RootNodeInfoDAO getRootNodeInfoDAO() {
+		return rootNodeInfoDAO;
 	}
 
 	public List<Node> getChildren(Node node, boolean populateProperties) {		
@@ -225,7 +233,19 @@ public class NodeService {
 		
 		return descriptorsMap;
 	}
-		
+	
+	public void subscribe(Node rootNode) {
+		rootNodeInfoDAO.subscribe(CorePlugin.getInstance().getSessionId(), rootNode);
+	}
+
+	public void unsubscribe(Node rootNode) {	
+		rootNodeInfoDAO.unsubscribe(CorePlugin.getInstance().getSessionId(), rootNode);
+	}
+	
+	public void stillSubscribedPing(Node rootNode) {
+		rootNodeInfoDAO.stillSubscribedPing(CorePlugin.getInstance().getSessionId(), rootNode);
+	}
+	
 	public Set<String> getRegisteredTypes() {
 		return registry.getRegisteredTypes();
 	}
