@@ -23,7 +23,7 @@ public class UpdatePropertySetterController extends PropertySetter {
 
 	@Override
 	public void unsetProperty(Node node, String key) {
-		setUnsetProperty(node, key, null, true);
+		setUnsetProperty(node, key, node.getOrPopulateProperties().get(key), false);
 	}
 	
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset) {

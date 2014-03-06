@@ -10,6 +10,7 @@ import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NO
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.node.controller.StylePropertyProvider.STYLE_PROPERTY_PROVIDER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.RootNodeProvider;
+import org.flowerplatform.core.node.controller.StylePropertyProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
@@ -106,11 +108,26 @@ public class NodeService {
 		}
 		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
 		for (ChildrenProvider provider : childrenProviders) {
-			if (provider.hasChildren(node)) {
+ 			if (provider.hasChildren(node)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Object getStylePropertyValue(Node node, String property) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		List<StylePropertyProvider> styleProviders = descriptor.getAdditiveControllers(STYLE_PROPERTY_PROVIDER, node);
+		for (StylePropertyProvider provider : styleProviders) {
+			Object propertyValue = provider.getStylePropertyValue(node, property);
+ 			if (propertyValue != null) {
+				return propertyValue;
+			}
+		}
+		return null;
 	}
 		
 	/**

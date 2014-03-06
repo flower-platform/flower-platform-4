@@ -19,9 +19,11 @@
 package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.collections.ArrayCollection;
 	import mx.events.FlexEvent;
+	import mx.events.PropertyChangeEvent;
 	
 	import spark.components.CheckBox;
 	import spark.components.DropDownList;
+	import spark.components.Label;
 	import spark.events.DropDownEvent;
 	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
@@ -37,6 +39,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		[Bindable]
 		public var changeCheckBox:CheckBox;
+		
+		[Bindable]
+		public var changeLabel:Label;
 		
 		/**
 		 * Signature: function getDataProviderHandler(callbackObject:Object, callbackFunction:Function):void		 
@@ -59,6 +64,10 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		private function creationCompleteHandler(event:FlexEvent):void {			
 			dropDownList.addEventListener(DropDownEvent.CLOSE, dropDownEventHandler);
+		}
+		
+		protected function propertyChangeHandler(e:PropertyChangeEvent):void {
+			setSelectedIndex();
 		}
 		
 		protected function dropDownEventHandler(e:DropDownEvent):void {
@@ -89,6 +98,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			addElement(dropDownList);	
 			changeCheckBox = new CheckBox();
 			addElement(changeCheckBox);
+			changeLabel = new Label();
+			changeLabel.text = "Change";
+			addElement(changeLabel);
 		}
 		
 		override public function set data(value:Object):void {

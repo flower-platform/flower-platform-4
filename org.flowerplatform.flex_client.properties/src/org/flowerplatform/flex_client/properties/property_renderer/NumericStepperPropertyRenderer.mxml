@@ -34,4 +34,7 @@
 	<s:CheckBox id="changeCheckBox" 
 				visible="{data.hasChangeCheckbox}"
 				enabled="{changeCheckBox.selected}"/>
+	<s:Label id="changeLabel" paddingTop="5"
+			 text="Change"
+			 visible="{data.hasChangeCheckbox}"/>
 </ns:BasicPropertyRenderer>

@@ -5,6 +5,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	
 	import spark.components.Button;
 	import spark.components.CheckBox;
+	import spark.components.Label;
 	import spark.components.TextInput;
 	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
@@ -17,6 +18,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		[Bindable]
 		public var changeCheckBox:CheckBox;
+		[Bindable]
+		public var changeLabel:Label;
 		
 		public var button:Button;
 		
@@ -43,6 +46,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			
 			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
 			changeCheckBox.enabled = changeCheckBox.selected;
+			changeLabel.visible = PropertyDescriptor(data).hasChangeCheckbox;
 		}
 		
 		override protected function createChildren():void {
@@ -64,6 +68,10 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			
 			changeCheckBox = new CheckBox();
 			addElement(changeCheckBox);
+			changeLabel = new Label();
+			changeLabel.text = "Change";
+			addElement(changeLabel);
+			
 		}
 		
 		private function clickHandlerInternal(event:MouseEvent):void {

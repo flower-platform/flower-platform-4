@@ -61,11 +61,13 @@ public class PersistencePropertySetter extends PropertySetter {
 		}
 		
 		// remove attribute from the attributes table
-		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) rawNodeData.getExtension(NodeAttributeTableModel.class);		
-		for (Attribute attribute : attributeTable.getAttributes()) {
-			if (attribute.getName().equals(property)) {
-				attributeTable.getAttributes().remove(attribute);
-				break;
+		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) rawNodeData.getExtension(NodeAttributeTableModel.class);	
+		if (attributeTable != null) {
+			for (Attribute attribute : attributeTable.getAttributes()) {
+				if (attribute.getName().equals(property)) {
+					attributeTable.getAttributes().remove(attribute);
+					break;
+				}
 			}
 		}
 		

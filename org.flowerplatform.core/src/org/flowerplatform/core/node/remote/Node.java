@@ -33,6 +33,7 @@ public class Node {
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
+	
 	private boolean rawNodeDataRetrieved;
 		
 	public Node(String type, String resource, String idWithinResource, Object rawNodeData) {		
@@ -157,6 +158,20 @@ public class Node {
 	@Override
 	public String toString() {
 		return String.format("Node [fullNodeId = %s]", getFullNodeId());
+	}
+	
+	/**
+	 * If the required property don't exists in {@link properties} the style property value is returned.
+	 * 
+	 * @author Sebastian Solomon
+	 */
+	public Object getPropertyValue(String propetyName) {
+		Object property = properties.get(propetyName);
+		if (property != null) {
+			return property;
+		}
+		//TODO serch in Style
+		return CorePlugin.getInstance().getNodeService().getStylePropertyValue(this, propetyName);
 	}
 	
 }

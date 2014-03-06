@@ -23,6 +23,7 @@ import org.flowerplatform.util.controller.AbstractController;
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
+ * @author Sebastian Solomon
  */
 public class PropertyDescriptor extends AbstractController {
 	
@@ -34,8 +35,12 @@ public class PropertyDescriptor extends AbstractController {
 	private String name;
 	private String title;
 	private String type = DEFAULT_TYPE;
+	
 	private String category = DEFAULT_CATEGORY;
+	
 	private Boolean hasChangeCheckbox = true;
+	
+	private Object defaultValue = null;
 
 	private boolean readOnly = true;
 		
@@ -119,6 +124,28 @@ public class PropertyDescriptor extends AbstractController {
 	 */
 	public PropertyDescriptor setHasChangeCheckboxAs(Boolean hasChangeCheckbox) {
 		this.hasChangeCheckbox = hasChangeCheckbox;
+		return this;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Object getDefaultValue() {
+		return defaultValue;
+	}
+
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public void setDefaultValue(Object defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public PropertyDescriptor setDefaultValueAs(Object defaultValue) {
+		this.defaultValue = defaultValue;
 		return this;
 	}
 	
