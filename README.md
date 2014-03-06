@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/flower-platform/flower-platform-4.png?label=ready&title=Ready)](https://waffle.io/flower-platform/flower-platform-4)
 # Flower Platform 4
 
 Each project contains a ``readme.md`` file with a brief description of the project and associated launch configs (if present).
