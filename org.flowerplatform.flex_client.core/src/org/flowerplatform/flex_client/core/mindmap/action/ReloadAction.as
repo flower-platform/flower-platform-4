@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -36,13 +37,11 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		override public function get visible():Boolean {			
 			return true;
 		}
-		
-		private function reloadCallbackHandler(result:Object):void {			
-			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(diagramShellContext, null);
-		}
-		
-		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, reloadCallbackHandler);			
+				
+		override public function doRun():void {
+			var context:DiagramShellContext = diagramShellContext;
+			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, 
+				function (result:Object):void {MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, null);});			
 		}			
 		
 	}

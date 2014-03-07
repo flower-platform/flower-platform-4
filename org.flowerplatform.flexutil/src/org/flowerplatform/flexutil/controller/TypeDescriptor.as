@@ -74,13 +74,19 @@ package org.flowerplatform.flexutil.controller {
 				return pair.a as AbstractController;
 			}
 			
+			// put all found controllers in this list, at the end sort on orderIndex and set the first one as the single controller
+			var controllers:ArrayCollection = new ArrayCollection([pair.a]);
+			
 			// else => let's scan now the categories
 			var allCategories:ArrayCollection = new ArrayCollection();
 			allCategories.addAll(categories);
 			if (includeDynamicCategoryProviders) {
 				for (var i:int = 0; i < registry.getDynamicCategoryProviders().length; i++) {
 					var categoryProvider:IDynamicCategoryProvider = IDynamicCategoryProvider(registry.getDynamicCategoryProviders().getItemAt(i));
-					allCategories.addAll(categoryProvider.getDynamicCategories(object));
+					var dynamicCategories:IList = categoryProvider.getDynamicCategories(object);
+					if (dynamicCategories != null) {
+						allCategories.addAll(dynamicCategories);
+					}
 				}
 			}
 			
@@ -95,18 +101,21 @@ package org.flowerplatform.flexutil.controller {
 				var categoryController:AbstractController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
 				if (categoryController != null) {
 					// found a controller from a category; cache it
-					pair.a = categoryController;
-					if (pair.b) {
-						throw new Error("Object with type " + type + "registered multiple categories with controllers of type " + controllerType);
-					}
-					pair.b = true;
+					controllers.addItem(categoryController);
 				}
 			}
 			
-			// finished scanning the categories
-			pair.b = true;
+			controllers.source.sortOn("orderIndex", Array.NUMERIC);
 			
-			return pair.a as AbstractController;
+			if (controllers.length > 0) {
+				pair.a = controllers.getItemAt(0);
+				// finished scanning the categories
+				pair.b = true;
+				
+				return pair.a as AbstractController;
+			} else {
+				return null;
+			}
 		}
 		
 		public function addSingleController(type:String, controller:AbstractController):TypeDescriptor {
@@ -149,7 +158,10 @@ package org.flowerplatform.flexutil.controller {
 			if (includeDynamicCategoryProviders) {
 				for (var i:int = 0; i < registry.getDynamicCategoryProviders().length; i++) {
 					var categoryProvider:IDynamicCategoryProvider = IDynamicCategoryProvider(registry.getDynamicCategoryProviders().getItemAt(i));
-					allCategories.addAll(categoryProvider.getDynamicCategories(object));
+					var dynamicCategories:IList = categoryProvider.getDynamicCategories(object);
+					if (dynamicCategories != null) {
+						allCategories.addAll(dynamicCategories);
+					}
 				}
 			}
 			

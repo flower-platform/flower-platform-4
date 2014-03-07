@@ -46,7 +46,6 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
 	import org.flowerplatform.flexdiagram.tool.IWakeUpableTool;
 	import org.flowerplatform.flexdiagram.tool.Tool;
@@ -76,22 +75,18 @@ package org.flowerplatform.flexdiagram {
 		
 		public var registry:TypeDescriptorRegistry;
 		
-		private var _typeProviders:IList;
+		private var _typeProvider:ITypeProvider;
 			
-		public function addTypeProvider(provider:ITypeProvider):void {
-			if (_typeProviders == null) {
-				_typeProviders = new ArrayList();
-			}
-			_typeProviders.addItem(provider);
+		public function set typeProvider(provider:ITypeProvider):void {			
+			_typeProvider = provider;
 		}
 		
 		/**
 		 * @see ControllerUtils
 		 */ 
 		public function getType(context:DiagramShellContext, model:Object):String {
-			for (var i:int = 0; i < _typeProviders.length; i++) {
-				var typeProvider:ITypeProvider = ITypeProvider(_typeProviders.getItemAt(i));
-				var type:String = typeProvider.getType(context, model);
+			if (_typeProvider != null) {				
+				var type:String = _typeProvider.getType(context, model);
 				if (type != null) {
 					return type;
 				}

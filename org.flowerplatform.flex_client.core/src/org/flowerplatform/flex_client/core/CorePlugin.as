@@ -31,6 +31,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
+	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
 	import org.flowerplatform.flex_client.core.mindmap.controller.ResourceTypeDynamicCategoryProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
@@ -44,6 +45,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
@@ -80,7 +82,8 @@ package org.flowerplatform.flex_client.core {
 		public var addChildDescriptors:Object = new Object();
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
-				
+		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
+			
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
@@ -141,13 +144,9 @@ package org.flowerplatform.flex_client.core {
 			nodeTypeDescriptorRegistry.addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 			
 			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapEditorDiagramShell.MINDMAP_ROOT_NODE_TYPE)
-				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())
-				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController())
-				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController());
-			
-//			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("mindmap")
-//				.addSingleController(
-			
+				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController(-10))
+				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController(-10));
+				
 //			linkHandlers = new Dictionary();			
 //			
 //			if (ExternalInterface.available) {

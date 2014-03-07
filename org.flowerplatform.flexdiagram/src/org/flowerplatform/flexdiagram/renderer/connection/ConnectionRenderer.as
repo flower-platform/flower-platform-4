@@ -25,13 +25,13 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 	import mx.core.UIComponent;
 	import mx.events.PropertyChangeEvent;
 	
-	import spark.components.Label;
-	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
+	
+	import spark.components.Label;
 	
 	/**
 	 * The figure class for a connection. 

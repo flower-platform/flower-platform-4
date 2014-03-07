@@ -22,6 +22,8 @@ package org.flowerplatform.flexutil.renderer {
 	import spark.primitives.BitmapImage;
 
 	/**
+	 * NOTE: This renderer is used only in samples.
+	 * 
 	 * Code from http://flexponential.com/2011/08/21/adding-multiline-text-support-to-labelitemrenderer/.
 	 * Adapted to work when using <code>MultipleIconItemRenderer</code>.
 	 * @author Cristina Constantinescu

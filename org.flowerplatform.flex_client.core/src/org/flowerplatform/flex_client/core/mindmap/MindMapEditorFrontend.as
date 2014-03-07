@@ -28,10 +28,6 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import mx.events.FlexEvent;
 	import mx.managers.IFocusManagerComponent;
 	
-	import spark.components.CheckBox;
-	import spark.components.HGroup;
-	import spark.components.VGroup;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
@@ -46,6 +42,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
+	
+	import spark.components.CheckBox;
+	import spark.components.HGroup;
+	import spark.components.VGroup;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -111,6 +111,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 							
 			diagramShell = new MindMapEditorDiagramShell();
 			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
+			diagramShell.typeProvider = CorePlugin.getInstance().nodeTypeProvider;
 			diagramShell.diagramRenderer = diagramRenderer;
 			
 			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));

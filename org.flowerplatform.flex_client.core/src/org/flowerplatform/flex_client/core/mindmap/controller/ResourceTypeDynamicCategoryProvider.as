@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller
 					}
 				}
 			}
-			return new ArrayList();
+			return null;
 		}
 		
 	}

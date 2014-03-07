@@ -37,7 +37,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			return selection != null;
 		}
 		
-		override public function run():void {
+		override public function doRun():void {
 			// refresh each node from selection
 			for (var i:int = 0; i < selection.length; i++) {
 				var obj:Object = selection.getItemAt(i);

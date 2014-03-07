@@ -6,16 +6,16 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import spark.components.DataRenderer;
-	import spark.components.Label;
-	import spark.layouts.HorizontalLayout;
-	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
+	
+	import spark.components.DataRenderer;
+	import spark.components.Label;
+	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -28,7 +28,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			
 		protected var labelDisplay:Label;
 		
-		protected var iconsExtension:IconsComponentExtension;
+		protected var iconsComponentExtension:IconsComponentExtension;
 		
 		public function AbstractMindMapModelRenderer() {
 			super();
@@ -55,7 +55,8 @@ package org.flowerplatform.flexdiagram.mindmap
 				}
 			}
 			
-			iconsExtension = new IconsComponentExtension(this);
+			iconsComponentExtension = new IconsComponentExtension(this);
+			
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;
 			hLayout.paddingBottom = 2;
@@ -76,11 +77,11 @@ package org.flowerplatform.flexdiagram.mindmap
 		}		
 				
 		public function get icons():FlowerArrayList	{			
-			return iconsExtension.icons;
+			return iconsComponentExtension.icons;
 		}
 		
 		public function set icons(value:FlowerArrayList):void {
-			iconsExtension.icons = value;
+			iconsComponentExtension.icons = value;
 		}
 		
 		override public function set data(value:Object):void {
@@ -154,16 +155,16 @@ package org.flowerplatform.flexdiagram.mindmap
 				
 		override public function validateDisplayList():void {
 			super.validateDisplayList();			
-			iconsExtension.validateDisplayList();
+			iconsComponentExtension.validateDisplayList();
 		}
 		
 		override public function validateProperties():void {
 			super.validateProperties();
-			iconsExtension.validateProperties();
+			iconsComponentExtension.validateProperties();
 		}
 		
 		override public function validateSize(recursive:Boolean=false):void	{
-			iconsExtension.validateSize();
+			iconsComponentExtension.validateSize();
 			super.validateSize(recursive);
 		}
 				
