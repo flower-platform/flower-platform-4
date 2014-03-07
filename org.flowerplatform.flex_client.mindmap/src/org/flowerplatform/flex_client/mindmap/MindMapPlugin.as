@@ -1,5 +1,6 @@
 package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeChildrenController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeDragController;
@@ -18,14 +19,18 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
 	import org.flowerplatform.flexdiagram.tool.controller.drag.DragController;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
+	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
 	/**
@@ -52,17 +57,21 @@ package org.flowerplatform.flex_client.mindmap {
 			}
 			INSTANCE = this;
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
-						 
+						
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapEditorDiagramShell.MINDMAP_ROOT_NODE_TYPE)
+				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController(-10))
+				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController(-10));
+						
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
 				.addSingleController(ModelChildrenController.TYPE, new NodeChildrenController())
-				.addSingleController(MindMapModelController.TYPE, new NodeController())
-				.addSingleController(DragController.TYPE, new NodeDragController())
-				.addSingleController(SelectionController.TYPE, new BasicSelectionController(NodeSelectionRenderer))
-				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())
-				.addSingleController(InplaceEditorController.TYPE, new NodeInplaceEditorController())
+				.addSingleController(MindMapModelController.TYPE, new NodeController())				
+				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())				
 				.addSingleController(RendererController.TYPE, new NodeRendererController(MindMapNodeRenderer))
 				.addSingleController(AbsoluteLayoutRectangleController.TYPE, new MindMapAbsoluteLayoutRectangleController());
-			
+						
+			addCommonControllers(CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY));
+			addCommonControllers(CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FREEPLANE_PERSISTENCE_CATEGORY));
+						
 			// register PropertiesPlugin Renderer
 			PropertiesPlugin.getInstance().propertyRendererClasses["MindMapIconsWithButton"] = new FactoryWithInitialization
 				(IconsWithButtonPropertyRenderer, {
@@ -84,6 +93,18 @@ package org.flowerplatform.flex_client.mindmap {
 					
 				});
 		
+		}
+		
+		/**
+		 * Adds common controllers.
+		 * Those controllers aren't set to "category.all", because that category includes the root node
+		 * and we don't want to set selection renderer or inplace editor controller etc. on it.
+		 */ 
+		private function addCommonControllers(typeDescriptor:TypeDescriptor):void {
+			typeDescriptor
+				.addSingleController(DragController.TYPE, new NodeDragController())
+				.addSingleController(SelectionController.TYPE, new BasicSelectionController(NodeSelectionRenderer))				
+				.addSingleController(InplaceEditorController.TYPE, new NodeInplaceEditorController());				
 		}
 		
 		

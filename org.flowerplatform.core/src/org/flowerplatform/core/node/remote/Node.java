@@ -46,18 +46,23 @@ public class Node {
 	}
 
 	public Node(String fullNodeId) {
-		if (StringUtils.countMatches(fullNodeId, FULL_NODE_ID_SEPARATOR) != 2) { 
+		// StringUtils.defaultIfEmpty -> Returns either the passed in String, or if the String is empty or null, the value of defaultStr.
+		// StringUtils.splitPreserveAllTokens -> Splits the provided text into an array, separator specified, preserving all tokens, including empty tokens created by adjacent separators.
+		
+		String[] tokens = StringUtils.splitPreserveAllTokens(fullNodeId, FULL_NODE_ID_SEPARATOR);
+		
+		if (tokens.length != 3) {
 			throw new RuntimeException("fullNodeId must have the following format: <type>|<resource>|<id>!");
 		}
-		String[] tokens = fullNodeId.split(FULL_NODE_ID_SPLIT_REGEX);
 		
-		this.type = tokens[0];
-		this.resource = tokens[1];
-		
-		if (tokens.length == 3) { // needed because if fullNodeId is "type|resource|" (without id), there will be two tokens ("type", "resource")
-			this.idWithinResource = tokens[2];
+		type = StringUtils.defaultIfEmpty(tokens[0], null);
+		if (type == null) {
+			throw new RuntimeException("type must be populated!");
 		}
-		this.cachedFullNodeId = fullNodeId;
+		resource = StringUtils.defaultIfEmpty(tokens[1], null);		
+		idWithinResource = StringUtils.defaultIfEmpty(tokens[2], null); 
+		
+		cachedFullNodeId = fullNodeId;
 	}
 	
 	public String getType() {
