@@ -5,6 +5,12 @@
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>
     <classEntry path="org.flowerplatform.flex_client.core.link.LinkHandler"/>
+    <classEntry path="org.flowerplatform.flex_client.core.service.UpdatesProcessingOperation"/>
+    <classEntry path="org.flowerplatform.flex_client.core.service.UpdatesProcessingRemoteObject"/>
+    <classEntry path="org.flowerplatform.flex_client.core.editor.EditorFrontend"/>
+    <classEntry path="org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend"/>
+    <classEntry path="org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor"/>
+    <classEntry path="org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterLeft;
@@ -40,6 +41,7 @@ import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -429,7 +431,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		URI uri = EditorModelPlugin.getInstance().getModelAccessController().getURIFromFile(file);
 //		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
 //		return getResource(resourceSet, uri, fileExists);
-		Node node = new Node("freeplaneNode", file.toString(), null, null);		
+		Matcher matcher = ResourceTypeDynamicCategoryProvider.RESOURCE_PATTERN.matcher(file.toString());
+		String path = null;
+		if (matcher.find()) {
+			path = matcher.group(2);
+		}
+		Node node = new Node(CorePlugin.RESOURCE_TYPE, null, path, null);		
 		return CorePlugin.getInstance().getNodeService().getChildren(node, true).get(0);
 	}
 	

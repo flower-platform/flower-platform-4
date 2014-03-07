@@ -29,7 +29,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	public class MindMapRootModelChildrenController extends ModelChildrenController {
 		
 		public function MindMapRootModelChildrenController(orderIndex:int = 0) {
-			super(orderIndex);
+			// low order index to override the category controller
+			super(-100);
 		}
 		
 		override public function getParent(context:DiagramShellContext, model:Object):Object {

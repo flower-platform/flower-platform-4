@@ -56,6 +56,11 @@ public abstract class AbstractController implements Comparable<AbstractControlle
 		this.orderIndex = orderIndex;
 	}
 
+	public AbstractController setOrderIndexAs(int orderIndex) {
+		setOrderIndex(orderIndex);
+		return this;
+	}
+	
 	/**
 	 * Needed to know how to sort the list of controllers. For additive controllers.
 	 */

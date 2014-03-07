@@ -1,5 +1,7 @@
 package org.flowerplatform.core.node.controller;
 
+import java.util.Map;
+
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -19,7 +21,7 @@ public class ConstantValuePropertyProvider extends PropertiesProvider {
 	}
 
 	@Override
-	public void populateWithProperties(Node node) {
+	public void populateWithProperties(Node node, Map<String, Object> options) {
 		node.getProperties().put(property, value);
 	}
 

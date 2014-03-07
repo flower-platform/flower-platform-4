@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
+import org.flowerplatform.util.Utils;
 
 /**
  * <p>
@@ -47,7 +48,7 @@ public class Node {
 
 	public Node(String fullNodeId) {
 		if (StringUtils.countMatches(fullNodeId, FULL_NODE_ID_SEPARATOR) != 2) { 
-			throw new RuntimeException("fullNodeId must have the following format: <type>|<resource>|<id>!");
+			throw new RuntimeException("fullNodeId must have the following format: <type>|<resource>|<id>! Received " + fullNodeId);
 		}
 		String[] tokens = fullNodeId.split(FULL_NODE_ID_SPLIT_REGEX);
 		
@@ -89,8 +90,7 @@ public class Node {
 
 	public String getFullNodeId() {
 		if (cachedFullNodeId == null) {
-			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + FULL_NODE_ID_SEPARATOR + (
-					idWithinResource == null ? "" : idWithinResource);
+			cachedFullNodeId = Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource);
 		}
 		return cachedFullNodeId;
 	}

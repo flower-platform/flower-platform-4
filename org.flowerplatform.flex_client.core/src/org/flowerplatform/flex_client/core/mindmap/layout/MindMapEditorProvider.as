@@ -21,6 +21,7 @@ package org.flowerplatform.flex_client.core.mindmap.layout {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;

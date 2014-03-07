@@ -1,8 +1,5 @@
 package org.flowerplatform.core;
 
-import static org.flowerplatform.core.node.update.UpdateService.TIMESTAMP_OF_LAST_REQUEST;
-
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +21,7 @@ public class RemoteMethodInvocationListener {
 	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
 
 	public static final String LAST_UPDATE_TIMESTAMP = "timestampOfLastUpdate";
-	public static final String FULL_ROOT_NODE_ID = "fullRootNodeId";
+	public static final String ROOT_NODE_IDS = "rootNodeIds";
 	
 	public static final String MESSAGE_RESULT = "messageResult";
 	public static final String UPDATES = "updates";
@@ -50,20 +47,22 @@ public class RemoteMethodInvocationListener {
 			logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 		}
 		
+		// get info from header
+		long timestampOfLastRequest = ((Number) remoteMethodInvocationInfo.getHeaders().get(LAST_UPDATE_TIMESTAMP)).longValue();
+		@SuppressWarnings("unchecked")
+		List<String> rootNodeIds = (List<String>) remoteMethodInvocationInfo.getHeaders().get(ROOT_NODE_IDS);
+		
 		// prepare result
 		Map<String, Object> returnValue = new HashMap<String, Object>();
 		returnValue.put(MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
+		returnValue.put(LAST_UPDATE_TIMESTAMP, new Date().getTime());
 		
 		Map<String, List<Update>> rootNodeIdToUpdates = new HashMap<String, List<Update>>();
-		
-		String sessionId = CorePlugin.getInstance().getSessionId();
-		Collection<Node> rootNodes = CorePlugin.getInstance().getNodeService().getRootNodeInfoDAO().getRootNodesForSession(sessionId);
-		for (Node rootNode : rootNodes) {
-			List<Update> updates = CorePlugin.getInstance().getUpdateService().getUpdates(rootNode);
+		for (String rootNodeId : rootNodeIds) {
+			Node rootNode = new Node(rootNodeId);
+			List<Update> updates = CorePlugin.getInstance().getUpdateService().getUpdates(rootNode, timestampOfLastRequest);
 			rootNodeIdToUpdates.put(rootNode.getFullNodeId(), updates);
 		}
-		// update the timestamp
-		CorePlugin.getInstance().getNodeService().getRootNodeInfoDAO().updateSessionProperty(sessionId, TIMESTAMP_OF_LAST_REQUEST, new Date().getTime());
 		if (rootNodeIdToUpdates.size() > 0) {
 			returnValue.put(UPDATES, rootNodeIdToUpdates);
 		}

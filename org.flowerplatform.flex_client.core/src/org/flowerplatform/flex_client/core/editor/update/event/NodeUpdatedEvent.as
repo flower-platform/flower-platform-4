@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.core.mindmap.update.event {
+package org.flowerplatform.flex_client.core.editor.update.event {
 	import flash.events.Event;
 	
 	import mx.collections.ArrayList;

@@ -1,4 +1,6 @@
 package org.flowerplatform.flex_client.core.link {
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
@@ -29,8 +31,11 @@ package org.flowerplatform.flex_client.core.link {
 				
 				for each (var file:String in files.split(",")) {
 					var view:ViewLayoutData = new ViewLayoutData();
+					var root:Node = new Node();
+					root.type = CorePlugin.RESOURCE_TYPE;
+					root.idWithinResource = file;
+					view.customData = root.fullNodeId;
 					view.isEditor = true;
-					view.customData = file;
 					view.viewId = viewId;
 					FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
 				}

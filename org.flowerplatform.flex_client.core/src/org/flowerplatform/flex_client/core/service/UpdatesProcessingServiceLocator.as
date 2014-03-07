@@ -1,12 +1,18 @@
 package org.flowerplatform.flex_client.core.service {
 	
+	import flash.utils.Dictionary;
+	
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
+	import mx.rpc.AbstractOperation;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
+	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
+	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
 
@@ -31,8 +37,32 @@ package org.flowerplatform.flex_client.core.service {
 		public static const MESSAGE_RESULT:String = "messageResult";
 		public static const UPDATES:String = "updates";
 		
+		public static const LAST_UPDATE_TIMESTAMP:String = "timestampOfLastUpdate";
+		public static const ROOT_NODE_IDS:String = "rootNodeIds";
+		
 		public function UpdatesProcessingServiceLocator(channelSet:ChannelSet) {
 			super(channelSet);
+		}
+		
+		/**
+		 * Uses <code>UpdatesProcessingRemoteObject</code> to instantiate the remoteObject.
+		 */
+		override protected function createRemoteObject(serviceId:String):RemoteObject {
+			return new UpdatesProcessingRemoteObject(serviceId);
+		}
+		
+		/**
+		 * Adds specific headers to operation.
+		 */
+		override protected function getOperation(serviceId:String, name:String):AbstractOperation {
+			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
+			
+			var headers:Dictionary = new Dictionary();
+			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().rootNodeIdToEditors.lastUpdateTimestamp;
+			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().rootNodeIdToEditors.getRootNodeIds();
+			operation.messageHeaders = headers;
+			
+			return operation;
 		}
 		
 		override public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {			
@@ -44,16 +74,41 @@ package org.flowerplatform.flex_client.core.service {
 				responder.resultHandler(messageResult);
 			}
 			
+			if (result.hasOwnProperty(LAST_UPDATE_TIMESTAMP)) {
+				CorePlugin.getInstance().rootNodeIdToEditors.lastUpdateTimestamp = result[LAST_UPDATE_TIMESTAMP];
+			}
+			
 			if (result.hasOwnProperty(UPDATES)) { // updates exists, process them
 				var rootNodeIdToUpdates:Object = result[UPDATES];
 				for (var rootNodeId:String in rootNodeIdToUpdates) {
 					var updates:ArrayCollection = rootNodeIdToUpdates[rootNodeId];
-					var diagramShell:MindMapEditorDiagramShell = CorePlugin.getInstance().fullRootNodeIdToDiagramShell[rootNodeId];
-					if (diagramShell != null) {
-						diagramShell.updateProcessor.rootNodeUpdatesHandler(diagramShell.getNewDiagramShellContext(), updates);
+					var editors:ArrayCollection = CorePlugin.getInstance().rootNodeIdToEditors.getEditors(rootNodeId);
+					for each (var editor:EditorFrontend in editors) {
+						updates = processUpdates(updates);
+						editor.updateProcessor.rootNodeUpdatesHandler(editor.getContext(), updates);
 					}
 				}
 			}
+			
+			CorePlugin.getInstance().pingTimer.reset();
+			CorePlugin.getInstance().pingTimer.start();
+		}
+		
+		/**
+		 * Children that come with the <code>ChildrenUpdate</code>s must be cloned, so that a different instance
+		 * is applied to each editor. Otherwise, the same node will be added to all the node registries, and then 
+		 * any <code>NodeUpdatedEvent</code> on this node will be caught by all the renderers from all open editors.
+		 */
+		public function processUpdates(updates:ArrayCollection):ArrayCollection {
+			for each (var update:Update in updates) {
+				if (update is ChildrenUpdate) {
+					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
+					var node:Node = childrenUpdate.targetNode;
+					childrenUpdate.targetNode = new Node(node.fullNodeId);
+					childrenUpdate.targetNode.properties = node.properties;
+				}
+			}
+			return updates;
 		}
 	
 	}

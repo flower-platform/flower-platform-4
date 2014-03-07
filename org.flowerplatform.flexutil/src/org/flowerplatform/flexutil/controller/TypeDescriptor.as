@@ -94,12 +94,11 @@ package org.flowerplatform.flexutil.controller {
 				
 				var categoryController:AbstractController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
 				if (categoryController != null) {
-					// found a controller from a category; cache it
-					pair.a = categoryController;
-					if (pair.b) {
-						throw new Error("Object with type " + type + "registered multiple categories with controllers of type " + controllerType);
+					// found a controller from a category
+					// keep it if it has a lower order index than the existing one
+					if (pair.a == null || AbstractController(pair.a).orderIndex > categoryController.orderIndex) {
+						pair.a = categoryController;
 					}
-					pair.b = true;
 				}
 			}
 			

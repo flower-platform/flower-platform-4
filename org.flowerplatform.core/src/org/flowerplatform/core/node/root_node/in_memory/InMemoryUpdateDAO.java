@@ -1,13 +1,13 @@
-package org.flowerplatform.core.node.update;
+package org.flowerplatform.core.node.root_node.in_memory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.node.remote.InMemoryRootNodeInfo;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.RootNodeInfo;
+import org.flowerplatform.core.node.resource.RootNodeInfo;
+import org.flowerplatform.core.node.update.UpdateDAO;
 import org.flowerplatform.core.node.update.remote.Update;
 
 /**
@@ -23,10 +23,10 @@ public class InMemoryUpdateDAO extends UpdateDAO {
 	protected void doAddUpdate(Node node, Update update) {
 		RootNodeInfo info = nodeToRootNodeInfo.get(node);
 		if (info == null) {
-			info = new InMemoryRootNodeInfo();
+			info = new RootNodeInfo();
 			nodeToRootNodeInfo.put(node, info);
 		}
-		info.addUpdate(update);		
+		info.getUpdates().add(update);		
 	}
 
 	@Override

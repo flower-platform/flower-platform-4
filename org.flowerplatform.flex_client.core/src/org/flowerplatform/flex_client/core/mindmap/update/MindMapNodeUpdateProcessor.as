@@ -1,23 +1,39 @@
+/* license-start
+* 
+* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* Contributors:
+*   Crispico - Initial API and implementation
+*
+* license-end
+*/
 package org.flowerplatform.flex_client.core.mindmap.update {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.core.mx_internal;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
-	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	
-	use namespace mx_internal;
 	
 	/**
 	 * Holds a node registry (fullNodeId -> Node) and handles the communication with the server. 
@@ -28,23 +44,14 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	 * 
 	 * @author Cristina Constantinescu
 	 */	
-	public class NodeUpdateProcessor {
+	public class MindMapNodeUpdateProcessor extends NodeUpdateProcessor {
 		
-		private var _nodeRegistry:NodeRegistry = new NodeRegistry();
-				
 		protected var diagramShell:DiagramShell;
 				
-		public function NodeUpdateProcessor(diagramShell:DiagramShell) {
+		public function MindMapNodeUpdateProcessor(diagramShell:DiagramShell) {
 			this.diagramShell = diagramShell;
 		}
 		
-		/**
-		 * <code>nodeRegistry</code> usage fom external classes is not recommended.
-		 */ 
-		mx_internal function get nodeRegistry():NodeRegistry {
-			return _nodeRegistry;
-		}
-					
 		/**
 		 * Adds <code>node</code> to <code>parent</code> at given index and registers it in registry. <br>
 		 * If <code>index</code> is -1, the node will be added last.
@@ -124,7 +131,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 					removeNode(context, Node(MindMapDiagramShell(diagramShell).getRoot(context)));
 				}
 				node = Node(children.getItemAt(0));
-				
+				nodeRegistry.registerNode(node);
 				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(context, node, true);	
 				
 				// by default, root node is considered expanded
@@ -147,18 +154,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		/* UPDATES */	
 		
 		/**
-		 * Called from UI when the auto refresh is on.
-		 * @see MindMapEditorFrontend
-		 */		
-		public function checkForUpdates():void {
-			var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
-			CorePlugin.getInstance().serviceLocator.invoke(
-				"updateService.getUpdates",	
-				[Node(MindMapDiagramShell(diagramShell).getRoot(context)).fullNodeId],
-				function (result:Object):void {rootNodeUpdatesHandler(context, ArrayCollection(result));});	
-		}
-			
-		/**
 		 * Handles updates received from server.
 		 * 
 		 * There are 2 cases:
@@ -177,10 +172,12 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		 * 
 		 * At the end, stores in <code>timestampOfLastRequest</code>, the last update's timestamp.
 		 */ 
-		public function rootNodeUpdatesHandler(context:DiagramShellContext, updates:ArrayCollection):void {			
+		override public function rootNodeUpdatesHandler(context:Dictionary, updates:ArrayCollection):void {			
+			var diagramShellContext:DiagramShellContext = DiagramShellContext(context);
+			
 			if (updates == null) {				
 				if (diagramShell.rootModel != null) {
-					refresh(context, Node(MindMapDiagramShell(diagramShell).getRoot(context)));
+					refresh(diagramShellContext, Node(MindMapDiagramShell(diagramShell).getRoot(diagramShellContext)));
 				}
 				return;
 			}
@@ -231,7 +228,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 							break;
 						case ChildrenUpdate.REMOVED:	
 							if (targetNodeInRegistry != null) {
-								removeNode(context, targetNodeInRegistry, nodeFromRegistry);
+								removeNode(diagramShellContext, targetNodeInRegistry, nodeFromRegistry);
 							} else {
 								// node not registered, probably it isn't visible for this client
 								// Nothing to do
@@ -239,8 +236,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 							break;
 					}
 						
-					MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
-					MindMapDiagramShell(diagramShell).refreshModelPositions(context, nodeFromRegistry);						
+					MindMapDiagramShell(diagramShell).refreshRootModelChildren(diagramShellContext);
+					MindMapDiagramShell(diagramShell).refreshModelPositions(diagramShellContext, nodeFromRegistry);						
 				}				
 			}		
 				

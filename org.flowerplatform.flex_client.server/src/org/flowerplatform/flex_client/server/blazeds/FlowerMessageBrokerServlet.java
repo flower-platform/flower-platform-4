@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.flowerplatform.core.CorePlugin;
 
-import flex.messaging.FlexContext;
 import flex.messaging.MessageBrokerServlet;
 
 /**
@@ -29,10 +28,10 @@ public class FlowerMessageBrokerServlet extends MessageBrokerServlet {
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) {
 		try {
-			CorePlugin.getInstance().setRequest(req);
+			CorePlugin.getInstance().getRequestThreadLocal().set(req);
 			super.service(req, res);
 		} finally {
-			CorePlugin.getInstance().clearRequest();
+			CorePlugin.getInstance().getRequestThreadLocal().remove();
 		}
 	}
 

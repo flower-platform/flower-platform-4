@@ -29,27 +29,10 @@ import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
  */
 public class FreeplaneUtils {
 
-	// TODO CC: temporary code
-	public static Map<String, MapModel> maps = new HashMap<String, MapModel>();
-				
 	static {
 		// configure Freeplane starter
 		new FreeplaneHeadlessStarter().createController().setMapViewManager(new HeadlessMapViewController());		
 		HeadlessMModeControllerFactory.createModeController();	
-	}
-	
-	public NodeModel getNodeModel(Node node) {		
-		if (node.getIdWithinResource() == null) {
-			if (!maps.containsKey(node.getResource())) {
-				try {
-					load(node.getResource());
-				} catch (Exception e) {	
-					throw new RuntimeException(e);
-				}
-			}
-			return maps.get(node.getResource()).getRootNode();
-		} 
-		return maps.get(node.getResource()).getNodeForID(node.getIdWithinResource());		
 	}
 	
 	public Node getStandardNode(NodeModel nodeModel) {
@@ -79,36 +62,9 @@ public class FreeplaneUtils {
 		return new Node(type, resource, nodeModel.createID(), nodeModel);
 	}
 	
-	/**
-	 * @param path matches {@link ResourceTypeDynamicCategoryProvider#RESOURCE_PATTERN} (e.g. mm://path-to-resource)
-	 * @throws Exception
-	 */
-	public void load(String path) throws Exception {
-		URL url = null;
-		Matcher matcher = RESOURCE_PATTERN.matcher(path);
-		if (matcher.find()) {
-			url = new File(matcher.group(2)).toURI().toURL();
-		}
-		
-		InputStreamReader urlStreamReader = null;
-		try {
-			urlStreamReader = new InputStreamReader(url.openStream());
-			
-			MapModel newModel = new MapModel();			
-			newModel.setURL(url);
-				
-			Controller.getCurrentModeController().getMapController().getMapReader().createNodeTreeFromXml(newModel, urlStreamReader, Mode.FILE);		
-			maps.put(path, newModel);
-		} finally {
-			if (urlStreamReader != null) {
-				urlStreamReader.close();
-			}
-		}
-	}
-		
 	@SuppressWarnings("deprecation")
 	public void save(String resource) throws IOException {
-		MapModel newModel = maps.get(resource);
-		((MFileManager) UrlManager.getController()).writeToFile(newModel, newModel.getFile());	
+//		MapModel newModel = maps.get(resource);
+//		((MFileManager) UrlManager.getController()).writeToFile(newModel, newModel.getFile());	
 	}
 }

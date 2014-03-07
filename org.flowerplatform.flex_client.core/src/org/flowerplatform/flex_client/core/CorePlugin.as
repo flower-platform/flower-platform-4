@@ -18,17 +18,21 @@
  */
 package org.flowerplatform.flex_client.core {
 
+	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.utils.Dictionary;
+	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
+	import org.flowerplatform.flex_client.core.editor.RootNodeIdsToEditors;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
+	import org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
@@ -66,6 +70,8 @@ package org.flowerplatform.flex_client.core {
 	 */
 	public class CorePlugin extends AbstractFlowerFlexPlugin {
 			
+		public static const RESOURCE_TYPE:String = "resource";
+		
 		protected static var INSTANCE:CorePlugin;
 		
 		public var serviceLocator:ServiceLocator;
@@ -76,7 +82,12 @@ package org.flowerplatform.flex_client.core {
 		
 		public var addChildDescriptors:Object = new Object();
 		
-		public var fullRootNodeIdToDiagramShell:Dictionary = new Dictionary;
+		public var rootNodeIdToEditors:RootNodeIdsToEditors = new RootNodeIdsToEditors();
+		
+		/**
+		 * Pings the server every 5 seconds. It is reset after a method is invoked.
+		 */
+		public var pingTimer:Timer;
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 				
@@ -104,7 +115,7 @@ package org.flowerplatform.flex_client.core {
 			
 			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);
 			serviceLocator.addService("nodeService");
-			serviceLocator.addService("updateService");
+			serviceLocator.addService("resourceInfoService");
 			serviceLocator.addService("freeplaneService");
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
@@ -116,7 +127,14 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(OpenInNewEditorAction);
 		
+			pingTimer = new Timer(5000);
+			pingTimer.addEventListener(TimerEvent.TIMER, function(event:TimerEvent):void {
+				serviceLocator.invoke("resourceInfoService.ping");
+			});
+			pingTimer.start();
+			
 			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
 				function(result:Object):void {
 					addChildDescriptors = result;		
