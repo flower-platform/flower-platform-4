@@ -8,21 +8,9 @@
 		<![CDATA[
 			import mx.binding.utils.BindingUtils;
 			import mx.events.FlexEvent;
-			
-			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 						
 			override protected function getValue():Object {
 				return propertyValue.text;	
-			}
-			
-			override protected function keyHandler(event:KeyboardEvent):void {
-//				if (propertyValue.editable == true) {
-//					changeCheckBox.selected = true;
-//					changeCheckBox.enabled = true;
-//				}
-				super.keyHandler(event);
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
@@ -30,22 +18,10 @@
 			}
 			
 			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
-				saveProperty(null);
+				saveProperty();
 			}
 			
 			
-			protected function changeClickHandler(event:MouseEvent):void {
-				//TODO move in super
-				
-				saveProperty(null);
-//				changeCheckBox.selected = false;
-//				changeCheckBox.enabled = false;
-				
-				//unset
-				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService.unsetProperty", 
-					[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, data.name]);
-			}
 			
 		]]>
 	</fx:Script>
@@ -54,18 +30,6 @@
 				 text="{data.value}"
 				 editable="{!data.readOnly}" 
 				 focusOut="propertyValue_focusOutHandler(event)"
-				 keyUp="keyHandler(event)"/>
-	
-	<s:CheckBox id="changeCheckBox" 
-				visible="{data.hasChangeCheckbox}"
-				click="changeClickHandler(event)"
-				
-				selected="{data.value != data.defaultValue}"
-				enabled="{data.value != data.defaultValue}"/>
-	
-	<s:Label id="changeLabel" paddingTop="5"
-			 text="Change"
-			 visible="{data.hasChangeCheckbox}"/>
-	
+				 keyUp="keyDownHandler1(event)"/>
 	
 </ns:BasicPropertyRenderer>

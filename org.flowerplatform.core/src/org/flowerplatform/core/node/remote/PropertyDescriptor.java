@@ -38,7 +38,7 @@ public class PropertyDescriptor extends AbstractController {
 	
 	private String category = DEFAULT_CATEGORY;
 	
-	private Boolean hasChangeCheckbox = true;
+	private Boolean hasChangeCheckbox = false;
 	
 	private Object defaultValue = null;
 

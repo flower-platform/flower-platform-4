@@ -21,7 +21,7 @@
 			}
 			
 			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
-				saveProperty(null);
+				saveProperty();
 			}
 			
 		]]>
@@ -30,11 +30,6 @@
 					  value="{data.value}"
 					  stepSize="1" 
 					  focusOut="propertyValue_focusOutHandler(event)"
-					  keyUp="keyHandler(event)"/>
-	<s:CheckBox id="changeCheckBox" 
-				visible="{data.hasChangeCheckbox}"
-				enabled="{changeCheckBox.selected}"/>
-	<s:Label id="changeLabel" paddingTop="5"
-			 text="Change"
-			 visible="{data.hasChangeCheckbox}"/>
+					  keyDown="keyDownHandler1(event)"/>
+	
 </ns:BasicPropertyRenderer>

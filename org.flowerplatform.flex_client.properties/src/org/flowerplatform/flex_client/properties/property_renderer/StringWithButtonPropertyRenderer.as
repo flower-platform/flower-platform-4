@@ -4,22 +4,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.binding.utils.BindingUtils;
 	
 	import spark.components.Button;
-	import spark.components.CheckBox;
-	import spark.components.Label;
 	import spark.components.TextInput;
 	
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
 	public class StringWithButtonPropertyRenderer extends BasicPropertyRenderer implements IDialogResultHandler {
 		
 		[Bindable]
 		public var propertyValue:TextInput;
-		
-		[Bindable]
-		public var changeCheckBox:CheckBox;
-		[Bindable]
-		public var changeLabel:Label;
 		
 		public var button:Button;
 		
@@ -43,10 +35,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			if (!data.readOnly) {
 				BindingUtils.bindProperty( data, "value", propertyValue, "text" );
 			}
-			
-			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
-			changeCheckBox.enabled = changeCheckBox.selected;
-			changeLabel.visible = PropertyDescriptor(data).hasChangeCheckbox;
 		}
 		
 		override protected function createChildren():void {
@@ -65,13 +53,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			
 			addElement(propertyValue);
 			addElement(button);
-			
-			changeCheckBox = new CheckBox();
-			addElement(changeCheckBox);
-			changeLabel = new Label();
-			changeLabel.text = "Change";
-			addElement(changeLabel);
-			
 		}
 		
 		private function clickHandlerInternal(event:MouseEvent):void {
@@ -81,9 +62,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		public function handleDialogResult(result:Object):void {
 			// set new value after closing dialog
 			propertyValue.text = getNewPropertyValueHandler(result);
-			saveProperty(null);			
+			saveProperty();			
 		}
-		
 		
 	}
 }

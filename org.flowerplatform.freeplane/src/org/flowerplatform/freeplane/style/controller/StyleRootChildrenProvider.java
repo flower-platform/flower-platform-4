@@ -11,7 +11,7 @@ import org.flowerplatform.core.node.remote.Node;
 /**
  * @author Sebastian Solomon
  */
-public class StyleChildrenProvider extends ChildrenProvider {
+public class StyleRootChildrenProvider extends ChildrenProvider {
 
 	@Override
 	public List<Node> getChildren(Node node) {

@@ -17,14 +17,14 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
+	import flash.events.Event;
+	
+	import mx.binding.utils.BindingUtils;
 	import mx.collections.ArrayCollection;
 	import mx.events.FlexEvent;
-	import mx.events.PropertyChangeEvent;
 	
-	import spark.components.CheckBox;
 	import spark.components.DropDownList;
-	import spark.components.Label;
-	import spark.events.DropDownEvent;
+	import spark.events.IndexChangeEvent;
 	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -36,12 +36,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		[Bindable]
 		public var dropDownList:spark.components.DropDownList;
-		
-		[Bindable]
-		public var changeCheckBox:CheckBox;
-		
-		[Bindable]
-		public var changeLabel:Label;
 		
 		/**
 		 * Signature: function getDataProviderHandler(callbackObject:Object, callbackFunction:Function):void		 
@@ -58,22 +52,20 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		 */ 
 		public var getItemIndexFromList:Function;
 		
-		public function DropDownListPropertyRenderer() {
-			super();
-		}
-		
+		/**
+		 * @author Sebastian Solomon
+		 */
 		private function creationCompleteHandler(event:FlexEvent):void {			
-			dropDownList.addEventListener(DropDownEvent.CLOSE, dropDownEventHandler);
+			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownIndexChangeEventHandler);
+			
 		}
 		
-		protected function propertyChangeHandler(e:PropertyChangeEvent):void {
-			setSelectedIndex();
+		/**
+		 * @author Sebastian Solomon
+		 */
+		protected function dropDownIndexChangeEventHandler(e:Event):void {
+			saveProperty();
 		}
-		
-		protected function dropDownEventHandler(e:DropDownEvent):void {
-			saveProperty(null);
-		}
-		
 		
 		/**
 		 * @author Cristina Constantinescu
@@ -94,13 +86,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 
 			//get data to fill dropDownList
 			requestDataProviderHandler(this, requestDataProviderCallbackHandler);
-			
-			addElement(dropDownList);	
-			changeCheckBox = new CheckBox();
-			addElement(changeCheckBox);
-			changeLabel = new Label();
-			changeLabel.text = "Change";
-			addElement(changeLabel);
+
+			addElementAt(dropDownList, 0);
 		}
 		
 		override public function set data(value:Object):void {
@@ -113,6 +100,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			changeCheckBox.enabled = changeCheckBox.selected;
 			
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
+			BindingUtils.bindSetter(setIndex, data, "value")
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		private function setIndex(value:String):void {
+			setSelectedIndex();
 		}
 
 		private function requestDataProviderCallbackHandler(result:ArrayCollection):void {

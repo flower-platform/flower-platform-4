@@ -7,7 +7,6 @@
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   fontWeight="normal"
 				   implements="mx.core.IDataRenderer, mx.managers.IFocusManagerComponent">
-	
 	<fx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;

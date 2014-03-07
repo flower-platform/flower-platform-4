@@ -38,8 +38,20 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 		
 		TypeDescriptor mmTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MINDMAP_NODE_TYPE);		
-		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs("Number").setNameAs(MIN_WIDTH).setTitleAs(getMessage("mindmap.min_width.title")).setReadOnlyAs(false).setCategoryAs(getMessage("nodeShape")));
-		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs("Number").setNameAs(MAX_WIDTH).setTitleAs(getMessage("mindmap.max_width.title")).setReadOnlyAs(false).setCategoryAs(getMessage("nodeShape")));		
+		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor()
+						.setTypeAs("Number")
+						.setNameAs(MIN_WIDTH)
+						.setTitleAs(getMessage("mindmap.min_width.title"))
+						.setReadOnlyAs(false)
+						.setCategoryAs(getMessage("nodeShape"))
+						.setHasChangeCheckboxAs(true));
+		mmTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor()
+						.setTypeAs("Number")
+						.setNameAs(MAX_WIDTH)
+						.setTitleAs(getMessage("mindmap.max_width.title"))
+						.setReadOnlyAs(false)
+						.setCategoryAs(getMessage("nodeShape"))
+						.setHasChangeCheckboxAs(true));		
 		mmTypeDescriptor.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE).setLabelAs(getMessage("mindmap.add")));
 	}	
 	

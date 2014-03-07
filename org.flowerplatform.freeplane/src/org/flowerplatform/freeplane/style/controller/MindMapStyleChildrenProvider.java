@@ -29,7 +29,7 @@ public class MindMapStyleChildrenProvider extends ChildrenProvider {
 		final MapModel styleMap = mapStyleModel.getStyleMap();
 		
 		if(styleMap == null){
-			// no_styles_found_in_map
+			// no style found in map
 			return null;
 		}
 		

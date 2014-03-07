@@ -28,7 +28,7 @@
     <classEntry path="org.flowerplatform.flexutil.action.VectorActionProvider"/>
     <classEntry path="org.flowerplatform.flexutil.layout.ITitleDecorator"/>
     <classEntry path="org.flowerplatform.flexutil.layout.AbstractViewProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.action.IComposedActionProviderProcessor"/>
+    <classEntry path="org.flowerplatform.flexutil.action.ComposedActionProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
