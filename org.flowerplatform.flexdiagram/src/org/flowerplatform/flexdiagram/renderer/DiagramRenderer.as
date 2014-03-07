@@ -106,10 +106,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			return new Rectangle(horizontalScrollPosition - viewPortRectOffsetTowardOutside, verticalScrollPosition - viewPortRectOffsetTowardOutside, width + 2 * viewPortRectOffsetTowardOutside, height + 2 * viewPortRectOffsetTowardOutside);
 		}
 		
-		public function setContentRect(rect:Rectangle):void {		
-			if (contentRect != null && rect.equals(contentRect)) {		
-				return;
-			}
+		public function setContentRect(rect:Rectangle):void {
 			contentRect = rect;
 		}
 		

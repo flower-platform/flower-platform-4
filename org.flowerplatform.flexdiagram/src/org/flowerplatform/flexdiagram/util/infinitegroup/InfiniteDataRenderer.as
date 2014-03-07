@@ -39,9 +39,13 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 		}
 		
 		public function set contentRect(value:Rectangle):void {
-			if (value == _contentRect)
+			// don't use == to verify if they are equals (it doesn't work)
+			// sometimes (@see https://github.com/flower-platform/flower-platform-4/issues/81), it enters in an infinite loop
+			// be aware when using multiple InfiniteDataRenderer that sets this contentRect in updateDisplayList.
+			// problem mentioned also here: http://apache-flex-users.2333346.n4.nabble.com/Infinite-recursion-in-custom-layout-td5148.html
+			if (_contentRect != null && value.equals(_contentRect)) {		
 				return;
-			
+			}
 			_contentRect = value;
 		}
 		
