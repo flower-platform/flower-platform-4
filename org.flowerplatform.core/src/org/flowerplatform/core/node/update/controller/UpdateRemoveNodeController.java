@@ -22,8 +22,8 @@ public class UpdateRemoveNodeController extends RemoveNodeController {
 	public void removeNode(Node node, Node child) {
 		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
 		if (rootNode != null) {
-			CorePlugin.getInstance().getUpdateService().getUpdateDAO()
-				.addUpdate(rootNode, 
+			CorePlugin.getInstance().getResourceInfoService()
+				.addUpdate(rootNode.getFullNodeId(), 
 						new ChildrenUpdate()
 							.setTypeAs(REMOVED)
 							.setTargetNodeAs(child)

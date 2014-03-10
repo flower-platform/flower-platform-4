@@ -31,8 +31,8 @@ public class UpdatePropertySetterController extends PropertySetter {
 		if (rootNode == null) {
 			return;
 		}
-		CorePlugin.getInstance().getUpdateService().getUpdateDAO()
-			.addUpdate(rootNode, new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
+		CorePlugin.getInstance().getResourceInfoService()
+			.addUpdate(rootNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
 	}
 
 }

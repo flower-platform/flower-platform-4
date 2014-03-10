@@ -24,6 +24,7 @@ public class Activator implements BundleActivator {
 		IConfigurationElement[] configurationElements = 
 				Platform.getExtensionRegistry().getConfigurationElementsFor("org.flowerplatform.host.servletbridge.registry.listeners");
 		for (IConfigurationElement configurationElement : configurationElements) {
+			@SuppressWarnings("unchecked")
 			RunnableWithParam<Void, ServletContext> runnable = (RunnableWithParam<Void, ServletContext>) configurationElement.createExecutableExtension("runnable");
 			runnable.run(httpServiceServlet.getServletContext());
 		}

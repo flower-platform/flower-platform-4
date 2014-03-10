@@ -24,6 +24,7 @@ import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.getI
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
@@ -52,7 +53,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 
 	@Override
-	public void populateWithProperties(Node node) {
+	public void populateWithProperties(Node node, Map<String, Object> options) {
 		int flags = getModifiersFlags(node);
 		
 		// get the icon depending on visibility

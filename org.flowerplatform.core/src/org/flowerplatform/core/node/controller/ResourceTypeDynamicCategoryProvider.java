@@ -26,7 +26,7 @@ import org.flowerplatform.util.controller.TypeDescriptor;
 public class ResourceTypeDynamicCategoryProvider implements IDynamicCategoryProvider {
 
 	public static final String CATEGORY_RESOURCE_PREFIX = TypeDescriptor.CATEGORY_PREFIX + "resource.";
-	private static final Pattern RESOURCE_PATTERN = Pattern.compile("(\\w+)://?");
+	public static final Pattern RESOURCE_PATTERN = Pattern.compile("(\\w+)://(.+)");
 	
 	@Override
 	public List<String> getDynamicCategories(Object object) {

@@ -17,11 +17,11 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap.controller {
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -29,7 +29,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	public class MindMapRootModelChildrenController extends ModelChildrenController {
 		
 		public function MindMapRootModelChildrenController(orderIndex:int = 0) {
-			super(orderIndex);
+			// low order index to override the category controller
+			super(-100);
 		}
 		
 		override public function getParent(context:DiagramShellContext, model:Object):Object {
@@ -37,8 +38,12 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		}
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList {
+			var children:IList = context.diagramShell.getDynamicObject(context, context.diagramShell.rootModel).children;
 			// the rootModel keeps all diagram's children in its dynamic object	
-			return context.diagramShell.getDynamicObject(context, context.diagramShell.rootModel).children;
+			if (children == null) {
+				return new ArrayList();
+			}
+			return children;
 		}
 		
 		override public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {

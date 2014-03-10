@@ -29,15 +29,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.core.IVisualElement;
 			import mx.events.MoveEvent;
 			import mx.events.ResizeEvent;
 			
 			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-			import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
-			import org.flowerplatform.flexdiagram.DiagramShell;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			

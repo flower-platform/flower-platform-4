@@ -1,9 +1,8 @@
 package org.flowerplatform.flex_client.core.mindmap.controller {
 	import mx.core.IVisualElement;
 	
+	import org.flowerplatform.flex_client.core.editor.update.event.NodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeRemovedEvent;
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	
