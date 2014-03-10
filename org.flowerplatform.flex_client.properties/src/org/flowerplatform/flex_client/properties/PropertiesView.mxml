@@ -68,8 +68,13 @@
 				
 				// get new selected node
 				node = Node(event.selection.getItemAt(0));
-				
+								
 				propertyForm.removeAllElements();
+				
+				if (node.parent == null) { // root node, don't populate with properties
+					label.text = "";
+					return;					
+				}
 				
 				// get properties to display
 				CorePlugin.getInstance().serviceLocator.invoke(
@@ -110,8 +115,8 @@
 					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
 						if (node.properties != null) {
-							if (node.properties.hasOwnProperty(propertyItemRenderer.label)) {
-								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.label];
+							if (node.properties.hasOwnProperty(propertyItemRenderer.propertyDescriptor.name)) {
+								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];
 							}
 						}
 					}

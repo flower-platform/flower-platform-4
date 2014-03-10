@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.flexutil {
 	import flash.display.DisplayObject;
+	import flash.text.Font;
+	import flash.text.FontType;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.controls.TextInput;
@@ -90,6 +92,32 @@ package org.flowerplatform.flexutil {
 		 */
 		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
 			return str == null ? defaultStr : str;
+		}
+		
+		/**
+		 * For java logical fonts, returns a corresponding flex style that resembles with it.
+		 * 
+		 * See links for more info. 
+		 * http://mindprod.com/jgloss/logicalfonts.html
+		 * http://docs.oracle.com/javase/tutorial/2d/text/fonts.html
+		 * 
+		 * @author Cristina Constantinescu
+		 */ 
+		public static function getSupportedFontFamily(javaFontFamily:String):String {
+			switch (javaFontFamily) {
+				case "SansSerif":
+				case "Dialog":
+				case "Lucida Sans":				
+					return "Arial";					
+				case "Monospaced":
+				case "DialogInput":
+				case "Lucida Sans Typewriter":
+					return "Courier New";					
+				case "Serif":
+					return "Times New Roman";					
+				default:
+					return javaFontFamily;
+			}			
 		}
 		
 	}

@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.MindMapNodePropertiesConstants;
 	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flexutil.Utils;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -32,6 +33,26 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				} else {
 					icons = null;
 				}
+			}
+			
+			var fontFamilyChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_FAMILY) != -1 : true;
+			if (fontFamilyChanged) {
+				labelDisplay.setStyle("fontFamily", Utils.getSupportedFontFamily(data.properties[MindMapNodePropertiesConstants.FONT_FAMILY]));				
+			}
+			
+			var fontSizeChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_SIZE) != -1 : true;
+			if (fontSizeChanged) {
+				labelDisplay.setStyle("fontSize",  data.properties[MindMapNodePropertiesConstants.FONT_SIZE]);
+			}
+			
+			var fontBoldChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_BOLD) != -1 : true;
+			if (fontBoldChanged) {				
+				labelDisplay.setStyle("fontWeight",  data.properties[MindMapNodePropertiesConstants.FONT_BOLD] == true ? "bold" : "normal");
+			}
+			
+			var fontItalicChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_ITALIC) != -1 : true;
+			if (fontItalicChanged) {
+				labelDisplay.setStyle("fontStyle",  data.properties[MindMapNodePropertiesConstants.FONT_ITALIC] == true ? "italic" : "normal");
 			}
 			
 			if (minWidthChanged || maxWidthChanged) {
