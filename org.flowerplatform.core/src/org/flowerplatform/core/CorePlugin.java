@@ -34,7 +34,6 @@ import org.flowerplatform.core.node.update.controller.UpdatePropertySetterContro
 import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
 import org.flowerplatform.core.node.update.remote.UpdateServiceRemote;
 import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
-import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.flowerplatform.util.servlet.ResourcesServlet;
@@ -107,10 +106,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 				
-		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL);
-		updaterDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController());
-		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController());
-		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController());
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
+		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
+		.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
+		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController());
 			
 		//TODO use Flower property
 		boolean isDeleteTempFolderAtStartProperty = true;
