@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.core.editor {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
+	import mx.controls.Alert;
 	import mx.events.FlexEvent;
 	import mx.managers.IFocusManagerComponent;
 	import mx.rpc.events.FaultEvent;
@@ -30,9 +31,11 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+	import org.flowerplatform.flexutil.popup.IMessageBox;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
@@ -51,7 +54,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected var _viewHost:IViewHost;
 		
-		protected var rootNodeIds:ArrayCollection = new ArrayCollection();
+		public var rootNodeIds:ArrayCollection = new ArrayCollection();
 		
 		public var updateProcessor:NodeUpdateProcessor;
 		
@@ -70,7 +73,15 @@ package org.flowerplatform.flex_client.core.editor {
 		}
 		
 		protected function subscribeFaultCallback(event:FaultEvent):void {
-			// TODO
+			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+			.setText(CorePlugin.getInstance().getMessage("editor.error.subscribe.message", [editorInput]))
+			.setTitle(CorePlugin.getInstance().getMessage("editor.error.subscribe.title"))
+			.setWidth(300)
+			.setHeight(200)
+			.showMessageBox();
+			
+			// close editor
+			FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost));
 		}
 		
 		public function getContext():Dictionary {

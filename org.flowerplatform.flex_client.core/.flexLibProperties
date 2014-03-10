@@ -11,6 +11,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction"/>
+    <classEntry path="org.flowerplatform.flex_client.core.editor.update.UpdateTimer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

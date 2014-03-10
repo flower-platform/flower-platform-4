@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -30,9 +31,13 @@ public class ResourceInfoService {
 	public ResourceInfoService(TypeDescriptorRegistry registry, IResourceInfoDAO resourceInfoDao) {
 		this.registry = registry;
 		this.resourceInfoDao = resourceInfoDao;
+		
+		new ResourceUnsubscriber().start();
 	}
 	
 	public Node subscribeToParentResource(String nodeId, String sessionId) {
+		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeId);
+		
 		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(new Node(nodeId));
 		sessionSubscribedToResource(rootNode.getFullNodeId(), sessionId);
 		return rootNode;
@@ -44,19 +49,24 @@ public class ResourceInfoService {
 	 * to this node.
 	 */
 	public void sessionSubscribedToResource(String rootNodeId, String sessionId) {
-		logger.debug("Subscribe session {} to root node {}", sessionId, rootNodeId);
-		
 		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
 			// first subscription
 			Map<String, Object> options = CorePlugin.getInstance().getNodeService().getControllerInvocationOptions();
 			for (ResourceSubscriptionListener listener : getResourceSubscriptionListeners(rootNodeId)) {
-				listener.firstClientSubscribed(rootNodeId, options);
-				if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
-					break;
+				try {
+					listener.firstClientSubscribed(rootNodeId, options);
+					if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+						break;
+					}
+				} catch (Exception e) {
+					// there was an error loading the resource
+					throw new RuntimeException(e);
 				}
 			}
 		}
 		resourceInfoDao.sessionSubscribedToResource(rootNodeId, sessionId);
+		
+		logger.debug("Subscribed session {} to root node {}", sessionId, rootNodeId);
 	}
 	
 	/**
@@ -65,8 +75,6 @@ public class ResourceInfoService {
 	 * from this node.
 	 */
 	public void sessionUnsubscribedFromResource(String rootNodeId, String sessionId) {
-		logger.debug("Unsubscribe session {} from root node {}", sessionId, rootNodeId);
-		
 		resourceInfoDao.sessionUnsubscribedFromResource(rootNodeId, sessionId);
 		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
 			// last unsubscription
@@ -78,6 +86,8 @@ public class ResourceInfoService {
 				}
 			}
 		}
+		
+		logger.debug("Unsubscribed session {} from root node {}", sessionId, rootNodeId);
 	}
 	
 	/**
@@ -96,12 +106,18 @@ public class ResourceInfoService {
 		resourceInfoDao.setRawResourceData(rootNodeId, rawResourceData);
 	}
 	
+	public long getUpdateRequestedTimestamp(String rootNodeId) {
+		return resourceInfoDao.getUpdateRequestedTimestamp(rootNodeId);
+	}
+	
 	/**
 	 * Called by the registered {@link ResourceInfoSessionListener} when a new session
 	 * is created.
 	 */
 	public void sessionCreated(String sessionId) {
 		logger.debug("Session created {}", sessionId);
+		
+		resourceInfoDao.sessionCreated(sessionId);
 		
 		HttpServletRequest request = CorePlugin.getInstance().getRequestThreadLocal().get();
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
@@ -119,9 +135,11 @@ public class ResourceInfoService {
 		logger.debug("Session removed {}", sessionId);
 		
 		List<String> resources = resourceInfoDao.getResourcesSubscribedBySession(sessionId);
-		while (resources.size() > 0) {
-			sessionUnsubscribedFromResource(resources.get(0), sessionId);
+		for (int i = resources.size() - 1; i >= 0; i--) {
+			sessionUnsubscribedFromResource(resources.get(i), sessionId);
 		}
+		
+		resourceInfoDao.sessionRemoved(sessionId);
 	}
 	
 	/**
@@ -145,6 +163,18 @@ public class ResourceInfoService {
 	
 	public List<String> getSessionsSubscribedToResource(String rootNodeId) {
 		return resourceInfoDao.getSessionsSubscribedToResource(rootNodeId);
+	}
+	
+	public List<String> getResources() {
+		return resourceInfoDao.getResources();
+	}
+	
+	public void addUpdate(String rootNodeId, Update update) {
+		resourceInfoDao.addUpdate(rootNodeId, update);
+	}
+	
+	public List<Update> getUpdates(String rootNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
+		return resourceInfoDao.getUpdates(rootNodeId, timestampOfLastRequest, timestampOfThisRequest);
 	}
 	
 	protected List<ResourceSubscriptionListener> getResourceSubscriptionListeners(String rootNodeId) {

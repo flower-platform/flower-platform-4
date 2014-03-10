@@ -14,7 +14,7 @@ public abstract class ResourceSubscriptionListener extends AbstractController {
 
 	public static final String RESOURCE_SUBSCRIPTION_LISTENER = "resourceSubscriptionListener";
 	
-	public abstract void firstClientSubscribed(String rootNodeId, Map<String, Object> options);
+	public abstract void firstClientSubscribed(String rootNodeId, Map<String, Object> options) throws Exception;
 	
 	public abstract void lastClientUnubscribed(String rootNodeId, Map<String, Object> options);
 	

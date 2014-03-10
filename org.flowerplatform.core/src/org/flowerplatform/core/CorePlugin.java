@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.RemoteMethodInvocationListener.LAST_UPDATE_TIMESTAMP;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +41,7 @@ import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceInfoServiceRemote;
 import org.flowerplatform.core.node.resource.ResourceInfoService;
-import org.flowerplatform.core.node.root_node.in_memory.InMemoryResourceInfoDAO;
-import org.flowerplatform.core.node.root_node.in_memory.InMemoryUpdateDAO;
-import org.flowerplatform.core.node.update.UpdateService;
+import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceInfoDAO;
 import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
@@ -75,7 +75,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
-	protected UpdateService updateService = new UpdateService(new InMemoryUpdateDAO());
 	protected ResourceInfoService resourceInfoService = new ResourceInfoService(nodeTypeDescriptorRegistry, new InMemoryResourceInfoDAO());
 
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
@@ -108,10 +107,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	public NodeService getNodeService() {
 		return nodeService;
-	}
-
-	public UpdateService getUpdateService() {
-		return updateService;
 	}
 
 	public ResourceInfoService getResourceInfoService() {
@@ -231,10 +226,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			public void populateWithProperties(Node node, Map<String, Object> options) {
 				String resourceId = node.getIdWithinResource().replace("+", "|").split(" ")[0];
 				node.getProperties().put(NodePropertiesConstants.TEXT, "Resource " + resourceId);
-				// TODO
+				long timestamp = CorePlugin.getInstance().getResourceInfoService().getUpdateRequestedTimestamp(resourceId);
+				node.getProperties().put(LAST_UPDATE_TIMESTAMP, timestamp);
 				options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
 			}
-		}.setOrderIndexAs(-500000));
+		}.setOrderIndexAs(-500000))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(LAST_UPDATE_TIMESTAMP));
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

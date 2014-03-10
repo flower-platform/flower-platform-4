@@ -1,4 +1,4 @@
-package org.flowerplatform.core.node.resource;
+package org.flowerplatform.core.node.resource.in_memory;
 
 import java.util.ArrayList;
 import java.util.List;

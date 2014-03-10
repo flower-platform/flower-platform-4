@@ -17,7 +17,7 @@
    <extension
          point="org.flowerplatform.host.servletbridge.registry.listeners">
       <listener
-            runnable="org.flowerplatform.core.node.update.AddRootNodeInfoHttpSessionListenerRunnable">
+            runnable="org.flowerplatform.core.node.resource.AddResourceInfoHttpSessionListenerRunnable">
       </listener>
    </extension>
 

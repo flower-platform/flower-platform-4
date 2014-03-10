@@ -28,6 +28,7 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.channels.AMFChannel;
 	
 	import org.flowerplatform.flex_client.core.editor.RootNodeIdsToEditors;
+	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
@@ -84,10 +85,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var rootNodeIdToEditors:RootNodeIdsToEditors = new RootNodeIdsToEditors();
 		
-		/**
-		 * Pings the server every 5 seconds. It is reset after a method is invoked.
-		 */
-		public var pingTimer:Timer;
+		public var updateTimer:UpdateTimer = new UpdateTimer();
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 				
@@ -129,12 +127,6 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(OpenInNewEditorAction);
 		
-			pingTimer = new Timer(5000);
-			pingTimer.addEventListener(TimerEvent.TIMER, function(event:TimerEvent):void {
-				serviceLocator.invoke("resourceInfoService.ping");
-			});
-			pingTimer.start();
-			
 			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
 				function(result:Object):void {
 					addChildDescriptors = result;		

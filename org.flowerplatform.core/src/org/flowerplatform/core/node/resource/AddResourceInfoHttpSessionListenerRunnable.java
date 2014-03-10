@@ -1,8 +1,7 @@
-package org.flowerplatform.core.node.update;
+package org.flowerplatform.core.node.resource;
 
 import javax.servlet.ServletContext;
 
-import org.flowerplatform.core.node.resource.ResourceInfoSessionListener;
 import org.flowerplatform.util.RunnableWithParam;
 
 /**
@@ -10,7 +9,7 @@ import org.flowerplatform.util.RunnableWithParam;
  * 
  * @author Mariana Gheorghe
  */
-public class AddRootNodeInfoHttpSessionListenerRunnable implements RunnableWithParam<Void, ServletContext> {
+public class AddResourceInfoHttpSessionListenerRunnable implements RunnableWithParam<Void, ServletContext> {
 
 	@Override
 	public Void run(ServletContext context) {

@@ -10,7 +10,6 @@ Export-Package: org.flowerplatform.core,
  org.flowerplatform.core.node.controller,
  org.flowerplatform.core.node.remote,
  org.flowerplatform.core.node.resource,
- org.flowerplatform.core.node.update,
  org.flowerplatform.core.node.update.remote
 Bundle-ClassPath: lib/commons-lang3-3.2.1.jar,
  .
