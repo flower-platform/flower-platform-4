@@ -65,14 +65,17 @@
 						
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				var node:Node;
-				
+													
+				propertyForm.removeAllElements();
+				label.text = "";
+
+				if (event.selection == null || event.selection.length == 0) { // happens when changing active view					
+					return;
+				}
 				// get new selected node
 				node = Node(event.selection.getItemAt(0));
-								
-				propertyForm.removeAllElements();
 				
-				if (node.parent == null) { // root node, don't populate with properties
-					label.text = "";
+				if (node.parent == null && node.children == null) { // root node, don't populate with properties
 					return;					
 				}
 				

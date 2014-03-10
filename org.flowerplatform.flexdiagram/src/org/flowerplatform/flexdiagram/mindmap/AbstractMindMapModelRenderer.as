@@ -21,7 +21,9 @@ package org.flowerplatform.flexdiagram.mindmap
 	 * @author Cristina Constantinescu
 	 */
 	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider {
-						
+					
+		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
+		
 		protected static const circleRadius:int = 3;
 		
 		protected var _context:DiagramShellContext;
@@ -29,6 +31,8 @@ package org.flowerplatform.flexdiagram.mindmap
 		protected var labelDisplay:Label;
 		
 		protected var iconsComponentExtension:IconsComponentExtension;
+		
+		protected var backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
 		
 		public function AbstractMindMapModelRenderer() {
 			super();
@@ -85,7 +89,7 @@ package org.flowerplatform.flexdiagram.mindmap
 		}
 		
 		override public function set data(value:Object):void {
-			if (super.data != null) {
+			if (data != null) {
 				data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 			}
 			
@@ -120,10 +124,11 @@ package org.flowerplatform.flexdiagram.mindmap
 			
 			graphics.clear();
 			graphics.lineStyle(1, 0x808080);
-			graphics.beginFill(0xCCCCCC, 0);
+			graphics.beginFill(backgroundColor, 1);
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
-			
+						
 			if (canDrawCircle(data)) {
+				graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
 				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					graphics.drawCircle(-circleRadius, height/2, circleRadius);
@@ -158,7 +163,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			iconsComponentExtension.validateDisplayList();
 		}
 		
-		override public function validateProperties():void {
+		override public function validateProperties():void {			
 			super.validateProperties();
 			iconsComponentExtension.validateProperties();
 		}

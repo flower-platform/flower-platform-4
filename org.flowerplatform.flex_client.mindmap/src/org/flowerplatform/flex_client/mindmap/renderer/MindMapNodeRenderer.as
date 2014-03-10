@@ -42,20 +42,30 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var fontSizeChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_SIZE) != -1 : true;
 			if (fontSizeChanged) {
-				labelDisplay.setStyle("fontSize",  data.properties[MindMapNodePropertiesConstants.FONT_SIZE]);
+				labelDisplay.setStyle("fontSize", data.properties[MindMapNodePropertiesConstants.FONT_SIZE]);
 			}
 			
 			var fontBoldChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_BOLD) != -1 : true;
 			if (fontBoldChanged) {				
-				labelDisplay.setStyle("fontWeight",  data.properties[MindMapNodePropertiesConstants.FONT_BOLD] == true ? "bold" : "normal");
+				labelDisplay.setStyle("fontWeight", data.properties[MindMapNodePropertiesConstants.FONT_BOLD] == true ? "bold" : "normal");
 			}
 			
 			var fontItalicChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_ITALIC) != -1 : true;
 			if (fontItalicChanged) {
-				labelDisplay.setStyle("fontStyle",  data.properties[MindMapNodePropertiesConstants.FONT_ITALIC] == true ? "italic" : "normal");
+				labelDisplay.setStyle("fontStyle", data.properties[MindMapNodePropertiesConstants.FONT_ITALIC] == true ? "italic" : "normal");
 			}
 			
-			if (minWidthChanged || maxWidthChanged) {
+			var colorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.COLOR_TEXT) != -1 : true;
+			if (colorChanged) {
+				labelDisplay.setStyle("color", data.properties[MindMapNodePropertiesConstants.COLOR_TEXT]);
+			}
+			
+			var backgroundColorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.COLOR_BACKGROUND) != -1 : true;
+			if (backgroundColorChanged) {
+				backgroundColor = data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND];
+			}
+			
+			if (minWidthChanged || maxWidthChanged || backgroundColorChanged) {
 				invalidateSize();
 				invalidateDisplayList();
 			}

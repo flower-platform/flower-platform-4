@@ -12,5 +12,8 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const FONT_SIZE:String = "fontSize";
 		public static const FONT_BOLD:String = "fontBold";
 		public static const FONT_ITALIC:String = "fontItalic";
+		
+		public static const COLOR_TEXT:String = "colorText";
+		public static const COLOR_BACKGROUND:String = "colorBackground";
 	}
 }

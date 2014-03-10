@@ -25,4 +25,7 @@ public class MindMapNodePropertiesConstants {
 	public static final String FONT_SIZE = "fontSize";
 	public static final String FONT_BOLD = "fontBold";
 	public static final String FONT_ITALIC = "fontItalic";
+	public static final String COLOR_TEXT = "colorText";
+	public static final String COLOR_BACKGROUND = "colorBackground";
+	
 }

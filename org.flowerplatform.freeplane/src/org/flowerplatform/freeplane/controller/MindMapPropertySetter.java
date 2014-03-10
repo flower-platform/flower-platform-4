@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_TEXT;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_BOLD;
@@ -10,11 +12,13 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
 
+import java.awt.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.mindmap.MindMapNodePropertiesConstants;
 import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
@@ -86,6 +90,16 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			case FONT_ITALIC:	
 				Boolean fontItalic = (Boolean) wrapper.getPropertyValue();				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setItalic(fontItalic);				
+				isPropertySet = true;
+				break;
+			case COLOR_TEXT:	
+				int color = (int) wrapper.getPropertyValue();				
+				NodeStyleModel.createNodeStyleModel(rawNodeData).setColor(new Color(color));				
+				isPropertySet = true;
+				break;
+			case COLOR_BACKGROUND:	
+				int backgroundColor = (int) wrapper.getPropertyValue();				
+				NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(new Color(backgroundColor));				
 				isPropertySet = true;
 				break;
 		}

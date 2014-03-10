@@ -66,7 +66,6 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(ModelChildrenController.TYPE, new NodeChildrenController())
 				.addSingleController(MindMapModelController.TYPE, new NodeController())				
 				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())				
-				.addSingleController(RendererController.TYPE, new NodeRendererController(MindMapNodeRenderer))
 				.addSingleController(AbsoluteLayoutRectangleController.TYPE, new MindMapAbsoluteLayoutRectangleController());
 						
 			addCommonControllers(CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY));
@@ -103,7 +102,8 @@ package org.flowerplatform.flex_client.mindmap {
 		private function addCommonControllers(typeDescriptor:TypeDescriptor):void {
 			typeDescriptor
 				.addSingleController(DragController.TYPE, new NodeDragController())
-				.addSingleController(SelectionController.TYPE, new BasicSelectionController(NodeSelectionRenderer))				
+				.addSingleController(SelectionController.TYPE, new BasicSelectionController(NodeSelectionRenderer))
+				.addSingleController(RendererController.TYPE, new NodeRendererController(MindMapNodeRenderer))
 				.addSingleController(InplaceEditorController.TYPE, new NodeInplaceEditorController());				
 		}
 		

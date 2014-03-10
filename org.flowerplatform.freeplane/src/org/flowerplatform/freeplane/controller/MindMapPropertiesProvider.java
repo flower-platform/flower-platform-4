@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_TEXT;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_BOLD;
@@ -10,6 +12,7 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
 
+import java.awt.Color;
 import java.util.List;
 
 import org.flowerplatform.core.node.remote.Node;
@@ -59,6 +62,14 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		node.getProperties().put(FONT_SIZE, NodeStyleController.getController().getFontSize(rawNodeData));
 		node.getProperties().put(FONT_BOLD, NodeStyleController.getController().isBold(rawNodeData));
 		node.getProperties().put(FONT_ITALIC, NodeStyleController.getController().isItalic(rawNodeData));
+		
+		// get text color -> sets the default color if none)
+		Color color = NodeStyleController.getController().getColor(rawNodeData);
+		node.getProperties().put(COLOR_TEXT, color.getRGB());
+		
+		// get background color -> is null if no color set (doesn't get the default style value)
+		color = NodeStyleController.getController().getBackgroundColor(rawNodeData);
+		node.getProperties().put(COLOR_BACKGROUND, color == null ? Color.WHITE.getRGB() : color.getRGB());		
 	}
 
 }
