@@ -300,7 +300,7 @@ public class CodeSyncTest {
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int");
 		Node staticModif = getChild(getTest, new String[] {"static"});
 		nodeService.setProperty(staticModif, REMOVED, true);
-//				nodeService.setProperty(getTest, DOCUMENTATION, "modified from model\n@author test");
+//		nodeService.setProperty(getTest, DOCUMENTATION, "modified from model\n@author test");
 		
 //				featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
 //				CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(getTest, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);
