@@ -55,4 +55,8 @@ public interface IFileAccessController {
 	
 	void writeStringToFile(Object file, String str);
 	
+	boolean hasChildren(Object file);
+	
+	void deleteFolderContent(Object folder);
+	
 }

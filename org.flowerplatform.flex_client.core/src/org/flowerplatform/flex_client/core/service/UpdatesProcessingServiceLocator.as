@@ -8,7 +8,6 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
-	import mx.rpc.AsyncToken;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
