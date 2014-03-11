@@ -1,13 +1,7 @@
 package org.flowerplatform.tests.controllers;
 
-import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
-import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,67 +10,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.file.FileAddNodeController;
-import org.flowerplatform.core.file.FileChildrenProvider;
-import org.flowerplatform.core.file.FilePropertiesProvider;
-import org.flowerplatform.core.file.FilePropertySetter;
-import org.flowerplatform.core.file.FileRemoveNodeController;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.util.controller.TypeDescriptor;
-import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author Sebastian Solomon
  */
 public class FileSystemControllersTest {
-	private static NodeService nodeService;
-	private static IFileAccessController fileAccessController;
+	
+	private static IFileAccessController fileAccessController = new PlainFileAccessController();
 	
 	private String fileSystemNode;
 	private String initialToBeCopied;
-	
-	@BeforeClass
-	public static void beforeClass() {
-		CorePlugin mockCorePlugin = mock(CorePlugin.class);
-		
-		Field field;
-		try {
-			field = CorePlugin.class.getDeclaredField("INSTANCE");
-			field.setAccessible(true);
-			field.set(null, mockCorePlugin);
-		} catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		
-		fileAccessController = new PlainFileAccessController();
-		when(mockCorePlugin.getFileAccessController()).thenReturn(fileAccessController);
-		
-		TypeDescriptorRegistry descriptorRegistry = new TypeDescriptorRegistry();
-		nodeService = new NodeService(descriptorRegistry);
-		when(mockCorePlugin.getNodeService()).thenReturn(nodeService);
-		
-		when(mockCorePlugin.getNodeTypeDescriptorRegistry()).thenReturn(descriptorRegistry);
-		TypeDescriptor fileNodeTypeDescriptor = descriptorRegistry
-								.getOrCreateTypeDescriptor("fileNode");
-		
-		fileNodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new FileChildrenProvider());
-		fileNodeTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FilePropertiesProvider());
-		fileNodeTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FileAddNodeController());
-		fileNodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
-		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_SETTER, new FilePropertySetter());
-	}
 	
 	@Before
 	public void setUp() {
