@@ -29,6 +29,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import mx.managers.IFocusManagerComponent;
 	
 	import spark.components.CheckBox;
+	import spark.components.Group;
 	import spark.components.HGroup;
 	import spark.components.VGroup;
 	
@@ -39,6 +40,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flexdiagram.DiagramShellAwareProcessor;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
@@ -72,6 +74,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 			actionProvider.actionProviders.push(new AddChildActionProvider());
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Sebastian Solomon
+		 */
 		override protected function createChildren():void {	
 			// toolbar
 			var toolbarsArea:HGroup = new HGroup();
@@ -99,10 +105,15 @@ package org.flowerplatform.flex_client.core.mindmap {
 			});
 			toolbarsArea.addElement(ckBox);
 						
+			var hGroupArea:HGroup = new HGroup();
+			
 			var scroller:InfiniteScroller = new InfiniteScroller();
 			scroller.percentWidth = 100;
 			scroller.percentHeight = 100;
-			addElement(scroller);
+			hGroupArea.percentWidth = 100;
+			hGroupArea.percentHeight = 100;
+			hGroupArea.gap=1;
+			hGroupArea.paddingRight = 0;
 			
 			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
 			diagramRenderer.useGrid = false;		
@@ -114,7 +125,12 @@ package org.flowerplatform.flex_client.core.mindmap {
 			diagramShell.diagramRenderer = diagramRenderer;
 			
 			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));
-			
+
+			var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
+			hGroupArea.addElement(iconSideBarfactory.newInstance(false));
+			hGroupArea.addElement(scroller);
+			addElement(hGroupArea);
+
 			super.createChildren();					
 		}
 		

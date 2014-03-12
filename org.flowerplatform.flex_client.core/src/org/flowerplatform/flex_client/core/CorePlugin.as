@@ -23,6 +23,8 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.channels.AMFChannel;
 	import mx.rpc.events.ResultEvent;
 	
+	import spark.components.Group;
+	
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
@@ -53,6 +55,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
@@ -81,6 +84,11 @@ package org.flowerplatform.flex_client.core {
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 				
+		//TODO to delete when mm classes from core will be moved in .mindmap project
+		public var iconSideBarClass:Class;
+		
+		public var iconSideBar:Group;
+		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
