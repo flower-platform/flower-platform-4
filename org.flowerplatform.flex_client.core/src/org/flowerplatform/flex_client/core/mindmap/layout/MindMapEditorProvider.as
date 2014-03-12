@@ -21,6 +21,7 @@ package org.flowerplatform.flex_client.core.mindmap.layout {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
@@ -37,11 +38,13 @@ package org.flowerplatform.flex_client.core.mindmap.layout {
 		}
 		
 		override public function createView(viewLayoutData:ViewLayoutData):UIComponent {
-			return new MindMapEditorFrontend();
+			var frontend:MindMapEditorFrontend = new MindMapEditorFrontend();
+			frontend.editorInput = viewLayoutData.customData;
+			return frontend;
 		}
 		
 		override public function getTitle(viewLayoutData:ViewLayoutData=null):String {
-			return "mindmap";
+			return viewLayoutData.customData;
 		}
 		
 		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {

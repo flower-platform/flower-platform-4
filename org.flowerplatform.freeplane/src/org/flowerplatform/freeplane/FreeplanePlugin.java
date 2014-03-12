@@ -8,10 +8,12 @@ import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SE
 import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
+import static org.flowerplatform.core.node.resource.ResourceSubscriptionListener.RESOURCE_SUBSCRIPTION_LISTENER;
 import static org.flowerplatform.mindmap.MindMapPlugin.FREEPLANE_MINDMAP_CATEGORY;
 import static org.flowerplatform.mindmap.MindMapPlugin.FREEPLANE_PERSISTENCE_CATEGORY;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.freeplane.controller.FreeplaneResourceSubscriptionListener;
 import org.flowerplatform.freeplane.controller.MindMapAddNodeController;
 import org.flowerplatform.freeplane.controller.MindMapChildrenProvider;
 import org.flowerplatform.freeplane.controller.MindMapParentProvider;
@@ -54,6 +56,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(PARENT_PROVIDER, new MindMapParentProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider())
 		.addSingleController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider())
+		.addAdditiveController(RESOURCE_SUBSCRIPTION_LISTENER, new FreeplaneResourceSubscriptionListener())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapAddNodeController())
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController());
@@ -64,9 +67,16 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(PARENT_PROVIDER, new MindMapParentProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider())
 		.addSingleController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider())
+		.addAdditiveController(RESOURCE_SUBSCRIPTION_LISTENER, new FreeplaneResourceSubscriptionListener())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new PersistenceAddNodeProvider())
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController());
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CorePlugin.RESOURCE_TYPE)
+		.addAdditiveController(RESOURCE_SUBSCRIPTION_LISTENER, new FreeplaneResourceSubscriptionListener())
+		.addSingleController(ROOT_NODE_PROVIDER, new MindMapRootNodeProvider())
+		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
+		.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider());
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
 	}

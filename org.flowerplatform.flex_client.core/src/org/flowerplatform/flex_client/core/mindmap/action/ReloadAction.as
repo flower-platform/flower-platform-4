@@ -37,12 +37,8 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			return true;
 		}
 		
-		private function reloadCallbackHandler(result:Object):void {			
-			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(diagramShellContext, null);
-		}
-		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, reloadCallbackHandler);			
+			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(diagramShellContext, null);
 		}			
 		
 	}

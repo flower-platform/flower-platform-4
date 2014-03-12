@@ -2,6 +2,7 @@ package org.flowerplatform.core.fileSystem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
@@ -17,7 +18,7 @@ public class RepoChildrenProvider extends ChildrenProvider {
 	}
 
 	@Override
-	public List<Node> getChildren(Node node) {
+	public List<Node> getChildren(Node node, Map<String, Object> options) {
 		List<Node> children = new ArrayList<Node>();
 		children.add(getFileSystem(node));
 		return children;	
@@ -29,7 +30,7 @@ public class RepoChildrenProvider extends ChildrenProvider {
 	}
 
 	@Override
-	public boolean hasChildren(Node node) {
+	public boolean hasChildren(Node node, Map<String, Object> options) {
 		return true;
 	}
 

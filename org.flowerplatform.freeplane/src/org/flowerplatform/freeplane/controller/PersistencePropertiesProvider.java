@@ -2,6 +2,8 @@ package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
+import java.util.Map;
+
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.features.attribute.Attribute;
@@ -14,7 +16,7 @@ import org.freeplane.features.map.NodeModel;
 public class PersistencePropertiesProvider extends PropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node) {
+	public void populateWithProperties(Node node, Map<String, Object> options) {
 		node.getProperties().put(TEXT, ((NodeModel) node.getOrRetrieveRawNodeData()).getText());
 		
 		// properties are populated from the attributes table

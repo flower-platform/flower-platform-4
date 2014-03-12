@@ -1,7 +1,7 @@
 package org.flowerplatform.flex_client.mindmap.renderer {
 	
+	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
-	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.MindMapNodePropertiesConstants;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	

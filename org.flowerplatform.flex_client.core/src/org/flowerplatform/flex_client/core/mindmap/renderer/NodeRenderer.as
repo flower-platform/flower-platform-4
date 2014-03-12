@@ -4,7 +4,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 	import mx.events.ResizeEvent;
 	
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
-	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;

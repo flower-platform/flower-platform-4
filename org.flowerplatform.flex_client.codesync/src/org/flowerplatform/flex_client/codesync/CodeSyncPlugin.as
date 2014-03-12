@@ -18,15 +18,9 @@
 */
 package org.flowerplatform.flex_client.codesync {
 	
-	import flash.events.MouseEvent;
-	
-	import mx.containers.HBox;
-	import mx.core.FlexGlobals;
-	import mx.core.IVisualElementContainer;
-	
-	import spark.components.Button;
 	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
+	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
 	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
@@ -59,20 +53,11 @@ package org.flowerplatform.flex_client.codesync {
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
+			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(SynchronizeAction);
 					
 			// controllers for code sync nodes
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(MindMapPlugin.FREEPLANE_PERSISTENCE_CATEGORY)
 				.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer));
-				
-			var hBox:HBox = new HBox();
-			hBox.percentWidth = 100;
-			var btn:Button = new Button();
-			btn.label = "CodeSync";
-			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().serviceLocator.invoke("codeSyncOperationsService.synchronize", [null]);
-			});
-			hBox.addChild(btn);
-			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 		}
 		
 	}

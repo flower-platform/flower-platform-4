@@ -38,7 +38,7 @@ public class Pair<A, B> {
 
 	@Override
 	public String toString() {
-		return "(" + a.toString() + ", " + b.toString() + ")";
+		return "(" + a + ", " + b + ")";
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package org.flowerplatform.core.file;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
@@ -15,7 +16,7 @@ public class FileChildrenProvider extends ChildrenProvider {
 			.getInstance().getFileAccessController();
 
 	@Override
-	public List<Node> getChildren(Node node) {
+	public List<Node> getChildren(Node node, Map<String, Object> options) {
 		String path;
 		path = node.getIdWithinResource();
 
@@ -39,7 +40,7 @@ public class FileChildrenProvider extends ChildrenProvider {
 	}
 
 	@Override
-	public boolean hasChildren(Node node) {
+	public boolean hasChildren(Node node, Map<String, Object> options) {
 		Object file = null;
 		try {
 			file = fileAccessController.getFile(node.getIdWithinResource());

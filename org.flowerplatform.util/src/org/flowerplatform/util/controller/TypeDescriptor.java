@@ -148,13 +148,11 @@ public class TypeDescriptor {
 			
 			T categoryController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
 			if (categoryController != null) {
-				// found a controller from a category; cache it
-				pair.a = categoryController;
-				if (pair.b) {
-					throw new RuntimeException(String.format(
-							"Object with type %s registered multiple categories with controllers of type %s", type, controllerType));
+				// found a controller from a category
+				// keep it if it has a lower order index than the existing one
+				if (pair.a == null || pair.a.getOrderIndex() > categoryController.getOrderIndex()) {
+					pair.a = categoryController;
 				}
-				pair.b = true;
 			}
 		}
 		

@@ -2,19 +2,14 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flexdiagram.DiagramShell"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.IControllerProvider"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.model_extra_info.IModelExtraInfoController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_extra_info.LightweightModelExtraInfoController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.renderer.IRendererController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.selection.ISelectionController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.DiagramRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer"/>
-    <classEntry path="org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.IWakeUpableTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.ScrollTool"/>
@@ -33,8 +28,6 @@
     <classEntry path="org.flowerplatform.flexdiagram.tool.ZoomTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.controller.drag.AbsoluteLayoutChildPlaceHolderDragController"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.selection.StandardAnchorsSelectionRenderer"/>
-    <classEntry path="org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider"/>
-    <classEntry path="org.flowerplatform.flexdiagram.mindmap.controller.IMindMapModelController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.selection.SelectionController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController"/>
     <classEntry path="org.flowerplatform.flexdiagram.util.MultilineLabelItemRenderer"/>

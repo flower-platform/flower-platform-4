@@ -22,7 +22,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 	private static IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 
 	@Override
-	public void populateWithProperties(Node node) {
+	public void populateWithProperties(Node node, Map<String, Object> options) {
 		Object file;
 		try {
 			file = fileAccessController.getFile(node.getIdWithinResource());

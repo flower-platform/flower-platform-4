@@ -1,5 +1,7 @@
 package org.flowerplatform.core.file;
 
+import java.util.Map;
+
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
@@ -16,7 +18,7 @@ public class FileImagePropertiesProvider extends PropertiesProvider {
 	}
 	
 	@Override
-	public void populateWithProperties(Node node) {
+	public void populateWithProperties(Node node, Map<String, Object> options) {
 		if (node.getProperties().get(NodePropertiesConstants.IS_DIRECTORY).equals("true")) {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
