@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_COLOR;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_TEXT;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
@@ -11,12 +13,18 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZ
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.NONE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
 
 import java.awt.Color;
 import java.util.List;
 
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.mindmap.MindMapPlugin;
+import org.freeplane.features.cloud.CloudController;
+import org.freeplane.features.cloud.CloudModel;
+import org.freeplane.features.cloud.CloudModel.Shape;
 import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
@@ -69,7 +77,25 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		
 		// get background color -> is null if no color set (doesn't get the default style value)
 		color = NodeStyleController.getController().getBackgroundColor(rawNodeData);
-		node.getProperties().put(COLOR_BACKGROUND, color == null ? Color.WHITE.getRGB() : color.getRGB());		
+		node.getProperties().put(COLOR_BACKGROUND, color == null ? Color.WHITE.getRGB() : color.getRGB());	
+		
+		// cloud		
+		String cloudShape = NONE;
+		int cloudColor = CloudController.getStandardColor().getRGB();
+		
+		CloudModel cloudModel = CloudController.getController().getCloud(rawNodeData);		
+		if (cloudModel != null) {
+			cloudColor = cloudModel.getColor().getRGB();
+			
+			Shape shape = cloudModel.getShape();
+			if (Shape.RECT.equals(shape)) {
+				cloudShape = RECTANGLE;
+			} else if (Shape.ROUND_RECT.equals(shape)) {
+				cloudShape = ROUND_RECTANGLE;
+			}
+		}		
+		node.getProperties().put(CLOUD_COLOR, cloudColor);
+		node.getProperties().put(CLOUD_SHAPE, cloudShape);
 	}
 
 }

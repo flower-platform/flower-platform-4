@@ -2,10 +2,13 @@ package org.flowerplatform.flexdiagram.mindmap
 {
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
+	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -33,11 +36,12 @@ package org.flowerplatform.flexdiagram.mindmap
 		protected var iconsComponentExtension:IconsComponentExtension;
 		
 		protected var backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
+		protected var allowBaseRendererToClearGraphics:Boolean = true;
 		
 		public function AbstractMindMapModelRenderer() {
 			super();
 			addEventListener(FlexEvent.INITIALIZE, initializeHandler);	
-									
+								
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				minHeight = 22;
 				minWidth = 10;
@@ -96,6 +100,13 @@ package org.flowerplatform.flexdiagram.mindmap
 			super.data = value;
 			
 			if (data != null) {
+				// set depth from model's dynamic object if available
+				// model's children must have a greater depth than the model because 
+				// when drawing more complex graphics (like clouds), they must be displayed above them
+				var dynamicObject:Object = diagramShellContext.diagramShell.getDynamicObject(diagramShellContext, data);
+				if (dynamicObject.depth) {
+					depth = dynamicObject.depth;
+				}
 				data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);				
 				assignData();
 			}
@@ -122,7 +133,10 @@ package org.flowerplatform.flexdiagram.mindmap
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {				
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
-			graphics.clear();
+			if (allowBaseRendererToClearGraphics) {
+				graphics.clear();
+			}
+			
 			graphics.lineStyle(1, 0x808080);
 			graphics.beginFill(backgroundColor, 1);
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
@@ -159,8 +173,8 @@ package org.flowerplatform.flexdiagram.mindmap
 		}
 				
 		override public function validateDisplayList():void {
-			super.validateDisplayList();			
 			iconsComponentExtension.validateDisplayList();
+			super.validateDisplayList();			
 		}
 		
 		override public function validateProperties():void {			

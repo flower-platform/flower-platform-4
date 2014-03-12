@@ -4,10 +4,10 @@ package org.flowerplatform.flexutil.renderer {
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	
-	import spark.primitives.BitmapImage;
-	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
+	
+	import spark.primitives.BitmapImage;
 	
 	/**
 	 * An extension for components that adds multiple icons as children.
@@ -86,6 +86,7 @@ package org.flowerplatform.flexutil.renderer {
 			iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
 			iconDisplay.source = icon;
 			iconDisplay.verticalAlign = "middle";
+			iconDisplay.depth = UIComponent(component).depth;
 			
 			IVisualElementContainer(component).addElementAt(iconDisplay, component.newIconIndex());
 			

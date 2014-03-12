@@ -1,5 +1,6 @@
 package org.flowerplatform.flex_client.core.mindmap.renderer {
 	
+	import mx.core.UIComponent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
@@ -54,7 +55,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		}
 		
 		override public function set data(value:Object):void {
-			if (super.data != null) {				
+			if (data != null) {		
 				data.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);				
 			}
 			

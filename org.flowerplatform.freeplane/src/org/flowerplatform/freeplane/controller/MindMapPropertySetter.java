@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_COLOR;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_TEXT;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
@@ -11,6 +13,8 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZ
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
 
 import java.awt.Color;
 import java.util.regex.Matcher;
@@ -18,7 +22,8 @@ import java.util.regex.Pattern;
 
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.mindmap.MindMapNodePropertiesConstants;
+import org.freeplane.features.cloud.CloudModel;
+import org.freeplane.features.cloud.CloudModel.Shape;
 import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
@@ -100,6 +105,30 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			case COLOR_BACKGROUND:	
 				int backgroundColor = (int) wrapper.getPropertyValue();				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(new Color(backgroundColor));				
+				isPropertySet = true;
+				break;
+			case CLOUD_COLOR:
+				int cloudColor = (int) wrapper.getPropertyValue();				
+				CloudModel.createModel(rawNodeData).setColor(new Color(cloudColor));				
+				isPropertySet = true;
+				break;
+			case CLOUD_SHAPE:
+				String cloudShape = (String) wrapper.getPropertyValue();
+				Shape shape = null;
+				// get shape correspondence from freeplane
+				switch (cloudShape) {
+					case RECTANGLE:
+						shape = Shape.RECT;
+						break;
+					case ROUND_RECTANGLE:
+						shape = Shape.ROUND_RECT;
+						break;				
+				}
+				if (shape != null) {
+					CloudModel.createModel(rawNodeData).setShape(shape);
+				} else { // no shape -> remove cloud from node
+					rawNodeData.removeExtension(CloudModel.class);
+				}
 				isPropertySet = true;
 				break;
 		}
