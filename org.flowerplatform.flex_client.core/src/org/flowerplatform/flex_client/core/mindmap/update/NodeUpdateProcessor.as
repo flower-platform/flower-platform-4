@@ -2,7 +2,6 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	import mx.core.mx_internal;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -13,9 +12,10 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.controller.IMindMapControllerProvider;
 	
 	use namespace mx_internal;
 	
@@ -73,13 +73,13 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		 * Removes node from parent and un-registers it from registry. <br>
 		 * Note: parent == null -> remove root node
 		 */ 
-		private function removeNode(node:Node, parent:Node = null):void {
-			if (parent != null && parent.children == null || !parent.children.contains(node)) {
+		private function removeNode(context:DiagramShellContext, node:Node, parent:Node = null):void {
+			if (parent != null && (parent.children == null || !parent.children.contains(node))) {
 				// not expanded or child already removed
 				return;
 			}
 			// remove children recursive
-			removeChildren(node, false);
+			removeChildren(context, node, false);
 			
 			nodeRegistry.unregisterNode(node.fullNodeId);
 			
@@ -95,17 +95,17 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		/**
 		 * Called from <code>removeNode()</code> or from UI: when a node is collapsed.
 		 */
-		public function removeChildren(node:Node, refreshChildrenAndPositions:Boolean = true):void {
+		public function removeChildren(context:DiagramShellContext, node:Node, refreshChildrenAndPositions:Boolean = true):void {
 			if (node.children != null) {
 				for each (var child:Node in node.children) {
-					removeChildren(child, false);
+					removeChildren(context, child, false);
 					nodeRegistry.unregisterNode(child.fullNodeId);
 				}
 				node.children = null;
 				
-				if (refreshChildrenAndPositions) {
-					MindMapDiagramShell(diagramShell).refreshRootModelChildren();
-					MindMapDiagramShell(diagramShell).refreshModelPositions(node);
+				if (refreshChildrenAndPositions) {					
+					MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
+					MindMapDiagramShell(diagramShell).refreshModelPositions(context, node);
 				}
 			}			
 		}
@@ -115,27 +115,27 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		/**
 		 * Called from UI when a node is expanded.
 		 */
-		public function requestChildren(node:Node):void {		
+		public function requestChildren(context:DiagramShellContext, node:Node):void {		
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? "freeplaneNode|mm://path_to_resource|": node.fullNodeId, true], 
-				function (result:Object):void {requestChildrenHandler(node, ArrayCollection(result));});	
+				[node == null ? "freeplaneNode|freePlanePersistence://path_to_resource|": node.fullNodeId, true], 
+				function (result:Object):void {requestChildrenHandler(context, node, ArrayCollection(result));});	
 		}
 		
-		protected function requestChildrenHandler(node:Node, children:ArrayCollection):void {
+		protected function requestChildrenHandler(context:DiagramShellContext, node:Node, children:ArrayCollection):void {			
 			if (node == null) {	// root node				
 				// rootModel already set, remove it from diagram
-				if (diagramShell.rootModel != null && MindMapDiagramShell(diagramShell).getDynamicObject(diagramShell.rootModel).children != null) {
-					removeNode(Node(MindMapDiagramShell(diagramShell).getRoot()));
+				if (diagramShell.rootModel != null && MindMapDiagramShell(diagramShell).getDynamicObject(context, diagramShell.rootModel).children != null) {
+					removeNode(context, Node(MindMapDiagramShell(diagramShell).getRoot(context)));
 				}
 				node = Node(children.getItemAt(0));
 				
 				diagramShell.rootModel = new Node();
-				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(node, true);	
+				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(context, node, true);	
 				
 				// by default, root node is considered expanded
-				IMindMapControllerProvider(diagramShell.getControllerProvider(node)).getMindMapModelController(node).setExpanded(node, true);
+				ControllerUtils.getMindMapModelController(context, node).setExpanded(context, node, true);
 			} else {				
 				// register each child
 				for each (var child:Node in children) {
@@ -147,8 +147,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				node.children = children;
 			}		
 			// refresh diagram's children and their positions
-			MindMapDiagramShell(diagramShell).refreshRootModelChildren();
-			MindMapDiagramShell(diagramShell).refreshModelPositions(node);				
+			MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
+			MindMapDiagramShell(diagramShell).refreshModelPositions(context, node);				
 		}
 				
 		/* UPDATES */	
@@ -158,9 +158,11 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		 * @see MindMapEditorFrontend
 		 */		
 		public function checkForUpdates():void {
+			var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"updateService.getUpdates",	
-				[Node(MindMapDiagramShell(diagramShell).getRoot()).fullNodeId, timestampOfLastRequest], rootNodeUpdatesHandler);	
+				[Node(MindMapDiagramShell(diagramShell).getRoot(context)).fullNodeId, timestampOfLastRequest],
+				function (result:Object):void {rootNodeUpdatesHandler(context, ArrayCollection(result));});	
 				// TODO CS: de init timestamp la subscribe
 		}
 			
@@ -183,10 +185,10 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		 * 
 		 * At the end, stores in <code>timestampOfLastRequest</code>, the last update's timestamp.
 		 */ 
-		public function rootNodeUpdatesHandler(updates:ArrayCollection):void {
+		public function rootNodeUpdatesHandler(context:DiagramShellContext, updates:ArrayCollection):void {			
 			if (updates == null) {				
 				if (diagramShell.rootModel != null) {
-					refresh(Node(MindMapDiagramShell(diagramShell).getRoot()));
+					refresh(context, Node(MindMapDiagramShell(diagramShell).getRoot(context)));
 				}
 				return;
 			}
@@ -237,7 +239,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 							break;
 						case ChildrenUpdate.REMOVED:	
 							if (targetNodeInRegistry != null) {
-								removeNode(targetNodeInRegistry, nodeFromRegistry);
+								removeNode(context, targetNodeInRegistry, nodeFromRegistry);
 							} else {
 								// node not registered, probably it isn't visible for this client
 								// Nothing to do
@@ -245,8 +247,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 							break;
 					}
 						
-					MindMapDiagramShell(diagramShell).refreshRootModelChildren();
-					MindMapDiagramShell(diagramShell).refreshModelPositions(nodeFromRegistry);						
+					MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
+					MindMapDiagramShell(diagramShell).refreshModelPositions(context, nodeFromRegistry);						
 				}				
 			}		
 				
@@ -265,15 +267,15 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		/**
 		 * Called from Refresh action.
 		 */	
-		public function refresh(node:Node):void {			
+		public function refresh(context:DiagramShellContext, node:Node):void {			
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.refresh", 
 				[getFullNodeIdWithChildren(node)], 
 				function (result:Object):void {
-					refreshHandler(node, NodeWithChildren(result));
+					refreshHandler(context, node, NodeWithChildren(result));
 					
-					MindMapDiagramShell(diagramShell).refreshRootModelChildren();
-					MindMapDiagramShell(diagramShell).refreshModelPositions(node);});
+					MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
+					MindMapDiagramShell(diagramShell).refreshModelPositions(context, node);});
 		}
 		
 		/**
@@ -314,7 +316,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		 * 		</ul>
 		 * </ul>
 		 */ 
-		protected function refreshHandler(node:Node, nodeWithVisibleChildren:NodeWithChildren):void {
+		protected function refreshHandler(context:DiagramShellContext, node:Node, nodeWithVisibleChildren:NodeWithChildren):void {
 			// set new node properties and dispatch event
 			node.properties = nodeWithVisibleChildren.node.properties;
 			node.dispatchEvent(new NodeUpdatedEvent(node));	
@@ -325,7 +327,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			
 			// no children -> remove the old ones
 			if (nodeWithVisibleChildren.children == null) {
-				removeChildren(node, false);
+				removeChildren(context, node, false);
 				return;
 			}
 			
@@ -344,12 +346,12 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 					}
 					if (exists) {
 						// child exists -> refresh its structure
-						refreshHandler(currentChildNode, newChildWithVisibleChildren);
+						refreshHandler(context, currentChildNode, newChildWithVisibleChildren);
 						// store, for the new child, its index in current list
 						newNodeToCurrentNodeIndex[newChildWithVisibleChildren.node.fullNodeId] = i;
 					} else {
 						// child doesn't exist in new list -> remove it from parent
-						removeNode(currentChildNode, node);
+						removeNode(context, currentChildNode, node);
 					}
 				}
 			}
@@ -360,7 +362,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 					addNode(newChildNode, node, i);
 				} else if (newNodeToCurrentNodeIndex[newChildNode.fullNodeId] != i) { // new child exists in current list, but different indexes -> get current child and move it to new index
 					currentChildNode = nodeRegistry.getNodeById(newChildNode.fullNodeId);
-					removeNode(currentChildNode, node);
+					removeNode(context, currentChildNode, node);
 					addNode(currentChildNode, node, i);
 				}
 			}
@@ -368,4 +370,4 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		
 	}
 }
-import mx.collections.ArrayList;
+

@@ -84,20 +84,66 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	
 	
 	protected static CorePlugin INSTANCE;
-	
+
+	protected IFileAccessController fileAccessController = new PlainFileAccessController();
+
+	/**
+	 * @author Sebastian Solomon
+	 */
+	protected RemoteMethodInvocationListener remoteMethodInvocationListener = new RemoteMethodInvocationListener();
+
+	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
+	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
+	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
+	protected UpdateService updateService = new UpdateService(new InMemoryUpdateDAO());
+
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public RemoteMethodInvocationListener getRemoteMethodInvocationListener() {
+		return remoteMethodInvocationListener;
+	}
+	
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public IFileAccessController getFileAccessController() {
+		return fileAccessController;
+	}
+	
+	public void setFileAccessController(IFileAccessController fileAccessController) {
+		this.fileAccessController = fileAccessController;
+	}
+
+	public ServiceRegistry getServiceRegistry() {
+		return serviceRegistry;
+	}
+
+	public TypeDescriptorRegistry getNodeTypeDescriptorRegistry() {
+		return nodeTypeDescriptorRegistry;
+	}
+
+	public NodeService getNodeService() {
+		return nodeService;
+	}
+
+	public UpdateService getUpdateService() {
+		return updateService;
+	}
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
 		
-		getServiceRegistry().registerService("nodeServiceInternal", new NodeService(nodeTypeDescriptorRegistry));
-		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		
-		getServiceRegistry().registerService("updateServiceInternal", new UpdateService(new InMemoryUpdateDAO()));
+		
+		
+getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("updateService", new UpdateServiceRemote());
 				
 		setFileAccessController(new PlainFileAccessController());
@@ -139,10 +185,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController());
 		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController());
 			
-		setFileAccessController(new PlainFileAccessController());
-
-		setRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
-		
 		//TODO use Flower property
 		boolean isDeleteTempFolderAtStartProperty = true;
 		if (isDeleteTempFolderAtStartProperty) {
@@ -172,61 +214,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = null;
 	}
 
-	private ServiceRegistry serviceRegistry = new ServiceRegistry();
-
-	public ServiceRegistry getServiceRegistry() {
-		return serviceRegistry;
-	}
-	
-	private TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
-
-	public TypeDescriptorRegistry getNodeTypeDescriptorRegistry() {
-		return nodeTypeDescriptorRegistry;
-	}
-
-	protected IFileAccessController fileAccessController;
-	
-	/**
-	 * @author Mariana Gheorghe
-	 */
-	public IFileAccessController getFileAccessController() {
-		return fileAccessController;
-	}
-
-	public void setFileAccessController(IFileAccessController fileAccessController) {
-		this.fileAccessController = fileAccessController;
-	}
-	
 	@Override
 	public void registerMessageBundle() throws Exception {
 		// no messages yet
 	}
-
-	/**
-	 * @author Sebastian Solomon
-	 */
-	protected RemoteMethodInvocationListener remoteMethodInvocationListener;
 	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public RemoteMethodInvocationListener getRemoteMethodInvocationListener() {
-		return remoteMethodInvocationListener;
-	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public void setRemoteMethodInvocationListener(RemoteMethodInvocationListener remoteMethodInvocationListener) {
-		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
-	}
-
-	public UpdateService getUpdateService() {
-		return (UpdateService) serviceRegistry.getService("updateServiceInternal");
-	}
-	
-	public NodeService getNodeService() {
-		return (NodeService) serviceRegistry.getService("nodeServiceInternal");
-	}
-
 }

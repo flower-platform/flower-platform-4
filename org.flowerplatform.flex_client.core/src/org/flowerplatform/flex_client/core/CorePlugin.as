@@ -18,9 +18,12 @@
  */
 package org.flowerplatform.flex_client.core {
 
+	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
-	import mx.rpc.events.ResultEvent;	
+	import mx.rpc.events.ResultEvent;
+	
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
@@ -28,10 +31,11 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
+	import org.flowerplatform.flex_client.core.mindmap.controller.ResourceTypeDynamicCategoryProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
-	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
+	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
@@ -39,10 +43,23 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
+	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
-	import org.flowerplatform.flexutil.action.IActionProvider;
+	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
+	import org.flowerplatform.flexutil.controller.CategoryTypeDescriptor;
+	import org.flowerplatform.flexutil.controller.TypeDescriptor;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	
@@ -51,7 +68,7 @@ package org.flowerplatform.flex_client.core {
 	 * @author Cristina Constantinescu
 	 */
 	public class CorePlugin extends AbstractFlowerFlexPlugin {
-		
+			
 		protected static var INSTANCE:CorePlugin;
 		
 		public var serviceLocator:ServiceLocator;
@@ -60,13 +77,10 @@ package org.flowerplatform.flex_client.core {
 		
 		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 		
-		public var mindmapEditorActionProviders:Vector.<IActionProvider> = new Vector.<IActionProvider>();
-		
 		public var addChildDescriptors:Object = new Object();
 		
-		// TODO MG: remove
-		public var mindmapNodeRendererControllerClass:Class;
-		
+		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
+				
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
@@ -104,14 +118,35 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
 		
-			mindmapEditorActionProviders.push(mindmapEditorClassFactoryActionProvider);
-			mindmapEditorActionProviders.push(new AddChildActionProvider());
-			
 			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
 				function(result:Object):void {
 					addChildDescriptors = result;		
 				}
 			);
+			
+			serviceLocator.invoke("nodeService.getRegisteredTypes", null,
+				function(result:Object):void {
+					var list:ArrayCollection = ArrayCollection(result);
+					for (var i:int = 0; i < list.length; i++) {
+						var type:String = String(list.getItemAt(i));
+						if (Utils.beginsWith(type, TypeDescriptor.CATEGORY_PREFIX)) {
+							nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(type);
+						} else {
+							nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(type);
+						}						
+					}
+				}
+			);
+			
+			nodeTypeDescriptorRegistry.addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
+			
+			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapEditorDiagramShell.MINDMAP_ROOT_NODE_TYPE)
+				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())
+				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController())
+				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController());
+			
+//			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("mindmap")
+//				.addSingleController(
 			
 //			linkHandlers = new Dictionary();			
 //			

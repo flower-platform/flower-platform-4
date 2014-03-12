@@ -31,13 +31,13 @@ public class DiffActionRevert extends DiffAction {
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Diff diff = match.getDiffs().get(diffIndex);
-		IModelAdapter ancestorModelAdapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(match.getAncestor());
+		IModelAdapter ancestorModelAdapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(match, match.getAncestor());
 		IModelAdapter leftModelAdapter = null;
 		if (diff.isLeftModified())
-			leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
+			leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match, match.getLeft());
 		IModelAdapter rightModelAdapter = null;
 		if (diff.isRightModified())
-			rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
+			rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match, match.getRight());
 		
 		Object value = ancestorModelAdapter.getValueFeatureValue(match.getAncestor(), diff.getFeature(), null);
 		if (diff.isLeftModified()) {

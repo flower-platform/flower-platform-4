@@ -20,10 +20,8 @@ package org.flowerplatform.tests.codesync;
 
 import java.io.File;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.tests.EclipseDependentTestSuiteBase;
-import org.flowerplatform.tests.TestUtil;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -49,7 +47,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 //			throw new RuntimeException(String.format("Error while getting resource %s", absolutePath), e);
 //		}
 //		return (File) CodeSyncPlugin.getInstance().getProjectAccessController().getContainingProjectForFile(resource);
-		return new File(TestUtil.getWorkspacePath());
+		return new File("workspace");
 	}
 	
 	public static File getFile(String path) {

@@ -28,6 +28,8 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
@@ -54,8 +56,9 @@
 				diagramShell.registerTools([
 					ScrollTool, SelectOnClickTool, ZoomTool, InplaceEditorTool, DragTool]);
 				
-				diagramShell.addModelInRootModelChildrenList(rootModel.getItemAt(0));
-				DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {diagramShell.getMindMapModelController(rootModel.getItemAt(0)).setExpanded(rootModel.getItemAt(0), true)});
+				var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
+				diagramShell.addModelInRootModelChildrenList(context, rootModel.getItemAt(0));
+				DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, rootModel.getItemAt(0)).setExpanded(context, rootModel.getItemAt(0), true)});
 			}
 			
 		

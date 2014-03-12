@@ -17,24 +17,18 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.model_extra_info {
-	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class LightweightModelExtraInfoController extends ControllerBase implements IModelExtraInfoController {
+	public class LightweightModelExtraInfoController extends ModelExtraInfoController {
 		
 		protected static const NO_RENDERER_ASSOCIATED_MARKER:Object = new Object();
 		
-		public function LightweightModelExtraInfoController(diagramShell:DiagramShell) {
-			super(diagramShell);
-		}
-		
-		public function getRenderer(extraInfo:Object):IVisualElement {
+		override public function getRenderer(context:DiagramShellContext, extraInfo:Object):IVisualElement {
 			if (extraInfo == NO_RENDERER_ASSOCIATED_MARKER) {
 				return null;
 			} else {
@@ -42,15 +36,15 @@ package org.flowerplatform.flexdiagram.controller.model_extra_info {
 			}
 		}
 		
-		public function setRenderer(model:Object, extraInfo:Object, renderer:IVisualElement):void	{
+		override public function setRenderer(context:DiagramShellContext, model:Object, extraInfo:Object, renderer:IVisualElement):void	{
 			if (renderer == null) {
-				diagramShell.modelToExtraInfoMap[model] = NO_RENDERER_ASSOCIATED_MARKER;	
+				context.diagramShell.modelToExtraInfoMap[model] = NO_RENDERER_ASSOCIATED_MARKER;	
 			} else {
-				diagramShell.modelToExtraInfoMap[model] = renderer;
+				context.diagramShell.modelToExtraInfoMap[model] = renderer;
 			}
 		}
 		
-		public function createExtraInfo(model:Object):Object {
+		override public function createExtraInfo(context:DiagramShellContext, model:Object):Object {
 			return NO_RENDERER_ASSOCIATED_MARKER;
 		}
 						

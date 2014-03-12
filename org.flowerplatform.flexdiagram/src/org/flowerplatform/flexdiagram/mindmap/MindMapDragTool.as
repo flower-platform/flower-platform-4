@@ -20,6 +20,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.tool.DragTool;
 	
@@ -52,7 +53,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		private function isParentInAcceptedDraggableModelsList(model:Object, acceptedDraggableModels:IList):Boolean {			
-			var parent:Object = diagramShell.getControllerProvider(model).getModelChildrenController(model).getParent(model);
+			var parent:Object = ControllerUtils.getModelChildrenController(context.shellContext, model).getParent(context.shellContext, model);
 			if (parent == null) {
 				return false;
 			}
@@ -63,8 +64,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 				
 		private function isParentOfAcceptedDraggableModel(model:Object, acceptedDraggableModel:Object):Boolean {			
-			var parent:Object = diagramShell.getControllerProvider(acceptedDraggableModel).
-				getModelChildrenController(acceptedDraggableModel).getParent(acceptedDraggableModel);
+			var parent:Object = ControllerUtils.getModelChildrenController(context.shellContext, acceptedDraggableModel).getParent(context.shellContext, acceptedDraggableModel);
 			if (parent == null) {
 				return false;
 			}

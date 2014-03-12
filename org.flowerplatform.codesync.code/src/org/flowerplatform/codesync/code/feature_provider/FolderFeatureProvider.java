@@ -18,10 +18,7 @@
  */
 package org.flowerplatform.codesync.code.feature_provider;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
@@ -29,19 +26,8 @@ import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
  */
 public class FolderFeatureProvider extends NodeFeatureProvider {
 
-	public static final String CHILDREN = "children";
+	public FolderFeatureProvider() {
+		containmentFeatures.add(CodeSyncPropertiesConstants.CHILDREN);
+	}
 	
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(CHILDREN);
-	}
-
-	@Override
-	public int getFeatureType(Object feature) {
-		if (CHILDREN.equals(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		}
-		return super.getFeatureType(feature);
-	}
-
 }

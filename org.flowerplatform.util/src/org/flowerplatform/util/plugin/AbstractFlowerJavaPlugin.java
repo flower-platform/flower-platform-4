@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.util.plugin;
 
+import static org.flowerplatform.util.servlet.ResourcesServlet.SEPARATOR;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,6 +38,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 
 	public static final String PUBLIC_RESOURCES_DIR = "public-resources";
+	
+	public static final String IMAGE_COMPOSER = "servlet/image-composer/";
 	
 	public static final String MESSAGES_FILE = "messages.properties";
 
@@ -102,9 +106,43 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	}
 
 	public String getResourceUrl(String resource) {
+		if (getBundleContext() == null) {
+			return null;
+		}
 		return "servlet/" + PUBLIC_RESOURCES_DIR + "/" + 
 				getBundleContext().getBundle().getSymbolicName() + "/" +
 				resource;
+	}
+	
+	/**
+	 * Returns the request string for the image composed from the URLs. 
+	 * E.g. <tt>servlet/image-composer/url1|url2|url3</tt>
+	 * 
+	 * <p>
+	 * Checks if the first URL already contains the image-composer prefix; 
+	 * this way it can be used to append images to the same string.
+	 * 
+	 * @see AbstractFlowerFlexPlugin#getImageComposerUrl()
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public String getImageComposerUrl(String... resources) {
+		if (resources.length == 0) {
+			return null;
+		}
+		String composedUrl = "";
+		for (String resource : resources) {
+			if (resource != null) {
+				composedUrl += (composedUrl.length() > 0 ? SEPARATOR : "") + resource;
+			}
+		}
+		if (composedUrl.length() == 0) {
+			return null;
+		}
+		if (composedUrl.indexOf(IMAGE_COMPOSER) < 0) {
+			composedUrl = IMAGE_COMPOSER + composedUrl;
+		}
+		return composedUrl;
 	}
 	
 }

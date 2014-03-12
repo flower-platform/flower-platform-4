@@ -7,7 +7,6 @@ package org.flowerplatform.core;
 public class NodePropertiesConstants {
 	
 	public static final String HAS_CHILDREN = "hasChildren";
-	public static final String TYPE = "type";
 	public static final String TEXT = "text";
 	public static final String SIZE = "size";
 	public static final String NAME = "name";

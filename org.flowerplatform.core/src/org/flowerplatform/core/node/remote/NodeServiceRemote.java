@@ -5,6 +5,7 @@ import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRECTORY;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -53,6 +54,10 @@ public class NodeServiceRemote {
 	
 	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
 		return CorePlugin.getInstance().getNodeService().getAddChildDescriptors();
+	}
+	
+	public Set<String> getRegisteredTypes() {
+		return CorePlugin.getInstance().getNodeService().getRegisteredTypes();
 	}
 	
 	/**

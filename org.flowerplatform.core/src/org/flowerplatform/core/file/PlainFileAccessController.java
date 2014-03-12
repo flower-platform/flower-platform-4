@@ -113,10 +113,21 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).isDirectory();
 	}
 
+	/**
+	 * Also creates the parent directory of this file,
+	 * if it doesn't exist.
+	 * 
+	 * @author Mariana Gheorghe
+	 */
 	@Override
 	public boolean createNewFile(Object file) {
 		try {
-			return ((File) file).createNewFile();
+			File realFile = (File) file;
+			File parentFile = realFile.getParentFile();
+			if (parentFile != null && !parentFile.exists()) {
+				parentFile.mkdirs();
+			}
+			return realFile.createNewFile();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -124,7 +135,7 @@ public class PlainFileAccessController implements IFileAccessController {
 	
 	@Override
 	public boolean createNewDirectory(Object directory) {
-		return ((File) directory).mkdir();
+		return ((File) directory).mkdirs();
 	}
 
 	@Override

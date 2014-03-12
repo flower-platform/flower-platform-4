@@ -16,82 +16,34 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller.selection
-{
+package org.flowerplatform.flexdiagram.controller.selection {
 	import mx.core.IVisualElement;
-	import mx.events.DynamicEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
-	import org.flowerplatform.flexdiagram.renderer.selection.AbstractSelectionRenderer;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 	
-	public class SelectionController extends ControllerBase implements ISelectionController {
+	/**
+	 * @author Cristina Constantinescu
+	 */ 
+	public class SelectionController extends AbstractController {
 		
-		public var selectionRendererClass:Class;
+		public static const TYPE:String = "SelectionController";
 		
-		public function SelectionController(diagramShell:DiagramShell, selectionRendererClass:Class = null) {
-			super(diagramShell);
-			this.selectionRendererClass = selectionRendererClass;
+		public function SelectionController(orderIndex:int = 0) {
+			super(orderIndex);
 		}
 		
-		public function setSelectedState(model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
-			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
-			
-			var dynamicObject:Object = modelExtraInfoController.getDynamicObject(model);
-			
-			if (modelExtraInfoController.getDynamicObject(model).selected != isSelected) {
-				modelExtraInfoController.getDynamicObject(model).selected = isSelected;
-			}
-			
-			if (renderer == null) {
-				return;
-			}
-			
-			// add/delete selectionRenderer
-			
-			if (isSelected) {		
-				var selectionRenderer:AbstractSelectionRenderer = modelExtraInfoController.getDynamicObject(model).selectionRenderer;				
-				if (selectionRenderer == null) {
-					selectionRenderer = new selectionRendererClass();
-					
-					if (selectionRenderer is IDiagramShellAware) {
-						IDiagramShellAware(selectionRenderer).diagramShell = diagramShell;
-					}
-					
-					selectionRenderer.isMainSelection = isMainSelection;
-					selectionRenderer.activate(model);
-					
-					modelExtraInfoController.getDynamicObject(model).selectionRenderer = selectionRenderer;
-				} else {
-					if (selectionRenderer.isMainSelection != isMainSelection) {
-						selectionRenderer.isMainSelection = isMainSelection;
-					}
-				}					
-			} else {
-				unassociatedModelFromSelectionRenderer(model, renderer);
-			}
+		public function setSelectedState(context:DiagramShellContext, model:Object, renderer:IVisualElement, isSelected:Boolean, isMainSelection:Boolean):void {
+			throw new Error("This method needs to be implemented.");
 		}
 		
-		public function associatedModelToSelectionRenderer(model:Object, renderer:IVisualElement):void {	
-			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
-			
-			setSelectedState(model, renderer, modelExtraInfoController.getDynamicObject(model).selected, diagramShell.mainSelectedItem == model);			
+		public function associatedModelToSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+			throw new Error("This method needs to be implemented.");
 		}
 		
-		public function unassociatedModelFromSelectionRenderer(model:Object, renderer:IVisualElement):void {
-			var modelExtraInfoController:DynamicModelExtraInfoController = 
-				DynamicModelExtraInfoController(diagramShell.getControllerProvider(model).getModelExtraInfoController(model));
-			
-			var selectionRenderer:AbstractSelectionRenderer = modelExtraInfoController.getDynamicObject(model).selectionRenderer;
-			
-			if (selectionRenderer != null) {
-				selectionRenderer.deactivate(model);				
-				delete modelExtraInfoController.getDynamicObject(model).selectionRenderer;
-			}
+		public function unassociatedModelFromSelectionRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+			throw new Error("This method needs to be implemented.");
 		}
-	}
+		
+	}	
 }

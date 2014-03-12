@@ -222,13 +222,13 @@ public class Match {
 		IModelAdapter modelAdapter = null;
 		if (getAncestor() != null && !getAncestor().equals(CodeSyncAlgorithm.UNDEFINED)) {
 			delegate = getAncestor();
-			modelAdapter = algorithm.getAncestorModelAdapter(delegate);
+			modelAdapter = algorithm.getAncestorModelAdapter(this, delegate);
 		} else if (getLeft() != null && !getLeft().equals(CodeSyncAlgorithm.UNDEFINED)) {
 			delegate = getLeft();
-			modelAdapter = algorithm.getLeftModelAdapter(delegate);
+			modelAdapter = algorithm.getLeftModelAdapter(this, delegate);
 		} else if (getRight() != null && !getRight().equals(CodeSyncAlgorithm.UNDEFINED)) {
 			delegate = getRight();
-			modelAdapter = algorithm.getRightModelAdapter(delegate);
+			modelAdapter = algorithm.getRightModelAdapter(this, delegate);
 		}
 		
 		if (delegate == null)
