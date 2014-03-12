@@ -47,8 +47,10 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			}
 			if (sb.length() > 0) { // remove last "|"
 				node.getProperties().put(ICONS, sb.substring(0, sb.length() - 1));
+			} else {
+				node.getProperties().put(ICONS, "");
 			}
-		}
+		} 
 	}
 
 }

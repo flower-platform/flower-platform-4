@@ -37,6 +37,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 			actionProvider.actionProviders.push(new AddChildActionProvider());
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Sebastian Solomon
+		 */
 		override protected function createDiagramShell():DiagramShell {
 			var diagramShell:MindMapEditorDiagramShell = new MindMapEditorDiagramShell();
 			diagramShell.updateProcessor = new MindMapNodeUpdateProcessor(diagramShell);

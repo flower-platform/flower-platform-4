@@ -92,6 +92,8 @@ package org.flowerplatform.flex_client.mindmap {
 					}					
 					
 				});
+			
+			CorePlugin.getInstance().iconSideBarClass = IconsSideBar;
 		
 		}
 		

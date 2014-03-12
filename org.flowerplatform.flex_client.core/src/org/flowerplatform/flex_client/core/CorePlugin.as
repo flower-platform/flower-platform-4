@@ -18,14 +18,14 @@
  */
 package org.flowerplatform.flex_client.core {
 
-	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.utils.Dictionary;
-	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
+	
+	import spark.components.Group;
 	
 	import org.flowerplatform.flex_client.core.editor.RootNodeIdsToEditors;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
@@ -89,6 +89,11 @@ package org.flowerplatform.flex_client.core {
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 				
+		//TODO to delete when mm classes from core will be moved in .mindmap project
+		public var iconSideBarClass:Class;
+		
+		public var iconSideBar:Group;
+		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
