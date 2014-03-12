@@ -18,12 +18,13 @@ public class FileAddNodeController extends AddNodeController {
 		Object parentFile;
 
 		try {
-			if (parentNode.getType().equals(CorePlugin.FILE_SYSTEM_NODE_TYPE)) {
-				parentFile = fileAccessController
-						.getFile("d:\\temp\\fileSystemNode");
-			} else {
-				parentFile = fileAccessController.getFile(parentNode.getIdWithinResource());
-			}
+//			if (parentNode.getType().equals(CorePlugin.FILE_SYSTEM_NODE_TYPE)) {
+//				parentFile = fileAccessController
+//						.getFile("d:\\temp\\fileSystemNode");
+//			} else {
+//				parentFile = fileAccessController.getFile(parentNode.getIdWithinResource());
+//			}
+			parentFile = fileAccessController.getFile(parentNode.getIdWithinResource());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

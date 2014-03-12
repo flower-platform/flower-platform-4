@@ -10,6 +10,6 @@ public class FileRootNodeProvider extends RootNodeProvider {
 
 	@Override
 	public Node getRootNode(Node node) {
-		return new Node("Folder|mm://path_to_resource|ID_85319927");
+		return new Node("root2||2");
 	}
 }

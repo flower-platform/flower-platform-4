@@ -110,9 +110,6 @@ public class FileSystemControllersTest {
 		
 		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), false), Arrays.asList(
 								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null)));
-		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null), false),
-								Arrays.asList());
 	}
 	
 	@Test
@@ -177,7 +174,7 @@ public class FileSystemControllersTest {
 	public void copyDirectory(File srcPath, File dstPath) throws IOException {
 		if (srcPath.isDirectory()) {
 			if (!dstPath.exists()) {
-				dstPath.mkdir();
+				dstPath.mkdirs();
 			}
 			String files[] = srcPath.list();
 			for (int i = 0; i < files.length; i++) {

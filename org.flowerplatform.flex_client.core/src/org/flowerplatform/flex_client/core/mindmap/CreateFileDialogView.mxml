@@ -52,7 +52,9 @@
 				properties.text = fileName.text;
 				properties.isDirectory = isDir;
 				
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
+				if (properties.text != "") { //TODO see if it's a valid file name
+					CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
+				}
 				cancel();
 			}
 			

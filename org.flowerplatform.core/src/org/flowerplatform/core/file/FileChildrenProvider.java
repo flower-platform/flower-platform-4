@@ -6,7 +6,6 @@ import java.util.List;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.Pair;
 
 /**
  * @author Sebastian Solomon
@@ -18,12 +17,7 @@ public class FileChildrenProvider extends ChildrenProvider {
 	@Override
 	public List<Node> getChildren(Node node) {
 		String path;
-
-		if (node.getType().equals(CorePlugin.FILE_SYSTEM_NODE_TYPE)) {
-			path = CorePlugin.FILE_SYSTEM_PATH;
-		} else {
-			path = node.getIdWithinResource();
-		}
+		path = node.getIdWithinResource();
 
 		Object file = null;
 		try {
@@ -42,6 +36,17 @@ public class FileChildrenProvider extends ChildrenProvider {
 	private Node getNode(Object file) {
 		Node node = new Node(CorePlugin.FILE_NODE_TYPE, null, fileAccessController.getAbsolutePath(file), null);
 		return node;
+	}
+
+	@Override
+	public boolean hasChildren(Node node) {
+		Object file = null;
+		try {
+			file = fileAccessController.getFile(node.getIdWithinResource());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return fileAccessController.hasChildren(file);
 	}
 
 }

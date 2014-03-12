@@ -119,7 +119,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? "freeplaneNode|freePlanePersistence://path_to_resource|": node.fullNodeId, true], 
+				[node == null ? "root1|1|": node.fullNodeId, true], 
 				function (result:Object):void {requestChildrenHandler(context, node, ArrayCollection(result));});	
 		}
 		

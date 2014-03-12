@@ -40,15 +40,18 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.file.FileAddNodeController;
 import org.flowerplatform.core.file.FileChildrenProvider;
+import org.flowerplatform.core.file.FileImagePropertiesProvider;
 import org.flowerplatform.core.file.FilePropertiesProvider;
 import org.flowerplatform.core.file.FilePropertySetter;
 import org.flowerplatform.core.file.FileRemoveNodeController;
 import org.flowerplatform.core.file.FileRootNodeProvider;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
-import org.flowerplatform.core.fileSystem.FileSystemChildrenProvider;
+import org.flowerplatform.core.fileSystem.RepoChildrenProvider;
 import org.flowerplatform.core.fileSystem.FileSystemPropertiesProvider;
 import org.flowerplatform.core.fileSystem.FileSystemRootNodeProvider;
+import org.flowerplatform.core.fileSystem.FirstRootChildrendProvider;
+import org.flowerplatform.core.fileSystem.SecondRootChildrendProvider;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
@@ -63,6 +66,7 @@ import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
 import org.flowerplatform.core.node.update.remote.UpdateServiceRemote;
+import org.flowerplatform.core.repo.RepoPropertiesProvider;
 import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -149,7 +153,7 @@ getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		setFileAccessController(new PlainFileAccessController());
 		
 		TypeDescriptor dummyTypeDescriptor = getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("dummyNode");
-		dummyTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new FileSystemChildrenProvider());
+		dummyTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new RepoChildrenProvider());
 		
 		TypeDescriptor fileSystemNodeTypeDescriptor = getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE);
 		fileSystemNodeTypeDescriptor.addSingleController(ROOT_NODE_PROVIDER, new FileSystemRootNodeProvider());
@@ -164,11 +168,10 @@ getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		fileNodeTypeDescriptor.addSingleController(ROOT_NODE_PROVIDER, new FileRootNodeProvider());
 		fileNodeTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, new FileChildrenProvider());
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FilePropertiesProvider());
+		fileNodeTypeDescriptor.addAdditiveController(PROPERTIES_PROVIDER, new FileImagePropertiesProvider());
 		fileNodeTypeDescriptor.addAdditiveController(ADD_NODE_CONTROLLER, new FileAddNodeController());
 		fileNodeTypeDescriptor.addAdditiveController(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController());
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_SETTER, new FilePropertySetter());
-		
-		addChildDescriptors(fileNodeTypeDescriptor);
 		
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(TEXT).setReadOnlyAs(false));
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(HAS_CHILDREN));
@@ -177,6 +180,20 @@ getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CREATION_TIME));
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(LAST_MODIFIED_TIME));
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(LAST_ACCESS_TIME));
+		
+		addChildDescriptors(fileNodeTypeDescriptor);
+		
+		
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("root1")
+		.addAdditiveController(CHILDREN_PROVIDER, new FirstRootChildrendProvider());
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("root2")
+				.addAdditiveController(CHILDREN_PROVIDER, new SecondRootChildrendProvider());
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("repo")
+				.addAdditiveController(PROPERTIES_PROVIDER, new RepoPropertiesProvider())
+				.addAdditiveController(CHILDREN_PROVIDER, new RepoChildrenProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 				
