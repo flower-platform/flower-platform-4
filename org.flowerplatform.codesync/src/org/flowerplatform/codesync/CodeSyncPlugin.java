@@ -44,7 +44,6 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
-import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -225,18 +224,18 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		addTypeProvider("node", new NodeTypeProvider());
 		
-		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.codeSync");
-		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
-		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.NAME).setReadOnlyAs(false));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.ADDED).setTypeAs("Boolean"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.REMOVED));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.SYNC).setTypeAs("Boolean"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_SYNC).setTypeAs("Boolean"));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CONFLICT));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_CONFLICT));
-		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());
-		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.codeSync")
+		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
+		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter())
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.NAME))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.ADDED).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.REMOVED).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor())
+		.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());
