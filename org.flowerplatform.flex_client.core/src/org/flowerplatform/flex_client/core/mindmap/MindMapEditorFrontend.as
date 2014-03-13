@@ -21,7 +21,6 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 

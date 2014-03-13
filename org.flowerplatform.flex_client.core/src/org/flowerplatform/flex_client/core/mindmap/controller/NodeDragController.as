@@ -169,11 +169,12 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		}
 		
 		override public function deactivate(context:DiagramShellContext, model:Object):void {
-			delete getDynamicObject(context, model).initialX;
-			delete getDynamicObject(context, model).initialY;
-			delete getDynamicObject(context, model).finalX;
-			delete getDynamicObject(context, model).finalY;
-			delete getDynamicObject(context, model).side;
+			var dynamicObject:Object = getDynamicObject(context, model);
+			delete dynamicObject.initialX;
+			delete dynamicObject.initialY;
+			delete dynamicObject.finalX;
+			delete dynamicObject.finalY;
+			delete dynamicObject.side;
 		}
 		
 		private function getDynamicObject(context:DiagramShellContext, model:Object):Object {
@@ -181,10 +182,11 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		}
 				
 		private function deletePlaceHolder(context:DiagramShellContext, model:Object):void {
-			var placeHolder:MoveResizePlaceHolder = getDynamicObject(context, model).placeHolder;
+			var dynamicObject:Object = getDynamicObject(context, model);
+			var placeHolder:MoveResizePlaceHolder = dynamicObject.placeHolder;
 			if (placeHolder != null) {
 				context.diagramShell.diagramRenderer.removeElement(placeHolder);
-				delete getDynamicObject(context, model).placeHolder;		
+				delete dynamicObject.placeHolder;		
 			}
 		}
 		

@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.renderer {
+package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 
 	/**

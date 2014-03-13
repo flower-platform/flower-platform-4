@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -38,7 +39,10 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			MindMapEditorDiagramShell(diagramShell).updateProcessor.requestChildren(diagramShellContext, null);
+//			var context:DiagramShellContext = diagramShellContext;
+//			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, 
+//				function (result:Object):void {MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, null);});
+			throw new Error("Unsupported");
 		}			
 		
 	}

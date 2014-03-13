@@ -25,17 +25,19 @@ package org.flowerplatform.flex_client.core.editor {
 	import mx.events.CollectionEventKind;
 	import mx.events.FlexEvent;
 	
+	import spark.components.HGroup;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellAwareProcessor;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
-	
-	import spark.components.HGroup;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -66,6 +68,7 @@ package org.flowerplatform.flex_client.core.editor {
 			
 			diagramShell = createDiagramShell();
 			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
+			diagramShell.typeProvider = CorePlugin.getInstance().nodeTypeProvider;
 			diagramShell.diagramRenderer = diagramRenderer;
 			diagramShell.rootModel = new Node(editorInput);
 			
@@ -80,16 +83,13 @@ package org.flowerplatform.flex_client.core.editor {
 			throw new Error("Must provide a diagram shell!");
 		}
 		
-		override public function getContext():Dictionary {
+		override public function getContext():DiagramShellContext {
 			return diagramShell.getNewDiagramShellContext();
 		}
 		
 		override protected function subscribeResultCallback(rootNode:Node):void {
 			super.subscribeResultCallback(rootNode);
-			// TODO CC: Temporary code
-			var reloadAction:ReloadAction = new ReloadAction();
-			reloadAction.diagramShellContext = diagramShell.getNewDiagramShellContext();
-			reloadAction.run();
+			MindMapNodeUpdateProcessor(updateProcessor).requestChildren(getContext(), null);
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

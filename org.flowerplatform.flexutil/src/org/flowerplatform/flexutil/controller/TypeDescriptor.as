@@ -80,7 +80,10 @@ package org.flowerplatform.flexutil.controller {
 			if (includeDynamicCategoryProviders) {
 				for (var i:int = 0; i < registry.getDynamicCategoryProviders().length; i++) {
 					var categoryProvider:IDynamicCategoryProvider = IDynamicCategoryProvider(registry.getDynamicCategoryProviders().getItemAt(i));
-					allCategories.addAll(categoryProvider.getDynamicCategories(object));
+					var dynamicCategories:IList = categoryProvider.getDynamicCategories(object);
+					if (dynamicCategories != null) {
+						allCategories.addAll(dynamicCategories);
+					}
 				}
 			}
 			
@@ -105,7 +108,7 @@ package org.flowerplatform.flexutil.controller {
 			// finished scanning the categories
 			pair.b = true;
 			
-			return pair.a as AbstractController;
+			return AbstractController(pair.a);
 		}
 		
 		public function addSingleController(type:String, controller:AbstractController):TypeDescriptor {
@@ -148,7 +151,10 @@ package org.flowerplatform.flexutil.controller {
 			if (includeDynamicCategoryProviders) {
 				for (var i:int = 0; i < registry.getDynamicCategoryProviders().length; i++) {
 					var categoryProvider:IDynamicCategoryProvider = IDynamicCategoryProvider(registry.getDynamicCategoryProviders().getItemAt(i));
-					allCategories.addAll(categoryProvider.getDynamicCategories(object));
+					var dynamicCategories:IList = categoryProvider.getDynamicCategories(object);
+					if (dynamicCategories != null) {
+						allCategories.addAll(dynamicCategories);
+					}
 				}
 			}
 			

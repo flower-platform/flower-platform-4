@@ -56,7 +56,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 		public function SampleMindMapDiagramShell() {
 			super();
 			
-			addTypeProvider(new SampleMindMapTypeProvider());
+			typeProvider = new SampleMindMapTypeProvider();
 			
 			registry = new TypeDescriptorRegistry();
 			registry.getOrCreateTypeDescriptor("mindmap")

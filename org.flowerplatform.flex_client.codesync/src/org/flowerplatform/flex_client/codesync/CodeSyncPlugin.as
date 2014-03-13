@@ -29,10 +29,17 @@ package org.flowerplatform.flex_client.codesync {
 	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexutil.Utils;
 	
+	import spark.components.Button;
+	
 	/**
 	 * @author Mariana Gheorghe
 	 */
 	public class CodeSyncPlugin extends AbstractFlowerFlexPlugin {
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public static const CODESYNC_CATEGORY:String = "category.codeSync";
 		
 		protected static var INSTANCE:CodeSyncPlugin;
 		

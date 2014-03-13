@@ -18,7 +18,6 @@
 */
 package org.flowerplatform.flexdiagram {
 	
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IComposedActionProviderProcessor;
 	

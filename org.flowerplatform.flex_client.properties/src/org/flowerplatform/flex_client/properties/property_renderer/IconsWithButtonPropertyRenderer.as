@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		public static const ICONS_SEPARATOR:String = "|";
 		
-		protected var iconsArea:IconsComponentExtension;
+		protected var iconsComponentExtension:IconsComponentExtension;
 		
 		/**
 		 * Signature: function clickHandler(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object):void
@@ -42,7 +42,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		public function IconsWithButtonPropertyRenderer() {
 			super();
-			iconsArea = new IconsComponentExtension(this);
+			iconsComponentExtension = new IconsComponentExtension(this);
 			
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;
@@ -58,11 +58,11 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		public function get icons():FlowerArrayList {
-			return iconsArea.icons;
+			return iconsComponentExtension.icons;
 		}
 		
 		public function set icons(value:FlowerArrayList):void {
-			iconsArea.icons = value;
+			iconsComponentExtension.icons = value;
 		}
 		
 		protected function creationCompleteHandler(event:FlexEvent):void {
@@ -155,16 +155,16 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		override public function validateDisplayList():void {
 			super.validateDisplayList();			
-			iconsArea.validateDisplayList();
+			iconsComponentExtension.validateDisplayList();
 		}
 		
 		override public function validateProperties():void {
 			super.validateProperties();
-			iconsArea.validateProperties();
+			iconsComponentExtension.validateProperties();
 		}
 		
 		override public function validateSize(recursive:Boolean=false):void	{
-			iconsArea.validateSize();
+			iconsComponentExtension.validateSize();
 			super.validateSize(recursive);
 		}
 		

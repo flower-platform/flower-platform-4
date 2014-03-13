@@ -59,7 +59,7 @@ package org.flowerplatform.flexdiagram.samples {
 		public function SamplesDiagramShell() {
 			super();
 			
-			addTypeProvider(new BasicTypeProvider());
+			typeProvider = new BasicTypeProvider();
 			
 			registry = new TypeDescriptorRegistry();
 			registry.getOrCreateTypeDescriptor("basicModel")
