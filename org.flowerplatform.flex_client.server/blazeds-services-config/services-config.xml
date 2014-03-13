@@ -2,7 +2,7 @@
 <services-config>
 
     <services>
-        <service-include file-path="remoting-config.xml" />
+		<service id="remoting-service" class="org.flowerplatform.flex_client.server.blazeds.FlowerRemotingService"/>
 	</services>
 	
 	<factories>
