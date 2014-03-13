@@ -16,16 +16,26 @@
  *
  * license-end
  */
-package org.flowerplatform.flexdiagram.renderer {
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
+package org.flowerplatform.flex_client.core.editor.update.event {
+	import flash.events.Event;
+	
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 
 	/**
-	 * @author Cristian Spiescu
+	 * Dispatched when <code>Node</code>s are being removed.
+	 *  
+	 * @author Cristina Constantinescu
 	 */
-	public interface IDiagramShellContextAware {
-				
-		function get diagramShellContext():DiagramShellContext;
-		function set diagramShellContext(value:DiagramShellContext):void;
+	public class NodeRemovedEvent extends Event {
+		
+		public static const NODE_REMOVED:String = "NodeRemovedEvent";
+		
+		public var node:Node;
+		
+		public function NodeRemovedEvent(node:Node) {
+			super(NODE_REMOVED, false, false);
+			this.node = node;
+		}
 		
 	}
 }

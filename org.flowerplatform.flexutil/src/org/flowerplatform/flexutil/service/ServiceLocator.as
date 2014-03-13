@@ -3,14 +3,11 @@ package org.flowerplatform.flexutil.service {
 	
 	import mx.controls.Alert;
 	import mx.messaging.ChannelSet;
-	import mx.messaging.channels.AMFChannel;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
-	
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @author Cristian Spiescu

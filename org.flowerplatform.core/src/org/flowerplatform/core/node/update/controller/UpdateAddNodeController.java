@@ -19,8 +19,8 @@ public class UpdateAddNodeController extends AddNodeController {
 	public void addNode(Node node, Node child, Node insertBeforeNode) {		
 		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
 		if (rootNode != null) {
-			CorePlugin.getInstance().getUpdateService().getUpdateDAO()
-				.addUpdate(rootNode, 
+			CorePlugin.getInstance().getResourceInfoService()
+				.addUpdate(rootNode.getFullNodeId(), 
 						new ChildrenUpdate()
 							.setTypeAs(ADDED)
 							.setTargetNodeAs(child)

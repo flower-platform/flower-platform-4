@@ -22,4 +22,12 @@ public class Utils {
 		else
 			return a.equals(b);
 	}
+	
+	public static String defaultIfNull(String str) {
+		return defaultIfNull(str, "");
+	}
+	
+	public static String defaultIfNull(String str, String defaultStr) {
+		return str == null ? defaultStr : str;
+	}
 }

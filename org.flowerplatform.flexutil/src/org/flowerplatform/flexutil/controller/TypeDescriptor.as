@@ -80,7 +80,10 @@ package org.flowerplatform.flexutil.controller {
 			if (includeDynamicCategoryProviders) {
 				for (var i:int = 0; i < registry.getDynamicCategoryProviders().length; i++) {
 					var categoryProvider:IDynamicCategoryProvider = IDynamicCategoryProvider(registry.getDynamicCategoryProviders().getItemAt(i));
-					allCategories.addAll(categoryProvider.getDynamicCategories(object));
+					var dynamicCategories:IList = categoryProvider.getDynamicCategories(object);
+					if (dynamicCategories != null) {
+						allCategories.addAll(dynamicCategories);
+					}
 				}
 			}
 			
@@ -94,19 +97,18 @@ package org.flowerplatform.flexutil.controller {
 				
 				var categoryController:AbstractController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
 				if (categoryController != null) {
-					// found a controller from a category; cache it
-					pair.a = categoryController;
-					if (pair.b) {
-						throw new Error("Object with type " + type + "registered multiple categories with controllers of type " + controllerType);
+					// found a controller from a category
+					// keep it if it has a lower order index than the existing one
+					if (pair.a == null || AbstractController(pair.a).orderIndex > categoryController.orderIndex) {
+						pair.a = categoryController;
 					}
-					pair.b = true;
 				}
 			}
 			
 			// finished scanning the categories
 			pair.b = true;
 			
-			return pair.a as AbstractController;
+			return AbstractController(pair.a);
 		}
 		
 		public function addSingleController(type:String, controller:AbstractController):TypeDescriptor {
@@ -149,7 +151,10 @@ package org.flowerplatform.flexutil.controller {
 			if (includeDynamicCategoryProviders) {
 				for (var i:int = 0; i < registry.getDynamicCategoryProviders().length; i++) {
 					var categoryProvider:IDynamicCategoryProvider = IDynamicCategoryProvider(registry.getDynamicCategoryProviders().getItemAt(i));
-					allCategories.addAll(categoryProvider.getDynamicCategories(object));
+					var dynamicCategories:IList = categoryProvider.getDynamicCategories(object);
+					if (dynamicCategories != null) {
+						allCategories.addAll(dynamicCategories);
+					}
 				}
 			}
 			

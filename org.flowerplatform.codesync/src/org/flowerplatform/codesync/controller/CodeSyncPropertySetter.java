@@ -46,11 +46,6 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	
 	@Override
 	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {		
-		if (property.equals("timestamp") || property.equals("icon")) {
-			return; // TODO skipping all non-sync props
-		}
-		
-
 		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		
 		// if the node is newly added or marked removed => propagate sync flag false

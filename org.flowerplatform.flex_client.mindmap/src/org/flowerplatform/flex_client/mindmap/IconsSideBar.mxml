@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<!---
+@author Sebastian Solomon
+-->
+<s:Scroller xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:local="org.flowerplatform.flex_client.mindmap.*" height="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
+			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			
+			private var _viewHost:IViewHost;
+			private var resultHandler:IDialogResultHandler;
+			
+			private var btnRemoveAll:MindMapButtonWithIcon;
+			private var btnRemoveFirst:MindMapButtonWithIcon;
+			private var btnRemoveLast:MindMapButtonWithIcon;
+			public  var diagramShell:DiagramShell;
+			
+			public var icons:String;
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(viewHost:IViewHost):void {
+				_viewHost = viewHost;
+			}
+			
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				this.resultHandler = resultHandler;
+			}
+			
+			override protected function createChildren():void {
+				super.createChildren();
+				
+				btnRemoveAll = new MindMapButtonWithIcon();
+				btnRemoveAll.iconUrl = "/images/icon_trash.png";
+				btnRemoveAll.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.all.label');
+				btnRemoveAll.addEventListener(MouseEvent.CLICK, btnRemoveAll_clickHandler);
+				
+				btnRemoveFirst = new MindMapButtonWithIcon();
+				btnRemoveFirst.iconUrl = "/images/remove_first_icon.png";
+				btnRemoveFirst.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.first.label');
+				btnRemoveFirst.addEventListener(MouseEvent.CLICK, btnRemoveFirst_clickHandler);
+				
+				btnRemoveLast = new MindMapButtonWithIcon();
+				btnRemoveLast.iconUrl = "/images/remove_last_icon.png";
+				btnRemoveLast.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.last.label');
+				btnRemoveLast.addEventListener(MouseEvent.CLICK, btnRemoveLast_clickHandler);
+				
+				removeGroup.addElement(btnRemoveAll);				
+				removeGroup.addElement(btnRemoveFirst);				
+				removeGroup.addElement(btnRemoveLast);
+				
+				var icons:Array = MindMapPlugin.getInstance().getMessage('icons.list').split(';');
+				for (var i:int=0; i < icons.length; i++) {
+					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
+					btnImage.iconUrl = "images/icons/" + icons[i] + ".png";
+					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
+					
+					imageGroup.addElement(btnImage);
+				}
+			}
+			
+			protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					if (node.properties.hasOwnProperty('icons')) {
+						saveIconProperty(node, null)
+					}
+				}
+			}
+			
+			protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					var currentValue:String = node.properties['icons'];
+					if (currentValue != null) {
+						var firstIndexOf:int = currentValue.indexOf(IconsWithButtonPropertyRenderer.ICONS_SEPARATOR);
+						currentValue = firstIndexOf != -1 ? currentValue.substr(firstIndexOf + 1, currentValue.length) : null;
+						saveIconProperty(node, currentValue);
+					}
+				}
+			}
+			
+			protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					var currentValue:String = node.properties['icons'];
+					if (currentValue != null) {
+						var lastIndexOf:int = currentValue.lastIndexOf(IconsWithButtonPropertyRenderer.ICONS_SEPARATOR);
+						currentValue = lastIndexOf != -1 ? currentValue.substr(0, lastIndexOf) : null;
+						saveIconProperty(node, currentValue);
+					}
+				}
+			}
+			
+			protected function btnImage_clickHandler(event:MouseEvent):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					if (node.properties.hasOwnProperty('icons')) {
+						var currentValue:String = node.properties['icons'];
+						nodeList.hasOwnProperty()
+						var iconUrl:String = MindMapPlugin.getInstance().getResourceUrl(MindMapButtonWithIcon(event.target).iconUrl);
+						currentValue = (currentValue == null ? "" : (currentValue + IconsWithButtonPropertyRenderer.ICONS_SEPARATOR)) + iconUrl;
+						saveIconProperty(node, currentValue);
+					}
+				}
+			}
+			
+			protected function saveIconProperty(node:Node, currentValue:String):void {			
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", 
+					[node.fullNodeId, "icons", currentValue]);
+			}
+			
+		]]>
+	</fx:Script>
+	
+<s:Group>
+	<s:layout>
+		<s:VerticalLayout gap="4" paddingRight="5"/>
+	</s:layout>
+	
+	<s:VGroup id="removeGroup" width="100%" gap="2">		
+	</s:VGroup>
+	
+	<s:Line width="100%" >
+		<s:stroke>
+			<s:SolidColorStroke color="gray" weight="1"/>
+		</s:stroke>
+	</s:Line>
+	
+	<s:Group id="imageGroup" width="100%" height="100%" >
+		<s:layout>
+			<s:VerticalLayout gap="2"/>
+		</s:layout>		
+	</s:Group>
+</s:Group>
+	
+</s:Scroller>

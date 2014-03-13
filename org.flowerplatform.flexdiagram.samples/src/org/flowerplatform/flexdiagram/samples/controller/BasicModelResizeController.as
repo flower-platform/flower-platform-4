@@ -27,60 +27,64 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	public class BasicModelResizeController extends ResizeController {
 		
 		override public function activate(context:DiagramShellContext, model:Object):void {
+			var extraInfo:Object = context.diagramShell.modelToExtraInfoMap[model];
+			
 			var resizePlaceHolder:MoveResizePlaceHolder = new MoveResizePlaceHolder();
 			resizePlaceHolder.x = BasicModel(model).x;
 			resizePlaceHolder.y = BasicModel(model).y;
 			resizePlaceHolder.width = BasicModel(model).width;
 			resizePlaceHolder.height = BasicModel(model).height;
 			
-			context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder = resizePlaceHolder;
+			extraInfo.resizePlaceHolder = resizePlaceHolder;
 			context.diagramShell.diagramRenderer.addElement(resizePlaceHolder);
 			
-			context.diagramShell.modelToExtraInfoMap[model].initialX = resizePlaceHolder.x;
-			context.diagramShell.modelToExtraInfoMap[model].initialY = resizePlaceHolder.y;
-			context.diagramShell.modelToExtraInfoMap[model].initialWidth = resizePlaceHolder.width;
-			context.diagramShell.modelToExtraInfoMap[model].initialHeight = resizePlaceHolder.height;
+			extraInfo.initialX = resizePlaceHolder.x;
+			extraInfo.initialY = resizePlaceHolder.y;
+			extraInfo.initialWidth = resizePlaceHolder.width;
+			extraInfo.initialHeight = resizePlaceHolder.height;
 		}
 			
 		override public function drag(context:DiagramShellContext, model:Object, deltaX:Number, deltaY:Number, type:String):void {	
-			var resizePlaceHolder:MoveResizePlaceHolder = context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
+			var extraInfo:Object = context.diagramShell.modelToExtraInfoMap[model];
+			
+			var resizePlaceHolder:MoveResizePlaceHolder = extraInfo.resizePlaceHolder;
 			
 			var newX:int = resizePlaceHolder.x, newY:int = resizePlaceHolder.y;
 			var newWidth:int = resizePlaceHolder.width, newHeight:int = resizePlaceHolder.height;
 			switch(type) {
 				case ResizeAnchor.LEFT_UP: 
-					newX = context.diagramShell.modelToExtraInfoMap[model].initialX + deltaX;
-					newY = context.diagramShell.modelToExtraInfoMap[model].initialY + deltaY;					
-					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - context.diagramShell.modelToExtraInfoMap[model].initialX);
-					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - context.diagramShell.modelToExtraInfoMap[model].initialY);
+					newX = extraInfo.initialX + deltaX;
+					newY = extraInfo.initialY + deltaY;					
+					newWidth = extraInfo.initialWidth - (newX - extraInfo.initialX);
+					newHeight = extraInfo.initialHeight - (newY - extraInfo.initialY);
 					break;
 				case ResizeAnchor.LEFT_MIDDLE:
-					newX = context.diagramShell.modelToExtraInfoMap[model].initialX + deltaX;
-					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - context.diagramShell.modelToExtraInfoMap[model].initialX);
+					newX = extraInfo.initialX + deltaX;
+					newWidth = extraInfo.initialWidth - (newX - extraInfo.initialX);
 					break;
 				case ResizeAnchor.LEFT_DOWN:
-					newX = context.diagramShell.modelToExtraInfoMap[model].initialX + deltaX; 
-					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth - (newX - context.diagramShell.modelToExtraInfoMap[model].initialX);
-					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
+					newX = extraInfo.initialX + deltaX; 
+					newWidth = extraInfo.initialWidth - (newX - extraInfo.initialX);
+					newHeight = extraInfo.initialHeight + deltaY;
 					break;
 				case ResizeAnchor.MIDDLE_DOWN:
-					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
+					newHeight = extraInfo.initialHeight + deltaY;
 					break;
 				case ResizeAnchor.MIDDLE_UP:
-					newY = context.diagramShell.modelToExtraInfoMap[model].initialY + deltaY;
-					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - context.diagramShell.modelToExtraInfoMap[model].initialY);
+					newY = extraInfo.initialY + deltaY;
+					newHeight = extraInfo.initialHeight - (newY - extraInfo.initialY);
 					break;
 				case ResizeAnchor.RIGHT_DOWN:
-					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
-					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight + deltaY;
+					newWidth = extraInfo.initialWidth + deltaX;
+					newHeight = extraInfo.initialHeight + deltaY;
 					break;
 				case ResizeAnchor.RIGHT_MIDDLE:
-					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
+					newWidth = extraInfo.initialWidth + deltaX;
 					break;
 				case ResizeAnchor.RIGHT_UP:
-					newY = context.diagramShell.modelToExtraInfoMap[model].initialY + deltaY;
-					newWidth = context.diagramShell.modelToExtraInfoMap[model].initialWidth + deltaX;
-					newHeight = context.diagramShell.modelToExtraInfoMap[model].initialHeight - (newY - context.diagramShell.modelToExtraInfoMap[model].initialY);
+					newY = extraInfo.initialY + deltaY;
+					newWidth = extraInfo.initialWidth + deltaX;
+					newHeight = extraInfo.initialHeight - (newY - extraInfo.initialY);
 					break;
 			}
 //			var fig:IDraggableAndResizableFigure = IDraggableAndResizableFigure(editPart.getFigure());
@@ -119,13 +123,15 @@ package org.flowerplatform.flexdiagram.samples.controller {
 		}
 		
 		override public function deactivate(context:DiagramShellContext, model:Object):void {
-			context.diagramShell.diagramRenderer.removeElement(context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder);			
-			delete context.diagramShell.modelToExtraInfoMap[model].resizePlaceHolder;
+			var extraInfo:Object = context.diagramShell.modelToExtraInfoMap[model];
 			
-			delete context.diagramShell.modelToExtraInfoMap[model].initialX;
-			delete context.diagramShell.modelToExtraInfoMap[model].initialY;
-			delete context.diagramShell.modelToExtraInfoMap[model].initialWidth;
-			delete context.diagramShell.modelToExtraInfoMap[model].initialHeight;
+			context.diagramShell.diagramRenderer.removeElement(extraInfo.resizePlaceHolder);			
+			delete extraInfo.resizePlaceHolder;
+			
+			delete extraInfo.initialX;
+			delete extraInfo.initialY;
+			delete extraInfo.initialWidth;
+			delete extraInfo.initialHeight;
 		}
 	}
 }

@@ -34,16 +34,12 @@ import org.flowerplatform.util.controller.TypeDescriptorRegistry;
  */
 public class CodeSyncOperationsService {
 
-	public Match synchronize(String path) {
-		// TODO test
-		path = "D:/temp/";
-		File project = new File(path);
-		File file = new File(path, "sync_test");
-		return synchronize(project, file, "java", true);
+	public Match synchronize(String fullNodeId) {
+		return synchronize(fullNodeId, new File("D:/temp/sync_test"), "java", true);
 	}
 		
-	public Match synchronize(File project, File file, String technology, boolean oneStepSync) {
-		Match match = generateMatch(project, file, technology, oneStepSync);
+	public Match synchronize(String fullNodeId, Object file, String technology, boolean oneStepSync) {
+		Match match = generateMatch(fullNodeId, file, technology, oneStepSync);
 		if (!oneStepSync) {
 			performSync(match);
 		}
@@ -51,17 +47,15 @@ public class CodeSyncOperationsService {
 		return match;
 	}
 	
-	public Match generateMatch(File project, File file, String technology, boolean oneStepSync) {
-		// find model file
-		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(project);
-		
+	public Match generateMatch(String fullNodeId, Object file, String technology, boolean oneStepSync) {
 		// find containing SrcDir
+		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(fullNodeId);
 		Node srcDir = null;
-		File parent = file;
+		File parent = (File) file;
 		do {
 			srcDir = CodeSyncPlugin.getInstance().getSrcDir(root, parent.getName());
 			parent = parent.getParentFile();
-		} while (srcDir == null && !parent.equals(project));
+		} while (srcDir == null && (parent != null));
 		if (srcDir == null) {
 			throw new RuntimeException("File " + file + " is not contained in a SrcDir!");
 		}

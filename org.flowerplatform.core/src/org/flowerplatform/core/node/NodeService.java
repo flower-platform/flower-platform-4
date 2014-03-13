@@ -52,6 +52,12 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeService {
 	
+	/**
+	 * An additive controller may set this option, to stop the service from invoking any controllers
+	 * with a higher order index.
+	 */
+	public static final String STOP_CONTROLLER_INVOCATION = "stopControllerInvocation";
+	
 	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
 	
 	protected TypeDescriptorRegistry registry;
@@ -64,7 +70,7 @@ public class NodeService {
 		super();
 		this.registry = registry;
 	}
-
+	
 	public List<Node> getChildren(Node node, boolean populateProperties) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -75,9 +81,10 @@ public class NodeService {
 		// many times there will be no children; that's why we lazy init the list (if needed)
 		List<Node> children = null;
 		// we ask each registered provider for children
+		Map<String, Object> options = getControllerInvocationOptions();
 		for (ChildrenProvider provider : providers) {
 			// we take the children ...
-			List<Node> childrenFromCurrentProvider = provider.getChildren(node);
+			List<Node> childrenFromCurrentProvider = provider.getChildren(node, options);
 			for (Node currentChild : childrenFromCurrentProvider) {
 				if (populateProperties) {
 					// ... and then populate them
@@ -90,6 +97,9 @@ public class NodeService {
 					children = new ArrayList<Node>();
 				}
 				children.add(currentChild);
+			}
+			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+				break;
 			}
 		}
 		if (children == null) {
@@ -105,9 +115,13 @@ public class NodeService {
 			return false;
 		}
 		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
+		Map<String, Object> options = getControllerInvocationOptions();
 		for (ChildrenProvider provider : childrenProviders) {
-			if (provider.hasChildren(node)) {
+			if (provider.hasChildren(node, options)) {
 				return true;
+			}
+			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+				break;
 			}
 		}
 		return false;
@@ -225,7 +239,7 @@ public class NodeService {
 		
 		return descriptorsMap;
 	}
-		
+	
 	public Set<String> getRegisteredTypes() {
 		return registry.getRegisteredTypes();
 	}
@@ -240,8 +254,12 @@ public class NodeService {
 		}
 					
 		List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);
+		Map<String, Object> options = getControllerInvocationOptions();
 		for (PropertiesProvider provider : providers) {
-			provider.populateWithProperties(node);
+			provider.populateWithProperties(node, options);
+			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+				break;
+			}
 		}
 		
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node));
@@ -262,6 +280,12 @@ public class NodeService {
 			return null;
 		}
 		return rawNodeDataProvider.getRawNodeData(node);	
+	}
+	
+	public Map<String, Object> getControllerInvocationOptions() {
+		Map<String, Object> options = new HashMap<String, Object>();
+		options.put(STOP_CONTROLLER_INVOCATION, false);
+		return options;
 	}
 	
 }

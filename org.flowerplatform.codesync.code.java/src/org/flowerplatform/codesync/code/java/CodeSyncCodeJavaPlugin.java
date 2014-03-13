@@ -62,7 +62,6 @@ import static org.flowerplatform.core.node.remote.PropertyDescriptor.DROP_DOWN_L
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
@@ -145,7 +144,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		.addCategory(category_canContainTypes)
 		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICON, getImagePath(IMG_FILE)));
 		
-		PropertyDescriptor returnType = new PropertyDescriptor().setNameAs(JavaPropertiesConstants.TYPED_ELEMENT_TYPE).setReadOnlyAs(false);
+		PropertyDescriptor returnType = new PropertyDescriptor().setNameAs(JavaPropertiesConstants.TYPED_ELEMENT_TYPE);
 		JavaTypeDeclarationModelAdapter typeModelAdapter = new JavaTypeDeclarationModelAdapter();
 		JavaTypeDeclarationFeatureProvider typeFeatureProvider = new JavaTypeDeclarationFeatureProvider();
 		
@@ -227,7 +226,9 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		createNodeTypeDescriptor(MEMBER_VALUE_PAIR, new JavaMemberValuePairModelAdapter(), new JavaMemberValuePairFeatureProvider())
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(JavaPropertiesConstants.ANNOTATION_VALUES));
 		
-		List<String> possibleValuesForModifiers = Arrays.asList(
+		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new NodeFeatureProvider())
+		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
 				"public",
 				"protected",
 				"private",
@@ -238,10 +239,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 				"synchronized",
 				"transient",
 				"volatile",
-				"strictfp");
-		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new NodeFeatureProvider())
-		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(DROP_DOWN_LIST).setPossibleValuesAs(possibleValuesForModifiers).setReadOnlyAs(false));
+				"strictfp")));
 		
 		createNodeTypeDescriptor(PARAMETER, new JavaParameterModelAdapter(), new JavaParameterFeatureProvider())
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(JavaPropertiesConstants.OPERATION_PARAMETERS))

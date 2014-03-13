@@ -41,7 +41,7 @@ public class PropertyDescriptor extends AbstractController {
 	private String type = STRING;
 	private String category = DEFAULT_CATEGORY;
 
-	private boolean readOnly = true;
+	private boolean readOnly;
 	private List<?> possibleValues;
 	
 	public String getName() {

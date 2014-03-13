@@ -1,9 +1,9 @@
 package org.flowerplatform.flex_client.codesync.renderer {
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
+	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
-	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	
 	/**

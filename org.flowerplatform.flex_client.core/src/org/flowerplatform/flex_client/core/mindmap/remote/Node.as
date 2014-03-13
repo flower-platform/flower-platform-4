@@ -53,6 +53,20 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		[Transient]
 		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
 				
+		public function Node(fullNodeId:String = null) {
+			if (fullNodeId != null) {
+				var tokens:Array = fullNodeId.split(FULL_NODE_ID_SEPARATOR);
+				
+				_type = tokens[0];
+				_resource = tokens[1];
+				
+				if (tokens.length == 3) {
+					_idWithinResource = tokens[2];
+				}
+				cachedFullNodeId = fullNodeId;
+			}
+		}
+		
 		public function get type():String {
 			return _type;
 		}
@@ -85,6 +99,10 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 				cachedFullNodeId = Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource);
 			}
 			return cachedFullNodeId;
+		}
+		
+		public function toString():String {
+			return fullNodeId;
 		}
 		
 	}

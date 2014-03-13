@@ -11,6 +11,14 @@ package org.flowerplatform.flexutil.renderer {
 	
 	/**
 	 * An extension for components that adds multiple icons as children.
+	 * 
+	 * <p>
+	 * The component must implement <code>IIconsComponentExtensionProvider</code>
+	 * to manage this "extension".
+	 * 
+	 * <p>
+	 * It is used in different components: node renderer (AbstractMindMapModelRenderer), property renderer (IconsWithButtonPropertyRenderer).
+	 * 
 	 * @author Cristina Constantinescu
 	 */ 
 	public class IconsComponentExtension {

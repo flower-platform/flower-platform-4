@@ -24,6 +24,11 @@ package org.flowerplatform.flexutil.renderer {
 	[Style(name="iconsGap", type="Number", format="Number", inherit="no")]
 	
 	/**
+	 * NOTE: This renderer is used only in samples.
+	 * 
+	 * Adds multiple icons functionality to <code>LabelItemRenderer</code>.
+	 * It isn't used in production because it has some problems when zooming (label font size isn't changing).
+	 * 
 	 * @author Cristina Constantinescu
 	 */ 
 	public class MultipleIconItemRenderer extends LabelItemRenderer implements IGraphicElementContainer {
@@ -33,6 +38,7 @@ package org.flowerplatform.flexutil.renderer {
 		public function MultipleIconItemRenderer() {
 			super();
 			
+			// if used in production => modify to use the global one (FlexUtilGlobals.imageContentCache)
 			if (_imageCache == null) {
 				_imageCache = new ContentCache();
 				_imageCache.enableCaching = true;

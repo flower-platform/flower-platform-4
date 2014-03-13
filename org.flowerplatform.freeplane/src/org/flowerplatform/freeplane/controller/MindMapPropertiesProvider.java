@@ -7,6 +7,7 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDT
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
 
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.mindmap.MindMapPlugin;
@@ -20,8 +21,8 @@ import org.freeplane.features.nodestyle.NodeSizeModel;
 public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 	
 	@Override
-	public void populateWithProperties(Node node) {
-		super.populateWithProperties(node);
+	public void populateWithProperties(Node node, Map<String, Object> options) {
+		super.populateWithProperties(node, options);
 		
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		NodeSizeModel nodeSizeModel = NodeSizeModel.getModel(rawNodeData);
@@ -46,8 +47,10 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			}
 			if (sb.length() > 0) { // remove last "|"
 				node.getProperties().put(ICONS, sb.substring(0, sb.length() - 1));
+			} else {
+				node.getProperties().put(ICONS, "");
 			}
-		}
+		} 
 	}
 
 }

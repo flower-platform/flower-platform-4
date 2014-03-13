@@ -18,20 +18,21 @@
  */
 package org.flowerplatform.flex_client.web {
 	import flash.events.MouseEvent;
+	import flash.external.ExternalInterface;
 	
 	import mx.containers.HBox;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
+	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	import spark.components.Button;
+	import spark.components.TextInput;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -62,15 +63,18 @@ package org.flowerplatform.flex_client.web {
 						
 			var btn:Button = new Button();
 			btn.label = "Open Editor";
+			var textInput:TextInput = new TextInput();
+			textInput.width = 400;
+			textInput.text = "D:/temp/FAP-FlowerPlatform4.mm";
 			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				var view:ViewLayoutData = new ViewLayoutData();
-				view.isEditor = true;
-				view.viewId = MindMapEditorProvider.ID;
-				FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
+				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, textInput.text);
 			});
 			hBox.addChild(btn);
+			hBox.addChild(textInput);
 						
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);			
+			
+			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 		}
 		
 		override protected function registerMessageBundle():void {			

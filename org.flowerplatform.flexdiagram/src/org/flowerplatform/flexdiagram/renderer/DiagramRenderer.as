@@ -21,13 +21,12 @@ package org.flowerplatform.flexdiagram.renderer {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
-	import mx.binding.utils.BindingUtils;
 	import mx.core.IVisualElement;
-	import mx.core.UIComponent;
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;
@@ -107,10 +106,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			return new Rectangle(horizontalScrollPosition - viewPortRectOffsetTowardOutside, verticalScrollPosition - viewPortRectOffsetTowardOutside, width + 2 * viewPortRectOffsetTowardOutside, height + 2 * viewPortRectOffsetTowardOutside);
 		}
 		
-		public function setContentRect(rect:Rectangle):void {		
-			if (contentRect != null && rect.equals(contentRect)) {		
-				return;
-			}
+		public function setContentRect(rect:Rectangle):void {
 			contentRect = rect;
 		}
 		
