@@ -52,7 +52,7 @@ package org.flowerplatform.flexdiagram {
 		
 		public static function getRendererController(context:DiagramShellContext, model:Object):RendererController {
 			var descriptor:TypeDescriptor = getTypeDescriptor(context, model);
-			if (descriptor == null) {
+			if (descriptor.type == null) {
 				return null;
 			}			
 			return RendererController(descriptor.getSingleController(RendererController.TYPE, model));	

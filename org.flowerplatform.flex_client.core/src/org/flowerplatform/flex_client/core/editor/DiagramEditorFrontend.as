@@ -25,6 +25,8 @@ package org.flowerplatform.flex_client.core.editor {
 	import mx.events.CollectionEventKind;
 	import mx.events.FlexEvent;
 	
+	import spark.components.HGroup;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
@@ -32,10 +34,9 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexdiagram.DiagramShellAwareProcessor;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
-	
-	import spark.components.HGroup;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -57,7 +58,13 @@ package org.flowerplatform.flex_client.core.editor {
 			var scroller:InfiniteScroller = new InfiniteScroller();
 			scroller.percentWidth = 100;
 			scroller.percentHeight = 100;
-			addElement(scroller);
+			
+			var hGroupArea:HGroup = new HGroup();
+			hGroupArea.percentWidth = 100;
+			hGroupArea.percentHeight = 100;
+			hGroupArea.gap=1;
+			hGroupArea.paddingRight = 0;
+
 			
 			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
 			diagramRenderer.useGrid = false;		
@@ -72,6 +79,11 @@ package org.flowerplatform.flex_client.core.editor {
 			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));
 			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
+			
+			var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
+			hGroupArea.addElement(iconSideBarfactory.newInstance(false));
+			hGroupArea.addElement(scroller);
+			addElement(hGroupArea);
 			
 			super.createChildren();		
 		}

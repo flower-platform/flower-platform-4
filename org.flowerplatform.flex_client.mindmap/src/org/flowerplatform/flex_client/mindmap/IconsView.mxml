@@ -21,7 +21,7 @@ license-end
 <!---
 @author Cristina Constantinescu
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<local:MindMapIconsComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:local="org.flowerplatform.flex_client.mindmap.*"
@@ -29,12 +29,7 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
-			
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
-			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
-			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
@@ -46,25 +41,7 @@ license-end
 			private var btnRemoveFirst:MindMapButtonWithIcon;
 			private var btnRemoveLast:MindMapButtonWithIcon;
 			
-			public var icons:String;
 			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
-			public function get viewHost():IViewHost {
-				return _viewHost;
-			}
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewHost = viewHost;
-				_viewHost.setLabel(MindMapPlugin.getInstance().getMessage('manageIcons.action.label'));
-				_viewHost.setIcon(MindMapPlugin.getInstance().getResourceUrl('images/images.png'));
-			}
-			
-			public function setResultHandler(resultHandler:IDialogResultHandler):void {
-				this.resultHandler = resultHandler;
-			}
 			
 			/**
 			 * @author Cristina Constantinescu
@@ -73,84 +50,15 @@ license-end
 			override protected function createChildren():void {
 				super.createChildren();
 				
-				btnRemoveAll = new MindMapButtonWithIcon();
-				btnRemoveAll.iconUrl = "/images/icon_trash.png";
-				btnRemoveAll.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.all.label');
-				btnRemoveAll.addEventListener(MouseEvent.CLICK, btnRemoveAll_clickHandler);
+			}
+			
+			override protected function btnImage_clickHandler(event:MouseEvent):void {
 				
-				btnRemoveFirst = new MindMapButtonWithIcon();
-				btnRemoveFirst.iconUrl = "/images/remove_first_icon.png";
-				btnRemoveFirst.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.first.label');
-				btnRemoveFirst.addEventListener(MouseEvent.CLICK, btnRemoveFirst_clickHandler);
-				
-				btnRemoveLast = new MindMapButtonWithIcon();
-				btnRemoveLast.iconUrl = "/images/remove_last_icon.png";
-				btnRemoveLast.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.last.label');
-				btnRemoveLast.addEventListener(MouseEvent.CLICK, btnRemoveLast_clickHandler);
-				
-				removeGroup.addElement(btnRemoveAll);				
-				removeGroup.addElement(btnRemoveFirst);				
-				removeGroup.addElement(btnRemoveLast);
-				
-				var icons:Array = MindMapPlugin.getInstance().getMessage('icons.list').split(';');
-				for (var i:int=0; i < icons.length; i++) {
-					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-					btnImage.iconUrl = "images/icons/" + icons[i] + ".png";
-					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
-					
-					imageGroup.addElement(btnImage);
-				}
 			}
 					
-			protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_ALL;
-				closeView(result);
-			}
-			
-			protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_FIRST;
-				closeView(result);
-			}
-			
-			protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_LAST;
-				closeView(result);
-			}
-			
-			protected function btnImage_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.ADD;
-				result.iconUrl = MindMapPlugin.getInstance().getResourceUrl(MindMapButtonWithIcon(event.target).iconUrl);
-				closeView(result);
-			}
-			
-			private function closeView(result:Object):void {
-				resultHandler.handleDialogResult(result);
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
-			}
 		]]>
 	</fx:Script>
 	
-	<s:layout>
-		<s:VerticalLayout gap="3"/>
-	</s:layout>
 	
-	<s:HGroup id="removeGroup" width="100%" gap="2">		
-	</s:HGroup>
 	
-	<s:Line width="100%" >
-		<s:stroke>
-			<s:SolidColorStroke color="gray" weight="1"/>
-		</s:stroke>
-	</s:Line>
-	
-	<s:Group id="imageGroup" width="100%" height="100%" >
-		<s:layout>
-			<s:TileLayout horizontalGap="2" verticalGap="2"/>
-		</s:layout>		
-	</s:Group>
-	
-</s:Group>
+</local:MindMapIconsComponent>

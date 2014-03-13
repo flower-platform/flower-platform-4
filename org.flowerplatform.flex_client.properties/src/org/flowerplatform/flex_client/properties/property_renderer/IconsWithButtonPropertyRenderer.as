@@ -75,7 +75,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			} else {
 				icons = null;
 			}
-			currentValue = String(propertyDescriptor.value);
+			currentValue = (propertyDescriptor.value == null) ? null : String(propertyDescriptor.value);
 		}
 		
 		override public function set data(value:Object):void {
@@ -118,7 +118,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			var valueChanged:Boolean = false;
 			switch (type) {
 				case ADD:
-					currentValue = (currentValue == null ? "" : (currentValue + ICONS_SEPARATOR)) + result.iconUrl;
+					currentValue = ( (currentValue == null || currentValue == "") ? "" : (currentValue + ICONS_SEPARATOR)) + result.iconUrl;
 					valueChanged = true;
 					break;
 				case REMOVE_FIRST:
