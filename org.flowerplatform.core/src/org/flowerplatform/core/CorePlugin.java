@@ -57,6 +57,7 @@ import org.flowerplatform.core.fileSystem.FileSystemPropertiesProvider;
 import org.flowerplatform.core.fileSystem.FileSystemRootNodeProvider;
 import org.flowerplatform.core.fileSystem.FirstRootChildrendProvider;
 import org.flowerplatform.core.fileSystem.SecondRootChildrendProvider;
+import org.flowerplatform.core.fileSystem.SecondRootPropertiesProvider;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
@@ -200,9 +201,12 @@ getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("root1")
-		.addAdditiveController(CHILDREN_PROVIDER, new FirstRootChildrendProvider());
+				.addSingleController(ROOT_NODE_PROVIDER, new FileRootNodeProvider())
+				.addAdditiveController(CHILDREN_PROVIDER, new FirstRootChildrendProvider());
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("root2")
+				.addSingleController(ROOT_NODE_PROVIDER, new FileRootNodeProvider())
+				.addAdditiveController(PROPERTIES_PROVIDER, new SecondRootPropertiesProvider())
 				.addAdditiveController(CHILDREN_PROVIDER, new SecondRootChildrendProvider());
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("repo")

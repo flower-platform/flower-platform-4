@@ -164,6 +164,7 @@ package org.flowerplatform.flex_client.core {
 			
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
+			linkHandlers[LinkHandler.OPEN_ROOT] = new LinkHandler(MindMapEditorProvider.ID);
 			
 			if (ExternalInterface.available) {
 				// on mobile, it's not available
