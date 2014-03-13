@@ -24,15 +24,15 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	
+	import spark.components.Button;
+	import spark.components.TextInput;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
-	
-	import spark.components.Button;
-	import spark.components.TextInput;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -71,7 +71,14 @@ package org.flowerplatform.flex_client.web {
 			});
 			hBox.addChild(btn);
 			hBox.addChild(textInput);
-						
+				
+			var addRootBtn:Button = new Button();
+			addRootBtn.label = "Add root";
+			addRootBtn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
+				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_ROOT, null);
+			});
+			hBox.addChild(addRootBtn);
+
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);			
 			
 			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));

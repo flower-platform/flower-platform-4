@@ -8,6 +8,7 @@ package org.flowerplatform.flex_client.core.link {
 		
 		public static const OPEN_RESOURCES:String = "openResources";
 		public static const SELECT_RESOURCE_AT_INDEX:String = "selectResourceAtIndex";
+		public static const OPEN_ROOT:String = "openRoot";
 		
 		public var viewId:String;
 		
@@ -39,6 +40,15 @@ package org.flowerplatform.flex_client.core.link {
 					view.viewId = viewId;
 					FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
 				}
+			} else if (command == OPEN_ROOT) {
+				var view:ViewLayoutData = new ViewLayoutData();
+				var root:Node = new Node();
+				root.type = "root1";
+				root.resource = "1";
+				view.customData = root.fullNodeId;
+				view.isEditor = true;
+				view.viewId = viewId;
+				FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
 			}
 		}
 	}

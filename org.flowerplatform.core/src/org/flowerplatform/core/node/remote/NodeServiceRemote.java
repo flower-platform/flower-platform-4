@@ -1,5 +1,7 @@
 package org.flowerplatform.core.node.remote;
 
+import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRECTORY;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,13 @@ public class NodeServiceRemote {
 	}
 	
 	public void addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
-		Node child = new Node((String) properties.get(CorePlugin.TYPE_KEY), (String) properties.get(CorePlugin.RESOURCE_KEY), null, null);
+		Node child;
+		if (properties.get(CorePlugin.TYPE_KEY).equals(CorePlugin.FILE_NODE_TYPE)) {
+			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), null, (String)properties.get("text"), null);
+			child.getProperties().put(IS_DIRECTORY, properties.get(IS_DIRECTORY)); 
+		} else {
+			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), (String) properties.get(CorePlugin.RESOURCE_KEY), null, null);
+		}
 		CorePlugin.getInstance().getNodeService().addChild(new Node(parentFullNodeId), child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null);	
 	}
 	
