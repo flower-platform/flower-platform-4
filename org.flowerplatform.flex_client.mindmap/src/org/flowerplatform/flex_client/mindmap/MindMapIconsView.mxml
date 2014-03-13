@@ -20,45 +20,56 @@ license-end
 -->
 <!---
 @author Cristina Constantinescu
+@author Sebastian Solomon
 -->
 <local:MindMapIconsComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:local="org.flowerplatform.flex_client.mindmap.*"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.dialog.IDialog" >
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.dialog.IDialog" 
+		 skinClass = "org.flowerplatform.flex_client.mindmap.TileMindMapIconsSkin">
 	
 	<fx:Script>
 		<![CDATA[
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
-			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-			
 			private var _viewHost:IViewHost;
-			private var resultHandler:IDialogResultHandler;
 			
 			private var btnRemoveAll:MindMapButtonWithIcon;
 			private var btnRemoveFirst:MindMapButtonWithIcon;
 			private var btnRemoveLast:MindMapButtonWithIcon;
 			
-			
-			
-			/**
-			 * @author Cristina Constantinescu
-			 * @author Sebastian Solomon
-			 */
 			override protected function createChildren():void {
 				super.createChildren();
-				
 			}
 			
-			override protected function btnImage_clickHandler(event:MouseEvent):void {
-				
+			override protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = IconsWithButtonPropertyRenderer.REMOVE_ALL;
+				closeView(result);
 			}
-					
+			
+			override protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = IconsWithButtonPropertyRenderer.REMOVE_FIRST;
+				closeView(result);
+			}
+			
+			override protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = IconsWithButtonPropertyRenderer.REMOVE_LAST;
+				closeView(result);
+			}
+			
+			override protected function btnImage_clickHandler(event:MouseEvent):Object {
+				var result:Object = super.btnImage_clickHandler(event);
+				closeView(result);
+				return result;
+			}
+			
 		]]>
 	</fx:Script>
-	
-	
 	
 </local:MindMapIconsComponent>

@@ -17,13 +17,11 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor {
-	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.IList;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
-	import mx.events.FlexEvent;
 	
 	import spark.components.HGroup;
 	
@@ -36,7 +34,6 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	
 	/**
 	 * @author Mariana Gheorghe

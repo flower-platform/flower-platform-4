@@ -19,9 +19,9 @@ Crispico - Initial API and implementation  The product is licensed under GPL. Th
 license-end
 -->
 <!---
-@author Cristina Constantinescu
+@author Sebastian Solomon
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:local="org.flowerplatform.flex_client.mindmap.*"
@@ -30,6 +30,8 @@ license-end
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
+			
+			import spark.components.Group;
 			
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
 			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
@@ -47,6 +49,14 @@ license-end
 			private var btnRemoveLast:MindMapButtonWithIcon;
 			
 			public var icons:String;
+			
+			[SkinPart(required="true")]
+			[Bindable]  
+			public var imageGroup:Group;
+			
+			[SkinPart(required="true")]
+			[Bindable]
+			public var removeGroup:Group;
 			
 			public function getActions(selection:IList):Vector.<IAction> {
 				return null;
@@ -103,54 +113,27 @@ license-end
 			}
 					
 			protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_ALL;
-				closeView(result);
 			}
 			
 			protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_FIRST;
-				closeView(result);
 			}
 			
 			protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_LAST;
-				closeView(result);
 			}
 			
-			protected function btnImage_clickHandler(event:MouseEvent):void {
+			protected function btnImage_clickHandler(event:MouseEvent):Object {
 				var result:Object = new Object();
 				result.type = IconsWithButtonPropertyRenderer.ADD;
 				result.iconUrl = MindMapPlugin.getInstance().getResourceUrl(MindMapButtonWithIcon(event.target).iconUrl);
-				closeView(result);
+				return result;
 			}
 			
-			private function closeView(result:Object):void {
+			protected function closeView(result:Object):void {
 				resultHandler.handleDialogResult(result);
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:layout>
-		<s:VerticalLayout gap="3"/>
-	</s:layout>
-	
-	<s:HGroup id="removeGroup" width="100%" gap="2">		
-	</s:HGroup>
-	
-	<s:Line width="100%" >
-		<s:stroke>
-			<s:SolidColorStroke color="gray" weight="1"/>
-		</s:stroke>
-	</s:Line>
-	
-	<s:Group id="imageGroup" width="100%" height="100%" >
-		<s:layout>
-			<s:TileLayout horizontalGap="2" verticalGap="2"/>
-		</s:layout>		
-	</s:Group>
-	
-</s:Group>
+</s:SkinnableContainer>

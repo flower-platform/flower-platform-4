@@ -76,7 +76,7 @@ package org.flowerplatform.flex_client.mindmap {
 			PropertiesPlugin.getInstance().propertyRendererClasses["MindMapIconsWithButton"] = new FactoryWithInitialization
 				(IconsWithButtonPropertyRenderer, {
 					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object):void {
-						var dialog:IconsView = new IconsView();
+						var dialog:MindMapIconsView = new MindMapIconsView();
 						dialog.setResultHandler(itemRendererHandler);
 						dialog.icons = propertyValue;
 						
@@ -93,7 +93,7 @@ package org.flowerplatform.flex_client.mindmap {
 					
 				});
 			
-			CorePlugin.getInstance().iconSideBarClass = IconsSideBar;
+			CorePlugin.getInstance().iconSideBarClass = MindMapIconsBar;
 		
 		}
 		

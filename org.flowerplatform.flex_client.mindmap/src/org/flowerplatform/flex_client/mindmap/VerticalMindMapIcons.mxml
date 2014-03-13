@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<!---
+@author Sebastian Solomon
+-->
+<ns:MindMapIconsComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  height="100%" xmlns:ns="org.flowerplatform.flex_client.mindmap.*"
+		  skinClass = "org.flowerplatform.flex_client.mindmap.VerticalMindMapIconsSkin">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
+			import org.flowerplatform.flexdiagram.DiagramShell;
+			
+			public  var diagramShell:DiagramShell;
+			
+			override protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					if (node.properties.hasOwnProperty('icons')) {
+						saveIconProperty(node, null)
+					}
+				}
+			}
+			
+		   	override protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					var currentValue:String = node.properties['icons'];
+					if (currentValue != null) {
+						var firstIndexOf:int = currentValue.indexOf(IconsWithButtonPropertyRenderer.ICONS_SEPARATOR);
+						currentValue = firstIndexOf != -1 ? currentValue.substr(firstIndexOf + 1, currentValue.length) : null;
+						saveIconProperty(node, currentValue);
+					}
+				}
+			}
+			
+			override protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					var currentValue:String = node.properties['icons'];
+					if (currentValue != null) {
+						var lastIndexOf:int = currentValue.lastIndexOf(IconsWithButtonPropertyRenderer.ICONS_SEPARATOR);
+						currentValue = lastIndexOf != -1 ? currentValue.substr(0, lastIndexOf) : null;
+						saveIconProperty(node, currentValue);
+					}
+				}
+			}
+			
+			override protected function btnImage_clickHandler(event:MouseEvent):Object {
+				var result:Object = super.btnImage_clickHandler(event);
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					if (node.properties.hasOwnProperty('icons')) {
+						var currentValue:String = node.properties['icons'];
+						currentValue = (currentValue == null || currentValue == "" ? "" : (currentValue + IconsWithButtonPropertyRenderer.ICONS_SEPARATOR)) + result.iconUrl;
+						saveIconProperty(node, currentValue);
+					}
+				}
+				return null;
+			}
+
+			protected function saveIconProperty(node:Node, currentValue:String):void {			
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", 
+					[node.fullNodeId, "icons", currentValue]);
+			}
+		]]>
+	</fx:Script>
+	
+</ns:MindMapIconsComponent>
