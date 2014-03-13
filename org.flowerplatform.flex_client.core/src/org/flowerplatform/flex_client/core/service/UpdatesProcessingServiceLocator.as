@@ -91,6 +91,9 @@ package org.flowerplatform.flex_client.core.service {
 		
 		// TODO CC: temporary code (when removing this code delete the flex_legacy dependency)
 		private function getFirstMindMapEditorDiagramShell():MindMapEditorDiagramShell {
+			if (!(FlexUtilGlobals.getInstance().workbench is Workbench)) {
+				return null;
+			}
 			if (Workbench(FlexUtilGlobals.getInstance().workbench).rootLayout == null) {
 				return null;
 			}

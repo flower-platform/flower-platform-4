@@ -102,7 +102,7 @@ package org.flowerplatform.flexutil.selection {
 				var selection:IList = viewHost.selectionChanged();
 			}
 			
-			if (activeSelectionProvider == selectionProvider) {
+			if (selectionProvider != null && activeSelectionProvider == selectionProvider) {
 				// this "if" is intended for a case like the following: there are 2 ViewContent/SelectionProviders;
 				// the user clicks on VC1 and selects/deselects. So VC1 is the activeSelectionProvider.
 				// Meanwhile, the selection is changed programmatically in VC2. In this case, we don't need to dispatch,

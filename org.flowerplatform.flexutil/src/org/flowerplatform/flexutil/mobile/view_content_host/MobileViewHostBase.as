@@ -239,6 +239,8 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			viewMenuItems = newViewMenuItems; 
 				
 			appendToActionContent(newActionContent);
+			
+			actionContent = newActionContent;
 		}
 		
 		/**

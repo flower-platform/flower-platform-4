@@ -1,8 +1,6 @@
 package org.flowerplatform.flex_client.codesync.renderer {
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
@@ -13,14 +11,11 @@ package org.flowerplatform.flex_client.codesync.renderer {
 	 */
 	public class CodeSyncNodeRenderer extends NodeRenderer {
 		
-		override public function set data(value:Object):void {
-			super.data = value;
-			composeIconWithSyncMarkers();			
-		}
-		
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
-			composeIconWithSyncMarkers();
+			if (event == null || event.updatedProperties == null || event.updatedProperties.getItemIndex("icon") != -1) {
+				composeIconWithSyncMarkers();
+			}
 		}
 		
 		protected function composeIconWithSyncMarkers():void {
