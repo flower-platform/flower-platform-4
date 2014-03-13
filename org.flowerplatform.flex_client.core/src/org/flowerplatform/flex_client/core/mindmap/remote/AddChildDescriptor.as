@@ -32,5 +32,7 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		
 		public var orderIndex:int;
 		
+		public var properties:Object;
+		
 	}
 }
