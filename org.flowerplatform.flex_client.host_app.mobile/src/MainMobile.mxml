@@ -87,7 +87,6 @@
 			import org.flowerplatform.flexutil.plugin.AbstractFlexPlugin;
 			import org.flowerplatform.flexutil.plugin.FlexPluginDescriptor;
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
-			import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
 			
 			import spark.core.ContentCache;
 			

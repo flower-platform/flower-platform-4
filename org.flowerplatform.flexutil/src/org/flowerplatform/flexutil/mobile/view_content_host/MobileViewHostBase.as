@@ -38,6 +38,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	import spark.components.Label;
 	import spark.components.View;
 	import spark.components.ViewMenuItem;
+	import spark.components.ViewNavigator;
 	import spark.components.supportClasses.ButtonBase;
 	import spark.events.ViewNavigatorEvent;
 	import spark.primitives.BitmapImage;
@@ -88,6 +89,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			openMenuAction = new OpenMenuAction(this);
 			addEventListener(FlexEvent.MENU_KEY_PRESSED, menuKeyPressedEvent);
 			addEventListener(FlexEvent.BACK_KEY_PRESSED, backKeyPressHandler);
+			addEventListener(ViewNavigatorEvent.VIEW_ACTIVATE, viewActivateHandler);
 			addEventListener(ViewNavigatorEvent.VIEW_DEACTIVATE, viewDeactivateHandler);
 			addEventListener("viewMenuClose", viewMenuClosedHandler);
 			
@@ -112,8 +114,20 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			FlexGlobals.topLevelApplication.dispatchEvent(new MenuClosedEvent());
 		}
 		
+		/**
+		 * Needed to notify the selection manager after a view was popped, and
+		 * the previous view is active again.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		protected function viewActivateHandler(event:ViewNavigatorEvent):void {
+			if (navigator.activeView is IViewHost) {
+				setActiveViewContent(IViewHost(navigator.activeView).activeViewContent);
+			}
+		}
+		
 		protected function viewDeactivateHandler(event:ViewNavigatorEvent):void {
-			FlexUtilGlobals.getInstance().selectionManager.viewContentRemoved(this, activeViewContent); 
+			FlexUtilGlobals.getInstance().selectionManager.viewContentRemoved(this, activeViewContent);
 		}
 		
 		private function initializeContextForActions():void {		

@@ -25,20 +25,24 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark">
 	<fx:Declarations>
 		<fx:Array id="navigatorContent">
-			<s:Button label="Back">
+			<s:Button label="Back" visible="{navigator.length > 1}" includeInLayout="{navigator.length > 1}">
 				<s:click>
 					<![CDATA[
-						navigator.popView();
+					// button is only visible if there are more than 1 views
+					// so we don't remove the workbench
+					navigator.popView();
+					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
+					navigator.activeView.dispatchEvent(viewRemovedEvent);
 					]]>
 				</s:click>
 			</s:Button>
 			<s:Button label="Open Editor">
 				<s:click>
 					<![CDATA[
-						var view:ViewLayoutData = new ViewLayoutData();
-						view.isEditor = true;
-						view.viewId = MindMapEditorProvider.ID;
-						FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
+					var view:ViewLayoutData = new ViewLayoutData();
+					view.isEditor = true;
+					view.viewId = MindMapEditorProvider.ID;
+					FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
 					]]>
 				</s:click>
 			</s:Button>
@@ -53,9 +57,11 @@
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.layout.ViewLayoutData;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			
 			import spark.components.ViewNavigator;
 			
+			[Bindable]
 			public var navigator:ViewNavigator;
 			
 		]]>
