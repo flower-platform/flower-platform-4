@@ -39,10 +39,7 @@
 			<s:Button label="Open Editor">
 				<s:click>
 					<![CDATA[
-					var view:ViewLayoutData = new ViewLayoutData();
-					view.isEditor = true;
-					view.viewId = MindMapEditorProvider.ID;
-					FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
+					CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "D:/temp/FAP-FlowerPlatform4.mm");
 					]]>
 				</s:click>
 			</s:Button>
@@ -53,6 +50,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.link.LinkHandler;
 			import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;

@@ -37,13 +37,14 @@
 						import mx.core.UIComponent;
 						
 						import org.flowerplatform.flex_client.core.CorePlugin;
-						import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
+						import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 						import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 						import org.flowerplatform.flexutil.FlexUtilGlobals;
 						
 						import spark.components.Group;
 						
-						public var editorFrontend:MindMapEditorFrontend; // TODO MG: replace with EditorFrontend
+						[Bindable]
+						public var editorFrontend:EditorFrontend;
 						
 						public var container:Group;
 						
@@ -69,17 +70,10 @@
 							container.removeElement(this);
 						}
 						
-						protected function getName():String {
-//							var path:String = String(editorInput);
-//							var lastIndexOf:int = path.lastIndexOf("/");
-//							return path.substr(lastIndexOf + 1);
-							return "EditorInput";
-						}
-						
 					]]>
 				</fx:Script>
 				
-				<s:Button id="switchButton" label="{getName()}" 
+				<s:Button id="switchButton" label="{editorFrontend.editorInput}" 
 						  click="switchToEditorFrontend(event)"
 						  width="100%"
 						  skinClass="com.flextras.mobile.shared.skins.ButtonSkinSquare"/>
