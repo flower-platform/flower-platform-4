@@ -158,11 +158,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
-		
-		
-		
-		
-getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
+			
+		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("resourceInfoService", new ResourceInfoServiceRemote());
 				
 		setFileAccessController(new PlainFileAccessController());
@@ -197,8 +194,6 @@ getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		fileNodeTypeDescriptor.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(LAST_ACCESS_TIME));
 		
 		addChildDescriptors(fileNodeTypeDescriptor);
-		
-		
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("root1")
 				.addSingleController(ROOT_NODE_PROVIDER, new FileRootNodeProvider())

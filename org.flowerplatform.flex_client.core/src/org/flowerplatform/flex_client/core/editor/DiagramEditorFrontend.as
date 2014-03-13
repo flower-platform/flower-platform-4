@@ -17,18 +17,13 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor {
-	import flash.events.IEventDispatcher;
-	import flash.utils.Dictionary;
-	
 	import mx.collections.IList;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
-	import mx.events.FlexEvent;
 	
 	import spark.components.HGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShell;
@@ -37,7 +32,6 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	
 	/**
 	 * @author Mariana Gheorghe
