@@ -64,7 +64,8 @@ package org.flowerplatform.flex_client.codesync {
 					
 			// controllers for code sync nodes
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(MindMapPlugin.FREEPLANE_PERSISTENCE_CATEGORY)
-				.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer));
+				// lower order index, must replace the generic renderer
+				.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer, -100000));
 		}
 		
 	}

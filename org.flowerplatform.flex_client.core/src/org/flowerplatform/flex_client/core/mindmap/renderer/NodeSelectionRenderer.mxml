@@ -88,7 +88,7 @@
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
-				if (Boolean(node.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() &&
+				if (node.properties != null && Boolean(node.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() &&
 					ControllerUtils.getModelChildrenController(context, node).getParent(context, node) != null) {	
 					vLine.visible = !mindMapDiagramShell.getModelController(context, node).getExpanded(context, node);
 					context.diagramShell.diagramRenderer.addElement(circle);
