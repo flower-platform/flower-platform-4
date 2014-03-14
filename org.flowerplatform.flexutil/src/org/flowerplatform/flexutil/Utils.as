@@ -98,30 +98,40 @@ package org.flowerplatform.flexutil {
 		}
 		
 		/**
+		 * Based on <code>type</code>:
+		 * <ul>
+		 * 	<li> ADD -> adds <code>token</code> to <code>str</code>.
+		 *  <li> REMOVE_FIRST/REMOVE_LAST -> removes first/last token from <code>str</code>.
+		 *  <li> REMOVE_ALL -> <code>str</code> becomes <code>null</code>
+		 * </ul>
+		 * 
+		 * @param str - a concatenation of substrings separated by <code>separator</code>.
+		 * 
 		 * @author Sebastian Solomon
+		 * @author Cristina Constantinescu
 		 */
-		public static function computeStringTokens(currentValue:String, separator:String, type:int, token:String = null):String {
+		public static function computeStringTokens(str:String, separator:String, type:int, token:String = null):String {
 			switch (type) {
 				case ADD:
-					currentValue = (currentValue == null ? "" : (currentValue + ICONS_SEPARATOR)) + token;
+					str = (str == null ? "" : (str + separator)) + token;
 					break;
 				case REMOVE_FIRST:
-					if (currentValue != null) {
-						var firstIndexOf:int = currentValue.indexOf(ICONS_SEPARATOR);
-						currentValue = firstIndexOf != -1 ? currentValue.substr(firstIndexOf + 1, currentValue.length) : null;
+					if (str != null) {
+						var firstIndexOf:int = str.indexOf(separator);
+						str = firstIndexOf != -1 ? str.substr(firstIndexOf + 1, str.length) : null;
 					}
 					break;
 				case REMOVE_LAST:
-					if (currentValue != null) {
-						var lastIndexOf:int = currentValue.lastIndexOf(ICONS_SEPARATOR);
-						currentValue = lastIndexOf != -1 ? currentValue.substr(0, lastIndexOf) : null;
+					if (str != null) {
+						var lastIndexOf:int = str.lastIndexOf(separator);
+						str = lastIndexOf != -1 ? str.substr(0, lastIndexOf) : null;
 					}
 					break;
 				case REMOVE_ALL:
-					currentValue = null;
+					str = null;
 					break;
 			}
-			return currentValue;
+			return str;
 		}
 		
 	}

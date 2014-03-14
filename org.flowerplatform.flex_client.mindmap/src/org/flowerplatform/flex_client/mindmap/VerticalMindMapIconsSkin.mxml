@@ -17,17 +17,10 @@
   limitations under the License.
 
 -->
-<!---
-@author Sebastian Solomon
--->
-<!--- The default skin class for a Spark SkinnableContainer container.  
+<!--- 
+Code generated from SkinnableContainerSkin.
 
-     @see spark.components.SkinnableContainer
-        
-      @langversion 3.0
-      @playerversion Flash 10
-      @playerversion AIR 1.5
-      @productversion Flex 4
+@author Sebastian Solomon
 -->
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
     xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled="0.5">
@@ -76,20 +69,20 @@
         size will not be thwarted by this skin part's minimum size.   This is a compromise,
         more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
     -->
-    <!--- @copy spark.components.SkinnableContainer#contentGroup -->
+    
 	<s:Scroller height="100%">
 	    <s:Group id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
 			<s:layout>
-			<s:VerticalLayout gap="4" paddingRight="5"/>
+				<s:VerticalLayout gap="4" paddingRight="5"/>
 			</s:layout>
 			
 			<s:VGroup id="removeGroup" width="100%" gap="2">		
 			</s:VGroup>
 			
 			<s:Line width="100%" >
-			<s:stroke>
-			<s:SolidColorStroke color="gray" weight="1"/>
-			</s:stroke>
+				<s:stroke>
+					<s:SolidColorStroke color="gray" weight="1"/>
+				</s:stroke>
 			</s:Line>
 			
 			<s:Group id="imageGroup" width="100%" height="100%" >

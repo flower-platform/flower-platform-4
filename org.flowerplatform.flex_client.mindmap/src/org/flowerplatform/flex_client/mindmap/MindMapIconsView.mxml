@@ -31,22 +31,32 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.IList;
+			
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-			private var _viewHost:IViewHost;
 			private var resultHandler:IDialogResultHandler;
 			
-			private var btnRemoveAll:MindMapButtonWithIcon;
-			private var btnRemoveFirst:MindMapButtonWithIcon;
-			private var btnRemoveLast:MindMapButtonWithIcon;
+			private var _viewHost:IViewHost;
 			
-			override protected function createChildren():void {
-				super.createChildren();
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
 			}
 			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(viewHost:IViewHost):void {
+				_viewHost = viewHost;
+				_viewHost.setLabel(MindMapPlugin.getInstance().getMessage('manageIcons.action.label'));
+				_viewHost.setIcon(MindMapPlugin.getInstance().getResourceUrl('images/images.png'));
+			}
+					
 			public function setResultHandler(resultHandler:IDialogResultHandler):void {
 				this.resultHandler = resultHandler;
 			}

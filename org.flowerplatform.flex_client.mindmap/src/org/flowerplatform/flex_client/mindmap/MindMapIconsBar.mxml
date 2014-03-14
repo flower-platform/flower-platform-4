@@ -51,9 +51,9 @@ license-end
 			}
 			
 			protected function saveIconProperty(node:Node, currentValue:String):void {			
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", 
-					[node.fullNodeId, "icons", currentValue]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, "icons", currentValue]);
 			}
+			
 		]]>
 	</fx:Script>
 	

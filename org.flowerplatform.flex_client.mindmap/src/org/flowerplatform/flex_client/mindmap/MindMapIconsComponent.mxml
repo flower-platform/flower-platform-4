@@ -36,13 +36,7 @@ license-end
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-			
-			private var _viewHost:IViewHost;
-			
-			private var btnRemoveAll:MindMapButtonWithIcon;
-			private var btnRemoveFirst:MindMapButtonWithIcon;
-			private var btnRemoveLast:MindMapButtonWithIcon;
-			
+						
 			public var icons:String;
 			
 			[SkinPart(required="true")]
@@ -52,22 +46,7 @@ license-end
 			[SkinPart(required="true")]
 			[Bindable]
 			public var removeGroup:Group;
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
-			public function get viewHost():IViewHost {
-				return _viewHost;
-			}
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewHost = viewHost;
-				_viewHost.setLabel(MindMapPlugin.getInstance().getMessage('manageIcons.action.label'));
-				_viewHost.setIcon(MindMapPlugin.getInstance().getResourceUrl('images/images.png'));
-			}
-			
-			
+					
 			/**
 			 * @author Cristina Constantinescu
 			 * @author Sebastian Solomon
@@ -75,17 +54,17 @@ license-end
 			override protected function createChildren():void {
 				super.createChildren();
 				
-				btnRemoveAll = new MindMapButtonWithIcon();
+				var btnRemoveAll:MindMapButtonWithIcon = new MindMapButtonWithIcon();
 				btnRemoveAll.iconUrl = "/images/icon_trash.png";
 				btnRemoveAll.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.all.label');
 				btnRemoveAll.addEventListener(MouseEvent.CLICK, btnRemoveAll_clickHandler);
 				
-				btnRemoveFirst = new MindMapButtonWithIcon();
+				var btnRemoveFirst:MindMapButtonWithIcon = new MindMapButtonWithIcon();
 				btnRemoveFirst.iconUrl = "/images/remove_first_icon.png";
 				btnRemoveFirst.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.first.label');
 				btnRemoveFirst.addEventListener(MouseEvent.CLICK, btnRemoveFirst_clickHandler);
 				
-				btnRemoveLast = new MindMapButtonWithIcon();
+				var btnRemoveLast:MindMapButtonWithIcon = new MindMapButtonWithIcon();
 				btnRemoveLast.iconUrl = "/images/remove_last_icon.png";
 				btnRemoveLast.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.last.label');
 				btnRemoveLast.addEventListener(MouseEvent.CLICK, btnRemoveLast_clickHandler);
@@ -131,8 +110,7 @@ license-end
 			
 			protected function handleClick(result:Object):void {
 			}
-			
-			
+						
 		]]>
 	</fx:Script>
 	

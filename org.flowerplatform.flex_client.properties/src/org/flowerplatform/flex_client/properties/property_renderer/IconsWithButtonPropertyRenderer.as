@@ -19,14 +19,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	 * @author Cristina Constantinescu
 	 */ 
 	public class IconsWithButtonPropertyRenderer extends BasicPropertyRenderer implements IIconsComponentExtensionProvider, IDialogResultHandler {
-		
-//		public static const ADD:String = "add";
-//		public static const REMOVE_FIRST:String = "remove_first";
-//		public static const REMOVE_LAST:String = "remove_last";
-//		public static const REMOVE_ALL:String = "remove_all";
-//		
-//		public static const ICONS_SEPARATOR:String = "|";
-		
+
 		protected var iconsComponentExtension:IconsComponentExtension;
 		
 		/**
