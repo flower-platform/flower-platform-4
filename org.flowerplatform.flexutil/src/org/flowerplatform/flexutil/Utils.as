@@ -175,5 +175,18 @@ package org.flowerplatform.flexutil {
 			return text.search(/(?s)^\s*<\s*html[^>]*>.*/) != -1;
 		}
 		
+		/**
+		 * Issue: TextFieldHtmlImporter doesn't support inline styles.
+		 * 
+		 * All inline styles from <code>text</code> are replaced with compatible flex format style.
+		 */ 
+		public static function getCompatibleHTMLText(text:String):String {			
+			text = text.replace(/s*style="text-align:\s*/g, 'align="');
+			
+			// add here other replacements
+			
+			return text;
+		}
+		
 	}
 }

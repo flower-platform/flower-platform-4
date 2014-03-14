@@ -76,6 +76,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 			var textChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.TEXT) != -1 : true;
 			if (textChanged) {
 				var text:String = data.properties[NodePropertiesConstants.TEXT] as String;
+				text = Utils.getCompatibleHTMLText(text);
 				// if text contains html tag, display it as html, otherwise plain text
 				labelDisplay.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
 				invalidateSize();
