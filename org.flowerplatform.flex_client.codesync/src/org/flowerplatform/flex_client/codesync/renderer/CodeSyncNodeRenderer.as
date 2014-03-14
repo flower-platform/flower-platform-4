@@ -25,9 +25,7 @@ package org.flowerplatform.flex_client.codesync.renderer {
 			if (data == null) {
 				return;
 			}
-			
-			var node:Node = Node(data);
-			
+					
 			var icon:String = node.properties.icon;
 			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
 			if (node.properties.conflict == true) {

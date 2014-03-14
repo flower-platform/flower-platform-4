@@ -41,6 +41,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public var verticalPadding:int = VERTICAL_PADDING_DEFAULT;
 		
 		/**
+		 * If <code>true</code>, the rootModel can be added as first child in rootModel's list of children.
+		 * @see addRootModelAsRootNode()
+		 * @see set rootModel
+		 */ 
+		public var showRootModelAsRootNode:Boolean = true;
+		
+		/**
 		 * Structure:
 		 * - rootModel -> keeps in its dynamic object the list of model children added directly on diagram renderer
 		 * - root (model from where the mindmap structure begins) -> first child in getDynamicObject(rootModel).children, it has no parent
@@ -48,9 +55,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 		override public function set rootModel(value:Object):void {
 			super.rootModel = value;
 			
-			shouldRefreshVisualChildren(getNewDiagramShellContext(), rootModel);
+			var context:DiagramShellContext = getNewDiagramShellContext();
+			if (showRootModelAsRootNode) {	
+				addRootModelAsRootNode(context);
+			}
+			shouldRefreshVisualChildren(context, rootModel);
 		}
-		
+				
 		public function getRoot(context:DiagramShellContext):Object {
 			var children:IList = ControllerUtils.getModelChildrenController(context, rootModel).getChildren(context, rootModel);
 			if (children == null || children.length == 0) {
@@ -294,5 +305,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 		private function getModelBottomHeight(context:DiagramShellContext, model:Object):Number {			
 			return Math.max(getPropertyValue(context, model, "expandedHeight"), getPropertyValue(context, model, "height"))/2 + getPropertyValue(context, model, "height")/2;
 		}
+		
+		/**
+		 * This method must be implemented by sub-classes that uses <code>showRootModelAsRootNode</code>.
+		 */ 
+		protected function addRootModelAsRootNode(context:DiagramShellContext):void {
+			// do nothing
+		}
+		
 	}
 }

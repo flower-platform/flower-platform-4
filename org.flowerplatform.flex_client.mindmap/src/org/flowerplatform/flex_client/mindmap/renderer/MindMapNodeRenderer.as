@@ -15,29 +15,30 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
 			
-			var minWidthChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.MIN_WIDTH) != -1 : true;
+			var minWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MIN_WIDTH);
 			if (minWidthChanged) {
-				minWidth = data.properties[MindMapNodePropertiesConstants.MIN_WIDTH];
+				minWidth = node.properties[MindMapNodePropertiesConstants.MIN_WIDTH];
 			}	
 			
-			var maxWidthChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.MAX_WIDTH) != -1 : true;
+			var maxWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MAX_WIDTH);
 			if (maxWidthChanged) {
-				maxWidth = data.properties[MindMapNodePropertiesConstants.MAX_WIDTH];
+				maxWidth = node.properties[MindMapNodePropertiesConstants.MAX_WIDTH];
 			}
 			
-			var iconsChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.ICONS) != -1 : true;
+			var iconsChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.ICONS);
 			if (iconsChanged) {
-				if (data.properties[MindMapNodePropertiesConstants.ICONS] != null) {
-					icons = new FlowerArrayList(String(data.properties[MindMapNodePropertiesConstants.ICONS]).split(ICONS_SEPARATOR));
+				if (node.properties[MindMapNodePropertiesConstants.ICONS] != null) {
+					icons = new FlowerArrayList(String(node.properties[MindMapNodePropertiesConstants.ICONS]).split(ICONS_SEPARATOR));
 				} else {
 					icons = null;
 				}
 			}
 			
-			if (minWidthChanged || maxWidthChanged) {
+			if (minWidthChanged || maxWidthChanged) {				
 				invalidateSize();
 				invalidateDisplayList();
-			}
+			}			
 		}
+		
 	}
 }

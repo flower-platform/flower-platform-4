@@ -87,6 +87,7 @@ package org.flowerplatform.flexdiagram.mindmap
 		override public function set data(value:Object):void {
 			if (super.data != null) {
 				data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+				unassignData();
 			}
 			
 			super.data = value;
@@ -123,7 +124,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			graphics.beginFill(0xCCCCCC, 0);
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 			
-			if (canDrawCircle(data)) {
+			if (canDrawCircle()) {
 				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					graphics.drawCircle(-circleRadius, height/2, circleRadius);
@@ -133,7 +134,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			}
 		}
 				
-		protected function canDrawCircle(model:Object):Boolean {
+		protected function canDrawCircle():Boolean {
 			throw new Error("This method needs to be implemented.");
 		}
 		
@@ -146,6 +147,10 @@ package org.flowerplatform.flexdiagram.mindmap
 		}
 		
 		protected function assignData():void {
+			throw new Error("This method needs to be implemented.");
+		}
+		
+		protected function unassignData():void {
 			throw new Error("This method needs to be implemented.");
 		}
 		
