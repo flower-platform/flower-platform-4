@@ -24,8 +24,7 @@ license-end
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 xmlns:local="org.flowerplatform.flex_client.mindmap.*"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.dialog.IDialog" >
+		 xmlns:local="org.flowerplatform.flex_client.mindmap.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -34,15 +33,11 @@ license-end
 			import spark.components.Group;
 			
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
-			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
-			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-			
 			private var _viewHost:IViewHost;
-			private var resultHandler:IDialogResultHandler;
 			
 			private var btnRemoveAll:MindMapButtonWithIcon;
 			private var btnRemoveFirst:MindMapButtonWithIcon;
@@ -72,9 +67,6 @@ license-end
 				_viewHost.setIcon(MindMapPlugin.getInstance().getResourceUrl('images/images.png'));
 			}
 			
-			public function setResultHandler(resultHandler:IDialogResultHandler):void {
-				this.resultHandler = resultHandler;
-			}
 			
 			/**
 			 * @author Cristina Constantinescu
@@ -113,25 +105,33 @@ license-end
 			}
 					
 			protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = Utils.REMOVE_ALL;
+				handleClick(result);
 			}
 			
 			protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = Utils.REMOVE_FIRST;
+				handleClick(result);
 			}
 			
 			protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
-			}
-			
-			protected function btnImage_clickHandler(event:MouseEvent):Object {
 				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.ADD;
-				result.iconUrl = MindMapPlugin.getInstance().getResourceUrl(MindMapButtonWithIcon(event.target).iconUrl);
-				return result;
+				result.type = Utils.REMOVE_LAST;
+				handleClick(result);
 			}
 			
-			protected function closeView(result:Object):void {
-				resultHandler.handleDialogResult(result);
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			protected function btnImage_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = Utils.ADD;
+				result.iconUrl = MindMapPlugin.getInstance().getResourceUrl(MindMapButtonWithIcon(event.target).iconUrl);
+				handleClick(result);
 			}
+			
+			protected function handleClick(result:Object):void {
+			}
+			
 			
 		]]>
 	</fx:Script>

@@ -32,10 +32,12 @@ license-end
 	<fx:Script>
 		<![CDATA[
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
-			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			private var _viewHost:IViewHost;
+			private var resultHandler:IDialogResultHandler;
 			
 			private var btnRemoveAll:MindMapButtonWithIcon;
 			private var btnRemoveFirst:MindMapButtonWithIcon;
@@ -45,28 +47,13 @@ license-end
 				super.createChildren();
 			}
 			
-			override protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_ALL;
-				closeView(result);
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				this.resultHandler = resultHandler;
 			}
 			
-			override protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_FIRST;
-				closeView(result);
-			}
-			
-			override protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
-				var result:Object = new Object();
-				result.type = IconsWithButtonPropertyRenderer.REMOVE_LAST;
-				closeView(result);
-			}
-			
-			override protected function btnImage_clickHandler(event:MouseEvent):Object {
-				var result:Object = super.btnImage_clickHandler(event);
-				closeView(result);
-				return result;
+			override protected function handleClick(result:Object):void {
+				resultHandler.handleDialogResult(result);
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			
 		]]>
