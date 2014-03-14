@@ -29,7 +29,10 @@ package org.flowerplatform.flexutil {
 		public static var INSTANCE:FlexUtilAssets = new FlexUtilAssets(); 
 		
 		[Embed(source="/info.png")]			
-		public static const _iconInfo:Class;	
+		public static const _iconInfo:Class;
+		
+		[Embed(source="/exit.png")]
+		public static const _exitIcon:Class;
 		
 		/**
 		 * Retrieves a message from the properties files. Parameters can be passed

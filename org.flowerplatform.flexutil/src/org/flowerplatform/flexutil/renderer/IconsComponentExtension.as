@@ -4,10 +4,10 @@ package org.flowerplatform.flexutil.renderer {
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	
-	import spark.primitives.BitmapImage;
-	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
+	
+	import spark.primitives.BitmapImage;
 	
 	/**
 	 * An extension for components that adds multiple icons as children.
@@ -62,7 +62,8 @@ package org.flowerplatform.flexutil.renderer {
 				var j:int = 0;
 				if (_icons.length > 0 && value.length > 0) {
 					while (j < value.length && j < _icons.length) {
-						BitmapImage(iconDisplays.getItemAt(j)).source = value.getItemAt(j);
+						BitmapImage(iconDisplays.getItemAt(j)).source = FlexUtilGlobals.getInstance()
+							.adjustImageBeforeDisplaying(value.getItemAt(j));
 						j++;
 					}
 				}
@@ -84,7 +85,7 @@ package org.flowerplatform.flexutil.renderer {
 		protected function addIconDisplay(icon:Object):void {
 			var iconDisplay:BitmapImage = new BitmapImage();
 			iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-			iconDisplay.source = icon;
+			iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(icon);
 			iconDisplay.verticalAlign = "middle";
 			
 			IVisualElementContainer(component).addElementAt(iconDisplay, component.newIconIndex());

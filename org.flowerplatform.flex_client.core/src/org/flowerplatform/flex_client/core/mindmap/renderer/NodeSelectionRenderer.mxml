@@ -25,10 +25,14 @@
 									xmlns:s="library://ns.adobe.com/flex/spark" 
 									xmlns:mx="library://ns.adobe.com/flex/mx" 
 									xmlns:selection="org.flowerplatform.flexdiagram.renderer.selection.*"
-									xmlns:ui="org.flowerplatform.flexdiagram.ui.*">
+									xmlns:ui="org.flowerplatform.flexdiagram.ui.*"
+									initialize="setCircleRadius()">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.core.DPIClassification;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
 			import mx.events.MoveEvent;
 			import mx.events.ResizeEvent;
 			
@@ -38,6 +42,7 @@
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
 			import spark.primitives.Ellipse;
 						
@@ -45,6 +50,31 @@
 			public var circleRadius:int = 10;
 			
 			public var padding:int = 3;
+			
+			/**
+			 * Sets the circle radius depending on the platform.
+			 * 
+			 * @author Mariana Gheorghe
+			 */
+			protected function setCircleRadius():void {
+				if (FlexUtilGlobals.getInstance().isMobile) {
+					switch (FlexGlobals.topLevelApplication.applicationDPI) {
+						case DPIClassification.DPI_320:	{
+							circleRadius = 40;
+							break;
+						}
+						case DPIClassification.DPI_240:	{
+							circleRadius = 30;
+							break;
+						}
+						default: {
+							// default PPI160
+							circleRadius = 20;
+							break;
+						}
+					}
+				}
+			}
 			
 			override public function activate(context:DiagramShellContext, model:Object):void {
 				super.activate(context, model);			
@@ -132,7 +162,7 @@
 			private function get mindMapDiagramShell():MindMapDiagramShell {
 				return MindMapDiagramShell(context.diagramShell);
 			}
-						
+			
 		]]>
 	</fx:Script>
 

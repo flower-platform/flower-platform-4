@@ -17,14 +17,17 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
+	
+	import flash.utils.getDefinitionByName;
+	
 	import mx.collections.IList;
 	import mx.events.FlexEvent;
 	
-	import spark.components.DropDownList;
-	import spark.events.DropDownEvent;
-	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	
+	import spark.components.DropDownList;
+	import spark.events.DropDownEvent;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -51,7 +54,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.createChildren();
 			
 			if (FlexUtilGlobals.getInstance().isMobile) {
-//				dropDownList = new com.flextras.mobile.dropDownList.DropDownList();										
+				var mobileClass:Class = Class(getDefinitionByName("com.flextras.mobile.dropDownList.DropDownList"));
+				dropDownList = new mobileClass();
 			} else {
 				dropDownList = new spark.components.DropDownList();											
 			}
