@@ -18,10 +18,16 @@
  */
 package org.flowerplatform.tests.codesync;
 
+import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
+
 import java.io.File;
 
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.mindmap.MindMapPlugin;
 import org.flowerplatform.tests.EclipseDependentTestSuiteBase;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -36,6 +42,13 @@ import org.junit.runners.Suite.SuiteClasses;
 //	CodeSyncWikiTest.class 
 })
 public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
+	
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		startPlugin(new CodeSyncPlugin());
+		startPlugin(new FreeplanePlugin());
+		startPlugin(new MindMapPlugin());
+	}
 	
 	// TODO CS/need centralized project get/set/copy/etc
 	public static File getProject(String project) {

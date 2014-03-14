@@ -25,6 +25,7 @@ import static org.flowerplatform.core.NodePropertiesConstants.LAST_ACCESS_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.LAST_MODIFIED_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.SIZE;
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.RemoteMethodInvocationListener.LAST_UPDATE_TIMESTAMP;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
@@ -33,7 +34,6 @@ import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOV
 import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.AddChildDescriptor.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.RemoteMethodInvocationListener.LAST_UPDATE_TIMESTAMP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,10 +52,10 @@ import org.flowerplatform.core.file.FileRemoveNodeController;
 import org.flowerplatform.core.file.FileRootNodeProvider;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
-import org.flowerplatform.core.fileSystem.RepoChildrenProvider;
 import org.flowerplatform.core.fileSystem.FileSystemPropertiesProvider;
 import org.flowerplatform.core.fileSystem.FileSystemRootNodeProvider;
 import org.flowerplatform.core.fileSystem.FirstRootChildrendProvider;
+import org.flowerplatform.core.fileSystem.RepoChildrenProvider;
 import org.flowerplatform.core.fileSystem.SecondRootChildrendProvider;
 import org.flowerplatform.core.fileSystem.SecondRootPropertiesProvider;
 import org.flowerplatform.core.node.NodeService;
@@ -68,7 +68,6 @@ import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvid
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceInfoServiceRemote;
 import org.flowerplatform.core.node.resource.ResourceInfoService;
@@ -207,7 +206,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("repo")
 				.addAdditiveController(PROPERTIES_PROVIDER, new RepoPropertiesProvider())
 				.addAdditiveController(CHILDREN_PROVIDER, new RepoChildrenProvider());
-		
+				
 		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 				
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
