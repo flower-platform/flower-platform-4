@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
 import org.freeplane.features.icon.MindIcon;
@@ -98,18 +99,18 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				isPropertySet = true;
 				break;
 			case COLOR_TEXT:	
-				int color = (int) wrapper.getPropertyValue();				
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setColor(new Color(color));				
+				String color = (String) wrapper.getPropertyValue();				
+				NodeStyleModel.createNodeStyleModel(rawNodeData).setColor(ColorUtils.stringToColor(color));				
 				isPropertySet = true;
 				break;
 			case COLOR_BACKGROUND:	
-				int backgroundColor = (int) wrapper.getPropertyValue();				
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(new Color(backgroundColor));				
+				String backgroundColor = (String) wrapper.getPropertyValue();				
+				NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(ColorUtils.stringToColor(backgroundColor));				
 				isPropertySet = true;
 				break;
 			case CLOUD_COLOR:
-				int cloudColor = (int) wrapper.getPropertyValue();				
-				CloudModel.createModel(rawNodeData).setColor(new Color(cloudColor));				
+				String cloudColor = (String) wrapper.getPropertyValue();				
+				CloudModel.createModel(rawNodeData).setColor(ColorUtils.stringToColor(cloudColor));				
 				isPropertySet = true;
 				break;
 			case CLOUD_SHAPE:

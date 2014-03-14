@@ -22,16 +22,20 @@ package org.flowerplatform.flexutil {
 	import flash.text.FontType;
 	import flash.utils.getQualifiedClassName;
 	
+	import flashx.textLayout.utils.CharacterUtil;
+	
 	import mx.controls.TextInput;
 	import mx.core.ITextInput;
 	import mx.core.UIComponent;
 	import mx.utils.DescribeTypeCache;
+	import mx.utils.StringUtil;
 	
 	import spark.components.TextInput;
+	import spark.components.supportClasses.RegExPatterns;
 	import spark.components.supportClasses.SkinnableTextBase;
 	
 	/**
-	 * @author Cristina
+	 * @author Cristina Constantinescu
 	 */ 
 	public class Utils {
 		
@@ -87,9 +91,6 @@ package org.flowerplatform.flexutil {
 			return simpleClassName;
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 */
 		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
 			return str == null ? defaultStr : str;
 		}
@@ -101,7 +102,6 @@ package org.flowerplatform.flexutil {
 		 * http://mindprod.com/jgloss/logicalfonts.html
 		 * http://docs.oracle.com/javase/tutorial/2d/text/fonts.html
 		 * 
-		 * @author Cristina Constantinescu
 		 */ 
 		public static function getSupportedFontFamily(javaFontFamily:String):String {
 			switch (javaFontFamily) {
@@ -118,6 +118,61 @@ package org.flowerplatform.flexutil {
 				default:
 					return javaFontFamily;
 			}			
+		}
+		
+		/**
+		 * Inspired from UintPropertyHandler.owningHandlerCheck().
+		 * Transforms value given as parameter into color (as uint).
+		 * 
+		 * <p>
+		 * Note: RichText has some problems when setting text color using something else.
+		 */ 
+		public static function convertValueToColor(value:*):uint {
+			if (value is uint) {
+				return value;
+			}
+			var newRslt:Number;
+			if (value is String) {
+				var str:String = String(value);
+				// Normally, we could just cast a string to a uint. However, the casting technique only works for
+				// normal numbers and numbers preceded by "0x". We can encounter numbers of the form "#ffffffff"					
+				if (str.substr(0, 1) == "#") {
+					str = "0x" + str.substr(1, str.length-1);
+				}
+				newRslt = (str.toLowerCase().substr(0, 2) == "0x") ? parseInt(str) : NaN;
+			} else if (value is Number || value is int) {
+				newRslt = Number(value);
+			} else {
+				return undefined;
+			}
+			
+			if (isNaN(newRslt)) {
+				return undefined;
+			}
+			if (newRslt < 0 || newRslt > 0xffffffff) {
+				return undefined;
+			}
+			return newRslt;	
+		}
+		
+		public static function convertColorToString(color:uint):String {
+			return "#" + color.toString(16); 
+		}
+		
+		/**
+		 * Verifies if text contains <html> tag.
+		 */ 
+		public static function isHTMLText(text:String):Boolean {
+			for (var i:int = 0; i < text.length; i++) {
+				var ch:String = text.charAt(i);
+				if (ch == '<') {
+					break;
+				}
+				if (!CharacterUtil.isWhitespace(ch.charCodeAt(0)) || i == text.length) {
+					return false;
+				}
+			}
+			return text.search(/(?s)^\s*<\s*html[^>]*>.*/) != -1;
 		}
 		
 	}

@@ -42,9 +42,14 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 		}
 				
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {		
 			// clear all graphics
 			graphics.clear();
+			
+			if (drawGraphicsOnlyFromBaseClass) {
+				super.updateDisplayList(unscaledWidth, unscaledHeight);	
+				return;
+			}
 			
 			// start drawing
 			
@@ -52,7 +57,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			var shape:String = data.properties[MindMapNodePropertiesConstants.CLOUD_SHAPE];
 			if (shape != null && shape != MindMapNodePropertiesConstants.NONE) {				
 				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness
-				graphics.beginFill(data.properties[MindMapNodePropertiesConstants.CLOUD_COLOR], 1);
+				graphics.beginFill(Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.CLOUD_COLOR]), 1);
 				
 				var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
 				var cloudPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
@@ -123,12 +128,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var colorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.COLOR_TEXT) != -1 : true;
 			if (colorChanged) {
-				labelDisplay.setStyle("color", data.properties[MindMapNodePropertiesConstants.COLOR_TEXT]);
+				labelDisplay.setStyle("color", Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_TEXT]));
 			}
 			
 			var backgroundColorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.COLOR_BACKGROUND) != -1 : true;
-			if (backgroundColorChanged) {
-				backgroundColor = data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND];
+			if (backgroundColorChanged) {				
+				backgroundColor = Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND]);
 			}
 				
 			var cloudColorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.CLOUD_COLOR) != -1 : true;

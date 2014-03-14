@@ -18,6 +18,7 @@ package org.flowerplatform.flexdiagram.mindmap
 	
 	import spark.components.DataRenderer;
 	import spark.components.Label;
+	import spark.components.RichText;
 	import spark.layouts.HorizontalLayout;
 	
 	/**
@@ -31,12 +32,18 @@ package org.flowerplatform.flexdiagram.mindmap
 		
 		protected var _context:DiagramShellContext;
 			
-		protected var labelDisplay:Label;
+		protected var labelDisplay:RichText;
 		
 		protected var iconsComponentExtension:IconsComponentExtension;
 		
 		protected var backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
+		
 		protected var allowBaseRendererToClearGraphics:Boolean = true;
+		
+		/**
+		 * If <code>true</code>, draw only this class graphics (border and small circle on right).
+		 */ 
+		public var drawGraphicsOnlyFromBaseClass:Boolean = false;
 		
 		public function AbstractMindMapModelRenderer() {
 			super();
@@ -123,7 +130,7 @@ package org.flowerplatform.flexdiagram.mindmap
 		override protected function createChildren():void {			
 			super.createChildren();
 			
-			labelDisplay = new Label();		
+			labelDisplay = new RichText();		
 			labelDisplay.percentHeight = 100;
 			labelDisplay.percentWidth = 100;
 			labelDisplay.setStyle("verticalAlign" , "middle");		
@@ -132,7 +139,7 @@ package org.flowerplatform.flexdiagram.mindmap
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {				
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-			
+						
 			if (allowBaseRendererToClearGraphics) {
 				graphics.clear();
 			}

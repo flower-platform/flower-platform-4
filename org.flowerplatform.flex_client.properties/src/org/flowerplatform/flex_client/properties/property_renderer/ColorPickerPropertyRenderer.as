@@ -5,6 +5,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.events.FlexEvent;
 	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flexutil.Utils;
 	
 	import spark.events.ColorChangeEvent;
 	
@@ -35,7 +36,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 				
 		protected function valueChanged(value:Object = null):void {
 			if (data != null) {
-				colorPicker.selectedColor = uint(propertyDescriptor.value);
+				colorPicker.selectedColor = Utils.convertValueToColor(propertyDescriptor.value);
 			}
 		}
 		
@@ -49,7 +50,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		override protected function getValue():Object {
-			return colorPicker.selectedColor;
+			return Utils.convertColorToString(colorPicker.selectedColor);
 		}
 				
 	}

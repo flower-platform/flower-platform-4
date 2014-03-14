@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.mindmap.MindMapPlugin;
+import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudController;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
@@ -73,19 +74,19 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		
 		// get text color -> sets the default color if none)
 		Color color = NodeStyleController.getController().getColor(rawNodeData);
-		node.getProperties().put(COLOR_TEXT, color.getRGB());
+		node.getProperties().put(COLOR_TEXT, ColorUtils.colorToString(color));
 		
 		// get background color -> is null if no color set (doesn't get the default style value)
 		color = NodeStyleController.getController().getBackgroundColor(rawNodeData);
-		node.getProperties().put(COLOR_BACKGROUND, color == null ? Color.WHITE.getRGB() : color.getRGB());	
+		node.getProperties().put(COLOR_BACKGROUND, color == null ? ColorUtils.colorToString(Color.WHITE) : ColorUtils.colorToString(color));	
 		
 		// cloud		
 		String cloudShape = NONE;
-		int cloudColor = CloudController.getStandardColor().getRGB();
+		String cloudColor = ColorUtils.colorToString(CloudController.getStandardColor());
 		
 		CloudModel cloudModel = CloudController.getController().getCloud(rawNodeData);		
 		if (cloudModel != null) {
-			cloudColor = cloudModel.getColor().getRGB();
+			cloudColor = ColorUtils.colorToString(cloudModel.getColor());
 			
 			Shape shape = cloudModel.getShape();
 			if (Shape.RECT.equals(shape)) {

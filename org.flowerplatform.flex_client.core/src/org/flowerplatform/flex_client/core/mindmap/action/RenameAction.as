@@ -17,62 +17,58 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.mindmap.action {
+	import avmplus.getQualifiedClassName;
+	
 	import flash.events.MouseEvent;
+	import flash.utils.getDefinitionByName;
+	
+	import mx.core.ClassFactory;
+	import mx.core.IVisualElement;
+	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.mindmap.ui.RichTextWithRendererView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 	import org.flowerplatform.flexutil.popup.IMessageBox;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class RenameAction extends ActionBase {
+	public class RenameAction extends DiagramShellAwareActionBase implements IDialogResultHandler {
 		
 		public function RenameAction() {			
 			label = CorePlugin.getInstance().getMessage("mindmap.action.rename");
 			icon = CorePlugin.getInstance().getResourceUrl("images/edit.png");
 			orderIndex = 30;
 		}
-		
-		protected function askForTextInput(defaultText:String, title:String, button:String, handler:Function):IMessageBox {
-			var textArea:Object;
-			var name:String = defaultText;
-			var messageBox:Object = FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-				.setTitle(title)
-				.setText(name)
-				.setWidth(300)
-				.setHeight(200)
-				.setSelectText(true)
-				.addButton(button, function(evt:MouseEvent = null):void {
-					if (textArea != null) {
-						name = textArea.text;
-					}
-					handler(name);
-				})
-				.addButton("Cancel");
-			if (messageBox.hasOwnProperty("textArea")) {
-				textArea = messageBox.textArea;
-				if (textArea.hasOwnProperty("editable")) {
-					textArea.editable = true;
-				}				
-			}
-			IMessageBox(messageBox).showMessageBox();
-			return IMessageBox(messageBox);
-		}
-		
+				
 		override public function get visible():Boolean {			
 			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node;
 		}
 		
+		public function handleDialogResult(result:Object):void {
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result.fullNodeId, NodePropertiesConstants.TEXT, result.name]);
+		}
+			
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var messageBox:IMessageBox = askForTextInput(node.properties[NodePropertiesConstants.TEXT], "Rename", "Rename",
-				function(name:String):void {
-					CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, NodePropertiesConstants.TEXT, name]);
-			});		
+			
+			var view:RichTextWithRendererView = new RichTextWithRendererView();
+			view.rendererClass = getDefinitionByName(getQualifiedClassName(diagramShell.getRendererForModel(diagramShellContext, node))) as Class;
+			view.rendererModel = Node(ObjectUtil.copy(node));
+			view.diagramShellContext = diagramShellContext;
+			view.setResultHandler(this);
+			
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+				.setViewContent(view)
+				.setWidth(500)
+				.setHeight(400)
+				.setTitle(label)
+				.show();			
 		}
 				
 	}
