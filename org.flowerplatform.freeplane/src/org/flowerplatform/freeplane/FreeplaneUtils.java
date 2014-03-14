@@ -49,7 +49,7 @@ public class FreeplaneUtils {
 				}
 			}
 		}
-		if (type == null) { 
+		if (type == null /*|| type.equals(MindMapPlugin.MINDMAP_NODE_TYPE)*/) { 
 			// no type provided, maybe this node is provided by a random .mm file, so set type to freeplaneNode
 			type = MindMapPlugin.MINDMAP_NODE_TYPE;	
 			// TODO CC: temporary code

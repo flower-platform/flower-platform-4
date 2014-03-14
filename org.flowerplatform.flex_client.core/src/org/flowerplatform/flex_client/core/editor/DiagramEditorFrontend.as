@@ -17,11 +17,10 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor {
+
 	import mx.collections.IList;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
-	
-	import spark.components.HGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
@@ -31,7 +30,10 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	
+	import spark.components.HGroup;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -41,24 +43,34 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public var diagramShell:DiagramShell;
 		
+		protected var toolbarArea:HGroup;
+		protected var editorArea:HGroup;
+		
 		override protected function createChildren():void {	
-			// toolbar
-			var toolbarsArea:HGroup = new HGroup();
-			toolbarsArea.percentWidth = 100;
-			toolbarsArea.verticalAlign = "middle";
-			toolbarsArea.gap = 10;
-			toolbarsArea.paddingLeft = 5;
-			addElement(toolbarsArea);	
+			super.createChildren();	
+			
+			toolbarArea = new HGroup();
+			toolbarArea.percentWidth = 100;
+			toolbarArea.verticalAlign = "middle";
+			toolbarArea.gap = 10;
+			toolbarArea.paddingLeft = 5;
+			addElement(toolbarArea);	
+						
+			editorArea = new HGroup();
+			editorArea.percentWidth = 100;
+			editorArea.percentHeight = 100;
+			editorArea.gap=1;
+			editorArea.paddingRight = 0;
+									
+			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
+			diagramRenderer.useGrid = false;			
+			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
 			
 			var scroller:InfiniteScroller = new InfiniteScroller();
 			scroller.percentWidth = 100;
 			scroller.percentHeight = 100;
-			addElement(scroller);
-			
-			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
-			diagramRenderer.useGrid = false;		
 			scroller.viewport = diagramRenderer;
-			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
+			editorArea.addElement(scroller);
 			
 			diagramShell = createDiagramShell();
 			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
@@ -66,11 +78,10 @@ package org.flowerplatform.flex_client.core.editor {
 			diagramShell.diagramRenderer = diagramRenderer;
 			diagramShell.rootModel = new Node(editorInput);
 			
-			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));
-			
+			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
-			
-			super.createChildren();		
+						
+			addElement(editorArea);				
 		}
 		
 		protected function createDiagramShell():DiagramShell {

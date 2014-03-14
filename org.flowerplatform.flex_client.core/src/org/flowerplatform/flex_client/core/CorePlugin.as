@@ -90,12 +90,14 @@ package org.flowerplatform.flex_client.core {
 		public var updateTimer:UpdateTimer = new UpdateTimer();
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
+
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
-			
-		//TODO to delete when mm classes from core will be moved in .mindmap project
+	
+		/**
+		 * @author Sebastian Solomon
+		 */
+		// TODO to delete when mm classes from core will be moved in .mindmap project
 		public var iconSideBarClass:Class;
-		
-		public var iconSideBar:Group;
 		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<!---
+@author Cristina Constantinescu
+@author Sebastian Solomon
+-->
+<local:MindMapIconsComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:local="org.flowerplatform.flex_client.mindmap.*"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.dialog.IDialog" 
+		 skinClass = "org.flowerplatform.flex_client.mindmap.TileMindMapIconsSkin">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
+			import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			private var _viewHost:IViewHost;
+			
+			private var btnRemoveAll:MindMapButtonWithIcon;
+			private var btnRemoveFirst:MindMapButtonWithIcon;
+			private var btnRemoveLast:MindMapButtonWithIcon;
+			
+			override protected function createChildren():void {
+				super.createChildren();
+			}
+			
+			override protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = IconsWithButtonPropertyRenderer.REMOVE_ALL;
+				closeView(result);
+			}
+			
+			override protected function btnRemoveFirst_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = IconsWithButtonPropertyRenderer.REMOVE_FIRST;
+				closeView(result);
+			}
+			
+			override protected function btnRemoveLast_clickHandler(event:MouseEvent):void {
+				var result:Object = new Object();
+				result.type = IconsWithButtonPropertyRenderer.REMOVE_LAST;
+				closeView(result);
+			}
+			
+			override protected function btnImage_clickHandler(event:MouseEvent):Object {
+				var result:Object = super.btnImage_clickHandler(event);
+				closeView(result);
+				return result;
+			}
+			
+		]]>
+	</fx:Script>
+	
+</local:MindMapIconsComponent>

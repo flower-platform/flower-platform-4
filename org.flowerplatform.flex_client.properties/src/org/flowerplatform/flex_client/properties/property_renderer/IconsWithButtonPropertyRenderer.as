@@ -6,13 +6,13 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.controls.Spacer;
 	import mx.events.FlexEvent;
 	
-	import spark.components.Button;
-	import spark.layouts.HorizontalLayout;
-	
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
+	
+	import spark.components.Button;
+	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -75,7 +75,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			} else {
 				icons = null;
 			}
-			currentValue = String(propertyDescriptor.value);
+			currentValue = propertyDescriptor.value as String;
 		}
 		
 		override public function set data(value:Object):void {

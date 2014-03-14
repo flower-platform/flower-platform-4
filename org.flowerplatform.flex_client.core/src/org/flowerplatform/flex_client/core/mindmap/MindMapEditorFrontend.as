@@ -23,6 +23,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -46,6 +47,13 @@ package org.flowerplatform.flex_client.core.mindmap {
 			updateProcessor = diagramShell.updateProcessor;
 			return diagramShell;
 		}
+		
+		override protected function createChildren():void {			
+			super.createChildren();
+			
+			var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
+			editorArea.addElementAt(iconSideBarfactory.newInstance(false), 0);
+		}	
 		
 	}
 }
