@@ -20,8 +20,7 @@ import javax.persistence.OneToMany;
 
 import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
-@Deprecated
-public class Test extends SuperClassFromModel implements IFromSource, IFromModel {
+public @Deprecated(test) class Test extends SuperClassFromModel implements IFromSource, IFromModel {
 
 	/**
 	 * modified from source
@@ -31,13 +30,16 @@ public class Test extends SuperClassFromModel implements IFromSource, IFromModel
 	
 	private int z = 3;
 	
-	@OneToMany(mappedBy="modified_by_model", orphanRemoval = true)
+	@OneToMany(mappedBy="modified_by_model", orphanRemoval=true)
 	static private int test(final String st) {
 		return x;
 	}
 
-	@OverrideAnnotationOf(x+y)
-	public Test getTest(int a) {
+	/**
+	 * modified from model
+	 * @author  test
+	 */
+	public @OverrideAnnotationOf(value1=true, value2=false) Test getTest(int a) {
 		return x;
 	}
 
@@ -66,6 +68,9 @@ public class Test extends SuperClassFromModel implements IFromSource, IFromModel
 		private int x;
 	}
 
+	/**
+	 * doc from model @author test
+	 */
 	public int t;
 
 	class InternalClassFromModel {
