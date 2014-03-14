@@ -19,12 +19,15 @@
 package org.flowerplatform.flexdiagram.mindmap {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
+	import mx.core.DPIClassification;
+	import mx.core.FlexGlobals;
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -39,6 +42,31 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public var horizontalPadding:int = HORIZONTAL_PADDING_DEFAULT;
 		public var verticalPadding:int = VERTICAL_PADDING_DEFAULT;
+		
+		/**
+		 * Sets the horizontal padding depending on the platform.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		public function MindMapDiagramShell() {
+			if (FlexUtilGlobals.getInstance().isMobile) {
+				switch (FlexGlobals.topLevelApplication.applicationDPI) {
+					case DPIClassification.DPI_320:	{
+						horizontalPadding = 80;
+						break;
+					}
+					case DPIClassification.DPI_240:	{
+						horizontalPadding = 60;
+						break;
+					}
+					default: {
+						// default PPI160
+						horizontalPadding = 40;
+						break;
+					}
+				}
+			}
+		}
 		
 		/**
 		 * Structure:
