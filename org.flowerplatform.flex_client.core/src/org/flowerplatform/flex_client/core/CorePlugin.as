@@ -25,8 +25,6 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
-	import spark.components.Group;
-	
 	import org.flowerplatform.flex_client.core.editor.RootNodeIdsToEditors;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
@@ -54,14 +52,15 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
+	import org.flowerplatform.flexutil.action.ComposedAction;
+	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.layout.Perspective;
@@ -92,12 +91,15 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
-	
+			
 		/**
 		 * @author Sebastian Solomon
 		 */
 		// TODO to delete when mm classes from core will be moved in .mindmap project
 		public var iconSideBarClass:Class;
+		
+		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
+		
 		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
@@ -170,9 +172,9 @@ package org.flowerplatform.flex_client.core {
 			if (ExternalInterface.available) {
 				// on mobile, it's not available
 				ExternalInterface.addCallback("handleLink", handleLink);
-			}
+			}			
 		}
-				
+					
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
@@ -257,6 +259,27 @@ package org.flowerplatform.flex_client.core {
 				return browserURL.split("?")[0];
 			}
 			 return null;
+		}
+		
+		/**
+		 * Creates and adds an action to the the actionProvider
+		 * 
+		 * @author Mircea Negreanu
+		 */
+		public function addActionToGlobalMenuActionProvider(label:String, id:String, parentId:String = null, icon:String = null, functionDelegate:Function = null):void {
+			var action:ActionBase;
+			if (id != null) {
+				action = new ComposedAction();				
+			} else {
+				action = new ActionBase();
+			}
+			
+			action.label = label;
+			action.id = id;
+			action.parentId = parentId;
+			action.icon = icon;
+			action.functionDelegate = functionDelegate;
+			globalMenuActionProvider.getActions(null).push(action);
 		}
 	
 	}

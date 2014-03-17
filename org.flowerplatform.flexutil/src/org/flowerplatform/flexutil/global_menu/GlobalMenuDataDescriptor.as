@@ -39,7 +39,7 @@ package org.flowerplatform.flexutil.global_menu {
 	 * 
 	 * @author Mircea Negreanu
 	 */
-	public class WebMenuDataDescriptor implements IMenuDataDescriptor {
+	public class GlobalMenuDataDescriptor implements IMenuDataDescriptor {
 		
 		protected var _actionProvider:IActionProvider;
 		
@@ -51,7 +51,7 @@ package org.flowerplatform.flexutil.global_menu {
 		 */
 		protected var childrenActions:Vector.<IAction> = new Vector.<IAction>();
 		
-		public function WebMenuDataDescriptor(ap:IActionProvider = null, sel:IList = null) {
+		public function GlobalMenuDataDescriptor(ap:IActionProvider = null, sel:IList = null) {
 			super();
 			
 			_actionProvider = ap;

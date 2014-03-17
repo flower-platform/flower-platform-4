@@ -24,15 +24,16 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	
-	import spark.components.Button;
-	import spark.components.TextInput;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
+	
+	import spark.components.Button;
+	import spark.components.TextInput;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -50,7 +51,8 @@ package org.flowerplatform.flex_client.web {
 			if (INSTANCE != null) {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
-			INSTANCE = this;			
+			INSTANCE = this;	
+		
 		}
 		
 		override public function start():void {
@@ -78,9 +80,12 @@ package org.flowerplatform.flex_client.web {
 				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_ROOT, null);
 			});
 			hBox.addChild(addRootBtn);
-
-			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);			
+			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 			
+			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
+			menuBar.percentWidth = 100;					
+			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
+						
 			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 		}
 		

@@ -3,15 +3,19 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
+	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -86,5 +90,21 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		public function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void {
 			rightActiveComponent = newActiveView;
 		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */ 
+		override protected function getActionsFromViewContent(viewContent:IViewContent, selection:IList):Vector.<IAction> {
+			var result:Vector.<IAction> = super.getActionsFromViewContent(viewContent, selection);
+			
+			var globalActions:Vector.<IAction> = CorePlugin.getInstance().globalMenuActionProvider.getActions(selection);
+			if (globalActions != null) {
+				for each (var action:IAction in globalActions) {
+					result.push(action);
+				}
+			}
+			return result;
+		}
+		
 	}
 }
