@@ -22,13 +22,16 @@ package org.flowerplatform.flex_client.core {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.core.FlexGlobals;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
 	import org.flowerplatform.flex_client.core.editor.RootNodeIdsToEditors;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
+	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
+	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction;
@@ -64,7 +67,11 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.layout.Perspective;
+	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
+	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
+	
+	import spark.components.Application;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -72,6 +79,12 @@ package org.flowerplatform.flex_client.core {
 	 */
 	public class CorePlugin extends AbstractFlowerFlexPlugin {
 			
+		/**
+		 * Stores the main page name. Used to create the application's full url.
+		 * @see getAppUrl()
+		 */ 
+		private static const MAIN_PAGE:String = "main.jsp";
+		
 		public static const RESOURCE_TYPE:String = "resource";
 		
 		protected static var INSTANCE:CorePlugin;
@@ -97,10 +110,9 @@ package org.flowerplatform.flex_client.core {
 		 */
 		// TODO to delete when mm classes from core will be moved in .mindmap project
 		public var iconSideBarClass:Class;
-		
+				
 		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
-		
-		
+				
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
@@ -173,8 +185,11 @@ package org.flowerplatform.flex_client.core {
 				// on mobile, it's not available
 				ExternalInterface.addCallback("handleLink", handleLink);
 			}			
+			
+			// when adding actions to global menu, the messages must be fully loaded
+			Application(FlexGlobals.topLevelApplication).addEventListener(ResourceUpdatedEvent.RESOURCE_UPDATED, messageResourceUpdatedHandler);
 		}
-					
+		
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
@@ -184,6 +199,37 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(NodeWithChildren);
 			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
+		}
+		
+		/**
+		 * Overriden to add FlexGlobals.topLevelApplication as <code>object</code> parameter.
+		 * Needed in <code>ResourceUtils</code> to dispatch <code>ResourceUpdatedEvent</code>.
+		 */ 
+		override protected function registerMessageBundle():void {
+			ResourcesUtils.registerMessageBundle("en_US", resourcesUrl, getResourceUrl(MESSAGES_FILE), FlexGlobals.topLevelApplication);
+		}
+		
+		private function messageResourceUpdatedHandler(event:ResourceUpdatedEvent):void {		
+			if (event.resourceURL != getResourceUrl(MESSAGES_FILE)) {
+				return;
+			}
+			
+			// message resource is loaded
+			
+			Application(FlexGlobals.topLevelApplication).removeEventListener(ResourceUpdatedEvent.RESOURCE_UPDATED, messageResourceUpdatedHandler);
+			
+			// add actions to global menu
+			
+			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, "navigate"); 
+			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, "navigate", 
+				function ():void {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+					.setViewContent(new LinkView())
+					.setWidth(400)
+					.setHeight(450)
+					.show();
+				}
+			);
 		}
 		
 		public function getPerspective(id:String):Perspective {
@@ -252,21 +298,18 @@ package org.flowerplatform.flex_client.core {
 			}
 			return parameters;
 		}
-			
-		public function getBrowserURLWithoutQuery():String {
-			if (ExternalInterface.available) {
-				var browserURL:String = ExternalInterface.call("getURL");
-				return browserURL.split("?")[0];
-			}
-			 return null;
+		
+		public function getAppUrl():String {
+			return FlexUtilGlobals.getInstance().rootUrl + MAIN_PAGE;	
 		}
 		
 		/**
 		 * Creates and adds an action to the the actionProvider
 		 * 
 		 * @author Mircea Negreanu
+		 * @author Cristina Constantinescu
 		 */
-		public function addActionToGlobalMenuActionProvider(label:String, id:String, parentId:String = null, icon:String = null, functionDelegate:Function = null):void {
+		public function addActionToGlobalMenuActionProvider(label:String, icon:String = null, id:String = null, parentId:String = null, functionDelegate:Function = null):void {
 			var action:ActionBase;
 			if (id != null) {
 				action = new ComposedAction();				
@@ -276,10 +319,12 @@ package org.flowerplatform.flex_client.core {
 			
 			action.label = label;
 			action.id = id;
-			action.parentId = parentId;
-			action.icon = icon;
+			action.parentId = parentId;			
+			action.icon = icon != null ? FlexUtilGlobals.getInstance().createAbsoluteUrl(icon) : null;
 			action.functionDelegate = functionDelegate;
-			globalMenuActionProvider.getActions(null).push(action);
+			globalMenuActionProvider.addAction(action);
+			
+			Application(FlexGlobals.topLevelApplication).dispatchEvent(new GlobalActionProviderChangedEvent());
 		}
 	
 	}

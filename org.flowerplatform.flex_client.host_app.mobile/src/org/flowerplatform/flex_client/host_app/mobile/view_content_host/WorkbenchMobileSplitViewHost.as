@@ -11,6 +11,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
+	import org.flowerplatform.flexutil.layout.LayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
@@ -64,6 +65,15 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			return comp;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */ 
+		public function getAllEditorViews(root:LayoutData, array:ArrayCollection):void {
+			for (var i:int = 0; i < rightComponents.length; i++) {
+				array.addItem(rightComponents.getItemAt(i));
+			}
+		}
+			
 		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean=true):void {
 			closeViews(new ArrayCollection([view]), shouldDispatchEvent);
 		}
@@ -89,6 +99,13 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		
 		public function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void {
 			rightActiveComponent = newActiveView;
+		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */ 
+		public function getActiveView():UIComponent {
+			return UIComponent(rightActiveComponent);
 		}
 		
 		/**

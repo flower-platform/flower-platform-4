@@ -56,6 +56,10 @@
 			alignmentBaseline: descent;
 		}
 		
+		s|TextArea {
+			skinClass: ClassReference("spark.skins.mobile.TextAreaSkin");
+		}
+		
 		@media (application-dpi: 160) {
 			s|ActionBar s|Label {
 				fontSize: 18;
@@ -140,7 +144,7 @@
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new MobileViewHostPopupHandlerFactory();
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorSpinnerHandlerFactory();
-				FlexUtilGlobals.getInstance().rootUrl = "http://localhost:8080/org.flowerplatform.host.web_app/";
+				FlexUtilGlobals.getInstance().rootUrl = "http://csp32:8080/org.flowerplatform.host.web_app/";
 				
 				startPlugins();
 				

@@ -5,6 +5,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider"/>
+    <classEntry path="org.flowerplatform.flex_client.core.link.LinkView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

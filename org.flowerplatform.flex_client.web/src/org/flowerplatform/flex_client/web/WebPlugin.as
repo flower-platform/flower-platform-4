@@ -25,6 +25,7 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
@@ -32,6 +33,7 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
 	
+	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.TextInput;
 	
@@ -67,7 +69,7 @@ package org.flowerplatform.flex_client.web {
 			btn.label = "Open Editor";
 			var textInput:TextInput = new TextInput();
 			textInput.width = 400;
-			textInput.text = "D:/temp/FAP-FlowerPlatform4.mm";
+			textInput.text = "resource||D:/temp/FAP-FlowerPlatform4.mm";
 			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
 				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, textInput.text);
 			});
@@ -82,15 +84,23 @@ package org.flowerplatform.flex_client.web {
 			hBox.addChild(addRootBtn);
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 			
+			
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
-			menuBar.percentWidth = 100;					
+			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
-						
-			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
+			
+			Application(FlexGlobals.topLevelApplication).addEventListener(GlobalActionProviderChangedEvent.ACTION_PROVIDER_CHANGED,
+				function (event:GlobalActionProviderChangedEvent):void {
+					//update menu provider with new content
+					menuBar.actionProvider = CorePlugin.getInstance().globalMenuActionProvider;
+				}
+			);			
+									
+			CorePlugin.getInstance().handleLink(CorePlugin.getInstance().getAppUrl());
 		}
 		
 		override protected function registerMessageBundle():void {			
 		}	
-	
+			
 	}
 }
