@@ -21,27 +21,40 @@ license-end
 <!---
 @author Sebastian Solomon
 -->
-<s:Scroller xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 	xmlns:s="library://ns.adobe.com/flex/spark" 
-			xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 	height="100%" 
-			xmlns:ns="org.flowerplatform.flex_client.mindmap.*">
+<ns:MindMapIconsComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:ns="org.flowerplatform.flex_client.mindmap.*"
+		 skinClass = "org.flowerplatform.flex_client.mindmap.VerticalMindMapIconsSkin"
+		 height="100%">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayList;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexutil.Utils;
+			
 			public  var diagramShell:DiagramShell;
 			
-			override protected function createChildren():void {
-				super.createChildren();
-				verticalIcons.diagramShell = diagramShell;
+			override protected function handleClick(result:Object):void {
+				var nodeList:ArrayList = diagramShell.selectedItems;
+				var currentValue:String;
+				
+				for (var i:int=0; i < nodeList.length; i++) {
+					var node:Node = Node(nodeList.getItemAt(i));
+					currentValue = Utils.computeStringTokens(node.properties['icons'], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
+					saveIconProperty(node, currentValue);
+				}
 			}
+			
+			protected function saveIconProperty(node:Node, currentValue:String):void {			
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, "icons", currentValue]);
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:Group>
-		<ns:VerticalMindMapIcons id="verticalIcons">
-		</ns:VerticalMindMapIcons>
-	</s:Group>
-	
-</s:Scroller>
+</ns:MindMapIconsComponent>

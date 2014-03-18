@@ -40,7 +40,6 @@ public class FreeplaneUtils {
 				}
 			}
 		}
-		
 		return new Node(type, resource, nodeModel.createID(), nodeModel);
 	}
 	

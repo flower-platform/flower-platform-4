@@ -24,12 +24,18 @@ package org.flowerplatform.flexdiagram.tool {
 	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	
+	import mx.charts.HitData;
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	
 	import spark.components.Scroller;
@@ -72,16 +78,33 @@ package org.flowerplatform.flexdiagram.tool {
 			
 		protected function getRendererFromDisplayCoordinates(ignoreDiagramRenderer:Boolean = false):IVisualElement {
 			var stage:Stage = diagramRenderer.stage;
-			var arr:Array = stage.getObjectsUnderPoint(new Point(stage.mouseX, stage.mouseY));
+			var mousePoint:Point = new Point(stage.mouseX, stage.mouseY);
+			var arr:Array = stage.getObjectsUnderPoint(mousePoint);
 						
+			var diagramContext:DiagramShellContext = diagramShell.getNewDiagramShellContext();
 			var renderer:IVisualElement;
 			var i:int;
 			for (i = arr.length - 1; i >= 0;  i--) {
 				renderer = getRendererFromDisplay(arr[i]);
 				if (renderer != null) {
-					if (!(ignoreDiagramRenderer && renderer is DiagramRenderer)) {
+					if (renderer is DiagramRenderer) {
+						if (ignoreDiagramRenderer) {
+							continue;
+						}
 						return renderer;
-					}					
+					}
+					
+					var model:Object = IDataRenderer(renderer).data;
+					var absoluteLayoutRectangleController:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(diagramContext, model);
+					if (absoluteLayoutRectangleController != null) {
+						// return renderer only if mouse point is over model's bounds
+						var bounds:Rectangle = absoluteLayoutRectangleController.getBounds(diagramContext, model);
+						if (bounds.containsPoint(globalToDiagram(stage.mouseX, stage.mouseY))) {
+							return renderer;
+						}
+					} else {
+						return renderer;
+					}													
 				}
 			}
 			return null;

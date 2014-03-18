@@ -19,12 +19,15 @@
 package org.flowerplatform.flexdiagram.mindmap {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
+	import mx.core.DPIClassification;
+	import mx.core.FlexGlobals;
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -37,8 +40,44 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public static const HORIZONTAL_PADDING_DEFAULT:int = 20;
 		public static const VERTICAL_PADDING_DEFAULT:int = 5;
 		
+		public static const ADDITIONAL_PADDING_DEFAULT:int = 15;
+		
 		public var horizontalPadding:int = HORIZONTAL_PADDING_DEFAULT;
 		public var verticalPadding:int = VERTICAL_PADDING_DEFAULT;
+		
+		/**
+		 * Additional padding value (left/right/top/bottom) for nodes.
+		 * 
+		 * <p>
+		 * When set in model's dynamic object, it is used to calculate model children & siblings coordinates based on it.
+		 * (e.g. mindmap cloud shape)
+		 */ 
+		public var additionalPadding:int = ADDITIONAL_PADDING_DEFAULT;
+		
+		/**
+		 * Sets the horizontal padding depending on the platform.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		public function MindMapDiagramShell() {
+			if (FlexUtilGlobals.getInstance().isMobile) {
+				switch (FlexGlobals.topLevelApplication.applicationDPI) {
+					case DPIClassification.DPI_320:	{
+						horizontalPadding = 80;
+						break;
+					}
+					case DPIClassification.DPI_240:	{
+						horizontalPadding = 60;
+						break;
+					}
+					default: {
+						// default PPI160
+						horizontalPadding = 40;
+						break;
+					}
+				}
+			}
+		}
 		
 		/**
 		 * Structure:
@@ -69,7 +108,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 			shouldRefreshVisualChildren(context, rootModel);
 		}
 		
-		public function addModelInRootModelChildrenList(context:DiagramShellContext, model:Object, asRoot:Boolean = false):void {
+		public function addModelInRootModelChildrenList(context:DiagramShellContext, model:Object, asRoot:Boolean = false, depth:int = 0):void {
+			// set depth in model's dynamic object -> it will be set further, in renderer
+			var modelDynamicObject:Object = getDynamicObject(context, model);
+			modelDynamicObject.depth = depth;
+			
 			var dynamicObject:Object = getDynamicObject(context, rootModel);
 			if (dynamicObject.children == null) {
 				dynamicObject.children = new ArrayList();
@@ -81,14 +124,14 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 		}
 		
-		protected function addModelInRootModelChildrenListRecursive(context:DiagramShellContext, model:Object, asRoot:Boolean = false):void {			
+		protected function addModelInRootModelChildrenListRecursive(context:DiagramShellContext, model:Object, asRoot:Boolean = false, depth:int = 0):void {			
 			if (getModelController(context, model).getExpanded(context, model)) {
 				var children:IList = getModelController(context, model).getChildren(context, model);
 				for (var i:int = 0; i < children.length; i++) {
-					addModelInRootModelChildrenListRecursive(context, children.getItemAt(i));
+					addModelInRootModelChildrenListRecursive(context, children.getItemAt(i), false, depth + 1);
 				}
 			}
-			addModelInRootModelChildrenList(context, model, asRoot);				
+			addModelInRootModelChildrenList(context, model, asRoot, depth);				
 		}
 		
 		public function getModelController(context:DiagramShellContext, model:Object):MindMapModelController {
@@ -104,6 +147,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 					return 22;	// minHeight							
 				case "expandedHeight":
 					return getPropertyValue(context, model, "height");
+				case "expandedWidth":
+					return getPropertyValue(context, model, "width");
 				default:
 					return 0;
 			}
@@ -152,7 +197,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var side:int = getModelController(context, model).getSide(context, model);
 			var isRoot:Boolean = getModelController(context, model).isRoot(context, model);			
 			
-			calculateRootExpandedHeight(context, side);
+			calculateRootExpandedWidthAndHeight(context, side);
 			
 			if (isRoot || side == POSITION_LEFT) {						
 				if (isRoot) {										
@@ -175,62 +220,96 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Used when getting delta to re-arrange model siblings.
 		 * @see changeCoordinates
 		 */ 
-		private function calculateRootExpandedHeight(context:DiagramShellContext, side:int):void {
+		private function calculateRootExpandedWidthAndHeight(context:DiagramShellContext, side:int):void {
 			var model:Object = getRoot(context);
 			var isRoot:Boolean = getModelController(context, model).isRoot(context, model);			
 			
 			if (isRoot || side == POSITION_LEFT) {
-				calculateExpandedHeight(context, model, POSITION_LEFT);
+				calculateExpandedWidthAndHeight(context, model, POSITION_LEFT);
 				setPropertyValue(context, model, "expandedHeightLeft", getPropertyValue(context, model, "expandedHeight"));				
 			}
 			if (isRoot || side == POSITION_RIGHT) {
-				calculateExpandedHeight(context, model, POSITION_RIGHT);
+				calculateExpandedWidthAndHeight(context, model, POSITION_RIGHT);
 				setPropertyValue(context, model, "expandedHeightRight", getPropertyValue(context, model, "expandedHeight"));				
 			}
 		}
-		
-		private function calculateExpandedHeight(context:DiagramShellContext, model:Object, side:int):Number {			
+				
+		private function calculateExpandedWidthAndHeight(context:DiagramShellContext, model:Object, side:int):Array {
+			var expandedWidth:Number = 0;
 			var expandedHeight:Number = 0;
 			var children:IList = getChildrenBasedOnSide(context, model, side);
 			if (getModelController(context, model).getExpanded(context, model)) {				
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
-					var childExpandedHeight:Number = calculateExpandedHeight(context, child, side);
+					
+					var arr:Array = calculateExpandedWidthAndHeight(context, child, side);
+					
+					var childExpandedWidth:Number = arr[0];
+					expandedWidth = Math.max(expandedWidth, childExpandedWidth);
+					
+					var childExpandedHeight:Number = arr[1];
 					expandedHeight += childExpandedHeight;					
 					if (i < children.length - 1) { // add padding only between children (not after the last one)
 						expandedHeight += verticalPadding;						
-					}
+					}					
 				}
+				expandedWidth += getPropertyValue(context, model, "width") + horizontalPadding;
+				setPropertyValue(context, model, "expandedWidth", expandedWidth);
+				// add additional padding here -> used only to calculate parent's expandedWidth
+				expandedWidth += getPropertyValue(context, model, "additionalPadding")/2;
+				
+				expandedHeight += getPropertyValue(context, model, "additionalPadding");
 				setPropertyValue(context, model, "expandedHeight", expandedHeight);				
-				expandedHeight = Math.max(expandedHeight, getPropertyValue(context, model, "height"));			
+				expandedHeight = Math.max(expandedHeight, getPropertyValue(context, model, "height"));				
 			} else {
-				expandedHeight = getPropertyValue(context, model, "height");
+				expandedWidth = getPropertyValue(context, model, "width");				
+				setPropertyValue(context, model, "expandedWidth", expandedWidth);
+				// add additional padding here -> used only for return result to calculate parent's expandedWidth
+				expandedWidth += getPropertyValue(context, model, "additionalPadding")/2;
+				
+				expandedHeight = getPropertyValue(context, model, "height") + getPropertyValue(context, model, "additionalPadding");
+				
 				// for collapse models, the expandedHeight must be 0
 				setPropertyValue(context, model, "expandedHeight", 0);
-			}			
-			return expandedHeight;
+			}
+			return [expandedWidth, expandedHeight];
 		}
 		
 		private function changeCoordinates(context:DiagramShellContext, model:Object, oldExpandedHeight:Number, newExpandedHeight:Number, side:int):void {			
 			changeChildrenCoordinates(context, model, side);	
 			
-			if (newExpandedHeight != 0 && newExpandedHeight < getPropertyValue(context, model, "height")) {
-				
-			} else {
-				var delta:Number = 0;
-				if (newExpandedHeight == 0) {
-					if (oldExpandedHeight > getPropertyValue(context, model, "height")) {						
-						delta = (getPropertyValue(context, model, "height") - oldExpandedHeight)/2;
-					}					
-				} else if (oldExpandedHeight == 0) {
-					delta = (newExpandedHeight - getPropertyValue(context, model, "height"))/2;
-				} else {
+			var additionalPadding:Number = getPropertyValue(context, model, "additionalPadding");
+			var height:Number = getPropertyValue(context, model, "height");
+			
+			var oldExpandedHeightWithoutAdditionalPadding:Number = oldExpandedHeight - additionalPadding;
+			var newExpandedHeightWithoutAdditionalPadding:Number = newExpandedHeight - additionalPadding;
+			
+			var delta:Number = 0;
+			if (newExpandedHeight != 0 && newExpandedHeightWithoutAdditionalPadding < height) {
+				// do nothing
+			} else {				
+				if (newExpandedHeight == 0) { // model collapsed
+					if (oldExpandedHeightWithoutAdditionalPadding > height) { 
+						// old expandedHeight was greater than height -> get delta between those two (value is negative)						
+						delta = (height - oldExpandedHeightWithoutAdditionalPadding)/2 ;
+					} else if (oldExpandedHeightWithoutAdditionalPadding < height) { 
+						// old expandedHeight was smaller than height -> use additional padding to calculate delta	
+						delta = additionalPadding/2;
+					} else { // oldExpandedHeightWithoutAdditionalPadding == height
+						// do nothing
+					}
+				} else if (oldExpandedHeight == 0) { 
+					// model expanded -> get delta between expandedHeight (without additional padding because it must propagate to its height) and height (value is positive)
+					delta = (newExpandedHeightWithoutAdditionalPadding - height)/2;
+				} else { 
+					// model changed its expandedHeight -> get delta between old and new expandedHeights
 					delta = (newExpandedHeight - oldExpandedHeight)/2;
 				}
-				if (delta != 0) {
-					changeSiblingsCoordinates(context, model, delta, side);
-				}
-			}			
+			}	
+		
+			if (delta != 0) { // delta changed, update siblings
+				changeSiblingsCoordinates(context, model, delta, side);
+			}
 		}		
 		
 		private function changeChildrenCoordinates(context:DiagramShellContext, model:Object, side:int):void {					
@@ -239,7 +318,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children.getItemAt(i);
 					if (i == 0) {						
-						setPropertyValue(context, child, "y", getPropertyValue(context, model, "y") + getDeltaBetweenExpandedHeightAndHeight(context, child)/2 - getDeltaBetweenExpandedHeightAndHeight(context, model)/2);										
+						setPropertyValue(context, child, "y", getPropertyValue(context, model, "y") + getDeltaBetweenExpandedHeightAndHeight(context, child)/2 - getDeltaBetweenExpandedHeightAndHeight(context, model, false, false)/2);										
 					} else {
 						var previousChild:Object = children.getItemAt(i - 1);
 						setPropertyValue(context, child, "y", getPropertyValue(context, previousChild, "y") + getModelBottomHeight(context, previousChild) + verticalPadding + getDeltaBetweenExpandedHeightAndHeight(context, child, true)/2);
@@ -281,18 +360,27 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 		}
 		
-		private function getDeltaBetweenExpandedHeightAndHeight(context:DiagramShellContext, model:Object, preventNegativeValues:Boolean = false):Number {
-			if (preventNegativeValues && getPropertyValue(context, model, "expandedHeight") < getPropertyValue(context, model, "height")) {
-				return 0;
+		public function getDeltaBetweenExpandedHeightAndHeight(context:DiagramShellContext, model:Object, preventNegativeValues:Boolean = false, addAdditionalPaddingIfNecessary:Boolean = true):Number {
+			var additionalPadding:Number = getPropertyValue(context, model, "additionalPadding");			
+			var expandedHeight:Number = getPropertyValue(context, model, "expandedHeight");
+			var height:Number = getPropertyValue(context, model, "height");
+			
+			if ((preventNegativeValues && expandedHeight < height) || expandedHeight == 0) {
+				// expandedHeight is smaller than height and we don't want negative values OR expandedHeght is 0 (model isn't expanded) -> return only the additional delta
+				return addAdditionalPaddingIfNecessary ? additionalPadding : 0;
 			}
-			if (getPropertyValue(context, model, "expandedHeight") != 0) {
-				return getPropertyValue(context, model, "expandedHeight") - getPropertyValue(context, model, "height");
-			}
-			return 0;		
+			
+			// expandedHeight exists (model is expanded) -> return delta between expandedHeight and height and, based on addAdditionalPaddingIfNecessary, remove additional padding
+			// (used when we want to calculate the first child position)
+			return expandedHeight - height - (!addAdditionalPaddingIfNecessary ? additionalPadding : 0);			
 		}
 		
-		private function getModelBottomHeight(context:DiagramShellContext, model:Object):Number {			
-			return Math.max(getPropertyValue(context, model, "expandedHeight"), getPropertyValue(context, model, "height"))/2 + getPropertyValue(context, model, "height")/2;
+		private function getModelBottomHeight(context:DiagramShellContext, model:Object):Number {
+			var additionalPadding:Number = getPropertyValue(context, model, "additionalPadding");			
+			var expandedHeight:Number = getPropertyValue(context, model, "expandedHeight");
+			var height:Number = getPropertyValue(context, model, "height");
+			
+			return (Math.max(expandedHeight, height + additionalPadding) + height)/2 ;
 		}
 	}
 }

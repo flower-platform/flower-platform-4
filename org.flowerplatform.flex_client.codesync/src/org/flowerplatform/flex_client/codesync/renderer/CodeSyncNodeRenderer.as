@@ -11,14 +11,11 @@ package org.flowerplatform.flex_client.codesync.renderer {
 	 */
 	public class CodeSyncNodeRenderer extends NodeRenderer {
 		
-		override public function set data(value:Object):void {
-			super.data = value;
-			composeIconWithSyncMarkers();			
-		}
-		
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
-			composeIconWithSyncMarkers();
+			if (event == null || event.updatedProperties == null || event.updatedProperties.getItemIndex("icon") != -1) {
+				composeIconWithSyncMarkers();
+			}
 		}
 		
 		protected function composeIconWithSyncMarkers():void {

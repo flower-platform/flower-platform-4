@@ -17,6 +17,10 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
+	
+	import flash.utils.getDefinitionByName;
+	
+	import mx.binding.utils.BindingUtils;
 	import mx.collections.IList;
 	import mx.events.FlexEvent;
 	
@@ -39,8 +43,15 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super();
 		}
 		
-		private function creationCompleteHandler(event:FlexEvent):void {			
+		private function creationCompleteHandler(event:FlexEvent):void {		
+			BindingUtils.bindSetter(valueChanged, data, "value");
 			dropDownList.addEventListener(DropDownEvent.CLOSE, dropDownEventHandler);
+		}
+		
+		protected function valueChanged(value:Object = null):void {
+			if (data != null && dropDownList.dataProvider != null) {
+				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
+			}
 		}
 		
 		protected function dropDownEventHandler(e:DropDownEvent):void {
@@ -51,7 +62,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.createChildren();
 			
 			if (FlexUtilGlobals.getInstance().isMobile) {
-//				dropDownList = new com.flextras.mobile.dropDownList.DropDownList();										
+				var mobileClass:Class = Class(getDefinitionByName("com.flextras.mobile.dropDownList.DropDownList"));
+				dropDownList = new mobileClass();
 			} else {
 				dropDownList = new spark.components.DropDownList();											
 			}
@@ -75,15 +87,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			if (data is PropertyDescriptor) {
 				dropDownList.dataProvider = PropertyDescriptor(data).possibleValues;
 			}
-			setSelectedIndex();
+			valueChanged();
 		}
-		
-		private function setSelectedIndex():void {
-			if (data != null && dropDownList.dataProvider != null) {
-				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
-			}
-		}
-		
+				
 		protected function getItemIndexFromList(item:Object, list:IList):int {
 			if (item != null) {
 				for (var i:int = 0; i < list.length; i++) {

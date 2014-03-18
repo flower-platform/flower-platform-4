@@ -29,6 +29,8 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAd
 import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
+import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
+import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -47,10 +49,7 @@ import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
-import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.tests.TestUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -72,22 +71,14 @@ public class CodeSyncTest {
 	public static final String SOURCE_FILE = "Test.java";
 	public static final String MODEL_FILE = "CSE.notation";
 	
-	private static NodeService nodeService = null;
-	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		TestUtil.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
-		
-		new CorePlugin().start(null);
-		new FreeplanePlugin().start(null);
-		
-		new CodeSyncPlugin().start(null);
-		new CodeSyncCodePlugin().start(null);
-		new CodeSyncCodeJavaPlugin().start(null);
-		
-		nodeService = (NodeService) CorePlugin.getInstance().getServiceRegistry().getService("nodeService");
+
+		startPlugin(new CodeSyncCodePlugin());
+		startPlugin(new CodeSyncCodeJavaPlugin());
 	}
 	
 	@Test
@@ -309,7 +300,7 @@ public class CodeSyncTest {
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int");
 		Node staticModif = getChild(getTest, new String[] {"static"});
 		nodeService.setProperty(staticModif, REMOVED, true);
-//				nodeService.setProperty(getTest, DOCUMENTATION, "modified from model\n@author test");
+//		nodeService.setProperty(getTest, DOCUMENTATION, "modified from model\n@author test");
 		
 //				featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
 //				CodeSyncCodePlugin.getInstance().getUtils().addFeatureChange(getTest, AstCacheCodePackage.eINSTANCE.getModifiableElement_Modifiers(), featureChange);

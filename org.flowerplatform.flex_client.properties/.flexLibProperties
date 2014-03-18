@@ -3,6 +3,7 @@
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.NumberPropertyRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.ColorPickerPropertyRenderer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

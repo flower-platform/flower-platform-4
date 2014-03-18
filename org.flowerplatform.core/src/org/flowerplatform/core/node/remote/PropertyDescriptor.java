@@ -34,6 +34,8 @@ public class PropertyDescriptor extends AbstractController {
 	public static final String BOOLEAN = "Boolean";
 	public static final String NUMBER = "Number";
 	public static final String DROP_DOWN_LIST = "DropDownList";
+	public static final String COLOR_PICKER = "ColorPicker";
+	
 	private static final String DEFAULT_CATEGORY = "";
 	
 	private String name;

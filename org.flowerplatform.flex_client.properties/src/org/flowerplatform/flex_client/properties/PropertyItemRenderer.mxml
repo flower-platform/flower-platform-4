@@ -45,8 +45,9 @@
 					return;
 				}
 				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
-
-				this.label = data.name;
+	
+				// use title as label if set
+				this.label = propertyDescriptor.title != null ? propertyDescriptor.title : propertyDescriptor.name;
 
 				UIComponent(labelDisplay).setStyle("fontWeight", "normal");
 				

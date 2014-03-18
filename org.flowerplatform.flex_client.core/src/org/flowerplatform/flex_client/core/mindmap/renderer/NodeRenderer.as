@@ -1,5 +1,9 @@
 package org.flowerplatform.flex_client.core.mindmap.renderer {
 	
+	import flashx.textLayout.conversion.TextConverter;
+	import flashx.textLayout.elements.TextFlow;
+	
+	import mx.core.UIComponent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
@@ -8,6 +12,9 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexutil.Utils;
+	
+	import spark.utils.TextFlowUtil;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -54,7 +61,7 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		}
 		
 		override public function set data(value:Object):void {
-			if (super.data != null) {				
+			if (data != null) {		
 				data.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);				
 			}
 			
@@ -68,7 +75,10 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			var textChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(NodePropertiesConstants.TEXT) != -1 : true;
 			if (textChanged) {
-				labelDisplay.text = data.properties[NodePropertiesConstants.TEXT];
+				var text:String = data.properties[NodePropertiesConstants.TEXT] as String;
+				text = Utils.getCompatibleHTMLText(text);
+				// if text contains html tag, display it as html, otherwise plain text
+				labelDisplay.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
 				invalidateSize();
 				invalidateDisplayList();
 			}
