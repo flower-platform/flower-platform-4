@@ -46,6 +46,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 			// create text area (auto grow width & height at CTRL + ENTER) 
 			var textArea:AutoGrowTextArea = new AutoGrowTextArea();
+			textArea.depth = int.MAX_VALUE; // model has depth, so put ied above
 			textArea.x = bounds.x;
 			textArea.y = bounds.y;			
 			textArea.minWidth = bounds.width;

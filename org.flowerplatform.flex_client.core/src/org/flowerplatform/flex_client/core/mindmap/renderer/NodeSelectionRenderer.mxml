@@ -26,7 +26,7 @@
 									xmlns:mx="library://ns.adobe.com/flex/mx" 
 									xmlns:selection="org.flowerplatform.flexdiagram.renderer.selection.*"
 									xmlns:ui="org.flowerplatform.flexdiagram.ui.*"
-									initialize="setCircleRadius()">
+									depth="{int.MAX_VALUE}" initialize="setCircleRadius()">
 	
 	<fx:Script>
 		<![CDATA[
@@ -170,7 +170,7 @@
 			<s:Group id="circle" 
 					 click="circle_mouseClickHandler(event)" 
 					 mouseDown="circle_mouseDownUpHandler(event)" mouseUp="circle_mouseDownUpHandler(event)"
-					 width="{circleRadius * 2}" height="{circleRadius * 2}" >		
+					 width="{circleRadius * 2}" height="{circleRadius * 2}" depth="{int.MAX_VALUE}">		
 				<s:layout>				
 					<s:BasicLayout />
 				</s:layout>				

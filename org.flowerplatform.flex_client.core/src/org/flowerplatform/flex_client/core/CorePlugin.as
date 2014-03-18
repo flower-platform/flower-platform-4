@@ -158,11 +158,7 @@ package org.flowerplatform.flex_client.core {
 			);
 			
 			nodeTypeDescriptorRegistry.addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
-			
-			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapEditorDiagramShell.MINDMAP_ROOT_NODE_TYPE)
-				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController(-10))
-				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController(-10));
-				
+						
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
 			linkHandlers[LinkHandler.OPEN_ROOT] = new LinkHandler(MindMapEditorProvider.ID);
