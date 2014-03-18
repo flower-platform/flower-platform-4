@@ -17,52 +17,57 @@
 * license-end
 */
 package org.flowerplatform.flexutil.global_menu {
+	
 	import flash.display.DisplayObject;
 	
 	import mx.controls.Image;
-	import mx.controls.menuClasses.MenuBarItem;
+	import mx.controls.menuClasses.MenuItemRenderer;
+	import mx.core.IFlexDisplayObject;
 	
 	import org.flowerplatform.flexutil.action.IAction;
 	
 	/**
-	 * <code>MenuBarItem</code> renderer that adds the possibility to show an image from
-	 * a URL.
+	 * Renderer implementation that uses <code>icon</code> attribute from an IAction node to
+	 * retrieve an image from the URL.
+	 * <p>
+	 * Used by application <code>WebMenuBar</code> to set icons on pop-up submenus based on their url.
 	 * 
-	 * @author Mariana
+	 * @author Cristina
 	 * @author Mircea Negreanu
 	 */ 
-	public class WebMenuBarItem extends MenuBarItem {
+	public class GlobalMenuItemRenderer extends MenuItemRenderer {
 		
 		/**
-		 * @author Mariana
-		 * @author Mricea Negreanu
+		 * @author Cristina
+		 * @author Mircea Negreanu
 		 */
-		override protected function commitProperties():void	{
+		override protected function commitProperties():void {
 			super.commitProperties();
 			
-			if (icon == null) { 
-				icon = createIconFromUrl();
-				if (icon != null)
+			if (icon == null) {
+				var newIcon:IFlexDisplayObject = createIcon();
+				if (newIcon != null) {
+					icon = newIcon;
 					addChild(DisplayObject(icon));
+				}
 			}
 		}
 		
 		/**
-		 * @author Mariana
+		 * @author Cristina
 		 * @author Mircea Negreanu
 		 */
-		private function createIconFromUrl(img:Image = null):Image {
+		protected function createIcon():IFlexDisplayObject {			
 			if (data is IAction && IAction(data).icon is String) {
-				if (img == null) {
-					img = new Image();
-				}
+				var img:Image = new Image();
 				img.source = IAction(data).icon;
 				img.maxWidth = 16;
 				img.maxHeight = 16;
 				return img;
+			} else {
+				return null;
 			}
-			return null;
-		}
-		
+		} 
+
 	}
 }

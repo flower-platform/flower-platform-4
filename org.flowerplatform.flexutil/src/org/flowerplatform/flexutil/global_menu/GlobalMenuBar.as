@@ -49,7 +49,7 @@ package org.flowerplatform.flexutil.global_menu {
 	 * 
 	 * @author Mircea Negreanu
 	 */
-	public class WebMenuBar extends MenuBar {
+	public class GlobalMenuBar extends MenuBar {
 		
 		protected var _actionProvider:IActionProvider;
 		
@@ -66,19 +66,19 @@ package org.flowerplatform.flexutil.global_menu {
 		/**
 		 * Menu descriptor for the popup menus.
 		 */
-		protected var menuDescriptor:WebMenuDataDescriptor;
+		protected var menuDescriptor:GlobalMenuDataDescriptor;
 		
 		/**
 		 * Item renderer for the menu items so that the icon is correctly rendered.
 		 */
 		protected var menuItemRender:IFactory;
 		
-		public function WebMenuBar(ap:IActionProvider = null):void {
+		public function GlobalMenuBar(ap:IActionProvider = null):void {
 			super();
 			
 			// Prepare the item renderers
-			menuBarItemRenderer = new ClassFactory(WebMenuBarItem);
-			menuItemRender = new ClassFactory(WebMenuItemRenderer);
+			menuBarItemRenderer = new ClassFactory(GlobalMenuBarItem);
+			menuItemRender = new ClassFactory(GlobalMenuItemRenderer);
 			
 			actionProvider = ap;
 			
@@ -113,7 +113,7 @@ package org.flowerplatform.flexutil.global_menu {
 				}
 				
 				// Also create the new menuDescriptor based on the new actionProvider
-				menuDescriptor = new WebMenuDataDescriptor(actionProvider);
+				menuDescriptor = new GlobalMenuDataDescriptor(actionProvider);
 				
 				dataProvider = getMenusList(selection, null);
 			}
@@ -222,7 +222,10 @@ package org.flowerplatform.flexutil.global_menu {
 				// Only a composed action can have children
 				if (ActionUtil.isComposedAction(menuBarAction)) {
 					// get the current selection
-					var selection:IList = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider.getSelection();
+					var selection:IList = null;
+					if (FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider != null) {
+						selection = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider.getSelection();
+					}
 					
 					// get the list of actions of the current menu
 					menuDescriptor.selection = selection;
@@ -305,8 +308,8 @@ package org.flowerplatform.flexutil.global_menu {
 				menu.hide();
 				
 				// also clean the selection from the submenus
-				if (menu.dataDescriptor != null && menu.dataDescriptor is WebMenuDataDescriptor) {
-					WebMenuDataDescriptor(menu.dataDescriptor).clearSelectionFromChildren();
+				if (menu.dataDescriptor != null && menu.dataDescriptor is GlobalMenuDataDescriptor) {
+					GlobalMenuDataDescriptor(menu.dataDescriptor).clearSelectionFromChildren();
 				}
 				
 				menu = null;

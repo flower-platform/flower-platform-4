@@ -56,6 +56,10 @@
 			alignmentBaseline: descent;
 		}
 		
+		s|TextArea {
+			skinClass: ClassReference("spark.skins.mobile.TextAreaSkin");
+		}
+		
 		@media (application-dpi: 160) {
 			s|ActionBar s|Label {
 				fontSize: 18;

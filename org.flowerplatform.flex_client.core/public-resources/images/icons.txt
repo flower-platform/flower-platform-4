@@ -1,0 +1,6 @@
+== Icons to be mentioned in license file ==
+
+clipboard-sign-out.png -> https://www.iconfinder.com/icons/25957/clipboard_copy_cut_icon#size=16
+arrow-right.png -> http://www.doublejdesign.co.uk
+
+== Icons allowed for commercial use (NO link required) ==

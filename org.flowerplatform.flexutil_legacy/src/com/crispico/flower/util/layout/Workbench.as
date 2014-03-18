@@ -2531,6 +2531,23 @@ package  com.crispico.flower.util.layout {
 			activeViewList.setActiveView(newActiveView, setFocusOnNewView, dispatchActiveViewChangedEvent, restoreIfMinimized);
 		}
 		
+		public function getActiveView():UIComponent {
+			return activeViewList.getActiveView();
+		}
+		
+		public function getAllEditorViews(root:LayoutData, array:ArrayCollection):void {
+			if (root == null)
+				root = _rootLayout;
+			
+			if (root is ViewLayoutData) {
+				if (ViewLayoutData(root).isEditor) {
+					array.addItem(layoutDataToComponent[root]);
+				}				
+			}			
+			for each(var layoutData:LayoutData in root.children) {
+				getAllEditorViews(layoutData, array);
+			}
+		}
 	}
 		
 }

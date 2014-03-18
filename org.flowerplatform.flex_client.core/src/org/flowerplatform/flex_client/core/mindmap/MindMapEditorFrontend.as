@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -51,8 +52,10 @@ package org.flowerplatform.flex_client.core.mindmap {
 		override protected function createChildren():void {			
 			super.createChildren();
 			
-			var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
-			editorArea.addElementAt(iconSideBarfactory.newInstance(false), 0);
+			if (!FlexUtilGlobals.getInstance().isMobile) { // don't show icons sidebar on mobile
+				var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
+				editorArea.addElementAt(iconSideBarfactory.newInstance(false), 0);
+			}
 		}	
 		
 	}

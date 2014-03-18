@@ -20,6 +20,8 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
+	import mx.events.PropertyChangeEvent;
+	
 	import spark.components.DataRenderer;
 	import spark.components.Group;
 	
@@ -32,21 +34,26 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 				
 		/**
 		 * The group's coordonates and dimensions.
+		 * 
+		 * <p>
+		 * Important: don't set this property as bindable -> it will dispatch update event even if values are equal -> infinite loop in updateDisplayList.
 		 */ 
-		[Bindable]
 		public function get contentRect():Rectangle {       
 			return _contentRect;
 		}
 		
 		public function set contentRect(value:Rectangle):void {
 			// don't use == to verify if they are equals (it doesn't work)
-			// sometimes (@see https://github.com/flower-platform/flower-platform-4/issues/81), it enters in an infinite loop
-			// be aware when using multiple InfiniteDataRenderer that sets this contentRect in updateDisplayList.
-			// problem mentioned also here: http://apache-flex-users.2333346.n4.nabble.com/Infinite-recursion-in-custom-layout-td5148.html
 			if (_contentRect != null && value.equals(_contentRect)) {		
 				return;
 			}
-			_contentRect = value;
+			var oldContentRect:Rectangle = _contentRect;
+			_contentRect = value;			
+			
+			// sometimes (@see https://github.com/flower-platform/flower-platform-4/issues/81), it enters in an infinite loop
+			// be aware when using multiple InfiniteDataRenderer that sets this contentRect in updateDisplayList.
+			// problem mentioned also here: http://apache-flex-users.2333346.n4.nabble.com/Infinite-recursion-in-custom-layout-td5148.html
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "contentRect", oldContentRect, _contentRect));
 		}
 		
 		private var _scrollByToolInProgress:Boolean = false;

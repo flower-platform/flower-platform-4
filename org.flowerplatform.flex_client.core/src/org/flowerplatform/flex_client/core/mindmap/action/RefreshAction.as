@@ -32,11 +32,11 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			icon = CorePlugin.getInstance().getResourceUrl("images/refresh.gif");
 			orderIndex = 40;					
 		}
-		
-		override public function get visible():Boolean {			
-			return selection != null;
+				
+		override protected function isVisibleForSelectedElement(element:Object):Boolean {
+			return element is Node;
 		}
-		
+				
 		override public function doRun():void {
 			// refresh each node from selection
 			for (var i:int = 0; i < selection.length; i++) {
@@ -45,8 +45,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 					MindMapEditorDiagramShell(diagramShell).updateProcessor.refresh(diagramShellContext, Node(obj));
 				}
 			}
-		}
-	
+		}	
 		
 	}
 }

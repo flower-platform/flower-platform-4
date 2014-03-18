@@ -21,14 +21,18 @@ package org.flowerplatform.flexutil.resources {
 	import flash.events.Event;
 	
 	/**
-	 * @author Mariana
+	 * @author Mariana Gheorghe
+	 * @author Cristina Constantinescu
 	 */
 	public class ResourceUpdatedEvent extends Event {
 		
 		public static const RESOURCE_UPDATED:String = "resourceUpdated";
 		
-		public function ResourceUpdatedEvent() {
+		public var resourceURL:String;
+		
+		public function ResourceUpdatedEvent(resourceURL:String) {
 			super(RESOURCE_UPDATED);
+			this.resourceURL = resourceURL;
 		}
 	}
 }
