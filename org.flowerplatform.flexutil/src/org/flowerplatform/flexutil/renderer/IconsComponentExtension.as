@@ -87,6 +87,7 @@ package org.flowerplatform.flexutil.renderer {
 			iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
 			iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(icon);
 			iconDisplay.verticalAlign = "middle";
+			iconDisplay.depth = UIComponent(component).depth;
 			
 			IVisualElementContainer(component).addElementAt(iconDisplay, component.newIconIndex());
 			

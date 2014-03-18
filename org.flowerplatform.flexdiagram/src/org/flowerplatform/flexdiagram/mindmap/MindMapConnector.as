@@ -39,6 +39,10 @@ package org.flowerplatform.flexdiagram.mindmap {
 				
 		private var context:DiagramShellContext;
 		
+		public function MindMapConnector() {
+			depth = int.MAX_VALUE; // model has depth, so put connector above
+		}
+		
 		public function setSource(value:Object):MindMapConnector {
 			this.source = value;
 			return this;

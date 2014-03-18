@@ -7,6 +7,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
 	import org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer;
+	import org.flowerplatform.flex_client.properties.property_renderer.ColorPickerPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.NumberPropertyRenderer;
@@ -60,6 +61,7 @@ package org.flowerplatform.flex_client.properties {
 			propertyRendererClasses["Number"] = new FactoryWithInitialization(NumberPropertyRenderer);
 			propertyRendererClasses["NumberStepper"] = new FactoryWithInitialization(NumericStepperPropertyRenderer);
 			propertyRendererClasses["DropDownList"] = new FactoryWithInitialization(DropDownListPropertyRenderer);
+			propertyRendererClasses["ColorPicker"] = new FactoryWithInitialization(ColorPickerPropertyRenderer);
 		}
 		
 	}

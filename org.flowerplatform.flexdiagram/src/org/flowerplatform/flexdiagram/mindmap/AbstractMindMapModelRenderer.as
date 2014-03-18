@@ -2,10 +2,13 @@ package org.flowerplatform.flexdiagram.mindmap
 {
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
+	import mx.core.IVisualElement;
+	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -15,25 +18,37 @@ package org.flowerplatform.flexdiagram.mindmap
 	
 	import spark.components.DataRenderer;
 	import spark.components.Label;
+	import spark.components.RichText;
 	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider {
-						
+					
+		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
+		
 		protected static const circleRadius:int = 3;
 		
 		protected var _context:DiagramShellContext;
 			
-		protected var labelDisplay:Label;
+		protected var labelDisplay:RichText;
 		
 		protected var iconsComponentExtension:IconsComponentExtension;
+		
+		protected var backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
+		
+		protected var allowBaseRendererToClearGraphics:Boolean = true;
+		
+		/**
+		 * If <code>true</code>, draw only this class graphics (border and small circle on right).
+		 */ 
+		public var drawGraphicsOnlyFromBaseClass:Boolean = false;
 		
 		public function AbstractMindMapModelRenderer() {
 			super();
 			addEventListener(FlexEvent.INITIALIZE, initializeHandler);	
-									
+								
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				minHeight = 22;
 				minWidth = 10;
@@ -85,13 +100,20 @@ package org.flowerplatform.flexdiagram.mindmap
 		}
 		
 		override public function set data(value:Object):void {
-			if (super.data != null) {
+			if (data != null) {
 				data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 			}
 			
 			super.data = value;
 			
 			if (data != null) {
+				// set depth from model's dynamic object if available
+				// model's children must have a greater depth than the model because 
+				// when drawing more complex graphics (like clouds), they must be displayed above them
+				var dynamicObject:Object = diagramShellContext.diagramShell.getDynamicObject(diagramShellContext, data);
+				if (dynamicObject.depth) {
+					depth = dynamicObject.depth;
+				}
 				data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);				
 				assignData();
 			}
@@ -108,7 +130,7 @@ package org.flowerplatform.flexdiagram.mindmap
 		override protected function createChildren():void {			
 			super.createChildren();
 			
-			labelDisplay = new Label();		
+			labelDisplay = new RichText();		
 			labelDisplay.percentHeight = 100;
 			labelDisplay.percentWidth = 100;
 			labelDisplay.setStyle("verticalAlign" , "middle");		
@@ -117,13 +139,17 @@ package org.flowerplatform.flexdiagram.mindmap
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {				
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
+						
+			if (allowBaseRendererToClearGraphics) {
+				graphics.clear();
+			}
 			
-			graphics.clear();
 			graphics.lineStyle(1, 0x808080);
-			graphics.beginFill(0xCCCCCC, 0);
+			graphics.beginFill(backgroundColor, 1);
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
-			
+						
 			if (canDrawCircle(data)) {
+				graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
 				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					graphics.drawCircle(-circleRadius, height/2, circleRadius);
@@ -154,11 +180,11 @@ package org.flowerplatform.flexdiagram.mindmap
 		}
 				
 		override public function validateDisplayList():void {
-			super.validateDisplayList();			
 			iconsComponentExtension.validateDisplayList();
+			super.validateDisplayList();			
 		}
 		
-		override public function validateProperties():void {
+		override public function validateProperties():void {			
 			super.validateProperties();
 			iconsComponentExtension.validateProperties();
 		}
