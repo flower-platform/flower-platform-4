@@ -21,12 +21,12 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
-	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flexutil.action.MultipleSelectionActionBase;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class DiagramShellAwareActionBase extends ActionBase implements IDiagramShellContextAware {
+	public class DiagramShellAwareActionBase extends MultipleSelectionActionBase implements IDiagramShellContextAware {
 		
 		private var _context:DiagramShellContext;
 		

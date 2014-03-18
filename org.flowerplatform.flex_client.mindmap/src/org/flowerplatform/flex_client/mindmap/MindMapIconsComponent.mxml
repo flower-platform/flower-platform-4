@@ -30,12 +30,12 @@ license-end
 		<![CDATA[
 			import mx.collections.IList;
 			
-			import spark.components.Group;
-			
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			import spark.components.Group;
 						
 			public var icons:String;
 			
@@ -47,6 +47,21 @@ license-end
 			[Bindable]
 			public var removeGroup:Group;
 					
+			private static const ICONS_LIST:String = 
+				"help;yes;button_ok;button_cancel;bookmark;idea;messagebox_warning;stop-sign;closed;info;clanbomber;checked;unchecked;" 
+				+ "wizard;gohome;knotify;password;pencil;xmag;bell;bookmark;launch;broken-line;stop;prepare;go;"
+				+ "very_negative;negative;neutral;positive;very_positive;"
+				+ "full-1;full-2;full-3;full-4;full-5;full-6;full-7;full-8;full-9;full-0;0percent;25percent;50percent;75percent;100percent;"
+				+ "attach;desktop_new;list;edit;kaddressbook;pencil;folder;kmail;Mail;revision;"
+				+ "video;audio;executable;image;internet;internet_warning;mindmap;narrative;"
+				+ "flag-black;flag-blue;flag-green;flag-orange;flag-pink;flag;flag-yellow;"
+				+ "clock;clock2;hourglass;calendar;"
+				+ "family;female1;female2;females;male1;male2;males;fema;group;"
+				+ "ksmiletris;smiley-neutral;smiley-oh;smiley-angry;smily_bad;"
+				+ "licq;penguin;freemind_butterfly;bee;"
+				+ "forward;back;up;down;"
+				+ "addition;subtraction;multiplication;division";
+			
 			/**
 			 * @author Cristina Constantinescu
 			 * @author Sebastian Solomon
@@ -73,7 +88,7 @@ license-end
 				removeGroup.addElement(btnRemoveFirst);				
 				removeGroup.addElement(btnRemoveLast);
 				
-				var icons:Array = MindMapPlugin.getInstance().getMessage('icons.list').split(';');
+				var icons:Array = ICONS_LIST.split(';');
 				for (var i:int=0; i < icons.length; i++) {
 					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
 					btnImage.iconUrl = "images/icons/" + icons[i] + ".png";
