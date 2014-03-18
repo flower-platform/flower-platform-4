@@ -2,6 +2,8 @@ package org.flowerplatform.core.node.remote;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CorePlugin;
@@ -20,7 +22,8 @@ import org.flowerplatform.util.Utils;
 public class Node {
 	
 	public static final String FULL_NODE_ID_SEPARATOR = "|";
-	private static final String FULL_NODE_ID_SPLIT_REGEX = "\\" + FULL_NODE_ID_SEPARATOR;
+
+	private static final Pattern FULL_NODE_ID_PATTERN = Pattern.compile("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
 	
 	private String type;
 	
@@ -47,18 +50,17 @@ public class Node {
 	}
 
 	public Node(String fullNodeId) {
-		if (StringUtils.countMatches(fullNodeId, FULL_NODE_ID_SEPARATOR) != 2) { 
+		if (StringUtils.countMatches(fullNodeId, FULL_NODE_ID_SEPARATOR) < 2) { 
 			throw new RuntimeException("fullNodeId must have the following format: <type>|<resource>|<id>! Received " + fullNodeId);
 		}
-		String[] tokens = fullNodeId.split(FULL_NODE_ID_SPLIT_REGEX);
 		
-		this.type = tokens[0];
-		this.resource = tokens[1];
-		
-		if (tokens.length == 3) { // needed because if fullNodeId is "type|resource|" (without id), there will be two tokens ("type", "resource")
-			this.idWithinResource = tokens[2];
+		Matcher matcher = FULL_NODE_ID_PATTERN.matcher(fullNodeId);
+		if (matcher.find()) {
+			type = matcher.group(1);
+			resource = matcher.group(2).isEmpty() ? null : matcher.group(2);
+			idWithinResource = matcher.group(3).isEmpty() ? null : matcher.group(3);
+			cachedFullNodeId = fullNodeId;
 		}
-		this.cachedFullNodeId = fullNodeId;
 	}
 	
 	public String getType() {
@@ -90,7 +92,7 @@ public class Node {
 
 	public String getFullNodeId() {
 		if (cachedFullNodeId == null) {
-			cachedFullNodeId = Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource);
+			cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";
 		}
 		return cachedFullNodeId;
 	}

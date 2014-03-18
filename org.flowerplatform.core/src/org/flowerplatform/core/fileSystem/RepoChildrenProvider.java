@@ -25,7 +25,7 @@ public class RepoChildrenProvider extends ChildrenProvider {
 	}
 	
 	public Node getFileSystem(Node parentnode) {
-		Node node = new Node(CorePlugin.FILE_SYSTEM_NODE_TYPE, null, parentnode.getIdWithinResource(), null);
+		Node node = new Node(CorePlugin.FILE_SYSTEM_NODE_TYPE, CorePlugin.SELF_RESOURCE, parentnode.getIdWithinResource(), null);
 		return node;
 	}
 

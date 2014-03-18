@@ -5,7 +5,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeDragController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeInplaceEditorController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.ResourceTypeDynamicCategoryProvider;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeSelectionRenderer;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer;
@@ -26,6 +25,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
+	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
 	/**
@@ -36,8 +36,8 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "freePlaneMindMap";
 		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "freePlanePersistence";
 		
-		public static const FREEPLANE_MINDMAP_CATEGORY:String = ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
-		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
+		public static const FREEPLANE_MINDMAP_CATEGORY:String = TypeDescriptor.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
+		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = TypeDescriptor.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 				
 		protected static var INSTANCE:MindMapPlugin;
 				
@@ -53,8 +53,7 @@ package org.flowerplatform.flex_client.mindmap {
 			INSTANCE = this;
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("root2").addCategory(FREEPLANE_MINDMAP_CATEGORY);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("repo").addCategory(FREEPLANE_MINDMAP_CATEGORY);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("repository").addCategory(FREEPLANE_MINDMAP_CATEGORY);
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("fileSystem").addCategory(FREEPLANE_MINDMAP_CATEGORY);
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("fileNode").addCategory(FREEPLANE_MINDMAP_CATEGORY);
 			

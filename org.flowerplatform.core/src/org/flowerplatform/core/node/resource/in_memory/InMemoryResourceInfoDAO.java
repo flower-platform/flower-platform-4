@@ -75,11 +75,23 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 	}
 
 	@Override
-	public void setRawResourceData(String rootNodeId, Object rawResourceData) {
-		getRootNodeInfoForRootNodeId(rootNodeId).setRawResourceData(rawResourceData);
-		if (rawResourceData == null) {
-			resourceNodeIdToInfo.remove(rootNodeId);
+	public String getResourceCategory(String resourceNodeId) {
+		RootNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		if (info != null) {
+			return info.getResourceCategory();
 		}
+		return null;
+	}
+	
+	@Override
+	public void setRawResourceData(String rootNodeId, Object rawResourceData, String resourceCategory) {
+		getRootNodeInfoForRootNodeId(rootNodeId).setRawResourceData(rawResourceData);
+		getRootNodeInfoForRootNodeId(rootNodeId).setResourceCategory(resourceCategory);
+	}
+	
+	@Override
+	public void unsetRawResourceData(String rootNodeId) {
+		resourceNodeIdToInfo.remove(rootNodeId);
 	}
 	
 	@Override
@@ -176,5 +188,5 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 		}
 		return info;
 	}
-	
+
 }

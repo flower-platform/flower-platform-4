@@ -14,15 +14,12 @@ public class MindMapRawNodeDataProvider extends RawNodeDataProvider<NodeModel> {
 
 	@Override
 	public NodeModel getRawNodeData(Node node) {
+		// get the raw resource data for the resource node
+		Node resourceNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
 		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService()
-				.getRawResourceData(node.getFullNodeId());
-		if (CorePlugin.RESOURCE_TYPE.equals(node.getType())) {
-			// return the root node for the resource
-			return model.getRootNode();
-		} else {
-			// return the node with this id
-			return model.getNodeForID(node.getIdWithinResource());
-		}
+				.getRawResourceData(resourceNode.getFullNodeId());
+		// return the node with this id
+		return model.getNodeForID(node.getIdWithinResource());
 	}
 
 }

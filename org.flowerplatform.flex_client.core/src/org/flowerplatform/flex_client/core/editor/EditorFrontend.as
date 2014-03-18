@@ -19,12 +19,9 @@
 package org.flowerplatform.flex_client.core.editor {
 	import flash.events.IEventDispatcher;
 	
-	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 	import mx.managers.IFocusManagerComponent;
 	import mx.rpc.events.FaultEvent;
-	
-	import spark.components.VGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
@@ -39,6 +36,8 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
+	import spark.components.VGroup;
+	
 	/**
 	 * @author Mariana Gheorghe
 	 */
@@ -50,9 +49,12 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected var _viewHost:IViewHost;
 		
-		public var rootNodeIds:ArrayCollection = new ArrayCollection();
+		public var nodeUpdateProcessor:NodeUpdateProcessor;
 		
-		public var updateProcessor:NodeUpdateProcessor;
+		public function EditorFrontend() {
+			super();
+			nodeUpdateProcessor = new NodeUpdateProcessor();
+		}
 		
 		public function get editorInput():String {
 			return _editorInput;
@@ -60,28 +62,16 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function set editorInput(editorInput:String):void {
 			_editorInput = editorInput;
-			CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.subscribeToParentResource",	[editorInput], subscribeResultCallback, subscribeFaultCallback);
+			nodeUpdateProcessor.subscribeToSelfOrParentResource(editorInput, subscribeResultCallback, subscribeFaultCallback);
 		}
 		
-		protected function subscribeResultCallback(rootNode:Node):void {
-			rootNodeIds.addItem(rootNode.fullNodeId);
-			CorePlugin.getInstance().rootNodeIdToEditors.addEditor(rootNode.fullNodeId, this);
+		protected function subscribeResultCallback(resourceNode:Node):void {
+			// nothing to do
 		}
 		
 		protected function subscribeFaultCallback(event:FaultEvent):void {
-			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-			.setText(CorePlugin.getInstance().getMessage("editor.error.subscribe.message", [editorInput]))
-			.setTitle(CorePlugin.getInstance().getMessage("editor.error.subscribe.title"))
-			.setWidth(300)
-			.setHeight(200)
-			.showMessageBox();
-			
 			// close editor
 			FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost));
-		}
-		
-		public function getContext():DiagramShellContext {
-			throw new Error("Must provide a context!");
 		}
 		
 		public function getActions(selection:IList):Vector.<IAction> {
@@ -102,8 +92,9 @@ package org.flowerplatform.flex_client.core.editor {
 		}
 		
 		protected function viewRemovedHandler(event:ViewRemovedEvent):void {
-			for each (var rootNodeId:String in rootNodeIds) {
-				CorePlugin.getInstance().rootNodeIdToEditors.removeEditor(rootNodeId, this);
+			for each (var rootNodeId:String in nodeUpdateProcessor.resourceNodeIds) {
+				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors
+					.removeNodeUpdateProcessor(rootNodeId, nodeUpdateProcessor);
 			}
 		}
 	}

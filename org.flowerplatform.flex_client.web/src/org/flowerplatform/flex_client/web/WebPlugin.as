@@ -65,7 +65,7 @@ package org.flowerplatform.flex_client.web {
 			btn.label = "Open Editor";
 			var textInput:TextInput = new TextInput();
 			textInput.width = 400;
-			textInput.text = "D:/temp/FAP-FlowerPlatform4.mm";
+			textInput.text = "(code|self|D:/temp/repo1/fp-repo-config/FAP-FlowerPlatform4.mm)";
 			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
 				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, textInput.text);
 			});
@@ -73,9 +73,9 @@ package org.flowerplatform.flex_client.web {
 			hBox.addChild(textInput);
 				
 			var addRootBtn:Button = new Button();
-			addRootBtn.label = "Add root";
+			addRootBtn.label = "Open Root";
 			addRootBtn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_ROOT, null);
+				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "(root||)");
 			});
 			hBox.addChild(addRootBtn);
 

@@ -11,10 +11,10 @@ import org.flowerplatform.core.node.resource.ResourceInfoService;
  */
 public class ResourceInfoServiceRemote {
 
-	public Node subscribeToParentResource(String nodeId) {
+	public Node subscribeToSelfOrParentResource(String nodeId) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		return CorePlugin.getInstance().getResourceInfoService()
-				.subscribeToParentResource(nodeId, sessionId);
+				.subscribeToSelfOrParentResource(nodeId, sessionId);
 	}
 	
 	/**

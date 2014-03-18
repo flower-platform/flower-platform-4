@@ -1,6 +1,8 @@
 package org.flowerplatform.core.node;
 
+import static org.flowerplatform.core.CorePlugin.SELF_RESOURCE;
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
+import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -8,7 +10,6 @@ import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERT
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.controller.RootNodeProvider.ROOT_NODE_PROVIDER;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
-import org.flowerplatform.core.node.controller.RootNodeProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
@@ -216,13 +216,12 @@ public class NodeService {
 	}
 	
 	public Node getRootNode(Node node) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
+		if (node.getResource() == null) {
 			return null;
+		} else if (SELF_RESOURCE.equals(node.getResource())) {
+			return node;
 		}
-		
-		RootNodeProvider provider = descriptor.getSingleController(ROOT_NODE_PROVIDER, node);		
-		return provider.getRootNode(node);
+		return new Node(node.getResource());
 	}
 	
 	/**
@@ -280,6 +279,14 @@ public class NodeService {
 			return null;
 		}
 		return rawNodeDataProvider.getRawNodeData(node);	
+	}
+	
+	public boolean isSubscribable(Map<String, Object> properties) {
+		Boolean isSubscribable = (Boolean) properties.get(IS_SUBSCRIBABLE);
+		if (isSubscribable == null) {
+			return false;
+		}
+		return isSubscribable;
 	}
 	
 	public Map<String, Object> getControllerInvocationOptions() {

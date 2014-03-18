@@ -10,6 +10,9 @@ public class NodePropertiesConstants {
 	public static final String TEXT = "text";
 	public static final String SIZE = "size";
 	public static final String NAME = "name";
+	
+	public static final String IS_SUBSCRIBABLE = "isSubscribable";
+	
 	public static final String IS_DIRECTORY = "isDirectory";
 	public static final String CREATION_TIME = "creationTime";
 	public static final String LAST_MODIFIED_TIME = "lastModifiedTime";

@@ -1,5 +1,7 @@
 package org.flowerplatform.core.file;
 
+import static org.flowerplatform.core.CorePlugin.FILE_SYSTEM_NODE_TYPE;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +31,13 @@ public class FileChildrenProvider extends ChildrenProvider {
 		Object[] files = fileAccessController.listFiles(file);
 		List<Node> children = new ArrayList<Node>();
 		for (Object object : files) {
-			children.add(getNode(object));
+			children.add(getNode(object, node.getType().equals(FILE_SYSTEM_NODE_TYPE) ? node.getFullNodeId() : node.getResource()));
 		}
 		return children;
 	}
 
-	private Node getNode(Object file) {
-		Node node = new Node(CorePlugin.FILE_NODE_TYPE, null, fileAccessController.getAbsolutePath(file), null);
+	private Node getNode(Object file, String resource) {
+		Node node = new Node(CorePlugin.FILE_NODE_TYPE, resource, fileAccessController.getAbsolutePath(file), null);
 		return node;
 	}
 

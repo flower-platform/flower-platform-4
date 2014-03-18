@@ -18,8 +18,8 @@
  */
 package org.flowerplatform.flex_client.core.mindmap {
 	
+	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
-	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 	import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
@@ -34,7 +34,7 @@ package org.flowerplatform.flex_client.core.mindmap {
 		
 		public static const MINDMAP_ROOT_NODE_TYPE:String = "mindmapRootNode";
 		
-		public var updateProcessor:MindMapNodeUpdateProcessor;
+		public var updateProcessor:NodeUpdateProcessor;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
