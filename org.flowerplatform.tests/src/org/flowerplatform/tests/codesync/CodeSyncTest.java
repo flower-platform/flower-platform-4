@@ -20,7 +20,6 @@ package org.flowerplatform.tests.codesync;
 
 import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.NAME;
 import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
-import static org.flowerplatform.codesync.code.CodeSyncCodePlugin.FOLDER;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin.TECHNOLOGY;
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.ANNOTATION_VALUE_VALUE;
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.SUPER_CLASS;
@@ -49,6 +48,7 @@ import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.tests.TestUtil;
 import org.junit.BeforeClass;
@@ -73,12 +73,16 @@ public class CodeSyncTest {
 	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
+	private static final String resourceNodeId = new Node(CorePlugin.CODE_TYPE, CorePlugin.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm", null).getFullNodeId();
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		TestUtil.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
 
 		startPlugin(new CodeSyncCodePlugin());
 		startPlugin(new CodeSyncCodeJavaPlugin());
+		
+		CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(resourceNodeId, "");
 	}
 	
 	@Test
@@ -88,12 +92,7 @@ public class CodeSyncTest {
 		
 		File project = getProject();
 		
-		Node root = CodeSyncPlugin.getInstance().getResource(null);
-		
-		Node model = new Node(FOLDER, root.getResource(), null, null);
-		nodeService.addChild(root, model, null);
-		nodeService.setProperty(model, NAME, INITIAL);
-		Match match = codeSyncService.synchronize(root.getFullNodeId(), new File(project, fullyQualifiedName), TECHNOLOGY, true);
+		Match match = codeSyncService.synchronize(resourceNodeId, new File(project, fullyQualifiedName), TECHNOLOGY, true);
 		
 		assertEquals(1, match.getSubMatches().size());
 		
@@ -137,12 +136,12 @@ public class CodeSyncTest {
 
 		File project = getProject();
 		
-		Node root = CodeSyncPlugin.getInstance().getResource(null);
+		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
 		
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
 		
-		Match match = codeSyncService.generateMatch(root.getFullNodeId(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
+		Match match = codeSyncService.generateMatch(resourceNodeId, new File(project, fullyQualifiedName), TECHNOLOGY, false);
 		
 		Pair[] typeList = {
 				new Pair(MatchType._3MATCH, 0),					// src
@@ -231,7 +230,7 @@ public class CodeSyncTest {
 		File project = getProject();
 		File dir = new File(project, fullyQualifiedName);
 		
-		Node root = CodeSyncPlugin.getInstance().getResource(null);
+		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
 		
 //		File cseLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().CSE_MAPPING_FILE_LOCATION);
 //		File aceLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().ACE_FILE_LOCATION);
@@ -239,7 +238,7 @@ public class CodeSyncTest {
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
 		
-		codeSyncService.synchronize(root.getFullNodeId(), dir, TECHNOLOGY, true);
+		codeSyncService.synchronize(resourceNodeId, dir, TECHNOLOGY, true);
 		
 		String expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/" + SOURCE_FILE);
 		String actual = FileUtils.readFileToString(new File(dir, SOURCE_FILE));
@@ -345,7 +344,7 @@ public class CodeSyncTest {
 
 		File project = getProject();
 		
-		Node root = CodeSyncPlugin.getInstance().getResource(null);		
+		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);		
 		
 		// simulate model modifications
 		
@@ -368,7 +367,7 @@ public class CodeSyncTest {
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
 		Node orphanRemoval = new Node(MEMBER_VALUE_PAIR, root.getResource(), null, null);
 
-		Match match = codeSyncService.generateMatch(root.getFullNodeId(), new File(project, fullyQualifiedName), TECHNOLOGY, false);
+		Match match = codeSyncService.generateMatch(resourceNodeId, new File(project, fullyQualifiedName), TECHNOLOGY, false);
 		
 		Pair[] typeList = {
 				new Pair(MatchType._3MATCH, 0),				// src
