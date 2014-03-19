@@ -58,6 +58,7 @@ package org.flowerplatform.flex_client.mindmap {
 			INSTANCE = this;
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
 			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("root1").addCategory(FREEPLANE_MINDMAP_CATEGORY);
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("root2").addCategory(FREEPLANE_MINDMAP_CATEGORY);
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("repo").addCategory(FREEPLANE_MINDMAP_CATEGORY);
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("fileSystem").addCategory(FREEPLANE_MINDMAP_CATEGORY);
