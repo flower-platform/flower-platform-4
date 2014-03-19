@@ -50,7 +50,7 @@ package org.flowerplatform.flexutil.resources {
 				resourceManager.update();
 				
 				if (object != null && object is IEventDispatcher) {
-					IEventDispatcher(object).dispatchEvent(new ResourceUpdatedEvent());
+					IEventDispatcher(object).dispatchEvent(new ResourceUpdatedEvent(url));
 				}
 			}
 			

@@ -106,6 +106,11 @@ package org.flowerplatform.flexutil.controller {
 				}
 			}
 			
+			if (pair.a is NullController) {
+				// means we must ignore all registered controllers
+				pair.a = null;
+			}
+			
 			// finished scanning the categories
 			pair.b = true;
 			

@@ -86,16 +86,16 @@
 </stylenode>
 </map_styles>
 </hook>
-<attribute NAME="nodeType" VALUE="Folder"/>
+<attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <node TEXT="initial" FOLDED="true" POSITION="right" ID="ID_1494658957" CREATED="1392727571546" MODIFIED="1392727571546">
-<attribute NAME="nodeType" VALUE="Folder"/>
+<attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="initial"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <node TEXT="Test.java" ID="ID_663546393" CREATED="1392727572118" MODIFIED="1392727572118">
-<attribute NAME="nodeType" VALUE="File"/>
+<attribute NAME="nodeType" VALUE="codesyncFile"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="Test.java"/>
@@ -240,14 +240,14 @@
 </node>
 <node TEXT="modified_no_conflicts" FOLDED="true" POSITION="right" ID="ID_1674185911" CREATED="1392727571546" MODIFIED="1392730370672">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
-<attribute NAME="nodeType" VALUE="Folder"/>
+<attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="modified_no_conflicts"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <node TEXT="Test.java" ID="ID_1480055610" CREATED="1392727572118" MODIFIED="1392727572118">
-<attribute NAME="nodeType" VALUE="File"/>
+<attribute NAME="nodeType" VALUE="codesyncFile"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="Test.java"/>
@@ -394,14 +394,14 @@
 </node>
 <node TEXT="modified_no_conflicts_perform_sync" FOLDED="true" POSITION="right" ID="ID_605803515" CREATED="1392727571546" MODIFIED="1392737861202">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="202"/>
-<attribute NAME="nodeType" VALUE="Folder"/>
+<attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="modified_no_conflicts_perform_sync"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <node TEXT="Test.java" ID="ID_1207452859" CREATED="1392727572118" MODIFIED="1392727572118">
-<attribute NAME="nodeType" VALUE="File"/>
+<attribute NAME="nodeType" VALUE="codesyncFile"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="Test.java"/>
@@ -548,14 +548,14 @@
 </node>
 <node TEXT="modified_conflicts" FOLDED="true" POSITION="right" ID="ID_79630243" CREATED="1392727571546" MODIFIED="1392736415327">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
-<attribute NAME="nodeType" VALUE="Folder"/>
+<attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="modified_conflicts"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <node TEXT="Test.java" ID="ID_1272448822" CREATED="1392727572118" MODIFIED="1392727572118">
-<attribute NAME="nodeType" VALUE="File"/>
+<attribute NAME="nodeType" VALUE="codesyncFile"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="Test.java"/>

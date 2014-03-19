@@ -1,6 +1,7 @@
 package org.flowerplatform.core.file;
 
-import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRECTORY;
+import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -18,12 +19,6 @@ public class FileAddNodeController extends AddNodeController {
 		Object parentFile;
 
 		try {
-//			if (parentNode.getType().equals(CorePlugin.FILE_SYSTEM_NODE_TYPE)) {
-//				parentFile = fileAccessController
-//						.getFile("d:\\temp\\fileSystemNode");
-//			} else {
-//				parentFile = fileAccessController.getFile(parentNode.getIdWithinResource());
-//			}
 			parentFile = fileAccessController.getFile(parentNode.getIdWithinResource());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -33,16 +28,28 @@ public class FileAddNodeController extends AddNodeController {
 			parentFile = fileAccessController.getParentFile(parentFile);
 		}
 
-		String name = child.getIdWithinResource();
+		String name = (String)child.getProperties().get(TEXT);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
 		child.setIdWithinResource(fileAccessController.getAbsolutePath(fileToCreate));
-		boolean isDir = (Boolean) child.getProperties().get(IS_DIRECTORY);
+		boolean isDir = (Boolean) child.getProperties().get(FILE_IS_DIRECTORY);
 		if (isDir) {
-			fileAccessController.createNewDirectory(fileToCreate);
+			if (!fileAccessController.createNewDirectory(fileToCreate)) {
+				if (fileAccessController.exists(fileToCreate)) {
+					throwException();
+				} else {
+					throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
+				}
+			}
 		} else {
-			fileAccessController.createNewFile(fileToCreate);
+			if (!fileAccessController.createNewFile(fileToCreate)) {
+				throwException();
+			}
 		}
 		child.getOrPopulateProperties();
+	}
+
+	private void throwException() {
+		throw new RuntimeException("There is already a file with the same name in this location.");
 	}
 
 }

@@ -13,7 +13,8 @@ package org.flowerplatform.flex_client.codesync.renderer {
 		
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
-			if (event == null || event.updatedProperties == null || event.updatedProperties.getItemIndex("icon") != -1) {
+			
+			if (hasPropertyChanged("icon")) {
 				composeIconWithSyncMarkers();
 			}
 		}
@@ -22,9 +23,7 @@ package org.flowerplatform.flex_client.codesync.renderer {
 			if (data == null) {
 				return;
 			}
-			
-			var node:Node = Node(data);
-			
+					
 			var icon:String = node.properties.icon;
 			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
 			if (node.properties.conflict == true) {

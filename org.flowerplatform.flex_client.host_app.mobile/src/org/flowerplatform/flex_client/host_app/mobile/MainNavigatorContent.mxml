@@ -39,7 +39,7 @@
 			<s:Button label="Open Editor">
 				<s:click>
 					<![CDATA[
-					CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "D:/temp/FAP-FlowerPlatform4.mm");
+					CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "resource||D:/temp/FAP-FlowerPlatform4.mm");
 					]]>
 				</s:click>
 			</s:Button>

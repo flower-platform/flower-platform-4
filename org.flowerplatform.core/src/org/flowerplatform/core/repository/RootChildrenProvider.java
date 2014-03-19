@@ -1,4 +1,4 @@
-package org.flowerplatform.core.fileSystem;
+package org.flowerplatform.core.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,27 +11,21 @@ import org.flowerplatform.core.node.remote.Node;
 /**
  * @author Sebastian Solomon
  */
-public class RepoChildrenProvider extends ChildrenProvider {
-	
-	public RepoChildrenProvider() {
+public class RootChildrenProvider extends ChildrenProvider {
+
+	public RootChildrenProvider() {
 		setOrderIndex(200);
 	}
 
 	@Override
 	public List<Node> getChildren(Node node, Map<String, Object> options) {
 		List<Node> children = new ArrayList<Node>();
-		children.add(getFileSystem(node));
+		children.add(new Node(CorePlugin.REPOSITORY_TYPE, null, CorePlugin.FILE_SYSTEM_PATH + "/repo1", null));
 		return children;	
 	}
 	
-	public Node getFileSystem(Node parentnode) {
-		Node node = new Node(CorePlugin.FILE_SYSTEM_NODE_TYPE, CorePlugin.SELF_RESOURCE, parentnode.getIdWithinResource(), null);
-		return node;
-	}
-
 	@Override
 	public boolean hasChildren(Node node, Map<String, Object> options) {
 		return true;
 	}
-
 }

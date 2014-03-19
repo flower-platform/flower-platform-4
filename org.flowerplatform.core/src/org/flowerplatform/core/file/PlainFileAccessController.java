@@ -72,8 +72,18 @@ public class PlainFileAccessController implements IFileAccessController {
 	}
 	
 	@Override
-	public boolean delete(Object child) {
-		return ((File)child).delete();
+	public void delete(Object folder) {
+		File[] files = ((File) folder).listFiles();
+		if (files != null) {
+			for (File f : files) {
+				if (f.isDirectory()) {
+					delete(f);
+				} else {
+					f.delete();
+				}
+			}
+		}
+		((File) folder).delete();
 	}
 	
 	@Override
@@ -86,8 +96,8 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).getParent();
 	}
 	@Override
-	public void rename(Object file, Object dest) {
-		((File)file).renameTo((File)dest);
+	public boolean rename(Object file, Object dest) {
+		return ((File)file).renameTo((File)dest);
 	}
 	
 	@Override
@@ -182,19 +192,19 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).list().length > 0;
 	}
 
-	@Override
-	public void deleteFolderContent(Object folder) {
-		File[] files = ((File) folder).listFiles();
-		if (files != null) {
-			for (File f : files) {
-				if (f.isDirectory()) {
-					deleteFolderContent(f);
-				} else {
-					f.delete();
-				}
-			}
-		}
-		((File) folder).delete();
-	}
+//	@Override
+//	public void deleteFolderContent(Object folder) {
+//		File[] files = ((File) folder).listFiles();
+//		if (files != null) {
+//			for (File f : files) {
+//				if (f.isDirectory()) {
+//					deleteFolderContent(f);
+//				} else {
+//					f.delete();
+//				}
+//			}
+//		}
+//		((File) folder).delete();
+//	}
 
 }

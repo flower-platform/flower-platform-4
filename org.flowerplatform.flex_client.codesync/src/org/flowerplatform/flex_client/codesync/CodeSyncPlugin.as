@@ -63,10 +63,6 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(SynchronizeAction);
-					
-			// controllers for code sync nodes
-			var codeSyncDescriptor:TypeDescriptor = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC);
-			MindMapPlugin.getInstance().addCommonControllers(codeSyncDescriptor);
 		}
 		
 	}

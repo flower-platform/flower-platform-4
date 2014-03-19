@@ -18,8 +18,13 @@
  */
 package org.flowerplatform.flex_client.core.mindmap {
 	
+	import mx.utils.ObjectUtil;
+	
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 	import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
@@ -31,15 +36,12 @@ package org.flowerplatform.flex_client.core.mindmap {
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell {
-		
-		public static const MINDMAP_ROOT_NODE_TYPE:String = "mindmapRootNode";
-		
+
 		public var updateProcessor:NodeUpdateProcessor;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
-			
-			
+						
 			registerTools([ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool, InplaceEditorTool]);
 		}
 	

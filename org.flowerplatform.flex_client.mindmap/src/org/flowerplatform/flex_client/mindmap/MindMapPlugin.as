@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
@@ -29,6 +30,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
+	import org.flowerplatform.flexutil.controller.NullController;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
@@ -56,25 +58,25 @@ package org.flowerplatform.flex_client.mindmap {
 			}
 			INSTANCE = this;
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
-			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("repository").addCategory(FREEPLANE_MINDMAP_CATEGORY);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("fileSystem").addCategory(FREEPLANE_MINDMAP_CATEGORY);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("fileNode").addCategory(FREEPLANE_MINDMAP_CATEGORY);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("freeplaneNode").addCategory(FREEPLANE_MINDMAP_CATEGORY);
-								
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapEditorDiagramShell.MINDMAP_ROOT_NODE_TYPE)
+
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController(-10))
-				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController(-10));
+				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController(-10))
+				.addSingleController(DragController.TYPE, new NullController(-10))
+				.addSingleController(SelectionController.TYPE, new NullController(-10))
+				.addSingleController(RendererController.TYPE, new NullController(-10))
+				.addSingleController(InplaceEditorController.TYPE, new NullController(-10));	
 						
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
 				.addSingleController(ModelChildrenController.TYPE, new NodeChildrenController())
 				.addSingleController(MindMapModelController.TYPE, new NodeController())				
 				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())				
-				.addSingleController(AbsoluteLayoutRectangleController.TYPE, new MindMapAbsoluteLayoutRectangleController());
-						
-			addCommonControllers(CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY));
-			addCommonControllers(CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FREEPLANE_PERSISTENCE_CATEGORY));
-						
+				.addSingleController(AbsoluteLayoutRectangleController.TYPE, new MindMapAbsoluteLayoutRectangleController())
+				.addSingleController(DragController.TYPE, new NodeDragController())
+				.addSingleController(SelectionController.TYPE, new BasicSelectionController(NodeSelectionRenderer))
+				.addSingleController(RendererController.TYPE, new NodeRendererController(MindMapNodeRenderer))
+				.addSingleController(InplaceEditorController.TYPE, new NodeInplaceEditorController());		
+			
 			// register PropertiesPlugin Renderer
 			PropertiesPlugin.getInstance().propertyRendererClasses["MindMapIconsWithButton"] = new FactoryWithInitialization
 				(IconsWithButtonPropertyRenderer, {
@@ -99,20 +101,6 @@ package org.flowerplatform.flex_client.mindmap {
 			CorePlugin.getInstance().iconSideBarClass = MindMapIconsBar;
 		
 		}
-		
-		/**
-		 * Adds common controllers.
-		 * Those controllers aren't set to "category.all", because that category includes the root node
-		 * and we don't want to set selection renderer or inplace editor controller etc. on it.
-		 */ 
-		public function addCommonControllers(typeDescriptor:TypeDescriptor):void {
-			typeDescriptor
-				.addSingleController(DragController.TYPE, new NodeDragController())
-				.addSingleController(SelectionController.TYPE, new BasicSelectionController(NodeSelectionRenderer))
-				.addSingleController(RendererController.TYPE, new NodeRendererController(MindMapNodeRenderer))
-				.addSingleController(InplaceEditorController.TYPE, new NodeInplaceEditorController());				
-		}
-		
-		
+
 	}
 }

@@ -22,6 +22,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -38,10 +40,13 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		}
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList {
-			var children:IList = context.diagramShell.getDynamicObject(context, context.diagramShell.rootModel).children;
+			var children:IList = MindMapRootModelWrapper(context.diagramShell.rootModel).children;			
 			// the rootModel keeps all diagram's children in its dynamic object	
 			if (children == null) {
-				return new ArrayList();
+				children = new ArrayList();
+			}
+			if (MindMapDiagramShell(context.diagramShell).showRootModelAsRootNode) {
+				children.addItemAt(MindMapRootModelWrapper(context.diagramShell.rootModel).model, 0);
 			}
 			return children;
 		}

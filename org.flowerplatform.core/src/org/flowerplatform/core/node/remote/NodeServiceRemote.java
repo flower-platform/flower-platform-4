@@ -1,6 +1,7 @@
 package org.flowerplatform.core.node.remote;
 
-import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRECTORY;
+import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class NodeServiceRemote {
 		Node child;
 		if (properties.get(CorePlugin.TYPE_KEY).equals(CorePlugin.FILE_NODE_TYPE)) {
 			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), (String)properties.get("text"), null);
-			child.getProperties().put(IS_DIRECTORY, properties.get(IS_DIRECTORY)); 
+			child.getProperties().put(FILE_IS_DIRECTORY, properties.get(FILE_IS_DIRECTORY)); 
 		} else {
 			
 			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);

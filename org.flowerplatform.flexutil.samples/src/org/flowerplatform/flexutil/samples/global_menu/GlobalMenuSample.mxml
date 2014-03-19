@@ -101,5 +101,5 @@ license-end
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<ns:WebMenuBar width="100%" id="mainMenu"/>
+	<ns:GlobalMenuBar width="100%" id="mainMenu"/>
 </s:Group>

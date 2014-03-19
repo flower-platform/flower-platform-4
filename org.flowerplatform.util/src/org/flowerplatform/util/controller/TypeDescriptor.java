@@ -160,6 +160,11 @@ public class TypeDescriptor {
 			}
 		}
 		
+		if (pair.a instanceof NullController) {
+			// means we must ignore all registered controllers
+			pair.a = null;
+		}
+		
 		// finished scanning the categories
 		pair.b = true;
 		

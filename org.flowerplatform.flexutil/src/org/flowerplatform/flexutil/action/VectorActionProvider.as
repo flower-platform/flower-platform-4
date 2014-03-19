@@ -23,6 +23,7 @@ package org.flowerplatform.flexutil.action {
 	 * Simple action provider that contains a vector.
 	 * 
 	 * @author Mircea negreanu
+	 * @author Cristina Constantinescu
 	 */
 	public class VectorActionProvider implements IActionProvider {
 		private var _actions:Vector.<IAction>;
@@ -31,12 +32,13 @@ package org.flowerplatform.flexutil.action {
 			_actions = new Vector.<IAction>();
 		}
 
-		/**
-		 * Does not process the vector in any way, so you can say
-		 * getActions(null).push(action)
-		 */
 		public function getActions(selection:IList):Vector.<IAction> {
 			return _actions;
 		}
+		
+		public function addAction(action:IAction):void {
+			_actions.push(action);
+		}
+		
 	}
 }
