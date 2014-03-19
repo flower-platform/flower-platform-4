@@ -13,7 +13,8 @@ package org.flowerplatform.flex_client.codesync.renderer {
 		
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
-			if (event == null || event.updatedProperties == null || event.updatedProperties.getItemIndex("icon") != -1) {
+			
+			if (hasPropertyChanged("icon")) {
 				composeIconWithSyncMarkers();
 			}
 		}
