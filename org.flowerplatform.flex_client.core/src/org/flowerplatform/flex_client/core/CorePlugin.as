@@ -26,20 +26,18 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
-	import org.flowerplatform.flex_client.core.editor.RootNodeIdsToEditors;
+	import org.flowerplatform.flex_client.core.editor.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
 	import org.flowerplatform.flex_client.core.mindmap.controller.ResourceTypeDynamicCategoryProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
@@ -54,10 +52,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
-	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -97,7 +91,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var addChildDescriptors:Object = new Object();
 		
-		public var rootNodeIdToEditors:RootNodeIdsToEditors = new RootNodeIdsToEditors();
+		public var resourceNodesManager:ResourceNodesManager;
 		
 		public var updateTimer:UpdateTimer = new UpdateTimer();
 		
@@ -131,7 +125,9 @@ package org.flowerplatform.flex_client.core {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-						
+					
+			resourceNodesManager = new ResourceNodesManager();
+			
 			var channelSet:ChannelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
 			
@@ -147,8 +143,7 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);		
 			mindmapEditorClassFactoryActionProvider.addActionClass(OpenInNewEditorAction);
 		
 			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
@@ -176,7 +171,7 @@ package org.flowerplatform.flex_client.core {
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
 			linkHandlers[LinkHandler.OPEN_ROOT] = new LinkHandler(MindMapEditorProvider.ID);
-			
+					
 			if (ExternalInterface.available) {
 				// on mobile, it's not available
 				ExternalInterface.addCallback("handleLink", handleLink);

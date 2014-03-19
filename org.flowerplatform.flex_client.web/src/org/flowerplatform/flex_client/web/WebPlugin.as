@@ -17,6 +17,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.web {
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
 	
@@ -25,6 +26,7 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.SaveResourceNodesView;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
@@ -32,6 +34,7 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
+	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	
 	import spark.components.Application;
 	import spark.components.Button;
@@ -55,11 +58,16 @@ package org.flowerplatform.flex_client.web {
 			}
 			INSTANCE = this;	
 		
+			if (ExternalInterface.available) { 
+				ExternalInterface.addCallback("invokeSaveResourcesDialog", invokeSaveResourcesDialog); 
+			}
 		}
 		
 		override public function start():void {
 			super.start();
-								
+					
+			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
+						
 			CorePlugin.getInstance().getPerspective(MindMapPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
 			var hBox:HBox = new HBox();
@@ -79,12 +87,12 @@ package org.flowerplatform.flex_client.web {
 			var addRootBtn:Button = new Button();
 			addRootBtn.label = "Add root";
 			addRootBtn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_ROOT, null);
+				new SaveResourceNodesView().show(null, null);
+//				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_ROOT, null);
 			});
 			hBox.addChild(addRootBtn);
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
-			
-			
+						
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
 			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
@@ -96,11 +104,16 @@ package org.flowerplatform.flex_client.web {
 				}
 			);			
 									
-			CorePlugin.getInstance().handleLink(CorePlugin.getInstance().getAppUrl());
+			CorePlugin.getInstance().handleLink(CorePlugin.getInstance().getAppUrl());		
 		}
 		
 		override protected function registerMessageBundle():void {			
 		}	
 			
+		public function invokeSaveResourcesDialog():Boolean {
+			CorePlugin.getInstance().resourceNodesManager.invokeSaveResourceNodesView();
+			return CorePlugin.getInstance().resourceNodesManager.getGlobalDirtyState();
+		}
+		
 	}
 }

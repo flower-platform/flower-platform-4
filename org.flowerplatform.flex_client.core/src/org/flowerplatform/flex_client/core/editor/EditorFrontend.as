@@ -24,8 +24,6 @@ package org.flowerplatform.flex_client.core.editor {
 	import mx.managers.IFocusManagerComponent;
 	import mx.rpc.events.FaultEvent;
 	
-	import spark.components.VGroup;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
@@ -33,16 +31,19 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.layout.ITitleDecorator;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
+	import spark.components.VGroup;
+	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator {
 		
 		private var _editorInput:String;
 		
@@ -65,7 +66,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected function subscribeResultCallback(rootNode:Node):void {
 			rootNodeIds.addItem(rootNode.fullNodeId);
-			CorePlugin.getInstance().rootNodeIdToEditors.addEditor(rootNode.fullNodeId, this);
+			CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.addEditor(rootNode.fullNodeId, this);
 		}
 		
 		protected function subscribeFaultCallback(event:FaultEvent):void {
@@ -94,17 +95,21 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function set viewHost(value:IViewHost):void {
 			_viewHost = value;
-			IEventDispatcher(viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
 		}
 		
 		public function get viewHost():IViewHost {
 			return _viewHost;
 		}
 		
-		protected function viewRemovedHandler(event:ViewRemovedEvent):void {
-			for each (var rootNodeId:String in rootNodeIds) {
-				CorePlugin.getInstance().rootNodeIdToEditors.removeEditor(rootNodeId, this);
+		public function isDirty():Boolean {	
+			return true;
+		}
+		
+		public function decorateTitle(title:String):String {
+			if (isDirty()) { 
+				return "* " + title;
 			}
+			return title;
 		}
 	}
 }

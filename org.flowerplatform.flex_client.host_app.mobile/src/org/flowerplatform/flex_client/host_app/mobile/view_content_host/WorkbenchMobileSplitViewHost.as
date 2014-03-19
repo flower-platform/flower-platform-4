@@ -45,7 +45,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 //			leftActiveComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(new ViewLayoutData(ExplorerViewProvider.ID));
 			
 			FlexUtilGlobals.getInstance().workbench = this;
-//			this.addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, EditorPlugin.getInstance().globalEditorOperationsManager.viewsRemovedHandler);
+			this.addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
 			
 			showOpenEditorsCalloutButton.splitView = this;
 		}
@@ -107,6 +107,9 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		public function getActiveView():UIComponent {
 			return UIComponent(rightActiveComponent);
 		}
+		
+		public function refreshLabels(viewLayoutData:ViewLayoutData=null):void {		
+		}	
 		
 		/**
 		 * @author Cristina Constantinescu

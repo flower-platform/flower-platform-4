@@ -31,5 +31,6 @@ package org.flowerplatform.flexutil.layout {
 		function getActiveView():UIComponent;
 		function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void;
 		function load(layoutData:Object, reuseExistingViews:Boolean = false, keepNewLayoutEditors:Boolean = false):void;
+		function refreshLabels(viewLayoutData:ViewLayoutData = null):void;
 	}
 }

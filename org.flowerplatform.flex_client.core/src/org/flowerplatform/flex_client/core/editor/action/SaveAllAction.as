@@ -16,29 +16,30 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.mindmap.action {
+package org.flowerplatform.flex_client.core.editor.action {
+	
+	import mx.collections.ArrayCollection;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class SaveAction extends DiagramShellAwareActionBase {
+	public class SaveAllAction extends ActionBase {
 		
-		public function SaveAction() {			
-			label = CorePlugin.getInstance().getMessage("mindmap.action.save");
-			icon = CorePlugin.getInstance().getResourceUrl("images/save_edit.gif");
-			preferShowOnActionBar = true;
-			orderIndex = 110;
+		public function SaveAllAction() {			
+			label = CorePlugin.getInstance().getMessage("saveAll.action.label");
+			icon = CorePlugin.getInstance().getResourceUrl("images/disk_multiple.png");
 		}
 				
-		override public function get visible():Boolean {			
-			return true;
-		}
-		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.save", [Node(diagramShell.rootModel).resource]);
+			var resourceNodes:ArrayCollection = CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.getRootNodeIds();
+			for (var i:int = 0; i < resourceNodes.length; i++) {
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.saveResource", [resourceNodes.getItemAt(i)]);				
+			}			
 		}
 				
 	}

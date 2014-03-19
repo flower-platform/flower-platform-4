@@ -61,8 +61,8 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().rootNodeIdToEditors.lastUpdateTimestamp;
-			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().rootNodeIdToEditors.getRootNodeIds();
+			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.lastUpdateTimestamp;
+			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.getRootNodeIds();
 			operation.messageHeaders = headers;
 			
 			return operation;
@@ -78,7 +78,7 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			
 			if (result.hasOwnProperty(LAST_UPDATE_TIMESTAMP)) {
-				CorePlugin.getInstance().rootNodeIdToEditors.lastUpdateTimestamp = result[LAST_UPDATE_TIMESTAMP];
+				CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.lastUpdateTimestamp = result[LAST_UPDATE_TIMESTAMP];
 			}
 			
 			if (result.hasOwnProperty(UPDATES)) { // updates exists, process them
@@ -95,7 +95,7 @@ package org.flowerplatform.flex_client.core.service {
 		private function sendUpdatesToOpenEditors(rootNodeIdToUpdates:Object):void {
 			for (var rootNodeId:String in rootNodeIdToUpdates) {
 				var updates:ArrayCollection = rootNodeIdToUpdates[rootNodeId];
-				var editors:ArrayCollection = CorePlugin.getInstance().rootNodeIdToEditors.getEditors(rootNodeId);
+				var editors:ArrayCollection = CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.getEditors(rootNodeId);
 				for each (var editor:EditorFrontend in editors) {
 					updates = processUpdates(updates);
 					editor.updateProcessor.rootNodeUpdatesHandler(editor.getContext(), updates);
@@ -123,7 +123,7 @@ package org.flowerplatform.flex_client.core.service {
 		private function closeObsoleteEditos(rootNodeIdsNotFound:ArrayCollection):void {
 			var idsList:String = "";
 			for each (var rootNodeId:String in rootNodeIdsNotFound) {
-				var editors:ArrayCollection = CorePlugin.getInstance().rootNodeIdToEditors.getEditors(rootNodeId);
+				var editors:ArrayCollection = CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.getEditors(rootNodeId);
 				for each (var editor:EditorFrontend in editors) {
 					FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(editor.viewHost));
 				}
