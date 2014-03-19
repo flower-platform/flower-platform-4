@@ -55,15 +55,18 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 				
 		public function Node(fullNodeId:String = null) {
 			if (fullNodeId != null) {
+				// this case happens when a Node is created from client
+				// so instantiate & populate required attributes
+				
 				var tokens:Array = fullNodeId.split(FULL_NODE_ID_SEPARATOR);
 				
 				_type = tokens[0];
 				_resource = tokens[1];
+				_idWithinResource = tokens[2];
 				
-				if (tokens.length == 3) {
-					_idWithinResource = tokens[2];
-				}
 				cachedFullNodeId = fullNodeId;
+				
+				properties = new Object();
 			}
 		}
 		

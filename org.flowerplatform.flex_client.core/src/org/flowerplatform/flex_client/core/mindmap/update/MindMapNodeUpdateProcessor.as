@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
@@ -46,10 +47,18 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 	 */	
 	public class MindMapNodeUpdateProcessor extends NodeUpdateProcessor {
 		
-		protected var diagramShell:DiagramShell;
+		protected var diagramShell:MindMapDiagramShell;
 				
-		public function MindMapNodeUpdateProcessor(diagramShell:DiagramShell) {
+		public function MindMapNodeUpdateProcessor(diagramShell:MindMapDiagramShell) {
 			this.diagramShell = diagramShell;
+		}
+		
+		/**
+		 * Adds <code>node</code> as the rootNode of this diagramShell.
+		 */ 
+		public function addRootNode(context:DiagramShellContext, node:Node):void {
+			nodeRegistry.registerNode(node);
+			diagramShell.addModelInRootModelChildrenList(context, node, true);	
 		}
 		
 		/**
@@ -105,8 +114,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				node.children = null;
 				
 				if (refreshChildrenAndPositions) {					
-					MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
-					MindMapDiagramShell(diagramShell).refreshModelPositions(context, node);
+					diagramShell.refreshRootModelChildren(context);
+					diagramShell.refreshModelPositions(context, node);
 				}
 			}			
 		}
@@ -127,16 +136,21 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 		protected function requestChildrenHandler(context:DiagramShellContext, node:Node, children:ArrayCollection):void {			
 			if (node == null) {	// root node				
 				// rootModel already set, remove it from diagram
-				if (diagramShell.rootModel != null && MindMapDiagramShell(diagramShell).getDynamicObject(context, diagramShell.rootModel).children != null) {
-					removeNode(context, Node(MindMapDiagramShell(diagramShell).getRoot(context)));
+				if (diagramShell.rootModel != null && diagramShell.getDynamicObject(context, diagramShell.rootModel).children != null) {
+					removeNode(context, Node(diagramShell.getRoot(context)));
 				}
-				node = Node(children.getItemAt(0));
-				nodeRegistry.registerNode(node);
-				MindMapDiagramShell(diagramShell).addModelInRootModelChildrenList(context, node, true);	
-				
-				// by default, root node is considered expanded
-				ControllerUtils.getMindMapModelController(context, node).setExpanded(context, node, true);
-			} else {				
+								
+				if (diagramShell.showRootModelAsRootNode) {
+					node = Node(diagramShell.getRoot(context));
+				} else {
+					addRootNode(context, Node(children.getItemAt(0)));
+					
+					// by default, root node is considered expanded
+					ControllerUtils.getMindMapModelController(context, node).setExpanded(context, node, true);
+				}						
+			} 
+			
+			if (node != null) {
 				// register each child
 				for each (var child:Node in children) {
 					nodeRegistry.registerNode(child);
@@ -146,9 +160,10 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				// set node list of children
 				node.children = children;
 			}		
+			
 			// refresh diagram's children and their positions
-			MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
-			MindMapDiagramShell(diagramShell).refreshModelPositions(context, node);				
+			diagramShell.refreshRootModelChildren(context);
+			diagramShell.refreshModelPositions(context, node);				
 		}
 				
 		/* UPDATES */	
@@ -177,7 +192,7 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 			
 			if (updates == null) {				
 				if (diagramShell.rootModel != null) {
-					refresh(diagramShellContext, Node(MindMapDiagramShell(diagramShell).getRoot(diagramShellContext)));
+					refresh(diagramShellContext, Node(diagramShell.getRoot(diagramShellContext)));
 				}
 				return;
 			}
@@ -236,8 +251,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 							break;
 					}
 						
-					MindMapDiagramShell(diagramShell).refreshRootModelChildren(diagramShellContext);
-					MindMapDiagramShell(diagramShell).refreshModelPositions(diagramShellContext, nodeFromRegistry);						
+					diagramShell.refreshRootModelChildren(diagramShellContext);
+					diagramShell.refreshModelPositions(diagramShellContext, nodeFromRegistry);						
 				}				
 			}		
 				
@@ -259,8 +274,8 @@ package org.flowerplatform.flex_client.core.mindmap.update {
 				function (result:Object):void {
 					refreshHandler(context, node, NodeWithChildren(result));
 					
-					MindMapDiagramShell(diagramShell).refreshRootModelChildren(context);
-					MindMapDiagramShell(diagramShell).refreshModelPositions(context, node);});
+					diagramShell.refreshRootModelChildren(context);
+					diagramShell.refreshModelPositions(context, node);});
 		}
 		
 		/**
