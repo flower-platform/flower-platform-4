@@ -25,7 +25,7 @@ public class RepositoryChildrenProvider extends ChildrenProvider {
 	}
 	
 	public Node getFileSystem(Node parentnode) {
-		Node node = new Node("fileSystem", null, parentnode.getIdWithinResource(), null);
+		Node node = new Node("fileSystem", CorePlugin.SELF_RESOURCE, parentnode.getIdWithinResource(), null);
 		return node;
 	}
 

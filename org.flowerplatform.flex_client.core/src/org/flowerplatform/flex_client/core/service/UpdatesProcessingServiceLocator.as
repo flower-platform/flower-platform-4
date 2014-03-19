@@ -11,6 +11,7 @@ package org.flowerplatform.flex_client.core.service {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
@@ -61,8 +62,8 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().rootNodeIdToEditors.lastUpdateTimestamp;
-			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().rootNodeIdToEditors.getRootNodeIds();
+			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestamp;
+			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
 			operation.messageHeaders = headers;
 			
 			return operation;
@@ -78,7 +79,7 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			
 			if (result.hasOwnProperty(LAST_UPDATE_TIMESTAMP)) {
-				CorePlugin.getInstance().rootNodeIdToEditors.lastUpdateTimestamp = result[LAST_UPDATE_TIMESTAMP];
+				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestamp = result[LAST_UPDATE_TIMESTAMP];
 			}
 			
 			if (result.hasOwnProperty(UPDATES)) { // updates exists, process them
@@ -95,35 +96,17 @@ package org.flowerplatform.flex_client.core.service {
 		private function sendUpdatesToOpenEditors(rootNodeIdToUpdates:Object):void {
 			for (var rootNodeId:String in rootNodeIdToUpdates) {
 				var updates:ArrayCollection = rootNodeIdToUpdates[rootNodeId];
-				var editors:ArrayCollection = CorePlugin.getInstance().rootNodeIdToEditors.getEditors(rootNodeId);
-				for each (var editor:EditorFrontend in editors) {
-					updates = processUpdates(updates);
-					editor.updateProcessor.rootNodeUpdatesHandler(editor.getContext(), updates);
+				var nodeUpdateProcessors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(rootNodeId);
+				for each (var nodeUpdateProcessor:NodeUpdateProcessor in nodeUpdateProcessors) {
+					nodeUpdateProcessor.rootNodeUpdatesHandler(nodeUpdateProcessor.context, updates);
 				}
 			}
 		}
 		
-		/**
-		 * Children that come with the <code>ChildrenUpdate</code>s must be cloned, so that a different instance
-		 * is applied to each editor. Otherwise, the same node will be added to all the node registries, and then 
-		 * any <code>NodeUpdatedEvent</code> on this node will be caught by all the renderers from all open editors.
-		 */
-		private function processUpdates(updates:ArrayCollection):ArrayCollection {
-			for each (var update:Update in updates) {
-				if (update is ChildrenUpdate) {
-					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
-					var node:Node = childrenUpdate.targetNode;
-					childrenUpdate.targetNode = new Node(node.fullNodeId);
-					childrenUpdate.targetNode.properties = node.properties;
-				}
-			}
-			return updates;
-		}
-	
 		private function closeObsoleteEditos(rootNodeIdsNotFound:ArrayCollection):void {
 			var idsList:String = "";
 			for each (var rootNodeId:String in rootNodeIdsNotFound) {
-				var editors:ArrayCollection = CorePlugin.getInstance().rootNodeIdToEditors.getEditors(rootNodeId);
+				var editors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(rootNodeId);
 				for each (var editor:EditorFrontend in editors) {
 					FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(editor.viewHost));
 				}

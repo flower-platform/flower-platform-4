@@ -45,7 +45,6 @@
 			}
 			
 			protected function createFile(evt:MouseEvent = null):void {
-				var child:Node = new Node();
 				var properties:Object = new Object();
 
 				properties.type = "fileNode";

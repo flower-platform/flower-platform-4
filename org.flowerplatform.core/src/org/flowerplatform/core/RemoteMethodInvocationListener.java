@@ -40,7 +40,7 @@ public class RemoteMethodInvocationListener {
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
-		List<String> clientRootNodeIds = getRootNodeIds(remoteMethodInvocationInfo);
+		List<String> clientRootNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 		List<String> serverRootNodeIds = CorePlugin.getInstance().getResourceInfoService().getResourcesSubscribedBySession(sessionId);
 		List<String> notFoundRootNodeIds = new ArrayList<String>();
 		for (String clientRootNodeId : clientRootNodeIds) {
@@ -82,8 +82,8 @@ public class RemoteMethodInvocationListener {
 		}
 		
 		// get info from header
-		long timestampOfLastRequest = getTimestampOfLastRequest(remoteMethodInvocationInfo);
-		List<String> rootNodeIds = getRootNodeIds(remoteMethodInvocationInfo);
+		long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
+		List<String> rootNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 		
 		// prepare result
 		remoteMethodInvocationInfo.getEnrichedReturnValue().put(MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
@@ -102,15 +102,6 @@ public class RemoteMethodInvocationListener {
 		}
 		
 		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());	
-	}
-	
-	@SuppressWarnings("unchecked")
-	private List<String> getRootNodeIds(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-		return (List<String>) remoteMethodInvocationInfo.getHeaders().get(ROOT_NODE_IDS);
-	}
-
-	private long getTimestampOfLastRequest(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-		return ((Number) remoteMethodInvocationInfo.getHeaders().get(LAST_UPDATE_TIMESTAMP)).longValue();
 	}
 	
 }

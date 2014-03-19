@@ -24,7 +24,6 @@ package org.flowerplatform.flex_client.core.editor {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellAwareProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -88,13 +87,9 @@ package org.flowerplatform.flex_client.core.editor {
 			throw new Error("Must provide a diagram shell!");
 		}
 		
-		override public function getContext():DiagramShellContext {
-			return diagramShell.getNewDiagramShellContext();
-		}
-		
 		override protected function subscribeResultCallback(rootNode:Node):void {
 			super.subscribeResultCallback(rootNode);
-			MindMapNodeUpdateProcessor(updateProcessor).requestChildren(getContext(), null);
+			nodeUpdateProcessor.requestChildren(diagramShell.getNewDiagramShellContext(), null);
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

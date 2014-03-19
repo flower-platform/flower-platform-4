@@ -10,7 +10,7 @@ import org.flowerplatform.core.node.remote.Node;
 /**
  * @author Sebastian Solomon
  */
-public class SecondRootPropertiesProvider extends PropertiesProvider {
+public class RootPropertiesProvider extends PropertiesProvider {
 
 	@Override
 	public void populateWithProperties(Node node, Map<String, Object> options) {

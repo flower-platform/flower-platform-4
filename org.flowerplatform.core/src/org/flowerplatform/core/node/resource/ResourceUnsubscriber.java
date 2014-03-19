@@ -18,7 +18,7 @@ import org.flowerplatform.core.CorePlugin;
 public class ResourceUnsubscriber extends TimerTask {
 
 	// get this from a property?
-	public static long RESOURCE_UNSUBSCRIBER_DELAY = 10000; // ms
+	public static long RESOURCE_UNSUBSCRIBER_DELAY = 600000; // ms
 	
 	@Override
 	public void run() {

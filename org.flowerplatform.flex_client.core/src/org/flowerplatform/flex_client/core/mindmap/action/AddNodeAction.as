@@ -68,14 +68,9 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			
 			var properties:Object = new Object();
 			properties.type = childType;
-			// TODO CC: temporary code
-			properties.resource = parent.resource;
 			
-			var child:Node = new Node();
-			child.type = "javaParameter";
 			if (Node(selection.getItemAt(0)).type != "fileNode" && 
 				Node(selection.getItemAt(0)).type != "fileSystem") { 
-//				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [Node(selection.getItemAt(0)).fullNodeId, properties, null]);
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parent.fullNodeId, properties, null]);		
 			} else {
 				var view:CreateFileDialogView = new CreateFileDialogView();

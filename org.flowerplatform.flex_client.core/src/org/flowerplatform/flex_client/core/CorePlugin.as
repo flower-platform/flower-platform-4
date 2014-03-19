@@ -26,13 +26,12 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
-	import org.flowerplatform.flex_client.core.editor.RootNodeIdsToEditors;
+	import org.flowerplatform.flex_client.core.editor.ResourceNodeIdsToNodeUpdateProcessors;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
@@ -41,7 +40,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
-	import org.flowerplatform.flex_client.core.mindmap.controller.ResourceTypeDynamicCategoryProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
@@ -54,10 +52,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
-	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -85,8 +79,6 @@ package org.flowerplatform.flex_client.core {
 		 */ 
 		private static const MAIN_PAGE:String = "main.jsp";
 		
-		public static const RESOURCE_TYPE:String = "resource";
-		
 		protected static var INSTANCE:CorePlugin;
 		
 		public var serviceLocator:ServiceLocator;
@@ -97,9 +89,9 @@ package org.flowerplatform.flex_client.core {
 		
 		public var addChildDescriptors:Object = new Object();
 		
-		public var rootNodeIdToEditors:RootNodeIdsToEditors = new RootNodeIdsToEditors();
+		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 		
-		public var updateTimer:UpdateTimer = new UpdateTimer();
+		public var updateTimer:UpdateTimer = new UpdateTimer(5000);
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
@@ -171,11 +163,8 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 			
-			nodeTypeDescriptorRegistry.addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
-						
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
-			linkHandlers[LinkHandler.OPEN_ROOT] = new LinkHandler(MindMapEditorProvider.ID);
 			
 			if (ExternalInterface.available) {
 				// on mobile, it's not available

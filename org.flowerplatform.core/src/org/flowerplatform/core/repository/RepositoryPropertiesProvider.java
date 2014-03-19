@@ -1,6 +1,5 @@
 package org.flowerplatform.core.repository;
 
-import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
 import java.util.Map;

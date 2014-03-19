@@ -36,6 +36,8 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 						
 		public static const FULL_NODE_ID_SEPARATOR:String = "|";
 		
+		private static const FULL_NODE_ID_PATTERN:RegExp = new RegExp("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
+		
 		private var cachedFullNodeId:String;
 		
 		private var _type:String;		
@@ -52,18 +54,16 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		
 		[Transient]
 		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
-				
+		
 		public function Node(fullNodeId:String = null) {
 			if (fullNodeId != null) {
 				// this case happens when a Node is created from client
 				// so instantiate & populate required attributes
 				
-				var tokens:Array = fullNodeId.split(FULL_NODE_ID_SEPARATOR);
-				
-				_type = tokens[0];
-				_resource = tokens[1];
-				_idWithinResource = tokens[2];
-				
+				var result:Object = FULL_NODE_ID_PATTERN.exec(fullNodeId);
+				type = result[1];
+				resource = result[2].length == 0 ? null : result[2];
+				idWithinResource = result[3].length == 0 ? null : result[3];
 				cachedFullNodeId = fullNodeId;
 				
 				properties = new Object();
@@ -99,7 +99,7 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 				
 		public function get fullNodeId():String {
 			if (cachedFullNodeId == null) {
-				cachedFullNodeId = Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource);
+				cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";
 			}
 			return cachedFullNodeId;
 		}

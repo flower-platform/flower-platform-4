@@ -17,7 +17,7 @@ public class MindMapParentProvider extends ParentProvider {
 		if (parentNodeModel == null) {
 			return null;
 		}
-		return FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(parentNodeModel);
+		return FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(parentNodeModel, node.getResource());
 	}
 
 }

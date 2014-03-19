@@ -2,6 +2,8 @@ package org.flowerplatform.core.node.remote;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CorePlugin;
@@ -20,7 +22,8 @@ import org.flowerplatform.util.Utils;
 public class Node {
 	
 	public static final String FULL_NODE_ID_SEPARATOR = "|";
-	private static final String FULL_NODE_ID_SPLIT_REGEX = "\\" + FULL_NODE_ID_SEPARATOR;
+
+	private static final Pattern FULL_NODE_ID_PATTERN = Pattern.compile("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
 	
 	private String type;
 	
@@ -47,23 +50,17 @@ public class Node {
 	}
 
 	public Node(String fullNodeId) {
-		// StringUtils.defaultIfEmpty -> Returns either the passed in String, or if the String is empty or null, the value of defaultStr.
-		// StringUtils.splitPreserveAllTokens -> Splits the provided text into an array, separator specified, preserving all tokens, including empty tokens created by adjacent separators.
-		
-		String[] tokens = StringUtils.splitPreserveAllTokens(fullNodeId, FULL_NODE_ID_SEPARATOR);
-		
-		if (tokens.length != 3) {
+		if (StringUtils.countMatches(fullNodeId, FULL_NODE_ID_SEPARATOR) < 2) { 
 			throw new RuntimeException("fullNodeId must have the following format: <type>|<resource>|<id>! Received " + fullNodeId);
 		}
 		
-		type = StringUtils.defaultIfEmpty(tokens[0], null);
-		if (type == null) {
-			throw new RuntimeException("type must be populated!");
+		Matcher matcher = FULL_NODE_ID_PATTERN.matcher(fullNodeId);
+		if (matcher.find()) {
+			type = matcher.group(1);
+			resource = matcher.group(2).isEmpty() ? null : matcher.group(2);
+			idWithinResource = matcher.group(3).isEmpty() ? null : matcher.group(3);
+			cachedFullNodeId = fullNodeId;
 		}
-		resource = StringUtils.defaultIfEmpty(tokens[1], null);		
-		idWithinResource = StringUtils.defaultIfEmpty(tokens[2], null); 
-		
-		cachedFullNodeId = fullNodeId;
 	}
 	
 	public String getType() {
@@ -95,7 +92,7 @@ public class Node {
 
 	public String getFullNodeId() {
 		if (cachedFullNodeId == null) {
-			cachedFullNodeId = Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource);
+			cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";
 		}
 		return cachedFullNodeId;
 	}

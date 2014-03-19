@@ -21,7 +21,13 @@ import org.slf4j.LoggerFactory;
  */
 public class FreeplaneResourceSubscriptionListener extends ResourceSubscriptionListener {
 
+	private String resourceCategory;
+	
 	private final static Logger logger = LoggerFactory.getLogger(FreeplaneResourceSubscriptionListener.class);
+	
+	public FreeplaneResourceSubscriptionListener(String resourceCategory) {
+		this.resourceCategory = resourceCategory;
+	}
 	
 	@Override
 	public void firstClientSubscribed(String rootNodeId, Map<String, Object> options) throws Exception {
@@ -48,7 +54,7 @@ public class FreeplaneResourceSubscriptionListener extends ResourceSubscriptionL
 		
 		logger.debug("Loaded mindmap {}", rootNode.getIdWithinResource());
 		
-		CorePlugin.getInstance().getResourceInfoService().setRawResourceData(rootNodeId, model);
+		CorePlugin.getInstance().getResourceInfoService().setRawResourceData(rootNodeId, model, resourceCategory);
 		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
 	}
 
@@ -61,7 +67,7 @@ public class FreeplaneResourceSubscriptionListener extends ResourceSubscriptionL
 		
 		logger.debug("Unloaded mindmap {}", rootNode.getIdWithinResource());
 		
-		CorePlugin.getInstance().getResourceInfoService().setRawResourceData(rootNodeId, null);
+		CorePlugin.getInstance().getResourceInfoService().unsetRawResourceData(rootNodeId);
 		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
 	}
 	

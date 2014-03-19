@@ -29,7 +29,9 @@ public class FileChildrenProvider extends ChildrenProvider {
 		Object[] files = fileAccessController.listFiles(file);
 		List<Node> children = new ArrayList<Node>();
 		for (Object object : files) {
-			children.add(new Node("fileNode", null, fileAccessController.getAbsolutePath(object), null));
+			children.add(new Node("fileNode", 
+					node.getType().equals(CorePlugin.FILE_SYSTEM_NODE_TYPE) ? node.getFullNodeId() : node.getResource(),
+					fileAccessController.getAbsolutePath(object), null));
 		}
 		return children;
 	}

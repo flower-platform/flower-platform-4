@@ -122,8 +122,10 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			
 			var backgroundColorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.COLOR_BACKGROUND) != -1 : true;
-			if (backgroundColorChanged) {				
-				backgroundColor = Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND]);
+			if (backgroundColorChanged) {
+				if (data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND] > 0) { // TODO remove after merge with show/hide root node
+					backgroundColor = Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND]);
+				}
 			}
 				
 			var cloudColorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.CLOUD_COLOR) != -1 : true;

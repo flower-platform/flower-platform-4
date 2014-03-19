@@ -28,6 +28,7 @@ package org.flowerplatform.flex_client.codesync {
 	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	
 	import spark.components.Button;
 	
@@ -39,7 +40,7 @@ package org.flowerplatform.flex_client.codesync {
 		/**
 		 * @author Cristina Constantinescu
 		 */
-		public static const CODESYNC_CATEGORY:String = "category.codeSync";
+		public static const CATEGORY_CODESYNC:String = TypeDescriptor.CATEGORY_PREFIX + "codeSync";
 		
 		protected static var INSTANCE:CodeSyncPlugin;
 		
@@ -62,10 +63,23 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(SynchronizeAction);
 					
+			// TODO MG: remove after the static categories are sent from java
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("codesyncFolder")
+				.addCategory(CATEGORY_CODESYNC);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("codesyncFile")
+				.addCategory(CATEGORY_CODESYNC);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("javaClass")
+				.addCategory(CATEGORY_CODESYNC);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("javaOperation")
+				.addCategory(CATEGORY_CODESYNC);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("javaAttribute")
+				.addCategory(CATEGORY_CODESYNC);
+			
 			// controllers for code sync nodes
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(MindMapPlugin.FREEPLANE_PERSISTENCE_CATEGORY)
-				// lower order index, must replace the generic renderer
-				.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer, -100000));
+			var codeSyncDescriptor:TypeDescriptor = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC);
+			MindMapPlugin.getInstance().addCommonControllers(codeSyncDescriptor);
+			// lower order index, must replace the generic renderer
+			codeSyncDescriptor.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer, -100000));
 		}
 		
 	}

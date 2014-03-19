@@ -15,7 +15,11 @@ public interface IResourceInfoDAO {
 	
 	public Object getRawResourceData(String rootNodeId);
 	
-	public void setRawResourceData(String rootNodeId, Object rawResourceData);
+	public String getResourceCategory(String resourceNodeId);
+	
+	public void setRawResourceData(String rootNodeId, Object rawResourceData, String resourceCategory);
+	
+	public void unsetRawResourceData(String rootNodeId);
 	
 	public long getUpdateRequestedTimestamp(String rootNodeId);
 	
