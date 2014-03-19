@@ -59,6 +59,7 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
+import org.flowerplatform.core.node.remote.GenericDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceInfoServiceRemote;
@@ -94,6 +95,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public static final String CODE_TYPE = "code";
 	
 	public static final String SELF_RESOURCE = "self";
+	
+	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";
+	public static final String PROPERTY_FOR_ICON_DESCRIPTOR = "propertyForIconDescriptor";
 	
 	protected static CorePlugin INSTANCE;
 
@@ -205,7 +209,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
 		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
 		.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
-		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController());
+		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController())
+		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.TEXT))
+		.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.ICONS));
 		
 		new ResourceDebugControllers().registerControllers();
 		

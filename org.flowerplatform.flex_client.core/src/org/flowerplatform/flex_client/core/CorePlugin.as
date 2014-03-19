@@ -47,6 +47,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.remote.GenericDescriptor;
 	import org.flowerplatform.flex_client.core.node.remote.TypeDescriptorRemote;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
@@ -59,6 +61,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.layout.Perspective;
@@ -86,6 +89,12 @@ package org.flowerplatform.flex_client.core {
 
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
 	
+		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
+		public static const PROPERTY_FOR_ICON_DESCRIPTOR:String = "propertyForIconDescriptor";
+		
+		public static const NODE_TITLE_PROVIDER:String = "nodeTitleProvider";
+		public static const NODE_ICON_PROVIDER:String = "nodeIconProvider";
+		
 		/**
 		 * @author Sebastian Solomon
 		 */
@@ -164,6 +173,10 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 			
+			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
+				.addSingleController(NODE_TITLE_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_TITLE_DESCRIPTOR))
+				.addSingleController(NODE_ICON_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_ICON_DESCRIPTOR));
+			
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
 			
@@ -181,8 +194,10 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(ChildrenUpdate);
 			registerClassAliasFromAnnotation(NodeWithChildren);
 			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
-			registerClassAliasFromAnnotation(AddChildDescriptor);
+		
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
+			registerClassAliasFromAnnotation(GenericDescriptor);
+			registerClassAliasFromAnnotation(AddChildDescriptor);
 		}
 		
 		public function getPerspective(id:String):Perspective {

@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.codesync {
 	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
@@ -66,8 +67,6 @@ package org.flowerplatform.flex_client.codesync {
 			// controllers for code sync nodes
 			var codeSyncDescriptor:TypeDescriptor = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC);
 			MindMapPlugin.getInstance().addCommonControllers(codeSyncDescriptor);
-			// lower order index, must replace the generic renderer
-			codeSyncDescriptor.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer, -100000));
 		}
 		
 	}
