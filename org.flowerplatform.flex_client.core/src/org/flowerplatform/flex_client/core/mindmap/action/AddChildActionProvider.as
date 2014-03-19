@@ -44,7 +44,8 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 			var parentType:String = parent.type;
 			
 			// get the descriptors for the selected parent type from the core dictionary
-			var descriptors:ArrayCollection = CorePlugin.getInstance().addChildDescriptors[parentType];
+			var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
+				.getExpectedTypeDescriptor(parentType).getAdditiveControllers(AddChildDescriptor.TYPE, parent);
 			if (descriptors != null) {
 				for each (var descriptor:AddChildDescriptor in descriptors) {
 					result.push(new AddNodeAction(descriptor));

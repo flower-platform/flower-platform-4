@@ -80,35 +80,32 @@
 				}
 				
 				// get properties to display
-				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService.getPropertyDescriptors", [node.fullNodeId], 
-					function(result:Object):void {
-						var currentCategory:String;
-						for ( var i:int = 0; i < ArrayCollection(result).length; i++ ) {
-							var formItem:PropertyItemRenderer = new PropertyItemRenderer();
-							var itemCategory:String = result.getItemAt(i)["category"];
-							if (itemCategory != currentCategory) {
-								var categoryItem:CategoryItem = new CategoryItem();
-								
-								currentCategory = itemCategory;
-								categoryItem.label = currentCategory;
-								propertyForm.addElement(categoryItem);
-							}
-							propertyForm.addElement(formItem);
-							formItem.data = ArrayCollection(result).getItemAt(i);
-							
-						}
-							
-						// get their values from node
-						nodeUpdatedHandler(new NodeUpdatedEvent(node));
+				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
+					.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertyDescriptor.TYPE, node);
+				var currentCategory:String;
+				for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {
+					var formItem:PropertyItemRenderer = new PropertyItemRenderer();
+					var itemCategory:String = propertyDescriptors.getItemAt(i)["category"];
+					if (itemCategory != currentCategory) {
+						var categoryItem:CategoryItem = new CategoryItem();
 						
-						label.text = (node.properties == null)? null : node.properties[NodePropertiesConstants.TEXT];
-						
-						// store new selection and listen for node upates
-						PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
-						node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+						currentCategory = itemCategory;
+						categoryItem.label = currentCategory;
+						propertyForm.addElement(categoryItem);
 					}
-				);		
+					propertyForm.addElement(formItem);
+					formItem.data = propertyDescriptors.getItemAt(i);
+					
+				}
+					
+				// get their values from node
+				nodeUpdatedHandler(new NodeUpdatedEvent(node));
+				
+				label.text = (node.properties == null)? null : node.properties[NodePropertiesConstants.TEXT];
+				
+				// store new selection and listen for node upates
+				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+				node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 			}
 			
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {

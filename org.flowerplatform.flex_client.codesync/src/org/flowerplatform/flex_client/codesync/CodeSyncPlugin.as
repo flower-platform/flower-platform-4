@@ -40,7 +40,7 @@ package org.flowerplatform.flex_client.codesync {
 		/**
 		 * @author Cristina Constantinescu
 		 */
-		public static const CATEGORY_CODESYNC:String = TypeDescriptor.CATEGORY_PREFIX + "codeSync";
+		public static const CATEGORY_CODESYNC:String = TypeDescriptor.CATEGORY_PREFIX + "codesync";
 		
 		protected static var INSTANCE:CodeSyncPlugin;
 		
@@ -63,18 +63,6 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(SynchronizeAction);
 					
-			// TODO MG: remove after the static categories are sent from java
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("codesyncFolder")
-				.addCategory(CATEGORY_CODESYNC);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("codesyncFile")
-				.addCategory(CATEGORY_CODESYNC);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("javaClass")
-				.addCategory(CATEGORY_CODESYNC);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("javaOperation")
-				.addCategory(CATEGORY_CODESYNC);
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("javaAttribute")
-				.addCategory(CATEGORY_CODESYNC);
-			
 			// controllers for code sync nodes
 			var codeSyncDescriptor:TypeDescriptor = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC);
 			MindMapPlugin.getInstance().addCommonControllers(codeSyncDescriptor);
