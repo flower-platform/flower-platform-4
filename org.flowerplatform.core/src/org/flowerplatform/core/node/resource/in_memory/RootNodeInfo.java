@@ -13,6 +13,8 @@ public class RootNodeInfo {
 
 	private Object rawResourceData;
 	
+	private String resourceCategory;
+	
 	private List<String> sessions = new ArrayList<String>();
 	
 	private List<Update> updates = new ArrayList<Update>();
@@ -25,6 +27,14 @@ public class RootNodeInfo {
 	
 	public void setRawResourceData(Object rawResourceData) {
 		this.rawResourceData = rawResourceData;
+	}
+	
+	public String getResourceCategory() {
+		return resourceCategory;
+	}
+
+	public void setResourceCategory(String resourceCategory) {
+		this.resourceCategory = resourceCategory;
 	}
 	
 	public List<String> getSessions() {
@@ -42,4 +52,5 @@ public class RootNodeInfo {
 	public void setUpdateRequestedTimestamp(long updateRequestedTimestamp) {
 		this.updateRequestedTimestamp = updateRequestedTimestamp;
 	}
+	
 }

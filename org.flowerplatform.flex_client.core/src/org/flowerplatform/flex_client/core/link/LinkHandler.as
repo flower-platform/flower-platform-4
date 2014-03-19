@@ -22,8 +22,9 @@ package org.flowerplatform.flex_client.core.link {
 			if (command == OPEN_RESOURCES) {
 				// parameters format = file1,file2,file3|selectResourceAtIndex=1
 				var files:String = parameters;
-				var index:String;
 				
+				// TODO MG: deactivated because this is a full node id = type|resource|id
+//				var index:String;
 //				if (parameters.lastIndexOf("|") != -1) { // index exists
 //					files = parameters.split("|")[0];
 //					index = parameters.split("|")[1];	
@@ -35,9 +36,7 @@ package org.flowerplatform.flex_client.core.link {
 				for each (var file:String in files.split(RESOURCES_SEPARATOR)) {
 					var view:ViewLayoutData = new ViewLayoutData();
 					var root:Node = new Node();
-					root.type = CorePlugin.RESOURCE_TYPE;
-					root.idWithinResource = file;
-					view.customData = file;//root.fullNodeId;
+					view.customData = file;
 					view.isEditor = true;
 					view.viewId = viewId;
 					FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);

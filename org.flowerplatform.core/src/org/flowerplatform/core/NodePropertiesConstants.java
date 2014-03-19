@@ -8,12 +8,13 @@ public class NodePropertiesConstants {
 	
 	public static final String HAS_CHILDREN = "hasChildren";
 	public static final String TEXT = "text";
-	public static final String SIZE = "size";
-	public static final String NAME = "name";
-	public static final String IS_DIRECTORY = "isDirectory";
-	public static final String CREATION_TIME = "creationTime";
-	public static final String LAST_MODIFIED_TIME = "lastModifiedTime";
-	public static final String LAST_ACCESS_TIME = "lastAccessTime";
 	
+	public static final String IS_SUBSCRIBABLE = "isSubscribable";
+	
+	public static final String FILE_SIZE = "size";
+	public static final String FILE_IS_DIRECTORY = "isDirectory";
+	public static final String FILE_CREATION_TIME = "creationTime";
+	public static final String FILE_LAST_MODIFIED_TIME = "lastModifiedTime";
+	public static final String FILE_LAST_ACCESS_TIME = "lastAccessTime";
 	
 }

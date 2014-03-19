@@ -6,7 +6,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeDragController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeInplaceEditorController;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.ResourceTypeDynamicCategoryProvider;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeSelectionRenderer;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer;
@@ -43,8 +42,8 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "freePlaneMindMap";
 		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "freePlanePersistence";
 		
-		public static const FREEPLANE_MINDMAP_CATEGORY:String = ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
-		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = ResourceTypeDynamicCategoryProvider.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
+		public static const FREEPLANE_MINDMAP_CATEGORY:String = TypeDescriptor.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
+		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = TypeDescriptor.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 				
 		protected static var INSTANCE:MindMapPlugin;
 				
@@ -59,8 +58,8 @@ package org.flowerplatform.flex_client.mindmap {
 			}
 			INSTANCE = this;
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
-				
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)
+
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController(-10))
 				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController(-10))
 				.addSingleController(DragController.TYPE, new NullController(-10))
@@ -102,6 +101,6 @@ package org.flowerplatform.flex_client.mindmap {
 			CorePlugin.getInstance().iconSideBarClass = MindMapIconsBar;
 		
 		}
-				
+
 	}
 }

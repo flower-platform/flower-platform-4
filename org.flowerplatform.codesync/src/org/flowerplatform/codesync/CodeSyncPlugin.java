@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterLeft;
@@ -41,9 +40,9 @@ import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.PropertySetter;
-import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -57,6 +56,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
+	public static final String CATEGORY_CODESYNC = TypeDescriptor.CATEGORY_PREFIX + "codesync"; 
+			
 	/**
 	 * The location of the CSE mapping file, relative to the project. May be
 	 * configurable in the future.
@@ -224,7 +225,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		addTypeProvider("node", new NodeTypeProvider());
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.codeSync")
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC)
 		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
 		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter())
 		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.NAME))
@@ -430,12 +431,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		URI uri = EditorModelPlugin.getInstance().getModelAccessController().getURIFromFile(file);
 //		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
 //		return getResource(resourceSet, uri, fileExists);
-		Matcher matcher = ResourceTypeDynamicCategoryProvider.RESOURCE_PATTERN.matcher(file.toString());
-		String path = null;
-		if (matcher.find()) {
-			path = matcher.group(2);
-		}
-		Node node = new Node(CorePlugin.RESOURCE_TYPE, null, path, null);		
+		Node node = new Node((String) file);
 		return CorePlugin.getInstance().getNodeService().getChildren(node, true).get(0);
 	}
 	

@@ -20,8 +20,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider;
-	import org.flowerplatform.flex_client.core.mindmap.update.MindMapNodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -44,8 +44,8 @@ package org.flowerplatform.flex_client.core.mindmap {
 		 */
 		override protected function createDiagramShell():DiagramShell {
 			var diagramShell:MindMapEditorDiagramShell = new MindMapEditorDiagramShell();
-			diagramShell.updateProcessor = new MindMapNodeUpdateProcessor(diagramShell);
-			updateProcessor = diagramShell.updateProcessor;
+			diagramShell.updateProcessor = nodeUpdateProcessor;
+			nodeUpdateProcessor.context = diagramShell.getNewDiagramShellContext();
 			return diagramShell;
 		}
 		

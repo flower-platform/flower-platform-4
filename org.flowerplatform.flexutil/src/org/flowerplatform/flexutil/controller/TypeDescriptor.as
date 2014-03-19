@@ -17,6 +17,7 @@ package org.flowerplatform.flexutil.controller {
 	public class TypeDescriptor {
 		
 		public static const CATEGORY_PREFIX:String = "category.";
+		public static const CATEGORY_RESOURCE_PREFIX:String = TypeDescriptor.CATEGORY_PREFIX + "resource.";
 		
 		private var _registry:TypeDescriptorRegistry;
 		

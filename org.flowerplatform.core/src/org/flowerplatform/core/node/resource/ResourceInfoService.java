@@ -31,16 +31,26 @@ public class ResourceInfoService {
 	public ResourceInfoService(TypeDescriptorRegistry registry, IResourceInfoDAO resourceInfoDao) {
 		this.registry = registry;
 		this.resourceInfoDao = resourceInfoDao;
-		
-		new ResourceUnsubscriber().start();
 	}
 	
-	public Node subscribeToParentResource(String nodeId, String sessionId) {
+	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId) {
 		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeId);
 		
-		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(new Node(nodeId));
-		sessionSubscribedToResource(rootNode.getFullNodeId(), sessionId);
-		return rootNode;
+		Node node = new Node(nodeId);
+		Node subscribableNode = null;
+		if (CorePlugin.getInstance().getNodeService().isSubscribable(node.getOrPopulateProperties())) {
+			subscribableNode = node;
+		} else {
+			Node resourceNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
+			if (resourceNode != null && CorePlugin.getInstance().getNodeService().isSubscribable(resourceNode.getOrPopulateProperties())) {
+				subscribableNode = resourceNode;
+			}
+		}
+		if (subscribableNode == null) {
+			return null;
+		}
+		sessionSubscribedToResource(subscribableNode.getFullNodeId(), sessionId);
+		return subscribableNode;
 	}
 	
 	/**
@@ -49,8 +59,10 @@ public class ResourceInfoService {
 	 * to this node.
 	 */
 	public void sessionSubscribedToResource(String rootNodeId, String sessionId) {
+		boolean firstSubscription = false;
 		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
 			// first subscription
+			firstSubscription = true;
 			Map<String, Object> options = CorePlugin.getInstance().getNodeService().getControllerInvocationOptions();
 			for (ResourceSubscriptionListener listener : getResourceSubscriptionListeners(rootNodeId)) {
 				try {
@@ -66,7 +78,9 @@ public class ResourceInfoService {
 		}
 		resourceInfoDao.sessionSubscribedToResource(rootNodeId, sessionId);
 		
-		logger.debug("Subscribed session {} to root node {}", sessionId, rootNodeId);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Subscribed session {} to root node {}, first subscription {}", new Object[] { sessionId, rootNodeId, firstSubscription });
+		}
 	}
 	
 	/**
@@ -76,8 +90,10 @@ public class ResourceInfoService {
 	 */
 	public void sessionUnsubscribedFromResource(String rootNodeId, String sessionId) {
 		resourceInfoDao.sessionUnsubscribedFromResource(rootNodeId, sessionId);
+		boolean lastUnsubscription = false;
 		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
 			// last unsubscription
+			lastUnsubscription = true;
 			Map<String, Object> options = CorePlugin.getInstance().getNodeService().getControllerInvocationOptions();
 			for (ResourceSubscriptionListener listener : getResourceSubscriptionListeners(rootNodeId)) {
 				listener.lastClientUnubscribed(rootNodeId, options);
@@ -87,27 +103,31 @@ public class ResourceInfoService {
 			}
 		}
 		
-		logger.debug("Unsubscribed session {} from root node {}", sessionId, rootNodeId);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Unsubscribed session {} from root node {}, last unsubscription {}", new Object[] { sessionId, rootNodeId, lastUnsubscription });
+		}
 	}
 	
-	/**
-	 * Delegates to {@link IResourceInfoDAO#getRawResourceData(String)} for the root node
-	 * of the node with this <code>nodeId</code>.
-	 */
-	public Object getRawResourceData(String nodeId) {
-		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(new Node(nodeId));
-		return resourceInfoDao.getRawResourceData(rootNode.getFullNodeId());
+	public Object getRawResourceData(String resourceNodeId) {
+		return resourceInfoDao.getRawResourceData(resourceNodeId);
 	}
 	
+	public String getResourceCategory(String resourceNodeId) {
+		return resourceInfoDao.getResourceCategory(resourceNodeId);
+	}
 	/**
 	 * Delegates to {@link IResourceInfoDAO#setRawResourceData(String, Object)}.
 	 */
-	public void setRawResourceData(String rootNodeId, Object rawResourceData) {
-		resourceInfoDao.setRawResourceData(rootNodeId, rawResourceData);
+	public void setRawResourceData(String resourceNodeId, Object rawResourceData, String resourceCategory) {
+		resourceInfoDao.setRawResourceData(resourceNodeId, rawResourceData, resourceCategory);
 	}
 	
-	public long getUpdateRequestedTimestamp(String rootNodeId) {
-		return resourceInfoDao.getUpdateRequestedTimestamp(rootNodeId);
+	public void unsetRawResourceData(String resourceNodeId) {
+		resourceInfoDao.unsetRawResourceData(resourceNodeId);
+	}
+	
+	public long getUpdateRequestedTimestamp(String resourceNodeId) {
+		return resourceInfoDao.getUpdateRequestedTimestamp(resourceNodeId);
 	}
 	
 	/**

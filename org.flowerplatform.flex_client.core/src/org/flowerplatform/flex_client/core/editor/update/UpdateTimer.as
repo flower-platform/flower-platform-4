@@ -31,12 +31,12 @@ package org.flowerplatform.flex_client.core.editor.update {
 		
 		private var timer:Timer;
 		
-		private var active:Boolean = true;
+		private var updateInterval:int;
 		
-		private var updateInterval:int = 5000;
-		
-		public function UpdateTimer() {
-			if (active) {
+		public function UpdateTimer(updateInterval:int = 0) {
+			this.updateInterval = updateInterval;
+			
+			if (updateInterval > 0) {
 				timer = new Timer(updateInterval);
 				timer.addEventListener(TimerEvent.TIMER, function(event:TimerEvent):void {
 					CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.ping");
@@ -46,7 +46,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		}
 		
 		public function restart():void {
-			if (active) {
+			if (updateInterval > 0) {
 				timer.reset();
 				timer.start();
 			}
