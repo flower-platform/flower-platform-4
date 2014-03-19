@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -11,13 +12,11 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	public class NodeTypeProvider implements ITypeProvider {
 		
 		public function getType(context:DiagramShellContext, model:Object):String {
-			if (model is Node) {
-				if (context.diagramShell.rootModel == model) { 
-					// the root node has the same type, but different controllers -> use this constant instead
-					return MindMapEditorDiagramShell.MINDMAP_ROOT_NODE_TYPE;
-				}
+			if (model is MindMapRootModelWrapper) {
+				return MindMapRootModelWrapper.ID;				
+			} else if (model is Node) {
 				return Node(model).type;
-			}
+			}			
 			return null;
 		}
 	}

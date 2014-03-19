@@ -96,39 +96,39 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				}
 			}
 			
-			var fontFamilyChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_FAMILY) != -1 : true;
+			var fontFamilyChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_FAMILY);
 			if (fontFamilyChanged) {
 				labelDisplay.setStyle("fontFamily", Utils.getSupportedFontFamily(data.properties[MindMapNodePropertiesConstants.FONT_FAMILY]));				
 			}
 			
-			var fontSizeChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_SIZE) != -1 : true;
+			var fontSizeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_SIZE);
 			if (fontSizeChanged) {
 				labelDisplay.setStyle("fontSize", data.properties[MindMapNodePropertiesConstants.FONT_SIZE]);
 			}
 			
-			var fontBoldChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_BOLD) != -1 : true;
+			var fontBoldChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_BOLD);
 			if (fontBoldChanged) {				
 				labelDisplay.setStyle("fontWeight", data.properties[MindMapNodePropertiesConstants.FONT_BOLD] == true ? "bold" : "normal");
 			}
 			
-			var fontItalicChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.FONT_ITALIC) != -1 : true;
+			var fontItalicChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_ITALIC);
 			if (fontItalicChanged) {
 				labelDisplay.setStyle("fontStyle", data.properties[MindMapNodePropertiesConstants.FONT_ITALIC] == true ? "italic" : "normal");
 			}
 			
-			var colorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.COLOR_TEXT) != -1 : true;
+			var colorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_TEXT);
 			if (colorChanged) {
 				labelDisplay.setStyle("color", Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_TEXT]));
 			}
 			
-			var backgroundColorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.COLOR_BACKGROUND) != -1 : true;
+			var backgroundColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_BACKGROUND);
 			if (backgroundColorChanged) {				
 				backgroundColor = Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND]);
 			}
 				
-			var cloudColorChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.CLOUD_COLOR) != -1 : true;
+			var cloudColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_COLOR);
 			
-			var cloudShapeChanged:Boolean = (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(MindMapNodePropertiesConstants.CLOUD_SHAPE) != -1 : true;						
+			var cloudShapeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_SHAPE);						
 			if (cloudShapeChanged) {				
 				var shape:String = data.properties[MindMapNodePropertiesConstants.CLOUD_SHAPE];
 				

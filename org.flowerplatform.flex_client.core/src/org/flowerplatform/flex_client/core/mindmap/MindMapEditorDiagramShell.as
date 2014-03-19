@@ -37,8 +37,6 @@ package org.flowerplatform.flex_client.core.mindmap {
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell {
 		
-		public static const MINDMAP_ROOT_NODE_TYPE:String = "mindmapRootNode";
-		
 		public var updateProcessor:MindMapNodeUpdateProcessor;
 				
 		public function MindMapEditorDiagramShell() {
@@ -47,12 +45,5 @@ package org.flowerplatform.flex_client.core.mindmap {
 			registerTools([ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool, InplaceEditorTool]);
 		}
 	
-		override protected function addRootModelAsRootNode(context:DiagramShellContext):void {
-			// a clone is needed to make difference between rootModel and rootNode instances
-			var rootNode:Node = Node(ObjectUtil.clone(rootModel));
-			// add it in registry and as child of rootModel
-			updateProcessor.addRootNode(context, rootNode);
-		}
-				
 	}
 }

@@ -55,6 +55,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public var additionalPadding:int = ADDITIONAL_PADDING_DEFAULT;
 		
 		/**
+		 * If <code>true</code>, the rootModel can be added as first child in rootModel's list of children.
+		 * @see addRootModelAsRootNode()
+		 * @see set rootModel
+		 */ 
+		public var showRootModelAsRootNode:Boolean = false;
+		
+		/**
 		 * Sets the horizontal padding depending on the platform.
 		 * 
 		 * @author Mariana Gheorghe
@@ -78,43 +85,35 @@ package org.flowerplatform.flexdiagram.mindmap {
 				}
 			}
 		}
-		
-		/**
-		 * If <code>true</code>, the rootModel can be added as first child in rootModel's list of children.
-		 * @see addRootModelAsRootNode()
-		 * @see set rootModel
-		 */ 
-		public var showRootModelAsRootNode:Boolean = true;
-		
+			
 		/**
 		 * Structure:
-		 * - rootModel -> keeps in its dynamic object the list of model children added directly on diagram renderer
-		 * - root (model from where the mindmap structure begins) -> first child in getDynamicObject(rootModel).children, it has no parent
+		 * - rootModel -> a MindMapRootModelWrapper that keeps the model and the list of model children added directly on diagram renderer
+		 * - root (model from where the mindmap structure begins) -> first child in MindMapRootModelWrapper.children, it has no parent
 		 */ 
 		override public function set rootModel(value:Object):void {
-			super.rootModel = value;
+			super.rootModel = new MindMapRootModelWrapper(value);
 			
-			var context:DiagramShellContext = getNewDiagramShellContext();
-			if (showRootModelAsRootNode) {	
-				addRootModelAsRootNode(context);
-			}
-			shouldRefreshVisualChildren(context, rootModel);
+			refreshRootModelChildren(getNewDiagramShellContext());			
 		}
 				
 		public function getRoot(context:DiagramShellContext):Object {
 			var children:IList = ControllerUtils.getModelChildrenController(context, rootModel).getChildren(context, rootModel);
 			if (children == null || children.length == 0) {
-				throw new Error("No root provided!");
+				return null;
 			}
 			return children.getItemAt(0);
 		}
 		
 		public function refreshRootModelChildren(context:DiagramShellContext):void {			
 			var root:Object = getRoot(context);
-			// clear old children
-			getDynamicObject(context, rootModel).children = new ArrayList();
-			// add new children
-			addModelInRootModelChildrenListRecursive(context, root, true);	
+			if (root != null) {			
+				// clear old children
+				MindMapRootModelWrapper(rootModel).children = new ArrayList();
+				
+				// add new children
+				addModelInRootModelChildrenListRecursive(context, root, true);	
+			}
 			// refresh rootModel's visual children
 			shouldRefreshVisualChildren(context, rootModel);
 		}
@@ -124,14 +123,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var modelDynamicObject:Object = getDynamicObject(context, model);
 			modelDynamicObject.depth = depth;
 			
-			var dynamicObject:Object = getDynamicObject(context, rootModel);
-			if (dynamicObject.children == null) {
-				dynamicObject.children = new ArrayList();
+			if (MindMapRootModelWrapper(rootModel).children == null) {
+				MindMapRootModelWrapper(rootModel).children = new ArrayList();
 			}
 			if (asRoot) {
-				dynamicObject.children.addItemAt(model, 0);
+				MindMapRootModelWrapper(rootModel).children.addItemAt(model, 0);
 			} else {
-				dynamicObject.children.addItem(model);
+				MindMapRootModelWrapper(rootModel).children.addItem(model);
 			}
 		}
 		
@@ -392,13 +390,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var height:Number = getPropertyValue(context, model, "height");
 			
 			return (Math.max(expandedHeight, height + additionalPadding) + height)/2 ;
-		}
-		
-		/**
-		 * This method must be implemented by sub-classes that uses <code>showRootModelAsRootNode</code>.
-		 */ 
-		protected function addRootModelAsRootNode(context:DiagramShellContext):void {
-			// do nothing
 		}
 		
 	}
