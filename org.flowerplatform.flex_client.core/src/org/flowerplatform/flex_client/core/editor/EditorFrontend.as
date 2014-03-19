@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.layout.ITitleDecorator;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
@@ -41,7 +42,7 @@ package org.flowerplatform.flex_client.core.editor {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator {
 		
 		private var _editorInput:String;
 		
@@ -65,6 +66,7 @@ package org.flowerplatform.flex_client.core.editor {
 			nodeUpdateProcessor.subscribeToSelfOrParentResource(editorInput, subscribeResultCallback, subscribeFaultCallback);
 		}
 		
+
 		protected function subscribeResultCallback(resourceNode:Node):void {
 			// nothing to do
 		}
@@ -84,18 +86,21 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function set viewHost(value:IViewHost):void {
 			_viewHost = value;
-			IEventDispatcher(viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
 		}
 		
 		public function get viewHost():IViewHost {
 			return _viewHost;
 		}
 		
-		protected function viewRemovedHandler(event:ViewRemovedEvent):void {
-			for each (var rootNodeId:String in nodeUpdateProcessor.resourceNodeIds) {
-				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors
-					.removeNodeUpdateProcessor(rootNodeId, nodeUpdateProcessor);
+		public function isDirty():Boolean {	
+			return true;
+		}
+		
+		public function decorateTitle(title:String):String {
+			if (isDirty()) { 
+				return "* " + title;
 			}
+			return title;
 		}
 	}
 }

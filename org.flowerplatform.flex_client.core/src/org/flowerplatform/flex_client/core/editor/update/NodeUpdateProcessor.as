@@ -84,14 +84,14 @@ package org.flowerplatform.flex_client.core.editor.update {
 		protected function registerResourceNodeForProcessor(resourceNode:Node):void {
 			if (resourceNode != null) {
 				resourceNodeIds.addItem(resourceNode.fullNodeId);
-				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors
+				CorePlugin.getInstance().resourceNodesManager.resourceNodeIdsToNodeUpdateProcessors
 					.addNodeUpdateProcessor(resourceNode.fullNodeId, this);
 			}
 		}
 		
 		protected function removeResourceNodeForProcessor(resourceNode:Node):void {
 			resourceNodeIds.removeItem(resourceNode.fullNodeId);
-			CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors
+			CorePlugin.getInstance().resourceNodesManager.resourceNodeIdsToNodeUpdateProcessors
 				.removeNodeUpdateProcessor(resourceNode.fullNodeId, this);
 		}
 		

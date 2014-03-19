@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.channels.AMFChannel;
 	
 	import org.flowerplatform.flex_client.core.editor.ResourceNodeIdsToNodeUpdateProcessors;
+	import org.flowerplatform.flex_client.core.editor.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
@@ -38,7 +39,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
@@ -88,7 +88,8 @@ package org.flowerplatform.flex_client.core {
 		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 		
 		public var addChildDescriptors:Object = new Object();
-		
+
+		public var resourceNodesManager:ResourceNodesManager;
 		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 		
 		public var updateTimer:UpdateTimer = new UpdateTimer(5000);
@@ -123,7 +124,9 @@ package org.flowerplatform.flex_client.core {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-						
+					
+			resourceNodesManager = new ResourceNodesManager();
+			
 			var channelSet:ChannelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
 			
@@ -139,8 +142,7 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);		
 			mindmapEditorClassFactoryActionProvider.addActionClass(OpenInNewEditorAction);
 		
 			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
@@ -165,7 +167,7 @@ package org.flowerplatform.flex_client.core {
 			
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
-			
+
 			if (ExternalInterface.available) {
 				// on mobile, it's not available
 				ExternalInterface.addCallback("handleLink", handleLink);

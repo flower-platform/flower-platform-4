@@ -63,6 +63,10 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService().getRegisteredTypes();
 	}
 	
+	public void saveResource(String resourceNodeId) {
+		System.out.println("saveResource " + resourceNodeId);
+	}
+	
 	/**
 	 * Sends a subtree to the client, based on the status of the client. Status of the client (i.e. <code>query</code> parameter)
 	 * means the tree that the client is actually seeing (based on what nodes are expanded and collapsed).

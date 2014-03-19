@@ -16,29 +16,34 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.mindmap.action {
+package org.flowerplatform.flex_client.core.editor.action {
+	
+	import mx.collections.ArrayCollection;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class SaveAction extends DiagramShellAwareActionBase {
+	public class SaveAction extends ActionBase {
+		
+		public var currentEditorFrontend:EditorFrontend;
 		
 		public function SaveAction() {			
-			label = CorePlugin.getInstance().getMessage("mindmap.action.save");
-			icon = CorePlugin.getInstance().getResourceUrl("images/save_edit.gif");
-			preferShowOnActionBar = true;
-			orderIndex = 110;
+			label = CorePlugin.getInstance().getMessage("save.action.label");
+			icon = CorePlugin.getInstance().getResourceUrl("images/disk.png");
 		}
 				
-		override public function get visible():Boolean {			
-			return true;
-		}
-		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [Node(diagramShell.rootModel).resource]);
+//			var resourceNodes:ArrayCollection = currentEditorFrontend.rootNodeIds;
+//			if (resourceNodes.length == 1) {
+//				CorePlugin.getInstance().serviceLocator.invoke("nodeService.saveResource", [resourceNodes.getItemAt(0)]);
+//			} else {
+//				CorePlugin.getInstance().resourceNodesManager.invokeSaveResourceNodesView(resourceNodes);
+//			}
 		}
 				
 	}
