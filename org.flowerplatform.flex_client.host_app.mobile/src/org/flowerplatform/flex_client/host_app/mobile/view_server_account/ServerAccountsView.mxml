@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.action.ActionBase;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			protected var _viewHost:IViewHost;
+			
+			protected var propertiesLength:int;
+			
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+				
+				// get dataProvider from SharedObject
+				var testList:ArrayList = new ArrayList();
+				for (var i:int = 1; i<15; i++) {
+					testList.addItem(new ServerAccount());
+					testList.addItem(new ServerAccount());
+				}
+				
+				accountList.itemRenderer = new ClassFactory(ServerAccountDataRenderer);
+				accountList.dataProvider = testList;
+				
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				var vector:Vector.<IAction> = new Vector.<IAction>;
+				vector[0] = new AddServerAccountAction();
+				return vector;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Scroller width="100%" height="100%">
+		<s:Group width="100%" height="100%">			
+			<s:List id="accountList" width="100%" height="100%"> 
+			</s:List>
+		</s:Group>
+	</s:Scroller>
+</s:Group>

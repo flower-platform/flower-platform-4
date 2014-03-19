@@ -76,9 +76,14 @@
 			
 			import mx.core.FlexGlobals;
 			
+			import spark.core.ContentCache;
+			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
+			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
+			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountViewProvider;
+			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsViewProvider;
 			import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -88,8 +93,6 @@
 			import org.flowerplatform.flexutil.plugin.FlexPluginDescriptor;
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
 			
-			import spark.core.ContentCache;
-			
 			// explicitely write the class name; a simple import won't actually compile this class
 			// used from properties
 			com.flextras.mobile.dropDownList.DropDownList;
@@ -98,6 +101,12 @@
 				return MainMobile(FlexGlobals.topLevelApplication);
 			}
 			
+			public static function openAccountsButtonClickHandler():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+					.setViewIdInWorkbench("serverAccounts")
+					.setTitle("Server Accounts")
+					.show();
+			}
 			/**
 			 * We need to inject the plugin URL, so that the plugins can find resources and messages.
 			 */
@@ -145,7 +154,8 @@
 				startPlugins();
 				
 				navigator.pushView(WorkbenchMobileSplitViewHost);
-				
+				FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new ServerAccountsViewProvider());
+				FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new EditServerAccountViewProvider());
 //				CommunicationPlugin.getInstance().bridge.addEventListener(BridgeEvent.WELCOME_RECEIVED_FROM_SERVER, welcomeReceivedFromServerHandler);
 			}
 			

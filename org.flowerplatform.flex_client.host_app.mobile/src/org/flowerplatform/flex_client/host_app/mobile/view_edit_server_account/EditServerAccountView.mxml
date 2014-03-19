@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			protected var _viewHost:IViewHost;
+			
+			protected var propertiesLength:int;
+			
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+				
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			protected function saveAccountButton_clickHandler(event:MouseEvent):void {
+				// TODO (add or edit) new Server Account to list
+			}
+			
+			protected function cancelAccountButton_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Form width="100%">
+		<s:FormItem label="Friendly Name:" width="100%">
+			<s:TextInput width="100%"/>
+		</s:FormItem>
+			
+		<s:FormItem label="Host:" width="100%">
+			<s:TextInput width="100%"/>
+		</s:FormItem>
+			
+		<s:FormItem label="User:" width="100%">
+			<s:TextInput width="100%"/>
+		</s:FormItem>
+		
+		<s:FormItem label="Password:" width="100%">
+			<s:TextInput width="100%" displayAsPassword="true"/>
+		</s:FormItem>
+			
+		<s:HGroup alignmentBaseline="ideographicCenter" horizontalAlign="center" width="100%">
+			<s:Button id="saveAccountButton" label="Save" click="saveAccountButton_clickHandler(event)"/>
+			<s:Button id="cancelAccountButton" label="Cancel" click="cancelAccountButton_clickHandler(event)"/>
+		</s:HGroup>
+	</s:Form>
+			 
+</s:Group>
+

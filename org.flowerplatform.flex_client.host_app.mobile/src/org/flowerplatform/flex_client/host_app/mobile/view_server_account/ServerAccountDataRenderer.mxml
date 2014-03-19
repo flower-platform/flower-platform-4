@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DataRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark">
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			protected function checkbox_clickHandler(event:MouseEvent):void	{
+				
+			}
+			
+			protected function label_clickHandler(event:MouseEvent):void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+					.setViewIdInWorkbench("editServerAccount")
+					.setTitle("Edit Server Account")
+					.setWidth(500)
+					.setHeight(350)
+					.show();
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<s:CheckBox id="checkBox" click="checkbox_clickHandler(event)"/>
+	<s:Label id="label" text="label" click="label_clickHandler(event) "/>
+	
+	
+</s:DataRenderer>
