@@ -1,7 +1,5 @@
-package org.flowerplatform.core.fileSystem;
+package org.flowerplatform.core.repository;
 
-import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
 import java.util.Map;
@@ -14,12 +12,9 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class SecondRootPropertiesProvider extends PropertiesProvider {
 
-
 	@Override
-	public void populateWithProperties(Node node, Map<String, Object> options) {		
+	public void populateWithProperties(Node node, Map<String, Object> options) {
 		node.getProperties().put(TEXT, "root");
-		node.getProperties().put(NAME, "root");
-		node.getProperties().put(HAS_CHILDREN, true);
 	}
-		
+
 }

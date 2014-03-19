@@ -1,8 +1,7 @@
-package org.flowerplatform.core.repo;
+package org.flowerplatform.core.repository;
 
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import org.flowerplatform.core.node.remote.Node;
 /**
  * @author Sebastian Solomon
  */
-public class RepoPropertiesProvider extends PropertiesProvider {
+public class RepositoryPropertiesProvider extends PropertiesProvider {
 
 	@Override
 	public void populateWithProperties(Node node, Map<String, Object> options) {		
@@ -26,8 +25,6 @@ public class RepoPropertiesProvider extends PropertiesProvider {
 			throw new RuntimeException(e);
 		}
 		node.getProperties().put(TEXT, fileAccessController.getName(file));
-		node.getProperties().put(NAME, fileAccessController.getName(file));
-		node.getProperties().put(HAS_CHILDREN, true);
 	}
 	
 }

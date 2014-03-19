@@ -45,18 +45,16 @@ public interface IFileAccessController {
 	
 	Object[] listFiles(Object folder);
 
-	boolean delete(Object child);
+	void delete(Object child);
 	
 	String getParent(Object file);
 	
-	void rename(Object file, Object dest);
+	boolean rename(Object file, Object dest);
 	
 	String readFileToString(Object file);
 	
 	void writeStringToFile(Object file, String str);
 	
 	boolean hasChildren(Object file);
-	
-	void deleteFolderContent(Object folder);
 	
 }

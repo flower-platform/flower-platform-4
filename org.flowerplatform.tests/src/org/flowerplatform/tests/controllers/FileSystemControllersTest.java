@@ -38,7 +38,7 @@ public class FileSystemControllersTest {
 		fileSystemNode = f.getPath() + "\\temp\\fileSystemNode";
 		initialToBeCopied = f.getPath()  + "\\src\\org\\flowerplatform\\tests\\controllers\\resources\\initial_to_be_copied";
 		
-		fileAccessController.deleteFolderContent(new File(fileSystemNode));
+		fileAccessController.delete(new File(fileSystemNode));
 		try {
 			copyDirectory(new File(initialToBeCopied), new File(fileSystemNode));
 		} catch (Exception e) {
@@ -71,7 +71,7 @@ public class FileSystemControllersTest {
 		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 		//add file
 		HashMap<String, Object> fileProperties = new HashMap<String, Object>();
-		fileProperties.put("type", CorePlugin.FILE_NODE_TYPE);
+//		fileProperties.put("type", CorePlugin.FILE_NODE_TYPE);
 		fileProperties.put("text", "newFile");
 		fileProperties.put("isDirectory", false);
 		
@@ -91,7 +91,7 @@ public class FileSystemControllersTest {
 		
 		//add folder
 		HashMap<String, Object> folderProperties = new HashMap<String, Object>();
-		folderProperties.put("type", CorePlugin.FILE_NODE_TYPE);
+		folderProperties.put("type", "fileNode");
 		folderProperties.put("text", "newFolder");
 		folderProperties.put("isDirectory", true);
 		
