@@ -105,7 +105,7 @@ public class ResourceDebugControllers {
 			
 			@Override
 			public void populateWithProperties(Node node, Map<String, Object> options) {
-				node.getProperties().put(NodePropertiesConstants.TEXT, DEBUG);
+				node.getProperties().put(NodePropertiesConstants.NAME, DEBUG);
 			}
 		});
 		
@@ -117,7 +117,7 @@ public class ResourceDebugControllers {
 			@Override
 			public void populateWithProperties(Node node, Map<String, Object> options) {
 				String sessionId = node.getIdWithinResource().split(" ")[0];
-				node.getProperties().put(NodePropertiesConstants.TEXT, "Session " + sessionId);
+				node.getProperties().put(NodePropertiesConstants.NAME, "Session " + sessionId);
 				node.getProperties().put("ip", CorePlugin.getInstance().getResourceInfoService().getSessionProperty(sessionId, "ip"));
 				options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
 			}
@@ -157,7 +157,7 @@ public class ResourceDebugControllers {
 			@Override
 			public void populateWithProperties(Node node, Map<String, Object> options) {
 				String resourceId = node.getIdWithinResource().replace("+", "|").split(" ")[0];
-				node.getProperties().put(NodePropertiesConstants.TEXT, "Resource " + resourceId);
+				node.getProperties().put(NodePropertiesConstants.NAME, "Resource " + resourceId);
 				long timestamp = CorePlugin.getInstance().getResourceInfoService().getUpdateRequestedTimestamp(resourceId);
 				node.getProperties().put(LAST_UPDATE_TIMESTAMP, timestamp);
 				options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);

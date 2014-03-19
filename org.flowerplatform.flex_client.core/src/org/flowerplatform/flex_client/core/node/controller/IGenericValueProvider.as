@@ -16,24 +16,16 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.mindmap.remote {
-	import org.flowerplatform.flexutil.controller.AbstractController;
+package org.flowerplatform.flex_client.core.node.controller {
+	
+	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	[RemoteClass(alias="org.flowerplatform.core.node.remote.AddChildDescriptor")]
-	public class AddChildDescriptor extends AbstractController {
+	public interface IGenericValueProvider {
 		
-		public static const TYPE:String = "addChildDescriptor";
-		
-		public var childType:String;
-		
-		public var label:String;
-		
-		public var icon:String;
-		
-		public var properties:Object;
+		function getValue(node:Node):Object;
 		
 	}
 }

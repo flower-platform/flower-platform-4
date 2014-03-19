@@ -1,6 +1,5 @@
 package org.flowerplatform.freeplane.controller;
 
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -18,11 +17,6 @@ public class PersistencePropertySetter extends PropertySetter {
 	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 						
-		if (NodePropertiesConstants.TEXT.equals(property)) {
-			rawNodeData.setText((String) wrapper.getPropertyValue());	
-			return;
-		}
-		
 		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
 			throw new RuntimeException(String.format("Property with name %s shouldn't be set because it's reserved. Please use another key!", property));
 		}

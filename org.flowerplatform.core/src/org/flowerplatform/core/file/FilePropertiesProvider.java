@@ -6,7 +6,7 @@ import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_ACCESS_T
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_MODIFIED_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_SIZE;
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,7 +35,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		node.getProperties().put(TEXT, fileAccessController.getName(file));
+		node.getProperties().put(NAME, fileAccessController.getName(file));
 		node.getProperties().put(HAS_CHILDREN, fileAccessController.hasChildren(file));
 		
 		Path path = Paths.get(fileAccessController.getAbsolutePath(file));

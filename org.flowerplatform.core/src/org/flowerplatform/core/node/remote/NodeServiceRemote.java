@@ -1,12 +1,11 @@
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -20,10 +19,6 @@ public class NodeServiceRemote {
 	
 	public List<Node> getChildren(String fullNodeId, boolean populateProperties) {
 		return CorePlugin.getInstance().getNodeService().getChildren(new Node(fullNodeId), populateProperties);		
-	}
-
-	public List<PropertyDescriptor> getPropertyDescriptors(String fullNodeId) {
-		return CorePlugin.getInstance().getNodeService().getPropertyDescriptors(new Node(fullNodeId));	
 	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
@@ -55,12 +50,8 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService().getRootNode(new Node(fullNodeId));
 	}
 	
-	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
-		return CorePlugin.getInstance().getNodeService().getAddChildDescriptors();
-	}
-	
-	public Set<String> getRegisteredTypes() {
-		return CorePlugin.getInstance().getNodeService().getRegisteredTypes();
+	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
+		return CorePlugin.getInstance().getNodeService().getRegisteredTypeDescriptors();
 	}
 	
 	/**

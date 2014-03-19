@@ -23,9 +23,10 @@ public class MindMapNodePropertiesConstants {
 	public static final int DEFAULT_MIN_WIDTH = 1;
 	public static final int DEFAULT_MAX_WIDTH = 600;
 	
+	public static final String TEXT = "text";
+	
 	public static final String MIN_WIDTH = "min_width";
 	public static final String MAX_WIDTH = "max_width";
-	public static final String ICONS = "icons";
 	public static final String FONT_FAMILY = "fontFamily";
 	public static final String FONT_SIZE = "fontSize";
 	public static final String FONT_BOLD = "fontBold";

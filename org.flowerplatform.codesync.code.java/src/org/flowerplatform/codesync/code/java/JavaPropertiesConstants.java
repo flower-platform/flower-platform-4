@@ -9,8 +9,6 @@ public class JavaPropertiesConstants {
 	// Properties constants
 	////////////////////////////////////////////
 	
-	public static final String ICON = "icon";
-	
 	// Value features
 	
 	public static final String MODIFIERS = "modifiers";

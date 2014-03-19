@@ -14,13 +14,12 @@
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
-			import spark.events.TextOperationEvent;
-			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
+			import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
@@ -28,6 +27,8 @@
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			import spark.events.TextOperationEvent;
 			
 			
 					
@@ -56,7 +57,8 @@
 			
 			protected function initializeHandler(event:FlexEvent):void {
 				renderer.data = rendererModel;
-				textEditor.text = String(renderer.data.properties[NodePropertiesConstants.TEXT]);
+				var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
+				textEditor.text = String(titleProvider.getValue(rendererModel));
 			}
 			
 			override protected function createChildren():void {
@@ -80,10 +82,12 @@
 						
 			public function textChangeHandler(event:TextOperationEvent):void {
 				// set new text
-				renderer.data.properties[NodePropertiesConstants.TEXT] = textEditor.text;
+				var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
+				var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(rendererModel);
+				renderer.data.properties[titleProperty] = textEditor.text;
 				
 				// dispatch event to update preview renderer's text
-				renderer.data.dispatchEvent(new NodeUpdatedEvent(Node(renderer.data), new ArrayList([NodePropertiesConstants.TEXT])));
+				renderer.data.dispatchEvent(new NodeUpdatedEvent(Node(renderer.data), new ArrayList([titleProperty])));
 			}
 						
 		]]>

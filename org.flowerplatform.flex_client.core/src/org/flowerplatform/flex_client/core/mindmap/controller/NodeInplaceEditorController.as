@@ -21,8 +21,9 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 	import flash.geom.Rectangle;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
@@ -52,7 +53,9 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 			textArea.minWidth = bounds.width;
 			textArea.maxWidth = MAX_WIDTH; // needed for width auto grow
 			textArea.minHeight = bounds.height;			
-			textArea.text = Node(model).properties[NodePropertiesConstants.TEXT];			
+			
+			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
+			textArea.text = String(titleProvider.getValue(Node(model)));			
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
 			// select all text
@@ -65,7 +68,9 @@ package org.flowerplatform.flex_client.core.mindmap.controller {
 		
 		override public function commit(context:DiagramShellContext, model:Object):void {		
 			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, NodePropertiesConstants.TEXT, textArea.text]);
+			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, 
+				titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text]);
 
 			context.diagramShell.mainToolFinishedItsJob();
 		}
