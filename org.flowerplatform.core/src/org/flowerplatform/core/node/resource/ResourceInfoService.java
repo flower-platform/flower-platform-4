@@ -1,7 +1,7 @@
 package org.flowerplatform.core.node.resource;
 
 import static org.flowerplatform.core.node.NodeService.STOP_CONTROLLER_INVOCATION;
-import static org.flowerplatform.core.node.resource.ResourceSubscriptionListener.RESOURCE_SUBSCRIPTION_LISTENER;
+import static org.flowerplatform.core.node.resource.ResourceAccessController.RESOURCE_ACCESS_CONTROLLER;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,9 +64,9 @@ public class ResourceInfoService {
 			// first subscription
 			firstSubscription = true;
 			Map<String, Object> options = CorePlugin.getInstance().getNodeService().getControllerInvocationOptions();
-			for (ResourceSubscriptionListener listener : getResourceSubscriptionListeners(rootNodeId)) {
+			for (ResourceAccessController controller : getResourceAccessController(rootNodeId)) {
 				try {
-					listener.firstClientSubscribed(rootNodeId, options);
+					controller.firstClientSubscribed(rootNodeId, options);
 					if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
 						break;
 					}
@@ -95,8 +95,8 @@ public class ResourceInfoService {
 			// last unsubscription
 			lastUnsubscription = true;
 			Map<String, Object> options = CorePlugin.getInstance().getNodeService().getControllerInvocationOptions();
-			for (ResourceSubscriptionListener listener : getResourceSubscriptionListeners(rootNodeId)) {
-				listener.lastClientUnubscribed(rootNodeId, options);
+			for (ResourceAccessController controller : getResourceAccessController(rootNodeId)) {
+				controller.lastClientUnubscribed(rootNodeId, options);
 				if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
 					break;
 				}
@@ -106,6 +106,26 @@ public class ResourceInfoService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Unsubscribed session {} from root node {}, last unsubscription {}", new Object[] { sessionId, rootNodeId, lastUnsubscription });
 		}
+	}
+	
+	public void save(String resourceNodeId, Map<String, Object> options) {
+		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
+			controller.save(resourceNodeId, options);
+			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+				break;
+			}
+		}
+	}
+	
+	public boolean isDirty(String resourceNodeId, Map<String, Object> options) {
+		boolean isDirty = false;
+		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
+			isDirty = controller.isDirty(resourceNodeId, options);
+			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+				break;
+			}
+		}
+		return isDirty;
 	}
 	
 	public Object getRawResourceData(String resourceNodeId) {
@@ -197,11 +217,11 @@ public class ResourceInfoService {
 		return resourceInfoDao.getUpdates(rootNodeId, timestampOfLastRequest, timestampOfThisRequest);
 	}
 	
-	protected List<ResourceSubscriptionListener> getResourceSubscriptionListeners(String rootNodeId) {
+	protected List<ResourceAccessController> getResourceAccessController(String rootNodeId) {
 		Node rootNode = new Node(rootNodeId);
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(rootNode.getType());
 		if (descriptor != null) {
-			return descriptor.getAdditiveControllers(RESOURCE_SUBSCRIPTION_LISTENER, rootNode);
+			return descriptor.getAdditiveControllers(RESOURCE_ACCESS_CONTROLLER, rootNode);
 		}
 		return Collections.emptyList();
 	}

@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.save", [Node(diagramShell.rootModel).resource]);
+			CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [Node(diagramShell.rootModel).resource]);
 		}
 				
 	}

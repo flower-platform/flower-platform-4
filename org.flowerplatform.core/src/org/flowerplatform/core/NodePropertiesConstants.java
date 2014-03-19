@@ -9,6 +9,8 @@ public class NodePropertiesConstants {
 	public static final String HAS_CHILDREN = "hasChildren";
 	public static final String TEXT = "text";
 	
+	public static final String IS_DIRTY = "isDirty";
+	
 	public static final String IS_SUBSCRIBABLE = "isSubscribable";
 	
 	public static final String FILE_SIZE = "size";
