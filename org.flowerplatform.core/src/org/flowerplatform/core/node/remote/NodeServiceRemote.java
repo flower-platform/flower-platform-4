@@ -1,7 +1,7 @@
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.ArrayList;
 import java.util.List;

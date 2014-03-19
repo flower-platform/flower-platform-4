@@ -36,6 +36,14 @@ package org.flowerplatform.flex_client.core.node.controller {
 		}
 		
 		public function getValue(node:Node):Object {
+			var propertyName:String = getPropertyNameFromGenericDescriptor(node);
+			if (propertyName == null) {
+				return null;
+			}
+			return node.properties[propertyName];
+		}
+		
+		public function getPropertyNameFromGenericDescriptor(node:Node):String {
 			var typeDescriptor:TypeDescriptor = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type);
 			if (typeDescriptor == null) {
 				return null;
@@ -47,9 +55,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 				return null;
 			}
 			
-			// return the property from the node properties
-			var propertyName:String = String(genericDescriptor.value);
-			return node.properties[propertyName];
+			return String(genericDescriptor.value);
 		}
 	}
 }

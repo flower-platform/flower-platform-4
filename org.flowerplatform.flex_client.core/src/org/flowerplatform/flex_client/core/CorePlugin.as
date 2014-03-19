@@ -101,10 +101,10 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
 			
 		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
-		public static const PROPERTY_FOR_ICON_DESCRIPTOR:String = "propertyForIconDescriptor";
+		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
 		
 		public static const NODE_TITLE_PROVIDER:String = "nodeTitleProvider";
-		public static const NODE_ICON_PROVIDER:String = "nodeIconProvider";
+		public static const NODE_ICONS_PROVIDER:String = "nodeIconProvider";
 		
 		/**
 		 * @author Sebastian Solomon
@@ -188,7 +188,7 @@ package org.flowerplatform.flex_client.core {
 			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
 				.addSingleController(NODE_TITLE_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_TITLE_DESCRIPTOR))
-				.addSingleController(NODE_ICON_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_ICON_DESCRIPTOR));
+				.addSingleController(NODE_ICONS_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);

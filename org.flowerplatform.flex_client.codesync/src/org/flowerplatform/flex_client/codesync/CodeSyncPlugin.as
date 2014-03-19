@@ -21,17 +21,11 @@ package org.flowerplatform.flex_client.codesync {
 	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
-	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
+	import org.flowerplatform.flex_client.codesync.node.controller.CodeSyncIconsValueProvider;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
-	
-	import spark.components.Button;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -59,6 +53,9 @@ package org.flowerplatform.flex_client.codesync {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC)
+				.addSingleController(CorePlugin.NODE_ICONS_PROVIDER, new CodeSyncIconsValueProvider());
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);

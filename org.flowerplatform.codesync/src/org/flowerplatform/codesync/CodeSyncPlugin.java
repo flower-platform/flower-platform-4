@@ -20,7 +20,7 @@ package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -534,7 +534,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public Node getSrcDir(Node root, String name) {
 		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(root, true);
 		for (Node child : children) {
-			if (name.equals(child.getOrPopulateProperties().get(TEXT))) {
+			if (name.equals(child.getOrPopulateProperties().get(NAME))) {
 				return child;
 			}
 		}

@@ -1,7 +1,7 @@
 package org.flowerplatform.core.file;
 
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -28,7 +28,7 @@ public class FileAddNodeController extends AddNodeController {
 			parentFile = fileAccessController.getParentFile(parentFile);
 		}
 
-		String name = (String)child.getProperties().get(TEXT);
+		String name = (String)child.getProperties().get(NAME);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
 		child.setIdWithinResource(fileAccessController.getAbsolutePath(fileToCreate));
 		boolean isDir = (Boolean) child.getProperties().get(FILE_IS_DIRECTORY);

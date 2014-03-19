@@ -2,7 +2,7 @@ package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class FreeplaneIsSubscribablePropertyProvider extends PropertiesProvider 
 	public void populateWithProperties(Node node, Map<String, Object> options) {
 		boolean isDirectory = Boolean.parseBoolean((String) node.getProperties().get(FILE_IS_DIRECTORY));
 		if (!isDirectory) {
-			String path = (String) node.getProperties().get(TEXT);
+			String path = (String) node.getProperties().get(NAME);
 			if (path.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
 				node.getProperties().put(IS_SUBSCRIBABLE, true);
 			}

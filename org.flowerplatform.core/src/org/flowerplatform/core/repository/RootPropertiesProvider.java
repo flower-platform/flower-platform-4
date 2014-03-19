@@ -1,6 +1,6 @@
 package org.flowerplatform.core.repository;
 
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ public class RootPropertiesProvider extends PropertiesProvider {
 
 	@Override
 	public void populateWithProperties(Node node, Map<String, Object> options) {
-		node.getProperties().put(TEXT, "root");
+		node.getProperties().put(NAME, "root");
 	}
 
 }
