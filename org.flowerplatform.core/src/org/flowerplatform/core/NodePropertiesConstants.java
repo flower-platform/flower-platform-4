@@ -12,6 +12,9 @@ public class NodePropertiesConstants {
 	public static final String ICONS = "icons";
 	public static final String ICONS_SEPARATOR = ",";
 	
+	public static final String CONTENT_TYPE = "contentType";
+	public static final String HIDE_ROOT_NODE = "hideRootNode";
+	
 	public static final String IS_SUBSCRIBABLE = "isSubscribable";
 	
 	public static final String FILE_SIZE = "size";

@@ -1,7 +1,6 @@
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +59,8 @@ public class NodeServiceRemote {
 	 */
 	public NodeWithChildren refresh(FullNodeIdWithChildren query) {
 		NodeWithChildren response = new NodeWithChildren();
-		Node node = new Node(query.getFullNodeId());
+		Node node = getNode(query.getFullNodeId());
 		response.setNode(node);
-		
-		// forces population of properties
-		node.getOrPopulateProperties();
 		
 		if (query.getVisibleChildren() == null) { 
 			// no visible children on client => node not expanded, so don't continue
@@ -90,6 +86,13 @@ public class NodeServiceRemote {
 			response.getChildren().add(childResponse);
 		}
 		return response;
+	}
+	
+	public Node getNode(String fullNodeId) {
+		Node node = new Node(fullNodeId);
+		// forces population of properties
+		node.getOrPopulateProperties();
+		return node;
 	}
 	
 	private FullNodeIdWithChildren getChildQueryFromQuery(FullNodeIdWithChildren query, String fullChildNodeId) {
