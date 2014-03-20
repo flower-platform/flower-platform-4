@@ -26,21 +26,23 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
+	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.ResourceNodeIdsToNodeUpdateProcessors;
+	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
+	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
-	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
@@ -99,7 +101,9 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
-			
+		
+		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
+		
 		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
 		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
 		
@@ -141,7 +145,14 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("resourceInfoService");
 			serviceLocator.addService("freeplaneService");
 			
-			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
+			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
+			contentTypeRegistry[TextEditorDescriptor.ID] = textEditorDescriptor;
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(textEditorDescriptor);
+			
+			var mindMapEditorDescriptor:MindMapEditorDescriptor = new MindMapEditorDescriptor();
+			contentTypeRegistry.defaultContentType = MindMapEditorDescriptor.ID;
+			contentTypeRegistry[MindMapEditorDescriptor.ID] = mindMapEditorDescriptor;
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);			
 			perspectives.push(new MindMapPerspective());
 		
 			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
@@ -150,7 +161,7 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(OpenInNewEditorAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(OpenAction);
 			
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
@@ -191,7 +202,7 @@ package org.flowerplatform.flex_client.core {
 				.addSingleController(NODE_ICONS_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			linkHandlers = new Dictionary();
-			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
+			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorDescriptor.ID);
 			
 			if (ExternalInterface.available) {
 				// on mobile, it's not available

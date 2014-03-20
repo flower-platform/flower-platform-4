@@ -1,14 +1,14 @@
 package org.flowerplatform.flex_client.core.link {
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
+	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	public class LinkHandler implements ILinkHandler {
 		
 		public static const OPEN_RESOURCES:String = "openResources";
 		public static const SELECT_RESOURCE_AT_INDEX:String = "selectResourceAtIndex";
-		public static const OPEN_ROOT:String = "openRoot";
 		
 		public static const RESOURCES_SEPARATOR:String = ",";
 		
@@ -34,22 +34,11 @@ package org.flowerplatform.flex_client.core.link {
 //				}
 				
 				for each (var file:String in files.split(RESOURCES_SEPARATOR)) {
-					var view:ViewLayoutData = new ViewLayoutData();
-					var root:Node = new Node();
-					view.customData = file;
-					view.isEditor = true;
-					view.viewId = viewId;
-					FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
+					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [file], 
+						function(node:Node):void {
+							new OpenAction().open(node);
+						});
 				}
-			} else if (command == OPEN_ROOT) {
-				var view:ViewLayoutData = new ViewLayoutData();
-				var root:Node = new Node();
-				root.type = "root1";
-				root.resource = "1";
-				view.customData = root.fullNodeId;
-				view.isEditor = true;
-				view.viewId = viewId;
-				FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
 			}
 		}
 	}

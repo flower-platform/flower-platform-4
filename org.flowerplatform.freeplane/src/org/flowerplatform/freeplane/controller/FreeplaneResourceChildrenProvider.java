@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.map.NodeModel;
@@ -14,7 +15,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Mariana Gheorghe
  */
-public class FreeplaneResourceChildrenProvider extends MindMapChildrenProvider {
+public class FreeplaneResourceChildrenProvider extends ChildrenProvider {
 
 	public FreeplaneResourceChildrenProvider() {
 		super();

@@ -1,5 +1,6 @@
 package org.flowerplatform.core.file;
 
+import static org.flowerplatform.core.NodePropertiesConstants.CONTENT_TYPE;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_CREATION_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_ACCESS_TIME;
@@ -25,6 +26,8 @@ import org.flowerplatform.core.node.remote.Node;
  * @author Sebastian Solomon
  */
 public class FilePropertiesProvider extends PropertiesProvider {
+	
+	private static final String TEXT_CONTENT_TYPE = "text";
 	
 	@Override
 	public void populateWithProperties(Node node, Map<String, Object> options) {
@@ -67,6 +70,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/file.gif"));
+			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
 	}
 	
