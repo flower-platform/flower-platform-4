@@ -27,6 +27,9 @@ public class ResourceInfoServiceRemote {
 		// nothing to do
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void save(String resourceNodeId) {
 		CorePlugin.getInstance().getResourceInfoService().save(resourceNodeId, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 	}

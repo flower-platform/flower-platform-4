@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import java.util.Map;
+
 import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
@@ -15,11 +17,12 @@ import org.freeplane.features.map.NodeModel;
 public class PersistencePropertySetter extends PropertySetter {
 
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, Map<String, Object> options) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 						
 		if (NodePropertiesConstants.TEXT.equals(property)) {
-			rawNodeData.setText((String) wrapper.getPropertyValue());	
+			rawNodeData.setText((String) wrapper.getPropertyValue());
+			rawNodeData.getMap().setSaved(false);
 			return;
 		}
 		
@@ -47,13 +50,14 @@ public class PersistencePropertySetter extends PropertySetter {
 			// new attribute; add it
 			attributeTable.getAttributes().add(new Attribute(property, wrapper.getPropertyValue()));
 		}
+		rawNodeData.getMap().setSaved(false);
 		
 		// set the property on the node instance too
 		node.getOrPopulateProperties().put(property, wrapper.getPropertyValue());
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property) {
+	public void unsetProperty(Node node, String property, Map<String, Object> options) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
 		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
@@ -65,6 +69,7 @@ public class PersistencePropertySetter extends PropertySetter {
 		for (Attribute attribute : attributeTable.getAttributes()) {
 			if (attribute.getName().equals(property)) {
 				attributeTable.getAttributes().remove(attribute);
+				rawNodeData.getMap().setSaved(false);
 				break;
 			}
 		}

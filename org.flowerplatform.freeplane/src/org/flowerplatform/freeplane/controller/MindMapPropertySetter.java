@@ -16,7 +16,7 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDT
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
 
-import java.awt.Color;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +38,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 	private static final Pattern ICON_URL_PATTERN = Pattern.compile("((.*?/)+)(.*?).png");
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, Map<String, Object> options) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
 		boolean isPropertySet = false;
@@ -135,8 +135,10 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		}
 				
 		if (!isPropertySet) {
-			super.setProperty(node, property, wrapper);
+			super.setProperty(node, property, wrapper, options);
 		} else {
+			rawNodeData.getMap().setSaved(false);
+			
 			// set the property on the node instance too
 			node.getOrPopulateProperties().put(property, wrapper.getPropertyValue());
 		}

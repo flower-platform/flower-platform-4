@@ -14,11 +14,10 @@ import static org.flowerplatform.mindmap.MindMapPlugin.FREEPLANE_MINDMAP_CATEGOR
 import static org.flowerplatform.mindmap.MindMapPlugin.FREEPLANE_PERSISTENCE_CATEGORY;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.resource.ResourceAccessController;
 import org.flowerplatform.freeplane.controller.FreeplaneIsSubscribablePropertyProvider;
+import org.flowerplatform.freeplane.controller.FreeplaneResourceAccessController;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceChildrenProvider;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceRawNodeDataProvider;
-import org.flowerplatform.freeplane.controller.FreeplaneResourceSubscriptionListener;
 import org.flowerplatform.freeplane.controller.MindMapAddNodeController;
 import org.flowerplatform.freeplane.controller.MindMapChildrenProvider;
 import org.flowerplatform.freeplane.controller.MindMapParentProvider;
@@ -74,12 +73,12 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new FreeplaneIsSubscribablePropertyProvider())
-		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceSubscriptionListener(FREEPLANE_MINDMAP_CATEGORY))
+		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_MINDMAP_CATEGORY))
 		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODE_TYPE)
-		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceSubscriptionListener(FREEPLANE_PERSISTENCE_CATEGORY))
+		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_PERSISTENCE_CATEGORY))
 		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());
 		

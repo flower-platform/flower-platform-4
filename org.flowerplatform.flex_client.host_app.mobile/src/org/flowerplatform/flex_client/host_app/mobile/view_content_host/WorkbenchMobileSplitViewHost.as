@@ -13,6 +13,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.LayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
@@ -20,6 +21,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	
 	/**
 	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
 	 */
 	public class WorkbenchMobileSplitViewHost extends MobileSplitViewHost implements IWorkbench {
 		
@@ -46,6 +48,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			
 			FlexUtilGlobals.getInstance().workbench = this;
 			this.addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
+			this.addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			
 			showOpenEditorsCalloutButton.splitView = this;
 		}
@@ -65,9 +68,6 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			return comp;
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 */ 
 		public function getAllEditorViews(root:LayoutData, array:ArrayCollection):void {
 			for (var i:int = 0; i < rightComponents.length; i++) {
 				array.addItem(rightComponents.getItemAt(i));
@@ -93,23 +93,44 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			}
 		}
 		
-		public function getComponent(viewId:String, customData:String=null):UIComponent {
+		public function getComponent(viewLayoutData:ViewLayoutData):UIComponent {
+			return null;
+		}
+		
+		public function getComponentById(viewId:String, customData:String=null):UIComponent {
 			return null;
 		}
 		
 		public function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void {
+			var oldActiveView:UIComponent = UIComponent(rightActiveComponent);
+			
 			rightActiveComponent = newActiveView;
+			
+			if (dispatchActiveViewChangedEvent) {
+				var event:ActiveViewChangedEvent = new ActiveViewChangedEvent(newActiveView, oldActiveView); 
+				newActiveView.dispatchEvent(event);
+				// it seems that an event cannot be redispatched; I had a strange error like: 
+				// "Event" cannot be coerced to ActiveViewChangedEvent 
+				event = new ActiveViewChangedEvent(newActiveView, oldActiveView); 
+				dispatchEvent(event);
+			}
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 */ 
 		public function getActiveView():UIComponent {
 			return UIComponent(rightActiveComponent);
 		}
 		
-		public function refreshLabels(viewLayoutData:ViewLayoutData=null):void {		
+		public function refreshLabels(viewLayoutData:ViewLayoutData=null):void {	
+			showOpenEditorsCalloutButton.refreshLabels();
 		}	
+		
+		public function getEditorFromViewComponent(viewComponent:UIComponent):UIComponent {			
+			return viewComponent;
+		}
+		
+		public function getViewComponentForEditor(editor:UIComponent):UIComponent {			
+			return editor;
+		}
 		
 		/**
 		 * @author Cristina Constantinescu

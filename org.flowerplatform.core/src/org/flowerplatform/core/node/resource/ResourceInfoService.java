@@ -1,5 +1,7 @@
 package org.flowerplatform.core.node.resource;
 
+import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
+import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.node.NodeService.STOP_CONTROLLER_INVOCATION;
 import static org.flowerplatform.core.node.resource.ResourceAccessController.RESOURCE_ACCESS_CONTROLLER;
 
@@ -48,8 +50,12 @@ public class ResourceInfoService {
 		}
 		if (subscribableNode == null) {
 			return null;
-		}
+		}			
 		sessionSubscribedToResource(subscribableNode.getFullNodeId(), sessionId);
+		
+		// populate resourceNode with isDirty			
+		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getFullNodeId(), CorePlugin.getInstance().getNodeService().getControllerInvocationOptions()));
+				
 		return subscribableNode;
 	}
 	
@@ -108,6 +114,9 @@ public class ResourceInfoService {
 		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void save(String resourceNodeId, Map<String, Object> options) {
 		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
 			controller.save(resourceNodeId, options);
@@ -115,8 +124,19 @@ public class ResourceInfoService {
 				break;
 			}
 		}
+		
+		// update isDirty property
+		options.put(NODE_IS_RESOURCE_NODE, true);
+		CorePlugin.getInstance().getNodeService().setProperty(
+				new Node(resourceNodeId), 
+				IS_DIRTY, 
+				CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNodeId, options), 
+				options);
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public boolean isDirty(String resourceNodeId, Map<String, Object> options) {
 		boolean isDirty = false;
 		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {

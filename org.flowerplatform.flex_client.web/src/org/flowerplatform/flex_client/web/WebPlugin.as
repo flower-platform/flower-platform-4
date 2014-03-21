@@ -34,6 +34,7 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
+	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	
 	import spark.components.Application;
@@ -67,7 +68,8 @@ package org.flowerplatform.flex_client.web {
 			super.start();
 					
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
-						
+			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
+			
 			CorePlugin.getInstance().getPerspective(MindMapPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
 			var hBox:HBox = new HBox();
@@ -102,7 +104,7 @@ package org.flowerplatform.flex_client.web {
 					menuBar.actionProvider = CorePlugin.getInstance().globalMenuActionProvider;
 				}
 			);			
-									
+			
 			CorePlugin.getInstance().handleLink(CorePlugin.getInstance().getAppUrl());		
 		}
 		
@@ -110,7 +112,7 @@ package org.flowerplatform.flex_client.web {
 		}	
 			
 		public function invokeSaveResourcesDialog():Boolean {
-			CorePlugin.getInstance().resourceNodesManager.invokeSaveResourceNodesView();
+			CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors();
 			return CorePlugin.getInstance().resourceNodesManager.getGlobalDirtyState();
 		}
 		

@@ -18,28 +18,33 @@
 */
 package org.flowerplatform.flex_client.core.editor.action {
 	
-	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.ResourceNode;
+	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
+	 * @see ResourceNodeManager#saveAllAction
 	 * @author Cristina Constantinescu
 	 */
 	public class SaveAllAction extends ActionBase {
 		
 		public function SaveAllAction() {			
 			label = CorePlugin.getInstance().getMessage("saveAll.action.label");
-			icon = CorePlugin.getInstance().getResourceUrl("images/disk_multiple.png");
+			icon = FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl("images/disk_multiple.png"));
+			parentId = CorePlugin.FILE_MENU_ID;
+			enabled = false;
 		}
 				
 		override public function run():void {
-			var resourceNodes:ArrayCollection = CorePlugin.getInstance().resourceNodesManager.resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
-			for (var i:int = 0; i < resourceNodes.length; i++) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.saveResource", [resourceNodes.getItemAt(i)]);				
-			}			
+			CorePlugin.getInstance().resourceNodesManager.getAllDirtyResourceNodeIds(false, function(dirtyResourceNodeId:String):void {
+				// for each dirty resourceNode found -> save it
+				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [dirtyResourceNodeId]);
+			});
 		}
 				
 	}

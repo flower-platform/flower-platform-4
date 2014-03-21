@@ -10,5 +10,6 @@ package org.flowerplatform.flex_client.core {
 		public static const TEXT:String = "text";
 		
 		public static const IS_SUBSCRIBABLE:String = "isSubscribable";
+		public static const IS_DIRTY:String = "isDirty";
 	}
 }

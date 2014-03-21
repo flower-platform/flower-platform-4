@@ -16,14 +16,14 @@
  *
  * license-end
  */
-package com.crispico.flower.util.layout.event {
+package org.flowerplatform.flexutil.layout.event {
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	
 	import mx.core.UIComponent;
 	
 	/**
-	 * Dispatched by <code>Workbench</code> each time the active view changes.
+	 * Dispatched by <code>IWorkbench</code> each time the active view changes.
 	 * 
 	 * @see ActiveViewList
 	 * 

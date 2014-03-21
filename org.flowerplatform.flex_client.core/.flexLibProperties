@@ -7,7 +7,6 @@
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider"/>
     <classEntry path="org.flowerplatform.flex_client.core.link.LinkView"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.ui.RichTextWithRendererView"/>
-    <classEntry path="org.flowerplatform.flex_client.core.editor.ResourceNodeData"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

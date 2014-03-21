@@ -23,9 +23,11 @@ package org.flowerplatform.flex_client.core {
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
+	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
+	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.ResourceNodeIdsToNodeUpdateProcessors;
 	import org.flowerplatform.flex_client.core.editor.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
@@ -78,6 +80,9 @@ package org.flowerplatform.flex_client.core {
 		 * @see getAppUrl()
 		 */ 
 		private static const MAIN_PAGE:String = "main.jsp";
+		
+		public static const FILE_MENU_ID:String = "file";
+		public static const NAVIGATE_MENU_ID:String = "navigate";
 		
 		protected static var INSTANCE:CorePlugin;
 		
@@ -207,8 +212,12 @@ package org.flowerplatform.flex_client.core {
 			
 			// add actions to global menu
 			
-			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, "navigate"); 
-			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, "navigate", 
+			addActionToGlobalMenuActionProvider(getMessage("menu.file"), null, FILE_MENU_ID);
+			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
+			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
+			
+			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, NAVIGATE_MENU_ID); 
+			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, NAVIGATE_MENU_ID, 
 				function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new LinkView())
@@ -216,7 +225,7 @@ package org.flowerplatform.flex_client.core {
 					.setHeight(450)
 					.show();
 				}
-			);
+			);			
 		}
 		
 		public function getPerspective(id:String):Perspective {
@@ -313,6 +322,23 @@ package org.flowerplatform.flex_client.core {
 			
 			Application(FlexGlobals.topLevelApplication).dispatchEvent(new GlobalActionProviderChangedEvent());
 		}
-	
+		
+		/**
+		 * @return a list with all <code>EditorFrontend</code>s found on workbench.
+		 */ 
+		public function getAllEditorFrontends():Array {			
+			var editors:Array = new Array();
+			
+			var components:ArrayCollection = new ArrayCollection();
+			FlexUtilGlobals.getInstance().workbench.getAllEditorViews(null, components);
+			
+			for each (var component:UIComponent in components) {								
+				if (component is EditorFrontend) {
+					editors.push(component);
+				}
+			}
+			return editors;
+		}
+			
 	}
 }

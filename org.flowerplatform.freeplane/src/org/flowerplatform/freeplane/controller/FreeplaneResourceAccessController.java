@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Mariana Gheorghe
  */
-public class FreeplaneResourceSubscriptionListener extends ResourceAccessController {
+public class FreeplaneResourceAccessController extends ResourceAccessController {
 
 	private String resourceCategory;
 	
-	private final static Logger logger = LoggerFactory.getLogger(FreeplaneResourceSubscriptionListener.class);
+	private final static Logger logger = LoggerFactory.getLogger(FreeplaneResourceAccessController.class);
 	
-	public FreeplaneResourceSubscriptionListener(String resourceCategory) {
+	public FreeplaneResourceAccessController(String resourceCategory) {
 		this.resourceCategory = resourceCategory;
 	}
 	
@@ -75,6 +75,9 @@ public class FreeplaneResourceSubscriptionListener extends ResourceAccessControl
 		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@SuppressWarnings("deprecation")
 	@Override
 	public void save(String resourceNodeId, Map<String, Object> options) {
@@ -83,17 +86,21 @@ public class FreeplaneResourceSubscriptionListener extends ResourceAccessControl
 			return;
 		}
 		
-		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
+		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
 		
 		try {
-			((MFileManager) UrlManager.getController()).save(model);
+			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, rawNodeData.getFile());
 		} catch (Exception e) {
 			return;
+		} finally {
+			options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
 		}
-		CorePlugin.getInstance().getNodeService().setProperty(rootNode, IS_DIRTY, CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNodeId, options));
-		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
+		rawNodeData.setSaved(true);		
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@Override
 	public boolean isDirty(String rootNodeId, Map<String, Object> options) {
 		Node rootNode = new Node(rootNodeId);
@@ -104,7 +111,7 @@ public class FreeplaneResourceSubscriptionListener extends ResourceAccessControl
 		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
 		
 		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
-		return model.isSaved();
+		return !model.isSaved();
 	}
 
 	private boolean canHandleResource(String path) {

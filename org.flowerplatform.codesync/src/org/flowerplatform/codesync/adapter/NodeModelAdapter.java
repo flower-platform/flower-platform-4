@@ -94,7 +94,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {		
-		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 	}
 	
 	/**
@@ -176,7 +176,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
 				if (childNode.getOrPopulateProperties().containsKey(ADDED)) {
-					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED);
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 				}
 			} else {
 				if (childNode.getOrPopulateProperties().containsKey(REMOVED)) {

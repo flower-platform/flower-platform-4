@@ -18,8 +18,14 @@ public abstract class ResourceAccessController extends AbstractController {
 	
 	public abstract void lastClientUnubscribed(String rootNodeId, Map<String, Object> options);
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public abstract void save(String rootNodeId, Map<String, Object> options);
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public abstract boolean isDirty(String rootNodeId, Map<String, Object> options);
 	
 }

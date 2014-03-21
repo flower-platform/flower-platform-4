@@ -30,11 +30,6 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
-			import com.crispico.flower.util.layout.WorkbenchViewHost;
-			
-			import flash.desktop.Clipboard;
-			import flash.desktop.ClipboardFormats;
-			
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			import mx.core.UIComponent;
@@ -48,7 +43,6 @@ license-end
 			import org.flowerplatform.flexutil.layout.IWorkbench;
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-			import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 			
 			private var _viewHost:IViewHost;
 			
@@ -68,27 +62,20 @@ license-end
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;
-				var editor:EditorFrontend;
-				
-				// get all open editors
-				var editors:ArrayCollection = new ArrayCollection();
-				workbench.getAllEditorViews(null, editors);
-				
+								
+				// get all open editors				
 				var editorInputs:Array = [];
-				for each (var component:UIComponent in editors) {
-					editor = getEditorFromComponent(component);
-					if (editor != null) {						
-						editorInputs.push(editor.editorInput);
-					}
-				}
+				for each (editor in CorePlugin.getInstance().getAllEditorFrontends()) {
+					editorInputs.push(EditorFrontend(editor).editorInput);				
+				}				
 				if (editorInputs.length != 0) {
 					txtAllEditors.text = getOpenResourcesURLPrefix() + editorInputs.join(LinkHandler.RESOURCES_SEPARATOR);
 				}
 			
 				// get current active editor
-				editor = getEditorFromComponent(workbench.getActiveView());
-				if (editor != null) {
-					txtCurrentEditor.text = getOpenResourcesURLPrefix() + editor.editorInput;
+				var editor:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
+				if (editor is EditorFrontend) {
+					txtCurrentEditor.text = getOpenResourcesURLPrefix() + EditorFrontend(editor).editorInput;
 				}
 				
 				Utils.makePseudoDisabled(txtCurrentEditor);
@@ -99,17 +86,6 @@ license-end
 				return CorePlugin.getInstance().getAppUrl() + "?" + LinkHandler.OPEN_RESOURCES + "=";
 			}
 			
-			private function getEditorFromComponent(component:UIComponent):EditorFrontend {
-				if (!FlexUtilGlobals.getInstance().isMobile && component is IViewHost) {
-					// diagram case: viewContent is wrapped in WorkbenchViewHost, so get the exact component registered in layout
-					component = UIComponent(IViewHost(component).activeViewContent);
-				}
-				if (component is EditorFrontend) {
-					return EditorFrontend(component);
-				}
-				return null;
-			}
-						
 		]]>
 	</fx:Script>
 	

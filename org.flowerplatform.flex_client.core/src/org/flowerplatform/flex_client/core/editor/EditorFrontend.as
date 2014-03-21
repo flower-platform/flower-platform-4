@@ -54,7 +54,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function EditorFrontend() {
 			super();
-			nodeUpdateProcessor = new NodeUpdateProcessor();
+			nodeUpdateProcessor = new NodeUpdateProcessor(this);
 		}
 		
 		public function get editorInput():String {
@@ -66,7 +66,6 @@ package org.flowerplatform.flex_client.core.editor {
 			nodeUpdateProcessor.subscribeToSelfOrParentResource(editorInput, subscribeResultCallback, subscribeFaultCallback);
 		}
 		
-
 		protected function subscribeResultCallback(resourceNode:Node):void {
 			// nothing to do
 		}
@@ -92,10 +91,21 @@ package org.flowerplatform.flex_client.core.editor {
 			return _viewHost;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
 		public function isDirty():Boolean {	
-			return true;
+			for each (var resourceNodeId:String in nodeUpdateProcessor.resourceNodeIds) {
+				if (nodeUpdateProcessor.isResourceNodeDirty(resourceNodeId)) {
+					return true;
+				}
+			}
+			return false;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
 		public function decorateTitle(title:String):String {
 			if (isDirty()) { 
 				return "* " + title;

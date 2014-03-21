@@ -2,7 +2,6 @@
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:layout="com.crispico.flower.util.layout.*" width="100%" height="100%" creationComplete="onApplicationComplete()" >
 	<mx:Script>
 		<![CDATA[
-			import com.crispico.flower.util.layout.event.ActiveViewChangedEvent;
 			import com.crispico.flower.util.layout.event.DockHandlerEvent;
 			import com.crispico.flower.util.layout.event.LayoutDataChangedEvent;
 			import com.crispico.flower.util.layout.event.ViewAddedEvent;
@@ -15,6 +14,7 @@
 			import mx.events.CloseEvent;
 			
 			import org.flowerplatform.flexutil.layout.ViewLayoutData;
+			import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 			import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 													
 			private var loader1:URLLoader = new URLLoader();
@@ -129,7 +129,7 @@
 			}
 						
 			private function btnAddView_clickHandler(event:MouseEvent):void {
-				var customView:UIComponent = workbench.getComponent("normal_view");
+				var customView:UIComponent = workbench.getComponentById("normal_view");
 				if (customView != null) {
 					Alert.show("Normal View already exists on workbench!", "Info");
 				} else {
@@ -138,7 +138,7 @@
 			}
 			
 			private function btnRemoveView_clickHandler(event:MouseEvent):void {
-				var customView:UIComponent = workbench.getComponent("normal_view");
+				var customView:UIComponent = workbench.getComponentById("normal_view");
 				if (customView != null) {
 					workbench.closeView(customView);
 				} else {
@@ -147,7 +147,7 @@
 			}
 			
 			private function btnSetFocusOnView_clickHandler(event:MouseEvent):void {
-				var customView:UIComponent = workbench.getComponent("normal_view");
+				var customView:UIComponent = workbench.getComponentById("normal_view");
 				if (customView != null) {
 					workbench.activeViewList.setActiveView(customView);
 				} else {
@@ -165,7 +165,7 @@
 			}
 						
 			protected function btnColorView_clickHandler(event:MouseEvent):void {
-				var customView:UIComponent = workbench.getComponent("normal_view");
+				var customView:UIComponent = workbench.getComponentById("normal_view");
 				if (customView != null) {
 					var tab:SuperTab = SuperTab(workbench.getTabComponentForViewLayoutData(workbench.componentToLayoutData[customView]));
 					tab.styleName = "tab1";

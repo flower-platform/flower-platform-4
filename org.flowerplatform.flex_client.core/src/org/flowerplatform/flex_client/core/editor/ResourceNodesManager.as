@@ -1,10 +1,6 @@
 package org.flowerplatform.flex_client.core.editor {
-	import com.crispico.flower.util.layout.WorkbenchViewHost;
-	import com.crispico.flower.util.layout.event.ActiveViewChangedEvent;
-	
 	import flash.events.EventDispatcher;
 	
-	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.UIComponent;
@@ -12,147 +8,202 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
+	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.layout.IWorkbench;
+	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	import org.flowerplatform.flexutil.shortcut.Shortcut;
-	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */ 
 	public class ResourceNodesManager {
-		
-		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 			
-		public var saveAction:SaveAction;
-		public var saveAllAction:SaveAllAction;
+		private var _saveAction:SaveAction;
+		private var _saveAllAction:SaveAllAction;
 		
-		public function ResourceNodesManager() {
-			saveAction = new SaveAction();
-			saveAllAction = new SaveAllAction();
-			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, "s"), saveAction); // Ctrl + S
-			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, true, "s"), saveAllAction); // Ctrl + Shift + S
-			
-			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, activeViewChangedHandler);
+		public function get saveAction():SaveAction {
+			if (_saveAction == null) {
+				_saveAction = new SaveAction();
+				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, "s"), saveAction); // Ctrl + S
+			}
+			return _saveAction;
 		}
 		
-		private function activeViewChangedHandler(evt:ActiveViewChangedEvent):void {
-			if (evt.newView is IDirtyStateProvider) {
-				editorInputChangedForComponent(IDirtyStateProvider(evt.newView));
+		public function get saveAllAction():SaveAllAction {
+			if (_saveAllAction == null) {
+				_saveAllAction = new SaveAllAction();
+				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, true, "s"), saveAllAction); // Ctrl + Shift + S
+			}
+			return _saveAllAction;
+		}
+				
+		public function activeViewChangedHandler(evt:ActiveViewChangedEvent):void {			
+			updateSaveActionEnablement();
+		}
+		
+		public function updateSaveActionEnablement():void {
+			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
+			var activeComponent:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
+			
+			if (activeComponent is EditorFrontend) {
+				saveAction.editorFrontend = EditorFrontend(activeComponent);
+				saveAction.enabled = EditorFrontend(activeComponent).isDirty();
 			} else {
-				saveAction.enabled = false;
-				saveAction.currentEditorFrontend = null;
-			}
+				saveAction.editorFrontend = null;
+				saveAction.enabled = false;					
+			}			
 		}
 		
-		public function editorInputChangedForComponent(component:IDirtyStateProvider):void {
-			var uiComponent:UIComponent = FlexUtilGlobals.getInstance().workbench.getActiveView();
-			
-			if (uiComponent is IViewHost) {
-				uiComponent = UIComponent(IViewHost(uiComponent).activeViewContent);
+		public function updateSaveAllActionEnablement(someResourceNodeHasBecomeDirty:Boolean):void {			
+			if (!saveAllAction.enabled) {
+				// saveAll is disabled -> set the resourceNode dirty state as action's enablement
+				saveAllAction.enabled = someResourceNodeHasBecomeDirty;
+				return;
+			}			
+			if (someResourceNodeHasBecomeDirty) {
+				// saveAll is enabled, resourceNode has become dirty -> same enablement state, no need to continue
+				return;
 			}
-			if (uiComponent == component) {				
-				if (component is EditorFrontend) {
-					saveAction.currentEditorFrontend = EditorFrontend(component);
-					saveAction.enabled = EditorFrontend(component).isDirty();
-				} else {
-					saveAction.currentEditorFrontend = null;
-					saveAction.enabled = false;					
-				}
-			}
+			// saveAll is enabled, resourceNode isn't dirty -> verify if there is at least one resourceNode dirty left
+			if (getAllDirtyResourceNodeIds(true).length == 0) {
+				// no resourceNode dirty -> disable action
+				saveAllAction.enabled = false;
+			}						
 		}
 		
 		/**
-		 * Update the save/save all actions enablement, and refreshes the
-		 * labels of the Workbench.
+		 * Update the save/save all actions enablement, and refreshes the editors labels.
 		 */ 
-		public function dirtyStateUpdated(editorFontend:EditorFrontend):void {
-			if (saveAllAction.enabled) {
-				// at least one dirty resource
-				if (editorFontend == null || !editorFontend.isDirty()) {
-					// either an ER has dissapeared or an ER has been saved
-					// => refresh the global dirty state, by looking at all ERs
-					
-					var dirtyEFFound:Boolean = false;
-					var count:int = 0;
-//					var resourceNodes:ArrayCollection = CorePlugin.getInstance().resourceNodesManager.rootNodeIdToEditors.getRootNodeIds();
-//					for each (var sc:String in resourceNodes) {
-//						if (true) { //currentESC.editableResourceStatus != null && currentESC.editableResourceStatus.dirty) {
-//							dirtyEFFound = true;
-//							count++;
-//							break;
-//						}
-//					}
-					if (count == 0 || !dirtyEFFound) {
-						saveAllAction.enabled = false;
-					}
-				}
-			} else {
-				if (editorFontend != null) {
-					// everything is saved
-					saveAllAction.enabled = editorFontend.isDirty(); // the value of this variable should always be true
-				} // otherwise we are not interested; i.e. global dirty = false and an ER has left (which was non dirty for sure)
-			}
+		public function updateGlobalDirtyState(someResourceNodeHasBecomeDirty:Boolean):void {
+			updateSaveAllActionEnablement(someResourceNodeHasBecomeDirty);
+			updateSaveActionEnablement();			
+			
 			FlexUtilGlobals.getInstance().workbench.refreshLabels();			
-//			dispatchEvent(new DirtyStateUpdatedEvent(editorStatefulClient));
 		}
 		
-		public function getDirtyResourceNodes(allResourceNodes:ArrayList):ArrayList {
-			var dirtyResourceNodes:ArrayList = new ArrayList();
-			for (var i:int = 0; i < allResourceNodes.length; i++) {
-				var resourceNodeId:String = String(allResourceNodes.getItemAt(i));
-				dirtyResourceNodes.addItem(new ResourceNodeData(resourceNodeId, true));
-			}
-			return dirtyResourceNodes;
+		// TODO CC: replace id with proper label
+		public function getResourceNodeLabel(resourceNodeId:String):String {			
+			return resourceNodeId;
 		}
-		
-		public function getResourceNodesFromEditors(editors:ArrayList):ArrayList {
-			var resourceNodes:ArrayList = new ArrayList();
-//			for (var i:int = 0; i < editors.length; i++) {
-//				var editor:EditorFrontend = EditorFrontend(editors.getItemAt(i));
-//				var resourceNodeIds:ArrayCollection = editor.rootNodeIds;
-//				for each (var resourceNodeId:String in resourceNodeIds) {
-//					if (resourceNodes.getItemIndex(resourceNodeId) == -1) {
-//						resourceNodes.addItem(resourceNodeId);					
-//					}
-//				}
-//			}
-			return resourceNodes;
-		}
-		
-		public function getResourceNodeLabel(resourceNode:String):String {			
-			return resourceNode;
-		}
-		
-		/**
-		 * @author Sebastian Solomon
-		 * @author Cristina Constantinescu
-		 */  
+				
 		public function viewsRemovedHandler(e:ViewsRemovedEvent):void {
-			var editors:ArrayList = new ArrayList();
+			var editors:Array = [];
 			for each (var view:Object in e.removedViews) {
-				var viewComponent:UIComponent = UIComponent(view);
-				if (!FlexUtilGlobals.getInstance().isMobile && viewComponent is IViewHost) {
-					// diagram case: viewContent is wrapped in WorkbenchViewHost, so get the exact component registered in layout
-					viewComponent = UIComponent(IViewHost(viewComponent).activeViewContent);
-				}
+				var viewComponent:UIComponent = FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(UIComponent(view));			
 				if (viewComponent is EditorFrontend) {
-					editors.addItem(EditorFrontend(viewComponent));
+					editors.push(EditorFrontend(viewComponent));
 					e.dontRemoveViews.addItem(view);
 				}
 			}
-			new SaveResourceNodesView().show(null, editors);					
+			showSaveDialogIfDirtyStateOrCloseEditors(editors);					
 		}
 		
-		public function invokeSaveResourceNodesView(resourceNodes:IList = null):void {
-			if (resourceNodes == null) { // when it comes from js
-//				resourceNodes = rootNodeIdToEditors.getRootNodeIds();
+		/**
+		 * Closes all editors without dispatching events and updates global state for save actions.
+		 */ 
+		public function closeEditors(editors:Array):void {
+			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;
+			
+			for (var i:int = 0; i < editors.length; i++) {
+				var editor:EditorFrontend = EditorFrontend(editors[i]);
+				
+				for each (var resourceNodeId:String in editor.nodeUpdateProcessor.resourceNodeIds) {
+					CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.removeNodeUpdateProcessor(resourceNodeId, editor.nodeUpdateProcessor);
+				}					
+				workbench.closeView(workbench.getViewComponentForEditor(editor), false);							
 			}
-			if (resourceNodes == null || resourceNodes.length == 0) {
+			
+			updateGlobalDirtyState(false);
+		}
+		
+		/**
+		 * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
+		 * @return all dirty resourceNodeIds found in <code>editors</code>, without duplicates.
+		 */ 
+		public function getEditorsDirtyResourceNodeIds(editors:Array, dirtyResourceNodeHandler:Function = null):Array {			
+			var dirtyResourceNodeIds:Array = [];
+			for (var i:int = 0; i < editors.length; i++) {
+				var nodeUpdateProcessor:NodeUpdateProcessor = NodeUpdateProcessor(EditorFrontend(editors[i]).nodeUpdateProcessor);				
+				for each (var resourceNodeId:String in nodeUpdateProcessor.resourceNodeIds) {
+					if (nodeUpdateProcessor.isResourceNodeDirty(resourceNodeId) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
+						if (dirtyResourceNodeHandler != null) {
+							dirtyResourceNodeHandler(resourceNodeId);
+						}
+						dirtyResourceNodeIds.push(resourceNodeId);						
+					}
+				}
+			}
+			return dirtyResourceNodeIds;
+		}
+		
+		/**
+		 * @param returnIfAtLeastOneDirtyResourceNodeFound if <code>true</code>, returns the first dirty resourceNodeId found.
+		 * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
+		 * @return all dirty resourceNodeIds, without duplicates.
+		 */ 
+		public function getAllDirtyResourceNodeIds(returnIfAtLeastOneDirtyResourceNodeFound:Boolean = false, dirtyResourceNodeHandler:Function = null):Array {
+			var dirtyResourceNodeIds:Array = [];
+			for each (var resourceNodeId:String in CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds()) {				
+				for each (var nodeUpdateProcessor:NodeUpdateProcessor in CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(resourceNodeId)) {										
+					if (nodeUpdateProcessor.isResourceNodeDirty(resourceNodeId) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
+						if (returnIfAtLeastOneDirtyResourceNodeFound) {
+							return [dirtyResourceNodeIds];
+						}											
+						if (dirtyResourceNodeHandler != null) {
+							dirtyResourceNodeHandler(resourceNodeId);
+						}
+						dirtyResourceNodeIds.push(resourceNodeId);						
+					}
+				}		
+			}
+			return dirtyResourceNodeIds;
+		}
+		
+		/**
+		 * If at least one dirty resourceNode found, shows the save dialog, else closes the editors.
+		 * 
+		 * @param editors if <code>null</code>, all workbench editors will be used.
+		 * @param dirtyResourceNodeIds if <code>null</code>, all dirty resourceNodes from <code>editors</code> will be used.
+		 */ 
+		public function showSaveDialogIfDirtyStateOrCloseEditors(editors:Array = null, dirtyResourceNodeIds:Array = null):void {	
+			if (editors == null) {
+				editors = CorePlugin.getInstance().getAllEditorFrontends();
+			}
+			
+			var dirtyResourceNodes:ArrayList = new ArrayList();
+			if (dirtyResourceNodeIds == null) {
+				getEditorsDirtyResourceNodeIds(editors, function(dirtyResourceNodeId:String):void {
+					dirtyResourceNodes.addItem(new ResourceNode(dirtyResourceNodeId, true));
+				});				
+			} else {
+				for (var i:int = 0; i < dirtyResourceNodeIds.length; i++) {
+					dirtyResourceNodes.addItem(new ResourceNode(dirtyResourceNodeIds[i], true));
+				}
+			}
+			if (dirtyResourceNodes.length == 0) {
+				closeEditors(editors);
 				return;
 			}
-			new SaveResourceNodesView().show(resourceNodes);
+					
+			var saveView:SaveResourceNodesView = new SaveResourceNodesView();
+			saveView.editors = editors;
+			saveView.dirtyResourceNodes = dirtyResourceNodes;
+			
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+				.setViewContent(saveView)
+				.setWidth(400)
+				.setHeight((dirtyResourceNodes.length == 1) ? 150 : 300)
+				.show();				
 		}
 		
+		/**
+		 * @return global dirty state for all open editors = saveAll action enablement.
+		 */ 
 		public function getGlobalDirtyState():Boolean {			
 			return saveAllAction != null ? saveAllAction.enabled : false;
 		}
+		
 	}
 }

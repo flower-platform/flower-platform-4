@@ -19,31 +19,40 @@
 package org.flowerplatform.flex_client.core.editor.action {
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.ResourceNode;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
+	 * @see ResourceNodeManager#saveAction
 	 * @author Cristina Constantinescu
 	 */
 	public class SaveAction extends ActionBase {
 		
-		public var currentEditorFrontend:EditorFrontend;
+		public var editorFrontend:EditorFrontend;
 		
 		public function SaveAction() {			
 			label = CorePlugin.getInstance().getMessage("save.action.label");
-			icon = CorePlugin.getInstance().getResourceUrl("images/disk.png");
+			icon = FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl("images/disk.png"));
+			parentId = CorePlugin.FILE_MENU_ID;
+			enabled = false;
 		}
 				
-		override public function run():void {
-//			var resourceNodes:ArrayCollection = currentEditorFrontend.rootNodeIds;
-//			if (resourceNodes.length == 1) {
-//				CorePlugin.getInstance().serviceLocator.invoke("nodeService.saveResource", [resourceNodes.getItemAt(0)]);
-//			} else {
-//				CorePlugin.getInstance().resourceNodesManager.invokeSaveResourceNodesView(resourceNodes);
-//			}
+		override public function run():void {			
+			var dirtyResourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.getEditorsDirtyResourceNodeIds([editorFrontend]);
+			if (dirtyResourceNodeIds.length == 1) { 
+				// single resourceNode to save -> save without asking
+				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [dirtyResourceNodeIds[0]]);
+			} else { 
+				// multiple resourceNodes to save -> show dialog
+				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds);
+			}
 		}
 				
 	}

@@ -74,6 +74,9 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 				case "y":
 					y = mindmapDiagramShell.getPropertyValue(diagramShellContext, data, "y");				
 					break;
+				case "depth":
+					depth = mindmapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");				
+					break;
 				case "hasChildren":
 					invalidateSize();
 				case "children":

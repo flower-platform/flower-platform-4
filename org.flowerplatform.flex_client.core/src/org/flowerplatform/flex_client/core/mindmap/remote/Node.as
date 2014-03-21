@@ -17,9 +17,12 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.mindmap.remote {
+	import flash.events.IEventDispatcher;
+	
 	import mx.collections.ArrayCollection;
 	import mx.utils.StringUtil;
 	
+	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.Utils;
 	
@@ -44,7 +47,7 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 		private var _resource:String;		
 		private var _idWithinResource:String;		
 				
-		public var properties:Object;
+		private var _properties:Object;
 		
 		[Transient]
 		public var parent:Node;
@@ -97,6 +100,20 @@ package org.flowerplatform.flex_client.core.mindmap.remote {
 			cachedFullNodeId = null;
 		}
 				
+		public function get properties():Object	{
+			return _properties;
+		}
+		
+		public function set properties(newProperties:Object):void {
+			var oldProperties:Object = _properties;
+			
+			_properties = newProperties;
+			
+			if (oldProperties != newProperties) {
+				this.dispatchEvent(new NodeUpdatedEvent(this, null, null, true));
+			}
+		}
+		
 		public function get fullNodeId():String {
 			if (cachedFullNodeId == null) {
 				cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";

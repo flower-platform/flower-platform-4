@@ -17,13 +17,17 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.update {
+	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	import mx.rpc.events.FaultEvent;
+	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
@@ -53,13 +57,19 @@ package org.flowerplatform.flex_client.core.editor.update {
 		
 		public var resourceNodeIds:ArrayCollection = new ArrayCollection();
 		
-		private var _nodeRegistry:NodeRegistry = new NodeRegistry();
+		public var editorFrontend:EditorFrontend;
 		
+		private var _nodeRegistry:NodeRegistry = new NodeRegistry();
+				
 		/**
 		 * <code>nodeRegistry</code> usage fom external classes is not recommended.
 		 */ 
 		protected function get nodeRegistry():NodeRegistry {
 			return _nodeRegistry;
+		}
+		
+		public function NodeUpdateProcessor(editorFrontend:EditorFrontend) {
+			this.editorFrontend = editorFrontend;
 		}
 		
 		/**
@@ -83,16 +93,35 @@ package org.flowerplatform.flex_client.core.editor.update {
 		
 		protected function registerResourceNodeForProcessor(resourceNode:Node):void {
 			if (resourceNode != null) {
+				var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.fullNodeId);
+				if (resourceNodeFromRegistry) { // node already in registry -> probably we want to update only its properties
+					resourceNodeFromRegistry.properties = resourceNode.properties;
+				} else {
+					nodeRegistry.registerNode(resourceNode);
+					resourceNodeFromRegistry = nodeRegistry.getNodeById(resourceNode.fullNodeId);
+				}
+				// listen for resourceNode properties modifications like isDirty
+				resourceNodeFromRegistry.addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
+				
 				resourceNodeIds.addItem(resourceNode.fullNodeId);
-				CorePlugin.getInstance().resourceNodesManager.resourceNodeIdsToNodeUpdateProcessors
-					.addNodeUpdateProcessor(resourceNode.fullNodeId, this);
+				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.addNodeUpdateProcessor(resourceNode.fullNodeId, this);				
+			}
+						
+			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
+			var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
+			// refresh rootNode only if it has no properties
+			// properties needed to set renderer's data if showRootModelAsRootNode is true
+			if (mindmapDiagramShell.showRootModelAsRootNode && rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
+				refresh(context, Node(mindmapDiagramShell.getRoot(context)));	
 			}
 		}
 		
 		protected function removeResourceNodeForProcessor(resourceNode:Node):void {
 			resourceNodeIds.removeItem(resourceNode.fullNodeId);
-			CorePlugin.getInstance().resourceNodesManager.resourceNodeIdsToNodeUpdateProcessors
-				.removeNodeUpdateProcessor(resourceNode.fullNodeId, this);
+			CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.removeNodeUpdateProcessor(resourceNode.fullNodeId, this);
+			
+			nodeRegistry.unregisterNode(resourceNode.fullNodeId);
+			resourceNode.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
 		}
 		
 		protected function showSubscriptionError(event:FaultEvent):void {
@@ -108,8 +137,13 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 * Adds <code>node</code> as the rootNode of this diagramShell.
 		 */ 
 		public function addRootNode(context:DiagramShellContext, node:Node):void {
-			nodeRegistry.registerNode(node);
-			MindMapDiagramShell(context.diagramShell).addModelInRootModelChildrenList(context, node, true);	
+			var nodeFromRegistry:Node = nodeRegistry.getNodeById(node.fullNodeId);
+			if (nodeFromRegistry) { // node already in registry -> probably we want to update only its properties
+				nodeFromRegistry.properties = node.properties;
+			} else {
+				nodeRegistry.registerNode(node);
+			}		
+			MindMapDiagramShell(context.diagramShell).addModelInRootModelChildrenList(context, node, true);				
 		}
 
 		/**
@@ -212,11 +246,6 @@ package org.flowerplatform.flex_client.core.editor.update {
 		protected function requestChildrenHandler(context:DiagramShellContext, node:Node, children:ArrayCollection):void {
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
 			if (node == null) {	// root node				
-				// rootModel already set, remove it from diagram
-				if (diagramShell.rootModel != null && MindMapRootModelWrapper(diagramShell.rootModel).children != null && MindMapRootModelWrapper(diagramShell.rootModel).children.length > 0) {
-					removeNode(context, Node(diagramShell.getRoot(context)));
-				}
-				
 				if (diagramShell.showRootModelAsRootNode) {
 					node = Node(diagramShell.getRoot(context));
 				} else {
@@ -228,9 +257,9 @@ package org.flowerplatform.flex_client.core.editor.update {
 					
 					// set to null -> don't enter in next if
 					children = null;
-				}
-				
+				}				
 			}
+			
 			if (node != null && children != null) {
 				// register each child
 				for each (var child:Node in children) {
@@ -241,10 +270,12 @@ package org.flowerplatform.flex_client.core.editor.update {
 				// set node list of children
 				node.children = children;
 			}
-			
-			// refresh diagram's children and their positions
-			diagramShell.refreshRootModelChildren(context);
-			diagramShell.refreshModelPositions(context, node);				
+						
+			if (children != null) {
+				// refresh diagram's children and their positions
+				diagramShell.refreshRootModelChildren(context);
+				diagramShell.refreshModelPositions(context, node);
+			}
 		}
 		
 		/* UPDATES */	
@@ -454,5 +485,16 @@ package org.flowerplatform.flex_client.core.editor.update {
 			}
 		}
 		
+		public function isResourceNodeDirty(resourceNodeId:String):Boolean {
+			var node:Node = nodeRegistry.getNodeById(resourceNodeId);	
+			return node == null ? false : node.properties[NodePropertiesConstants.IS_DIRTY];
+		}
+		
+		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
+			var resourceNode:Node = event.node;
+			if (event.allPropertiesUpdated || (event.updatedProperties != null && event.updatedProperties.getItemIndex(NodePropertiesConstants.IS_DIRTY) != -1)) {
+				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(resourceNode.properties[NodePropertiesConstants.IS_DIRTY]);
+			}
+		}
 	}
 }

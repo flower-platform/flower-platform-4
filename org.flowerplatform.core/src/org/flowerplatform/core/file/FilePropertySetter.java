@@ -2,6 +2,8 @@ package org.flowerplatform.core.file;
 
 import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
+import java.util.Map;
+
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
@@ -15,7 +17,7 @@ public class FilePropertySetter extends PropertySetter {
 	private static IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper value) {
+	public void setProperty(Node node, String property, PropertyValueWrapper value, Map<String, Object> options) {
 		
 		if (TEXT.equals(property)) {
 			Object file;
@@ -42,7 +44,7 @@ public class FilePropertySetter extends PropertySetter {
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property) {
+	public void unsetProperty(Node node, String property, Map<String, Object> options) {
 		node.getOrPopulateProperties().remove(property);
 	}
 	
