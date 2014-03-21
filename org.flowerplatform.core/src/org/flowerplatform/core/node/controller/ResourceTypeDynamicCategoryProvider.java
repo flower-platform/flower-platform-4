@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.resource.in_memory.RootNodeInfo;
 import org.flowerplatform.util.controller.IDynamicCategoryProvider;
@@ -31,7 +32,7 @@ public class ResourceTypeDynamicCategoryProvider implements IDynamicCategoryProv
 	public List<String> getDynamicCategories(Object object) {
 		if (object instanceof Node) {
 			Node node = (Node) object;
-			Node resourceNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
+			Node resourceNode = CoreUtils.getRootNode(node);
 			if (resourceNode == null) {
 				return Collections.emptyList();
 			}

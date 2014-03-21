@@ -33,7 +33,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		
 		private var updateInterval:int;
 		
-		public function UpdateTimer(updateInterval:int = 0) {
+		public function UpdateTimer(updateInterval:int) {
 			this.updateInterval = updateInterval;
 			
 			if (updateInterval > 0) {

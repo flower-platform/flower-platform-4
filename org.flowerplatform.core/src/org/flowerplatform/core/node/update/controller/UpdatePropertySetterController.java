@@ -1,6 +1,7 @@
 package org.flowerplatform.core.node.update.controller;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -27,7 +28,7 @@ public class UpdatePropertySetterController extends PropertySetter {
 	}
 	
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset) {
-		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
+		Node rootNode = CoreUtils.getRootNode(node);
 		if (rootNode == null) {
 			return;
 		}
