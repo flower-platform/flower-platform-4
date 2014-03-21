@@ -24,7 +24,7 @@ import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_ACCESS_T
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_MODIFIED_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_SIZE;
 import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
@@ -54,6 +54,7 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
+import org.flowerplatform.core.node.remote.GenericDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
@@ -92,6 +93,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public static final String CODE_TYPE = "code";
 	
 	public static final String SELF_RESOURCE = "self";
+	
+	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";
+	public static final String PROPERTY_FOR_ICON_DESCRIPTOR = "propertyForIconDescriptor";
 	
 	protected static CorePlugin INSTANCE;
 
@@ -169,7 +173,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
 		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
 		.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
-		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController());
+		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController())
+		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.NAME))
+		.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.ICONS));
 		
 		registerFileSystemControllers();
 		new ResourceDebugControllers().registerControllers();
@@ -206,7 +212,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("fileSystem")
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
 			public void populateWithProperties(Node node, Map<String, Object> options) {
-				node.getProperties().put(TEXT, "fileSystem");
+				node.getProperties().put(NAME, "fileSystem");
 			}
 		})
 		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(IS_SUBSCRIBABLE, true))
@@ -215,7 +221,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("fileNode")
 		.addAdditiveController(PROPERTIES_PROVIDER, new FilePropertiesProvider())
 		.addAdditiveController(PROPERTY_SETTER, new FilePropertySetter())
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(TEXT))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setTypeAs("FileSize"))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setReadOnlyAs(true))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setReadOnlyAs(true).setTypeAs("Date"))

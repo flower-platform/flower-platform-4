@@ -11,8 +11,7 @@ Export-Package: org.flowerplatform.core,
  org.flowerplatform.core.node.remote,
  org.flowerplatform.core.node.resource,
  org.flowerplatform.core.node.update.remote
-Bundle-ClassPath: lib/commons-lang3-3.2.1.jar,
- .
+Bundle-ClassPath: .
 Require-Bundle: org.flowerplatform.util,
  org.eclipse.osgi,
  org.eclipse.equinox.http.registry

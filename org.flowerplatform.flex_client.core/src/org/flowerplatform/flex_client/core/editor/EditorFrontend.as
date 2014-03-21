@@ -46,6 +46,8 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		private var _editorInput:String;
 		
+		public var hideRootNode:Boolean;
+		
 		public var actionProvider:ComposedActionProvider = new ComposedActionProvider();;
 		
 		protected var _viewHost:IViewHost;

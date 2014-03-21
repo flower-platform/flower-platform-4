@@ -16,22 +16,22 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.mindmap.action {
+package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class OpenInNewEditorAction extends DiagramShellAwareActionBase {
+	public class OpenAction extends ActionBase {
 		
-		public function OpenInNewEditorAction() {
+		public function OpenAction() {
 			super();
 			
-			label = CorePlugin.getInstance().getMessage("mindmap.action.openInNewEditor");
+			label = CorePlugin.getInstance().getMessage("editor.action.open");
 		}
 		
 		override public function get visible():Boolean {			
@@ -39,12 +39,18 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		override public function run():void {
-			var node:Node = Node(selection.getItemAt(0));
-			var view:ViewLayoutData = new ViewLayoutData();
-			view.customData = node.fullNodeId;
-			view.isEditor = true;
-			view.viewId = MindMapEditorProvider.ID;
-			FlexUtilGlobals.getInstance().workbench.addEditorView(view, true);
+			open(Node(selection.getItemAt(0)));
+		}
+		
+		public function open(node:Node):void {
+			var contentType:String = node.properties[NodePropertiesConstants.CONTENT_TYPE];
+			if (contentType == null) {
+				contentType = CorePlugin.getInstance().contentTypeRegistry.defaultContentType;
+			}
+			var hideRootNode:Boolean = node.properties[NodePropertiesConstants.HIDE_ROOT_NODE];
+			
+			var editorDescriptor:BasicEditorDescriptor = CorePlugin.getInstance().contentTypeRegistry[contentType];
+			editorDescriptor.openEditor(node.fullNodeId, true, hideRootNode);
 		}
 	}
 }

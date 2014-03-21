@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.core.NodePropertiesConstants.ICONS;
+import static org.flowerplatform.core.NodePropertiesConstants.ICONS_SEPARATOR;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
@@ -10,11 +12,11 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_BOL
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_FAMILY;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_ITALIC;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -42,7 +44,11 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
 		boolean isPropertySet = false;
-		switch (property) {			
+		switch (property) {
+			case TEXT:
+				rawNodeData.setText((String) wrapper.getPropertyValue());
+				isPropertySet = true;
+				break;
 			case MIN_WIDTH:
 				Integer newMinValue = NodeSizeModel.NOT_SET;
 				if (wrapper.getPropertyValue() == null) {
@@ -67,7 +73,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				String icons = (String) wrapper.getPropertyValue();
 				rawNodeData.getIcons().clear();
 				if (icons != null) {					
-					String[] array = icons.split("\\|");
+					String[] array = icons.split(ICONS_SEPARATOR);
 					for (String icon : array) {
 						Matcher matcher = ICON_URL_PATTERN.matcher(icon);
 						if (matcher.find()) {

@@ -1,12 +1,13 @@
 package org.flowerplatform.core.file;
 
+import static org.flowerplatform.core.NodePropertiesConstants.CONTENT_TYPE;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_CREATION_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_ACCESS_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_MODIFIED_TIME;
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_SIZE;
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,6 +27,8 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class FilePropertiesProvider extends PropertiesProvider {
 	
+	private static final String TEXT_CONTENT_TYPE = "text";
+	
 	@Override
 	public void populateWithProperties(Node node, Map<String, Object> options) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
@@ -35,7 +38,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		node.getProperties().put(TEXT, fileAccessController.getName(file));
+		node.getProperties().put(NAME, fileAccessController.getName(file));
 		node.getProperties().put(HAS_CHILDREN, fileAccessController.hasChildren(file));
 		
 		Path path = Paths.get(fileAccessController.getAbsolutePath(file));
@@ -67,6 +70,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/file.gif"));
+			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
 	}
 	

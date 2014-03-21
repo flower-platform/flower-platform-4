@@ -6,7 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.map.NodeModel;
@@ -14,7 +15,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Mariana Gheorghe
  */
-public class FreeplaneResourceChildrenProvider extends MindMapChildrenProvider {
+public class FreeplaneResourceChildrenProvider extends ChildrenProvider {
 
 	public FreeplaneResourceChildrenProvider() {
 		super();
@@ -24,7 +25,7 @@ public class FreeplaneResourceChildrenProvider extends MindMapChildrenProvider {
 	
 	@Override
 	public List<Node> getChildren(Node node, Map<String, Object> options) {
-		if (!CorePlugin.getInstance().getNodeService().isSubscribable(node.getOrPopulateProperties())) {
+		if (!CoreUtils.isSubscribable(node.getOrPopulateProperties())) {
 			return Collections.emptyList();
 		}
 		
@@ -37,7 +38,7 @@ public class FreeplaneResourceChildrenProvider extends MindMapChildrenProvider {
 
 	@Override
 	public boolean hasChildren(Node node, Map<String, Object> options) {
-		return CorePlugin.getInstance().getNodeService().isSubscribable(node.getProperties());
+		return CoreUtils.isSubscribable(node.getProperties());
 	}
 	
 }

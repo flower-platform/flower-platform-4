@@ -62,6 +62,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.createChildren();
 			
 			if (FlexUtilGlobals.getInstance().isMobile) {
+				// component for mobile
+				// this class is in the MobileComponents lib from flexutil
 				var mobileClass:Class = Class(getDefinitionByName("com.flextras.mobile.dropDownList.DropDownList"));
 				dropDownList = new mobileClass();
 			} else {

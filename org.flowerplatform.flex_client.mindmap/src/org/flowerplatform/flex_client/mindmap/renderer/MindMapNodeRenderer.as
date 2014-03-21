@@ -6,7 +6,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flex_client.mindmap.MindMapNodePropertiesConstants;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -14,8 +13,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 */ 
 	public class MindMapNodeRenderer extends NodeRenderer {
 		
-		public static const ICONS_SEPARATOR:String = "|";
-
 		public function MindMapNodeRenderer() {
 			super();
 			
@@ -85,15 +82,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			var maxWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MAX_WIDTH);
 			if (maxWidthChanged) {
 				maxWidth = node.properties[MindMapNodePropertiesConstants.MAX_WIDTH];
-			}
-			
-			var iconsChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.ICONS);
-			if (iconsChanged) {
-				if (node.properties[MindMapNodePropertiesConstants.ICONS] != null) {
-					icons = new FlowerArrayList(String(node.properties[MindMapNodePropertiesConstants.ICONS]).split(ICONS_SEPARATOR));
-				} else {
-					icons = null;
-				}
 			}
 			
 			var fontFamilyChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_FAMILY);

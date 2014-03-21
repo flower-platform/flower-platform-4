@@ -31,17 +31,8 @@
 		@namespace mobile "org.flowerplatform.web.mobile.*";
 		@namespace texteditor "com.crispico.flower.texteditor.*";
 		
-		.borderlessButton {
-			/* used for the buttons shown on diagrams */
-			skinClass: ClassReference("spark.skins.mobile.supportClasses.ButtonSkinBase");
-		}
-		
 		s|TextInput {
-			skinClass: ClassReference("org.flowerplatform.flex_client.host_app.mobile.text.ValidatingTextInputSkin")
-		}
-		
-		texteditor|SyntaxTextEditor {
-			skinClass: ClassReference("org.flowerplatform.flex_client.host_app.mobile.text.RichEditableTextAreaSkin");
+			skinClass: ClassReference("org.flowerplatform.flexutil.mobile.text.ValidatingTextInputSkin")
 		}
 		
 		s|FormItem {
@@ -133,8 +124,6 @@
 				navigator.defaultPopTransition = crossFadeTransition;
 				navigator.navigationContent = mainNavigatorContent.navigatorContent;
 				
-//				navigator.pushView(RecentActivityView);
-				
 				var imageContentCache:ContentCache = new ContentCache();
 				imageContentCache.enableCaching = true;
 				imageContentCache.maxCacheEntries = 300;
@@ -149,13 +138,7 @@
 				startPlugins();
 				
 				navigator.pushView(WorkbenchMobileSplitViewHost);
-				
-//				CommunicationPlugin.getInstance().bridge.addEventListener(BridgeEvent.WELCOME_RECEIVED_FROM_SERVER, welcomeReceivedFromServerHandler);
 			}
-			
-//			protected function welcomeReceivedFromServerHandler(event:BridgeEvent):void {
-//				navigator.pushView(WorkbenchMobileSplitViewHost);
-//			}
 			
 		]]>
 	</fx:Script>
@@ -163,8 +146,4 @@
 		<mobile:MainNavigatorContent id="mainNavigatorContent" navigator="{navigator}"/>
 		<s:CrossFadeViewTransition id="crossFadeTransition"/>
 	</fx:Declarations>
-	<!--	<s:ViewNavigator id="navigator1" width="100%" height="100%" firstView="org.flowerplatform.web.mobile.RecentActivityView"
-	navigationContent="{mainNavigatorContent.navigatorContent}" defaultPushTransition="{crossFadeTransition}" defaultPopTransition="{crossFadeTransition}">
-	</s:ViewNavigator>
-	</s:Application>-->
 </flexutil_mobile:FlowerViewNavigatorApplication>

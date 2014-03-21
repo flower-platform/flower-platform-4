@@ -93,7 +93,7 @@ package org.flowerplatform.flex_client.web {
 			});
 			hBox.addChild(addRootBtn);
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
-						
+
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
 			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		

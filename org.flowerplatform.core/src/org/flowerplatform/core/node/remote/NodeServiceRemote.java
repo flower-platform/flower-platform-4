@@ -1,12 +1,10 @@
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -20,10 +18,6 @@ public class NodeServiceRemote {
 	
 	public List<Node> getChildren(String fullNodeId, boolean populateProperties) {
 		return CorePlugin.getInstance().getNodeService().getChildren(new Node(fullNodeId), populateProperties);		
-	}
-
-	public List<PropertyDescriptor> getPropertyDescriptors(String fullNodeId) {
-		return CorePlugin.getInstance().getNodeService().getPropertyDescriptors(new Node(fullNodeId));	
 	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
@@ -51,16 +45,8 @@ public class NodeServiceRemote {
 		CorePlugin.getInstance().getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId));
 	}
 	
-	public Node getRootNode(String fullNodeId) {			
-		return CorePlugin.getInstance().getNodeService().getRootNode(new Node(fullNodeId));
-	}
-	
-	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
-		return CorePlugin.getInstance().getNodeService().getAddChildDescriptors();
-	}
-	
-	public Set<String> getRegisteredTypes() {
-		return CorePlugin.getInstance().getNodeService().getRegisteredTypes();
+	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
+		return CorePlugin.getInstance().getNodeService().getRegisteredTypeDescriptors();
 	}
 	
 	public void saveResource(String resourceNodeId) {
@@ -73,11 +59,8 @@ public class NodeServiceRemote {
 	 */
 	public NodeWithChildren refresh(FullNodeIdWithChildren query) {
 		NodeWithChildren response = new NodeWithChildren();
-		Node node = new Node(query.getFullNodeId());
+		Node node = getNode(query.getFullNodeId());
 		response.setNode(node);
-		
-		// forces population of properties
-		node.getOrPopulateProperties();
 		
 		if (query.getVisibleChildren() == null) { 
 			// no visible children on client => node not expanded, so don't continue
@@ -103,6 +86,13 @@ public class NodeServiceRemote {
 			response.getChildren().add(childResponse);
 		}
 		return response;
+	}
+	
+	public Node getNode(String fullNodeId) {
+		Node node = new Node(fullNodeId);
+		// forces population of properties
+		node.getOrPopulateProperties();
+		return node;
 	}
 	
 	private FullNodeIdWithChildren getChildQueryFromQuery(FullNodeIdWithChildren query, String fullChildNodeId) {

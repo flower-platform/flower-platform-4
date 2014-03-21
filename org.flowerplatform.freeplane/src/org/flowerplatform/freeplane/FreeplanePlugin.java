@@ -20,6 +20,7 @@ import org.flowerplatform.freeplane.controller.FreeplaneResourceChildrenProvider
 import org.flowerplatform.freeplane.controller.FreeplaneResourceRawNodeDataProvider;
 import org.flowerplatform.freeplane.controller.MindMapAddNodeController;
 import org.flowerplatform.freeplane.controller.MindMapChildrenProvider;
+import org.flowerplatform.freeplane.controller.MindMapFileContentTypeProvider;
 import org.flowerplatform.freeplane.controller.MindMapParentProvider;
 import org.flowerplatform.freeplane.controller.MindMapPropertiesProvider;
 import org.flowerplatform.freeplane.controller.MindMapPropertySetter;
@@ -75,7 +76,8 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTIES_PROVIDER, new FreeplaneIsSubscribablePropertyProvider())
 		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_MINDMAP_CATEGORY))
 		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
-		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());
+		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider())
+		.addAdditiveController(PROPERTIES_PROVIDER, new MindMapFileContentTypeProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODE_TYPE)
 		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_PERSISTENCE_CATEGORY))

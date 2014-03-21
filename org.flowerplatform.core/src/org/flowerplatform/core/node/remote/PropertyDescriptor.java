@@ -21,12 +21,13 @@ package org.flowerplatform.core.node.remote;
 import java.util.List;
 
 import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IDescriptor;
 
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
  */
-public class PropertyDescriptor extends AbstractController {
+public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
 	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	

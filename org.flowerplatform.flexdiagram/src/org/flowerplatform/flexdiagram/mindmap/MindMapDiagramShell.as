@@ -59,7 +59,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * @see addRootModelAsRootNode()
 		 * @see set rootModel
 		 */ 
-		public var showRootModelAsRootNode:Boolean = false;
+		public var showRootModelAsRootNode:Boolean = true;
 		
 		/**
 		 * Sets the horizontal padding depending on the platform.

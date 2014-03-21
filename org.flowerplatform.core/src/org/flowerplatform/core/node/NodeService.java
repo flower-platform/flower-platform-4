@@ -1,9 +1,7 @@
 package org.flowerplatform.core.node;
 
-import static org.flowerplatform.core.CorePlugin.SELF_RESOURCE;
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
-import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -11,18 +9,16 @@ import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERT
 import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
 import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
@@ -32,11 +28,13 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
-import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.core.node.remote.TypeDescriptorRemote;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
+import org.flowerplatform.util.Pair;
+import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -156,25 +154,7 @@ public class NodeService {
 		return parent;
 	}
 	
-	/**
-	 * @author Mariana Gheorghe
-	 * @author Sebastian Solomon
-	 */
-	public List<PropertyDescriptor> getPropertyDescriptors(Node node) {		
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return Collections.emptyList();
-		}
-		List<PropertyDescriptor> propertyDescriptorList  = descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
-		Collections.sort(propertyDescriptorList, new Comparator<PropertyDescriptor>() {
-			public int compare(PropertyDescriptor o1, PropertyDescriptor o2) {
-				return o1.getCategory().compareTo(o2.getCategory());
-			}
-		});
-		
-		return propertyDescriptorList;
-	}
-	
+
 	public void setProperty(Node node, String property, Object value, Map<String, Object> options) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -182,7 +162,7 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = getRootNode(node);
+		Node resourceNode = CoreUtils.getRootNode(node);
 		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
 				
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
@@ -210,7 +190,7 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = getRootNode(node);
+		Node resourceNode = CoreUtils.getRootNode(node);
 		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
 					
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
@@ -234,7 +214,7 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = getRootNode(node);
+		Node resourceNode = CoreUtils.getRootNode(node);
 		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
 				
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
@@ -260,7 +240,7 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = getRootNode(node);
+		Node resourceNode = CoreUtils.getRootNode(node);
 		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
 						
 		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
@@ -279,32 +259,39 @@ public class NodeService {
 		setProperty(node, HAS_CHILDREN, hasChildren(node), getControllerInvocationOptions());
 	}
 	
-	public Node getRootNode(Node node) {
-		if (node.getResource() == null) {
-			return null;
-		} else if (SELF_RESOURCE.equals(node.getResource())) {
-			return node;
-		}
-		return new Node(node.getResource());
-	}
-	
 	/**
+	 * Converts the registered {@link TypeDescriptor}s to {@link TypeDescriptorRemote}s that will be sent to the client.
+	 * 
 	 * @author Mariana Gheorghe
 	 */
-	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
-		Map<String, List<AddChildDescriptor>> descriptorsMap = new HashMap<String, List<AddChildDescriptor>>();
-		
-		Collection<TypeDescriptor> typeDescriptors = registry.getTypeDescriptors();
-		for (TypeDescriptor typeDescriptor : typeDescriptors) {
-			List<AddChildDescriptor> addChildDescriptors = typeDescriptor.getAdditiveControllers(AddChildDescriptor.ADD_CHILD_DESCRIPTOR, null);
-			descriptorsMap.put(typeDescriptor.getType(), addChildDescriptors);
+	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
+		List<TypeDescriptorRemote> remotes = new ArrayList<TypeDescriptorRemote>();
+		for (TypeDescriptor descriptor : registry.getRegisteredTypeDescriptors()) {
+			// create the new remote type descriptor with the type and static categories
+			TypeDescriptorRemote remote = new TypeDescriptorRemote(descriptor.getType(), descriptor.getCategories());
+			
+			// filter the single controllers map
+			for (Entry<String, Pair<AbstractController, Boolean>> entry : descriptor.getSingleControllers().entrySet()) {
+				if (entry.getValue().a instanceof IDescriptor) {
+					remote.getSingleControllers().put(entry.getKey(), (IDescriptor) entry.getValue().a);
+				}
+			}
+			
+			// filter the additive controlers map
+			for (Entry<String, Pair<List<? extends AbstractController>, Boolean>> entry : descriptor.getAdditiveControllers().entrySet()) {
+				List<IDescriptor> additiveControllers = new ArrayList<IDescriptor>();
+				for (AbstractController abstractController : entry.getValue().a) {
+					if (abstractController instanceof IDescriptor) {
+						additiveControllers.add((IDescriptor) abstractController);
+					}
+				}
+				if (additiveControllers.size() > 0) {
+					remote.getAdditiveControllers().put(entry.getKey(), additiveControllers);
+				}
+			}
+			remotes.add(remote);
 		}
-		
-		return descriptorsMap;
-	}
-	
-	public Set<String> getRegisteredTypes() {
-		return registry.getRegisteredTypes();
+		return remotes;
 	}
 	
 	/**
@@ -328,7 +315,6 @@ public class NodeService {
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node));
 	}
 	
-	
 	/**
 	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
 	 */
@@ -343,14 +329,6 @@ public class NodeService {
 			return null;
 		}
 		return rawNodeDataProvider.getRawNodeData(node);	
-	}
-	
-	public boolean isSubscribable(Map<String, Object> properties) {
-		Boolean isSubscribable = (Boolean) properties.get(IS_SUBSCRIBABLE);
-		if (isSubscribable == null) {
-			return false;
-		}
-		return isSubscribable;
 	}
 	
 	public Map<String, Object> getControllerInvocationOptions() {

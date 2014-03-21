@@ -19,21 +19,17 @@
 package org.flowerplatform.flex_client.core.mindmap.action {
 	import avmplus.getQualifiedClassName;
 	
-	import flash.events.MouseEvent;
 	import flash.utils.getDefinitionByName;
 	
-	import mx.core.ClassFactory;
-	import mx.core.IVisualElement;
 	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.ui.RichTextWithRendererView;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
-	import org.flowerplatform.flexutil.popup.IMessageBox;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -51,7 +47,10 @@ package org.flowerplatform.flex_client.core.mindmap.action {
 		}
 		
 		public function handleDialogResult(result:Object):void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result.fullNodeId, NodePropertiesConstants.TEXT, result.name]);
+			var node:Node = new Node(result.fullNodeId);
+			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShell.registry, node);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result.fullNodeId, 
+				titleProvider.getPropertyNameFromGenericDescriptor(node), result.name]);
 		}
 			
 		override public function run():void {

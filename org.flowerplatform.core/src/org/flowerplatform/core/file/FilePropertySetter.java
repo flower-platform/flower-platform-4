@@ -1,6 +1,6 @@
 package org.flowerplatform.core.file;
 
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.Map;
 
@@ -19,9 +19,9 @@ public class FilePropertySetter extends PropertySetter {
 	@Override
 	public void setProperty(Node node, String property, PropertyValueWrapper value, Map<String, Object> options) {
 		
-		if (TEXT.equals(property)) {
+		if (NAME.equals(property)) {
 			Object file;
-			if (!node.getOrPopulateProperties().get(TEXT).equals(value.getPropertyValue())) {
+			if (!node.getOrPopulateProperties().get(NAME).equals(value.getPropertyValue())) {
 				try {
 					file = fileAccessController.getFile(node.getIdWithinResource());
 					String parentPath = fileAccessController.getParent(file);
@@ -33,7 +33,7 @@ public class FilePropertySetter extends PropertySetter {
 					if (!fileAccessController.rename(file, dest)) {
 						throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
 					}
-					node.getProperties().put(TEXT, value.getPropertyValue());
+					node.getProperties().put(NAME, value.getPropertyValue());
 					//TODO
 					//node.setIdWithinResource(fileAccessController.getAbsolutePath(dest));
 				} catch (Exception e) {

@@ -3,6 +3,7 @@ package org.flowerplatform.core.node.update.controller;
 import static org.flowerplatform.core.node.update.remote.ChildrenUpdate.ADDED;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
@@ -16,7 +17,7 @@ public class UpdateAddNodeController extends AddNodeController {
 	
 	@Override
 	public void addNode(Node node, Node child, Node insertBeforeNode) {		
-		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
+		Node rootNode = CoreUtils.getRootNode(node);
 		if (rootNode != null) {
 			CorePlugin.getInstance().getResourceInfoService()
 				.addUpdate(rootNode.getFullNodeId(), 

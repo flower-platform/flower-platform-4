@@ -42,7 +42,7 @@ package org.flowerplatform.flexutil {
 		public static const REMOVE_FIRST:int = 1;
 		public static const REMOVE_LAST:int = 2;
 		public static const REMOVE_ALL:int = 3;
-		public static const ICONS_SEPARATOR:String = "|";
+		public static const ICONS_SEPARATOR:String = ",";
 		
 		/**
 		 * Makes the given text input non-editable and applies a grey color as background.

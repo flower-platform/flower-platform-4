@@ -1,9 +1,12 @@
-package org.flowerplatform.flex_client.codesync.renderer {
+package org.flowerplatform.flex_client.codesync.node.renderer {
 	
+	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	
 	/**
@@ -14,17 +17,18 @@ package org.flowerplatform.flex_client.codesync.renderer {
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
 			
-			if (hasPropertyChanged("icon")) {
+			if (hasPropertyChanged(CodeSyncConstants.SYNC, event) ||
+				hasPropertyChanged(CodeSyncConstants.CHILDREN_SYNC, event) ||
+				hasPropertyChanged(CodeSyncConstants.CONFLICT, event) ||
+				hasPropertyChanged(CodeSyncConstants.CHILDREN_CONFLICT, event)) {
+				// a sync property has changed, redecorate the original icon
 				composeIconWithSyncMarkers();
 			}
 		}
 		
 		protected function composeIconWithSyncMarkers():void {
-			if (data == null) {
-				return;
-			}
-					
-			var icon:String = node.properties.icon;
+			var iconsProvider:GenericDescriptorValueProvider =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
+			var icon:String = String(iconsProvider.getValue(node));
 			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
 			if (node.properties.conflict == true) {
 				composedUrl = append(composedUrl, "syncMarker_conflict.gif");

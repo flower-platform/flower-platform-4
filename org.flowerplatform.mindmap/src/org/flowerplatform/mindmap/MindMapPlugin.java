@@ -1,5 +1,7 @@
 package org.flowerplatform.mindmap;
 
+import static org.flowerplatform.core.CorePlugin.PROPERTY_FOR_TITLE_DESCRIPTOR;
+import static org.flowerplatform.core.NodePropertiesConstants.ICONS;
 import static org.flowerplatform.core.node.remote.AddChildDescriptor.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.BOOLEAN;
 import static org.flowerplatform.core.node.remote.PropertyDescriptor.COLOR_PICKER;
@@ -15,9 +17,9 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_FAM
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_ITALIC;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZES;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
 
 import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
@@ -25,6 +27,7 @@ import java.util.Arrays;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
+import org.flowerplatform.core.node.remote.GenericDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -65,7 +68,9 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(COLOR_PICKER).setNameAs(COLOR_BACKGROUND).setTitleAs(getMessage("mindmap.color.background")).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.color")))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(COLOR_PICKER).setNameAs(CLOUD_COLOR).setTitleAs(getMessage("mindmap.cloud.color")).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.cloud")))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(DROP_DOWN_LIST).setNameAs(CLOUD_SHAPE).setTitleAs(getMessage("mindmap.cloud.shape")).setPossibleValuesAs(Arrays.asList("", "Rectangle", "Round Rectangle")).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.cloud")))
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE).setLabelAs(getMessage("mindmap.add")));
+		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE).setLabelAs(getMessage("mindmap.add")))
+		// lower order index to override the default title property
+		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericDescriptor(TEXT).setOrderIndexAs(-10000));
 	}	
 	
 	public void stop(BundleContext bundleContext) throws Exception {

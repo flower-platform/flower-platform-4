@@ -7,7 +7,13 @@ package org.flowerplatform.core;
 public class NodePropertiesConstants {
 	
 	public static final String HAS_CHILDREN = "hasChildren";
-	public static final String TEXT = "text";
+	public static final String NAME = "name";
+	
+	public static final String ICONS = "icons";
+	public static final String ICONS_SEPARATOR = ",";
+	
+	public static final String CONTENT_TYPE = "contentType";
+	public static final String HIDE_ROOT_NODE = "hideRootNode";
 	
 	public static final String IS_DIRTY = "isDirty";
 	

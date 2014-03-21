@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.core.NodePropertiesConstants.ICONS;
+import static org.flowerplatform.core.NodePropertiesConstants.ICONS_SEPARATOR;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
@@ -10,12 +12,12 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_BOL
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_FAMILY;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_ITALIC;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.NONE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
 
 import java.awt.Color;
 import java.util.List;
@@ -42,8 +44,11 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		super.populateWithProperties(node, options);
 		
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		
+		node.getProperties().put(TEXT, rawNodeData.getText());
+		
 		NodeSizeModel nodeSizeModel = NodeSizeModel.getModel(rawNodeData);
-				
+		
 		if (nodeSizeModel != null && nodeSizeModel.getMinNodeWidth() != NodeSizeModel.NOT_SET) { // property set by user, use it
 			node.getProperties().put(MIN_WIDTH, nodeSizeModel.getMinNodeWidth());
 		} else { // otherwise, use default value
@@ -60,9 +65,9 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			StringBuilder sb = new StringBuilder();
 			for (MindIcon icon : icons) {
 				sb.append(MindMapPlugin.getInstance().getResourceUrl(icon.getPath()));
-				sb.append("|");
+				sb.append(ICONS_SEPARATOR);
 			}
-			if (sb.length() > 0) { // remove last "|"
+			if (sb.length() > 0) { // remove last icons separator
 				node.getProperties().put(ICONS, sb.substring(0, sb.length() - 1));
 			} else {
 				node.getProperties().put(ICONS, null);

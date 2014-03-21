@@ -27,22 +27,24 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
+	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.ResourceNodeIdsToNodeUpdateProcessors;
 	import org.flowerplatform.flex_client.core.editor.ResourceNodesManager;
+	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
+	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
+	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.OpenInNewEditorAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
-	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapEditorProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
@@ -51,6 +53,9 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.remote.GenericDescriptor;
+	import org.flowerplatform.flex_client.core.node.remote.TypeDescriptorRemote;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
@@ -60,6 +65,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
+	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.layout.Perspective;
@@ -91,10 +98,9 @@ package org.flowerplatform.flex_client.core {
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
 		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
-		
-		public var addChildDescriptors:Object = new Object();
 
 		public var resourceNodesManager:ResourceNodesManager;
+
 		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 		
 		public var updateTimer:UpdateTimer = new UpdateTimer(5000);
@@ -102,7 +108,15 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
-			
+		
+		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
+		
+		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
+		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
+		
+		public static const NODE_TITLE_PROVIDER:String = "nodeTitleProvider";
+		public static const NODE_ICONS_PROVIDER:String = "nodeIconProvider";
+		
 		/**
 		 * @author Sebastian Solomon
 		 */
@@ -140,38 +154,63 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("resourceInfoService");
 			serviceLocator.addService("freeplaneService");
 			
-			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
+			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
+			contentTypeRegistry[TextEditorDescriptor.ID] = textEditorDescriptor;
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(textEditorDescriptor);
+			
+			var mindMapEditorDescriptor:MindMapEditorDescriptor = new MindMapEditorDescriptor();
+			contentTypeRegistry.defaultContentType = MindMapEditorDescriptor.ID;
+			contentTypeRegistry[MindMapEditorDescriptor.ID] = mindMapEditorDescriptor;
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);			
 			perspectives.push(new MindMapPerspective());
 		
 			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
 			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);		
-			mindmapEditorClassFactoryActionProvider.addActionClass(OpenInNewEditorAction);
-		
-			serviceLocator.invoke("nodeService.getAddChildDescriptors", null,
-				function(result:Object):void {
-					addChildDescriptors = result;		
-				}
-			);
+			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);			
+			mindmapEditorClassFactoryActionProvider.addActionClass(OpenAction);
 			
-			serviceLocator.invoke("nodeService.getRegisteredTypes", null,
+			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
 					var list:ArrayCollection = ArrayCollection(result);
 					for (var i:int = 0; i < list.length; i++) {
-						var type:String = String(list.getItemAt(i));
-						if (Utils.beginsWith(type, TypeDescriptor.CATEGORY_PREFIX)) {
-							nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(type);
+						var remote:TypeDescriptorRemote = TypeDescriptorRemote(list.getItemAt(i));
+						
+						// create new type descriptor with remote type
+						var descriptor:TypeDescriptor = null;
+						if (Utils.beginsWith(remote.type, TypeDescriptor.CATEGORY_PREFIX)) {
+							descriptor = nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(remote.type);
 						} else {
-							nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(type);
-						}						
+							descriptor = nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(remote.type);
+						}
+						
+						// add static categories
+						for each (var category:String in remote.categories) {
+							descriptor.addCategory(category);
+						}
+						
+						// add single controllers
+						for (var singleControllerType:String in remote.singleControllers) {
+							descriptor.addSingleController(singleControllerType, remote.singleControllers[singleControllerType]);
+						}
+						
+						// add additive controllers
+						for (var additiveControllerType:String in remote.additiveControllers) {
+							for each (var additiveController:AbstractController in remote.additiveControllers[additiveControllerType]) {
+								descriptor.addAdditiveController(additiveControllerType, additiveController);
+							}
+						}
 					}
 				}
 			);
 			
+			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
+				.addSingleController(NODE_TITLE_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_TITLE_DESCRIPTOR))
+				.addSingleController(NODE_ICONS_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_ICONS_DESCRIPTOR));
+			
 			linkHandlers = new Dictionary();
-			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorProvider.ID);
+			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorDescriptor.ID);
 
 			if (ExternalInterface.available) {
 				// on mobile, it's not available
@@ -190,6 +229,9 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(ChildrenUpdate);
 			registerClassAliasFromAnnotation(NodeWithChildren);
 			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
+		
+			registerClassAliasFromAnnotation(TypeDescriptorRemote);
+			registerClassAliasFromAnnotation(GenericDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
 		}
 		

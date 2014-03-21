@@ -17,20 +17,21 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.mindmap.remote {
+	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.AddChildDescriptor")]
-	public class AddChildDescriptor {
+	public class AddChildDescriptor extends AbstractController {
+		
+		public static const TYPE:String = "addChildDescriptor";
 		
 		public var childType:String;
 		
 		public var label:String;
 		
 		public var icon:String;
-		
-		public var orderIndex:int;
 		
 		public var properties:Object;
 		

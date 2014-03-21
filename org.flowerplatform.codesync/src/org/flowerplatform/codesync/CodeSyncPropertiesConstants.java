@@ -13,7 +13,7 @@ public class CodeSyncPropertiesConstants {
 	public static final String CONFLICT = "conflict";
 	public static final String CHILDREN_CONFLICT = "childrenConflict";
 	
-	public static final String NAME = "text";
+	public static final String NAME = "name";
 	public static final String CHILDREN = "children";
 
 }

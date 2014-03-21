@@ -5,6 +5,7 @@ import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -35,11 +36,12 @@ public class UpdatePropertySetterController extends PropertySetter {
 		if ((boolean) options.get(NODE_IS_RESOURCE_NODE)) {
 			rootNode = node;
 		} else {
-			rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
+			rootNode = CoreUtils.getRootNode(node);
 			if (rootNode == null) {
 				return;
 			}
 		}
+
 		CorePlugin.getInstance().getResourceInfoService()
 			.addUpdate(rootNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
 	}

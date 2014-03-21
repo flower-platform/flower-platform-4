@@ -108,6 +108,10 @@ public class TypeDescriptor {
 	 */
 	protected Map<String, Pair<AbstractController, Boolean>> singleControllers = new HashMap<String, Pair<AbstractController, Boolean>>();
 
+	public Map<String, Pair<AbstractController, Boolean>> getSingleControllers() {
+		return singleControllers;
+	}
+	
 	/**
 	 * @return For a given controller type, the single controller 
 	 * (collected from this node type, as well as its categories OR from object's dynamic category providers). 
@@ -213,6 +217,10 @@ public class TypeDescriptor {
 	 */
 	protected Map<String, Pair<List<? extends AbstractController>, Boolean>> additiveControllers = new HashMap<String, Pair<List<? extends AbstractController>,Boolean>>();
 
+	public Map<String, Pair<List<? extends AbstractController>, Boolean>> getAdditiveControllers() {
+		return additiveControllers;
+	}
+	
 	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType, Object object) {
 		return  getCachedAdditiveControllers(controllerType, object, true);
 	}

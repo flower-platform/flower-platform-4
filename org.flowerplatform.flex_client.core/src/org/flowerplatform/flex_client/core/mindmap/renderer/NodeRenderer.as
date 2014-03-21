@@ -1,21 +1,20 @@
 package org.flowerplatform.flex_client.core.mindmap.renderer {
 	
 	import flashx.textLayout.conversion.TextConverter;
-	import flashx.textLayout.elements.TextFlow;
 	
-	import mx.core.UIComponent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
-	
-	import spark.utils.TextFlowUtil;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -97,14 +96,28 @@ package org.flowerplatform.flex_client.core.mindmap.renderer {
 		}
 		
 		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
-			var textChanged:Boolean = hasPropertyChanged(NodePropertiesConstants.TEXT);
-			if (textChanged) {
-				var text:String = data.properties[NodePropertiesConstants.TEXT] as String;
-				text = Utils.getCompatibleHTMLText(text);
+			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node);
+			var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(node);
+			var titleChanged:Boolean = hasPropertyChanged(titleProperty, event);
+			if (titleChanged) {
+				var title:String = String(titleProvider.getValue(node));
+				title = Utils.getCompatibleHTMLText(title);
 				// if text contains html tag, display it as html, otherwise plain text
-				labelDisplay.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
+				labelDisplay.textFlow = TextConverter.importToFlow(title , Utils.isHTMLText(title) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
 				invalidateSize();
 				invalidateDisplayList();
+			}
+			
+			var iconsProvider:GenericDescriptorValueProvider =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
+			var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
+			var iconsChanged:Boolean = hasPropertyChanged(iconsProperty, event);
+			if (iconsChanged) {
+				var iconsValue:String = String(iconsProvider.getValue(node));
+				if (iconsValue != null) {
+					icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
+				} else {
+					icons = null;
+				}
 			}
 		}
 		
