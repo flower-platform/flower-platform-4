@@ -16,7 +16,7 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.host_app.mobile.text {
+package org.flowerplatform.flexutil.mobile.text {
 	
 	import flash.events.FocusEvent;
 	
@@ -25,7 +25,14 @@ package org.flowerplatform.flex_client.host_app.mobile.text {
 	import spark.skins.mobile.TextInputSkin;
 	
 	/**
-	 * @author Mariana
+	 * A modified <code>spark.skins.mobile.TextInputSkin</code>, that does not 
+	 * change the initial text for measurement, as this triggers a validation 
+	 * when the text input is first displayed.
+	 * 
+	 * <p>
+	 * Also adds a listener that triggers validation when the text input loses focus.
+	 * 
+	 * @author Mariana Gheorghe
 	 */
 	public class ValidatingTextInputSkin extends TextInputSkin {
 		
