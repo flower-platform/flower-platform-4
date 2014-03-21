@@ -7,6 +7,7 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
+	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -102,6 +103,7 @@ package org.flowerplatform.flexdiagram.mindmap
 		override public function set data(value:Object):void {
 			if (data != null) {
 				data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+				depth = 0;
 				unassignData();
 			}
 			

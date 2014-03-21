@@ -23,6 +23,8 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.set
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 import static org.flowerplatform.codesync.feature_provider.FeatureProvider.FEATURE_PROVIDER;
 
+import java.util.Map;
+
 import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -45,7 +47,7 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper) {		
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, Map<String, Object> options) {		
 		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		
 		// if the node is newly added or marked removed => propagate sync flag false
@@ -75,20 +77,20 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		if (!Utils.safeEquals(originalValue, wrapper.getPropertyValue())) {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
-				service.setProperty(node, originalProperty, originalValue);
+				service.setProperty(node, originalProperty, originalValue, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 				setSyncFalseAndPropagateToParents(node, service);
 			}
 		} else {
 			if (isOriginalPropertySet) {
 				// trying to set the same value as the original (a revert operation); unset the original value
-				service.unsetProperty(node, originalProperty);
+				service.unsetProperty(node, originalProperty, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 				setSyncTrueAndPropagateToParents(node, service);
 			}
 		}
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property) {
+	public void unsetProperty(Node node, String property, Map<String, Object> options) {
 		// nothing to do
 	}
 	

@@ -10,12 +10,22 @@ import org.flowerplatform.util.controller.AbstractController;
  * 
  * @author Mariana Gheorghe
  */
-public abstract class ResourceSubscriptionListener extends AbstractController {
+public abstract class ResourceAccessController extends AbstractController {
 
-	public static final String RESOURCE_SUBSCRIPTION_LISTENER = "resourceSubscriptionListener";
+	public static final String RESOURCE_ACCESS_CONTROLLER = "resourceAccessController";
 	
 	public abstract void firstClientSubscribed(String rootNodeId, Map<String, Object> options) throws Exception;
 	
 	public abstract void lastClientUnubscribed(String rootNodeId, Map<String, Object> options);
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public abstract void save(String rootNodeId, Map<String, Object> options);
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public abstract boolean isDirty(String rootNodeId, Map<String, Object> options);
 	
 }

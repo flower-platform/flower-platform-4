@@ -12,5 +12,6 @@ package org.flowerplatform.flex_client.core {
 		public static const HIDE_ROOT_NODE:String = "hideRootNode";
 		
 		public static const IS_SUBSCRIBABLE:String = "isSubscribable";
+		public static const IS_DIRTY:String = "isDirty";
 	}
 }

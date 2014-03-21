@@ -23,11 +23,14 @@ package org.flowerplatform.flex_client.core {
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
+	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
+	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.ResourceNodeIdsToNodeUpdateProcessors;
+	import org.flowerplatform.flex_client.core.editor.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
@@ -41,7 +44,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.SaveAction;
 	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
 	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
@@ -86,6 +88,9 @@ package org.flowerplatform.flex_client.core {
 		 */ 
 		private static const MAIN_PAGE:String = "main.jsp";
 		
+		public static const FILE_MENU_ID:String = "file";
+		public static const NAVIGATE_MENU_ID:String = "navigate";
+		
 		protected static var INSTANCE:CorePlugin;
 		
 		public var serviceLocator:ServiceLocator;
@@ -93,7 +98,9 @@ package org.flowerplatform.flex_client.core {
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
 		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
-		
+
+		public var resourceNodesManager:ResourceNodesManager;
+
 		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 		
 		public var updateTimer:UpdateTimer = new UpdateTimer(5000);
@@ -136,7 +143,9 @@ package org.flowerplatform.flex_client.core {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-						
+					
+			resourceNodesManager = new ResourceNodesManager();
+			
 			var channelSet:ChannelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
 			
@@ -159,8 +168,7 @@ package org.flowerplatform.flex_client.core {
 			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(SaveAction);
+			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);			
 			mindmapEditorClassFactoryActionProvider.addActionClass(OpenAction);
 			
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
@@ -203,7 +211,7 @@ package org.flowerplatform.flex_client.core {
 			
 			linkHandlers = new Dictionary();
 			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorDescriptor.ID);
-			
+
 			if (ExternalInterface.available) {
 				// on mobile, it's not available
 				ExternalInterface.addCallback("handleLink", handleLink);
@@ -246,8 +254,12 @@ package org.flowerplatform.flex_client.core {
 			
 			// add actions to global menu
 			
-			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, "navigate"); 
-			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, "navigate", 
+			addActionToGlobalMenuActionProvider(getMessage("menu.file"), null, FILE_MENU_ID);
+			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
+			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
+			
+			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, NAVIGATE_MENU_ID); 
+			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, NAVIGATE_MENU_ID, 
 				function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new LinkView())
@@ -255,7 +267,7 @@ package org.flowerplatform.flex_client.core {
 					.setHeight(450)
 					.show();
 				}
-			);
+			);			
 		}
 		
 		public function getPerspective(id:String):Perspective {
@@ -352,6 +364,23 @@ package org.flowerplatform.flex_client.core {
 			
 			Application(FlexGlobals.topLevelApplication).dispatchEvent(new GlobalActionProviderChangedEvent());
 		}
-	
+		
+		/**
+		 * @return a list with all <code>EditorFrontend</code>s found on workbench.
+		 */ 
+		public function getAllEditorFrontends():Array {			
+			var editors:Array = new Array();
+			
+			var components:ArrayCollection = new ArrayCollection();
+			FlexUtilGlobals.getInstance().workbench.getAllEditorViews(null, components);
+			
+			for each (var component:UIComponent in components) {								
+				if (component is EditorFrontend) {
+					editors.push(component);
+				}
+			}
+			return editors;
+		}
+			
 	}
 }

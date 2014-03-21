@@ -98,11 +98,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 				
 		public function getRoot(context:DiagramShellContext):Object {
-			var children:IList = ControllerUtils.getModelChildrenController(context, rootModel).getChildren(context, rootModel);
-			if (children == null || children.length == 0) {
-				return null;
+			if (showRootModelAsRootNode) {
+				return MindMapRootModelWrapper(rootModel).model;
 			}
-			return children.getItemAt(0);
+			if (MindMapRootModelWrapper(rootModel).children != null) {
+				return MindMapRootModelWrapper(rootModel).children.getItemAt(0);
+			}
+			return null;
 		}
 		
 		public function refreshRootModelChildren(context:DiagramShellContext):void {			
@@ -118,11 +120,10 @@ package org.flowerplatform.flexdiagram.mindmap {
 			shouldRefreshVisualChildren(context, rootModel);
 		}
 		
-		public function addModelInRootModelChildrenList(context:DiagramShellContext, model:Object, asRoot:Boolean = false, depth:int = 0):void {
+		public function addModelInRootModelChildrenList(context:DiagramShellContext, model:Object, asRoot:Boolean = false, depth:int = 1):void {
 			// set depth in model's dynamic object -> it will be set further, in renderer
-			var modelDynamicObject:Object = getDynamicObject(context, model);
-			modelDynamicObject.depth = depth;
-			
+			setPropertyValue(context, model, "depth", depth);
+						
 			if (MindMapRootModelWrapper(rootModel).children == null) {
 				MindMapRootModelWrapper(rootModel).children = new ArrayList();
 			}
@@ -133,7 +134,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 		}
 		
-		protected function addModelInRootModelChildrenListRecursive(context:DiagramShellContext, model:Object, asRoot:Boolean = false, depth:int = 0):void {			
+		protected function addModelInRootModelChildrenListRecursive(context:DiagramShellContext, model:Object, asRoot:Boolean = false, depth:int = 1):void {			
 			if (getModelController(context, model).getExpanded(context, model)) {
 				var children:IList = getModelController(context, model).getChildren(context, model);
 				for (var i:int = 0; i < children.length; i++) {

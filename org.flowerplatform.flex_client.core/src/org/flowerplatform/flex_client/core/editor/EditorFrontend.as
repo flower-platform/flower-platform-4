@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.layout.ITitleDecorator;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
@@ -41,7 +42,7 @@ package org.flowerplatform.flex_client.core.editor {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware {
+	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator {
 		
 		private var _editorInput:String;
 		
@@ -55,7 +56,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function EditorFrontend() {
 			super();
-			nodeUpdateProcessor = new NodeUpdateProcessor();
+			nodeUpdateProcessor = new NodeUpdateProcessor(this);
 		}
 		
 		public function get editorInput():String {
@@ -86,18 +87,32 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function set viewHost(value:IViewHost):void {
 			_viewHost = value;
-			IEventDispatcher(viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
 		}
 		
 		public function get viewHost():IViewHost {
 			return _viewHost;
 		}
 		
-		protected function viewRemovedHandler(event:ViewRemovedEvent):void {
-			for each (var rootNodeId:String in nodeUpdateProcessor.resourceNodeIds) {
-				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors
-					.removeNodeUpdateProcessor(rootNodeId, nodeUpdateProcessor);
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function isDirty():Boolean {	
+			for each (var resourceNodeId:String in nodeUpdateProcessor.resourceNodeIds) {
+				if (nodeUpdateProcessor.isResourceNodeDirty(resourceNodeId)) {
+					return true;
+				}
 			}
+			return false;
+		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function decorateTitle(title:String):String {
+			if (isDirty()) { 
+				return "* " + title;
+			}
+			return title;
 		}
 	}
 }

@@ -1,31 +1,35 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
+
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.resource.ResourceSubscriptionListener;
+import org.flowerplatform.core.node.resource.ResourceAccessController;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.url.UrlManager;
+import org.freeplane.features.url.mindmapmode.MFileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mariana Gheorghe
  */
-public class FreeplaneResourceSubscriptionListener extends ResourceSubscriptionListener {
+public class FreeplaneResourceAccessController extends ResourceAccessController {
 
 	private String resourceCategory;
 	
-	private final static Logger logger = LoggerFactory.getLogger(FreeplaneResourceSubscriptionListener.class);
+	private final static Logger logger = LoggerFactory.getLogger(FreeplaneResourceAccessController.class);
 	
-	public FreeplaneResourceSubscriptionListener(String resourceCategory) {
+	public FreeplaneResourceAccessController(String resourceCategory) {
 		this.resourceCategory = resourceCategory;
 	}
 	
@@ -71,6 +75,45 @@ public class FreeplaneResourceSubscriptionListener extends ResourceSubscriptionL
 		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	@SuppressWarnings("deprecation")
+	@Override
+	public void save(String resourceNodeId, Map<String, Object> options) {
+		Node rootNode = new Node(resourceNodeId);
+		if (!canHandleResource(rootNode.getIdWithinResource())) {
+			return;
+		}
+		
+		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
+		
+		try {
+			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, rawNodeData.getFile());
+		} catch (Exception e) {
+			return;
+		} finally {
+			options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
+		}
+		rawNodeData.setSaved(true);		
+	}
+
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	@Override
+	public boolean isDirty(String rootNodeId, Map<String, Object> options) {
+		Node rootNode = new Node(rootNodeId);
+		if (!canHandleResource(rootNode.getIdWithinResource())) {
+			return false;
+		}
+		
+		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
+		
+		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
+		return !model.isSaved();
+	}
+
 	private boolean canHandleResource(String path) {
 		return path.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION);
 	}

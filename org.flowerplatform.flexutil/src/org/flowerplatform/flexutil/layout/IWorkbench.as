@@ -24,12 +24,21 @@ package org.flowerplatform.flexutil.layout {
 
 	public interface IWorkbench {
 		function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean = false, existingComponent:UIComponent = null):UIComponent;
-		function getAllEditorViews(root:LayoutData, array:ArrayCollection):void;
-		function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void;
-		function getComponent(viewId:String, customData:String = null):UIComponent;
+		
+		function getComponentById(viewId:String, customData:String = null):UIComponent;
+		function getComponent(viewLayoutData:ViewLayoutData):UIComponent;
+		
+		function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void;		
 		function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true):void;
+		
 		function getActiveView():UIComponent;
 		function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void;
+		
 		function load(layoutData:Object, reuseExistingViews:Boolean = false, keepNewLayoutEditors:Boolean = false):void;
+		function refreshLabels(viewLayoutData:ViewLayoutData = null):void;
+		
+		function getAllEditorViews(root:LayoutData, array:ArrayCollection):void;
+		function getEditorFromViewComponent(viewComponent:UIComponent):UIComponent;		
+		function getViewComponentForEditor(editor:UIComponent):UIComponent;
 	}
 }

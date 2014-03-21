@@ -19,7 +19,6 @@
 package com.crispico.flower.util.layout.view.activeview
 {
 	import com.crispico.flower.util.layout.Workbench;
-	import com.crispico.flower.util.layout.event.ActiveViewChangedEvent;
 	import com.crispico.flower.util.layout.view.LayoutTabNavigator;
 	
 	import mx.collections.ArrayCollection;
@@ -28,6 +27,7 @@ package com.crispico.flower.util.layout.view.activeview
 	
 	import org.flowerplatform.flexutil.layout.StackLayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
+	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	
 	/**
 	 * Provides functionality for active view mechanism used on workbench.

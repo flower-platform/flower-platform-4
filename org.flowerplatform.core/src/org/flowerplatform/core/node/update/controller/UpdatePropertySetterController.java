@@ -1,5 +1,9 @@
 package org.flowerplatform.core.node.update.controller;
 
+import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
+
+import java.util.Map;
+
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.PropertySetter;
@@ -18,20 +22,26 @@ public class UpdatePropertySetterController extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String key, PropertyValueWrapper wrapper) {	
-		setUnsetProperty(node, key, wrapper.getPropertyValue(), false);
+	public void setProperty(Node node, String key, PropertyValueWrapper wrapper, Map<String, Object> options) {	
+		setUnsetProperty(node, key, wrapper.getPropertyValue(), false, options);
 	}
 
 	@Override
-	public void unsetProperty(Node node, String key) {
-		setUnsetProperty(node, key, null, true);
+	public void unsetProperty(Node node, String key, Map<String, Object> options) {
+		setUnsetProperty(node, key, null, true, options);
 	}
 	
-	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset) {
-		Node rootNode = CoreUtils.getRootNode(node);
-		if (rootNode == null) {
-			return;
+	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, Map<String, Object> options) {		
+		Node rootNode;
+		if ((boolean) options.get(NODE_IS_RESOURCE_NODE)) {
+			rootNode = node;
+		} else {
+			rootNode = CoreUtils.getRootNode(node);
+			if (rootNode == null) {
+				return;
+			}
 		}
+
 		CorePlugin.getInstance().getResourceInfoService()
 			.addUpdate(rootNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
 	}

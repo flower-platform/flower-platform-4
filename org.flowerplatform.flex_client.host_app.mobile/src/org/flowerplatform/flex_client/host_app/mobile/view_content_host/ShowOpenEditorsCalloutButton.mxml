@@ -106,6 +106,19 @@
 				contents.addElement(entry);
 			}
 			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			public function refreshLabels():void {
+				for (var i:int = 0; i < contents.numElements; i++) {
+					var entry:EditorFrontendEntry = EditorFrontendEntry(contents.getElementAt(i));
+					var label:String = entry.editorFrontend.editorInput;					
+					label = entry.editorFrontend.decorateTitle(label); 
+					
+					entry.switchButton.label = label;
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	

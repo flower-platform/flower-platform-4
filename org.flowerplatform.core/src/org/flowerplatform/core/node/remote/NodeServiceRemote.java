@@ -21,11 +21,11 @@ public class NodeServiceRemote {
 	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
-		CorePlugin.getInstance().getNodeService().setProperty(new Node(fullNodeId), property, value);	
+		CorePlugin.getInstance().getNodeService().setProperty(new Node(fullNodeId), property, value, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());	
 	}
 		
 	public void unsetProperty(String fullNodeId, String property) {
-		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property);	
+		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());	
 	}
 	
 	public void addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
@@ -47,6 +47,10 @@ public class NodeServiceRemote {
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
 		return CorePlugin.getInstance().getNodeService().getRegisteredTypeDescriptors();
+	}
+	
+	public void saveResource(String resourceNodeId) {
+		System.out.println("saveResource " + resourceNodeId);
 	}
 	
 	/**

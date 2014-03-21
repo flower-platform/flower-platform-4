@@ -20,6 +20,7 @@ public class MindMapAddNodeController extends AddNodeController {
 		newNodeModel.setLeft(false);
 		
 		parentRawNodeData.insert(newNodeModel, currentModelAtInsertionPoint != null ? parentRawNodeData.getChildPosition(currentModelAtInsertionPoint) : parentRawNodeData.getChildCount());
+		parentRawNodeData.getMap().setSaved(false);
 		
 		// set the id on the node instance
 		child.setIdWithinResource(newNodeModel.createID());		

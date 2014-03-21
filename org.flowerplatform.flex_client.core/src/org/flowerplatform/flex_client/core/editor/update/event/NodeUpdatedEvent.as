@@ -45,14 +45,16 @@ package org.flowerplatform.flex_client.core.editor.update.event {
 		
 		public var node:Node;
 		
+		public var allPropertiesUpdated:Boolean;
 		public var updatedProperties:IList;
 		public var removedProperties:IList;
 		
-		public function NodeUpdatedEvent(node:Node, updatedProperties:IList = null, removedProperties:IList = null) {
+		public function NodeUpdatedEvent(node:Node, updatedProperties:IList = null, removedProperties:IList = null, allPropertiesUpdated:Boolean = false) {
 			super(NODE_UPDATED, false, false);
 			this.node = node;
 			this.updatedProperties = updatedProperties;
 			this.removedProperties = removedProperties;
+			this.allPropertiesUpdated = allPropertiesUpdated;
 		}
 		
 		public function addUpdatedProperty(property:String):void {

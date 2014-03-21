@@ -1,6 +1,7 @@
 package org.flowerplatform.core.node;
 
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
+import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -17,6 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ParentProvider;
@@ -28,6 +31,7 @@ import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.TypeDescriptorRemote;
+import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
@@ -54,6 +58,15 @@ public class NodeService {
 	 * with a higher order index.
 	 */
 	public static final String STOP_CONTROLLER_INVOCATION = "stopControllerInvocation";
+	
+	/**
+	 * An additive controller may set this option, to ask the {@link UpdatePropertySetterController} to use
+	 * the node given as parameter as the resourceNode where the update will be saved.
+	 * 
+	 * <p>
+	 * An example is {@link NodePropertiesConstants#IS_DIRTY}: if option not set, the update will be registered on parent resource -> bad.
+	 */
+	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
 	
 	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
 	
@@ -141,31 +154,56 @@ public class NodeService {
 		return parent;
 	}
 	
-	public void setProperty(Node node, String property, Object value) {		
+
+	public void setProperty(Node node, String property, Object value, Map<String, Object> options) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
+		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
+		Node resourceNode = CoreUtils.getRootNode(node);
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+				
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
 		for (PropertySetter controller : controllers) {
-			controller.setProperty(node, property, wrapper);
+			controller.setProperty(node, property, wrapper, options);
+		}
+		
+		// get dirty state after executing controllers
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		if (oldDirty != newDirty) {			
+			// dirty state changed -> change resourceNode isDirty property
+			options.put(NODE_IS_RESOURCE_NODE, true);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
 		}
 	}
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public void unsetProperty(Node node, String property) {	
+	public void unsetProperty(Node node, String property, Map<String, Object> options) {	
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		
+		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
+		Node resourceNode = CoreUtils.getRootNode(node);
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+					
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (PropertySetter controller : controllers) {
-			controller.unsetProperty(node, property);
+			controller.unsetProperty(node, property, options);
+		}
+		
+		// get dirty state after executing controllers
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		if (oldDirty != newDirty) {			
+			// dirty state changed -> change resourceNode isDirty property
+			options.put(NODE_IS_RESOURCE_NODE, true);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
 		}
 	}
 	
@@ -175,10 +213,24 @@ public class NodeService {
 			return;
 		}
 		
+		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
+		Node resourceNode = CoreUtils.getRootNode(node);
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+				
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
 			controller.addNode(node, child, insertBeforeNode);
 		}
+		
+		// get dirty state after executing controllers
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		if (oldDirty != newDirty) {
+			// dirty state changed -> change resourceNode isDirty property
+			Map<String, Object> options = getControllerInvocationOptions();
+			options.put(NODE_IS_RESOURCE_NODE, true);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
+		}
+		setProperty(node, HAS_CHILDREN, true, getControllerInvocationOptions());
 	}
 	
 	public void removeChild(Node node, Node child) {	
@@ -187,10 +239,24 @@ public class NodeService {
 			return;
 		}
 		
+		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
+		Node resourceNode = CoreUtils.getRootNode(node);
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+						
 		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (RemoveNodeController controller : controllers) {
 			controller.removeNode(node, child);
 		}
+		
+		// get dirty state after executing controllers
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		if (oldDirty != newDirty) {
+			// dirty state changed -> change resourceNode isDirty property
+			Map<String, Object> options = getControllerInvocationOptions();
+			options.put(NODE_IS_RESOURCE_NODE, true);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
+		}
+		setProperty(node, HAS_CHILDREN, hasChildren(node), getControllerInvocationOptions());
 	}
 	
 	/**
@@ -268,6 +334,7 @@ public class NodeService {
 	public Map<String, Object> getControllerInvocationOptions() {
 		Map<String, Object> options = new HashMap<String, Object>();
 		options.put(STOP_CONTROLLER_INVOCATION, false);
+		options.put(NODE_IS_RESOURCE_NODE, false);
 		return options;
 	}
 	

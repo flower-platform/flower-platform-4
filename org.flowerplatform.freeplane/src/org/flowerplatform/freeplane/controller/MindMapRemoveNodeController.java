@@ -14,6 +14,7 @@ public class MindMapRemoveNodeController extends RemoveNodeController {
 		NodeModel rawNodeData = ((NodeModel) child.getOrRetrieveRawNodeData());
 		rawNodeData.removeFromParent();
 		rawNodeData.getMap().unregistryNodes(rawNodeData);
+		rawNodeData.getMap().setSaved(false);
 	}
 
 }
