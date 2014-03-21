@@ -21,9 +21,11 @@ package org.flowerplatform.flex_client.codesync {
 	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
-	import org.flowerplatform.flex_client.codesync.node.controller.CodeSyncIconsValueProvider;
+	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	
@@ -55,7 +57,7 @@ package org.flowerplatform.flex_client.codesync {
 			INSTANCE = this;
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC)
-				.addSingleController(CorePlugin.NODE_ICONS_PROVIDER, new CodeSyncIconsValueProvider());
+				.addSingleController(RendererController.TYPE, new NodeRendererController(CodeSyncNodeRenderer, -10000));
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);

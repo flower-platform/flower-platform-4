@@ -42,7 +42,7 @@ public abstract class FeatureProvider extends AbstractController {
 	public List<?> getContainmentFeatures(Object element) {
 		return containmentFeatures;
 	}
-
+	
 	public int getFeatureType(Object feature) {
 		if (valueFeatures.contains(feature)) {
 			return IModelAdapter.FEATURE_TYPE_VALUE;
@@ -53,7 +53,7 @@ public abstract class FeatureProvider extends AbstractController {
 	}
 	
 	public String getFeatureName(Object feature) {
-		if (feature == null) {
+		if (feature != null) {
 			return feature.toString();
 		}
 		throw new RuntimeException("Feature is null");
