@@ -52,4 +52,5 @@
 	<s:Button label="Context Menu" click="navigator.pushView(MobileViewHost, { viewContent: new ContextMenuSample() })"/>
 	<s:Button label="Split Mobile View Host" click="splitViewWrapperClickHandler(event)"/>
 	<s:Button label="Gradient List" click="gradientListClickHandler(event)"/>
+	<s:Button label="Validating Text Input" click="navigator.pushView(ValidatingTextInputSkinSampleView)"/>
 </s:View>
