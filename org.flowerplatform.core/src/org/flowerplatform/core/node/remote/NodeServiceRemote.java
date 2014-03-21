@@ -45,10 +45,6 @@ public class NodeServiceRemote {
 		CorePlugin.getInstance().getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId));
 	}
 	
-	public Node getRootNode(String fullNodeId) {			
-		return CorePlugin.getInstance().getNodeService().getRootNode(new Node(fullNodeId));
-	}
-	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
 		return CorePlugin.getInstance().getNodeService().getRegisteredTypeDescriptors();
 	}

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -38,11 +39,11 @@ public class ResourceInfoService {
 		
 		Node node = new Node(nodeId);
 		Node subscribableNode = null;
-		if (CorePlugin.getInstance().getNodeService().isSubscribable(node.getOrPopulateProperties())) {
+		if (CoreUtils.isSubscribable(node.getOrPopulateProperties())) {
 			subscribableNode = node;
 		} else {
-			Node resourceNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
-			if (resourceNode != null && CorePlugin.getInstance().getNodeService().isSubscribable(resourceNode.getOrPopulateProperties())) {
+			Node resourceNode = CoreUtils.getRootNode(node);
+			if (resourceNode != null && CoreUtils.isSubscribable(resourceNode.getOrPopulateProperties())) {
 				subscribableNode = resourceNode;
 			}
 		}

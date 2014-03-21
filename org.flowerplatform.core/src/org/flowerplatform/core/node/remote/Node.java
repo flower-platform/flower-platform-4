@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
@@ -50,10 +49,6 @@ public class Node {
 	}
 
 	public Node(String fullNodeId) {
-		if (StringUtils.countMatches(fullNodeId, FULL_NODE_ID_SEPARATOR) < 2) { 
-			throw new RuntimeException("fullNodeId must have the following format: <type>|<resource>|<id>! Received " + fullNodeId);
-		}
-		
 		Matcher matcher = FULL_NODE_ID_PATTERN.matcher(fullNodeId);
 		if (matcher.find()) {
 			type = matcher.group(1);

@@ -1,8 +1,6 @@
 package org.flowerplatform.core.node;
 
-import static org.flowerplatform.core.CorePlugin.SELF_RESOURCE;
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
-import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -195,15 +193,6 @@ public class NodeService {
 		}
 	}
 	
-	public Node getRootNode(Node node) {
-		if (node.getResource() == null) {
-			return null;
-		} else if (SELF_RESOURCE.equals(node.getResource())) {
-			return node;
-		}
-		return new Node(node.getResource());
-	}
-	
 	/**
 	 * Converts the registered {@link TypeDescriptor}s to {@link TypeDescriptorRemote}s that will be sent to the client.
 	 * 
@@ -260,7 +249,6 @@ public class NodeService {
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node));
 	}
 	
-	
 	/**
 	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
 	 */
@@ -275,14 +263,6 @@ public class NodeService {
 			return null;
 		}
 		return rawNodeDataProvider.getRawNodeData(node);	
-	}
-	
-	public boolean isSubscribable(Map<String, Object> properties) {
-		Boolean isSubscribable = (Boolean) properties.get(IS_SUBSCRIBABLE);
-		if (isSubscribable == null) {
-			return false;
-		}
-		return isSubscribable;
 	}
 	
 	public Map<String, Object> getControllerInvocationOptions() {
