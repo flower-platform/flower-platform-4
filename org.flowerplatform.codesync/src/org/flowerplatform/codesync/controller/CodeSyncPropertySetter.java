@@ -19,19 +19,19 @@
 package org.flowerplatform.codesync.controller;
 
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isCodeSyncFlagConstant;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isConflictPropertyName;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.isOriginalPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
+import static org.flowerplatform.codesync.feature_provider.FeatureProvider.FEATURE_PROVIDER;
 
 import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
+import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.Utils;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Mariana Gheorghe
@@ -54,10 +54,11 @@ public class CodeSyncPropertySetter extends PropertySetter {
 			return;
 		}
 		
-		if (isOriginalPropertyName(property) || isConflictPropertyName(property) || isCodeSyncFlagConstant(property)) {
+		// check if property is synchronizable
+		if (!isSyncProperty(node, property)) {
 			return;
 		}
-	
+		
 		boolean isOriginalPropertySet = false;
 		Object originalValue = null;
 		String originalProperty = getOriginalPropertyName(property);
@@ -89,6 +90,19 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	@Override
 	public void unsetProperty(Node node, String property) {
 		// nothing to do
+	}
+	
+	private boolean isSyncProperty(Node node, String property) {
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return false;
+		}
+		
+		FeatureProvider featureProvider = descriptor.getSingleController(FEATURE_PROVIDER, node);
+		if (featureProvider.getValueFeatures(node).contains(property)) {
+			return true;
+		}
+		return false;
 	}
 	
 }
