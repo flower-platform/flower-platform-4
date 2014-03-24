@@ -18,10 +18,6 @@
  */
 package org.flowerplatform.tests;
 
-import static org.flowerplatform.tests.TestUtil.createDirectoriesIfNeeded;
-import static org.flowerplatform.tests.TestUtil.getCanonicalPath;
-
-import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

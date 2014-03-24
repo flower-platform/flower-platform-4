@@ -18,42 +18,17 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.DOCUMENTATION;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.MODIFIERS;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.TYPED_ELEMENT_TYPE;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaAttributeFeatureProvider extends NodeFeatureProvider {
 	
-	public static final String ATTRIBUTE_INITIALIZER = "attributeInitializer";
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		List features = super.getValueFeatures(element);
-		features.addAll(Arrays.asList(
-				DOCUMENTATION,
-				TYPED_ELEMENT_TYPE,
-				ATTRIBUTE_INITIALIZER));
-		return features;
-	}
-
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(MODIFIERS);
-	}
-	
-	@Override
-	public int getFeatureType(Object feature) {
-		if (MODIFIERS.equals(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		}
-		return super.getFeatureType(feature);
+	public JavaAttributeFeatureProvider() {
+		valueFeatures.add(JavaPropertiesConstants.DOCUMENTATION);
+		valueFeatures.add(JavaPropertiesConstants.TYPED_ELEMENT_TYPE);
+		valueFeatures.add(JavaPropertiesConstants.ATTRIBUTE_INITIALIZER);
+		
+		containmentFeatures.add(JavaPropertiesConstants.MODIFIERS);
 	}
 	
 }

@@ -109,4 +109,7 @@ public class TypeDescriptorRegistry {
 		return typeDescriptors.values();
 	}
 	
+	public Collection<TypeDescriptor> getRegisteredTypeDescriptors() {
+		return typeDescriptors.values();
+	}
 }

@@ -1,12 +1,14 @@
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.CodeSyncPlugin.ADDED;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CHILDREN_SYNC;
-import static org.flowerplatform.codesync.CodeSyncPlugin.CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPlugin.REMOVED;
-import static org.flowerplatform.codesync.CodeSyncPlugin.SYNC;
 
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_SYNC;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.SYNC;
+
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -15,29 +17,29 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class CodeSyncControllerUtils {
 
-	public static final String ORIGINAL = ".original";
-	public static final String OTHER = ".conflict";
+	public static final String ORIGINAL_SUFFIX = ".original";
+	public static final String CONFLICT_SUFFIX = ".conflict";
 	
 	public static boolean isOriginalPropertyName(String property) {
-		return property.endsWith(ORIGINAL);
+		return property.endsWith(ORIGINAL_SUFFIX);
 	}
 	
 	public static String getOriginalPropertyName(String property) {
-		return property + ORIGINAL;
+		return property + ORIGINAL_SUFFIX;
 	}
 	
 	public static boolean isConflictPropertyName(String property) {
-		return property.endsWith(OTHER);
+		return property.endsWith(CONFLICT_SUFFIX);
 	}
 	
 	public static String getConflictPropertyName(String property) {
-		return property + OTHER;
+		return property + CONFLICT_SUFFIX;
 	}
 	
 	public static boolean isCodeSyncFlagConstant(String property) {
-		if (property.equals(SYNC) || property.equals(CHILDREN_SYNC) || 
-				property.equals(CONFLICT) || property.equals(CHILDREN_CONFLICT) ||
-				property.equals(ADDED) || property.equals(REMOVED)) {
+		if (SYNC.equals(property) || CHILDREN_SYNC.equals(property) || 
+				CONFLICT.equals(property) || CHILDREN_CONFLICT.equals(property) ||
+				ADDED.equals(property) || REMOVED.equals(property)) {
 			return true;
 		}
 		return false;
@@ -45,7 +47,7 @@ public class CodeSyncControllerUtils {
 	
 	public static void setSyncFalseAndPropagateToParents(Node node, NodeService service) {
 		// set sync false
-		service.setProperty(node, SYNC, false);
+		service.setProperty(node, SYNC, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
@@ -55,7 +57,7 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenSync false
-			service.setProperty(parent, CHILDREN_SYNC, false);
+			service.setProperty(parent, CHILDREN_SYNC, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 			node = parent;
 		}
 	}
@@ -83,29 +85,38 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set sync true
-		service.setProperty(node, SYNC, true);
-		if (allChildrenSync(node, service)) {
-			service.setProperty(node, CHILDREN_SYNC, true);
-		}
+		service.setProperty(node, SYNC, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 		
 		// propagate childrenSync flag for parents
-		Node parent = null;
-		while ((parent = service.getParent(node)) != null) {
-			if (!allChildrenSync(parent, service)) {
-				return;
-			}
+		setChildrenSyncTrueAndPropagateToParents(service.getParent(node), service);
+	}
+	
+	public static void setChildrenSyncTrueAndPropagateToParents(Node parent, NodeService service) {
+		while (parent != null) {
 			// if childrenSync is already true for the parent, no need to go up
 			if (isChildrenSync(parent)) {
 				return;
 			}
+			
+			if (!allChildrenSync(parent, service)) {
+				return;
+			}
+			
 			// set childrenSync true
-			service.setProperty(parent, CHILDREN_SYNC, true);
-			node = parent;
+			service.setProperty(parent, CHILDREN_SYNC, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+			
+			// if this parent is not sync, then its parents' childrenSync flag can't be set to true
+			// it's better to just stop now
+			if (!isSync(parent)) {
+				return;
+			}
+			
+			parent = service.getParent(parent);
 		}
 	}
 	
 	public static void setConflictTrueAndPropagateToParents(Node node, String conflictProperty, Object conflictValue, NodeService service) {
-		service.setProperty(node, getConflictPropertyName(conflictProperty), conflictValue);
+		service.setProperty(node, getConflictPropertyName(conflictProperty), conflictValue, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 		
 		if (isConflict(node)) {
 			// already set
@@ -113,7 +124,7 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict true
-		service.setProperty(node, CONFLICT, true);
+		service.setProperty(node, CONFLICT, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 		
 		// propagate childrenConflict flag for parents
 		Node parent = null;
@@ -123,13 +134,13 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT, true);
+			service.setProperty(parent, CHILDREN_CONFLICT, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 			node = parent;
 		}
 	}
 
 	public static void setConflictFalseAndPropagateToParents(Node node, String conflictProperty, NodeService service) {
-		service.unsetProperty(node, getConflictPropertyName(conflictProperty));
+		service.unsetProperty(node, getConflictPropertyName(conflictProperty), CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 		
 		if (!isConflict(node)) {
 			return;
@@ -147,9 +158,9 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict false
-		service.setProperty(node, CONFLICT, false);
+		service.setProperty(node, CONFLICT, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 		if (noChildConflict(node, service)) {
-			service.setProperty(node, CHILDREN_CONFLICT, false);
+			service.setProperty(node, CHILDREN_CONFLICT, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 		}
 		
 		// propagate childrenConflict flag for parents
@@ -163,14 +174,14 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT, false);
+			service.setProperty(parent, CHILDREN_CONFLICT, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 			node = parent;
 		}
 	}
 	
 	public static boolean allChildrenSync(Node node, NodeService service) {
-		for (Node child : service.getChildren(node, true)) {
-			if (!isSync(child) || !isChildrenSync(child) || isAdded(child) || isRemoved(child)) {
+		for (Node child : service.getChildren(node, false)) {
+			if (!isSync(child) || isAdded(child) || isRemoved(child)) {
 				return false;
 			}
 		}

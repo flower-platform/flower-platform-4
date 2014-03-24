@@ -78,6 +78,8 @@ package  com.crispico.flower.util.layout {
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	import org.flowerplatform.flexutil.shortcut.Shortcut;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
+	import org.flowerplatform.flexutil.view_content_host.IViewHost;
+	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 
 
 	use namespace mx_internal;
@@ -1850,7 +1852,7 @@ package  com.crispico.flower.util.layout {
 		 * Obtains the graphical component by providing a viewId and optionally a customData.
 		 * @author Sorin
 		 */ 
-		public function getComponent(viewId:String, customData:String = null):UIComponent {
+		public function getComponentById(viewId:String, customData:String = null):UIComponent {
 			var viewLayoutDataList:ArrayCollection /* of ViewLayoutData */ = findLayoutDatasById(viewId);
 			if (customData != null) {
 				for each (var viewLayoutData:ViewLayoutData in viewLayoutDataList) 
@@ -1863,6 +1865,10 @@ package  com.crispico.flower.util.layout {
 				else
 					return null;
 			}
+		}
+		
+		public function getComponent(viewLayoutData:ViewLayoutData):UIComponent {
+			return _layoutDataToComponent[viewLayoutData];
 		}
 		
 		/**
@@ -2531,6 +2537,39 @@ package  com.crispico.flower.util.layout {
 			activeViewList.setActiveView(newActiveView, setFocusOnNewView, dispatchActiveViewChangedEvent, restoreIfMinimized);
 		}
 		
+		public function getActiveView():UIComponent {
+			return activeViewList.getActiveView();
+		}
+		
+		public function getEditorFromViewComponent(viewComponent:UIComponent):UIComponent {			
+			if (viewComponent is IViewHost) {
+				// Workbench case: viewContent is wrapped in WorkbenchViewHost, so get the exact viewContent from component registered in layout
+				viewComponent = UIComponent(IViewHost(viewComponent).activeViewContent);
+			}
+			return viewComponent;
+		}
+		
+		public function getViewComponentForEditor(editor:UIComponent):UIComponent {
+			if (editor is IViewContent && editor is IViewHostAware) {
+				// Workbench case: viewContent is wrapped in WorkbenchViewHost, so get the exact component registered in layout
+				editor = UIComponent(IViewHostAware(editor).viewHost);
+			}
+			return editor;
+		}
+		
+		public function getAllEditorViews(root:LayoutData, array:ArrayCollection):void {
+			if (root == null)
+				root = _rootLayout;
+			
+			if (root is ViewLayoutData) {
+				if (ViewLayoutData(root).isEditor) {					
+					array.addItem(getEditorFromViewComponent(layoutDataToComponent[root]));
+				}				
+			}			
+			for each(var layoutData:LayoutData in root.children) {
+				getAllEditorViews(layoutData, array);
+			}
+		}
 	}
 		
 }

@@ -24,10 +24,10 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
+import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -48,17 +48,15 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
 			return getMatchKey(element);
-		} else if (NodePropertiesConstants.TYPE.equals(feature)) {
-			return ENUM_CONSTANT;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
 			EnumConstantDeclaration enumConstant = getEnumConstant(element);
 			enumConstant.setName(enumConstant.getAST().newSimpleName((String) value));
 		}
@@ -67,7 +65,7 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (JavaEnumConstantDeclarationFeatureProvider.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
+		if (JavaPropertiesConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
 			return getEnumConstant(element).arguments();
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
@@ -75,10 +73,10 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		if (JavaEnumConstantDeclarationFeatureProvider.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
+		if (JavaPropertiesConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
 			EnumConstantDeclaration parent = (EnumConstantDeclaration) element;
 			AST ast = parent.getAST();
-			Expression arg = getExpressionFromString(ast, ((Node) correspondingChild).getOrPopulateProperties().get(FeatureProvider.NAME).toString());
+			Expression arg = getExpressionFromString(ast, ((Node) correspondingChild).getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME).toString());
 			parent.arguments().add(arg);
 			return arg;
 		}

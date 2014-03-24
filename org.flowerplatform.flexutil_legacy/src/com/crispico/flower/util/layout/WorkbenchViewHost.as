@@ -17,14 +17,10 @@
  * license-end
  */
 package com.crispico.flower.util.layout {
-	import com.crispico.flower.util.layout.event.ActiveViewChangedEvent;
-	
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
-	import mx.containers.Canvas;
 	import mx.containers.VBox;
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
@@ -32,15 +28,13 @@ package com.crispico.flower.util.layout {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionUtil;
 	import org.flowerplatform.flexutil.action.IAction;
-	import org.flowerplatform.flexutil.context_menu.ContextMenu;
 	import org.flowerplatform.flexutil.context_menu.FillContextMenuEvent;
+	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
-	import org.flowerplatform.flexutil.selection.ISelectionForServerProvider;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
-	import spark.components.Button;
 	import spark.components.HGroup;
 	
 	/**

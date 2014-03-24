@@ -25,10 +25,11 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 	import mx.core.UIComponent;
 	import mx.events.PropertyChangeEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.renderer.IDiagramShellAware;
 	
 	import spark.components.Label;
 	
@@ -51,9 +52,9 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 	 * @author Georgi
 	 * 
 	 */
-	public class ConnectionRenderer extends UIComponent implements IDataRenderer, IDiagramShellAware {
+	public class ConnectionRenderer extends UIComponent implements IDataRenderer, IDiagramShellContextAware {
 		
-		private var _diagramShell:DiagramShell;
+		protected var _context:DiagramShellContext;
 		
 		private var _data:Object;
 				
@@ -148,13 +149,13 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 			depth = int.MAX_VALUE;
 		}
 		
-		public function get diagramShell():DiagramShell {
-			return _diagramShell;
+		public function get diagramShellContext():DiagramShellContext {			
+			return _context;
 		}
 		
-		public function set diagramShell(value:DiagramShell):void {
-			_diagramShell = value;
-		}
+		public function set diagramShellContext(value:DiagramShellContext):void {
+			this._context = value;
+		}	
 
 		public function get data():Object {
 			return _data;
@@ -164,7 +165,7 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 		
 		public function set data(value:Object):void {
 			if (_data != null) {
-				var controller:ConnectionRendererController = ConnectionRendererController(diagramShell.getControllerProvider(data).getRendererController(data));
+				var controller:ConnectionRendererController = ConnectionRendererController(ControllerUtils.getRendererController(diagramShellContext, data));
 				var sourceModel:Object = controller.getSourceModel(_data);
 				var targetModel:Object = controller.getTargetModel(_data);
 				if (sourceModel != null) {
@@ -180,7 +181,7 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 			}
 			_data = value;
 			if (_data != null) {
-				controller = ConnectionRendererController(diagramShell.getControllerProvider(data).getRendererController(data));
+				controller = ConnectionRendererController(ControllerUtils.getRendererController(diagramShellContext, data));
 				sourceModel = controller.getSourceModel(_data);
 				targetModel = controller.getTargetModel(_data);
 				if (sourceModel != null) {
@@ -214,8 +215,8 @@ package org.flowerplatform.flexdiagram.renderer.connection {
 		 * From here we have access to it. If we had this code in the controller, then we wouldn't have access to it.
 		 */
 		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent):void {
-			var controller:ConnectionRendererController = ConnectionRendererController(diagramShell.getControllerProvider(data).getRendererController(data));
-			controller.updateConnectionEnds(data, event.target);
+			var controller:ConnectionRendererController = ConnectionRendererController(ControllerUtils.getRendererController(diagramShellContext, data));
+			controller.updateConnectionEnds(diagramShellContext, data, event.target);
 		}
 		
 		public function get sourceEndType():String {

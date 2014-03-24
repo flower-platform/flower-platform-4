@@ -1,45 +1,34 @@
 package org.flowerplatform.flexutil.renderer {
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.events.TimerEvent;
-	import flash.net.URLRequest;
-	import flash.utils.Timer;
 	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
-	import mx.controls.listClasses.*;
 	import mx.core.DPIClassification;
-	import mx.core.FlexGlobals;
-	import mx.core.INavigatorContent;
 	import mx.core.mx_internal;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.events.PropertyChangeEvent;
-	import mx.graphics.BitmapFillMode;
-	import mx.graphics.BitmapScaleMode;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.utils.DensityUtil;
-	
-	import org.flowerplatform.flexutil.FlowerArrayList;
 	
 	import spark.components.LabelItemRenderer;
-	import spark.components.supportClasses.StyleableTextField;
 	import spark.core.ContentCache;
 	import spark.core.DisplayObjectSharingMode;
 	import spark.core.IContentLoader;
 	import spark.core.IGraphicElement;
 	import spark.core.IGraphicElementContainer;
-	import spark.core.ISharedDisplayObject;
 	import spark.primitives.BitmapImage;
-	import spark.utils.MultiDPIBitmapSource;
+	
+	import org.flowerplatform.flexutil.FlowerArrayList;
 	
 	use namespace mx_internal;
 	
 	[Style(name="iconsGap", type="Number", format="Number", inherit="no")]
 	
 	/**
+	 * NOTE: This renderer is used only in samples.
+	 * 
+	 * Adds multiple icons functionality to <code>LabelItemRenderer</code>.
+	 * It isn't used in production because it has some problems when zooming (label font size isn't changing).
+	 * 
 	 * @author Cristina Constantinescu
 	 */ 
 	public class MultipleIconItemRenderer extends LabelItemRenderer implements IGraphicElementContainer {
@@ -49,6 +38,7 @@ package org.flowerplatform.flexutil.renderer {
 		public function MultipleIconItemRenderer() {
 			super();
 			
+			// if used in production => modify to use the global one (FlexUtilGlobals.imageContentCache)
 			if (_imageCache == null) {
 				_imageCache = new ContentCache();
 				_imageCache.enableCaching = true;

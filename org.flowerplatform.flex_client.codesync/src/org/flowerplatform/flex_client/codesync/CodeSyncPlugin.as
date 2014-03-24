@@ -18,30 +18,27 @@
 */
 package org.flowerplatform.flex_client.codesync {
 	
-	import flash.events.MouseEvent;
-	
-	import mx.collections.ArrayCollection;
-	import mx.containers.HBox;
-	import mx.core.FlexGlobals;
-	import mx.core.IVisualElementContainer;
-	import mx.rpc.events.ResultEvent;
 	
 	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
-	import org.flowerplatform.flex_client.codesync.remote.CodeSyncOperationsService;
-	import org.flowerplatform.flex_client.codesync.renderer.CodeSyncNodeRenderer;
+	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
+	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
-	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
+	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexutil.Utils;
-	
-	import spark.components.Button;
+	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
 	public class CodeSyncPlugin extends AbstractFlowerFlexPlugin {
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public static const CATEGORY_CODESYNC:String = TypeDescriptor.CATEGORY_PREFIX + "codesync";
 		
 		protected static var INSTANCE:CodeSyncPlugin;
 		
@@ -49,6 +46,10 @@ package org.flowerplatform.flex_client.codesync {
 			return INSTANCE;
 		}
 		
+		/**
+		 * @author Mariana Gheorghe
+		 * @author Cristina Constantinescu
+		 */
 		override public function start():void {
 			super.start();
 			if (INSTANCE != null) {
@@ -56,50 +57,12 @@ package org.flowerplatform.flex_client.codesync {
 			}
 			INSTANCE = this;
 			
-			CorePlugin.getInstance().mindmapNodeRendererControllerClass = CodeSyncNodeRenderer;
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC)
+				.addSingleController(RendererController.TYPE, AbstractController(new NodeRendererController(CodeSyncNodeRenderer, -10000)));
 			
-			CorePlugin.getInstance().serviceLocator.addService(CodeSyncOperationsService.ID);
-			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
-		
-			var hBox:HBox = new HBox();
-			hBox.percentWidth = 100;
-			var btn:Button = new Button();
-			btn.label = "CodeSync";
-			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				new CodeSyncOperationsService().synchronize(null);
-			});
-			hBox.addChild(btn);
-			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
-			
-			CorePlugin.getInstance().serviceLocator.invoke(CodeSyncOperationsService.ID + ".getDropdownPropertyRenderersInfo", null, function(result:Object):void {
-				var names:ArrayCollection = result["names"];
-				var dataProviders:Object = result["dataProviders"];
-				for each (var name:String in names) {
-					PropertiesPlugin.getInstance().propertyRendererClasses[name] = new FactoryWithInitialization(DropDownListPropertyRenderer, 
-						{
-							requestDataProviderHandler: function (callbackObject:Object, callbackFunction:Function):void {
-								callbackFunction.call(callbackObject, dataProviders[name]);
-							},
-							
-							labelFunction: function (object:Object):String {
-								return object.toString();
-							},
-							
-							getItemIndexFromList: function (item:Object, list:ArrayCollection):int {
-								if (item != null) {
-									for (var i:int = 0; i < list.length; i++) {
-										var listItem:Object = list.getItemAt(i);
-										if (item == listItem) {
-											return i;
-										}
-									}
-								}
-								return -1;
-							}
-						});
-				}
-			});
-				
+			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(SynchronizeAction);
 		}
 		
 	}

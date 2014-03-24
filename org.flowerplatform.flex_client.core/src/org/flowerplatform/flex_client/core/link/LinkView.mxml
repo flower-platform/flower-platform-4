@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<!---
+ @author Cristina Constantinescu
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent" 
+		 xmlns:local="org.flowerplatform.flex_client.core.link.*"
+		 creationComplete="creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.layout.IWorkbench;
+			import org.flowerplatform.flexutil.view_content_host.IViewContent;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			private var _viewHost:IViewHost;
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(viewHost:IViewHost):void {
+				_viewHost = viewHost;
+				_viewHost.setLabel(CorePlugin.getInstance().getMessage('link.title'));
+				_viewHost.setIcon(CorePlugin.getInstance().getResourceUrl('images/external_link.png'));
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;
+								
+				// get all open editors				
+				var editorInputs:Array = [];
+				for each (editor in CorePlugin.getInstance().getAllEditorFrontends()) {
+					editorInputs.push(EditorFrontend(editor).editorInput);				
+				}				
+				if (editorInputs.length != 0) {
+					txtAllEditors.text = getOpenResourcesURLPrefix() + editorInputs.join(LinkHandler.RESOURCES_SEPARATOR);
+				}
+			
+				// get current active editor
+				var editor:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
+				if (editor is EditorFrontend) {
+					txtCurrentEditor.text = getOpenResourcesURLPrefix() + EditorFrontend(editor).editorInput;
+				}
+				
+				Utils.makePseudoDisabled(txtCurrentEditor);
+				Utils.makePseudoDisabled(txtAllEditors);				
+			}
+			
+			private function getOpenResourcesURLPrefix():String {
+				return CorePlugin.getInstance().getAppUrl() + "?" + LinkHandler.OPEN_RESOURCES + "=";
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>		
+		<fx:Component className="CopyToClipboardButton">
+			<s:HGroup horizontalAlign="right" verticalAlign="middle">
+				<fx:Script>
+					<![CDATA[
+						import org.flowerplatform.flex_client.core.CorePlugin;
+						import org.flowerplatform.flexutil.FlexUtilGlobals;
+						
+						public var textToCopy:String;
+						
+						protected function clickHandler(event:MouseEvent):void {
+							System.setClipboard(textToCopy);
+							
+							// show copied message
+							lbCopied.alpha = 1;
+							
+							// hide copied message by playing this effect
+							fadeEffect.play([lbCopied]);
+						}
+						
+					]]>
+				</fx:Script>
+				
+				<fx:Declarations>
+					<s:Fade id="fadeEffect" duration="2000" alphaFrom="1" alphaTo="0" />
+				</fx:Declarations>
+				
+				<s:Label id="lbCopied" text="{CorePlugin.getInstance().getMessage('link.copied')}" color="red" alpha="0"/>
+				
+				<s:Button label="{CorePlugin.getInstance().getMessage('link.copy.clipboard')}" 
+						  icon="{FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(CorePlugin.getInstance().getResourceUrl('images/clipboard-sign-out.png'))}"
+						  click="clickHandler(event)" />
+			</s:HGroup>			
+		</fx:Component>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingBottom="5" paddingTop="10" paddingLeft="5" paddingRight="5" />
+	</s:layout>
+		
+	<!-- 1) -->
+	<s:Label text="{CorePlugin.getInstance().getMessage('link.option.to')}" width="100%" paddingBottom="5" />
+	
+	<!-- a) -->
+	<s:Label text="{CorePlugin.getInstance().getMessage('link.to.current.editor')}" width="100%" />	
+	<s:VGroup width="100%" height="30%" horizontalAlign="right">
+		<s:TextArea id="txtCurrentEditor" width="100%" height="100%" focusIn="{txtCurrentEditor.selectAll()}"  />
+		<local:CopyToClipboardButton width="100%" textToCopy="{txtCurrentEditor.text}" />
+	</s:VGroup>
+	
+	<!-- b) -->
+	<s:Label text="{CorePlugin.getInstance().getMessage('link.to.all.editors')}" width="100%" />
+	<s:VGroup width="100%" height="30%" horizontalAlign="right" >
+		<s:TextArea id="txtAllEditors" width="100%" height="100%" focusIn="{txtAllEditors.selectAll()}" />
+		<local:CopyToClipboardButton width="100%" textToCopy="{txtAllEditors.text}" />
+	</s:VGroup>
+	
+	<!-- separator -->
+	<s:Spacer width="100%" height="10%" />
+	<s:Line width="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="gray" weight="1"/>
+		</s:stroke>
+	</s:Line>
+	
+	<!-- 2) -->
+	<s:Label text="{CorePlugin.getInstance().getMessage('link.option.follow')}" width="100%" />
+	<s:VGroup width="100%" height="30%" horizontalAlign="right">
+		<s:TextArea id="txtFollowLink" width="100%" height="100%" />
+		<s:Button label="{CorePlugin.getInstance().getMessage('link.follow')}" 
+				  icon="{FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(CorePlugin.getInstance().getResourceUrl('images/arrow_right.png'))}"
+				  click="{CorePlugin.getInstance().handleLink(txtFollowLink.text)}"/>
+	</s:VGroup>
+	
+</s:Group>

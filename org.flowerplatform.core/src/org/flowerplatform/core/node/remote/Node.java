@@ -2,10 +2,13 @@ package org.flowerplatform.core.node.remote;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
+import org.flowerplatform.util.Utils;
 
 /**
  * <p>
@@ -17,8 +20,9 @@ import org.flowerplatform.core.node.controller.PropertiesProvider;
  */
 public class Node {
 	
-	public static final char FULL_NODE_ID_SEPARATOR = '|';
-	private static final String FULL_NODE_ID_SPLIT_REGEX = "\\" + FULL_NODE_ID_SEPARATOR;
+	public static final String FULL_NODE_ID_SEPARATOR = "|";
+
+	private static final Pattern FULL_NODE_ID_PATTERN = Pattern.compile("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
 	
 	private String type;
 	
@@ -46,15 +50,13 @@ public class Node {
 	}
 
 	public Node(String fullNodeId) {
-		String[] tokens = fullNodeId.split(FULL_NODE_ID_SPLIT_REGEX);
-						
-		this.type = tokens[0];
-		this.resource = tokens[1];
-		
-		if (tokens.length == 3) {
-			this.idWithinResource = tokens[2];
+		Matcher matcher = FULL_NODE_ID_PATTERN.matcher(fullNodeId);
+		if (matcher.find()) {
+			type = matcher.group(1);
+			resource = matcher.group(2).isEmpty() ? null : matcher.group(2);
+			idWithinResource = matcher.group(3).isEmpty() ? null : matcher.group(3);
+			cachedFullNodeId = fullNodeId;
 		}
-		this.cachedFullNodeId = fullNodeId;
 	}
 	
 	public String getType() {
@@ -86,7 +88,7 @@ public class Node {
 
 	public String getFullNodeId() {
 		if (cachedFullNodeId == null) {
-			cachedFullNodeId = type + FULL_NODE_ID_SEPARATOR + resource + FULL_NODE_ID_SEPARATOR + idWithinResource;
+			cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";
 		}
 		return cachedFullNodeId;
 	}
@@ -145,12 +147,15 @@ public class Node {
 
 	@Override
 	public boolean equals(Object obj) {
-		return getFullNodeId().equals(((Node) obj).getFullNodeId());
+		if (obj instanceof Node) {
+			return getFullNodeId().equals(((Node) obj).getFullNodeId());
+		}
+		return false;
 	}
 	
 	@Override
 	public String toString() {
 		return String.format("Node [fullNodeId = %s]", getFullNodeId());
 	}
-	
+
 }

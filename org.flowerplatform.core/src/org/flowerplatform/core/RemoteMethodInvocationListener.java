@@ -1,11 +1,11 @@
 package org.flowerplatform.core;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,26 +15,60 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sebastian Solomon
  * @author Cristina Constantinescu
+ * @author Mariana Gheorghe
  */
 public class RemoteMethodInvocationListener {
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
 
 	public static final String LAST_UPDATE_TIMESTAMP = "timestampOfLastUpdate";
-	public static final String FULL_ROOT_NODE_ID = "fullRootNodeId";
+	public static final String ROOT_NODE_IDS = "rootNodeIds";
+	public static final String ROOT_NODE_IDS_NOT_FOUND = "rootNodeIdsNotFound";
 	
 	public static final String MESSAGE_RESULT = "messageResult";
 	public static final String UPDATES = "updates";
 	
+	/**
+	 * Compares the list of resources the client has with the list of resources that the client is subscribed to. For any
+	 * resource that the client is not subscribed to anymore => re-subscribe.
+	 * 
+	 * <p>
+	 * If a resource cannot be reloaded, the result of this invocation will be enriched with a list of {@link #ROOT_NODE_IDS_NOT_FOUND},
+	 * so the client can react (e.g. close the obsolete editors).
+	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
+
+		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
+		List<String> clientRootNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
+		List<String> serverRootNodeIds = CorePlugin.getInstance().getResourceInfoService().getResourcesSubscribedBySession(sessionId);
+		List<String> notFoundRootNodeIds = new ArrayList<String>();
+		for (String clientRootNodeId : clientRootNodeIds) {
+			if (serverRootNodeIds.contains(clientRootNodeId)) {
+				continue;
+			}
+			
+			// the client is not subscribed to this resource anymore, maybe he went offline?
+			// subscribe the client to this resource
+			try {
+				CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(clientRootNodeId, sessionId);
+			} catch (Exception e) {
+				// the resource could not be loaded; inform the client
+				notFoundRootNodeIds.add(clientRootNodeId);
+			}
+		}
+		
+		if (notFoundRootNodeIds.size() > 0) {
+			remoteMethodInvocationInfo.getEnrichedReturnValue().put(ROOT_NODE_IDS_NOT_FOUND, notFoundRootNodeIds);
+		}
 	}
 
 	/**
 	 * Changes {@link RemoteMethodInvocationInfo#getReturnValue()} to a map containing:
 	 * <ul>
 	 * 	<li> {@link #MESSAGE_RESULT} -> message invocation result
-	 *  <li> {@link #UPDATES} -> list of recently updates = all updates registered after {@link #LAST_UPDATE_TIMESTAMP}
+	 *  <li> {@link #UPDATES} -> map from fullRootNodeId to a list of recent updates = all updates registered after {@link #LAST_UPDATE_TIMESTAMP}
+	 *  <li> {{@link #LAST_UPDATE_TIMESTAMP} -> server timestamp of this request
 	 * </ul>
 	 * 
 	 */
@@ -47,25 +81,27 @@ public class RemoteMethodInvocationListener {
 			logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 		}
 		
-		// prepare result
-		Map<String, Object> returnValue = new HashMap<String, Object>();
-		returnValue.put(MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-				
-		Object timestampOfLastRequest = remoteMethodInvocationInfo.getHeaders().get(LAST_UPDATE_TIMESTAMP);
-		Object fullRootNodeId = remoteMethodInvocationInfo.getHeaders().get(FULL_ROOT_NODE_ID);
+		// get info from header
+		long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
+		List<String> rootNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 		
-		if (fullRootNodeId != null) { // client requested the latest updates
-			List<Update> updates = CorePlugin.getInstance().getUpdateService().getUpdates(
-							new Node((String) fullRootNodeId), 
-							// this instance verification is only temporary (correct timestamp will be seen as Double)
-							// TODO CC: remove verification when properly timestamp
-							((timestampOfLastRequest instanceof Double) ? ((Double) timestampOfLastRequest).longValue() : ((Integer) timestampOfLastRequest).longValue()));
-			if (updates != null) {
-				returnValue.put(UPDATES, updates);	
-			}
+		// prepare result
+		remoteMethodInvocationInfo.getEnrichedReturnValue().put(MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
+		
+		long timestamp = new Date().getTime();
+		remoteMethodInvocationInfo.getEnrichedReturnValue().put(LAST_UPDATE_TIMESTAMP, timestamp);
+		
+		Map<String, List<Update>> rootNodeIdToUpdates = new HashMap<String, List<Update>>();
+		for (String rootNodeId : rootNodeIds) {
+			List<Update> updates = CorePlugin.getInstance().getResourceInfoService()
+					.getUpdates(rootNodeId, timestampOfLastRequest, timestamp);
+			rootNodeIdToUpdates.put(rootNodeId, updates);
+		}
+		if (rootNodeIdToUpdates.size() > 0) {
+			remoteMethodInvocationInfo.getEnrichedReturnValue().put(UPDATES, rootNodeIdToUpdates);
 		}
 		
-		remoteMethodInvocationInfo.setReturnValue(returnValue);	
+		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());	
 	}
-
+	
 }

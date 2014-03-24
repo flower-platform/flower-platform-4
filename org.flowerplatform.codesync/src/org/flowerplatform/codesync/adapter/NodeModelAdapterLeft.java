@@ -21,7 +21,7 @@ package org.flowerplatform.codesync.adapter;
 import java.util.Iterator;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -37,13 +37,14 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	/**
 	 * Filters out deleted {@link Node}s from the containment list for <code>feature</code>.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(final Object element, Object feature, Iterable<?> correspondingIterable) {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 		// filter out deleted elements
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPlugin.REMOVED);
+				Boolean isRemoved = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPropertiesConstants.REMOVED);
 				if (isRemoved != null && isRemoved) {
 					return false;
 				}
@@ -97,10 +98,10 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		}
 
 		Node node = getNode(element);
-		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(node).getFeatureType(feature);
+		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(match).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
-			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()));
+			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
 			processContainmentFeatureAfterActionPerformed(node, feature, result, match);

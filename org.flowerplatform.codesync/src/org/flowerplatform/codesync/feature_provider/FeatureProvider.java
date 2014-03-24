@@ -18,9 +18,10 @@
  */
 package org.flowerplatform.codesync.feature_provider;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -30,15 +31,32 @@ public abstract class FeatureProvider extends AbstractController {
 	
 	public static final String FEATURE_PROVIDER = "featureProvider";
 
-	// TODO CC: to be removed
-	public static final String NAME = NodePropertiesConstants.TEXT;
-
-	public abstract List<?> getValueFeatures(Object element);
+	protected List<Object> valueFeatures = new ArrayList<>();
 	
-	public abstract List<?> getContainmentFeatures(Object element);
-
-	public abstract int getFeatureType(Object feature);
+	protected List<Object> containmentFeatures = new ArrayList<>();
 	
-	public abstract String getFeatureName(Object feature);
+	public List<?> getValueFeatures(Object element) {
+		return valueFeatures;
+	}
+	
+	public List<?> getContainmentFeatures(Object element) {
+		return containmentFeatures;
+	}
+	
+	public int getFeatureType(Object feature) {
+		if (valueFeatures.contains(feature)) {
+			return IModelAdapter.FEATURE_TYPE_VALUE;
+		} else if (containmentFeatures.contains(feature)) {
+			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
+		}
+		throw new RuntimeException("Feature " + getFeatureName(feature) + " is not registered");
+	}
+	
+	public String getFeatureName(Object feature) {
+		if (feature != null) {
+			return feature.toString();
+		}
+		throw new RuntimeException("Feature is null");
+	}
 	
 }

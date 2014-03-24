@@ -18,23 +18,35 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import java.util.List;
+
 import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IDescriptor;
 
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
  */
-public class PropertyDescriptor extends AbstractController {
+public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
 	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	
-	private static final String DEFAULT_TYPE = "String";
+	public static final String STRING = "String";
+	public static final String BOOLEAN = "Boolean";
+	public static final String NUMBER = "Number";
+	public static final String DROP_DOWN_LIST = "DropDownList";
+	public static final String COLOR_PICKER = "ColorPicker";
+	
+	private static final String DEFAULT_CATEGORY = "";
 	
 	private String name;
 	private String title;
-	private String type = DEFAULT_TYPE;
-	private boolean readOnly = true;
-		
+	private String type = STRING;
+	private String category = DEFAULT_CATEGORY;
+
+	private boolean readOnly;
+	private List<?> possibleValues;
+	
 	public String getName() {
 		return name;
 	}
@@ -74,6 +86,28 @@ public class PropertyDescriptor extends AbstractController {
 		return this;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public String getCategory() {
+		return category;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public PropertyDescriptor setCategoryAs (String category) {
+		this.category = category;
+		return this;
+	}
+	
 	public boolean getReadOnly() {
 		return readOnly;
 	}
@@ -86,5 +120,17 @@ public class PropertyDescriptor extends AbstractController {
 		this.readOnly = readOnly;
 		return this;
 	}
-		
+
+	public List<?> getPossibleValues() {
+		return possibleValues;
+	}
+
+	public void setPossibleValues(List<Object> possibleValues) {
+		this.possibleValues = possibleValues;
+	}
+	
+	public PropertyDescriptor setPossibleValuesAs(List<?> possibleValues) {
+		this.possibleValues = possibleValues;
+		return this;
+	}
 }

@@ -1,8 +1,12 @@
 package org.flowerplatform.core.node.controller;
 
+import java.util.Map;
+
 import org.flowerplatform.core.node.remote.Node;
 
 /**
+ * Adds a constant value for {@link #property} to the properties map of a node (e.g. icon).
+ * 
  * @author Mariana Gheorghe
  */
 public class ConstantValuePropertyProvider extends PropertiesProvider {
@@ -17,7 +21,7 @@ public class ConstantValuePropertyProvider extends PropertiesProvider {
 	}
 
 	@Override
-	public void populateWithProperties(Node node) {
+	public void populateWithProperties(Node node, Map<String, Object> options) {
 		node.getProperties().put(property, value);
 	}
 

@@ -113,6 +113,15 @@ public class TestUtil {
 		}
 	}
 	
+	public static void copyFiles(String from, String dir) {
+		File to = new File("workspace", dir);
+		try {
+			FileUtils.copyDirectory(new File(from), to);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot copy files needed for test", e);
+		}
+	}
+	
 	/**
 	 * Copied from http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file
 	 */

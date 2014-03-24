@@ -17,57 +17,62 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
-	import mx.collections.ArrayCollection;
+	
+	import flash.utils.getDefinitionByName;
+	
+	import mx.binding.utils.BindingUtils;
+	import mx.collections.IList;
+	import mx.events.FlexEvent;
+	
+	import spark.components.DropDownList;
+	import spark.events.DropDownEvent;
 	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
-	import spark.components.DropDownList;
-	import spark.events.IndexChangeEvent;
-	
 	/**
 	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */ 
 	public class DropDownListPropertyRenderer extends BasicPropertyRenderer {
 		
 		[Bindable]
 		public var dropDownList:spark.components.DropDownList;
 		
-		/**
-		 * Signature: function getDataProviderHandler(callbackObject:Object, callbackFunction:Function):void		 
-		 */ 
-		public var requestDataProviderHandler:Function;
-		
-		/**
-		 * Signature: function myLabelFunction(item:Object):String
-		 */ 
-		public var labelFunction:Function;
-		
-		/**
-		 * Signature: function getItemIndexFromList(item:Object, list:ArrayCollection):int
-		 */ 
-		public var getItemIndexFromList:Function;
-		
 		public function DropDownListPropertyRenderer() {
 			super();
+		}
+		
+		private function creationCompleteHandler(event:FlexEvent):void {		
+			BindingUtils.bindSetter(valueChanged, data, "value");
+			dropDownList.addEventListener(DropDownEvent.CLOSE, dropDownEventHandler);
+		}
+		
+		protected function valueChanged(value:Object = null):void {
+			if (data != null && dropDownList.dataProvider != null) {
+				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
+			}
+		}
+		
+		protected function dropDownEventHandler(e:DropDownEvent):void {
+			saveProperty(null);
 		}
 		
 		override protected function createChildren():void {			
 			super.createChildren();
 			
 			if (FlexUtilGlobals.getInstance().isMobile) {
-//				dropDownList = new com.flextras.mobile.dropDownList.DropDownList();										
+				// component for mobile
+				// this class is in the MobileComponents lib from flexutil
+				var mobileClass:Class = Class(getDefinitionByName("com.flextras.mobile.dropDownList.DropDownList"));
+				dropDownList = new mobileClass();
 			} else {
 				dropDownList = new spark.components.DropDownList();											
 			}
 						
 			dropDownList.percentWidth = 100;
 			dropDownList.percentHeight = 100;		
-			dropDownList.labelFunction = labelFunction;
-			
-			//get data to fill dropDownList
-			requestDataProviderHandler(this, requestDataProviderCallbackHandler);
-			
+
 			addElement(dropDownList);			
 		}
 		
@@ -75,27 +80,28 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.data = value;			
 			dropDownList.enabled = !PropertyDescriptor(data).readOnly;
 			
-			if (!data.readOnly) {				
-				handleListeningOnEvent(IndexChangeEvent.CHANGE, this, dropDownList);
-			}
+			requestDataProvider();
 			
-			setSelectedIndex();
+			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
 		}
-		
-		private function requestDataProviderCallbackHandler(result:ArrayCollection):void {
-			dropDownList.dataProvider = result;		
-			setSelectedIndex();
-		}
-		
-		/**
-		 * Called after the data provider for the dropDownList is set, and after the data is set.
-		 * 
-		 * @author Mariana Gheorghe
-		 */
-		private function setSelectedIndex():void {
-			if (data != null && dropDownList.dataProvider != null) {
-				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
+
+		protected function requestDataProvider():void {
+			if (data is PropertyDescriptor) {
+				dropDownList.dataProvider = PropertyDescriptor(data).possibleValues;
 			}
+			valueChanged();
+		}
+				
+		protected function getItemIndexFromList(item:Object, list:IList):int {
+			if (item != null) {
+				for (var i:int = 0; i < list.length; i++) {
+					var listItem:Object = list.getItemAt(i);
+					if (item == listItem) {
+						return i;
+					}
+				}
+			}
+			return -1;
 		}
 		
 		override protected function getValue():Object {

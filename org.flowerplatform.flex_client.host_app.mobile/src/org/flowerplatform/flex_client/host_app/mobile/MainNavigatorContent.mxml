@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristian Spiescu
+-->
+<fx:Object xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark">
+	<fx:Declarations>
+		<fx:Array id="navigatorContent">
+			<s:Button label="Back" visible="{navigator.length > 1}" includeInLayout="{navigator.length > 1}">
+				<s:click>
+					<![CDATA[
+					// button is only visible if there are more than 1 views
+					// so we don't remove the workbench
+					navigator.popView();
+					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
+					navigator.activeView.dispatchEvent(viewRemovedEvent);
+					]]>
+				</s:click>
+			</s:Button>
+			<s:Button label="Open Editor">
+				<s:click>
+					<![CDATA[
+					CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "(root||)");
+					]]>
+				</s:click>
+			</s:Button>
+			<s:Button id="closeAppButton" label="Exit" icon="{FlexUtilAssets._exitIcon}"
+					  click="NativeApplication.nativeApplication.exit()"/>
+		</fx:Array>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.link.LinkHandler;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			
+			import spark.components.ViewNavigator;
+			
+			[Bindable]
+			public var navigator:ViewNavigator;
+			
+		]]>
+	</fx:Script>
+</fx:Object>

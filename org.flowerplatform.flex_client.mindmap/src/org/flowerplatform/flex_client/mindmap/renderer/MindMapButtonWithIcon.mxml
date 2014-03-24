@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
+-->
+<!---
+@author Sebastian Solomon
+-->
+<s:Button xmlns:fx="http://ns.adobe.com/mxml/2009"
+			  xmlns:s="library://ns.adobe.com/flex/spark"
+			  xmlns:mx="library://ns.adobe.com/flex/mx" initialize="initilizeHander(event)">
+	
+			<fx:Script>
+				<![CDATA[
+					import mx.events.FlexEvent;
+					
+					import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
+					import org.flowerplatform.flexutil.FlexUtilGlobals;
+					
+					public var iconUrl:String;
+					
+					override protected function partAdded(partName:String, instance:Object):void {							 
+						if (instance == iconDisplay) {
+							iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;								
+						}
+						super.partAdded(partName, instance);
+					}
+					
+					private function initilizeHander(event:FlexEvent):void {
+						if (!FlexUtilGlobals.getInstance().isMobile) {
+							width = 22;
+							height = 22;
+						}	
+						setStyle("icon", FlexUtilGlobals.getInstance().createAbsoluteUrl(MindMapPlugin.getInstance().getResourceUrl(iconUrl)));
+					}
+				]]>
+			</fx:Script>				 
+</s:Button>

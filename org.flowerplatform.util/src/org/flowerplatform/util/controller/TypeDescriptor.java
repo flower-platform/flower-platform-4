@@ -108,6 +108,10 @@ public class TypeDescriptor {
 	 */
 	protected Map<String, Pair<AbstractController, Boolean>> singleControllers = new HashMap<String, Pair<AbstractController, Boolean>>();
 
+	public Map<String, Pair<AbstractController, Boolean>> getSingleControllers() {
+		return singleControllers;
+	}
+	
 	/**
 	 * @return For a given controller type, the single controller 
 	 * (collected from this node type, as well as its categories OR from object's dynamic category providers). 
@@ -148,14 +152,17 @@ public class TypeDescriptor {
 			
 			T categoryController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
 			if (categoryController != null) {
-				// found a controller from a category; cache it
-				pair.a = categoryController;
-				if (pair.b) {
-					throw new RuntimeException(String.format(
-							"Object with type %s registered multiple categories with controllers of type %s", type, controllerType));
+				// found a controller from a category
+				// keep it if it has a lower order index than the existing one
+				if (pair.a == null || pair.a.getOrderIndex() > categoryController.getOrderIndex()) {
+					pair.a = categoryController;
 				}
-				pair.b = true;
 			}
+		}
+		
+		if (pair.a instanceof NullController) {
+			// means we must ignore all registered controllers
+			pair.a = null;
 		}
 		
 		// finished scanning the categories
@@ -210,6 +217,10 @@ public class TypeDescriptor {
 	 */
 	protected Map<String, Pair<List<? extends AbstractController>, Boolean>> additiveControllers = new HashMap<String, Pair<List<? extends AbstractController>,Boolean>>();
 
+	public Map<String, Pair<List<? extends AbstractController>, Boolean>> getAdditiveControllers() {
+		return additiveControllers;
+	}
+	
 	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType, Object object) {
 		return  getCachedAdditiveControllers(controllerType, object, true);
 	}
@@ -282,6 +293,11 @@ public class TypeDescriptor {
 			additiveControllers.put(type, pair);
 		}
 		return pair;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s [type = %s]", this.getClass().getSimpleName(), type);
 	}
 			
 }

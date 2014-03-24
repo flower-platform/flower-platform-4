@@ -20,7 +20,7 @@ package org.flowerplatform.flex_client.codesync.action {
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**

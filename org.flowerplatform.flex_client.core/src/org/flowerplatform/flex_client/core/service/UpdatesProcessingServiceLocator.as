@@ -1,22 +1,18 @@
 package org.flowerplatform.flex_client.core.service {
 	
-	import com.crispico.flower.util.layout.Workbench;
-	import com.crispico.flower.util.layout.WorkbenchViewHost;
-	
+	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
-	import mx.rpc.AsyncToken;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
 
@@ -30,10 +26,11 @@ package org.flowerplatform.flex_client.core.service {
 	 * The server result contains:
 	 * <ul>
 	 * 	<li> <code>MESSAGE_RESULT</code> -> the message invocation result; it will be handled by <code>response.resultHandler</code>
-	 * 	<li> <code>UPDATES</code> (optional) -> list of updates
+	 * 	<li> <code>UPDATES</code> (optional) -> map of full rootNode id to a list of updates that will be applied to the corresponding processor
 	 * </ul>
 	 * 
 	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */ 
 	public class UpdatesProcessingServiceLocator extends ServiceLocator {
 		
@@ -41,7 +38,8 @@ package org.flowerplatform.flex_client.core.service {
 		public static const UPDATES:String = "updates";
 		
 		public static const LAST_UPDATE_TIMESTAMP:String = "timestampOfLastUpdate";
-		public static const FULL_ROOT_NODE_ID:String = "fullRootNodeId";
+		public static const ROOT_NODE_IDS:String = "rootNodeIds";
+		public static const ROOT_NODE_IDS_NOT_FOUND:String = "rootNodeIdsNotFound";
 		
 		public function UpdatesProcessingServiceLocator(channelSet:ChannelSet) {
 			super(channelSet);
@@ -49,29 +47,25 @@ package org.flowerplatform.flex_client.core.service {
 		
 		/**
 		 * Uses <code>UpdatesProcessingRemoteObject</code> to instantiate the remoteObject.
-		 */ 
-		override public function addService(serviceId:String):void {
-			var remoteObject:RemoteObject = new UpdatesProcessingRemoteObject(serviceId);
-			remoteObject.channelSet = channelSet;
-			remoteObjects[serviceId] = remoteObject;
+		 */
+		override protected function createRemoteObject(serviceId:String):RemoteObject {
+			return new UpdatesProcessingRemoteObject(serviceId);
 		}
-			
+		
 		/**
 		 * Adds specific headers to operation.
 		 */
 		override protected function getOperation(serviceId:String, name:String):AbstractOperation {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
-			var diagramShell:MindMapEditorDiagramShell = getFirstMindMapEditorDiagramShell();
-			if (diagramShell != null && diagramShell.rootModel != null) {
-				var headers:Dictionary = new Dictionary();
-				headers[LAST_UPDATE_TIMESTAMP] = diagramShell.updateProcessor.timestampOfLastRequest;				
-				headers[FULL_ROOT_NODE_ID] = Node(diagramShell.getRoot()).fullNodeId;
-				operation.messageHeaders = headers;
-			}
+			var headers:Dictionary = new Dictionary();
+			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestamp;
+			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
+			operation.messageHeaders = headers;
+			
 			return operation;
 		}
-				
+		
 		override public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {			
 			var result:Object = event.result;
 			
@@ -81,33 +75,46 @@ package org.flowerplatform.flex_client.core.service {
 				responder.resultHandler(messageResult);
 			}
 			
+			if (result.hasOwnProperty(LAST_UPDATE_TIMESTAMP)) {
+				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestamp = result[LAST_UPDATE_TIMESTAMP];
+			}
+			
 			if (result.hasOwnProperty(UPDATES)) { // updates exists, process them
-				var updates:ArrayCollection = ArrayCollection(result[UPDATES]);
-					
-				var diagramShell:MindMapEditorDiagramShell = getFirstMindMapEditorDiagramShell();
-				if (diagramShell != null) {
-					diagramShell.updateProcessor.rootNodeUpdatesHandler(updates);
+				sendUpdatesToOpenEditors(result[UPDATES]);
+			}
+			
+			if (result.hasOwnProperty(ROOT_NODE_IDS_NOT_FOUND)) {
+				closeObsoleteEditos(result[ROOT_NODE_IDS_NOT_FOUND]);
+			}
+			
+			CorePlugin.getInstance().updateTimer.restart();
+		}
+		
+		private function sendUpdatesToOpenEditors(rootNodeIdToUpdates:Object):void {
+			for (var rootNodeId:String in rootNodeIdToUpdates) {
+				var updates:ArrayCollection = rootNodeIdToUpdates[rootNodeId];
+				var nodeUpdateProcessors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(rootNodeId);
+				for each (var nodeUpdateProcessor:NodeUpdateProcessor in nodeUpdateProcessors) {
+					nodeUpdateProcessor.rootNodeUpdatesHandler(nodeUpdateProcessor.context, updates);
 				}
 			}
 		}
 		
-		// TODO CC: temporary code (when removing this code delete the flex_legacy dependency)
-		private function getFirstMindMapEditorDiagramShell():MindMapEditorDiagramShell {
-			if (Workbench(FlexUtilGlobals.getInstance().workbench).rootLayout == null) {
-				return null;
-			}
-			var editors:ArrayCollection = new ArrayCollection();
-			Workbench(FlexUtilGlobals.getInstance().workbench).getAllViewLayoutData(null, editors, true);
-			for each (var editor:ViewLayoutData in editors) {
-				var component:Object = FlexUtilGlobals.getInstance().workbench.getComponent(editor.viewId);
-				if (component is WorkbenchViewHost) {
-					component = WorkbenchViewHost(component).activeViewContent;
+		private function closeObsoleteEditos(rootNodeIdsNotFound:ArrayCollection):void {
+			var idsList:String = "";
+			for each (var rootNodeId:String in rootNodeIdsNotFound) {
+				var editors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(rootNodeId);
+				for each (var editor:EditorFrontend in editors) {
+					FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(editor.viewHost));
 				}
-				if (component is MindMapEditorFrontend) {
-					return MindMapEditorDiagramShell(MindMapEditorFrontend(component).diagramShell);
-				}
+				idsList += "\n* " + rootNodeId;
 			}
-			return null;
+			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+			.setText(CorePlugin.getInstance().getMessage("editor.error.subscribe.message", [idsList]))
+			.setTitle(CorePlugin.getInstance().getMessage("editor.error.subscribe.title"))
+			.setWidth(300)
+			.setHeight(200)
+			.showMessageBox();
 		}
 		
 	}

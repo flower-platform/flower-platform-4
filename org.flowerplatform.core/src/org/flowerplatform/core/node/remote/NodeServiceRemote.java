@@ -1,5 +1,7 @@
 package org.flowerplatform.core.node.remote;
 
+import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,34 +19,38 @@ public class NodeServiceRemote {
 	public List<Node> getChildren(String fullNodeId, boolean populateProperties) {
 		return CorePlugin.getInstance().getNodeService().getChildren(new Node(fullNodeId), populateProperties);		
 	}
-
-	public List<PropertyDescriptor> getPropertyDescriptors(String fullNodeId) {
-		return CorePlugin.getInstance().getNodeService().getPropertyDescriptors(new Node(fullNodeId));	
-	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
-		CorePlugin.getInstance().getNodeService().setProperty(new Node(fullNodeId), property, value);	
+		CorePlugin.getInstance().getNodeService().setProperty(new Node(fullNodeId), property, value, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());	
 	}
 		
 	public void unsetProperty(String fullNodeId, String property) {
-		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property);	
+		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());	
 	}
 	
 	public void addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
-		Node child = new Node((String) properties.get(CorePlugin.TYPE_KEY), (String) properties.get(CorePlugin.RESOURCE_KEY), null, null);
-		CorePlugin.getInstance().getNodeService().addChild(new Node(parentFullNodeId), child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null);	
+		Node parent = new Node(parentFullNodeId);
+		Node child;
+		if (properties.get(CorePlugin.TYPE_KEY).equals(CorePlugin.FILE_NODE_TYPE)) {
+			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), (String)properties.get("text"), null);
+			child.getProperties().put(FILE_IS_DIRECTORY, properties.get(FILE_IS_DIRECTORY)); 
+		} else {
+			
+			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);
+		}
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null);	
 	}
 	
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
 		CorePlugin.getInstance().getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId));
 	}
 	
-	public Node getRootNode(String fullNodeId) {			
-		return CorePlugin.getInstance().getNodeService().getRootNode(new Node(fullNodeId));
+	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
+		return CorePlugin.getInstance().getNodeService().getRegisteredTypeDescriptors();
 	}
 	
-	public Map<String, List<AddChildDescriptor>> getAddChildDescriptors() {
-		return CorePlugin.getInstance().getNodeService().getAddChildDescriptors();
+	public void saveResource(String resourceNodeId) {
+		System.out.println("saveResource " + resourceNodeId);
 	}
 	
 	/**
@@ -53,11 +59,8 @@ public class NodeServiceRemote {
 	 */
 	public NodeWithChildren refresh(FullNodeIdWithChildren query) {
 		NodeWithChildren response = new NodeWithChildren();
-		Node node = new Node(query.getFullNodeId());
+		Node node = getNode(query.getFullNodeId());
 		response.setNode(node);
-		
-		// forces population of properties
-		node.getOrPopulateProperties();
 		
 		if (query.getVisibleChildren() == null) { 
 			// no visible children on client => node not expanded, so don't continue
@@ -83,6 +86,13 @@ public class NodeServiceRemote {
 			response.getChildren().add(childResponse);
 		}
 		return response;
+	}
+	
+	public Node getNode(String fullNodeId) {
+		Node node = new Node(fullNodeId);
+		// forces population of properties
+		node.getOrPopulateProperties();
+		return node;
 	}
 	
 	private FullNodeIdWithChildren getChildQueryFromQuery(FullNodeIdWithChildren query, String fullChildNodeId) {

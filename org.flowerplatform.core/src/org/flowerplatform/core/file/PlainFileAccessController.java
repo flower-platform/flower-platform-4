@@ -72,8 +72,18 @@ public class PlainFileAccessController implements IFileAccessController {
 	}
 	
 	@Override
-	public boolean delete(Object child) {
-		return ((File)child).delete();
+	public void delete(Object folder) {
+		File[] files = ((File) folder).listFiles();
+		if (files != null) {
+			for (File f : files) {
+				if (f.isDirectory()) {
+					delete(f);
+				} else {
+					f.delete();
+				}
+			}
+		}
+		((File) folder).delete();
 	}
 	
 	@Override
@@ -86,8 +96,8 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).getParent();
 	}
 	@Override
-	public void rename(Object file, Object dest) {
-		((File)file).renameTo((File)dest);
+	public boolean rename(Object file, Object dest) {
+		return ((File)file).renameTo((File)dest);
 	}
 	
 	@Override
@@ -113,10 +123,21 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).isDirectory();
 	}
 
+	/**
+	 * Also creates the parent directory of this file,
+	 * if it doesn't exist.
+	 * 
+	 * @author Mariana Gheorghe
+	 */
 	@Override
 	public boolean createNewFile(Object file) {
 		try {
-			return ((File) file).createNewFile();
+			File realFile = (File) file;
+			File parentFile = realFile.getParentFile();
+			if (parentFile != null && !parentFile.exists()) {
+				parentFile.mkdirs();
+			}
+			return realFile.createNewFile();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -124,7 +145,7 @@ public class PlainFileAccessController implements IFileAccessController {
 	
 	@Override
 	public boolean createNewDirectory(Object directory) {
-		return ((File) directory).mkdir();
+		return ((File) directory).mkdirs();
 	}
 
 	@Override
@@ -162,5 +183,28 @@ public class PlainFileAccessController implements IFileAccessController {
 	public Object getFile(String path) throws Exception {
 		return new File(path);
 	}
+
+	@Override
+	public boolean hasChildren(Object file) {
+		if (((File)file).list() == null) {
+			return false;
+		}
+		return ((File)file).list().length > 0;
+	}
+
+//	@Override
+//	public void deleteFolderContent(Object folder) {
+//		File[] files = ((File) folder).listFiles();
+//		if (files != null) {
+//			for (File f : files) {
+//				if (f.isDirectory()) {
+//					deleteFolderContent(f);
+//				} else {
+//					f.delete();
+//				}
+//			}
+//		}
+//		((File) folder).delete();
+//	}
 
 }

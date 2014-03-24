@@ -20,11 +20,8 @@ package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
 import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
+import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
-import static org.flowerplatform.codesync.feature_provider.FeatureProvider.NAME;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,26 +56,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	public static final String REMOVED = "removed";
-	public static final String ADDED = "added";
-	public static final String SYNC = "sync";
-	public static final String CHILDREN_SYNC = "childrenSync";
-	public static final String CONFLICT = "conflict";
-	public static final String CHILDREN_CONFLICT = "childrenConflict";
-	
-	
-	public static final String CONTEXT_INITIALIZATION_TYPE = "initializationType";
-	
-	public static final String VIEW = "view";
-	public static final String PARENT_CODE_SYNC_ELEMENT = "parentCodeSyncElement";
-	public static final String PARENT_VIEW = "parentView";
-
-	public static final String SOURCE = "source";
-	public static final String TARGET = "target";
-	
-	public static final String WIZARD_ELEMENT = "wizardElement";
-	public static final String WIZARD_ATTRIBUTE = "wizardAttribute";
-	
+	public static final String CATEGORY_CODESYNC = TypeDescriptor.CATEGORY_PREFIX + "codesync"; 
+			
 	/**
 	 * The location of the CSE mapping file, relative to the project. May be
 	 * configurable in the future.
@@ -173,14 +152,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		this.projectAccessController = projectAccessController;
 	}
 	
-	public void addDataProviderForDropDownListProperty(String name, List<String> dataProvider) {
-		dataProvidersForDropDownListProperties.put(name, dataProvider);
-	}
-	
-	public Map<String, List<String>> getDataProvidersForDropDownListProperties() {
-		return dataProvidersForDropDownListProperties;
-	}
-	
 //	/**
 //	 * A list of feature to be deleted in case an object is deleted 
 //	 * (e.g. an edge that starts or ends in a deleted view).
@@ -254,18 +225,18 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		addTypeProvider("node", new NodeTypeProvider());
 		
-		TypeDescriptor codeSyncDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.codeSync");
-		codeSyncDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController());
-		codeSyncDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter());
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setReadOnlyAs(false));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ADDED));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOVED));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(SYNC));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_SYNC));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFLICT));
-		codeSyncDescriptor.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CHILDREN_CONFLICT));
-		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor());
-		codeSyncDescriptor.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC)
+		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
+		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter())
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.NAME))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.ADDED).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.REMOVED).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor())
+		.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());
@@ -460,27 +431,10 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		URI uri = EditorModelPlugin.getInstance().getModelAccessController().getURIFromFile(file);
 //		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
 //		return getResource(resourceSet, uri, fileExists);
-		return getResource(null, true);
-	}
-	
-	/**
-	 * @author Mariana
-	 */
-	public Node getResource(URI uri, boolean fileExists) {
-//		if (fileExists) {
-//			return resourceSet.getResource(uri, true);
-//		} else {
-//			Resource resource =	resourceSet.getResource(uri, false);
-//			if (resource == null) {
-//				resource = resourceSet.createResource(uri);
-//			}
-//			resource.unload();
-//			return resource;
-//		}
-		// TODO CC: temporary code
-		Node node = new Node("freeplaneNode", "mm://path_to_resource", null, null);		
+		Node node = new Node((String) file);
 		return CorePlugin.getInstance().getNodeService().getChildren(node, true).get(0);
 	}
+	
 //	
 //	/**
 //	 * Saves all the resources from the {@link ResourceSet} where <code>resourceToSave</code>
@@ -524,8 +478,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //	}
 	
 	public Node getCodeSyncMappingRoot(Object project) {
-		Object codeSyncElementMappingFile = null;//CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CSE_MAPPING_FILE_LOCATION); 
-		Node root = CodeSyncPlugin.getInstance().getResource(codeSyncElementMappingFile);
+		Node root = getResource(project);
 //		if (!EditorPlugin.getInstance().getFileAccessController().exists(codeSyncElementMappingFile)) {
 //			// first clear the resource in case the mapping file was deleted 
 //			// after it has been loaded at a previous moment
@@ -581,7 +534,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public Node getSrcDir(Node root, String name) {
 		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(root, true);
 		for (Node child : children) {
-			if (name.equals(child.getOrPopulateProperties().get(TEXT))) {
+			if (name.equals(child.getOrPopulateProperties().get(NAME))) {
 				return child;
 			}
 		}
