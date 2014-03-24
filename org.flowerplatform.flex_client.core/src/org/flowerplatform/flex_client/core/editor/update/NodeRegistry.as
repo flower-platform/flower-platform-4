@@ -23,7 +23,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 	import mx.core.mx_internal;
 	
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeRemovedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	
 	use namespace mx_internal;
 		

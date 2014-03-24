@@ -22,7 +22,7 @@ package org.flowerplatform.flex_client.core.editor.update.event {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 
 	/**
 	 * Dispatched when a <code>Node</code> has been

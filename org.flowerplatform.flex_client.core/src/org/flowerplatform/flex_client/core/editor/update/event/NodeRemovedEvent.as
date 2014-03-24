@@ -19,7 +19,7 @@
 package org.flowerplatform.flex_client.core.editor.update.event {
 	import flash.events.Event;
 	
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 
 	/**
 	 * Dispatched when <code>Node</code>s are being removed.
