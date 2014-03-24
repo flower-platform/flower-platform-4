@@ -14,28 +14,26 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class FilePropertySetter extends PropertySetter {
 	
-	private static IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
-	
 	@Override
 	public void setProperty(Node node, String property, PropertyValueWrapper value, Map<String, Object> options) {
-		
+		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		if (NAME.equals(property)) {
 			Object file;
 			if (!node.getOrPopulateProperties().get(NAME).equals(value.getPropertyValue())) {
 				try {
-					file = fileAccessController.getFile(node.getIdWithinResource());
-					String parentPath = fileAccessController.getParent(file);
-					Object parent = fileAccessController.getFile(parentPath);
-					Object dest = fileAccessController.getFile(parent, value.getPropertyValue().toString());
-					if (fileAccessController.exists(dest)) {
-						throw new RuntimeException("There is already a file with the same name in this location.");
-					}
-					if (!fileAccessController.rename(file, dest)) {
-						throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
-					}
-					node.getProperties().put(NAME, value.getPropertyValue());
-					//TODO
-					//node.setIdWithinResource(fileAccessController.getAbsolutePath(dest));
+					throw new UnsupportedOperationException();
+//					file = fileAccessController.getFile(node.getIdWithinResource());
+//					String parentPath = fileAccessController.getParent(file);
+//					Object parent = fileAccessController.getFile(parentPath);
+//					Object dest = fileAccessController.getFile(parent, value.getPropertyValue().toString());
+//					if (fileAccessController.exists(dest)) {
+//						throw new RuntimeException("There is already a file with the same name in this location.");
+//					}
+//					if (!fileAccessController.rename(file, dest)) {
+//						throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
+//					}
+//					node.getProperties().put(NAME, value.getPropertyValue());
+//					node.setIdWithinResource(fileAccessController.getAbsolutePath(dest));
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}

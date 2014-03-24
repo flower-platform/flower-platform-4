@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-    <classEntry path="org.flowerplatform.flex_client.core.service.ServiceLocator"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.action.AddChildActionProvider"/>
-    <classEntry path="org.flowerplatform.flex_client.core.link.LinkView"/>
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.ui.RichTextWithRendererView"/>
   </includeClasses>
   <includeResources/>

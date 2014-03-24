@@ -44,6 +44,7 @@ import org.flowerplatform.core.file.FileChildrenProvider;
 import org.flowerplatform.core.file.FilePropertiesProvider;
 import org.flowerplatform.core.file.FilePropertySetter;
 import org.flowerplatform.core.file.FileRemoveNodeController;
+import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.NodeService;
@@ -177,7 +178,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.NAME))
 		.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.ICONS));
 		
-		registerFileSystemControllers();
+		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
 		
 		//TODO use Flower property
@@ -185,49 +186,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (isDeleteTempFolderAtStartProperty) {
 			FileUtils.deleteDirectory(ResourcesServlet.TEMP_FOLDER);
 		}
-	}
-
-	/**
-	 * @author Sebastian Solomon
-	 */
-	private void registerFileSystemControllers() {
-		Map<String, Object> filePropertyMap = new HashMap<String, Object>();
-		Map<String, Object> folderPropertyMap = new HashMap<String, Object>();
-		folderPropertyMap.put(FILE_IS_DIRECTORY, true);
-		filePropertyMap.put(FILE_IS_DIRECTORY, false);
-		
-		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.fileContainer")
-		.addAdditiveController(CHILDREN_PROVIDER, new FileChildrenProvider())
-		.addAdditiveController(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController())
-		.addAdditiveController(ADD_NODE_CONTROLLER, new FileAddNodeController())
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs("fileNode").setLabelAs("File")
-			.setPropertiesAs(filePropertyMap)
-			.setIconAs(getResourceUrl("images/file.gif"))
-			.setOrderIndexAs(10))
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs("fileNode").setLabelAs("Folder")
-			.setPropertiesAs(folderPropertyMap)
-			.setIconAs(getResourceUrl("images/folder.gif"))
-			.setOrderIndexAs(20));
-	
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("fileSystem")
-		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
-			public void populateWithProperties(Node node, Map<String, Object> options) {
-				node.getProperties().put(NAME, "fileSystem");
-			}
-		})
-		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(IS_SUBSCRIBABLE, true))
-		.addCategory("category.fileContainer");
-		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("fileNode")
-		.addAdditiveController(PROPERTIES_PROVIDER, new FilePropertiesProvider())
-		.addAdditiveController(PROPERTY_SETTER, new FilePropertySetter())
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setTypeAs("FileSize"))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setReadOnlyAs(true).setTypeAs("Date"))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setReadOnlyAs(true).setTypeAs("Date"))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setReadOnlyAs(true).setTypeAs("Date"))
-		.addCategory("category.fileContainer");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

@@ -85,6 +85,7 @@ license-end
 			import mx.utils.RpcClassAliasInitializer;
 			
 			import spark.core.ContentCache;
+			import spark.formatters.DateTimeFormatter;
 			import spark.layouts.TileLayout;
 			import spark.utils.DataItem;
 			import spark.validators.NumberValidator;
@@ -117,6 +118,8 @@ license-end
 			
 			// needed by .mindmap
 			TileLayout;
+			
+			DateTimeFormatter;
 			
 			// We force the reference towards the classe below, because they declare "RemoteClass" annotation, which is ignored when used
 			// by classes from SWCs (i.e. plugins). By referencing them now, the compiler uses their annotation and automatically registers

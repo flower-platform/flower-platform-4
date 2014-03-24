@@ -12,6 +12,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -46,12 +47,12 @@
 			
 			protected function createFile(evt:MouseEvent = null):void {
 				var properties:Object = new Object();
-
-				properties.type = "fileNode";
-				properties.text = fileName.text;
-				properties.isDirectory = isDir;
 				
-				if (properties.text != "") { //TODO see if it's a valid file name
+				properties.type = CorePlugin.FILE_NODE_TYPE;
+				properties[NodePropertiesConstants.NAME] = fileName.text;
+				properties[NodePropertiesConstants.FILE_IS_DIRECTORY] = isDir;
+				
+				if (properties.text != "") {
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
 				}
 				cancel();

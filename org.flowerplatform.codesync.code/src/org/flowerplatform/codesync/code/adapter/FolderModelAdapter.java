@@ -152,7 +152,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	public boolean save(Object file) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		if (!fileAccessController.exists(file)) {
-			fileAccessController.createNewDirectory(file);
+			fileAccessController.createFile(file, true);
 		}
 		
 		// remove children that were mark deleted	

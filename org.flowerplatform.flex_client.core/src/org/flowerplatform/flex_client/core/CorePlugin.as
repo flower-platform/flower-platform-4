@@ -91,6 +91,9 @@ package org.flowerplatform.flex_client.core {
 		public static const FILE_MENU_ID:String = "file";
 		public static const NAVIGATE_MENU_ID:String = "navigate";
 		
+		public static const FILE_NODE_TYPE:String = "fileNode";
+		
+		
 		protected static var INSTANCE:CorePlugin;
 		
 		public var serviceLocator:ServiceLocator;

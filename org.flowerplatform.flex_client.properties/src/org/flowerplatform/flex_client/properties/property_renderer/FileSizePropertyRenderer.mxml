@@ -5,10 +5,23 @@
 <ns:BasicPropertyRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 						  xmlns:s="library://ns.adobe.com/flex/spark" 
 						  xmlns:mx="library://ns.adobe.com/flex/mx" 
-						  xmlns:ns="org.flowerplatform.flex_client.properties.property_renderer.*">
+						  xmlns:ns="org.flowerplatform.flex_client.properties.property_renderer.*"
+						  creationComplete="creationCompleteHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				var unit:Array = [' bytes', ' KB', ' MB', ' GB', ' TB'];
+				var index:uint = Math.floor(Math.log(data.value)/Math.log(1024));
+				if (index == 0) {
+					propertyValue.text = data.value + unit[index];
+				} else {
+			    	propertyValue.text = (data.value/Math.pow(1024, index)).toFixed(2) + unit[index];
+				}
+			}
+
 			override protected function getValue():Object {
 				return propertyValue.text;	
 			}
@@ -16,7 +29,6 @@
 	</fx:Script>
 	
 	<s:TextInput id="propertyValue"  width="100%" height="100%"
-				 text="{data.value} bytes"
 				 editable="false">
 	</s:TextInput> 
 	
