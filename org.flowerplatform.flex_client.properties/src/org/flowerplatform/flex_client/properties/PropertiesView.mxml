@@ -10,15 +10,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 			import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flex_client.properties.remote.CategoryItem;
@@ -71,7 +69,7 @@
 				propertyForm.removeAllElements();
 				label.text = "";
 
-				if (event.selection == null || event.selection.length == 0) { // happens when changing active view					
+				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view					
 					return;
 				}
 				// get new selected node

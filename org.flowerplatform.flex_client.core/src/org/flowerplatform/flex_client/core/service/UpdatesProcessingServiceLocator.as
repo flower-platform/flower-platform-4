@@ -3,7 +3,6 @@ package org.flowerplatform.flex_client.core.service {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.core.IVisualElement;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.events.FaultEvent;
@@ -11,8 +10,8 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;

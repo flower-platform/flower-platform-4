@@ -17,9 +17,8 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.node.controller {
-	
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+		
 	/**
 	 * @author Mariana Gheorghe
 	 */

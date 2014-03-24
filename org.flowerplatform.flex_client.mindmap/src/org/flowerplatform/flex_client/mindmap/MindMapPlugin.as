@@ -1,14 +1,19 @@
 package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeChildrenController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeDragController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeInplaceEditorController;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeSelectionRenderer;
+	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
+	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeDragController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeInplaceEditorController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer;
+	import org.flowerplatform.flex_client.mindmap.renderer.NodeRenderer;
+	import org.flowerplatform.flex_client.mindmap.renderer.NodeSelectionRenderer;
+	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
+	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
@@ -59,6 +64,8 @@ package org.flowerplatform.flex_client.mindmap {
 			INSTANCE = this;
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
 
+			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
+			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(ModelChildrenController.TYPE, new MindMapRootModelChildrenController(-10))
 				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController(-10))
@@ -99,7 +106,14 @@ package org.flowerplatform.flex_client.mindmap {
 				});
 			
 			CorePlugin.getInstance().iconSideBarClass = MindMapIconsBar;
-		
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);			
+			
+			CorePlugin.getInstance().linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorDescriptor.ID);
+			
+			var mindMapEditorDescriptor:MindMapEditorDescriptor = new MindMapEditorDescriptor();
+			CorePlugin.getInstance().contentTypeRegistry.defaultContentType = MindMapEditorDescriptor.ID;
+			CorePlugin.getInstance().contentTypeRegistry[MindMapEditorDescriptor.ID] = mindMapEditorDescriptor;
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);	
 		}
 
 	}

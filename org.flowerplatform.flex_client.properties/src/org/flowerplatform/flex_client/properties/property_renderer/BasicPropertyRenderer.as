@@ -3,13 +3,13 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 	
-	import spark.components.DataRenderer;
-	import spark.layouts.HorizontalLayout;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	
+	import spark.components.DataRenderer;
+	import spark.layouts.HorizontalLayout;
 
 	/**
 	 * @author Razvan Tache

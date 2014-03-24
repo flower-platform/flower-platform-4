@@ -1,9 +1,7 @@
 package org.flowerplatform.flex_client.core.link {
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDescriptor;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	
 	public class LinkHandler implements ILinkHandler {
 		

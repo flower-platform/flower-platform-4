@@ -17,24 +17,22 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.update {
-	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	import mx.rpc.events.FaultEvent;
 	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.NodeWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
+	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
+	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -98,17 +96,21 @@ package org.flowerplatform.flex_client.core.editor.update {
 		protected function registerResourceNodeForProcessor(resourceNode:Node):void {
 			if (resourceNode != null) {
 				var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.fullNodeId);
-				if (resourceNodeFromRegistry) { // node already in registry -> probably we want to update only its properties
-					resourceNodeFromRegistry.properties = resourceNode.properties;
+				if (resourceNodeFromRegistry) { 
+					// do nothing
+					// node already in registry -> probably we want to update only its properties					
 				} else {
 					nodeRegistry.registerNode(resourceNode);
 					resourceNodeFromRegistry = nodeRegistry.getNodeById(resourceNode.fullNodeId);
-				}
+				}				
+				resourceNodeIds.addItem(resourceNode.fullNodeId);
+				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.addNodeUpdateProcessor(resourceNode.fullNodeId, this);
+				
 				// listen for resourceNode properties modifications like isDirty
 				resourceNodeFromRegistry.addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
 				
-				resourceNodeIds.addItem(resourceNode.fullNodeId);
-				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.addNodeUpdateProcessor(resourceNode.fullNodeId, this);				
+				// copy needed -> otherwise, if same instances, the setter isn't called
+				resourceNodeFromRegistry.properties = ObjectUtil.copy(resourceNode.properties);								
 			}
 			
 			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
@@ -208,13 +210,39 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 * If the node is subscribable, remove it from the resource nodes list.
 		 */
 		public function removeChildren(context:DiagramShellContext, node:Node, refreshChildrenAndPositions:Boolean = true):void {
-			var isSubscribable:Boolean = node == null ? false : node.properties[NodePropertiesConstants.IS_SUBSCRIBABLE];
-			if (isSubscribable) {
-				removeResourceNodeForProcessor(node);
+			// get all dirty resourceNodes starting from node
+			var dirtyResourceNodeIds:Array = [];
+			for each (var resourceNodeId:String in resourceNodeIds) {
+				var resourceNode:Node = nodeRegistry.getNodeById(resourceNodeId);
+				var parent:Node = resourceNode;
+				while (parent != null && parent != node) {					
+					parent = parent.parent;					
+				}
+				if (parent == node) {
+					var isSubscribable:Boolean = resourceNode.properties[NodePropertiesConstants.IS_SUBSCRIBABLE];
+					if (isSubscribable && isResourceNodeDirty(resourceNodeId) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
+						dirtyResourceNodeIds.push(resourceNodeId);
+					}
+				}
 			}
+			if (dirtyResourceNodeIds.length > 0) { // at least one dirty resourceNode found -> show dialog 
+				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds, 
+					function():void {
+						for (var i:int = 0; i < dirtyResourceNodeIds.length; i++) {
+							removeResourceNodeForProcessor(nodeRegistry.getNodeById(dirtyResourceNodeIds[i]));
+						}
+						removeChildrenRecursive(context, node, refreshChildrenAndPositions);
+					}
+				);
+			} else {
+				removeChildrenRecursive(context, node, refreshChildrenAndPositions);
+			}
+		}
+		
+		private function removeChildrenRecursive(context:DiagramShellContext, node:Node, refreshChildrenAndPositions:Boolean = true):void {
 			if (node.children != null) {
 				for each (var child:Node in node.children) {
-					removeChildren(context, child, false);
+					removeChildrenRecursive(context, child, false);
 					nodeRegistry.unregisterNode(child.fullNodeId);
 				}
 				node.children = null;
@@ -223,9 +251,9 @@ package org.flowerplatform.flex_client.core.editor.update {
 					MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(context);
 					MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, node);
 				}
-			}			
+			}
 		}
-		
+				
 		/* REQUEST CHILDREN */		
 		
 		/**

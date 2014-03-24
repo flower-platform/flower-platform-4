@@ -26,10 +26,8 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.SaveResourceNodesView;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
-	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -70,8 +68,8 @@ package org.flowerplatform.flex_client.web {
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			
-			CorePlugin.getInstance().getPerspective(MindMapPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
-			
+			CorePlugin.getInstance().perspectives.push(new FlowerPerspective());
+					
 			var hBox:HBox = new HBox();
 			hBox.percentWidth = 100;
 						
@@ -104,6 +102,8 @@ package org.flowerplatform.flex_client.web {
 					menuBar.actionProvider = CorePlugin.getInstance().globalMenuActionProvider;
 				}
 			);			
+			
+			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
 			CorePlugin.getInstance().handleLink(CorePlugin.getInstance().getAppUrl());		
 		}

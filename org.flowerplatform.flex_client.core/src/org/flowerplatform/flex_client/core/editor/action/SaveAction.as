@@ -18,14 +18,8 @@
 */
 package org.flowerplatform.flex_client.core.editor.action {
 	
-	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
-	import mx.collections.IList;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-	import org.flowerplatform.flex_client.core.editor.ResourceNode;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -51,7 +45,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [dirtyResourceNodeIds[0]]);
 			} else { 
 				// multiple resourceNodes to save -> show dialog
-				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds);
+				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds, function():void {});
 			}
 		}
 				
