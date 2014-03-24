@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Sebastian Solomon
+-->
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 creationComplete="creationCompleteHandler(event)"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
+		 
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent, org.flowerplatform.flexutil.dialog.IDialog">
 	<s:layout>
 		<s:VerticalLayout gap="0"/>
 	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayList;
+			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
-			import org.flowerplatform.flexutil.action.ActionBase;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			protected var _viewHost:IViewHost;
 			
-			protected var propertiesLength:int;
+			protected var resultHandler:IDialogResultHandler;
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
-				
-				// get dataProvider from SharedObject
-				var testList:ArrayList = new ArrayList();
-				for (var i:int = 1; i<15; i++) {
-					testList.addItem(new ServerAccount());
-					testList.addItem(new ServerAccount());
-				}
-				
-				accountList.itemRenderer = new ClassFactory(ServerAccountDataRenderer);
-				accountList.dataProvider = testList;
-				
+				refresh();
+			}
+			
+			public function refresh():void {
+				var serverAccountList:ArrayCollection = getSharedObjectServerAccountList();
+				var factory:ClassFactory = new ClassFactory(ServerAccountDataRenderer);
+				factory.properties = {serverAccountView: this};
+				accountList.itemRenderer = factory;
+				accountList.dataProvider = serverAccountList;
 			}
 			
 			public function get viewHost():IViewHost {
@@ -44,12 +47,69 @@
 				_viewHost = value;
 			}
 			
+			public function getResultHandler():IDialogResultHandler {
+				return resultHandler;
+			}
+			
 			public function getActions(selection:IList):Vector.<IAction> {
 				var vector:Vector.<IAction> = new Vector.<IAction>;
-				vector[0] = new AddServerAccountAction();
+				var addAccountAction:AddServerAccountAction = new AddServerAccountAction();
+				addAccountAction.serverAccountView = this;
+				vector[0] = addAccountAction;
 				return vector;
 			}
 			
+			public static function  getSharedObjectServerAccountList():ArrayCollection {
+				var sharedObject:SharedObject = SharedObject.getLocal("flower-platform");
+				return sharedObject.data.serverAccounts;
+			}
+			
+			public static function  getSharedObject():SharedObject {
+				return SharedObject.getLocal("flower-platform");
+			}
+			
+			public function deselectDefaultAccount():ArrayCollection {
+				var accountList:ArrayCollection = getSharedObjectServerAccountList();
+				for (var i:int=0; i<accountList.length; i++) {
+					if (accountList[i].isDefault == true) {
+						accountList[i].isDefault = false;
+						var serverAccountRenderer:ServerAccountDataRenderer = this.accountList.dataGroup.getElementAt(i) as ServerAccountDataRenderer;
+						serverAccountRenderer.checkBox.selected = false;
+					}
+				}
+				return accountList;
+			}
+			
+			public function setDefaultAccount(data:Object):void {
+				var accountList:ArrayCollection = deselectDefaultAccount();
+				for (var i:int=0; i < accountList.length; i++) {
+					if (accountList[i].friendlyName == data.friendlyName &&
+						accountList[i].host == data.host &&
+						accountList[i].user == data.user &&
+						accountList[i].password == data.password) {
+						
+						accountList[i].isDefault = true;
+						var serverAccountRenderer:ServerAccountDataRenderer = this.accountList.dataGroup.getElementAt(i) as ServerAccountDataRenderer;
+						serverAccountRenderer.checkBox.selected = true;
+						break;
+					}
+				}
+				saveAccountsToSharedObject(accountList);
+			}
+			
+			public function saveAccountsToSharedObject(accountList:ArrayCollection):void {
+				var sharedObject:SharedObject = SharedObject.getLocal("flower-platform");
+				sharedObject.data.serverAccounts = accountList;
+				sharedObject.flush(10000);
+			}
+			
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				this.resultHandler = resultHandler;
+			}
+			
+			public function closeView():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
 		]]>
 	</fx:Script>
 	

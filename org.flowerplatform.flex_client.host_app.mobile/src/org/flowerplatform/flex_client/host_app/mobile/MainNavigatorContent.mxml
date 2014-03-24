@@ -43,11 +43,11 @@
 					]]>
 				</s:click>
 			</s:Button>
-			<s:Button id="closeAppButton" label="Exit" icon="{FlexUtilAssets._exitIcon}"
-					  click="NativeApplication.nativeApplication.exit()"/>
 			<s:Button id="openAccountsView" label="Open Accounts"
 					  click = "MainMobile.openAccountsButtonClickHandler()">
 			</s:Button>
+			<s:Button id="closeAppButton" label="Exit" icon="{FlexUtilAssets._exitIcon}"
+					  click="NativeApplication.nativeApplication.exit()"/>
 		</fx:Array>
 	</fx:Declarations>
 	<fx:Script>

@@ -22,7 +22,9 @@ package org.flowerplatform.flex_client.host_app.mobile.view_server_account {
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
-	
+	/**
+	 * @author Sebastian Solomon
+	 */
 	public class ServerAccountsViewProvider extends AbstractViewProvider {
 		
 		public static const ID:String = "serverAccounts";
@@ -36,8 +38,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_server_account {
 		}
 		
 		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
-//			return PropertiesPlugin.getInstance().getMessage("properties.view");
-			return "";
+			return "Server Accounts";
 		}
 		
 //		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {

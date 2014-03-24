@@ -87,7 +87,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var rootNodeIdToEditors:RootNodeIdsToEditors = new RootNodeIdsToEditors();
 		
-		public var updateTimer:UpdateTimer = new UpdateTimer();
+		public var updateTimer:UpdateTimer;
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
@@ -125,6 +125,8 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("nodeService");
 			serviceLocator.addService("resourceInfoService");
 			serviceLocator.addService("freeplaneService");
+			
+			updateTimer = new UpdateTimer();
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new MindMapEditorProvider());			
 			perspectives.push(new MindMapPerspective());

@@ -1,31 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Sebastian Solomon
+-->
 <s:DataRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				xmlns:s="library://ns.adobe.com/flex/spark">
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				creationComplete="creationCompleteHandler(event)">
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle"/>
 	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			protected function checkbox_clickHandler(event:MouseEvent):void	{
+			
+			public var serverAccountView:ServerAccountsView;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				var text:String = data.user + '@';
+				if (data.friendlyName != "") {
+					text += data.friendlyName;
+				} else {
+					text += data.host;
+				}
+				label.text = text;
+				
+				if(data.isDefault) {
+					checkBox.selected = true;
+				}
+			}
+			
+			protected function checkboxClickHandler(event:MouseEvent):void {
+				if (serverAccountView.getResultHandler() is MainMobile) {
+					serverAccountView.getResultHandler().handleDialogResult(data);
+					serverAccountView.closeView();
+				}
+				var accountList:ArrayCollection = serverAccountView.deselectDefaultAccount();				
+				if (checkBox.selected) { // set default value
+					setThisAsDefaultAccount();
+				} else { // default accaunt deselected. do nothing default account already deselected.
+				}
 				
 			}
 			
-			protected function label_clickHandler(event:MouseEvent):void {
-				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
-					.setViewIdInWorkbench("editServerAccount")
-					.setTitle("Edit Server Account")
-					.setWidth(500)
-					.setHeight(350)
-					.show();
+			private function setThisAsDefaultAccount():void {
+				var serverAccount:ServerAccount = new ServerAccount();
+				data.isDefault = true;
+				serverAccount.setData(data);
+				serverAccountView.setDefaultAccount(data)
+			}
+			
+			protected function labelClickHandler(event:MouseEvent=null):void {
+				if (serverAccountView.getResultHandler() is MainMobile) {
+					setThisAsDefaultAccount();
+					serverAccountView.getResultHandler().handleDialogResult(data);
+					serverAccountView.closeView();
+				} else {
+					var editAccountView:EditServerAccountView = new EditServerAccountView();
+					var serverAccount:ServerAccount = new ServerAccount();
+					
+					serverAccount.setData(data);
+					editAccountView.setServerAccount(serverAccount);
+					editAccountView.setServerAccountView(serverAccountView);
+						
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setTitle("Edit Server Account")
+						.setViewContent(editAccountView)
+						.show();
+				}
 			}
 		]]>
 	</fx:Script>
-	
-	
-	<s:CheckBox id="checkBox" click="checkbox_clickHandler(event)"/>
-	<s:Label id="label" text="label" click="label_clickHandler(event) "/>
-	
+	<s:CheckBox id="checkBox" click="checkboxClickHandler(event)"/>
+	<s:Label id="label" click="labelClickHandler(event) "/>
 	
 </s:DataRenderer>
