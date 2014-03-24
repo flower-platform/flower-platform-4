@@ -21,6 +21,7 @@ import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.VISI
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.VISIBILITY_PRIVATE;
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.VISIBILITY_PROTECTED;
 import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.getImagePath;
+import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -53,7 +55,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 
 	@Override
-	public void populateWithProperties(Node node, Map<String, Object> options) {
+	public void populateWithProperties(Node node, ServiceContext context) {
 		int flags = getModifiersFlags(node);
 		
 		// get the icon depending on visibility
@@ -119,7 +121,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	protected List<Node> getModifiers(Node node) {
 		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		List<Node> modifiers = new ArrayList<Node>();
-		for (Node child : service.getChildren(node, true)) {
+		for (Node child : service.getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true))) {
 			if (JavaModifierModelAdapter.MODIFIER.equals(child.getType())) {
 				modifiers.add(child);
 			}

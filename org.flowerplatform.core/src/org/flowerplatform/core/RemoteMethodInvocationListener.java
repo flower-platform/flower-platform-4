@@ -51,7 +51,7 @@ public class RemoteMethodInvocationListener {
 			// the client is not subscribed to this resource anymore, maybe he went offline?
 			// subscribe the client to this resource
 			try {
-				CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(clientRootNodeId, sessionId);
+				CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(clientRootNodeId, sessionId, new ServiceContext());
 			} catch (Exception e) {
 				// the resource could not be loaded; inform the client
 				notFoundRootNodeIds.add(clientRootNodeId);

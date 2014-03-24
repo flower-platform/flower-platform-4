@@ -1,12 +1,14 @@
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
 
 /**
@@ -17,15 +19,15 @@ import org.flowerplatform.core.node.NodeService;
 public class NodeServiceRemote {
 	
 	public List<Node> getChildren(String fullNodeId, boolean populateProperties) {
-		return CorePlugin.getInstance().getNodeService().getChildren(new Node(fullNodeId), populateProperties);		
+		return CorePlugin.getInstance().getNodeService().getChildren(new Node(fullNodeId), new ServiceContext().add(POPULATE_WITH_PROPERTIES, populateProperties));		
 	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
-		CorePlugin.getInstance().getNodeService().setProperty(new Node(fullNodeId), property, value, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());	
+		CorePlugin.getInstance().getNodeService().setProperty(new Node(fullNodeId), property, value, new ServiceContext());	
 	}
 		
 	public void unsetProperty(String fullNodeId, String property) {
-		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());	
+		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property, new ServiceContext());	
 	}
 	
 	public void addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
@@ -38,11 +40,11 @@ public class NodeServiceRemote {
 			
 			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);
 		}
-		CorePlugin.getInstance().getNodeService().addChild(parent, child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null);	
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null, new ServiceContext());	
 	}
 	
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
-		CorePlugin.getInstance().getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId));
+		CorePlugin.getInstance().getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId), new ServiceContext());
 	}
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {

@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.mindmap.MindMapPlugin;
 import org.freeplane.core.util.ColorUtils;
@@ -40,8 +41,8 @@ import org.freeplane.features.nodestyle.NodeStyleController;
 public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 	
 	@Override
-	public void populateWithProperties(Node node, Map<String, Object> options) {
-		super.populateWithProperties(node, options);
+	public void populateWithProperties(Node node, ServiceContext context) {
+		super.populateWithProperties(node, context);
 		
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		

@@ -211,7 +211,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("fileSystem")
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
-			public void populateWithProperties(Node node, Map<String, Object> options) {
+			public void populateWithProperties(Node node, ServiceContext context) {
 				node.getProperties().put(NAME, "fileSystem");
 			}
 		})

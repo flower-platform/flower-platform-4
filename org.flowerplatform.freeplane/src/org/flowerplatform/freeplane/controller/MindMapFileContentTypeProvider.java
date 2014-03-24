@@ -7,6 +7,7 @@ import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
 import java.util.Map;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.features.url.UrlManager;
@@ -27,7 +28,7 @@ public class MindMapFileContentTypeProvider extends PropertiesProvider {
 	}
 	
 	@Override
-	public void populateWithProperties(Node node, Map<String, Object> options) {
+	public void populateWithProperties(Node node, ServiceContext context) {
 		boolean isDirectory = Boolean.parseBoolean((String) node.getProperties().get(FILE_IS_DIRECTORY));
 		if (!isDirectory) {
 			String path = (String) node.getProperties().get(NAME);

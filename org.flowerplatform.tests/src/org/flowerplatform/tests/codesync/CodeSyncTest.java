@@ -28,6 +28,7 @@ import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAd
 import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
 import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
 import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
+import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.junit.Assert.assertEquals;
@@ -49,6 +50,7 @@ import org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter;
 import org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.tests.TestUtil;
 import org.junit.BeforeClass;
@@ -82,7 +84,7 @@ public class CodeSyncTest {
 		startPlugin(new CodeSyncCodePlugin());
 		startPlugin(new CodeSyncCodeJavaPlugin());
 		
-		CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(resourceNodeId, "");
+		CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(resourceNodeId, "", new ServiceContext());
 	}
 	
 	@Test
@@ -256,10 +258,10 @@ public class CodeSyncTest {
 	private void simulateNonConflictingChanges(Node root, String srcDir) {
 		// change superCls, superInterfaces
 		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
-		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel");
+		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext());
 		Node superInterface = new Node(JavaExpressionModelAdapter.SUPER_INTERFACE, root.getResource(), null, null);
-		nodeService.addChild(cls, superInterface, null);
-		nodeService.setProperty(superInterface, NAME, "IFromModel");
+		nodeService.addChild(cls, superInterface, null, new ServiceContext());
+		nodeService.setProperty(superInterface, NAME, "IFromModel", new ServiceContext());
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
 //		Node val = new Node();
 //		val.setType(MEMBER_VALUE_PAIR);
@@ -269,36 +271,36 @@ public class CodeSyncTest {
 
 		// add class
 		Node internalCls = new Node(CLASS, root.getResource(), null, null);
-		nodeService.addChild(cls, internalCls, null);
-		nodeService.setProperty(internalCls, NAME, "InternalClassFromModel");
+		nodeService.addChild(cls, internalCls, null, new ServiceContext());
+		nodeService.setProperty(internalCls, NAME, "InternalClassFromModel", new ServiceContext());
 
 		// change typed element type
 		Node x = getChild(cls, new String[] {"x"});
-		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test");
+		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test", new ServiceContext());
 		
 		// change modifiers + annotations
 		Node test = getChild(cls, new String[] {"test(String)"});
 		Node privateModif = new Node(MODIFIER, root.getResource(), null, null);
-		nodeService.addChild(test, privateModif, null);
-		nodeService.setProperty(privateModif, NAME, "private");
+		nodeService.addChild(test, privateModif, null, new ServiceContext());
+		nodeService.setProperty(privateModif, NAME, "private", new ServiceContext());
 		Node publicModif = getChild(test, new String[] {"public"});
-		nodeService.setProperty(publicModif, REMOVED, true);
+		nodeService.setProperty(publicModif, REMOVED, true, new ServiceContext());
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
-		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
+		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext());
 		Node orphanRemoval = new Node(MEMBER_VALUE_PAIR, root.getResource(), null, null);
-		nodeService.addChild(a, orphanRemoval, null);
-		nodeService.setProperty(orphanRemoval, NAME, "orphanRemoval");
-		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true");
+		nodeService.addChild(a, orphanRemoval, null, new ServiceContext());
+		nodeService.setProperty(orphanRemoval, NAME, "orphanRemoval", new ServiceContext());
+		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true", new ServiceContext());
 		
 		// change parameters
 		Node getTest = getChild(cls, new String[] {"getTest()"});
 		Node param = new Node(JavaParameterModelAdapter.PARAMETER, root.getResource(), null, null);
-		nodeService.addChild(getTest, param, null);
-		nodeService.setProperty(param, NAME, "a");
-		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int");
+		nodeService.addChild(getTest, param, null, new ServiceContext());
+		nodeService.setProperty(param, NAME, "a", new ServiceContext());
+		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int", new ServiceContext());
 		Node staticModif = getChild(getTest, new String[] {"static"});
-		nodeService.setProperty(staticModif, REMOVED, true);
+		nodeService.setProperty(staticModif, REMOVED, true, new ServiceContext());
 //		nodeService.setProperty(getTest, DOCUMENTATION, "modified from model\n@author test");
 		
 //				featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
@@ -324,17 +326,17 @@ public class CodeSyncTest {
 
 		// add element
 		Node t = new Node(ATTRIBUTE, root.getResource(), null, null);
-		nodeService.addChild(cls, t, null);
-		nodeService.setProperty(t, NAME, "t");
-		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int");
+		nodeService.addChild(cls, t, null, new ServiceContext());
+		nodeService.setProperty(t, NAME, "t", new ServiceContext());
+		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int", new ServiceContext());
 //		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
 		publicModif = new Node(MODIFIER, root.getResource(), null, null);
-		nodeService.addChild(t, publicModif, null);
-		nodeService.setProperty(publicModif, NAME, "public");
+		nodeService.addChild(t, publicModif, null, new ServiceContext());
+		nodeService.setProperty(publicModif, NAME, "public", new ServiceContext());
 		
 		// remove element
 		Node y = getChild(cls, new String[] {"y"});
-		nodeService.setProperty(y, REMOVED, true);
+		nodeService.setProperty(y, REMOVED, true, new ServiceContext());
 	}
 	
 	@Test
@@ -350,21 +352,21 @@ public class CodeSyncTest {
 		
 		// change super class
 		Node cls = getChild(root, new String[] {MODIFIED_CONFLICTS, SOURCE_FILE, "Test"});
-		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel");
+		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext());
 		
 //		// change typed element type
 		Node x = getChild(cls, new String[] {"x"});
-		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test");
+		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test", new ServiceContext());
 		
 //		// change typed element type
 		Node y = getChild(cls, new String[] {"y"});
-		nodeService.setProperty(y, TYPED_ELEMENT_TYPE, "Test");
+		nodeService.setProperty(y, TYPED_ELEMENT_TYPE, "Test", new ServiceContext());
 		
 		// change modifiers + annotations
 		Node test = getChild(cls, new String[] {"test(String)"});
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
-		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"");
+		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext());
 		Node orphanRemoval = new Node(MEMBER_VALUE_PAIR, root.getResource(), null, null);
 
 		Match match = codeSyncService.generateMatch(resourceNodeId, new File(project, fullyQualifiedName), TECHNOLOGY, false);
@@ -444,7 +446,7 @@ public class CodeSyncTest {
 	private Node getChild(Node node, String[] names) {
 		Node parent = node;
 		for (String name : names) {
-			List<Node> children = nodeService.getChildren(parent, true);
+			List<Node> children = nodeService.getChildren(parent, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true));
 			for (Node child : children) {
 				if (name.equals(child.getOrPopulateProperties().get(NAME))) {
 					parent = child;

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -22,18 +23,18 @@ public class UpdatePropertySetterController extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String key, PropertyValueWrapper wrapper, Map<String, Object> options) {	
-		setUnsetProperty(node, key, wrapper.getPropertyValue(), false, options);
+	public void setProperty(Node node, String key, PropertyValueWrapper wrapper, ServiceContext context) {	
+		setUnsetProperty(node, key, wrapper.getPropertyValue(), false, context);
 	}
 
 	@Override
-	public void unsetProperty(Node node, String key, Map<String, Object> options) {
-		setUnsetProperty(node, key, null, true, options);
+	public void unsetProperty(Node node, String key, ServiceContext context) {
+		setUnsetProperty(node, key, null, true, context);
 	}
 	
-	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, Map<String, Object> options) {		
+	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext context) {		
 		Node rootNode;
-		if ((boolean) options.get(NODE_IS_RESOURCE_NODE)) {
+		if (context.getValue(NODE_IS_RESOURCE_NODE)) {
 			rootNode = node;
 		} else {
 			rootNode = CoreUtils.getRootNode(node);

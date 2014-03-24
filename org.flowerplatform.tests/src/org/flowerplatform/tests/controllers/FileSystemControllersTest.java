@@ -1,5 +1,6 @@
 package org.flowerplatform.tests.controllers;
 
+import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.junit.Assert.assertEquals;
 
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
@@ -49,20 +51,20 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void testGetChildren() {
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode, null), false), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode, null), new ServiceContext().add(POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node("fileNode", null, fileSystemNode + "\\1", null),
 								new Node("fileNode", null, fileSystemNode + "\\A", null),
 								new Node("fileNode", null, fileSystemNode + "\\B", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A", null), false), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A", null), new ServiceContext().add(POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node("fileNode", null, fileSystemNode + "\\A\\file1", null),
 								new Node("fileNode", null, fileSystemNode + "\\A\\Folder1", null),
 								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder1", null), false), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder1", null), new ServiceContext().add(POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node("fileNode", null, fileSystemNode + "\\A\\Folder1\\oneFile", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), false), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), new ServiceContext().add(POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null)));
 	}
 	
@@ -112,9 +114,9 @@ public class FileSystemControllersTest {
 	public void removeNode() {
 		//delete oneFolder
 		nodeService.removeChild(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), 
-								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null));
+								new Node("fileNode", null, fileSystemNode + "\\A\\Folder2\\oneFolder", null), new ServiceContext());
 		
-		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), false), 
+		assertEquals(nodeService.getChildren(new Node("fileNode", null, fileSystemNode + "\\A\\Folder2", null), new ServiceContext().add(POPULATE_WITH_PROPERTIES, false)), 
 								Arrays.asList());
 		Object newFolder;
 		try {

@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.util.Utils;
@@ -120,7 +121,7 @@ public class Node {
 	public Map<String, Object> getOrPopulateProperties() {
 		if (!propertiesPopulated) {	
 			// lazy population
-			CorePlugin.getInstance().getNodeService().populateNodeProperties(this);
+			CorePlugin.getInstance().getNodeService().populateNodeProperties(this, new ServiceContext());
 			propertiesPopulated = true;
 		}
 		return getProperties();
@@ -129,7 +130,7 @@ public class Node {
 	public Object getOrRetrieveRawNodeData() {
 		if (!rawNodeDataRetrieved) {
 			// lazy initialization
-			setRawNodeData(CorePlugin.getInstance().getNodeService().getRawNodeData(this));		
+			setRawNodeData(CorePlugin.getInstance().getNodeService().getRawNodeData(this, new ServiceContext()));		
 		}
 		return rawNodeData;
 	}

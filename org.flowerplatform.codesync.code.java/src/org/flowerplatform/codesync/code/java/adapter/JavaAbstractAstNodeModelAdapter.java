@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
+
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +48,7 @@ import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -109,7 +112,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 					String keyword = (String) node.getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME);
 					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
 				} else if (JavaAnnotationModelAdapter.ANNOTATION.equals(node.getType())) {
-					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, false).size();
+					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, false)).size();
 					if (valuesCount == 0) {
 						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();
 						extendedModifier = markerAnnotation;

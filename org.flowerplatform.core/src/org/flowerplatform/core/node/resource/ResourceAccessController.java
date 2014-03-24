@@ -1,7 +1,6 @@
 package org.flowerplatform.core.node.resource;
 
-import java.util.Map;
-
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -14,18 +13,18 @@ public abstract class ResourceAccessController extends AbstractController {
 
 	public static final String RESOURCE_ACCESS_CONTROLLER = "resourceAccessController";
 	
-	public abstract void firstClientSubscribed(String rootNodeId, Map<String, Object> options) throws Exception;
+	public abstract void firstClientSubscribed(String rootNodeId, ServiceContext context) throws Exception;
 	
-	public abstract void lastClientUnubscribed(String rootNodeId, Map<String, Object> options);
-	
-	/**
-	 * @author Cristina Constantinescu
-	 */
-	public abstract void save(String rootNodeId, Map<String, Object> options);
+	public abstract void lastClientUnubscribed(String rootNodeId, ServiceContext context);
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public abstract boolean isDirty(String rootNodeId, Map<String, Object> options);
+	public abstract void save(String rootNodeId, ServiceContext context);
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public abstract boolean isDirty(String rootNodeId, ServiceContext context);
 	
 }
