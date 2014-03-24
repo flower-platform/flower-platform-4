@@ -28,6 +28,8 @@
 			[Bindable]
 			public var dirtyResourceNodes:IList;
 			
+			public var handler:Function;
+			
 			private var _viewHost:IViewHost;
 			
 			public function getActions(selection:IList):Vector.<IAction> {
@@ -63,11 +65,16 @@
 			}
 			
 			protected function noButton_clickHandler(event:MouseEvent = null):void {
-				CorePlugin.getInstance().resourceNodesManager.closeEditors(editors);
+				if (handler == null) { // don't execute the default behavior, let the handler to take the lead
+					CorePlugin.getInstance().resourceNodesManager.closeEditors(editors);
+				}
 				closeView();	
 			}
 			
 			protected function closeView():void {
+				if (handler != null) { // execute handler before closing view
+					handler();
+				}
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			

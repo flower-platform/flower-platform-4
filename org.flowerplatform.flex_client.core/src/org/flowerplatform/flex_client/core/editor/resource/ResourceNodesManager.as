@@ -160,12 +160,14 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		}
 		
 		/**
-		 * If at least one dirty resourceNode found, shows the save dialog, else closes the editors.
+		 * If at least one dirty resourceNode found, shows the save dialog, else closes the editors OR 
+		 * calls the <code>handler</code> if not null.
 		 * 
 		 * @param editors if <code>null</code>, all workbench editors will be used.
 		 * @param dirtyResourceNodeIds if <code>null</code>, all dirty resourceNodes from <code>editors</code> will be used.
+		 * @param handler Is called before closing the view. If <code>null</code>, <code>editors</code> will be removed.
 		 */ 
-		public function showSaveDialogIfDirtyStateOrCloseEditors(editors:Array = null, dirtyResourceNodeIds:Array = null):void {	
+		public function showSaveDialogIfDirtyStateOrCloseEditors(editors:Array = null, dirtyResourceNodeIds:Array = null, handler:Function = null):void {	
 			if (editors == null) {
 				editors = CorePlugin.getInstance().getAllEditorFrontends();
 			}
@@ -181,13 +183,18 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				}
 			}
 			if (dirtyResourceNodes.length == 0) {
-				closeEditors(editors);
+				if (handler != null) {
+					handler();
+				} else {
+					closeEditors(editors);
+				}
 				return;
 			}
 					
 			var saveView:SaveResourceNodesView = new SaveResourceNodesView();
 			saveView.editors = editors;
 			saveView.dirtyResourceNodes = dirtyResourceNodes;
+			saveView.handler = handler;
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(saveView)

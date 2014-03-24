@@ -104,14 +104,10 @@ package org.flowerplatform.flex_client.core.editor.remote {
 			return _properties;
 		}
 		
-		public function set properties(newProperties:Object):void {
-			var oldProperties:Object = _properties;
+		public function set properties(value:Object):void {			
+			_properties = value;
 			
-			_properties = newProperties;
-			
-//			if (oldProperties != newProperties) {
-				this.dispatchEvent(new NodeUpdatedEvent(this, null, null, true));
-//			}
+			this.dispatchEvent(new NodeUpdatedEvent(this, null, null, true));			
 		}
 		
 		public function get fullNodeId():String {
