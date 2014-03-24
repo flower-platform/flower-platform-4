@@ -38,7 +38,6 @@
 						
 						import org.flowerplatform.flex_client.core.CorePlugin;
 						import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-						import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 						import org.flowerplatform.flexutil.FlexUtilGlobals;
 						
 						import spark.components.Group;
@@ -87,8 +86,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.mindmap.MindMapEditorFrontend;
+			import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
+			import org.flowerplatform.flex_client.core.CorePlugin;			
 			import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import mx.collections.ArrayList;

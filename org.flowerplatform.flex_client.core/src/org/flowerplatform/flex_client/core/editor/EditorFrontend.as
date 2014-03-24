@@ -23,15 +23,12 @@ package org.flowerplatform.flex_client.core.editor {
 	import mx.managers.IFocusManagerComponent;
 	import mx.rpc.events.FaultEvent;
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.layout.ITitleDecorator;
-	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;

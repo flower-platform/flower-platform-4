@@ -18,14 +18,8 @@
 */
 package org.flowerplatform.flex_client.core.editor.action {
 	
-	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
-	import mx.collections.IList;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-	import org.flowerplatform.flex_client.core.editor.ResourceNode;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	

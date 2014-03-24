@@ -43,7 +43,7 @@ package org.flowerplatform.flex_client.properties {
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
 			
-			CorePlugin.getInstance().mindmapEditorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
 		}
 		
 		override public function start():void {

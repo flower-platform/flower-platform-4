@@ -29,30 +29,25 @@ package org.flowerplatform.flex_client.core {
 	
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-	import org.flowerplatform.flex_client.core.editor.ResourceNodeIdsToNodeUpdateProcessors;
-	import org.flowerplatform.flex_client.core.editor.ResourceNodesManager;
+	import org.flowerplatform.flex_client.core.editor.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
+	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
+	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
+	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
+	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
+	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.NodeWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
+	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
+	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
+	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodeIdsToNodeUpdateProcessors;
+	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
-	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
-	import org.flowerplatform.flex_client.core.mindmap.MindMapEditorDescriptor;
-	import org.flowerplatform.flex_client.core.mindmap.action.AddNodeAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RefreshAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.ReloadAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RemoveNodeAction;
-	import org.flowerplatform.flex_client.core.mindmap.action.RenameAction;
-	import org.flowerplatform.flex_client.core.mindmap.controller.NodeTypeProvider;
-	import org.flowerplatform.flex_client.core.mindmap.layout.MindMapPerspective;
-	import org.flowerplatform.flex_client.core.mindmap.remote.AddChildDescriptor;
-	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
 	import org.flowerplatform.flex_client.core.node.remote.GenericDescriptor;
 	import org.flowerplatform.flex_client.core.node.remote.TypeDescriptorRemote;
@@ -97,7 +92,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
-		public var mindmapEditorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
+		public var editorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 
 		public var resourceNodesManager:ResourceNodesManager;
 
@@ -107,7 +102,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
-		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
+		public var nodeTypeProvider:ITypeProvider;
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
 		
@@ -157,19 +152,12 @@ package org.flowerplatform.flex_client.core {
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
 			contentTypeRegistry[TextEditorDescriptor.ID] = textEditorDescriptor;
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(textEditorDescriptor);
-			
-			var mindMapEditorDescriptor:MindMapEditorDescriptor = new MindMapEditorDescriptor();
-			contentTypeRegistry.defaultContentType = MindMapEditorDescriptor.ID;
-			contentTypeRegistry[MindMapEditorDescriptor.ID] = mindMapEditorDescriptor;
-			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);			
-			perspectives.push(new MindMapPerspective());
-		
-			mindmapEditorClassFactoryActionProvider.addActionClass(AddNodeAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
-			mindmapEditorClassFactoryActionProvider.addActionClass(RenameAction);			
-			mindmapEditorClassFactoryActionProvider.addActionClass(ReloadAction);
-			mindmapEditorClassFactoryActionProvider.addActionClass(RefreshAction);			
-			mindmapEditorClassFactoryActionProvider.addActionClass(OpenAction);
+								
+			editorClassFactoryActionProvider.addActionClass(AddNodeAction);
+			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
+			editorClassFactoryActionProvider.addActionClass(RenameAction);			
+			editorClassFactoryActionProvider.addActionClass(ReloadAction);			
+			editorClassFactoryActionProvider.addActionClass(OpenAction);
 			
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
@@ -210,8 +198,7 @@ package org.flowerplatform.flex_client.core {
 				.addSingleController(NODE_ICONS_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			linkHandlers = new Dictionary();
-			linkHandlers[LinkHandler.OPEN_RESOURCES] = new LinkHandler(MindMapEditorDescriptor.ID);
-
+			
 			if (ExternalInterface.available) {
 				// on mobile, it's not available
 				ExternalInterface.addCallback("handleLink", handleLink);

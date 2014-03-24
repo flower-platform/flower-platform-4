@@ -17,24 +17,22 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.update {
-	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	import mx.rpc.events.FaultEvent;
 	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.NodeWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
+	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
+	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.remote.FullNodeIdWithChildren;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-	import org.flowerplatform.flex_client.core.mindmap.remote.NodeWithChildren;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.ChildrenUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.PropertyUpdate;
-	import org.flowerplatform.flex_client.core.mindmap.remote.update.Update;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;

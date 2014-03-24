@@ -3,7 +3,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flex_client.mindmap.MindMapNodePropertiesConstants;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.Utils;

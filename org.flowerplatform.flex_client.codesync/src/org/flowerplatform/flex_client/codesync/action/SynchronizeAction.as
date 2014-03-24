@@ -2,8 +2,8 @@ package org.flowerplatform.flex_client.codesync.action {
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.action.DiagramShellAwareActionBase;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	
 	/**
 	 * @author Mariana Gheorghe
