@@ -30,7 +30,8 @@ package org.flowerplatform.flex_client.core.editor {
 	 */
 	public class ResourceNodeIdsToNodeUpdateProcessors {
 		
-		public var lastUpdateTimestamp:Number = -1;
+		public var lastUpdateTimestampOfServer:Number = -1;
+		public var lastUpdateTimestampOfClient:Number = -1;
 		
 		private var map:Dictionary = new Dictionary();
 		

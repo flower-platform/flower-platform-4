@@ -29,7 +29,6 @@ package com.crispico.flower.util.popup {
 		
 		public function ModalSpinnerViewHost(viewContent:IViewContent) {
 			super();
-			dontShowSpinner = true;
 			childrenUnderSpinner = [viewContent];
 		}
 		

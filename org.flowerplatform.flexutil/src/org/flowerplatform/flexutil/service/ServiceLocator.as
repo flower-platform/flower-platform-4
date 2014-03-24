@@ -1,7 +1,6 @@
 package org.flowerplatform.flexutil.service {
 	import flash.utils.Dictionary;
 	
-	import mx.controls.Alert;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncToken;
@@ -44,9 +43,7 @@ package org.flowerplatform.flexutil.service {
 		public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
 			if (responder.faultHandler != null) {
 				responder.faultHandler(event);
-			} else {
-				Alert.show("Error while sending request to server: " + event.fault.faultString + "\n" + event.fault.content);
-			}			
+			}		
 		}
 		
 		public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {

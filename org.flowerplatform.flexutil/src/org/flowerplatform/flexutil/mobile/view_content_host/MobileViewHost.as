@@ -17,21 +17,11 @@
  * license-end
  */
 package org.flowerplatform.flexutil.mobile.view_content_host {
-	import mx.core.IVisualElement;
-	
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionUtil;
-	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
-	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
-	import spark.components.Button;
 	import spark.components.Group;
-	import spark.components.Label;
 	import spark.components.Scroller;
-	import spark.components.View;
 	import spark.core.IViewport;
-	import spark.primitives.BitmapImage;
 	
 	/**
 	 * @author Cristian Spiescu

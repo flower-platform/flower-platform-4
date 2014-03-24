@@ -79,15 +79,19 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 * 	<li><code>subscribeFaultCallback(event:FaultEvent):void</code>
 		 * </ul>
 		 */ 
-		public function subscribeToSelfOrParentResource(nodeId:String, subscribeResultCallback:Function, subscribeFaultCallback:Function):void {
+		public function subscribeToSelfOrParentResource(nodeId:String, subscribeResultCallback:Function = null, subscribeFaultCallback:Function = null):void {
 			CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.subscribeToSelfOrParentResource", [nodeId], 
 				function(resourceNode:Node):void {
 					registerResourceNodeForProcessor(resourceNode);
-					subscribeResultCallback(resourceNode);
+					if (subscribeResultCallback != null) {
+						subscribeResultCallback(resourceNode);
+					}
 				},
 				function(event:FaultEvent):void {
 					showSubscriptionError(event);
-					subscribeFaultCallback(event);
+					if (subscribeFaultCallback != null) {
+						subscribeFaultCallback(event);
+					}
 				});
 		}
 		
@@ -106,7 +110,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 				resourceNodeIds.addItem(resourceNode.fullNodeId);
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.addNodeUpdateProcessor(resourceNode.fullNodeId, this);				
 			}
-						
+			
 			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
 			var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
 			// refresh rootNode only if it has no properties
@@ -188,6 +192,16 @@ package org.flowerplatform.flex_client.core.editor.update {
 		}
 		
 		/**
+		 * Finds the node with the <code>nodeId</code> in the registry, and removes its children.
+		 * 
+		 * @see UpdatesProcessingServiceLocator#clearObsoleteResourceNodes()
+		 */
+		public function removeChildrenForNodeId(context:DiagramShellContext, nodeId:String, refreshChildrenAndPositions:Boolean = true):void {
+			var node:Node = nodeRegistry.getNodeById(nodeId);
+			removeChildren(context, node, refreshChildrenAndPositions);
+		}
+		
+		/**
 		 * Called from <code>removeNode()</code> or from UI: when a node is collapsed.
 		 * 
 		 * <p>
@@ -226,12 +240,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 			if (!isSubscribable) {
 				requestChildrenFromServer(context, node);
 			} else {
-				subscribeToSelfOrParentResource(node.fullNodeId, 
-					function(resourceNode:Node):void {
+				subscribeToSelfOrParentResource(node.fullNodeId, function(resourceNode:Node):void {
 						requestChildrenFromServer(context, node);
-					},
-					function(event:FaultEvent):void {
-						// TODO
 					});
 			}
 		}
