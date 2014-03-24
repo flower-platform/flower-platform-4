@@ -70,9 +70,9 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, 
-				titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text]);
-
-			context.diagramShell.mainToolFinishedItsJob();
+				titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text], function(data:Object):void {
+					context.diagramShell.mainToolFinishedItsJob();
+				});
 		}
 		
 		override public function abort(context:DiagramShellContext, model:Object):void {

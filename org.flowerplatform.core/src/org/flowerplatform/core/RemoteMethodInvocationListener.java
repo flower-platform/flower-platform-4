@@ -41,25 +41,28 @@ public class RemoteMethodInvocationListener {
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		List<String> clientRootNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
-		List<String> serverRootNodeIds = CorePlugin.getInstance().getResourceInfoService().getResourcesSubscribedBySession(sessionId);
-		List<String> notFoundRootNodeIds = new ArrayList<String>();
-		for (String clientRootNodeId : clientRootNodeIds) {
-			if (serverRootNodeIds.contains(clientRootNodeId)) {
-				continue;
+		
+		if (clientRootNodeIds != null) {
+			List<String> serverRootNodeIds = CorePlugin.getInstance().getResourceInfoService().getResourcesSubscribedBySession(sessionId);
+			List<String> notFoundRootNodeIds = new ArrayList<String>();
+			for (String clientRootNodeId : clientRootNodeIds) {
+				if (serverRootNodeIds.contains(clientRootNodeId)) {
+					continue;
+				}
+				
+				// the client is not subscribed to this resource anymore, maybe he went offline?
+				// subscribe the client to this resource
+				try {
+					CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(clientRootNodeId, sessionId);
+				} catch (Exception e) {
+					// the resource could not be loaded; inform the client
+					notFoundRootNodeIds.add(clientRootNodeId);
+				}
 			}
 			
-			// the client is not subscribed to this resource anymore, maybe he went offline?
-			// subscribe the client to this resource
-			try {
-				CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(clientRootNodeId, sessionId);
-			} catch (Exception e) {
-				// the resource could not be loaded; inform the client
-				notFoundRootNodeIds.add(clientRootNodeId);
+			if (notFoundRootNodeIds.size() > 0) {
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(ROOT_NODE_IDS_NOT_FOUND, notFoundRootNodeIds);
 			}
-		}
-		
-		if (notFoundRootNodeIds.size() > 0) {
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(ROOT_NODE_IDS_NOT_FOUND, notFoundRootNodeIds);
 		}
 	}
 
@@ -81,27 +84,30 @@ public class RemoteMethodInvocationListener {
 			logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 		}
 		
-		// get info from header
-		long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
-		List<String> rootNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
-		
 		// prepare result
 		remoteMethodInvocationInfo.getEnrichedReturnValue().put(MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
 		
-		long timestamp = new Date().getTime();
-		remoteMethodInvocationInfo.getEnrichedReturnValue().put(LAST_UPDATE_TIMESTAMP, timestamp);
-		
-		Map<String, List<Update>> rootNodeIdToUpdates = new HashMap<String, List<Update>>();
-		for (String rootNodeId : rootNodeIds) {
-			List<Update> updates = CorePlugin.getInstance().getResourceInfoService()
-					.getUpdates(rootNodeId, timestampOfLastRequest, timestamp);
-			rootNodeIdToUpdates.put(rootNodeId, updates);
+		// get info from header
+		List<String> rootNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
+				
+		if (rootNodeIds != null) {
+			// only request updates if the client is subscribed to some resource
+			long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
+			long timestamp = new Date().getTime();
+			remoteMethodInvocationInfo.getEnrichedReturnValue().put(LAST_UPDATE_TIMESTAMP, timestamp);
+			
+			Map<String, List<Update>> rootNodeIdToUpdates = new HashMap<String, List<Update>>();
+			for (String rootNodeId : rootNodeIds) {
+				List<Update> updates = CorePlugin.getInstance().getResourceInfoService()
+						.getUpdates(rootNodeId, timestampOfLastRequest, timestamp);
+				rootNodeIdToUpdates.put(rootNodeId, updates);
+			}
+			if (rootNodeIdToUpdates.size() > 0) {
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(UPDATES, rootNodeIdToUpdates);
+			}
 		}
-		if (rootNodeIdToUpdates.size() > 0) {
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(UPDATES, rootNodeIdToUpdates);
-		}
-		
-		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());	
+			
+		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
 	}
 	
 }

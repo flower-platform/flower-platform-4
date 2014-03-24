@@ -48,10 +48,20 @@ that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow
 		<mx:Fade id="fadeOut" duration="300" alphaFrom="1" alphaTo="0" effectEnd="fadeOutEffectEndHandler()"/>
 	</fx:Declarations>
 	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace spinner "com.crispico.flower.util.spinner.*";
+		
+		.childUnderSpinner {
+			color: #0D78FF;
+		}
+		
+	</fx:Style>
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.containers.Panel;
-			import mx.controls.Label;
 			import mx.core.Container;
 			import mx.core.FlexGlobals;
 			import mx.core.UIComponent;
@@ -60,6 +70,8 @@ that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow
 			import mx.managers.ISystemManager;
 			import mx.managers.PopUpManager;
 			import mx.managers.SystemManager;
+			
+			import spark.components.Label;
 			
 			public var dontShowSpinner:Boolean;
 			
@@ -129,7 +141,6 @@ that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow
 				if (text != null) {
 					var label:Label = new Label();
 					label.text = text;
-					label.setStyle("color", "#0D78FF");
 					modalSpinner.childrenUnderSpinner = [label];
 				}
 
@@ -188,7 +199,6 @@ that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow
 				if (text != null) {
 					var label:Label = new Label();
 					label.text = text;
-					label.setStyle("color", "#0D78FF");
 					modalSpinner.childrenUnderSpinner = [label];
 				}
 				
@@ -305,6 +315,9 @@ that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow
 				}
 				if (childrenUnderSpinner != null) {
 					for each (var child:DisplayObject in childrenUnderSpinner) {
+						if (child is UIComponent) {
+							UIComponent(child).styleName = "childUnderSpinner";
+						}
 						addChild(child);
 					}
 				}
