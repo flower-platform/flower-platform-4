@@ -45,7 +45,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [dirtyResourceNodeIds[0]]);
 			} else { 
 				// multiple resourceNodes to save -> show dialog
-				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds);
+				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds, function():void {});
 			}
 		}
 				
