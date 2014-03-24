@@ -38,6 +38,7 @@ package org.flowerplatform.flex_client.web {
 	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.TextInput;
+	import spark.formatters.DateTimeFormatter;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -90,6 +91,13 @@ package org.flowerplatform.flex_client.web {
 				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "(root||)");
 			});
 			hBox.addChild(addRootBtn);
+			
+			CorePlugin.getInstance().lastUpdateTimestampButton.label = "No resource updates requested yet";
+			CorePlugin.getInstance().lastUpdateTimestampButton.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
+				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.ping");
+			});
+			hBox.addChild(CorePlugin.getInstance().lastUpdateTimestampButton);
+			
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);

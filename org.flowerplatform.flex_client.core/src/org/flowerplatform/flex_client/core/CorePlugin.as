@@ -70,6 +70,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	
 	import spark.components.Application;
+	import spark.components.Button;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -105,6 +106,8 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeProvider:ITypeProvider;
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
+		
+		public var lastUpdateTimestampButton:Button = new Button();
 		
 		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
 		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";

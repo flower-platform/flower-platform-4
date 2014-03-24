@@ -144,7 +144,8 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 			return updatesAddedAfterLastRequest;
 		}
 		
-		boolean updatesBeforeLastRequestFound = timestampOfLastRequest != -1;
+		long timestampOfLastRequestForServer = info == null ? 0 : info.getUpdateRequestedTimestamp();
+		boolean updatesBeforeLastRequestFound = timestampOfLastRequest <= timestampOfLastRequestForServer;
 		// iterate updates reversed. Because last element in list is the most recent.
 		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
 		for (int i = updates.size() - 1; i >= 0; i--) {

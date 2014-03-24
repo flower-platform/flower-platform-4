@@ -61,7 +61,9 @@ package org.flowerplatform.flex_client.core.editor.update {
 		}
 		
 		public function stop():void {
-			timer.reset();
+			if (updateInterval > 0) {
+				timer.reset();
+			}
 		}
 		
 	}

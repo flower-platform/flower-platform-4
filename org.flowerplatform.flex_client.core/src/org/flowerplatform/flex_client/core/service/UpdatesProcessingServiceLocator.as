@@ -17,6 +17,8 @@ package org.flowerplatform.flex_client.core.service {
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
+	
+	import spark.formatters.DateTimeFormatter;
 
 	/**
 	 * Custom behavior to get updates registered after each message invocation.
@@ -63,8 +65,11 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
-			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
+			var resourceNodeIds:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
+			if (resourceNodeIds.length > 0) {
+				headers[ROOT_NODE_IDS] = resourceNodeIds;
+				headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
+			}
 			operation.messageHeaders = headers;
 			
 			return operation;
@@ -82,6 +87,14 @@ package org.flowerplatform.flex_client.core.service {
 			if (result.hasOwnProperty(LAST_UPDATE_TIMESTAMP)) {
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer = result[LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient = new Date().time;
+				
+				if (CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient != -1) {
+					var formatter:DateTimeFormatter = new DateTimeFormatter();
+					formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
+					var date:Date = new Date();
+					date.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
+					CorePlugin.getInstance().lastUpdateTimestampButton.label = "Last update: " + formatter.format(date);
+				}
 			}
 			
 			if (result.hasOwnProperty(UPDATES)) { // updates exists, process them
@@ -100,7 +113,7 @@ package org.flowerplatform.flex_client.core.service {
 		}
 		
 		override public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
-			if (event.fault.faultCode == "Channel.Call.Failed ") {
+			if (event.fault.faultCode == "Channel.Call.Failed" || event.fault.faultCode == "Client.Error.MessageSend") {
 				if (reconnectingViewContent == null) {
 					reconnectingViewContent = new ReconnectingViewContent();
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
