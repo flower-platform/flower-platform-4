@@ -42,6 +42,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 		override protected function unassignData():void {
 			labelDisplay.text = "";
+			icons = null;
 			
 			// Important: measuredHeight/measuredWidth are reset to their default values; otherwise the renderer will use recycled values for width/height 
 			measuredWidth = 0;

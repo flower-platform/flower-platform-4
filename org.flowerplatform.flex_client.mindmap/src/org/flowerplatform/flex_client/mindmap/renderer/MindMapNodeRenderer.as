@@ -19,6 +19,22 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			allowBaseRendererToClearGraphics = false;
 		}
 		
+		override protected function unassignData():void {
+			super.unassignData();
+			
+			minWidth = 0;
+			maxWidth = DEFAULT_MAX_WIDTH;
+			backgroundColor = BACKGROUND_COLOR_DEFAULT;
+			
+			if (labelDisplay) {
+				labelDisplay.setStyle("fontFamily", undefined);	
+				labelDisplay.setStyle("fontSize", undefined);
+				labelDisplay.setStyle("fontWeight", undefined);
+				labelDisplay.setStyle("fontStyle", undefined);
+				labelDisplay.setStyle("color", undefined);
+			}			
+		}
+		
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			super.modelChangedHandler(event);
 			switch (event.property) {			
