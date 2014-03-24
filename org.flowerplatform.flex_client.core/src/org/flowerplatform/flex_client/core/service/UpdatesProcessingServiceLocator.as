@@ -100,15 +100,16 @@ package org.flowerplatform.flex_client.core.service {
 		}
 		
 		override public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
-			super.faultHandler(event, responder);
-			if (responder.faultHandler == null) {
+			if (event.fault.faultCode == "Channel.Call.Failed ") {
 				if (reconnectingViewContent == null) {
 					reconnectingViewContent = new ReconnectingViewContent();
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 						.setViewContent(reconnectingViewContent)
 						.showModalOverAllApplication();
 				}
-			}	
+			} else {
+				super.faultHandler(event, responder);
+			}
 		}
 		
 		private function sendUpdatesToOpenEditors(rootNodeIdToUpdates:Object):void {

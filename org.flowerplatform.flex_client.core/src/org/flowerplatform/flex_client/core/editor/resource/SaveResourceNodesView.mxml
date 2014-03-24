@@ -57,11 +57,12 @@
 				for (var i:int = 0; i < dirtyResourceNodes.length; i++) {
 					var resourceNodeData:ResourceNode = ResourceNode(dirtyResourceNodes.getItemAt(i));
 					if (resourceNodeData.selected) {
-						CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [resourceNodeData.resourceNodeId]);
+						// invoke service method and wait for result to close the view
+						CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [resourceNodeData.resourceNodeId], function(data:Object):void {
+							noButton_clickHandler();
+						});
 					}
 				}
-				
-				noButton_clickHandler();
 			}
 			
 			protected function noButton_clickHandler(event:MouseEvent = null):void {

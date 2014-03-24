@@ -7,6 +7,9 @@ package org.flowerplatform.flexutil.service {
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
+	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @author Cristian Spiescu
@@ -43,7 +46,14 @@ package org.flowerplatform.flexutil.service {
 		public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
 			if (responder.faultHandler != null) {
 				responder.faultHandler(event);
-			}		
+			} else {
+				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+					.setWidth(300)
+					.setHeight(200)
+					.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
+					.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [event.fault.faultString, event.fault.content]))
+					.showMessageBox();
+			}			
 		}
 		
 		public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {
