@@ -110,7 +110,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		}
 		
 		if (!fileAccessController.exists(file)) {
-			fileAccessController.createNewFile(file);
+			fileAccessController.createFile(file, false);
 		}
 		
 		if (fileAccessController.exists(file)) {

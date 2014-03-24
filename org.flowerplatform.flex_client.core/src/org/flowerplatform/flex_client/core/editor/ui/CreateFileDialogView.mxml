@@ -12,12 +12,14 @@
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-
+			
+			
 			private var _viewHost:IViewHost;
 			private var _resultHandler:IDialogResultHandler;
 			
@@ -40,18 +42,18 @@
 			public function setParentNode(parent:Node):void {
 				parentNode = parent;
 			}
-		
+			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 			}
 			
 			protected function createFile(evt:MouseEvent = null):void {
 				var properties:Object = new Object();
-
-				properties.type = "fileNode";
-				properties.text = fileName.text;
-				properties.isDirectory = isDir;
 				
-				if (properties.text != "") { //TODO see if it's a valid file name
+				properties.type = CorePlugin.FILE_NODE_TYPE;
+				properties[NodePropertiesConstants.NAME] = fileName.text;
+				properties[NodePropertiesConstants.FILE_IS_DIRECTORY] = isDir;
+				
+				if (properties.text != "") {
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
 				}
 				cancel();
@@ -62,7 +64,7 @@
 			}
 		]]>
 	</fx:Script>
-
+	
 	<s:layout>
 		<s:VerticalLayout paddingTop="2" paddingLeft="2" paddingBottom="2" paddingRight="2" gap="5"/>
 	</s:layout>

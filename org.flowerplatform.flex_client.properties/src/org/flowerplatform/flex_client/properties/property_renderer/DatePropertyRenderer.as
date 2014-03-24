@@ -19,6 +19,8 @@
 package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.events.FlexEvent;
 	
+	import spark.formatters.DateTimeFormatter;
+	
 	/**
 	 * @author Sebastian Solomon
 	 */
@@ -30,20 +32,10 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		override protected function creationCompleteHandler(event:FlexEvent):void {
 			if (data.value is Date) {
-				var date:Date = data.value as Date;
-				var month:String = addLeadingZero(date.monthUTC + 1);
-				var day:String = addLeadingZero(date.dateUTC);
-				var hours:String = addLeadingZero(date.hours);
-				var minutes:String = addLeadingZero(date.minutes);
-				var seconds:String = addLeadingZero(date.seconds);
-				// YYYY-MM-DD hh:mm:ss
-				propertyValue.text = date.fullYear + "-" + month + "-" + day + " " + 
-						hours + ":" + minutes + ":" + seconds; 
+				var dtf:DateTimeFormatter = new DateTimeFormatter();
+				dtf.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
+				propertyValue.text = dtf.format(data.value);
 			}
-		}
-		
-		protected function addLeadingZero(number:Number):String {
-			return (number >= 10 ? '' : '0') + number;
 		}
 		
 	}
