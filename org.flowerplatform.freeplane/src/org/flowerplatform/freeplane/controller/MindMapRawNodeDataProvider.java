@@ -19,8 +19,8 @@ public class MindMapRawNodeDataProvider extends RawNodeDataProvider<NodeModel> {
 	@Override
 	public NodeModel getRawNodeData(Node node, ServiceContext context) {
 		// get the raw resource data for the resource node
-		Node resourceNode = CoreUtils.getRootNode(node);
-		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService()
+		Node resourceNode = CoreUtils.getResourceNode(node);
+		MapModel model = (MapModel) CorePlugin.getInstance().getResourceService()
 				.getRawResourceData(resourceNode.getFullNodeId());
 		// return the node with this id
 		return model.getNodeForID(node.getIdWithinResource());

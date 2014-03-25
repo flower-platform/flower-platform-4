@@ -84,7 +84,7 @@ public class CodeSyncTest {
 		startPlugin(new CodeSyncCodePlugin());
 		startPlugin(new CodeSyncCodeJavaPlugin());
 		
-		CorePlugin.getInstance().getResourceInfoService().sessionSubscribedToResource(resourceNodeId, "", new ServiceContext());
+		CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(resourceNodeId, "", new ServiceContext());
 	}
 	
 	@Test

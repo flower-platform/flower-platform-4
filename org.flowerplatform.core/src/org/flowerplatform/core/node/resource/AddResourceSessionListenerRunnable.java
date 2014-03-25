@@ -5,15 +5,15 @@ import javax.servlet.ServletContext;
 import org.flowerplatform.util.RunnableWithParam;
 
 /**
- * Registers a {@link ResourceInfoSessionListener} as a session listener.
+ * Registers a {@link ResourceSessionListener} as a session listener.
  * 
  * @author Mariana Gheorghe
  */
-public class AddResourceInfoHttpSessionListenerRunnable implements RunnableWithParam<Void, ServletContext> {
+public class AddResourceSessionListenerRunnable implements RunnableWithParam<Void, ServletContext> {
 
 	@Override
 	public Void run(ServletContext context) {
-		context.addListener(new ResourceInfoSessionListener());
+		context.addListener(new ResourceSessionListener());
 		return null;
 	}
 

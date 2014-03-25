@@ -20,7 +20,7 @@ public class CoreUtils {
 		return isSubscribable;
 	}
 	
-	public static Node getRootNode(Node node) {
+	public static Node getResourceNode(Node node) {
 		if (node.getResource() == null) {
 			return null;
 		} else if (SELF_RESOURCE.equals(node.getResource())) {

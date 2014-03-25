@@ -33,14 +33,14 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	}
 	
 	@Override
-	public void firstClientSubscribed(String rootNodeId, ServiceContext context) throws Exception {
-		Node rootNode = new Node(rootNodeId);
-		if (!canHandleResource(rootNode.getIdWithinResource())) {
+	public void firstClientSubscribed(String resourceNodeId, ServiceContext context) throws Exception {
+		Node resourceNode = new Node(resourceNodeId);
+		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return;
 		}
 		
 		MapModel model = null;
-		URL url = new File(rootNode.getIdWithinResource()).toURI().toURL();
+		URL url = new File(resourceNode.getIdWithinResource()).toURI().toURL();
 		InputStreamReader urlStreamReader = null;
 		try {
 			urlStreamReader = new InputStreamReader(url.openStream());
@@ -55,22 +55,22 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 			}
 		}
 		
-		logger.debug("Loaded mindmap {}", rootNode.getIdWithinResource());
+		logger.debug("Loaded mindmap {}", resourceNode.getIdWithinResource());
 		
-		CorePlugin.getInstance().getResourceInfoService().setRawResourceData(rootNodeId, model, resourceCategory);
+		CorePlugin.getInstance().getResourceService().setRawResourceData(resourceNodeId, model, resourceCategory);
 		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 
 	@Override
-	public void lastClientUnubscribed(String rootNodeId, ServiceContext context) {
-		Node rootNode = new Node(rootNodeId);
-		if (!canHandleResource(rootNode.getIdWithinResource())) {
+	public void lastClientUnubscribed(String resourceNodeId, ServiceContext context) {
+		Node resourceNode = new Node(resourceNodeId);
+		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return;
 		}
 		
-		logger.debug("Unloaded mindmap {}", rootNode.getIdWithinResource());
+		logger.debug("Unloaded mindmap {}", resourceNode.getIdWithinResource());
 		
-		CorePlugin.getInstance().getResourceInfoService().unsetRawResourceData(rootNodeId);
+		CorePlugin.getInstance().getResourceService().unsetRawResourceData(resourceNodeId);
 		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 	
@@ -80,12 +80,12 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void save(String resourceNodeId, ServiceContext context) {
-		Node rootNode = new Node(resourceNodeId);
-		if (!canHandleResource(rootNode.getIdWithinResource())) {
+		Node resourceNode = new Node(resourceNodeId);
+		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return;
 		}
 		
-		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
+		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
 		
 		try {
 			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File (URLDecoder.decode(rawNodeData.getURL().getPath())));
@@ -101,13 +101,13 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public boolean isDirty(String rootNodeId, ServiceContext context) {
-		Node rootNode = new Node(rootNodeId);
-		if (!canHandleResource(rootNode.getIdWithinResource())) {
+	public boolean isDirty(String resourceNodeId, ServiceContext context) {
+		Node resourceNode = new Node(resourceNodeId);
+		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return false;
 		}
 		
-		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
+		MapModel model = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
 		
 		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 		return !model.isSaved();

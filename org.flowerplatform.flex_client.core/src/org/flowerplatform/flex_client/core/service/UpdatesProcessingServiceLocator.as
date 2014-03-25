@@ -23,13 +23,13 @@ package org.flowerplatform.flex_client.core.service {
 	 * Custom behavior to get updates registered after each message invocation.
 	 * 
 	 * <p>
-	 * Before sending message to server, adds additional headers like timestamp of last update, full rootNode id.
+	 * Before sending message to server, adds additional headers like timestamp of last update, full resourceNode id.
 	 * These headers will be used on server to get a list of latest updates.
 	 * <p>
 	 * The server result contains:
 	 * <ul>
 	 * 	<li> <code>MESSAGE_RESULT</code> -> the message invocation result; it will be handled by <code>response.resultHandler</code>
-	 * 	<li> <code>UPDATES</code> (optional) -> map of full rootNode id to a list of updates that will be applied to the corresponding processor
+	 * 	<li> <code>UPDATES</code> (optional) -> map of full resourceNode id to a list of updates that will be applied to the corresponding processor
 	 * </ul>
 	 * 
 	 * @author Cristina Constantinescu
@@ -41,8 +41,8 @@ package org.flowerplatform.flex_client.core.service {
 		public static const UPDATES:String = "updates";
 		
 		public static const LAST_UPDATE_TIMESTAMP:String = "timestampOfLastUpdate";
-		public static const ROOT_NODE_IDS:String = "rootNodeIds";
-		public static const ROOT_NODE_IDS_NOT_FOUND:String = "rootNodeIdsNotFound";
+		public static const ROOT_NODE_IDS:String = "resourceNodeIds";
+		public static const ROOT_NODE_IDS_NOT_FOUND:String = "resourceNodeIdsNotFound";
 		
 		private var reconnectingViewContent:IViewContent;
 		
@@ -120,12 +120,12 @@ package org.flowerplatform.flex_client.core.service {
 			}
 		}
 		
-		private function sendUpdatesToOpenEditors(rootNodeIdToUpdates:Object):void {
-			for (var rootNodeId:String in rootNodeIdToUpdates) {
-				var updates:ArrayCollection = rootNodeIdToUpdates[rootNodeId];
-				var nodeUpdateProcessors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(rootNodeId);
+		private function sendUpdatesToOpenEditors(resourceNodeIdToUpdates:Object):void {
+			for (var resourceNodeId:String in resourceNodeIdToUpdates) {
+				var updates:ArrayCollection = resourceNodeIdToUpdates[resourceNodeId];
+				var nodeUpdateProcessors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(resourceNodeId);
 				for each (var nodeUpdateProcessor:NodeUpdateProcessor in nodeUpdateProcessors) {
-					nodeUpdateProcessor.rootNodeUpdatesHandler(nodeUpdateProcessor.context, updates);
+					nodeUpdateProcessor.resourceNodeUpdatesHandler(nodeUpdateProcessor.context, updates);
 				}
 			}
 		}

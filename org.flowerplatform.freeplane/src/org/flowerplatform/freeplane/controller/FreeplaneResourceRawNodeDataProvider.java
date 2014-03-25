@@ -1,7 +1,5 @@
 package org.flowerplatform.freeplane.controller;
 
-import java.util.Map;
-
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.RawNodeDataProvider;
@@ -16,7 +14,7 @@ public class FreeplaneResourceRawNodeDataProvider extends RawNodeDataProvider<No
 
 	@Override
 	public NodeModel getRawNodeData(Node node, ServiceContext context) {
-		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService()
+		MapModel model = (MapModel) CorePlugin.getInstance().getResourceService()
 				.getRawResourceData(node.getFullNodeId());
 		// return the root node for the resource
 		return model.getRootNode();

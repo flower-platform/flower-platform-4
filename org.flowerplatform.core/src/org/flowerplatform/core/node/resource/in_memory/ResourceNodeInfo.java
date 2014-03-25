@@ -9,7 +9,7 @@ import org.flowerplatform.core.node.update.remote.Update;
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
  */
-public class RootNodeInfo {
+public class ResourceNodeInfo {
 
 	private Object rawResourceData;
 	

@@ -6,34 +6,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.node.resource.IResourceInfoDAO;
+import org.flowerplatform.core.node.resource.IResourceDAO;
 import org.flowerplatform.core.node.update.remote.Update;
 
 /**
- * Keeps in-memory maps of {@link RootNodeInfo}s and information about subscribed clients (sessions).
+ * Keeps in-memory maps of {@link ResourceNodeInfo}s and information about subscribed clients (sessions).
  * 
  * @author Mariana Gheorghe
  */
-public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
+public class InMemoryResourceDAO implements IResourceDAO {
 
-	private Map<String, RootNodeInfo> resourceNodeIdToInfo = new HashMap<String, RootNodeInfo>();
+	private Map<String, ResourceNodeInfo> resourceNodeIdToInfo = new HashMap<String, ResourceNodeInfo>();
 
 	private Map<String, SessionInfo> sessionIdToSessionInfo = new HashMap<String, SessionInfo>();
 
 	@Override
-	public void sessionSubscribedToResource(String rootNodeId, String sessionId) {
-		if (!getRootNodeInfoForRootNodeId(rootNodeId).getSessions().contains(sessionId)) {
-			getRootNodeInfoForRootNodeId(rootNodeId).getSessions().add(sessionId);
+	public void sessionSubscribedToResource(String resourceNodeId, String sessionId) {
+		if (!getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().contains(sessionId)) {
+			getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().add(sessionId);
 		}
-		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().contains(rootNodeId)) {
-			getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().add(rootNodeId);
+		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().contains(resourceNodeId)) {
+			getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().add(resourceNodeId);
 		}
 	}
 
 	@Override
-	public void sessionUnsubscribedFromResource(String rootNodeId, String sessionId) {
-		getRootNodeInfoForRootNodeId(rootNodeId).getSessions().remove(sessionId);
-		getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().remove(rootNodeId);
+	public void sessionUnsubscribedFromResource(String resourceNodeId, String sessionId) {
+		getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().remove(sessionId);
+		getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().remove(resourceNodeId);
 	}
 
 	@Override
@@ -66,8 +66,8 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 	}
 
 	@Override
-	public Object getRawResourceData(String rootNodeId) {
-		RootNodeInfo info = resourceNodeIdToInfo.get(rootNodeId);
+	public Object getRawResourceData(String resourceNodeId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
 		if (info != null) {
 			return info.getRawResourceData();
 		}
@@ -76,7 +76,7 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 
 	@Override
 	public String getResourceCategory(String resourceNodeId) {
-		RootNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
 		if (info != null) {
 			return info.getResourceCategory();
 		}
@@ -84,19 +84,19 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 	}
 	
 	@Override
-	public void setRawResourceData(String rootNodeId, Object rawResourceData, String resourceCategory) {
-		getRootNodeInfoForRootNodeId(rootNodeId).setRawResourceData(rawResourceData);
-		getRootNodeInfoForRootNodeId(rootNodeId).setResourceCategory(resourceCategory);
+	public void setRawResourceData(String resourceNodeId, Object rawResourceData, String resourceCategory) {
+		getResourceNodeInfoForResourceNodeId(resourceNodeId).setRawResourceData(rawResourceData);
+		getResourceNodeInfoForResourceNodeId(resourceNodeId).setResourceCategory(resourceCategory);
 	}
 	
 	@Override
-	public void unsetRawResourceData(String rootNodeId) {
-		resourceNodeIdToInfo.remove(rootNodeId);
+	public void unsetRawResourceData(String resourceNodeId) {
+		resourceNodeIdToInfo.remove(resourceNodeId);
 	}
 	
 	@Override
-	public long getUpdateRequestedTimestamp(String rootNodeId) {
-		RootNodeInfo info = resourceNodeIdToInfo.get(rootNodeId);
+	public long getUpdateRequestedTimestamp(String resourceNodeId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
 		if (info != null) {
 			return info.getUpdateRequestedTimestamp();
 		}
@@ -104,8 +104,8 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 	}
 	
 	@Override
-	public List<String> getSessionsSubscribedToResource(String rootNodeId) {
-		RootNodeInfo info = resourceNodeIdToInfo.get(rootNodeId);
+	public List<String> getSessionsSubscribedToResource(String resourceNodeId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
 		if (info != null) {
 			return info.getSessions();
 		}
@@ -127,15 +127,15 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 	}
 	
 	@Override
-	public void addUpdate(String rootNodeId, Update update) {
-		RootNodeInfo info = getRootNodeInfoForRootNodeId(rootNodeId);
+	public void addUpdate(String resourceNodeId, Update update) {
+		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(resourceNodeId);
 		info.getUpdates().add(update);
 	}
 
 	@Override
-	public List<Update> getUpdates(String rootNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
+	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
 		List<Update> updates = null;
-		RootNodeInfo info = resourceNodeIdToInfo.get(rootNodeId);
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
 		if (info != null) {
 			updates = info.getUpdates();
 		}
@@ -168,11 +168,11 @@ public class InMemoryResourceInfoDAO implements IResourceInfoDAO {
 	 * Lazy-init mechanism. Called from methods that need to add/update info.
 	 * Getters should instead check if the info exists, to avoid memory leaks.
 	 */
-	private RootNodeInfo getRootNodeInfoForRootNodeId(String rootNodeId) {
-		RootNodeInfo info = resourceNodeIdToInfo.get(rootNodeId);
+	private ResourceNodeInfo getResourceNodeInfoForResourceNodeId(String resourceNodeId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
 		if (info == null) {
-			info = new RootNodeInfo();
-			resourceNodeIdToInfo.put(rootNodeId, info);
+			info = new ResourceNodeInfo();
+			resourceNodeIdToInfo.put(resourceNodeId, info);
 		}
 		return info;
 	}

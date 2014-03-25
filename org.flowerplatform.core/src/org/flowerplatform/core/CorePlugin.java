@@ -36,11 +36,11 @@ import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.GenericDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.remote.ResourceInfoServiceRemote;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
-import org.flowerplatform.core.node.resource.ResourceInfoService;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
-import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceInfoDAO;
+import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
 import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
@@ -88,7 +88,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
-	protected ResourceInfoService resourceInfoService = new ResourceInfoService(nodeTypeDescriptorRegistry, new InMemoryResourceInfoDAO());
+	protected ResourceService resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
 
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	
@@ -122,8 +122,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return nodeService;
 	}
 
-	public ResourceInfoService getResourceInfoService() {
-		return resourceInfoService;
+	public ResourceService getResourceService() {
+		return resourceService;
 	}
 	
 	@Override
@@ -132,7 +132,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 			
 		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
-		getServiceRegistry().registerService("resourceInfoService", new ResourceInfoServiceRemote());
+		getServiceRegistry().registerService("resourceService", new ResourceServiceRemote());
 		
 		new ResourceUnsubscriber().start();
 		

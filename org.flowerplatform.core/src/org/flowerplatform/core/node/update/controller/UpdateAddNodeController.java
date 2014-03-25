@@ -18,10 +18,10 @@ public class UpdateAddNodeController extends AddNodeController {
 	
 	@Override
 	public void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
-		Node rootNode = CoreUtils.getRootNode(node);
-		if (rootNode != null) {
-			CorePlugin.getInstance().getResourceInfoService()
-				.addUpdate(rootNode.getFullNodeId(), 
+		Node resourceNode = CoreUtils.getResourceNode(node);
+		if (resourceNode != null) {
+			CorePlugin.getInstance().getResourceService()
+				.addUpdate(resourceNode.getFullNodeId(), 
 						new ChildrenUpdate()
 							.setTypeAs(ADDED)
 							.setTargetNodeAs(child)

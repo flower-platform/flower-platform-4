@@ -42,7 +42,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			var dirtyResourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.getEditorsDirtyResourceNodeIds([editorFrontend]);
 			if (dirtyResourceNodeIds.length == 1) { 
 				// single resourceNode to save -> save without asking
-				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [dirtyResourceNodeIds[0]]);
+				CorePlugin.getInstance().serviceLocator.invoke("resourceService.save", [dirtyResourceNodeIds[0]]);
 			} else { 
 				// multiple resourceNodes to save -> show dialog
 				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds, function():void {});
