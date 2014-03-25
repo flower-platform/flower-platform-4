@@ -5,6 +5,7 @@ import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLL
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
@@ -87,7 +88,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
 		
 		try {
-			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, rawNodeData.getFile());
+			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File (URLDecoder.decode(rawNodeData.getURL().getPath())));
 		} catch (Exception e) {
 			return;
 		} finally {
