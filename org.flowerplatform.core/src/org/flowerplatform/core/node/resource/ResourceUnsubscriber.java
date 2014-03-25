@@ -24,14 +24,14 @@ public class ResourceUnsubscriber extends TimerTask {
 	@Override
 	public void run() {
 		long now = new Date().getTime();
-		ResourceInfoService service = CorePlugin.getInstance().getResourceInfoService();
-		List<String> rootNodeIds = service.getResources();
-		for (String rootNodeId : rootNodeIds) {
-			long lastPing = service.getUpdateRequestedTimestamp(rootNodeId);
+		ResourceService service = CorePlugin.getInstance().getResourceService();
+		List<String> resourceNodeIds = service.getResources();
+		for (String resourceNodeId : resourceNodeIds) {
+			long lastPing = service.getUpdateRequestedTimestamp(resourceNodeId);
 			if (now - lastPing > RESOURCE_UNSUBSCRIBER_DELAY) {
-				List<String> sessionIds = service.getSessionsSubscribedToResource(rootNodeId);
+				List<String> sessionIds = service.getSessionsSubscribedToResource(resourceNodeId);
 				for (int i = sessionIds.size() - 1; i >= 0; i--) {
-					service.sessionUnsubscribedFromResource(rootNodeId, sessionIds.get(i), new ServiceContext());
+					service.sessionUnsubscribedFromResource(resourceNodeId, sessionIds.get(i), new ServiceContext());
 				}
 			}
 		}

@@ -30,7 +30,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.ping");
+			CorePlugin.getInstance().serviceLocator.invoke("resourceService.ping");
 		}
 		
 	}

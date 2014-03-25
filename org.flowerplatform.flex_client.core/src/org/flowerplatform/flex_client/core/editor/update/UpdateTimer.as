@@ -39,7 +39,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 			if (_updateInterval > 0) {
 				timer = new Timer(_updateInterval);
 				timer.addEventListener(TimerEvent.TIMER, function(event:TimerEvent):void {
-					CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.ping");
+					CorePlugin.getInstance().serviceLocator.invoke("resourceService.ping");
 				});
 				timer.start();
 			}

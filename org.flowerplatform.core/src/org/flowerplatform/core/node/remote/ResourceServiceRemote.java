@@ -3,18 +3,18 @@ package org.flowerplatform.core.node.remote;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.ServiceContext;
-import org.flowerplatform.core.node.resource.ResourceInfoService;
+import org.flowerplatform.core.node.resource.ResourceService;
 
 /**
- * @see ResourceInfoService
+ * @see ResourceService
  * 
  * @author Mariana Gheorghe
  */
-public class ResourceInfoServiceRemote {
+public class ResourceServiceRemote {
 
 	public Node subscribeToSelfOrParentResource(String nodeId) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
-		return CorePlugin.getInstance().getResourceInfoService()
+		return CorePlugin.getInstance().getResourceService()
 				.subscribeToSelfOrParentResource(nodeId, sessionId, new ServiceContext());
 	}
 	
@@ -32,7 +32,7 @@ public class ResourceInfoServiceRemote {
 	 * @author Cristina Constantinescu
 	 */
 	public void save(String resourceNodeId) {
-		CorePlugin.getInstance().getResourceInfoService().save(resourceNodeId, new ServiceContext());
+		CorePlugin.getInstance().getResourceService().save(resourceNodeId, new ServiceContext());
 	}
 	
 }

@@ -23,7 +23,7 @@ public class FreeplaneUtils {
 	}
 	
 	public Node getStandardNode(NodeModel nodeModel, String resource) {
-		String resourceCategory = CorePlugin.getInstance().getResourceInfoService().getResourceCategory(resource);
+		String resourceCategory = CorePlugin.getInstance().getResourceService().getResourceCategory(resource);
 		
 		String type = null;
 		if (MindMapPlugin.FREEPLANE_MINDMAP_CATEGORY.equals(resourceCategory)) {

@@ -25,12 +25,10 @@ import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLL
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.ServiceContext;
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -89,13 +87,13 @@ public class ResourceDebugControllers {
 				List<Node> children = new ArrayList<Node>();
 				
 				// sessions
-				for (String sessionId : CorePlugin.getInstance().getResourceInfoService().getSubscribedSessions()) {
+				for (String sessionId : CorePlugin.getInstance().getResourceService().getSubscribedSessions()) {
 					Node session = new Node(SESSION, node.getResource(), sessionId, null);
 					children.add(session);
 				}
 				
 				// resources
-				for (String resourceId : CorePlugin.getInstance().getResourceInfoService().getResources()) {
+				for (String resourceId : CorePlugin.getInstance().getResourceService().getResources()) {
 					Node resource = new Node(RESOURCE_NODE_INFO, node.getResource(), resourceId.replace("|", "+"), null);
 					children.add(resource);
 				}
@@ -120,7 +118,7 @@ public class ResourceDebugControllers {
 			public void populateWithProperties(Node node, ServiceContext context) {
 				String sessionId = node.getIdWithinResource().split(" ")[0];
 				node.getProperties().put(NodePropertiesConstants.NAME, "Session " + sessionId);
-				node.getProperties().put("ip", CorePlugin.getInstance().getResourceInfoService().getSessionProperty(sessionId, "ip"));
+				node.getProperties().put("ip", CorePlugin.getInstance().getResourceService().getSessionProperty(sessionId, "ip"));
 				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 			}
 		}.setOrderIndexAs(-500000))
@@ -143,7 +141,7 @@ public class ResourceDebugControllers {
 				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 				List<Node> children = new ArrayList<Node>();
 				String sessionId = node.getIdWithinResource().split(" ")[0];
-				for (String resourceId : CorePlugin.getInstance().getResourceInfoService().getResourcesSubscribedBySession(sessionId)) {
+				for (String resourceId : CorePlugin.getInstance().getResourceService().getResourcesSubscribedBySession(sessionId)) {
 					Node resource = new Node(RESOURCE_NODE_INFO2, node.getResource(), resourceId.replace("|", "+"), null);
 					children.add(resource);
 				}
@@ -160,7 +158,7 @@ public class ResourceDebugControllers {
 			public void populateWithProperties(Node node, ServiceContext context) {
 				String resourceId = node.getIdWithinResource().replace("+", "|").split(" ")[0];
 				node.getProperties().put(NodePropertiesConstants.NAME, "Resource " + resourceId);
-				long timestamp = CorePlugin.getInstance().getResourceInfoService().getUpdateRequestedTimestamp(resourceId);
+				long timestamp = CorePlugin.getInstance().getResourceService().getUpdateRequestedTimestamp(resourceId);
 				node.getProperties().put(LAST_UPDATE_TIMESTAMP, timestamp);
 				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 			}
@@ -185,7 +183,7 @@ public class ResourceDebugControllers {
 				
 				List<Node> children = new ArrayList<Node>();
 				String resourceId = node.getIdWithinResource().replace("+", "|");
-				for (String sessionId : CorePlugin.getInstance().getResourceInfoService().getSessionsSubscribedToResource(resourceId)) {
+				for (String sessionId : CorePlugin.getInstance().getResourceService().getSessionsSubscribedToResource(resourceId)) {
 					Node session = new Node(SESSION2, node.getResource(), sessionId, null);
 					children.add(session);
 				}
@@ -215,7 +213,7 @@ public class ResourceDebugControllers {
 				
 				List<Node> children = new ArrayList<Node>();
 				String resourceId = node.getIdWithinResource().replace("+", "|");
-				for (String sessionId : CorePlugin.getInstance().getResourceInfoService().getSessionsSubscribedToResource(resourceId)) {
+				for (String sessionId : CorePlugin.getInstance().getResourceService().getSessionsSubscribedToResource(resourceId)) {
 					Node session = new Node(SESSION3, node.getResource(), sessionId, null);
 					children.add(session);
 				}

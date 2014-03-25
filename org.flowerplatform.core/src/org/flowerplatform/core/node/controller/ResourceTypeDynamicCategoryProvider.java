@@ -6,13 +6,13 @@ import java.util.List;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.resource.in_memory.RootNodeInfo;
+import org.flowerplatform.core.node.resource.in_memory.ResourceNodeInfo;
 import org.flowerplatform.util.controller.IDynamicCategoryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * Provides a dynamic category based on a {@link Node}'s resource type.
- * For a given node, find the resource category from its resource node, i.e. {@link RootNodeInfo#getResourceCategory()}.
+ * For a given node, find the resource category from its resource node, i.e. {@link ResourceNodeInfo#getResourceCategory()}.
  * 
  * <p>
  * This way we can easily implement plugins that are "persistence providers" for a certain type of resource. E.g. the
@@ -32,11 +32,11 @@ public class ResourceTypeDynamicCategoryProvider implements IDynamicCategoryProv
 	public List<String> getDynamicCategories(Object object) {
 		if (object instanceof Node) {
 			Node node = (Node) object;
-			Node resourceNode = CoreUtils.getRootNode(node);
+			Node resourceNode = CoreUtils.getResourceNode(node);
 			if (resourceNode == null) {
 				return Collections.emptyList();
 			}
-			String resourceCategory = CorePlugin.getInstance().getResourceInfoService().getResourceCategory(resourceNode.getFullNodeId());
+			String resourceCategory = CorePlugin.getInstance().getResourceService().getResourceCategory(resourceNode.getFullNodeId());
 			if (resourceCategory != null) {
 				return Collections.singletonList(resourceCategory);
 			}

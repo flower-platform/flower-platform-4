@@ -58,7 +58,7 @@
 					var resourceNodeData:ResourceNode = ResourceNode(dirtyResourceNodes.getItemAt(i));
 					if (resourceNodeData.selected) {
 						// invoke service method and wait for result to close the view
-						CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.save", [resourceNodeData.resourceNodeId], function(data:Object):void {
+						CorePlugin.getInstance().serviceLocator.invoke("resourceService.save", [resourceNodeData.resourceNodeId], function(data:Object):void {
 							noButton_clickHandler();
 						});
 					}

@@ -46,7 +46,7 @@
 			
 			protected function reconnect():void {
 				reconnectingAutomatically = true;
-				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.ping");
+				CorePlugin.getInstance().serviceLocator.invoke("resourceService.ping");
 				CorePlugin.getInstance().updateTimer.restart(reconnectingPeriod, cancel);
 				
 				if (!FlexUtilGlobals.getInstance().isMobile && _viewHost is ModalSpinner) {

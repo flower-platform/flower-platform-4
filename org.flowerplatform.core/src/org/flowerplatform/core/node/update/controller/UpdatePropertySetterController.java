@@ -2,8 +2,6 @@ package org.flowerplatform.core.node.update.controller;
 
 import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
 
-import java.util.Map;
-
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.ServiceContext;
@@ -33,18 +31,18 @@ public class UpdatePropertySetterController extends PropertySetter {
 	}
 	
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext context) {		
-		Node rootNode;
+		Node resourceNode;
 		if (context.getValue(NODE_IS_RESOURCE_NODE)) {
-			rootNode = node;
+			resourceNode = node;
 		} else {
-			rootNode = CoreUtils.getRootNode(node);
-			if (rootNode == null) {
+			resourceNode = CoreUtils.getResourceNode(node);
+			if (resourceNode == null) {
 				return;
 			}
 		}
 
-		CorePlugin.getInstance().getResourceInfoService()
-			.addUpdate(rootNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
+		CorePlugin.getInstance().getResourceService()
+			.addUpdate(resourceNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
 	}
 
 }

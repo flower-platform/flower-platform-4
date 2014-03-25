@@ -156,7 +156,7 @@ package org.flowerplatform.flex_client.core {
 			
 			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);
 			serviceLocator.addService("nodeService");
-			serviceLocator.addService("resourceInfoService");
+			serviceLocator.addService("resourceService");
 			serviceLocator.addService("freeplaneService");
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();

@@ -23,17 +23,17 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Mariana Gheorghe
  */
-public class ResourceInfoService {
+public class ResourceService {
 
-	private final static Logger logger = LoggerFactory.getLogger(ResourceInfoService.class);
+	private final static Logger logger = LoggerFactory.getLogger(ResourceService.class);
 	
 	private TypeDescriptorRegistry registry;
 	
-	private IResourceInfoDAO resourceInfoDao;
+	private IResourceDAO resourceDao;
 	
-	public ResourceInfoService(TypeDescriptorRegistry registry, IResourceInfoDAO resourceInfoDao) {
+	public ResourceService(TypeDescriptorRegistry registry, IResourceDAO resourceDao) {
 		this.registry = registry;
-		this.resourceInfoDao = resourceInfoDao;
+		this.resourceDao = resourceDao;
 	}
 	
 	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId, ServiceContext context) {
@@ -44,7 +44,7 @@ public class ResourceInfoService {
 		if (CoreUtils.isSubscribable(node.getOrPopulateProperties())) {
 			subscribableNode = node;
 		} else {
-			Node resourceNode = CoreUtils.getRootNode(node);
+			Node resourceNode = CoreUtils.getResourceNode(node);
 			if (resourceNode != null && CoreUtils.isSubscribable(resourceNode.getOrPopulateProperties())) {
 				subscribableNode = resourceNode;
 			}
@@ -61,18 +61,18 @@ public class ResourceInfoService {
 	}
 	
 	/**
-	 * Subscribes the client with this <code>sessionId</code> to the <code>rootNode</code>. 
+	 * Subscribes the client with this <code>sessionId</code> to the <code>resourceNode</code>. 
 	 * Notifies all registered subscription listeners if this is the first client to subscribe
 	 * to this node.
 	 */
-	public void sessionSubscribedToResource(String rootNodeId, String sessionId, ServiceContext context) {
+	public void sessionSubscribedToResource(String resourceNodeId, String sessionId, ServiceContext context) {
 		boolean firstSubscription = false;
-		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
+		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
 			// first subscription
 			firstSubscription = true;
-			for (ResourceAccessController controller : getResourceAccessController(rootNodeId)) {
+			for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
 				try {
-					controller.firstClientSubscribed(rootNodeId, context);
+					controller.firstClientSubscribed(resourceNodeId, context);
 					if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 						break;
 					}
@@ -82,26 +82,26 @@ public class ResourceInfoService {
 				}
 			}
 		}
-		resourceInfoDao.sessionSubscribedToResource(rootNodeId, sessionId);
+		resourceDao.sessionSubscribedToResource(resourceNodeId, sessionId);
 		
 		if (logger.isDebugEnabled()) {
-			logger.debug("Subscribed session {} to root node {}, first subscription {}", new Object[] { sessionId, rootNodeId, firstSubscription });
+			logger.debug("Subscribed session {} to root node {}, first subscription {}", new Object[] { sessionId, resourceNodeId, firstSubscription });
 		}
 	}
 	
 	/**
-	 * Unsubscribes the client with this <code>sessionId</code> from the <code>rootNode</code>. 
+	 * Unsubscribes the client with this <code>sessionId</code> from the <code>resourceNode</code>. 
 	 * Notifies all registered subscription listeners if this is the last client to unsubscribe
 	 * from this node.
 	 */
-	public void sessionUnsubscribedFromResource(String rootNodeId, String sessionId, ServiceContext context) {
-		resourceInfoDao.sessionUnsubscribedFromResource(rootNodeId, sessionId);
+	public void sessionUnsubscribedFromResource(String resourceNodeId, String sessionId, ServiceContext context) {
+		resourceDao.sessionUnsubscribedFromResource(resourceNodeId, sessionId);
 		boolean lastUnsubscription = false;
-		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
+		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
 			// last unsubscription
 			lastUnsubscription = true;
-			for (ResourceAccessController controller : getResourceAccessController(rootNodeId)) {
-				controller.lastClientUnubscribed(rootNodeId, context);
+			for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
+				controller.lastClientUnubscribed(resourceNodeId, context);
 				if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 					break;
 				}
@@ -109,7 +109,7 @@ public class ResourceInfoService {
 		}
 		
 		if (logger.isDebugEnabled()) {
-			logger.debug("Unsubscribed session {} from root node {}, last unsubscription {}", new Object[] { sessionId, rootNodeId, lastUnsubscription });
+			logger.debug("Unsubscribed session {} from root node {}, last unsubscription {}", new Object[] { sessionId, resourceNodeId, lastUnsubscription });
 		}
 	}
 	
@@ -128,7 +128,7 @@ public class ResourceInfoService {
 		CorePlugin.getInstance().getNodeService().setProperty(
 				new Node(resourceNodeId), 
 				IS_DIRTY, 
-				CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNodeId, new ServiceContext()), 
+				CorePlugin.getInstance().getResourceService().isDirty(resourceNodeId, new ServiceContext()), 
 				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
 	}
 	
@@ -147,99 +147,99 @@ public class ResourceInfoService {
 	}
 	
 	public Object getRawResourceData(String resourceNodeId) {
-		return resourceInfoDao.getRawResourceData(resourceNodeId);
+		return resourceDao.getRawResourceData(resourceNodeId);
 	}
 	
 	public String getResourceCategory(String resourceNodeId) {
-		return resourceInfoDao.getResourceCategory(resourceNodeId);
+		return resourceDao.getResourceCategory(resourceNodeId);
 	}
 	/**
-	 * Delegates to {@link IResourceInfoDAO#setRawResourceData(String, Object)}.
+	 * Delegates to {@link IResourceDAO#setRawResourceData(String, Object)}.
 	 */
 	public void setRawResourceData(String resourceNodeId, Object rawResourceData, String resourceCategory) {
-		resourceInfoDao.setRawResourceData(resourceNodeId, rawResourceData, resourceCategory);
+		resourceDao.setRawResourceData(resourceNodeId, rawResourceData, resourceCategory);
 	}
 	
 	public void unsetRawResourceData(String resourceNodeId) {
-		resourceInfoDao.unsetRawResourceData(resourceNodeId);
+		resourceDao.unsetRawResourceData(resourceNodeId);
 	}
 	
 	public long getUpdateRequestedTimestamp(String resourceNodeId) {
-		return resourceInfoDao.getUpdateRequestedTimestamp(resourceNodeId);
+		return resourceDao.getUpdateRequestedTimestamp(resourceNodeId);
 	}
 	
 	/**
-	 * Called by the registered {@link ResourceInfoSessionListener} when a new session
+	 * Called by the registered {@link ResourceSessionListener} when a new session
 	 * is created.
 	 */
 	public void sessionCreated(String sessionId) {
 		logger.debug("Session created {}", sessionId);
 		
-		resourceInfoDao.sessionCreated(sessionId);
+		resourceDao.sessionCreated(sessionId);
 		
 		HttpServletRequest request = CorePlugin.getInstance().getRequestThreadLocal().get();
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
 		if (ipAddress == null) {
 			ipAddress = request.getRemoteAddr();
 		}
-		resourceInfoDao.updateSessionProperty(sessionId, "ip", ipAddress);
+		resourceDao.updateSessionProperty(sessionId, "ip", ipAddress);
 	}
 	
 	/**
-	 * Called by the registered {@link ResourceInfoSessionListener} when a session
+	 * Called by the registered {@link ResourceSessionListener} when a session
 	 * is removed.
 	 */
 	public void sessionRemoved(String sessionId) {
 		logger.debug("Session removed {}", sessionId);
 		
-		List<String> resources = resourceInfoDao.getResourcesSubscribedBySession(sessionId);
+		List<String> resources = resourceDao.getResourcesSubscribedBySession(sessionId);
 		for (int i = resources.size() - 1; i >= 0; i--) {
 			sessionUnsubscribedFromResource(resources.get(i), sessionId, new ServiceContext());
 		}
 		
-		resourceInfoDao.sessionRemoved(sessionId);
+		resourceDao.sessionRemoved(sessionId);
 	}
 	
 	/**
-	 * Delegates to {@link IResourceInfoDAO#getSubscribedSessions()}.
+	 * Delegates to {@link IResourceDAO#getSubscribedSessions()}.
 	 */
 	public List<String> getSubscribedSessions() {
-		return resourceInfoDao.getSubscribedSessions();
+		return resourceDao.getSubscribedSessions();
 	}
 	
 	public Object getSessionProperty(String sessionId, String property) {
-		return resourceInfoDao.getSessionProperty(sessionId, property);
+		return resourceDao.getSessionProperty(sessionId, property);
 	}
 	
 	public void updateSessionProperty(String sessionId, String property, Object value) {
-		resourceInfoDao.updateSessionProperty(sessionId, property, value);
+		resourceDao.updateSessionProperty(sessionId, property, value);
 	}
 	
 	public List<String> getResourcesSubscribedBySession(String sessionId) {
-		return resourceInfoDao.getResourcesSubscribedBySession(sessionId);
+		return resourceDao.getResourcesSubscribedBySession(sessionId);
 	}
 	
-	public List<String> getSessionsSubscribedToResource(String rootNodeId) {
-		return resourceInfoDao.getSessionsSubscribedToResource(rootNodeId);
+	public List<String> getSessionsSubscribedToResource(String resourceNodeId) {
+		return resourceDao.getSessionsSubscribedToResource(resourceNodeId);
 	}
 	
 	public List<String> getResources() {
-		return resourceInfoDao.getResources();
+		return resourceDao.getResources();
 	}
 	
-	public void addUpdate(String rootNodeId, Update update) {
-		resourceInfoDao.addUpdate(rootNodeId, update);
+	public void addUpdate(String resourceNodeId, Update update) {
+		resourceDao.addUpdate(resourceNodeId, update);
 	}
 	
-	public List<Update> getUpdates(String rootNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
-		return resourceInfoDao.getUpdates(rootNodeId, timestampOfLastRequest, timestampOfThisRequest);
+	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
+		return resourceDao.getUpdates(resourceNodeId, timestampOfLastRequest, timestampOfThisRequest);
 	}
 	
-	protected List<ResourceAccessController> getResourceAccessController(String rootNodeId) {
-		Node rootNode = new Node(rootNodeId);
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(rootNode.getType());
+	protected List<ResourceAccessController> getResourceAccessController(String resourceNodeId) {
+		Node resourceNode = new Node(resourceNodeId);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(resourceNode.getType());
 		if (descriptor != null) {
-			return descriptor.getAdditiveControllers(RESOURCE_ACCESS_CONTROLLER, rootNode);
+			return descriptor.getAdditiveControllers(RESOURCE_ACCESS_CONTROLLER, resourceNode);
 		}
 		return Collections.emptyList();
 	}

@@ -79,7 +79,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 * </ul>
 		 */ 
 		public function subscribeToSelfOrParentResource(nodeId:String, subscribeResultCallback:Function = null, subscribeFaultCallback:Function = null):void {
-			CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.subscribeToSelfOrParentResource", [nodeId], 
+			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToSelfOrParentResource", [nodeId], 
 				function(resourceNode:Node):void {
 					registerResourceNodeForProcessor(resourceNode);
 					if (subscribeResultCallback != null) {
@@ -115,10 +115,10 @@ package org.flowerplatform.flex_client.core.editor.update {
 			}
 			
 			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
-			var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
-			// refresh rootNode only if it has no properties
+			var resourceNode:Node = Node(mindmapDiagramShell.getRoot(context));
+			// refresh resourceNode only if it has no properties
 			// properties needed to set renderer's data if showRootModelAsRootNode is true
-			if (mindmapDiagramShell.showRootModelAsRootNode && rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
+			if (mindmapDiagramShell.showRootModelAsRootNode && resourceNode != null && ObjectUtil.getClassInfo(resourceNode.properties).properties.length == 0) {
 				refresh(context, Node(mindmapDiagramShell.getRoot(context)));	
 			}
 		}
@@ -144,7 +144,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		}
 		
 		/**
-		 * Adds <code>node</code> as the rootNode of this diagramShell.
+		 * Adds <code>node</code> as the resourceNode of this diagramShell.
 		 */ 
 		public function addRootNode(context:DiagramShellContext, node:Node):void {
 			var nodeFromRegistry:Node = nodeRegistry.getNodeById(node.fullNodeId);
@@ -341,7 +341,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 * 
 		 * At the end, stores in <code>timestampOfLastRequest</code>, the last update's timestamp.
 		 */ 
-		public function rootNodeUpdatesHandler(context:Dictionary, updates:ArrayCollection):void {			
+		public function resourceNodeUpdatesHandler(context:Dictionary, updates:ArrayCollection):void {			
 			var diagramShellContext:DiagramShellContext = DiagramShellContext(context);
 			
 			if (updates == null) {				
