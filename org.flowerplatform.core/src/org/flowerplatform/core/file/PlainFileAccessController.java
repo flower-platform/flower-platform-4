@@ -128,9 +128,13 @@ public class PlainFileAccessController implements IFileAccessController {
 	 * if it doesn't exist.
 	 * 
 	 * @author Mariana Gheorghe
+	 * @author Sebastian Solomon
 	 */
 	@Override
-	public boolean createNewFile(Object file) {
+	public boolean createFile(Object file, boolean isDirectory) {
+		if (isDirectory) {
+			return ((File) file).mkdirs();
+		}
 		try {
 			File realFile = (File) file;
 			File parentFile = realFile.getParentFile();
@@ -143,11 +147,6 @@ public class PlainFileAccessController implements IFileAccessController {
 		}
 	}
 	
-	@Override
-	public boolean createNewDirectory(Object directory) {
-		return ((File) directory).mkdirs();
-	}
-
 	@Override
 	public Object getFile(Object file, String name) {
 		return new File((File) file, name);
@@ -192,19 +191,9 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).list().length > 0;
 	}
 
-//	@Override
-//	public void deleteFolderContent(Object folder) {
-//		File[] files = ((File) folder).listFiles();
-//		if (files != null) {
-//			for (File f : files) {
-//				if (f.isDirectory()) {
-//					deleteFolderContent(f);
-//				} else {
-//					f.delete();
-//				}
-//			}
-//		}
-//		((File) folder).delete();
-//	}
+	@Override
+	public long length(Object file) {
+		return ((File)file).length();
+	}
 
 }

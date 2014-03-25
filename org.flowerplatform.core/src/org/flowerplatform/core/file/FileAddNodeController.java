@@ -35,24 +35,13 @@ public class FileAddNodeController extends AddNodeController {
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
 		child.setIdWithinResource(fileAccessController.getAbsolutePath(fileToCreate));
 		boolean isDir = (Boolean) child.getProperties().get(FILE_IS_DIRECTORY);
-		if (isDir) {
-			if (!fileAccessController.createNewDirectory(fileToCreate)) {
-				if (fileAccessController.exists(fileToCreate)) {
-					throwException();
-				} else {
-					throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
-				}
-			}
-		} else {
-			if (!fileAccessController.createNewFile(fileToCreate)) {
-				throwException();
-			}
+		
+		if (fileAccessController.exists(fileToCreate)) {
+			throw new RuntimeException("There is already a file with the same name in this location.");
+		} else if (!fileAccessController.createFile(fileToCreate, isDir)) {
+			throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
 		}
 		child.getOrPopulateProperties();
-	}
-
-	private void throwException() {
-		throw new RuntimeException("There is already a file with the same name in this location.");
 	}
 
 }

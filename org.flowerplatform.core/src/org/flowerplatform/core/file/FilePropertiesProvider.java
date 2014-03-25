@@ -54,7 +54,13 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		for (Map.Entry<String, Object> entry : atributes.entrySet()) {
 			switch (entry.getKey()) {
 				case FILE_SIZE:
-					node.getProperties().put(entry.getKey().toString(), entry.getValue());
+					if (node.getProperties().get(FILE_IS_DIRECTORY).equals("true")) {
+						long folderSize = getFolderSize(file);
+						node.getProperties().put(entry.getKey().toString(), folderSize);
+					} else {
+						node.getProperties().put(entry.getKey().toString(), fileAccessController.length(file));
+					}
+					
 					break;
 				case FILE_LAST_ACCESS_TIME:
 				case FILE_LAST_MODIFIED_TIME:
@@ -73,6 +79,18 @@ public class FilePropertiesProvider extends PropertiesProvider {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/file.gif"));
 			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
+	}
+
+	private long getFolderSize(Object folder) {
+		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
+		long length = 0;
+	    for (Object child : fileAccessController.listFiles(folder)) {
+	        if (fileAccessController.isFile(folder))
+	            length += fileAccessController.length(child);
+	        else
+	            length += getFolderSize(child);
+	    }
+	    return length;
 	}
 	
 

@@ -27,9 +27,7 @@ public interface IFileAccessController {
 	
 	Object getFile(Object parent, String name);
 	
-	boolean createNewFile(Object file);
-	
-	boolean createNewDirectory(Object directory);
+	boolean createFile(Object file, boolean isDirectory);
 	
 	boolean exists(Object file);
 	
@@ -57,4 +55,5 @@ public interface IFileAccessController {
 	
 	boolean hasChildren(Object file);
 	
+	long length(Object file);
 }
