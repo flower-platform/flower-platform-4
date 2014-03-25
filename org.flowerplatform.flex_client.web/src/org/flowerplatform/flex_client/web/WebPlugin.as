@@ -107,6 +107,7 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
+			// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
 			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));		
 		}
 		
