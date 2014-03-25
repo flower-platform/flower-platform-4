@@ -18,47 +18,24 @@
  */
 package org.flowerplatform.core;
 
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_CREATION_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_ACCESS_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_MODIFIED_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_SIZE;
 import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
-import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
-import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.remote.AddChildDescriptor.ADD_CHILD_DESCRIPTOR;
-import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
-import org.flowerplatform.core.file.FileAddNodeController;
-import org.flowerplatform.core.file.FileChildrenProvider;
-import org.flowerplatform.core.file.FilePropertiesProvider;
-import org.flowerplatform.core.file.FilePropertySetter;
-import org.flowerplatform.core.file.FileRemoveNodeController;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
-import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
-import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.GenericDescriptor;
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceInfoServiceRemote;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceInfoService;

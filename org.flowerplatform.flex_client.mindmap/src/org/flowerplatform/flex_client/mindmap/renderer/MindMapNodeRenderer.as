@@ -72,10 +72,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					shapeX -= (diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth") - diagramShell.getPropertyValue(diagramShellContext, data, "width"));
-				} else {
-					
 				}
-				
 				if (shape == MindMapNodePropertiesConstants.RECTANGLE) {
 					graphics.drawRect(shapeX, shapeY, shapeWidth, shapeHeight);
 				} else {
@@ -96,49 +93,49 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
 			var dynamicObject:Object = diagramShell.getDynamicObject(diagramShellContext, data);
 			
-			var minWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MIN_WIDTH);
+			var minWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MIN_WIDTH, event);
 			if (minWidthChanged) {
 				minWidth = node.properties[MindMapNodePropertiesConstants.MIN_WIDTH];
 			}	
 			
-			var maxWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MAX_WIDTH);
+			var maxWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MAX_WIDTH, event);
 			if (maxWidthChanged) {
 				maxWidth = node.properties[MindMapNodePropertiesConstants.MAX_WIDTH];
 			}
 			
-			var fontFamilyChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_FAMILY);
+			var fontFamilyChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_FAMILY, event);
 			if (fontFamilyChanged) {
 				labelDisplay.setStyle("fontFamily", Utils.getSupportedFontFamily(data.properties[MindMapNodePropertiesConstants.FONT_FAMILY]));				
 			}
 			
-			var fontSizeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_SIZE);
+			var fontSizeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_SIZE, event);
 			if (fontSizeChanged) {
 				labelDisplay.setStyle("fontSize", data.properties[MindMapNodePropertiesConstants.FONT_SIZE]);
 			}
 			
-			var fontBoldChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_BOLD);
+			var fontBoldChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_BOLD, event);
 			if (fontBoldChanged) {				
 				labelDisplay.setStyle("fontWeight", data.properties[MindMapNodePropertiesConstants.FONT_BOLD] == true ? "bold" : "normal");
 			}
 			
-			var fontItalicChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_ITALIC);
+			var fontItalicChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_ITALIC, event);
 			if (fontItalicChanged) {
 				labelDisplay.setStyle("fontStyle", data.properties[MindMapNodePropertiesConstants.FONT_ITALIC] == true ? "italic" : "normal");
 			}
 			
-			var colorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_TEXT);
+			var colorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_TEXT, event);
 			if (colorChanged) {
 				labelDisplay.setStyle("color", Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_TEXT]));
 			}
 			
-			var backgroundColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_BACKGROUND);
+			var backgroundColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_BACKGROUND, event);
 			if (backgroundColorChanged) {				
 				backgroundColor = Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND]);
 			}
 				
-			var cloudColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_COLOR);
+			var cloudColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_COLOR, event);
 			
-			var cloudShapeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_SHAPE);						
+			var cloudShapeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_SHAPE, event);						
 			if (cloudShapeChanged) {				
 				var shape:String = data.properties[MindMapNodePropertiesConstants.CLOUD_SHAPE];
 				

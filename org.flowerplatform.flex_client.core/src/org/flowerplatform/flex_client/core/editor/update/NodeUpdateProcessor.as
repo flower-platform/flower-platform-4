@@ -527,13 +527,11 @@ package org.flowerplatform.flex_client.core.editor.update {
 			if (event.allPropertiesUpdated || (event.updatedProperties != null && event.updatedProperties.getItemIndex(NodePropertiesConstants.IS_DIRTY) != -1)) {
 				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(resourceNode.properties[NodePropertiesConstants.IS_DIRTY]);
 			}
-			if (event.allPropertiesUpdated || (event.updatedProperties != null && event.updatedProperties.getItemIndex(NodePropertiesConstants.CONTENT_TYPE) != -1)) {
-				var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
-				var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
-				if (rootNode != null) {
-				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, rootNode);	
-				}
-			}
 		}
+		
+		public function getNodeById(id:String):Node {
+			return nodeRegistry.getNodeById(id);
+		}
+		
 	}
 }

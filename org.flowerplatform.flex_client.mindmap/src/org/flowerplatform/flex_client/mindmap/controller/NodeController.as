@@ -55,26 +55,26 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {
 			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
-			var rootModel:Node = Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model);
-			rootModel = mindmapDiagramShell.updateProcessor.mx_internal::nodeRegistry.getNodeById(rootModel.fullNodeId);
+			var rootModel:Node = mindmapDiagramShell.updateProcessor.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).fullNodeId);
 			
-			if (rootModel.properties[NodePropertiesConstants.CONTENT_TYPE] == MindMapEditorDescriptor.ID) {				
-				var sideProvider:GenericDescriptorValueProvider = NodeControllerUtils.getSideProvider(context.diagramShell.registry, model);
+			if (rootModel != null && rootModel.properties[NodePropertiesConstants.CONTENT_TYPE] == MindMapEditorDescriptor.ID) {
+				//root node is mm file -> get side from provider
+				var sideProvider:GenericDescriptorValueProvider = NodeControllerUtils.getSideProvider(mindmapDiagramShell.registry, model);
 				if (sideProvider != null) {
 					var side:int = int(sideProvider.getValue(Node(model)));
-					if (side == 0) {
+					if (side == 0) { // no side -> get side from parent
 						side = getSide(context, Node(model).parent);
 					}
-					if (side != 0) {
+					if (side != 0) { // side found (left/right)
 						return side;
 					}
 				}
 			}
+			// default side
 			return MindMapDiagramShell.POSITION_RIGHT;
 		}
 		
 		override public function setSide(context:DiagramShellContext, model:Object, value:int):void {
-//			Node(model).side = value;
 		}
 
 		override public function isRoot(context:DiagramShellContext, model:Object):Boolean {			

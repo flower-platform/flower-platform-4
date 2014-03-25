@@ -35,6 +35,9 @@ package org.flowerplatform.flex_client.core.node.controller {
 			return getPropertyProvider(registry, node, CorePlugin.NODE_ICONS_PROVIDER);
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
 		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericDescriptorValueProvider {
 			return getPropertyProvider(registry, node, CorePlugin.NODE_SIDE_PROVIDER);
 		}
