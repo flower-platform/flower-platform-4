@@ -4,8 +4,6 @@ import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
 import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
-import java.util.Map;
-
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;

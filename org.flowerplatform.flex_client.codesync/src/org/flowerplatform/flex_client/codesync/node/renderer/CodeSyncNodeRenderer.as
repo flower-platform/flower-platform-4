@@ -3,7 +3,7 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flexutil.FlowerArrayList;
@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 		}
 		
 		protected function composeIconWithSyncMarkers():void {
-			var iconsProvider:GenericDescriptorValueProvider =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
+			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
 			var icon:String = String(iconsProvider.getValue(node));
 			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
 			if (node.properties.conflict == true) {

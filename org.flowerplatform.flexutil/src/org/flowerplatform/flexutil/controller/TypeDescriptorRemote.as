@@ -1,4 +1,4 @@
-package org.flowerplatform.flex_client.core.node.remote {
+package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
@@ -6,7 +6,7 @@ package org.flowerplatform.flex_client.core.node.remote {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	[RemoteClass(alias="org.flowerplatform.core.node.remote.TypeDescriptorRemote")]
+	[RemoteClass(alias="org.flowerplatform.util.controller.TypeDescriptorRemote")]
 	public class TypeDescriptorRemote {
 		
 		public var type:String;

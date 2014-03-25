@@ -20,18 +20,18 @@ package org.flowerplatform.flex_client.core.node.controller {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.remote.GenericDescriptor;
+	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class GenericDescriptorValueProvider extends AbstractController implements IGenericValueProvider {
+	public class GenericValueProviderFromDescriptor extends AbstractController implements IGenericValueProvider {
 		
 		private var genericDescriptorName:String;
 		
-		public function GenericDescriptorValueProvider(genericDescriptorName:String) {
+		public function GenericValueProviderFromDescriptor(genericDescriptorName:String) {
 			this.genericDescriptorName = genericDescriptorName;
 		}
 		
@@ -50,7 +50,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			}
 			
 			// find the generic descriptor registered for this node
-			var genericDescriptor:GenericDescriptor = GenericDescriptor(typeDescriptor.getSingleController(genericDescriptorName, node));
+			var genericDescriptor:GenericValueDescriptor = GenericValueDescriptor(typeDescriptor.getSingleController(genericDescriptorName, node));
 			if (genericDescriptor == null) {
 				return null;
 			}

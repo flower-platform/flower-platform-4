@@ -5,7 +5,6 @@ package org.flowerplatform.flexutil.controller {
 	import mx.collections.IList;
 	
 	import org.apache.flex.collections.ArrayList;
-	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -60,7 +59,7 @@ package org.flowerplatform.flexutil.controller {
 			return this;
 		}
 		
-		protected var singleControllers:Dictionary = new Dictionary(); /* Map<String, Pair<AbstractController, Boolean>> */
+		protected var singleControllers:Dictionary = new Dictionary(); /* Map<String, ControllerEntry<AbstractController>> */
 		
 		public function getSingleController(controllerType:String, object:Object):AbstractController {		
 			return getCachedSingleController(controllerType, object, true);
@@ -69,10 +68,10 @@ package org.flowerplatform.flexutil.controller {
 		protected function getCachedSingleController(controllerType:String, object:Object, includeDynamicCategoryProviders:Boolean):AbstractController {
 			registry.configurable = false;
 			
-			var pair:Pair = getSingleControllerPair(controllerType);
-			if (pair.b) {
+			var entry:ControllerEntry = getSingleControllerEntry(controllerType);
+			if (entry.wasCached) {
 				// categories were processed before; return the controller
-				return pair.a as AbstractController;
+				return entry.cachedValue as AbstractController;
 			}
 			
 			// else => let's scan now the categories
@@ -100,42 +99,43 @@ package org.flowerplatform.flexutil.controller {
 				if (categoryController != null) {
 					// found a controller from a category
 					// keep it if it has a lower order index than the existing one
-					if (pair.a == null || AbstractController(pair.a).orderIndex > categoryController.orderIndex) {
-						pair.a = categoryController;
+					if (entry.cachedValue == null || AbstractController(entry.cachedValue).orderIndex > categoryController.orderIndex) {
+						entry.cachedValue = categoryController;
 					}
 				}
 			}
 			
-			if (pair.a is NullController) {
+			if (entry.cachedValue is NullController) {
 				// means we must ignore all registered controllers
-				pair.a = null;
+				entry.cachedValue = null;
 			}
 			
 			// finished scanning the categories
-			pair.b = true;
+			entry.wasCached = true;
 			
-			return AbstractController(pair.a);
+			return AbstractController(entry.cachedValue);
 		}
 		
 		public function addSingleController(type:String, controller:AbstractController):TypeDescriptor {
 			if (!registry.isConfigurable()) {
 				throw new Error("Trying to add a new single controller to a non-configurable registry");
 			}
-			var pair:Pair = getSingleControllerPair(type);
-			pair.a = controller;
+			var entry:ControllerEntry = getSingleControllerEntry(type);
+			entry.selfValue = controller;
+			entry.cachedValue = controller;
 			return this;
 		}
 		
-		private function getSingleControllerPair(type:String):Pair {
-			var pair:Pair = singleControllers[type];
-			if (pair == null) {
-				pair = new Pair(null, false);
-				singleControllers[type] = pair;
+		private function getSingleControllerEntry(type:String):ControllerEntry {
+			var entry:ControllerEntry = singleControllers[type];
+			if (entry == null) {
+				entry = new ControllerEntry();
+				singleControllers[type] = entry;
 			}
-			return pair;
+			return entry;
 		}
 		
-		protected var additiveControllers:Dictionary = new Dictionary(); /* Map<String, Pair<List<? extends AbstractController>, Boolean>> */
+		protected var additiveControllers:Dictionary = new Dictionary(); /* Map<String, ControllerEntry<List<? extends AbstractController>>> */
 		
 		public function getAdditiveControllers(controllerType:String, object:Object):IList {
 			return getCachedAdditiveControllers(controllerType, object, true);
@@ -144,9 +144,9 @@ package org.flowerplatform.flexutil.controller {
 		protected function getCachedAdditiveControllers(controllerType:String, object:Object, includeDynamicCategoryProviders:Boolean):IList {
 			registry.configurable = false;
 			
-			var pair:Pair = getAdditiveControllersPair(controllerType);
-			var controllers:ArrayCollection = pair.a as ArrayCollection;
-			if (pair.b) {
+			var entry:ControllerEntry = getAdditiveControllersEntry(controllerType);
+			var controllers:ArrayCollection = entry.cachedValue as ArrayCollection;
+			if (entry.wasCached) {
 				// categories were processed before; return the controllers
 				return controllers;
 			}
@@ -173,11 +173,11 @@ package org.flowerplatform.flexutil.controller {
 				}
 				
 				controllers.addAll(categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false));
-				pair.b = true;
+				entry.wasCached = true;
 			}
 			
 			// finished scanning the categories
-			pair.b = true;
+			entry.wasCached = true;
 			
 			controllers.source.sortOn("orderIndex", Array.NUMERIC);
 			
@@ -188,18 +188,21 @@ package org.flowerplatform.flexutil.controller {
 			if (!registry.isConfigurable()) {
 				throw new Error("Trying to add a new additive controller to a non-configurable registry");
 			}
-			var pair:Pair = getAdditiveControllersPair(type);
-			ArrayCollection(pair.a).addItem(controller);
+			var entry:ControllerEntry = getAdditiveControllersEntry(type);
+			ArrayCollection(entry.selfValue).addItem(controller);
+			ArrayCollection(entry.cachedValue).addItem(controller);
 			return this;
 		}
 		
-		private function getAdditiveControllersPair(type:String):Pair {
-			var pair:Pair = additiveControllers[type];
-			if (pair == null) {
-				pair = new Pair(new ArrayCollection(), false);
-				additiveControllers[type] = pair;
+		private function getAdditiveControllersEntry(type:String):ControllerEntry {
+			var entry:ControllerEntry = additiveControllers[type];
+			if (entry == null) {
+				entry = new ControllerEntry();
+				entry.selfValue = new ArrayCollection();
+				entry.cachedValue = new ArrayCollection();
+				additiveControllers[type] = entry;
 			}
-			return pair;
+			return entry;
 		}
 		
 	}

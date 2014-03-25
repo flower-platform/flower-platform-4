@@ -15,7 +15,6 @@ import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOV
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -31,11 +30,7 @@ import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.remote.TypeDescriptorRemote;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
-import org.flowerplatform.util.Pair;
-import org.flowerplatform.util.controller.AbstractController;
-import org.flowerplatform.util.controller.IDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -256,41 +251,6 @@ public class NodeService {
 			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
 		}
 		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext()), new ServiceContext());
-	}
-	
-	/**
-	 * Converts the registered {@link TypeDescriptor}s to {@link TypeDescriptorRemote}s that will be sent to the client.
-	 * 
-	 * @author Mariana Gheorghe
-	 */
-	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
-		List<TypeDescriptorRemote> remotes = new ArrayList<TypeDescriptorRemote>();
-		for (TypeDescriptor descriptor : registry.getRegisteredTypeDescriptors()) {
-			// create the new remote type descriptor with the type and static categories
-			TypeDescriptorRemote remote = new TypeDescriptorRemote(descriptor.getType(), descriptor.getCategories());
-			
-			// filter the single controllers map
-			for (Entry<String, Pair<AbstractController, Boolean>> entry : descriptor.getSingleControllers().entrySet()) {
-				if (entry.getValue().a instanceof IDescriptor) {
-					remote.getSingleControllers().put(entry.getKey(), (IDescriptor) entry.getValue().a);
-				}
-			}
-			
-			// filter the additive controlers map
-			for (Entry<String, Pair<List<? extends AbstractController>, Boolean>> entry : descriptor.getAdditiveControllers().entrySet()) {
-				List<IDescriptor> additiveControllers = new ArrayList<IDescriptor>();
-				for (AbstractController abstractController : entry.getValue().a) {
-					if (abstractController instanceof IDescriptor) {
-						additiveControllers.add((IDescriptor) abstractController);
-					}
-				}
-				if (additiveControllers.size() > 0) {
-					remote.getAdditiveControllers().put(entry.getKey(), additiveControllers);
-				}
-			}
-			remotes.add(remote);
-		}
-		return remotes;
 	}
 	
 	/**

@@ -23,8 +23,8 @@ package org.flowerplatform.flex_client.core.node.remote {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	[RemoteClass(alias="org.flowerplatform.core.node.remote.GenericDescriptor")]
-	public class GenericDescriptor extends AbstractController {
+	[RemoteClass(alias="org.flowerplatform.core.node.remote.GenericValueDescriptor")]
+	public class GenericValueDescriptor extends AbstractController {
 		
 		public var value:Object;
 		

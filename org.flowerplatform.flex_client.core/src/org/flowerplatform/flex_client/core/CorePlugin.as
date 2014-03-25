@@ -49,9 +49,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
-	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
-	import org.flowerplatform.flex_client.core.node.remote.GenericDescriptor;
-	import org.flowerplatform.flex_client.core.node.remote.TypeDescriptorRemote;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
+	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
@@ -65,13 +64,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
 	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	
 	import spark.components.Application;
-	import spark.components.Button;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -206,9 +205,9 @@ package org.flowerplatform.flex_client.core {
 			);
 			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
-				.addSingleController(NODE_TITLE_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_TITLE_DESCRIPTOR))
-				.addSingleController(NODE_SIDE_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_SIDE_DESCRIPTOR))
-				.addSingleController(NODE_ICONS_PROVIDER, new GenericDescriptorValueProvider(PROPERTY_FOR_ICONS_DESCRIPTOR));
+				.addSingleController(NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(PROPERTY_FOR_TITLE_DESCRIPTOR))
+				.addSingleController(NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(PROPERTY_FOR_SIDE_DESCRIPTOR))
+				.addSingleController(NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			linkHandlers = new Dictionary();
 			
@@ -241,7 +240,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
 		
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
-			registerClassAliasFromAnnotation(GenericDescriptor);
+			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
 		}
 		

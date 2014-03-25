@@ -22,13 +22,24 @@ import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
 
 /**
+ * A descriptor used to provide a value common to all nodes of a given type, as opposed to keeping
+ * the value in the properties map of each node.
+ * 
+ * <p>
+ * For example, the name of the property that gives the title or icons for all nodes of a given type
+ * should <b>not</b> be put in the properties map of each node. Instead, a {@link GenericValueDescriptor}
+ * with the name of the property should be registered, and used whenever the property is needed. 
+ * If the property needs to be overwritten (e.g. a type would need to use a different property for its
+ * title than the one registered by a category), then a new {@link GenericValueDescriptor} with a lower
+ * order index may be registered for that type.
+ * 
  * @author Mariana Gheorghe
  */
-public class GenericDescriptor extends AbstractController implements IDescriptor {
+public class GenericValueDescriptor extends AbstractController implements IDescriptor {
 
 	private Object value;
 	
-	public GenericDescriptor(Object value) {
+	public GenericValueDescriptor(Object value) {
 		super();
 		this.value = value;
 	}

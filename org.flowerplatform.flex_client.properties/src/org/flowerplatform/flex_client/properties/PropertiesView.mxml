@@ -17,7 +17,7 @@
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-			import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flex_client.properties.remote.CategoryItem;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
@@ -83,7 +83,7 @@
 				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 					.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertyDescriptor.TYPE, node);
 				var currentCategory:String;
-				for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {
+				for (var i:int = 0; i < propertyDescriptors.length; i++) {
 					var formItem:PropertyItemRenderer = new PropertyItemRenderer();
 					var itemCategory:String = propertyDescriptors.getItemAt(i)["category"];
 					if (itemCategory != currentCategory) {
@@ -101,7 +101,7 @@
 				// get their values from node
 				nodeUpdatedHandler(new NodeUpdatedEvent(node));
 				
-				var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(
+				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(
 					CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
 				label.text = String(titleProvider.getValue(node));
 				

@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.util.Pair;
-
 /**
  * A type descriptor specifies (for a node type):
  * <ul>
@@ -106,12 +104,8 @@ public class TypeDescriptor {
 	 * 
 	 * @see #additiveControllers
 	 */
-	protected Map<String, Pair<AbstractController, Boolean>> singleControllers = new HashMap<String, Pair<AbstractController, Boolean>>();
+	protected Map<String, ControllerEntry<AbstractController>> singleControllers = new HashMap<String, ControllerEntry<AbstractController>>();
 
-	public Map<String, Pair<AbstractController, Boolean>> getSingleControllers() {
-		return singleControllers;
-	}
-	
 	/**
 	 * @return For a given controller type, the single controller 
 	 * (collected from this node type, as well as its categories OR from object's dynamic category providers). 
@@ -127,10 +121,10 @@ public class TypeDescriptor {
 	protected <T extends AbstractController> T getCachedSingleController(String controllerType, Object object, boolean includeDynamicCategoryProviders) {
 		getRegistry().configurable = false;
 		
-		Pair<AbstractController, Boolean> pair = getSingleControllerPair(controllerType);
-		if (pair.b) {
+		ControllerEntry<AbstractController> entry = getSingleControllerEntry(controllerType);
+		if (entry.wasCached()) {
 			// categories were processed before; return the controller
-			return (T) pair.a;
+			return (T) entry.getCachedValue();
 		}
 		
 		// else => let's scan now the categories
@@ -154,21 +148,21 @@ public class TypeDescriptor {
 			if (categoryController != null) {
 				// found a controller from a category
 				// keep it if it has a lower order index than the existing one
-				if (pair.a == null || pair.a.getOrderIndex() > categoryController.getOrderIndex()) {
-					pair.a = categoryController;
+				if (entry.getCachedValue() == null || entry.getCachedValue().getOrderIndex() > categoryController.getOrderIndex()) {
+					entry.setCachedValue(categoryController);
 				}
 			}
 		}
 		
-		if (pair.a instanceof NullController) {
+		if (entry.getCachedValue() instanceof NullController) {
 			// means we must ignore all registered controllers
-			pair.a = null;
+			entry.setCachedValue(null);
 		}
 		
 		// finished scanning the categories
-		pair.b = true;
+		entry.setCached(true);
 		
-		return (T) pair.a;
+		return (T) entry.getCachedValue();
 	}
 		
 	/**
@@ -183,18 +177,19 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new single controller to a non-configurable registry");
 		}
-		Pair<AbstractController, Boolean> pair = getSingleControllerPair(type);
-		pair.a = controller;
+		ControllerEntry<AbstractController> entry = getSingleControllerEntry(type);
+		entry.setSelfValue(controller);
+		entry.setCachedValue(controller);
 		return this;
 	}
 	
-	private Pair<AbstractController, Boolean> getSingleControllerPair(String type) {
-		Pair<AbstractController, Boolean> pair = singleControllers.get(type);
-		if (pair == null) {
-			pair = new Pair<AbstractController, Boolean>(null, false);
-			singleControllers.put(type, pair);
+	private ControllerEntry<AbstractController> getSingleControllerEntry(String type) {
+		ControllerEntry<AbstractController> entry = singleControllers.get(type);
+		if (entry == null) {
+			entry = new ControllerEntry<AbstractController>();
+			singleControllers.put(type, entry);
 		}
-		return pair;
+		return entry;
 	}
 	
 	/**
@@ -215,12 +210,8 @@ public class TypeDescriptor {
 	 * 
 	 * @see #singleControllers
 	 */
-	protected Map<String, Pair<List<? extends AbstractController>, Boolean>> additiveControllers = new HashMap<String, Pair<List<? extends AbstractController>,Boolean>>();
+	protected Map<String, ControllerEntry<List<? extends AbstractController>>> additiveControllers = new HashMap<String, ControllerEntry<List<? extends AbstractController>>>();
 
-	public Map<String, Pair<List<? extends AbstractController>, Boolean>> getAdditiveControllers() {
-		return additiveControllers;
-	}
-	
 	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType, Object object) {
 		return  getCachedAdditiveControllers(controllerType, object, true);
 	}
@@ -233,9 +224,9 @@ public class TypeDescriptor {
 	protected <T extends AbstractController> List<T> getCachedAdditiveControllers(String controllerType, Object object, boolean includeDynamicCategoryProviders) {
 		getRegistry().configurable = false;
 		
-		Pair<List<? extends AbstractController>, Boolean> pair = getAdditiveControllersPair(controllerType);
-		List<T> controllers = (List<T>) pair.a;
-		if (pair.b) {
+		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(controllerType);
+		List<T> controllers = (List<T>) entry.getCachedValue();
+		if (entry.wasCached()) {
 			// categories were processed before; return the controllers
 			return controllers;
 		}
@@ -258,11 +249,11 @@ public class TypeDescriptor {
 			}
 			
 			controllers.addAll((Collection<? extends T>) categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false));
-			pair.b = true;
+			entry.setCached(true);
 		}
 		
 		// finished scanning the categories
-		pair.b = true;
+		entry.setCached(true);
 		
 		Collections.sort(controllers);
 		return controllers;
@@ -281,18 +272,21 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new additive controller to a non-configurable registry");
 		}
-		Pair<List<? extends AbstractController>, Boolean> pair = getAdditiveControllersPair(type);
-		((List<AbstractController>) pair.a).add(controller);
+		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(type);
+		((List<AbstractController>) entry.getSelfValue()).add(controller);
+		((List<AbstractController>) entry.getCachedValue()).add(controller);
 		return this;
 	}
 	
-	private Pair<List<? extends AbstractController>, Boolean> getAdditiveControllersPair(String type) {
-		Pair<List<? extends AbstractController>, Boolean> pair = additiveControllers.get(type);
-		if (pair == null) {
-			pair = new Pair<List<? extends AbstractController>, Boolean>(new ArrayList<AbstractController>(), false);
-			additiveControllers.put(type, pair);
+	private ControllerEntry<List<? extends AbstractController>> getAdditiveControllersEntry(String type) {
+		ControllerEntry<List<? extends AbstractController>> entry = additiveControllers.get(type);
+		if (entry == null) {
+			entry = new ControllerEntry<List<? extends AbstractController>>();
+			entry.setSelfValue(new ArrayList<AbstractController>());
+			entry.setCachedValue(new ArrayList<AbstractController>());
+			additiveControllers.put(type, entry);
 		}
-		return pair;
+		return entry;
 	}
 
 	@Override
