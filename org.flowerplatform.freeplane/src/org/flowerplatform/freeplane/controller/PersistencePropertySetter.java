@@ -2,6 +2,7 @@ package org.flowerplatform.freeplane.controller;
 
 import java.util.Map;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -16,7 +17,7 @@ import org.freeplane.features.map.NodeModel;
 public class PersistencePropertySetter extends PropertySetter {
 
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, Map<String, Object> options) {
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext context) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 
 		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
@@ -50,7 +51,7 @@ public class PersistencePropertySetter extends PropertySetter {
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property, Map<String, Object> options) {
+	public void unsetProperty(Node node, String property, ServiceContext context) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
 		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
@@ -52,7 +53,7 @@ public class FileSystemControllers {
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
-			public void populateWithProperties(Node node, Map<String, Object> options) {
+			public void populateWithProperties(Node node, ServiceContext context) {
 				node.getProperties().put(NAME, FILE_SYSTEM_NODE_TYPE);
 			}
 		})

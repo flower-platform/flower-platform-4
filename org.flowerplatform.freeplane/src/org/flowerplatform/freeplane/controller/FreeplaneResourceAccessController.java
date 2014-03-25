@@ -1,13 +1,14 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
+
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.resource.ResourceAccessController;
 import org.freeplane.features.map.MapModel;
@@ -32,7 +33,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	}
 	
 	@Override
-	public void firstClientSubscribed(String rootNodeId, Map<String, Object> options) throws Exception {
+	public void firstClientSubscribed(String rootNodeId, ServiceContext context) throws Exception {
 		Node rootNode = new Node(rootNodeId);
 		if (!canHandleResource(rootNode.getIdWithinResource())) {
 			return;
@@ -57,11 +58,11 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		logger.debug("Loaded mindmap {}", rootNode.getIdWithinResource());
 		
 		CorePlugin.getInstance().getResourceInfoService().setRawResourceData(rootNodeId, model, resourceCategory);
-		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
+		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 
 	@Override
-	public void lastClientUnubscribed(String rootNodeId, Map<String, Object> options) {
+	public void lastClientUnubscribed(String rootNodeId, ServiceContext context) {
 		Node rootNode = new Node(rootNodeId);
 		if (!canHandleResource(rootNode.getIdWithinResource())) {
 			return;
@@ -70,7 +71,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		logger.debug("Unloaded mindmap {}", rootNode.getIdWithinResource());
 		
 		CorePlugin.getInstance().getResourceInfoService().unsetRawResourceData(rootNodeId);
-		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
+		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 	
 	/**
@@ -78,7 +79,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public void save(String resourceNodeId, Map<String, Object> options) {
+	public void save(String resourceNodeId, ServiceContext context) {
 		Node rootNode = new Node(resourceNodeId);
 		if (!canHandleResource(rootNode.getIdWithinResource())) {
 			return;
@@ -91,7 +92,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		} catch (Exception e) {
 			return;
 		} finally {
-			options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
+			context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 		}
 		rawNodeData.setSaved(true);		
 	}
@@ -100,7 +101,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public boolean isDirty(String rootNodeId, Map<String, Object> options) {
+	public boolean isDirty(String rootNodeId, ServiceContext context) {
 		Node rootNode = new Node(rootNodeId);
 		if (!canHandleResource(rootNode.getIdWithinResource())) {
 			return false;
@@ -108,7 +109,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		
 		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
 		
-		options.put(NodeService.STOP_CONTROLLER_INVOCATION, true);
+		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 		return !model.isSaved();
 	}
 

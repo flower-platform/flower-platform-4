@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.core.util.ColorUtils;
@@ -40,7 +41,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 	private static final Pattern ICON_URL_PATTERN = Pattern.compile("((.*?/)+)(.*?).png");
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, Map<String, Object> options) {
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext context) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
 		boolean isPropertySet = false;
@@ -141,7 +142,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		}
 				
 		if (!isPropertySet) {
-			super.setProperty(node, property, wrapper, options);
+			super.setProperty(node, property, wrapper, context);
 		} else {
 			rawNodeData.getMap().setSaved(false);
 			

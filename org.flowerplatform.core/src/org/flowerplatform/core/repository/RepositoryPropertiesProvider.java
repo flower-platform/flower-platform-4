@@ -2,9 +2,8 @@ package org.flowerplatform.core.repository;
 
 import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 
-import java.util.Map;
-
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -15,7 +14,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class RepositoryPropertiesProvider extends PropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node, Map<String, Object> options) {		
+	public void populateWithProperties(Node node, ServiceContext context) {		
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object file;
 		try {

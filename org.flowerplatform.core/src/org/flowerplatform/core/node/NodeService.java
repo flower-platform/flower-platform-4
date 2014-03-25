@@ -2,6 +2,8 @@ package org.flowerplatform.core.node;
 
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
+import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
+import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
@@ -12,14 +14,13 @@ import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOV
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ParentProvider;
@@ -52,13 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author Cristina Constantinescu
  */
 public class NodeService {
-	
-	/**
-	 * An additive controller may set this option, to stop the service from invoking any controllers
-	 * with a higher order index.
-	 */
-	public static final String STOP_CONTROLLER_INVOCATION = "stopControllerInvocation";
-	
+		
 	/**
 	 * An additive controller may set this option, to ask the {@link UpdatePropertySetterController} to use
 	 * the node given as parameter as the resourceNode where the update will be saved.
@@ -81,7 +76,7 @@ public class NodeService {
 		this.registry = registry;
 	}
 	
-	public List<Node> getChildren(Node node, boolean populateProperties) {		
+	public List<Node> getChildren(Node node, ServiceContext context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
@@ -91,12 +86,11 @@ public class NodeService {
 		// many times there will be no children; that's why we lazy init the list (if needed)
 		List<Node> children = null;
 		// we ask each registered provider for children
-		Map<String, Object> options = getControllerInvocationOptions();
 		for (ChildrenProvider provider : providers) {
 			// we take the children ...
-			List<Node> childrenFromCurrentProvider = provider.getChildren(node, options);
+			List<Node> childrenFromCurrentProvider = provider.getChildren(node, context);
 			for (Node currentChild : childrenFromCurrentProvider) {
-				if (populateProperties) {
+				if (context.getValue(POPULATE_WITH_PROPERTIES)) {
 					// ... and then populate them
 					currentChild.getOrPopulateProperties();
 				}
@@ -108,7 +102,7 @@ public class NodeService {
 				}
 				children.add(currentChild);
 			}
-			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
 		}
@@ -119,18 +113,17 @@ public class NodeService {
 		}
 	}
 		
-	public boolean hasChildren(Node node) {
+	public boolean hasChildren(Node node, ServiceContext context) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return false;
 		}
 		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
-		Map<String, Object> options = getControllerInvocationOptions();
 		for (ChildrenProvider provider : childrenProviders) {
-			if (provider.hasChildren(node, options)) {
+			if (provider.hasChildren(node, context)) {
 				return true;
 			}
-			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
 		}
@@ -140,14 +133,14 @@ public class NodeService {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public Node getParent(Node node) {
+	public Node getParent(Node node, ServiceContext context) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
 		
 		ParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
-		Node parent = provider.getParent(node);
+		Node parent = provider.getParent(node, context);
 		if (parent == null) {
 			return null;
 		}
@@ -155,7 +148,7 @@ public class NodeService {
 	}
 	
 
-	public void setProperty(Node node, String property, Object value, Map<String, Object> options) {		
+	public void setProperty(Node node, String property, Object value, ServiceContext context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -163,27 +156,29 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getRootNode(node);
-		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 				
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
 		for (PropertySetter controller : controllers) {
-			controller.setProperty(node, property, wrapper, options);
+			controller.setProperty(node, property, wrapper, context);
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+				break;
+			}
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
-			options.put(NODE_IS_RESOURCE_NODE, true);
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
 		}
 	}
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public void unsetProperty(Node node, String property, Map<String, Object> options) {	
+	public void unsetProperty(Node node, String property, ServiceContext context) {	
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -191,23 +186,25 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getRootNode(node);
-		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 					
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (PropertySetter controller : controllers) {
-			controller.unsetProperty(node, property, options);
+			controller.unsetProperty(node, property, context);
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+				break;
+			}
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
-			options.put(NODE_IS_RESOURCE_NODE, true);
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
 		}
 	}
 	
-	public void addChild(Node node, Node child, Node insertBeforeNode) {		
+	public void addChild(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -215,25 +212,26 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getRootNode(node);
-		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 				
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
-			controller.addNode(node, child, insertBeforeNode);
+			controller.addNode(node, child, insertBeforeNode, context);
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+				break;
+			}
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
-			Map<String, Object> options = getControllerInvocationOptions();
-			options.put(NODE_IS_RESOURCE_NODE, true);
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
 		}
-		setProperty(node, HAS_CHILDREN, true, getControllerInvocationOptions());
+		setProperty(node, HAS_CHILDREN, true, new ServiceContext());
 	}
 	
-	public void removeChild(Node node, Node child) {	
+	public void removeChild(Node node, Node child, ServiceContext context) {	
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -241,22 +239,23 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getRootNode(node);
-		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean oldDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 						
 		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (RemoveNodeController controller : controllers) {
-			controller.removeNode(node, child);
+			controller.removeNode(node, child, context);
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+				break;
+			}
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), getControllerInvocationOptions());
+		boolean newDirty = CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
-			Map<String, Object> options = getControllerInvocationOptions();
-			options.put(NODE_IS_RESOURCE_NODE, true);
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, options);
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node), getControllerInvocationOptions());
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext()), new ServiceContext());
 	}
 	
 	/**
@@ -297,28 +296,27 @@ public class NodeService {
 	/**
 	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
 	 */
-	public void populateNodeProperties(Node node) {	
+	public void populateNodeProperties(Node node, ServiceContext context) {	
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 					
-		List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);
-		Map<String, Object> options = getControllerInvocationOptions();
+		List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);		
 		for (PropertiesProvider provider : providers) {
-			provider.populateWithProperties(node, options);
-			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+			provider.populateWithProperties(node, context);
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
 		}
 		
-		node.getProperties().put(HAS_CHILDREN, hasChildren(node));
+		node.getProperties().put(HAS_CHILDREN, hasChildren(node, new ServiceContext()));
 	}
 	
 	/**
 	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
 	 */
-	public Object getRawNodeData(Node node) {	
+	public Object getRawNodeData(Node node, ServiceContext context) {	
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
@@ -328,14 +326,7 @@ public class NodeService {
 		if (rawNodeDataProvider == null) {
 			return null;
 		}
-		return rawNodeDataProvider.getRawNodeData(node);	
+		return rawNodeDataProvider.getRawNodeData(node, context);	
 	}
-	
-	public Map<String, Object> getControllerInvocationOptions() {
-		Map<String, Object> options = new HashMap<String, Object>();
-		options.put(STOP_CONTROLLER_INVOCATION, false);
-		options.put(NODE_IS_RESOURCE_NODE, false);
-		return options;
-	}
-	
+
 }

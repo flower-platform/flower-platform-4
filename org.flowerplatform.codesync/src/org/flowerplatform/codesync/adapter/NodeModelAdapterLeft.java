@@ -27,6 +27,7 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -88,7 +89,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	@Override
 	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		Node node = getNode(element);
-		CodeSyncControllerUtils.setSyncTrueAndPropagateToParents(node, CorePlugin.getInstance().getNodeService());
+		CodeSyncControllerUtils.setSyncTrueAndPropagateToParents(node);
 	}
 
 	@Override
@@ -101,7 +102,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(match).getFeatureType(feature);
 		switch (featureType) {
 		case IModelAdapter.FEATURE_TYPE_VALUE:
-			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), new ServiceContext());
 			break;
 		case IModelAdapter.FEATURE_TYPE_CONTAINMENT:
 			processContainmentFeatureAfterActionPerformed(node, feature, result, match);

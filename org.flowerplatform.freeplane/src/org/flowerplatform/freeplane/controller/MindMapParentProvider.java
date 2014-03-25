@@ -1,5 +1,8 @@
 package org.flowerplatform.freeplane.controller;
 
+import java.util.Map;
+
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
@@ -11,7 +14,7 @@ import org.freeplane.features.map.NodeModel;
 public class MindMapParentProvider extends ParentProvider {
 
 	@Override
-	public Node getParent(Node node) {
+	public Node getParent(Node node, ServiceContext context) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());		
 		NodeModel parentNodeModel = rawNodeData.getParentNode();
 		if (parentNodeModel == null) {

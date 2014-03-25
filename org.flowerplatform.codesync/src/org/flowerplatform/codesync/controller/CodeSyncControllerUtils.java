@@ -7,8 +7,10 @@ import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_S
 import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CONFLICT;
 import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
 import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.SYNC;
+import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -45,24 +47,26 @@ public class CodeSyncControllerUtils {
 		return false;
 	}
 	
-	public static void setSyncFalseAndPropagateToParents(Node node, NodeService service) {
+	public static void setSyncFalseAndPropagateToParents(Node node) {
+		NodeService service = CorePlugin.getInstance().getNodeService();
 		// set sync false
-		service.setProperty(node, SYNC, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+		service.setProperty(node, SYNC, false, new ServiceContext());
 		
 		// propagate childrenSync flag for parents
 		Node parent = null;
-		while ((parent = service.getParent(node)) != null) {
+		while ((parent = service.getParent(node, new ServiceContext())) != null) {
 			if (!isChildrenSync(parent)) {
 				// the parentSync flag has already been propagated
 				return;
 			}
 			// set childrenSync false
-			service.setProperty(parent, CHILDREN_SYNC, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+			service.setProperty(parent, CHILDREN_SYNC, false, new ServiceContext());
 			node = parent;
 		}
 	}
 	
-	public static void setSyncTrueAndPropagateToParents(Node node, NodeService service) {
+	public static void setSyncTrueAndPropagateToParents(Node node) {
+		NodeService service = CorePlugin.getInstance().getNodeService();
 		if (isSync(node)) {
 			// already set
 			return;
@@ -85,25 +89,26 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set sync true
-		service.setProperty(node, SYNC, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+		service.setProperty(node, SYNC, true, new ServiceContext());
 		
 		// propagate childrenSync flag for parents
-		setChildrenSyncTrueAndPropagateToParents(service.getParent(node), service);
+		setChildrenSyncTrueAndPropagateToParents(service.getParent(node, new ServiceContext()));
 	}
 	
-	public static void setChildrenSyncTrueAndPropagateToParents(Node parent, NodeService service) {
+	public static void setChildrenSyncTrueAndPropagateToParents(Node parent) {
+		NodeService service = CorePlugin.getInstance().getNodeService();
 		while (parent != null) {
 			// if childrenSync is already true for the parent, no need to go up
 			if (isChildrenSync(parent)) {
 				return;
 			}
 			
-			if (!allChildrenSync(parent, service)) {
+			if (!allChildrenSync(parent)) {
 				return;
 			}
 			
 			// set childrenSync true
-			service.setProperty(parent, CHILDREN_SYNC, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+			service.setProperty(parent, CHILDREN_SYNC, true, new ServiceContext());
 			
 			// if this parent is not sync, then its parents' childrenSync flag can't be set to true
 			// it's better to just stop now
@@ -111,12 +116,13 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			
-			parent = service.getParent(parent);
+			parent = service.getParent(parent, new ServiceContext());
 		}
 	}
 	
-	public static void setConflictTrueAndPropagateToParents(Node node, String conflictProperty, Object conflictValue, NodeService service) {
-		service.setProperty(node, getConflictPropertyName(conflictProperty), conflictValue, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+	public static void setConflictTrueAndPropagateToParents(Node node, String conflictProperty, Object conflictValue) {
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		service.setProperty(node, getConflictPropertyName(conflictProperty), conflictValue, new ServiceContext());
 		
 		if (isConflict(node)) {
 			// already set
@@ -124,23 +130,24 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict true
-		service.setProperty(node, CONFLICT, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+		service.setProperty(node, CONFLICT, true, new ServiceContext());
 		
 		// propagate childrenConflict flag for parents
 		Node parent = null;
-		while ((parent = service.getParent(node)) != null) {
+		while ((parent = service.getParent(node, new ServiceContext())) != null) {
 			if (isChildrenConflict(parent)) {
 				// the childrenConflict flag has already been propagated
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT, true, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+			service.setProperty(parent, CHILDREN_CONFLICT, true, new ServiceContext());
 			node = parent;
 		}
 	}
 
-	public static void setConflictFalseAndPropagateToParents(Node node, String conflictProperty, NodeService service) {
-		service.unsetProperty(node, getConflictPropertyName(conflictProperty), CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+	public static void setConflictFalseAndPropagateToParents(Node node, String conflictProperty) {
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		service.unsetProperty(node, getConflictPropertyName(conflictProperty), new ServiceContext());
 		
 		if (!isConflict(node)) {
 			return;
@@ -158,15 +165,15 @@ public class CodeSyncControllerUtils {
 		}
 		
 		// set conflict false
-		service.setProperty(node, CONFLICT, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
-		if (noChildConflict(node, service)) {
-			service.setProperty(node, CHILDREN_CONFLICT, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+		service.setProperty(node, CONFLICT, false, new ServiceContext());
+		if (noChildConflict(node)) {
+			service.setProperty(node, CHILDREN_CONFLICT, false, new ServiceContext());
 		}
 		
 		// propagate childrenConflict flag for parents
 		Node parent = null;
-		while ((parent = service.getParent(node)) != null) {
-			if (!noChildConflict(parent, service)) {
+		while ((parent = service.getParent(node, new ServiceContext())) != null) {
+			if (!noChildConflict(parent)) {
 				return;
 			}
 			// if childrenConflict is already true for the parent, no need to go up
@@ -174,13 +181,13 @@ public class CodeSyncControllerUtils {
 				return;
 			}
 			// set childrenConflict false
-			service.setProperty(parent, CHILDREN_CONFLICT, false, CorePlugin.getInstance().getNodeService().getControllerInvocationOptions());
+			service.setProperty(parent, CHILDREN_CONFLICT, false, new ServiceContext());
 			node = parent;
 		}
 	}
 	
-	public static boolean allChildrenSync(Node node, NodeService service) {
-		for (Node child : service.getChildren(node, false)) {
+	public static boolean allChildrenSync(Node node) {
+		for (Node child : CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, false))) {
 			if (!isSync(child) || isAdded(child) || isRemoved(child)) {
 				return false;
 			}
@@ -188,8 +195,8 @@ public class CodeSyncControllerUtils {
 		return true;
 	}
 	
-	public static boolean noChildConflict(Node node, NodeService service) {
-		for (Node child : service.getChildren(node, true)) {
+	public static boolean noChildConflict(Node node) {
+		for (Node child : CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true))) {
 			if (isConflict(child) || isChildrenConflict(child)) {
 				return false;
 			}

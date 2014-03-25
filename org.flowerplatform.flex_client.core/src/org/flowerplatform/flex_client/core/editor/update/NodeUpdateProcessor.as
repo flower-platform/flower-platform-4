@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	import mx.rpc.events.FaultEvent;
 	import mx.utils.ObjectUtil;
 	
@@ -118,12 +119,15 @@ package org.flowerplatform.flex_client.core.editor.update {
 			}
 		}
 		
-		protected function removeResourceNodeForProcessor(resourceNode:Node):void {
+		protected function removeResourceNodeForProcessor(resourceNode:Node):void {	
+			// change isDirty to false and dispatch event
+			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.fullNodeId);
+			resourceNodeFromRegistry.properties[NodePropertiesConstants.IS_DIRTY] = false;
+			resourceNodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(resourceNodeFromRegistry, new ArrayList([NodePropertiesConstants.IS_DIRTY])));
+				
+			// refresh maps
 			resourceNodeIds.removeItem(resourceNode.fullNodeId);
 			CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.removeNodeUpdateProcessor(resourceNode.fullNodeId, this);
-			
-			nodeRegistry.unregisterNode(resourceNode.fullNodeId);
-			resourceNode.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
 		}
 		
 		protected function showSubscriptionError(event:FaultEvent):void {

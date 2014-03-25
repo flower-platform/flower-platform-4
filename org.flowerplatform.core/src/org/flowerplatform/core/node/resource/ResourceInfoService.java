@@ -1,18 +1,18 @@
 package org.flowerplatform.core.node.resource;
 
 import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
+import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
 import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
-import static org.flowerplatform.core.node.NodeService.STOP_CONTROLLER_INVOCATION;
 import static org.flowerplatform.core.node.resource.ResourceAccessController.RESOURCE_ACCESS_CONTROLLER;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -36,7 +36,7 @@ public class ResourceInfoService {
 		this.resourceInfoDao = resourceInfoDao;
 	}
 	
-	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId) {
+	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId, ServiceContext context) {
 		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeId);
 		
 		Node node = new Node(nodeId);
@@ -52,10 +52,10 @@ public class ResourceInfoService {
 		if (subscribableNode == null) {
 			return null;
 		}			
-		sessionSubscribedToResource(subscribableNode.getFullNodeId(), sessionId);
+		sessionSubscribedToResource(subscribableNode.getFullNodeId(), sessionId, context);
 		
 		// populate resourceNode with isDirty			
-		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getFullNodeId(), CorePlugin.getInstance().getNodeService().getControllerInvocationOptions()));
+		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getFullNodeId(), new ServiceContext()));
 				
 		return subscribableNode;
 	}
@@ -65,16 +65,15 @@ public class ResourceInfoService {
 	 * Notifies all registered subscription listeners if this is the first client to subscribe
 	 * to this node.
 	 */
-	public void sessionSubscribedToResource(String rootNodeId, String sessionId) {
+	public void sessionSubscribedToResource(String rootNodeId, String sessionId, ServiceContext context) {
 		boolean firstSubscription = false;
 		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
 			// first subscription
 			firstSubscription = true;
-			Map<String, Object> options = CorePlugin.getInstance().getNodeService().getControllerInvocationOptions();
 			for (ResourceAccessController controller : getResourceAccessController(rootNodeId)) {
 				try {
-					controller.firstClientSubscribed(rootNodeId, options);
-					if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+					controller.firstClientSubscribed(rootNodeId, context);
+					if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 						break;
 					}
 				} catch (Exception e) {
@@ -95,16 +94,15 @@ public class ResourceInfoService {
 	 * Notifies all registered subscription listeners if this is the last client to unsubscribe
 	 * from this node.
 	 */
-	public void sessionUnsubscribedFromResource(String rootNodeId, String sessionId) {
+	public void sessionUnsubscribedFromResource(String rootNodeId, String sessionId, ServiceContext context) {
 		resourceInfoDao.sessionUnsubscribedFromResource(rootNodeId, sessionId);
 		boolean lastUnsubscription = false;
 		if (resourceInfoDao.getSessionsSubscribedToResource(rootNodeId).isEmpty()) {
 			// last unsubscription
 			lastUnsubscription = true;
-			Map<String, Object> options = CorePlugin.getInstance().getNodeService().getControllerInvocationOptions();
 			for (ResourceAccessController controller : getResourceAccessController(rootNodeId)) {
-				controller.lastClientUnubscribed(rootNodeId, options);
-				if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+				controller.lastClientUnubscribed(rootNodeId, context);
+				if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 					break;
 				}
 			}
@@ -118,31 +116,30 @@ public class ResourceInfoService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public void save(String resourceNodeId, Map<String, Object> options) {
+	public void save(String resourceNodeId, ServiceContext context) {
 		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
-			controller.save(resourceNodeId, options);
-			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+			controller.save(resourceNodeId, context);
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
 		}
 		
 		// update isDirty property
-		options.put(NODE_IS_RESOURCE_NODE, true);
 		CorePlugin.getInstance().getNodeService().setProperty(
 				new Node(resourceNodeId), 
 				IS_DIRTY, 
-				CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNodeId, options), 
-				options);
+				CorePlugin.getInstance().getResourceInfoService().isDirty(resourceNodeId, new ServiceContext()), 
+				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
 	}
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public boolean isDirty(String resourceNodeId, Map<String, Object> options) {
+	public boolean isDirty(String resourceNodeId, ServiceContext context) {
 		boolean isDirty = false;
 		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
-			isDirty = controller.isDirty(resourceNodeId, options);
-			if ((boolean) options.get(STOP_CONTROLLER_INVOCATION)) {
+			isDirty = controller.isDirty(resourceNodeId, context);
+			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
 		}
@@ -197,7 +194,7 @@ public class ResourceInfoService {
 		
 		List<String> resources = resourceInfoDao.getResourcesSubscribedBySession(sessionId);
 		for (int i = resources.size() - 1; i >= 0; i--) {
-			sessionUnsubscribedFromResource(resources.get(i), sessionId);
+			sessionUnsubscribedFromResource(resources.get(i), sessionId, new ServiceContext());
 		}
 		
 		resourceInfoDao.sessionRemoved(sessionId);

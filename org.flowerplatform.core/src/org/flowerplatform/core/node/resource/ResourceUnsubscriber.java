@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 
 /**
  * Scheduled task that periodically checks if the subscribed clients are still active.
@@ -30,7 +31,7 @@ public class ResourceUnsubscriber extends TimerTask {
 			if (now - lastPing > RESOURCE_UNSUBSCRIBER_DELAY) {
 				List<String> sessionIds = service.getSessionsSubscribedToResource(rootNodeId);
 				for (int i = sessionIds.size() - 1; i >= 0; i--) {
-					service.sessionUnsubscribedFromResource(rootNodeId, sessionIds.get(i));
+					service.sessionUnsubscribedFromResource(rootNodeId, sessionIds.get(i), new ServiceContext());
 				}
 			}
 		}

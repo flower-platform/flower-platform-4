@@ -1,7 +1,10 @@
 package org.flowerplatform.freeplane.controller;
 
+import java.util.Map;
+
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.features.map.MapModel;
@@ -14,7 +17,7 @@ import org.freeplane.features.map.NodeModel;
 public class MindMapRawNodeDataProvider extends RawNodeDataProvider<NodeModel> {
 
 	@Override
-	public NodeModel getRawNodeData(Node node) {
+	public NodeModel getRawNodeData(Node node, ServiceContext context) {
 		// get the raw resource data for the resource node
 		Node resourceNode = CoreUtils.getRootNode(node);
 		MapModel model = (MapModel) CorePlugin.getInstance().getResourceInfoService()
