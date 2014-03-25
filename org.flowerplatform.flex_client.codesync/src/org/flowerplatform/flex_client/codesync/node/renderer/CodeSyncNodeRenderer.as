@@ -16,10 +16,10 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
 			
-			if (hasPropertyChanged(CodeSyncConstants.SYNC, event) ||
-				hasPropertyChanged(CodeSyncConstants.CHILDREN_SYNC, event) ||
-				hasPropertyChanged(CodeSyncConstants.CONFLICT, event) ||
-				hasPropertyChanged(CodeSyncConstants.CHILDREN_CONFLICT, event)) {
+			if (NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.SYNC, event) ||
+				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CHILDREN_SYNC, event) ||
+				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CONFLICT, event) ||
+				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CHILDREN_CONFLICT, event)) {
 				// a sync property has changed, redecorate the original icon
 				composeIconWithSyncMarkers();
 			}

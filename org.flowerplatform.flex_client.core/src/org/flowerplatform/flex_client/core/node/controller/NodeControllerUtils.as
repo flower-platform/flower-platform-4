@@ -19,6 +19,8 @@
 package org.flowerplatform.flex_client.core.node.controller {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
@@ -35,6 +37,13 @@ package org.flowerplatform.flex_client.core.node.controller {
 			return getPropertyProvider(registry, node, CorePlugin.NODE_ICONS_PROVIDER);
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericDescriptorValueProvider {
+			return getPropertyProvider(registry, node, CorePlugin.NODE_SIDE_PROVIDER);
+		}
+		
 		public static function getPropertyProvider(registry:TypeDescriptorRegistry, 
 												   node:Object, controllerType:String):GenericDescriptorValueProvider {
 			var typeDescriptor:TypeDescriptor = registry.getExpectedTypeDescriptor(node.type);
@@ -43,5 +52,13 @@ package org.flowerplatform.flex_client.core.node.controller {
 			}
 			return GenericDescriptorValueProvider(typeDescriptor.getSingleController(controllerType, node));
 		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public static function hasPropertyChanged(node:Node, property:String, event:NodeUpdatedEvent = null):Boolean {			
+			return (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(property) != -1 : node.properties.hasOwnProperty(property);
+		}
+		
 	}
 }

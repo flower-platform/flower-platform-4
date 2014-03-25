@@ -34,6 +34,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -118,8 +119,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 			var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
 			// refresh rootNode only if it has no properties
 			// properties needed to set renderer's data if showRootModelAsRootNode is true
-			if (mindmapDiagramShell.showRootModelAsRootNode && rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
-				refresh(context, Node(mindmapDiagramShell.getRoot(context)));	
+			if (rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
+				refresh(context, rootNode);	
 			}
 		}
 		
@@ -316,8 +317,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 			if (children != null) {
 				// refresh diagram's children and their positions
 				diagramShell.refreshRootModelChildren(context);
-				diagramShell.refreshModelPositions(context, node);
-			}
+				diagramShell.refreshModelPositions(context, node);			
+			}			
 		}
 		
 		/* UPDATES */	
@@ -534,9 +535,14 @@ package org.flowerplatform.flex_client.core.editor.update {
 		
 		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
 			var resourceNode:Node = event.node;
-			if (event.allPropertiesUpdated || (event.updatedProperties != null && event.updatedProperties.getItemIndex(NodePropertiesConstants.IS_DIRTY) != -1)) {
+			if (NodeControllerUtils.hasPropertyChanged(resourceNode, NodePropertiesConstants.IS_DIRTY)) {
 				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(resourceNode.properties[NodePropertiesConstants.IS_DIRTY]);
 			}
 		}
+		
+		public function getNodeById(id:String):Node {
+			return nodeRegistry.getNodeById(id);
+		}
+		
 	}
 }

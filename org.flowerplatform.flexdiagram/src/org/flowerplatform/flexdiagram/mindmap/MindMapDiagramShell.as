@@ -212,12 +212,14 @@ package org.flowerplatform.flexdiagram.mindmap {
 			if (isRoot || side == POSITION_LEFT) {						
 				if (isRoot) {										
 					oldExpandedHeight = oldExpandedHeightLeft;
-				}			
+					setPropertyValue(context, model, "expandedHeight", getPropertyValue(context, model, "expandedHeightLeft"));	
+				}							
 				changeCoordinates(context, model, oldExpandedHeight, getPropertyValue(context, model, "expandedHeight"), POSITION_LEFT);
 			}
 			if (isRoot || side == POSITION_RIGHT) {
 				if (isRoot) {								
 					oldExpandedHeight = oldExpandedHeightRight;
+					setPropertyValue(context, model, "expandedHeight", getPropertyValue(context, model, "expandedHeightRight"));
 				}				
 				changeCoordinates(context, model, oldExpandedHeight, getPropertyValue(context, model, "expandedHeight"), POSITION_RIGHT);
 			}

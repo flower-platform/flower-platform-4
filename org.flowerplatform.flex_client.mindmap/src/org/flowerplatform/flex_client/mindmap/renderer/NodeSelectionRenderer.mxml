@@ -38,6 +38,7 @@
 			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -103,7 +104,7 @@
 			}
 			
 			protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
-				if (event.updatedProperties != null ? event.updatedProperties.getItemIndex(NodePropertiesConstants.HAS_CHILDREN) != -1 : true) {
+				if (NodeControllerUtils.hasPropertyChanged(node, NodePropertiesConstants.HAS_CHILDREN)) {
 					// hasChildren changed -> update display
 					invalidateDisplayList();
 				}
@@ -132,10 +133,11 @@
 				graphics.drawRoundRect(-padding, - padding, target.width + padding * 2, target.height + padding * 2, 10, 10);			
 				
 				var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(context, node);
-				if (node.side == MindMapDiagramShell.POSITION_LEFT) {
+				var side:int = mindMapDiagramShell.getModelController(context, node).getSide(context, node);
+				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					circle.x = dynamicObject.x - circleRadius * 2;						
 					circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;
-				} else if (node.side == MindMapDiagramShell.POSITION_RIGHT) {
+				} else if (side == MindMapDiagramShell.POSITION_RIGHT) {
 					circle.x = dynamicObject.x + dynamicObject.width;
 					circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;							
 				}

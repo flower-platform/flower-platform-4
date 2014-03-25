@@ -25,4 +25,8 @@ public class NodePropertiesConstants {
 	public static final String FILE_LAST_MODIFIED_TIME = "lastModifiedTime";
 	public static final String FILE_LAST_ACCESS_TIME = "lastAccessTime";
 	
+	public static final String SIDE = "side";
+	public static final int POSITION_LEFT = -1;
+	public static final int POSITION_RIGHT = 1;
+	
 }

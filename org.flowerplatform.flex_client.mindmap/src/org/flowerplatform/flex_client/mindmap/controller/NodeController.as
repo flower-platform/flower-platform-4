@@ -18,10 +18,18 @@
  */
 package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
+	import mx.core.mx_internal;
 	
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.mindmap.MindMapEditorDescriptor;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
+	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	
 	/**
@@ -46,11 +54,27 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {
-			return Node(model).side;
+			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
+			var rootModel:Node = mindmapDiagramShell.updateProcessor.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).fullNodeId);
+			
+			if (rootModel != null && rootModel.properties[NodePropertiesConstants.CONTENT_TYPE] == MindMapEditorDescriptor.ID) {
+				//root node is mm file -> get side from provider
+				var sideProvider:GenericDescriptorValueProvider = NodeControllerUtils.getSideProvider(mindmapDiagramShell.registry, model);
+				if (sideProvider != null) {
+					var side:int = int(sideProvider.getValue(Node(model)));
+					if (side == 0) { // no side -> get side from parent
+						side = getSide(context, Node(model).parent);
+					}
+					if (side != 0) { // side found (left/right)
+						return side;
+					}
+				}
+			}
+			// default side
+			return MindMapDiagramShell.POSITION_RIGHT;
 		}
 		
 		override public function setSide(context:DiagramShellContext, model:Object, value:int):void {
-//			Node(model).side = value;
 		}
 
 		override public function isRoot(context:DiagramShellContext, model:Object):Boolean {			
