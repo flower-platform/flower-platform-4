@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package com.crispico.flower.util.spinner {
+package org.flowerplatform.flexutil.spinner {
 	
 	/**
 	 * Should be implemented by <code>Container</code> classes that don't have

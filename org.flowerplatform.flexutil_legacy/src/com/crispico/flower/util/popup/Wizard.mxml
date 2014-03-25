@@ -68,9 +68,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.crispico.flower.util.spinner.ModalSpinner;
-			
-			import mx.events.FlexEvent;
 			import mx.states.State;
 		
 			/**

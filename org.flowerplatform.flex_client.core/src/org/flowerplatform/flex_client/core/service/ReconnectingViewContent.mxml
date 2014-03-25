@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Displayed when the connection to the server has been lost. It shows the last update timestamp (client-side and server-side).
+
+	<p>
+	By default, the client automatically attempts to reconnect to the server periodically; the user may cancel the reconnecting process. 
+	If the server does not respond after a while, the reconnecting process if stopped. The user may retart the automatic reconnection.
+
+	@author Mariana Gheorghe
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent">
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" gap="20" paddingTop="20"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.spinner.ModalSpinner;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			import spark.formatters.DateTimeFormatter;
+			
+			[Bindable]
+			public var reconnectingAutomatically:Boolean = true;
+			
+			public var reconnectingPeriod:int = 60000; // ms
+			
+			protected function cancel(evt:Event = null):void {
+				reconnectingAutomatically = false;
+				CorePlugin.getInstance().updateTimer.stop();
+				
+				if (!FlexUtilGlobals.getInstance().isMobile && _viewHost is ModalSpinner) {
+					ModalSpinner(_viewHost).spinner.stop();
+				}
+			}
+			
+			protected function reconnect():void {
+				reconnectingAutomatically = true;
+				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.ping");
+				CorePlugin.getInstance().updateTimer.restart(reconnectingPeriod, cancel);
+				
+				if (!FlexUtilGlobals.getInstance().isMobile && _viewHost is ModalSpinner) {
+					ModalSpinner(_viewHost).spinner.play();
+				}
+			}
+			
+			protected function getReconnectingMessage():String {
+				var server:Date = new Date();
+				server.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
+				var client:Date = new Date();
+				client.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
+				return CorePlugin.getInstance().getMessage('reconnect.message', [formatter.format(client), formatter.format(server)]);
+			}
+			
+			private var _viewHost:IViewHost;
+			
+			public function set viewHost(viewHost:IViewHost):void {
+				_viewHost = viewHost;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:DateTimeFormatter id="formatter" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	
+	<s:Label text="{getReconnectingMessage()}" textAlign="center" width="100%"/>
+	
+	<s:Label text="{CorePlugin.getInstance().getMessage('reconnect.automatic', [CorePlugin.getInstance().updateTimer.updateInterval / 1000])}"
+			 visible="{reconnectingAutomatically}" includeInLayout="{reconnectingAutomatically}" textAlign="center" width="100%"/>
+	
+	<s:HGroup>
+		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancel()"
+				  visible="{reconnectingAutomatically}" includeInLayout="{reconnectingAutomatically}"/>
+		<s:Button label="{CorePlugin.getInstance().getMessage('reconnect')}" click="reconnect()"
+				  visible="{!reconnectingAutomatically}" includeInLayout="{!reconnectingAutomatically}"/>
+	</s:HGroup>
+	
+</s:Group>

@@ -38,6 +38,7 @@ package org.flowerplatform.flex_client.web {
 	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.TextInput;
+	import spark.formatters.DateTimeFormatter;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -90,6 +91,7 @@ package org.flowerplatform.flex_client.web {
 				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "(root||)");
 			});
 			hBox.addChild(addRootBtn);
+			
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
@@ -105,7 +107,7 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			CorePlugin.getInstance().handleLink(CorePlugin.getInstance().getAppUrl());		
+			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));		
 		}
 		
 		override protected function registerMessageBundle():void {			

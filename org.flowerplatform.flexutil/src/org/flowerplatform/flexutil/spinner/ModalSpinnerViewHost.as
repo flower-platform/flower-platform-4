@@ -16,8 +16,7 @@
  *
  * license-end
  */
-package com.crispico.flower.util.popup {
-	import com.crispico.flower.util.spinner.ModalSpinner;
+package org.flowerplatform.flexutil.spinner {
 	
 	import mx.collections.IList;
 	
@@ -29,8 +28,8 @@ package com.crispico.flower.util.popup {
 		
 		public function ModalSpinnerViewHost(viewContent:IViewContent) {
 			super();
-			dontShowSpinner = true;
 			childrenUnderSpinner = [viewContent];
+			viewContent.viewHost = this;
 		}
 		
 		public function get activeViewContent():IViewContent {

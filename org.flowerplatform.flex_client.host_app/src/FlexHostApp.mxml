@@ -96,6 +96,12 @@ license-end
 			import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
 			
+			import spark.core.ContentCache;
+			import spark.formatters.DateTimeFormatter;
+			import spark.layouts.TileLayout;
+			import spark.utils.DataItem;
+			import spark.validators.NumberValidator;
+			
 			
 			
 			
@@ -119,6 +125,7 @@ license-end
 			// needed by .mindmap
 			TileLayout;
 			
+			// needed by .core
 			DateTimeFormatter;
 			
 			// We force the reference towards the classe below, because they declare "RemoteClass" annotation, which is ignored when used
@@ -152,7 +159,7 @@ license-end
 			ArrayList;
 			ObjectProxy;
 			ImageSnapshot;
-						
+			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
 				// The channels are puzzled by a query string that has slashes,

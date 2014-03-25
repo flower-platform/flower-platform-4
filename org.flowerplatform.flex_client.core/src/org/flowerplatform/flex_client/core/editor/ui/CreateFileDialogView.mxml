@@ -54,9 +54,11 @@
 				properties[NodePropertiesConstants.FILE_IS_DIRECTORY] = isDir;
 				
 				if (properties.text != "") {
-					CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
+					// invoke service method and wait for the result to close the dialog
+					CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null], function(data:Object):void {
+						cancel();
+					});
 				}
-				cancel();
 			}
 			
 			protected function cancel():void {

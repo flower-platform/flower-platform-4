@@ -36,6 +36,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */
 	public class RenameAction extends DiagramShellAwareActionBase implements IDialogResultHandler {
 		
+		private var view:RichTextWithRendererView;
+		
 		public function RenameAction() {			
 			label = CorePlugin.getInstance().getMessage("action.rename");
 			icon = CorePlugin.getInstance().getResourceUrl("images/edit.png");
@@ -49,14 +51,22 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public function handleDialogResult(result:Object):void {
 			var node:Node = new Node(result.fullNodeId);
 			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShell.registry, node);
+			// invoke service method and wait for result to close the rename popup
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result.fullNodeId, 
-				titleProvider.getPropertyNameFromGenericDescriptor(node), result.name]);
+				titleProvider.getPropertyNameFromGenericDescriptor(node), result.name], renameSuccessful);
+		}
+		
+		protected function renameSuccessful(data:Object):void {
+			if (view != null) {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);
+				view = null;
+			}
 		}
 			
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			
-			var view:RichTextWithRendererView = new RichTextWithRendererView();
+			view = new RichTextWithRendererView();
 			view.rendererClass = getDefinitionByName(getQualifiedClassName(diagramShell.getRendererForModel(diagramShellContext, node))) as Class;
 			view.rendererModel = Node(ObjectUtil.copy(node));
 			view.diagramShellContext = diagramShellContext;

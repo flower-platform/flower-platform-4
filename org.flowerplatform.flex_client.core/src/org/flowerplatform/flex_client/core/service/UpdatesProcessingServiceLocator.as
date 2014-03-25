@@ -1,20 +1,23 @@
 package org.flowerplatform.flex_client.core.service {
 	
-	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
+	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
+	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 
 	/**
 	 * Custom behavior to get updates registered after each message invocation.
@@ -41,6 +44,8 @@ package org.flowerplatform.flex_client.core.service {
 		public static const ROOT_NODE_IDS:String = "rootNodeIds";
 		public static const ROOT_NODE_IDS_NOT_FOUND:String = "rootNodeIdsNotFound";
 		
+		private var reconnectingViewContent:IViewContent;
+		
 		public function UpdatesProcessingServiceLocator(channelSet:ChannelSet) {
 			super(channelSet);
 		}
@@ -59,8 +64,11 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestamp;
-			headers[ROOT_NODE_IDS] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
+			var resourceNodeIds:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
+			if (resourceNodeIds.length > 0) {
+				headers[ROOT_NODE_IDS] = resourceNodeIds;
+				headers[LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
+			}
 			operation.messageHeaders = headers;
 			
 			return operation;
@@ -76,7 +84,12 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			
 			if (result.hasOwnProperty(LAST_UPDATE_TIMESTAMP)) {
-				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestamp = result[LAST_UPDATE_TIMESTAMP];
+				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer = result[LAST_UPDATE_TIMESTAMP];
+				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient = new Date().time;
+				
+				if (CorePlugin.getInstance().debug) {
+					CorePlugin.getInstance().debug_forceUpdateAction.updateLabel();
+				}
 			}
 			
 			if (result.hasOwnProperty(UPDATES)) { // updates exists, process them
@@ -84,10 +97,27 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			
 			if (result.hasOwnProperty(ROOT_NODE_IDS_NOT_FOUND)) {
-				closeObsoleteEditos(result[ROOT_NODE_IDS_NOT_FOUND]);
+				clearObsoleteResourceNodes(result[ROOT_NODE_IDS_NOT_FOUND]);
 			}
 			
 			CorePlugin.getInstance().updateTimer.restart();
+			if (reconnectingViewContent != null) {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(reconnectingViewContent);
+				reconnectingViewContent = null;
+			}
+		}
+		
+		override public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
+			if (event.fault.faultCode == "Channel.Call.Failed" || event.fault.faultCode == "Client.Error.MessageSend") {
+				if (reconnectingViewContent == null) {
+					reconnectingViewContent = new ReconnectingViewContent();
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setViewContent(reconnectingViewContent)
+						.showModalOverAllApplication();
+				}
+			} else {
+				super.faultHandler(event, responder);
+			}
 		}
 		
 		private function sendUpdatesToOpenEditors(rootNodeIdToUpdates:Object):void {
@@ -100,14 +130,26 @@ package org.flowerplatform.flex_client.core.service {
 			}
 		}
 		
-		private function closeObsoleteEditos(rootNodeIdsNotFound:ArrayCollection):void {
+		/**
+		 * Collapse the resource nodes in various editors. If a resource node is the root of an editor,
+		 * close the editor.
+		 */
+		private function clearObsoleteResourceNodes(resourceNodeIds:ArrayCollection):void {
 			var idsList:String = "";
-			for each (var rootNodeId:String in rootNodeIdsNotFound) {
-				var editors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(rootNodeId);
-				for each (var editor:EditorFrontend in editors) {
-					FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(editor.viewHost));
+			for each (var resourceNodeId:String in resourceNodeIds) {
+				var nodeUpdateProcessors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(resourceNodeId);
+				for each (var nodeUpdateProcessor:NodeUpdateProcessor in nodeUpdateProcessors) {
+					var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(nodeUpdateProcessor.context.diagramShell.rootModel);
+					if (Node(rootModel.model).fullNodeId == resourceNodeId) {
+						// remove the editor
+						FlexUtilGlobals.getInstance().workbench.closeView(nodeUpdateProcessor.editorFrontend);
+					} else {
+						// collapse the node
+						nodeUpdateProcessor.removeChildrenForNodeId(nodeUpdateProcessor.context, resourceNodeId);
+					}
+					CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.removeNodeUpdateProcessor(resourceNodeId, nodeUpdateProcessor);
 				}
-				idsList += "\n* " + rootNodeId;
+				idsList += "\n* " + resourceNodeId;
 			}
 			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 			.setText(CorePlugin.getInstance().getMessage("editor.error.subscribe.message", [idsList]))

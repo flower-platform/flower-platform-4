@@ -12,6 +12,8 @@
     <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.ListSettings"/>
     <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.DummyData"/>
     <classEntry path="org.flowerplatform.flexutil.samples.global_menu.SampleActionGlobalMenu1"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.spinner.ModalSpinnerSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.spinner.RemoveGlobalSpinnerViewContent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
