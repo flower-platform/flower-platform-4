@@ -18,7 +18,6 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGL
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

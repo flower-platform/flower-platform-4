@@ -7,7 +7,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const HAS_CHILDREN:String = "hasChildren";
 		public static const NAME:String = "name";
-		
+		public static const ICONS:String = "icons";
 		
 		public static const CONTENT_TYPE:String = "contentType";
 		public static const HIDE_ROOT_NODE:String = "hideRootNode";

@@ -30,8 +30,10 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		public static const ID:String = "mindmap";
 		
+		public static const NAME:String = "MindMap Editor";
+		
 		override public function getEditorName():String {
-			return "mindmap";
+			return NAME;
 		}
 		
 		override protected function createViewInstance():EditorFrontend	{
@@ -50,7 +52,7 @@ package org.flowerplatform.flex_client.mindmap {
 			if (viewLayoutData != null) {
 				return viewLayoutData.customData;
 			} else {
-				return "mindmap";
+				return NAME;
 			}
 		}
 	}

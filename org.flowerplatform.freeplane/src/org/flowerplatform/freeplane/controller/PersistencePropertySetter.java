@@ -1,7 +1,5 @@
 package org.flowerplatform.freeplane.controller;
 
-import java.util.Map;
-
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;

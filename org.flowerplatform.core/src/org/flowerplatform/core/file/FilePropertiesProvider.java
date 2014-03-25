@@ -74,9 +74,9 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		}
 		
 		if (node.getProperties().get(NodePropertiesConstants.FILE_IS_DIRECTORY).equals("true")) {
-			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
+			node.getProperties().put(NodePropertiesConstants.ICONS, CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
-			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/file.gif"));
+			node.getProperties().put(NodePropertiesConstants.ICONS, CorePlugin.getInstance().getResourceUrl("images/file.gif"));
 			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
 	}

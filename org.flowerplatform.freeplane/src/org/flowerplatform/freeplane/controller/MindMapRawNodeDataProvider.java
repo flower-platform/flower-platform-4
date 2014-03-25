@@ -1,7 +1,5 @@
 package org.flowerplatform.freeplane.controller;
 
-import java.util.Map;
-
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.ServiceContext;
