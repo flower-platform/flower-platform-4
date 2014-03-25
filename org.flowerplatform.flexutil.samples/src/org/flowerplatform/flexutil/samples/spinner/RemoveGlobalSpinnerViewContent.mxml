@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			private var _viewHost:IViewHost;
+			
+			public function set viewHost(viewHost:IViewHost):void {
+				_viewHost = viewHost;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			protected function removeGlobalSpinner():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Button label="Remove Global Spinner" click="removeGlobalSpinner()"/>
+	
+</s:Group>

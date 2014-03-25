@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.AddNodeAction;
+	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
@@ -86,6 +87,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const FILE_MENU_ID:String = "file";
 		public static const NAVIGATE_MENU_ID:String = "navigate";
+		public static const DEBUG:String = "debug";
 		
 		protected static var INSTANCE:CorePlugin;
 		
@@ -107,7 +109,9 @@ package org.flowerplatform.flex_client.core {
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
 		
-		public var lastUpdateTimestampButton:Button = new Button();
+		public var debug:Boolean = isDebug();
+		
+		public var debug_forceUpdateAction:ForceUpdateAction;
 		
 		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
 		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
@@ -211,6 +215,16 @@ package org.flowerplatform.flex_client.core {
 			Application(FlexGlobals.topLevelApplication).addEventListener(ResourceUpdatedEvent.RESOURCE_UPDATED, messageResourceUpdatedHandler);
 		}
 		
+		private function isDebug():Boolean {
+			if (ExternalInterface.available) {
+				var params:Object = parseQueryStringParameters(ExternalInterface.call("getURL"));
+				if (params[DEBUG] == "true") {
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
@@ -257,7 +271,13 @@ package org.flowerplatform.flex_client.core {
 					.setHeight(450)
 					.show();
 				}
-			);			
+			);
+			
+			if (debug) {
+				debug_forceUpdateAction = new ForceUpdateAction();
+				globalMenuActionProvider.addAction(debug_forceUpdateAction);
+				addActionToGlobalMenuActionProvider("Debug", null, DEBUG);
+			}
 		}
 		
 		public function getPerspective(id:String):Perspective {

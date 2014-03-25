@@ -92,12 +92,6 @@ package org.flowerplatform.flex_client.web {
 			});
 			hBox.addChild(addRootBtn);
 			
-			CorePlugin.getInstance().lastUpdateTimestampButton.label = "No resource updates requested yet";
-			CorePlugin.getInstance().lastUpdateTimestampButton.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().serviceLocator.invoke("resourceInfoService.ping");
-			});
-			hBox.addChild(CorePlugin.getInstance().lastUpdateTimestampButton);
-			
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
 
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
@@ -113,7 +107,7 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			CorePlugin.getInstance().handleLink(CorePlugin.getInstance().getAppUrl());		
+			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));		
 		}
 		
 		override protected function registerMessageBundle():void {			

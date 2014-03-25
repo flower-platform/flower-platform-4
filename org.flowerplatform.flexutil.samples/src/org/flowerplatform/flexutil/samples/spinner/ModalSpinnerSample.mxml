@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			protected function addGlobalModalSpinner():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setViewContent(new RemoveGlobalSpinnerViewContent())
+					.showModalOverAllApplication();
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Button label="Add Global Modal Spinner" click="addGlobalModalSpinner()"/>
+			  
+</s:Group>

@@ -10,6 +10,7 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
@@ -17,8 +18,6 @@ package org.flowerplatform.flex_client.core.service {
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
-	
-	import spark.formatters.DateTimeFormatter;
 
 	/**
 	 * Custom behavior to get updates registered after each message invocation.
@@ -88,12 +87,8 @@ package org.flowerplatform.flex_client.core.service {
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer = result[LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient = new Date().time;
 				
-				if (CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient != -1) {
-					var formatter:DateTimeFormatter = new DateTimeFormatter();
-					formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
-					var date:Date = new Date();
-					date.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
-					CorePlugin.getInstance().lastUpdateTimestampButton.label = "Last update: " + formatter.format(date);
+				if (CorePlugin.getInstance().debug) {
+					CorePlugin.getInstance().debug_forceUpdateAction.updateLabel();
 				}
 			}
 			
@@ -152,6 +147,7 @@ package org.flowerplatform.flex_client.core.service {
 						// collapse the node
 						nodeUpdateProcessor.removeChildrenForNodeId(nodeUpdateProcessor.context, resourceNodeId);
 					}
+					CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.removeNodeUpdateProcessor(resourceNodeId, nodeUpdateProcessor);
 				}
 				idsList += "\n* " + resourceNodeId;
 			}
