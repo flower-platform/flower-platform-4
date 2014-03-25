@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.RichTextWithRendererView;
-	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
@@ -50,7 +50,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		
 		public function handleDialogResult(result:Object):void {
 			var node:Node = new Node(result.fullNodeId);
-			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShell.registry, node);
+			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShell.registry, node);
 			// invoke service method and wait for result to close the rename popup
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result.fullNodeId, 
 				titleProvider.getPropertyNameFromGenericDescriptor(node), result.name], renameSuccessful);

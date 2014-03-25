@@ -17,7 +17,7 @@
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-			import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
@@ -55,7 +55,7 @@
 			
 			protected function initializeHandler(event:FlexEvent):void {
 				renderer.data = rendererModel;
-				var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
+				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
 				textEditor.text = String(titleProvider.getValue(rendererModel));
 			}
 			
@@ -79,7 +79,7 @@
 						
 			public function textChangeHandler(event:TextOperationEvent):void {
 				// set new text
-				var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
+				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
 				var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(rendererModel);
 				renderer.data.properties[titleProperty] = textEditor.text;
 				

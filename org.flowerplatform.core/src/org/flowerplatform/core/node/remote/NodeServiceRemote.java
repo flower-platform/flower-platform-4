@@ -11,6 +11,7 @@ import java.util.Map;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
 /**
  * @see NodeService
@@ -50,7 +51,7 @@ public class NodeServiceRemote {
 	}
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
-		return CorePlugin.getInstance().getNodeService().getRegisteredTypeDescriptors();
+		return CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getTypeDescriptorsRemote();
 	}
 	
 	public void saveResource(String resourceNodeId) {

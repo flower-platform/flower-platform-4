@@ -116,11 +116,11 @@ package org.flowerplatform.flex_client.core.editor.update {
 			}
 			
 			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
-			var resourceNode:Node = Node(mindmapDiagramShell.getRoot(context));
-			// refresh resourceNode only if it has no properties
+			var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
+			// refresh rootNode only if it has no properties
 			// properties needed to set renderer's data if showRootModelAsRootNode is true
-			if (resourceNode != null && ObjectUtil.getClassInfo(resourceNode.properties).properties.length == 0) {
-				refresh(context, resourceNode);	
+			if (rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
+				refresh(context, rootNode);	
 			}
 		}
 		
@@ -145,7 +145,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		}
 		
 		/**
-		 * Adds <code>node</code> as the resourceNode of this diagramShell.
+		 * Adds <code>node</code> as the rootNode of this diagramShell.
 		 */ 
 		public function addRootNode(context:DiagramShellContext, node:Node):void {
 			var nodeFromRegistry:Node = nodeRegistry.getNodeById(node.fullNodeId);

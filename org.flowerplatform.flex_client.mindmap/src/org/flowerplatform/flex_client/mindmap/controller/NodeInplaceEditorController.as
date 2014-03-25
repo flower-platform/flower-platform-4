@@ -22,7 +22,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -54,7 +54,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			textArea.maxWidth = MAX_WIDTH; // needed for width auto grow
 			textArea.minHeight = bounds.height;			
 			
-			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
+			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
 			textArea.text = String(titleProvider.getValue(Node(model)));			
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
@@ -68,7 +68,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		
 		override public function commit(context:DiagramShellContext, model:Object):void {		
 			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
+			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, 
 				titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text], function(data:Object):void {
 					context.diagramShell.mainToolFinishedItsJob();

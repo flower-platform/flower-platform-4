@@ -34,7 +34,7 @@ import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
-import org.flowerplatform.core.node.remote.GenericDescriptor;
+import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
@@ -145,6 +145,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(CHILDREN_PROVIDER, new RepositoryChildrenProvider());
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODE_TYPE)
+		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NodePropertiesConstants.NAME, CODE_TYPE))
 		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(IS_SUBSCRIBABLE, true));
 		
 		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
@@ -153,9 +154,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
 		.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
 		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController())
-		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.NAME))
-		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.SIDE))
-		.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.ICONS));
+		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(NodePropertiesConstants.NAME))
+		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(NodePropertiesConstants.SIDE))
+		.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(NodePropertiesConstants.ICONS));
 		
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();

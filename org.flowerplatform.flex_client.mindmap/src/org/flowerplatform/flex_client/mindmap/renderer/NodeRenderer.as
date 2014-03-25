@@ -8,7 +8,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
@@ -93,7 +93,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		}
 		
 		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
-			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node);
+			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node);
 			var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(node);
 			var titleChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, titleProperty, event);
 			if (titleChanged) {
@@ -105,7 +105,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				invalidateDisplayList();
 			}
 			
-			var iconsProvider:GenericDescriptorValueProvider =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
+			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
 			var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
 			var iconsChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, iconsProperty, event);
 			if (iconsChanged) {

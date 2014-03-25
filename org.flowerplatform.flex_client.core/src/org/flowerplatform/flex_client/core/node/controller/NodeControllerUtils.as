@@ -29,28 +29,28 @@ package org.flowerplatform.flex_client.core.node.controller {
 	 */
 	public class NodeControllerUtils {
 		
-		public static function getTitleProvider(registry:TypeDescriptorRegistry, node:Object):GenericDescriptorValueProvider {
-			return getPropertyProvider(registry, node, CorePlugin.NODE_TITLE_PROVIDER);
+		public static function getTitleProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
+			return getValueProvider(registry, node, CorePlugin.NODE_TITLE_PROVIDER);
 		}
 		
-		public static function getIconsProvider(registry:TypeDescriptorRegistry, node:Object):GenericDescriptorValueProvider {
-			return getPropertyProvider(registry, node, CorePlugin.NODE_ICONS_PROVIDER);
+		public static function getIconsProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
+			return getValueProvider(registry, node, CorePlugin.NODE_ICONS_PROVIDER);
 		}
 		
 		/**
 		 * @author Cristina Constantinescu
 		 */
-		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericDescriptorValueProvider {
-			return getPropertyProvider(registry, node, CorePlugin.NODE_SIDE_PROVIDER);
+		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
+			return getValueProvider(registry, node, CorePlugin.NODE_SIDE_PROVIDER);
 		}
 		
-		public static function getPropertyProvider(registry:TypeDescriptorRegistry, 
-												   node:Object, controllerType:String):GenericDescriptorValueProvider {
+		public static function getValueProvider(registry:TypeDescriptorRegistry, 
+												   node:Object, controllerType:String):GenericValueProviderFromDescriptor {
 			var typeDescriptor:TypeDescriptor = registry.getExpectedTypeDescriptor(node.type);
 			if (typeDescriptor == null) {
 				return null;
 			}
-			return GenericDescriptorValueProvider(typeDescriptor.getSingleController(controllerType, node));
+			return GenericValueProviderFromDescriptor(typeDescriptor.getSingleController(controllerType, node));
 		}
 		
 		/**

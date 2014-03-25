@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +110,38 @@ public class TypeDescriptorRegistry {
 		return typeDescriptors.values();
 	}
 	
-	public Collection<TypeDescriptor> getRegisteredTypeDescriptors() {
-		return typeDescriptors.values();
+	/**
+	 * Converts the registered {@link TypeDescriptor}s to {@link TypeDescriptorRemote}s that will be sent to the client.
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public List<TypeDescriptorRemote> getTypeDescriptorsRemote() {
+		List<TypeDescriptorRemote> remotes = new ArrayList<TypeDescriptorRemote>();
+		for (TypeDescriptor descriptor : typeDescriptors.values()) {
+			// create the new remote type descriptor with the type and static categories
+			TypeDescriptorRemote remote = new TypeDescriptorRemote(descriptor.getType(), descriptor.getCategories());
+			
+			// filter the single controllers map
+			for (Entry<String, ControllerEntry<AbstractController>> entry : descriptor.singleControllers.entrySet()) {
+				if (entry.getValue().getSelfValue() instanceof IDescriptor) {
+					remote.getSingleControllers().put(entry.getKey(), (IDescriptor) entry.getValue().getSelfValue());
+				}
+			}
+			
+			// filter the additive controlers map
+			for (Entry<String, ControllerEntry<List<? extends AbstractController>>> entry : descriptor.additiveControllers.entrySet()) {
+				List<IDescriptor> additiveControllers = new ArrayList<IDescriptor>();
+				for (AbstractController abstractController : entry.getValue().getSelfValue()) {
+					if (abstractController instanceof IDescriptor) {
+						additiveControllers.add((IDescriptor) abstractController);
+					}
+				}
+				if (additiveControllers.size() > 0) {
+					remote.getAdditiveControllers().put(entry.getKey(), additiveControllers);
+				}
+			}
+			remotes.add(remote);
+		}
+		return remotes;
 	}
 }

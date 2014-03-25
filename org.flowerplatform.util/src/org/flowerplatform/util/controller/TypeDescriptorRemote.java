@@ -1,10 +1,9 @@
-package org.flowerplatform.core.node.remote;
+package org.flowerplatform.util.controller;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.util.controller.IDescriptor;
 
 /**
  * @author Mariana Gheorghe
