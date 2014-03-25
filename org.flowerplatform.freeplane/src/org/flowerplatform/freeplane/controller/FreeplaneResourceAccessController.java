@@ -1,14 +1,12 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
-
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.resource.ResourceAccessController;
@@ -89,7 +87,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceInfoService().getRawResourceData(rootNode.getFullNodeId());
 		
 		try {
-			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, rawNodeData.getFile());
+			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File (URLDecoder.decode(rawNodeData.getURL().getPath())));
 		} catch (Exception e) {
 			return;
 		} finally {
