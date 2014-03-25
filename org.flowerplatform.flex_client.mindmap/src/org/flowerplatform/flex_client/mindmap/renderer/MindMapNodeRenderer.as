@@ -3,6 +3,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapNodePropertiesConstants;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.Utils;
@@ -93,49 +94,49 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
 			var dynamicObject:Object = diagramShell.getDynamicObject(diagramShellContext, data);
 			
-			var minWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MIN_WIDTH, event);
+			var minWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.MIN_WIDTH, event);
 			if (minWidthChanged) {
 				minWidth = node.properties[MindMapNodePropertiesConstants.MIN_WIDTH];
 			}	
 			
-			var maxWidthChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.MAX_WIDTH, event);
+			var maxWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.MAX_WIDTH, event);
 			if (maxWidthChanged) {
 				maxWidth = node.properties[MindMapNodePropertiesConstants.MAX_WIDTH];
 			}
 			
-			var fontFamilyChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_FAMILY, event);
+			var fontFamilyChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.FONT_FAMILY, event);
 			if (fontFamilyChanged) {
 				labelDisplay.setStyle("fontFamily", Utils.getSupportedFontFamily(data.properties[MindMapNodePropertiesConstants.FONT_FAMILY]));				
 			}
 			
-			var fontSizeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_SIZE, event);
+			var fontSizeChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.FONT_SIZE, event);
 			if (fontSizeChanged) {
 				labelDisplay.setStyle("fontSize", data.properties[MindMapNodePropertiesConstants.FONT_SIZE]);
 			}
 			
-			var fontBoldChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_BOLD, event);
+			var fontBoldChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.FONT_BOLD, event);
 			if (fontBoldChanged) {				
 				labelDisplay.setStyle("fontWeight", data.properties[MindMapNodePropertiesConstants.FONT_BOLD] == true ? "bold" : "normal");
 			}
 			
-			var fontItalicChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.FONT_ITALIC, event);
+			var fontItalicChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.FONT_ITALIC, event);
 			if (fontItalicChanged) {
 				labelDisplay.setStyle("fontStyle", data.properties[MindMapNodePropertiesConstants.FONT_ITALIC] == true ? "italic" : "normal");
 			}
 			
-			var colorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_TEXT, event);
+			var colorChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.COLOR_TEXT, event);
 			if (colorChanged) {
 				labelDisplay.setStyle("color", Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_TEXT]));
 			}
 			
-			var backgroundColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.COLOR_BACKGROUND, event);
+			var backgroundColorChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.COLOR_BACKGROUND, event);
 			if (backgroundColorChanged) {				
 				backgroundColor = Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.COLOR_BACKGROUND]);
 			}
 				
-			var cloudColorChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_COLOR, event);
+			var cloudColorChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.CLOUD_COLOR, event);
 			
-			var cloudShapeChanged:Boolean = hasPropertyChanged(MindMapNodePropertiesConstants.CLOUD_SHAPE, event);						
+			var cloudShapeChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapNodePropertiesConstants.CLOUD_SHAPE, event);						
 			if (cloudShapeChanged) {				
 				var shape:String = data.properties[MindMapNodePropertiesConstants.CLOUD_SHAPE];
 				

@@ -28,11 +28,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		protected function get mindmapDiagramShell():MindMapDiagramShell {
 			return MindMapDiagramShell(diagramShellContext.diagramShell);	
 		}
-		
-		protected function hasPropertyChanged(property:String, event:NodeUpdatedEvent = null):Boolean {
-			return (event != null && event.updatedProperties != null) ? event.updatedProperties.getItemIndex(property) != -1 : node.properties.hasOwnProperty(property);
-		}
-		
+				
 		override protected function assignData():void {
 			x = mindmapDiagramShell.getPropertyValue(diagramShellContext, data, "x");	
 			y = mindmapDiagramShell.getPropertyValue(diagramShellContext, data, "y");		
@@ -99,7 +95,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			var titleProvider:GenericDescriptorValueProvider = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node);
 			var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(node);
-			var titleChanged:Boolean = hasPropertyChanged(titleProperty, event);
+			var titleChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, titleProperty, event);
 			if (titleChanged) {
 				var title:String = String(titleProvider.getValue(node));
 				title = Utils.getCompatibleHTMLText(title);
@@ -111,7 +107,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var iconsProvider:GenericDescriptorValueProvider =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
 			var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
-			var iconsChanged:Boolean = hasPropertyChanged(iconsProperty, event);
+			var iconsChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, iconsProperty, event);
 			if (iconsChanged) {
 				var iconsValue:String = String(iconsProvider.getValue(node));
 				if (iconsValue != null) {
@@ -124,7 +120,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		override protected function canDrawCircle():Boolean {			
 			return node != null 
-				&& hasPropertyChanged(NodePropertiesConstants.HAS_CHILDREN)
+				&& NodeControllerUtils.hasPropertyChanged(node, NodePropertiesConstants.HAS_CHILDREN)
 				&& Boolean(node.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() 
 				&& !mindmapDiagramShell.getModelController(diagramShellContext, node).getExpanded(diagramShellContext, node);
 		}
