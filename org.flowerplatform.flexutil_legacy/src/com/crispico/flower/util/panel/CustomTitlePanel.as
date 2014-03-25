@@ -19,14 +19,15 @@
 package com.crispico.flower.util.panel
 {
 	import com.crispico.flower.flexdiagram.util.common.BitmapContainer;
-	import com.crispico.flower.util.spinner.ModalSpinner;
-	import com.crispico.flower.util.spinner.ModalSpinnerSupport;
 	
 	import flash.display.DisplayObject;
 	
 	import mx.containers.TitleWindow;
 	import mx.core.IFlexDisplayObject;
 	import mx.core.mx_internal;
+	
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.flexutil.spinner.ModalSpinnerSupport;
 	
 	use namespace mx_internal;
 	

@@ -71,7 +71,6 @@
 			
 			protected function okButton_clickHandler(event:MouseEvent):void {
 				resultHandler.handleDialogResult({fullNodeId: rendererModel.fullNodeId, name: textEditor.text});
-				cancelButton_clickHandler();
 			}
 			
 			protected function cancelButton_clickHandler(event:MouseEvent = null):void {

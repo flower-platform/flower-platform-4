@@ -17,7 +17,6 @@
  * license-end
  */
 package com.crispico.flower.util.popup {
-	import com.crispico.flower.util.spinner.ModalSpinner;
 	
 	import flash.display.DisplayObject;
 	
@@ -29,6 +28,7 @@ package com.crispico.flower.util.popup {
 	
 	import org.flowerplatform.flexutil.popup.IPopupHandler;
 	import org.flowerplatform.flexutil.popup.IPopupHandlerFactory;
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
 	/**
 	 * @author Cristian Spiescu	

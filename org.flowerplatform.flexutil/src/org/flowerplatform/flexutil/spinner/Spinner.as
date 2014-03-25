@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package com.crispico.flower.util.spinner
+package org.flowerplatform.flexutil.spinner
 {
     import flash.events.TimerEvent;
     import flash.utils.Timer;
