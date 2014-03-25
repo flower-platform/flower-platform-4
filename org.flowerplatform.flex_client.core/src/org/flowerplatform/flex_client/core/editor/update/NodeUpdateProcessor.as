@@ -114,8 +114,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 			var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
 			// refresh rootNode only if it has no properties
 			// properties needed to set renderer's data if showRootModelAsRootNode is true
-			if (mindmapDiagramShell.showRootModelAsRootNode && rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
-				refresh(context, Node(mindmapDiagramShell.getRoot(context)));	
+			if (rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
+				refresh(context, rootNode);	
 			}
 		}
 		
@@ -306,8 +306,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 			if (children != null) {
 				// refresh diagram's children and their positions
 				diagramShell.refreshRootModelChildren(context);
-				diagramShell.refreshModelPositions(context, node);
-			}
+				diagramShell.refreshModelPositions(context, node);			
+			}			
 		}
 		
 		/* UPDATES */	
@@ -526,6 +526,13 @@ package org.flowerplatform.flex_client.core.editor.update {
 			var resourceNode:Node = event.node;
 			if (event.allPropertiesUpdated || (event.updatedProperties != null && event.updatedProperties.getItemIndex(NodePropertiesConstants.IS_DIRTY) != -1)) {
 				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(resourceNode.properties[NodePropertiesConstants.IS_DIRTY]);
+			}
+			if (event.allPropertiesUpdated || (event.updatedProperties != null && event.updatedProperties.getItemIndex(NodePropertiesConstants.CONTENT_TYPE) != -1)) {
+				var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
+				var rootNode:Node = Node(mindmapDiagramShell.getRoot(context));
+				if (rootNode != null) {
+				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, rootNode);	
+				}
 			}
 		}
 	}

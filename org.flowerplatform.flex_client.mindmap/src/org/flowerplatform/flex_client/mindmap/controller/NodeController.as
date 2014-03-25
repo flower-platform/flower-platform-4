@@ -18,10 +18,18 @@
  */
 package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
+	import mx.core.mx_internal;
 	
+	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.node.controller.GenericDescriptorValueProvider;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.mindmap.MindMapEditorDescriptor;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
+	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	
 	/**
@@ -46,7 +54,23 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {
-			return Node(model).side;
+			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
+			var rootModel:Node = Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model);
+			rootModel = mindmapDiagramShell.updateProcessor.mx_internal::nodeRegistry.getNodeById(rootModel.fullNodeId);
+			
+			if (rootModel.properties[NodePropertiesConstants.CONTENT_TYPE] == MindMapEditorDescriptor.ID) {				
+				var sideProvider:GenericDescriptorValueProvider = NodeControllerUtils.getSideProvider(context.diagramShell.registry, model);
+				if (sideProvider != null) {
+					var side:int = int(sideProvider.getValue(Node(model)));
+					if (side == 0) {
+						side = getSide(context, Node(model).parent);
+					}
+					if (side != 0) {
+						return side;
+					}
+				}
+			}
+			return MindMapDiagramShell.POSITION_RIGHT;
 		}
 		
 		override public function setSide(context:DiagramShellContext, model:Object, value:int):void {

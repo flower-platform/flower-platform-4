@@ -35,6 +35,10 @@ package org.flowerplatform.flex_client.core.node.controller {
 			return getPropertyProvider(registry, node, CorePlugin.NODE_ICONS_PROVIDER);
 		}
 		
+		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericDescriptorValueProvider {
+			return getPropertyProvider(registry, node, CorePlugin.NODE_SIDE_PROVIDER);
+		}
+		
 		public static function getPropertyProvider(registry:TypeDescriptorRegistry, 
 												   node:Object, controllerType:String):GenericDescriptorValueProvider {
 			var typeDescriptor:TypeDescriptor = registry.getExpectedTypeDescriptor(node.type);

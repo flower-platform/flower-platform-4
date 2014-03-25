@@ -97,6 +97,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	
 	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";
 	public static final String PROPERTY_FOR_ICON_DESCRIPTOR = "propertyForIconDescriptor";
+	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
 	
 	protected static CorePlugin INSTANCE;
 
@@ -176,6 +177,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
 		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController())
 		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.NAME))
+		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.SIDE))
 		.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericDescriptor(NodePropertiesConstants.ICONS));
 		
 		new FileSystemControllers().registerControllers();

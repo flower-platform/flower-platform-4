@@ -55,9 +55,6 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		[Transient]
 		public var children:ArrayCollection;
 		
-		[Transient]
-		public var side:int = MindMapDiagramShell.POSITION_RIGHT;
-		
 		public function Node(fullNodeId:String = null) {
 			if (fullNodeId != null) {
 				// this case happens when a Node is created from client

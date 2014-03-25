@@ -63,11 +63,18 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				
 				var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
 				var cloudPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
+				var side:int = diagramShell.getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
 				
 				var shapeX:Number = - cloudPadding/2;
 				var shapeY:Number = - diagramShell.getDeltaBetweenExpandedHeightAndHeight(diagramShellContext, data, true)/2;
 				var shapeWidth:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth") + cloudPadding;
 				var shapeHeight:Number = Math.max(diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeight"), diagramShell.getPropertyValue(diagramShellContext, data, "height") + cloudPadding);
+				
+				if (side == MindMapDiagramShell.POSITION_LEFT) {
+					shapeX -= (diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth") - diagramShell.getPropertyValue(diagramShellContext, data, "width"));
+				} else {
+					
+				}
 				
 				if (shape == MindMapNodePropertiesConstants.RECTANGLE) {
 					graphics.drawRect(shapeX, shapeY, shapeWidth, shapeHeight);
