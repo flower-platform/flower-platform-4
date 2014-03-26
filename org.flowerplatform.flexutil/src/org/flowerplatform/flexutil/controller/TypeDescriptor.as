@@ -125,7 +125,7 @@ package org.flowerplatform.flexutil.controller {
 			entry.cachedValue = controller;
 			return this;
 		}
-		
+	
 		private function getSingleControllerEntry(type:String):ControllerEntry {
 			var entry:ControllerEntry = singleControllers[type];
 			if (entry == null) {

@@ -24,13 +24,20 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.collections.IList;
 	import mx.events.FlexEvent;
 	
+	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.Pair;
+	
 	import spark.components.DropDownList;
 	import spark.events.DropDownEvent;
 	
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	
 	/**
+	 * Supported dataProvider item class:
+	 * <ul>
+	 * 	<li> String
+	 * 	<li> Pair -> a = key, b = label
+	 * </ul>
+	 * 
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
@@ -88,15 +95,24 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		protected function requestDataProvider():void {
 			if (data is PropertyDescriptor) {
 				dropDownList.dataProvider = PropertyDescriptor(data).possibleValues;
+				// if list of Pairs, use item.b as label
+				var listItem:Object = dropDownList.dataProvider.getItemAt(0);
+				if (listItem is Pair) {
+					dropDownList.labelField = "b";
+				}
 			}
 			valueChanged();
 		}
 				
-		protected function getItemIndexFromList(item:Object, list:IList):int {
-			if (item != null) {
+		protected function getItemIndexFromList(itemKey:Object, list:IList):int {
+			if (itemKey != null) {
 				for (var i:int = 0; i < list.length; i++) {
 					var listItem:Object = list.getItemAt(i);
-					if (item == listItem) {
+					if (listItem is Pair) {
+						if (listItem.a == itemKey) {
+							return i;
+						}
+					} else if (itemKey == listItem) {
 						return i;
 					}
 				}
@@ -105,6 +121,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		override protected function getValue():Object {
+			if (dropDownList.selectedItem is Pair) {
+				return Pair(dropDownList.selectedItem).a;
+			}
 			return dropDownList.selectedItem;	
 		}
 		

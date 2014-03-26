@@ -153,8 +153,9 @@ package org.flowerplatform.flex_client.core.editor.update {
 				nodeFromRegistry.properties = node.properties;
 			} else {
 				nodeRegistry.registerNode(node);
+				nodeFromRegistry = nodeRegistry.getNodeById(node.fullNodeId);
 			}		
-			MindMapDiagramShell(context.diagramShell).addModelInRootModelChildrenList(context, node, true);				
+			MindMapDiagramShell(context.diagramShell).addModelInRootModelChildrenList(context, nodeFromRegistry, true);				
 		}
 
 		/**
