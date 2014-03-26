@@ -129,7 +129,9 @@ package org.flowerplatform.flexutil.controller {
 		private function getSingleControllerPair(type:String):Pair {
 			var pair:Pair = singleControllers[type];
 			if (pair == null) {
-				pair = new Pair(null, false);
+				pair = new Pair();
+				pair.a = null;
+				pair.b = false;
 				singleControllers[type] = pair;
 			}
 			return pair;
@@ -196,7 +198,9 @@ package org.flowerplatform.flexutil.controller {
 		private function getAdditiveControllersPair(type:String):Pair {
 			var pair:Pair = additiveControllers[type];
 			if (pair == null) {
-				pair = new Pair(new ArrayCollection(), false);
+				pair = new Pair();
+				pair.a = new ArrayCollection();
+				pair.b = false;
 				additiveControllers[type] = pair;
 			}
 			return pair;

@@ -19,6 +19,9 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZ
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZES;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_NONE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
 
 import java.awt.GraphicsEnvironment;
@@ -29,6 +32,7 @@ import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvid
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.GenericDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -67,7 +71,7 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(COLOR_PICKER).setNameAs(COLOR_TEXT).setTitleAs(getMessage("mindmap.color.text")).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.color")))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(COLOR_PICKER).setNameAs(COLOR_BACKGROUND).setTitleAs(getMessage("mindmap.color.background")).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.color")))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(COLOR_PICKER).setNameAs(CLOUD_COLOR).setTitleAs(getMessage("mindmap.cloud.color")).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.cloud")))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(DROP_DOWN_LIST).setNameAs(CLOUD_SHAPE).setTitleAs(getMessage("mindmap.cloud.shape")).setPossibleValuesAs(Arrays.asList("", "Rectangle", "Round Rectangle")).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.cloud")))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(DROP_DOWN_LIST).setNameAs(CLOUD_SHAPE).setTitleAs(getMessage("mindmap.cloud.shape")).setPossibleValuesAs(Arrays.asList(new Pair<String, String>(SHAPE_NONE, getMessage("mindmap.shape.none")), new Pair<String, String>(SHAPE_RECTANGLE, getMessage("mindmap.shape.rectangle")), new Pair<String, String>(SHAPE_ROUND_RECTANGLE, getMessage("mindmap.shape.roundRectangle")))).setReadOnlyAs(false).setCategoryAs(getMessage("mindmap.cloud")))
 		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE).setLabelAs(getMessage("mindmap.add")))
 		// lower order index to override the default title property
 		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericDescriptor(TEXT).setOrderIndexAs(-10000));

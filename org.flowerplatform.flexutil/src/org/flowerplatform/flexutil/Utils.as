@@ -19,6 +19,7 @@
 package org.flowerplatform.flexutil {
 	import flash.text.Font;
 	import flash.text.FontType;
+	import flash.text.StyleSheet;
 	import flash.utils.getQualifiedClassName;
 	
 	import flashx.textLayout.utils.CharacterUtil;
@@ -205,15 +206,6 @@ package org.flowerplatform.flexutil {
 		 * Verifies if text contains <html> tag.
 		 */ 
 		public static function isHTMLText(text:String):Boolean {
-			for (var i:int = 0; i < text.length; i++) {
-				var ch:String = text.charAt(i);
-				if (ch == '<') {
-					break;
-				}
-				if (!CharacterUtil.isWhitespace(ch.charCodeAt(0)) || i == text.length) {
-					return false;
-				}
-			}
 			return text.search(/(?s)^\s*<\s*html[^>]*>.*/) != -1;
 		}
 		
@@ -223,8 +215,19 @@ package org.flowerplatform.flexutil {
 		 * All inline styles from <code>text</code> are replaced with compatible flex format style.
 		 */ 
 		public static function getCompatibleHTMLText(text:String):String {			
-			text = text.replace(/s*style="text-align:\s*/g, 'align="');
+			text = text.replace(/<p(\s*.*?\s?)style=['"](\s*.*?\s?)text-align:\s*(.*?\s*)[;"]/g, "<p$1align='$3' style='$2'");
+			text = text.replace(/<p(\s*.*?\s?)style=['"](\s*.*?\s?)text-decoration:\s*(.*?\s*)[;"]/g, "<p$1decoration='$3' style='$2'");
+			text = text.replace(/<p(\s*.*?\s?)style=['"](\s*.*?\s?)text-indent:\s*(.*?\s*)[;"]/g, "<p$1indent='$3' style='$2'");
 			
+			text = text.replace(/color:\s*(.*?)\s*[";]/g, "color='$1' ");			
+			text = text.replace(/font-size:\s*(.*?)\s*[";]/g, "size='$1' ");
+			text = text.replace(/font-family:\s*(.*?)\s*[";]/g, "face='$1' ");
+			
+			text = text.replace(/<p(\s*.*?\s?)font-weight:\s*(.*?\s*)[;"](\s*.*?\s*)>(\s*.*?\s*)<\/p>/g, "<p$1$3><b>$4<\/b><\/p>");
+			text = text.replace(/<p(\s*.*?\s?)font-style:\s*(.*?\s*)[;"](\s*.*?\s*)>(\s*.*?\s*)<\/p>/g, "<p$1$3><i>$4<\/i><\/p>");
+
+			text = text.replace(/<p(\s*.*?\s?)style=['"]{0,2}(.*?)["']{0,2}(\s*.*?\s*)>(\s*.*?\s*)<(\s*.*?\s*)\/p>/g, "<p$1$3><font $2>$4$5\/font><\/p>");
+
 			// add here other replacements
 			
 			return text;

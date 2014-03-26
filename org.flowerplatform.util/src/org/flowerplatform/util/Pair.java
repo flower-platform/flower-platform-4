@@ -25,6 +25,12 @@ public class Pair<A, B> {
 	public A a;
 	public B b;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public Pair() {
+	}
+	
 	public Pair(A a, B b) {
 		super();
 		this.a = a;

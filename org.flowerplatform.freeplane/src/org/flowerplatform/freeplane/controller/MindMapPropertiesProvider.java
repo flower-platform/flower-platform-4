@@ -15,9 +15,9 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_ITA
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.NONE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_NONE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
 
 import java.awt.Color;
@@ -92,7 +92,7 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		node.getProperties().put(COLOR_BACKGROUND, color == null ? ColorUtils.colorToString(Color.WHITE) : ColorUtils.colorToString(color));	
 		
 		// cloud		
-		String cloudShape = NONE;
+		String cloudShape = SHAPE_NONE;
 		String cloudColor = ColorUtils.colorToString(CloudController.getStandardColor());
 		
 		CloudModel cloudModel = CloudController.getController().getCloud(rawNodeData);		
@@ -101,9 +101,9 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			
 			Shape shape = cloudModel.getShape();
 			if (Shape.RECT.equals(shape)) {
-				cloudShape = RECTANGLE;
+				cloudShape = SHAPE_RECTANGLE;
 			} else if (Shape.ROUND_RECT.equals(shape)) {
-				cloudShape = ROUND_RECTANGLE;
+				cloudShape = SHAPE_ROUND_RECTANGLE;
 			}
 		}		
 		node.getProperties().put(CLOUD_COLOR, cloudColor);
