@@ -4,6 +4,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.action.EditorFrontendAwareAction;
+	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
@@ -21,6 +23,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		private var _saveAction:SaveAction;
 		private var _saveAllAction:SaveAllAction;
 		
+		private var _reloadAction:ReloadAction;
+		
 		public function get saveAction():SaveAction {
 			if (_saveAction == null) {
 				_saveAction = new SaveAction();
@@ -36,22 +40,35 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 			return _saveAllAction;
 		}
+		
+		public function get reloadAction():ReloadAction {
+			if (_reloadAction == null) {
+				_reloadAction = new ReloadAction();
+			}
+			return _reloadAction;
+		}
 				
 		public function activeViewChangedHandler(evt:ActiveViewChangedEvent):void {			
-			updateSaveActionEnablement();
+			updateEditorFrontendActionsEnablement();
 		}
 		
-		public function updateSaveActionEnablement():void {
+		public function updateEditorFrontendActionsEnablement():void {
 			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 			var activeComponent:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
 			
 			if (activeComponent is EditorFrontend) {
-				saveAction.editorFrontend = EditorFrontend(activeComponent);
-				saveAction.enabled = EditorFrontend(activeComponent).isDirty();
+				var editorFrontend:EditorFrontend = EditorFrontend(activeComponent);
+				enableDisableAction(saveAction, editorFrontend.isDirty(), editorFrontend);
+				enableDisableAction(reloadAction, true, editorFrontend);
 			} else {
-				saveAction.editorFrontend = null;
-				saveAction.enabled = false;					
+				enableDisableAction(saveAction, false, null);
+				enableDisableAction(reloadAction, false, null);
 			}			
+		}
+		
+		private function enableDisableAction(action:EditorFrontendAwareAction, enabled:Boolean, editorFrontend:EditorFrontend):void {
+			action.enabled = enabled;
+			action.editorFrontend = editorFrontend;
 		}
 		
 		public function updateSaveAllActionEnablement(someResourceNodeHasBecomeDirty:Boolean):void {			
@@ -76,7 +93,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 */ 
 		public function updateGlobalDirtyState(someResourceNodeHasBecomeDirty:Boolean):void {
 			updateSaveAllActionEnablement(someResourceNodeHasBecomeDirty);
-			updateSaveActionEnablement();			
+			updateEditorFrontendActionsEnablement();			
 			
 			FlexUtilGlobals.getInstance().workbench.refreshLabels();			
 		}
@@ -191,17 +208,57 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				return;
 			}
 					
-			var saveView:SaveResourceNodesView = new SaveResourceNodesView();
+			var saveView:ResourceNodesListView = new ResourceNodesListView();
 			saveView.editors = editors;
-			saveView.dirtyResourceNodes = dirtyResourceNodes;
+			saveView.resourceNodes = dirtyResourceNodes;
 			saveView.handler = handler;
+			saveView.serverMethodToInvokeForSelection = "resourceService.save";
+			saveView.title = CorePlugin.getInstance().getMessage("save.title");
+			saveView.labelForSingleResourceNode = CorePlugin.getInstance().getMessage('save.singleResourceNode.message', 
+				[getResourceNodeLabel(dirtyResourceNodes.getItemAt(0).resourceNodeId)])
+			saveView.labelForMultipleResourceNodes = CorePlugin.getInstance().getMessage('save.multipleResourceNodes.label');
+			saveView.iconForSingleResourceNode = CorePlugin.getInstance().getResourceUrl("images/disk.png");
+			saveView.iconForMultipleResourceNodes = CorePlugin.getInstance().getResourceUrl("images/disk_multiple.png");
 			
-			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
-				.setViewContent(saveView)
-				.setWidth(400)
-				.setHeight((dirtyResourceNodes.length == 1) ? 150 : 300)
-				.show();				
+			showPopup(saveView, dirtyResourceNodes.length == 1);
 		}
+		
+		/**
+		 * @author Mariana Gheorghe
+		 */
+		public function showReloadDialog(editors:Array = null):void {
+			if (editors == null) {
+				editors = CorePlugin.getInstance().getAllEditorFrontends();
+			}
+			
+			var resourceNodes:ArrayList = new ArrayList();
+			for each (var editor:EditorFrontend in editors) {
+				for each (var resourceNodeId:String in editor.nodeUpdateProcessor.resourceNodeIds) {
+					resourceNodes.addItem(new ResourceNode(resourceNodeId, true));
+				}
+			}
+			
+			var reloadView:ResourceNodesListView = new ResourceNodesListView();
+			reloadView.editors = editors;
+			reloadView.resourceNodes = resourceNodes;
+			reloadView.handler = function():void {};
+			reloadView.serverMethodToInvokeForSelection = "resourceService.reload";
+			reloadView.title = CorePlugin.getInstance().getMessage("reload.title");
+			reloadView.labelForMultipleResourceNodes = CorePlugin.getInstance().getMessage('reload.multipleResourceNodes.label');
+			reloadView.iconForSingleResourceNode = reloadView.iconForMultipleResourceNodes =
+				CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png");
+			
+			showPopup(reloadView, resourceNodes.length == 1);
+		}
+		
+		private function showPopup(view:ResourceNodesListView, small:Boolean):void {
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+				.setViewContent(view)
+				.setWidth(400)
+				.setHeight(small ? 150 : 300)
+				.show();	
+		}
+		
 		
 		/**
 		 * @return global dirty state for all open editors = saveAll action enablement.

@@ -3,6 +3,7 @@ package org.flowerplatform.freeplane.controller;
 import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -16,6 +17,7 @@ import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.url.UrlManager;
 import org.freeplane.features.url.mindmapmode.MFileManager;
+import org.freeplane.n3.nanoxml.XMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,31 +36,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	
 	@Override
 	public void firstClientSubscribed(String resourceNodeId, ServiceContext context) throws Exception {
-		Node resourceNode = new Node(resourceNodeId);
-		if (!canHandleResource(resourceNode.getIdWithinResource())) {
-			return;
-		}
-		
-		MapModel model = null;
-		URL url = new File(resourceNode.getIdWithinResource()).toURI().toURL();
-		InputStreamReader urlStreamReader = null;
-		try {
-			urlStreamReader = new InputStreamReader(url.openStream());
-			
-			model = new MapModel();			
-			model.setURL(url);
-				
-			Controller.getCurrentModeController().getMapController().getMapReader().createNodeTreeFromXml(model, urlStreamReader, Mode.FILE);		
-		} finally {
-			if (urlStreamReader != null) {
-				urlStreamReader.close();
-			}
-		}
-		
-		logger.debug("Loaded mindmap {}", resourceNode.getIdWithinResource());
-		
-		CorePlugin.getInstance().getResourceService().setRawResourceData(resourceNodeId, model, resourceCategory);
-		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+		reload(resourceNodeId, context);
 	}
 
 	@Override
@@ -97,6 +75,35 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		rawNodeData.setSaved(true);		
 	}
 
+	@Override
+	public void reload(String resourceNodeId, ServiceContext context) throws IOException, XMLException {
+		Node resourceNode = new Node(resourceNodeId);
+		if (!canHandleResource(resourceNode.getIdWithinResource())) {
+			return;
+		}
+		
+		MapModel model = null;
+		URL url = new File(resourceNode.getIdWithinResource()).toURI().toURL();
+		InputStreamReader urlStreamReader = null;
+		try {
+			urlStreamReader = new InputStreamReader(url.openStream());
+			
+			model = new MapModel();			
+			model.setURL(url);
+				
+			Controller.getCurrentModeController().getMapController().getMapReader().createNodeTreeFromXml(model, urlStreamReader, Mode.FILE);		
+		} finally {
+			if (urlStreamReader != null) {
+				urlStreamReader.close();
+			}
+		}
+		
+		logger.debug("Loaded mindmap {}", resourceNode.getIdWithinResource());
+		
+		CorePlugin.getInstance().getResourceService().setRawResourceData(resourceNodeId, model, resourceCategory);
+		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+	}
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */
@@ -110,9 +117,12 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		MapModel model = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
 		
 		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+		if (model == null) {
+			return false;
+		}
 		return !model.isSaved();
 	}
-
+	
 	private boolean canHandleResource(String path) {
 		return path.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION);
 	}

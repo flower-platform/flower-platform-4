@@ -35,4 +35,8 @@ public class ResourceServiceRemote {
 		CorePlugin.getInstance().getResourceService().save(resourceNodeId, new ServiceContext());
 	}
 	
+	public void reload(String resourceNodeId) {
+		CorePlugin.getInstance().getResourceService().reload(resourceNodeId, new ServiceContext());
+	}
+	
 }

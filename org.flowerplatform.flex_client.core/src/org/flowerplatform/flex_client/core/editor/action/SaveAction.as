@@ -19,17 +19,13 @@
 package org.flowerplatform.flex_client.core.editor.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @see ResourceNodeManager#saveAction
 	 * @author Cristina Constantinescu
 	 */
-	public class SaveAction extends ActionBase {
-		
-		public var editorFrontend:EditorFrontend;
+	public class SaveAction extends EditorFrontendAwareAction {
 		
 		public function SaveAction() {			
 			label = CorePlugin.getInstance().getMessage("save.action.label");

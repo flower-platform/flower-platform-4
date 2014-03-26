@@ -18,29 +18,33 @@
 */
 package org.flowerplatform.flex_client.core.editor.action {
 	
+	import mx.collections.ArrayCollection;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
 	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
-	public class ReloadAction extends DiagramShellAwareActionBase {
+	public class ReloadAction extends EditorFrontendAwareAction {
 		
 		public function ReloadAction() {			
-			label = CorePlugin.getInstance().getMessage("action.reload");
-			icon = CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png");
-			preferShowOnActionBar = true;
-			orderIndex = 100;
+			label = CorePlugin.getInstance().getMessage("reload.action.label");
+			icon = FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png"));
+			parentId = CorePlugin.FILE_MENU_ID;
+			enabled = false;
 		}
 				
-		override public function get visible():Boolean {			
-			return true;
-		}
-		
 		override public function run():void {
-//			var context:DiagramShellContext = diagramShellContext;
-//			CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.load", null, 
-//				function (result:Object):void {MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, null);});
-			throw new Error("Unsupported");
+			var resourceNodeIds:ArrayCollection = editorFrontend.nodeUpdateProcessor.resourceNodeIds;
+			if (resourceNodeIds.length == 1) {
+				// single resourceNode to reload -> reload without asking
+				CorePlugin.getInstance().serviceLocator.invoke("resourceService.reload", [resourceNodeIds.getItemAt(0)]);
+			} else {
+				// multiple resourceNodes -> show dialog
+				CorePlugin.getInstance().resourceNodesManager.showReloadDialog([editorFrontend]);
+			}
 		}			
 		
 	}

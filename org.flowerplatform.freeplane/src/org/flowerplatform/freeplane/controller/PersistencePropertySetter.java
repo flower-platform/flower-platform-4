@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.core.ServiceContext.EXECUTE_ONLY_FOR_UPDATER;
+
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
@@ -16,6 +18,10 @@ public class PersistencePropertySetter extends PropertySetter {
 
 	@Override
 	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext context) {
+		if (context.getValue(EXECUTE_ONLY_FOR_UPDATER)) {
+			return;
+		}
+		
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 
 		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
