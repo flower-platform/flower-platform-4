@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.resource;
 
 import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
 import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
+import static org.flowerplatform.core.ServiceContext.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.node.resource.ResourceAccessController.RESOURCE_ACCESS_CONTROLLER;
 
@@ -70,7 +71,7 @@ public class ResourceService {
 		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
 			// first subscription
 			firstSubscription = true;
-			for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
+			for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 				try {
 					controller.firstClientSubscribed(resourceNodeId, context);
 					if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
@@ -100,7 +101,7 @@ public class ResourceService {
 		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
 			// last unsubscription
 			lastUnsubscription = true;
-			for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
+			for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 				controller.lastClientUnubscribed(resourceNodeId, context);
 				if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 					break;
@@ -117,7 +118,7 @@ public class ResourceService {
 	 * @author Cristina Constantinescu
 	 */
 	public void save(String resourceNodeId, ServiceContext context) {
-		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
+		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 			controller.save(resourceNodeId, context);
 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -128,8 +129,34 @@ public class ResourceService {
 		CorePlugin.getInstance().getNodeService().setProperty(
 				new Node(resourceNodeId), 
 				IS_DIRTY, 
-				CorePlugin.getInstance().getResourceService().isDirty(resourceNodeId, new ServiceContext()), 
-				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
+				isDirty(resourceNodeId, new ServiceContext()), 
+				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+	}
+	
+	public void reload(String resourceNodeId, ServiceContext context) {
+		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
+			try {
+				controller.reload(resourceNodeId, context);
+				if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+					break;
+				}
+			} catch (Exception e) {
+				// there was an error loading the resource
+				// unsubscribe all other clients
+				List<String> sessionIds = getSessionsSubscribedToResource(resourceNodeId);
+				for (int i = sessionIds.size() - 1; i >= 0; i--) {
+					sessionUnsubscribedFromResource(resourceNodeId, sessionIds.get(i), new ServiceContext());
+				}
+				throw new RuntimeException(e);
+			}
+		}
+		
+		// update isDirty property
+		CorePlugin.getInstance().getNodeService().setProperty(
+				new Node(resourceNodeId), 
+				IS_DIRTY, 
+				isDirty(resourceNodeId, new ServiceContext()), 
+				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	/**
@@ -137,7 +164,7 @@ public class ResourceService {
 	 */
 	public boolean isDirty(String resourceNodeId, ServiceContext context) {
 		boolean isDirty = false;
-		for (ResourceAccessController controller : getResourceAccessController(resourceNodeId)) {
+		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 			isDirty = controller.isDirty(resourceNodeId, context);
 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -235,7 +262,7 @@ public class ResourceService {
 		return resourceDao.getUpdates(resourceNodeId, timestampOfLastRequest, timestampOfThisRequest);
 	}
 	
-	protected List<ResourceAccessController> getResourceAccessController(String resourceNodeId) {
+	protected List<ResourceAccessController> getResourceAccessControllers(String resourceNodeId) {
 		Node resourceNode = new Node(resourceNodeId);
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(resourceNode.getType());
 		if (descriptor != null) {
@@ -243,5 +270,5 @@ public class ResourceService {
 		}
 		return Collections.emptyList();
 	}
-	
+
 }

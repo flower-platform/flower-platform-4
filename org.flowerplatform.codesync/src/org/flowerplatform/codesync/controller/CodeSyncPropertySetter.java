@@ -23,8 +23,6 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.set
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 import static org.flowerplatform.codesync.feature_provider.FeatureProvider.FEATURE_PROVIDER;
 
-import java.util.Map;
-
 import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;

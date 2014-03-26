@@ -4,8 +4,8 @@ import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
- * Responsible with loading a resource on the first client subscribed and unloading the resource
- * on the last client unsubscribed.
+ * Responsible with working with raw resource data (load on the first client subscribed and unload
+ * on the last client unsubscribed, save and reload).
  * 
  * @author Mariana Gheorghe
  */
@@ -21,6 +21,8 @@ public abstract class ResourceAccessController extends AbstractController {
 	 * @author Cristina Constantinescu
 	 */
 	public abstract void save(String resourceNodeId, ServiceContext context);
+	
+	public abstract void reload(String resourceNodeId, ServiceContext context) throws Exception;
 	
 	/**
 	 * @author Cristina Constantinescu

@@ -1,6 +1,7 @@
 package org.flowerplatform.core.node.resource.in_memory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.flowerplatform.core.node.update.remote.Update;
@@ -15,6 +16,8 @@ public class ResourceNodeInfo {
 	
 	private String resourceCategory;
 	
+	private long loadedTimestamp;
+	
 	private List<String> sessions = new ArrayList<String>();
 	
 	private List<Update> updates = new ArrayList<Update>();
@@ -27,6 +30,8 @@ public class ResourceNodeInfo {
 	
 	public void setRawResourceData(Object rawResourceData) {
 		this.rawResourceData = rawResourceData;
+		loadedTimestamp = new Date().getTime();
+		updates.clear();
 	}
 	
 	public String getResourceCategory() {
@@ -37,6 +42,10 @@ public class ResourceNodeInfo {
 		this.resourceCategory = resourceCategory;
 	}
 	
+	public long getLoadedTimestamp() {
+		return loadedTimestamp;
+	}
+
 	public List<String> getSessions() {
 		return sessions;
 	}

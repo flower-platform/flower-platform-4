@@ -217,6 +217,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		public function removeChildren(context:DiagramShellContext, node:Node, refreshChildrenAndPositions:Boolean = true):void {
 			// get all dirty resourceNodes starting from node
 			var dirtyResourceNodeIds:Array = [];
+			var savedResourceNodeIds:Array = [];
 			for each (var resourceNodeId:String in resourceNodeIds) {
 				var resourceNode:Node = nodeRegistry.getNodeById(resourceNodeId);
 				var parent:Node = resourceNode;
@@ -225,21 +226,33 @@ package org.flowerplatform.flex_client.core.editor.update {
 				}
 				if (parent == node) {
 					var isSubscribable:Boolean = resourceNode.properties[NodePropertiesConstants.IS_SUBSCRIBABLE];
-					if (isSubscribable && isResourceNodeDirty(resourceNodeId) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
-						dirtyResourceNodeIds.push(resourceNodeId);
+					if (isSubscribable) {
+						if (isResourceNodeDirty(resourceNodeId) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
+							dirtyResourceNodeIds.push(resourceNodeId);
+						} else {
+							savedResourceNodeIds.push(resourceNodeId);
+						}
 					}
 				}
 			}
+			
+			// remove nodes that are already saved
+			for each (var savedResourceNodeId:String in savedResourceNodeIds) {
+				removeResourceNodeForProcessor(nodeRegistry.getNodeById(savedResourceNodeId));	
+			}
+			
 			if (dirtyResourceNodeIds.length > 0) { // at least one dirty resourceNode found -> show dialog 
 				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds, 
 					function():void {
 						for (var i:int = 0; i < dirtyResourceNodeIds.length; i++) {
 							removeResourceNodeForProcessor(nodeRegistry.getNodeById(dirtyResourceNodeIds[i]));
 						}
+						// wait for server response before collapse			
 						removeChildrenRecursive(context, node, refreshChildrenAndPositions);
 					}
 				);
 			} else {
+				// no dirty resources => collapse immediately
 				removeChildrenRecursive(context, node, refreshChildrenAndPositions);
 			}
 		}
@@ -479,6 +492,10 @@ package org.flowerplatform.flex_client.core.editor.update {
 		protected function refreshHandler(context:DiagramShellContext, node:Node, nodeWithVisibleChildren:NodeWithChildren):void {
 			// set new node properties and dispatch event
 			node.properties = nodeWithVisibleChildren.node.properties;
+			var nodeFromRegistry:Node = nodeRegistry.getNodeById(node.fullNodeId);
+			if (nodeFromRegistry != null && nodeFromRegistry != node) {
+				nodeFromRegistry.properties = nodeWithVisibleChildren.node.properties;
+			}
 			node.dispatchEvent(new NodeUpdatedEvent(node));	
 			
 			var newNodeToCurrentNodeIndex:Dictionary = new Dictionary();

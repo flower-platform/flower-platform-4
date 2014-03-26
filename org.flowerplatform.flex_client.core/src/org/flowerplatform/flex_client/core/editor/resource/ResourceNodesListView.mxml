@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
  @author Cristina Constantinescu
+ @author Mariana Gheorghe
 -->
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent" 
-		 currentState="{dirtyResourceNodes.length == 1 ? 'singleResourceNode' : 'multipleResourceNodes'}" >
+		 currentState="{resourceNodes.length == 1 ? 'singleResourceNode' : 'multipleResourceNodes'}" >
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayList;
 			import mx.collections.IList;
-			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
 			public var editors:Array;		
 			
 			[Bindable]
-			public var dirtyResourceNodes:IList;
+			public var resourceNodes:IList;
 			
 			public var handler:Function;
 			
+			public var serverMethodToInvokeForSelection:String;
+			
 			private var _viewHost:IViewHost;
+			
+			public var title:String;
+			
+			[Bindable]
+			public var labelForSingleResourceNode:String;
+			
+			[Bindable]
+			public var labelForMultipleResourceNodes:String;
+			
+			public var iconForSingleResourceNode:String;
+			public var iconForMultipleResourceNodes:String;
 			
 			public function getActions(selection:IList):Vector.<IAction> {
 				return null;
@@ -42,26 +52,32 @@
 			
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewHost = viewHost;
-				_viewHost.setLabel(CorePlugin.getInstance().getMessage("save.title"));
-				_viewHost.setIcon(CorePlugin.getInstance().getResourceUrl(currentState == "singleResourceNode" ? 'images/disk.png' : 'images/disk_multiple.png'));							
+				_viewHost.setLabel(title);
+				_viewHost.setIcon(currentState == "singleResourceNode" ? iconForSingleResourceNode : iconForMultipleResourceNodes);							
 			}		
 						
 			protected function setAllSelected(value:Boolean):void {
-				for (var i:int = 0; i < dirtyResourceNodes.length; i++) {
-					var resourceNodeData:ResourceNode = ResourceNode(dirtyResourceNodes.getItemAt(i));
+				for (var i:int = 0; i < resourceNodes.length; i++) {
+					var resourceNodeData:ResourceNode = ResourceNode(resourceNodes.getItemAt(i));
 					resourceNodeData.selected = value;
 				}
 			}
 			
 			protected function yesButton_clickHandler(event:MouseEvent):void {
-				for (var i:int = 0; i < dirtyResourceNodes.length; i++) {
-					var resourceNodeData:ResourceNode = ResourceNode(dirtyResourceNodes.getItemAt(i));
+				var invokedServerMethod:Boolean = false;
+				for (var i:int = 0; i < resourceNodes.length; i++) {
+					var resourceNodeData:ResourceNode = ResourceNode(resourceNodes.getItemAt(i));
 					if (resourceNodeData.selected) {
 						// invoke service method and wait for result to close the view
-						CorePlugin.getInstance().serviceLocator.invoke("resourceService.save", [resourceNodeData.resourceNodeId], function(data:Object):void {
+						CorePlugin.getInstance().serviceLocator.invoke(serverMethodToInvokeForSelection, [resourceNodeData.resourceNodeId], function(data:Object):void {
 							noButton_clickHandler();
 						});
+						invokedServerMethod = true;
 					}
+				}
+				if (!invokedServerMethod) {
+					// if there was resource selected => server method was not invoked, no reason to wait for result
+					noButton_clickHandler();
 				}
 			}
 			
@@ -91,13 +107,13 @@
 		<s:VerticalLayout paddingBottom="5" paddingTop="10" paddingLeft="5" paddingRight="5" />
 	</s:layout>
 	
-	<s:RichText text.singleResourceNode="{CorePlugin.getInstance().getMessage('save.singleResourceNode.message', [CorePlugin.getInstance().resourceNodesManager.getResourceNodeLabel(dirtyResourceNodes.getItemAt(0).resourceNodeId)])}" 
+	<s:RichText text.singleResourceNode="{labelForSingleResourceNode}" 
 				includeIn="singleResourceNode"
 				width="100%" height="100%" />
 	
 	<s:VGroup width="100%" height="100%" includeIn="multipleResourceNodes">
-		<s:Label text="{CorePlugin.getInstance().getMessage('save.multipleResourceNodes.label')}"/>
-		<s:List id="list" width="100%" height="100%" dataProvider="{dirtyResourceNodes}">
+		<s:Label text="{labelForMultipleResourceNodes}"/>
+		<s:List id="list" width="100%" height="100%" dataProvider="{resourceNodes}">
 			<s:itemRenderer>
 				<fx:Component>
 					<s:ItemRenderer>

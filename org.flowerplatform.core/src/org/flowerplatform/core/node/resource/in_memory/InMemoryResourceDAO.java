@@ -85,8 +85,9 @@ public class InMemoryResourceDAO implements IResourceDAO {
 	
 	@Override
 	public void setRawResourceData(String resourceNodeId, Object rawResourceData, String resourceCategory) {
-		getResourceNodeInfoForResourceNodeId(resourceNodeId).setRawResourceData(rawResourceData);
-		getResourceNodeInfoForResourceNodeId(resourceNodeId).setResourceCategory(resourceCategory);
+		ResourceNodeInfo resourceNodeInfo = getResourceNodeInfoForResourceNodeId(resourceNodeId);
+		resourceNodeInfo.setRawResourceData(rawResourceData);
+		resourceNodeInfo.setResourceCategory(resourceCategory);
 	}
 	
 	@Override
@@ -138,30 +139,29 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
 		if (info != null) {
 			updates = info.getUpdates();
+			info.setUpdateRequestedTimestamp(timestampOfThisRequest);
 		}
 		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
 		if (updates == null) {
 			return updatesAddedAfterLastRequest;
 		}
 		
-		long timestampOfLastRequestForServer = info == null ? 0 : info.getUpdateRequestedTimestamp();
-		boolean updatesBeforeLastRequestFound = timestampOfLastRequest <= timestampOfLastRequestForServer;
+		if (timestampOfLastRequest > 0 && info.getLoadedTimestamp() > timestampOfLastRequest) {
+			// if resource was reloaded after -> tell client to perform full refresh
+			return null;
+		}
+		
 		// iterate updates reversed. Because last element in list is the most recent.
 		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
 		for (int i = updates.size() - 1; i >= 0; i--) {
 			Update update = updates.get(i);			
-			if (update.getTimestamp() <= timestampOfLastRequest) { 
+			if (update.getTimestamp() < timestampOfLastRequest) { 
 				// an update was registered before timestampOfLastRequest
-				updatesBeforeLastRequestFound = true;
 				break;
 			}
 			updatesAddedAfterLastRequest.add(0, update);
 		}
-		
-		info.setUpdateRequestedTimestamp(timestampOfThisRequest);
-		
-		// if no updates registered before -> tell client to perform full refresh
-		return updatesBeforeLastRequestFound ? updatesAddedAfterLastRequest : null;
+		return updatesAddedAfterLastRequest;
 	}
 
 	/**

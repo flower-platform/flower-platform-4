@@ -32,7 +32,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
-	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
@@ -103,7 +102,7 @@ package org.flowerplatform.flex_client.core {
 
 		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 		
-		public var updateTimer:UpdateTimer = new UpdateTimer(5000);
+		public var updateTimer:UpdateTimer = new UpdateTimer(0);
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
@@ -167,7 +166,6 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(AddNodeAction);
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
-			editorClassFactoryActionProvider.addActionClass(ReloadAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
 			
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
@@ -266,6 +264,7 @@ package org.flowerplatform.flex_client.core {
 			addActionToGlobalMenuActionProvider(getMessage("menu.file"), null, FILE_MENU_ID);
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
+			globalMenuActionProvider.addAction(resourceNodesManager.reloadAction);
 			
 			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, NAVIGATE_MENU_ID); 
 			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, NAVIGATE_MENU_ID, 

@@ -3,6 +3,7 @@ package org.flowerplatform.core.node;
 import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
 import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
 import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
+import static org.flowerplatform.core.ServiceContext.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
@@ -166,7 +167,7 @@ public class NodeService {
 		boolean newDirty = CorePlugin.getInstance().getResourceService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
 	
@@ -195,7 +196,7 @@ public class NodeService {
 		boolean newDirty = CorePlugin.getInstance().getResourceService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
 	
@@ -221,7 +222,7 @@ public class NodeService {
 		boolean newDirty = CorePlugin.getInstance().getResourceService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 		setProperty(node, HAS_CHILDREN, true, new ServiceContext());
 	}
@@ -248,7 +249,7 @@ public class NodeService {
 		boolean newDirty = CorePlugin.getInstance().getResourceService().isDirty(resourceNode.getFullNodeId(), new ServiceContext());
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
-			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true));
+			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext()), new ServiceContext());
 	}
@@ -271,6 +272,10 @@ public class NodeService {
 		}
 		
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node, new ServiceContext()));
+		
+		if (CoreUtils.isSubscribable(node.getProperties())) {
+			node.getProperties().put(IS_DIRTY, CorePlugin.getInstance().getResourceService().isDirty(node.getFullNodeId(), new ServiceContext()));
+		}
 	}
 	
 	/**
