@@ -14,8 +14,8 @@ import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_ITA
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.SHAPE_ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
 
 import java.util.regex.Matcher;
@@ -124,10 +124,10 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				Shape shape = null;
 				// get shape correspondence from freeplane
 				switch (cloudShape) {
-					case RECTANGLE:
+					case SHAPE_RECTANGLE:
 						shape = Shape.RECT;
 						break;
-					case ROUND_RECTANGLE:
+					case SHAPE_ROUND_RECTANGLE:
 						shape = Shape.ROUND_RECT;
 						break;				
 				}

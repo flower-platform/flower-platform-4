@@ -54,6 +54,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
@@ -240,6 +241,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
 			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
+			registerClassAliasFromAnnotation(Pair);
 		}
 		
 		/**

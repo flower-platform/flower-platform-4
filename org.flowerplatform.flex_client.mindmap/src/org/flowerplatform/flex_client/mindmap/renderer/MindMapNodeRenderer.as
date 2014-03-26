@@ -58,7 +58,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			// draw could shape
 			var shape:String = data.properties[MindMapNodePropertiesConstants.CLOUD_SHAPE];
-			if (shape != null && shape != MindMapNodePropertiesConstants.NONE) {				
+			if (shape != null && shape != MindMapNodePropertiesConstants.SHAPE_NONE) {				
 				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness
 				graphics.beginFill(Utils.convertValueToColor(data.properties[MindMapNodePropertiesConstants.CLOUD_COLOR]), 1);
 				
@@ -66,15 +66,20 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				var cloudPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
 				var side:int = diagramShell.getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
 				
+				var width:Number = diagramShell.getPropertyValue(diagramShellContext, data, "width");
+				var height:Number = diagramShell.getPropertyValue(diagramShellContext, data, "height");
+				var expandedWidth:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth");
+				var expandedHeight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeight");
+								
 				var shapeX:Number = - cloudPadding/2;
 				var shapeY:Number = - diagramShell.getDeltaBetweenExpandedHeightAndHeight(diagramShellContext, data, true)/2;
-				var shapeWidth:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth") + cloudPadding;
-				var shapeHeight:Number = Math.max(diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeight"), diagramShell.getPropertyValue(diagramShellContext, data, "height") + cloudPadding);
+				var shapeWidth:Number = expandedWidth + cloudPadding;
+				var shapeHeight:Number = Math.max(expandedHeight, height + cloudPadding);
 				
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
-					shapeX -= (diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth") - diagramShell.getPropertyValue(diagramShellContext, data, "width"));
+					shapeX -= (expandedWidth - width);
 				}
-				if (shape == MindMapNodePropertiesConstants.RECTANGLE) {
+				if (shape == MindMapNodePropertiesConstants.SHAPE_RECTANGLE) {
 					graphics.drawRect(shapeX, shapeY, shapeWidth, shapeHeight);
 				} else {
 					graphics.drawRoundRect(shapeX, shapeY, shapeWidth, shapeHeight, 20, 20);					
@@ -140,7 +145,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			if (cloudShapeChanged) {				
 				var shape:String = data.properties[MindMapNodePropertiesConstants.CLOUD_SHAPE];
 				
-				if (shape != null && shape != MindMapNodePropertiesConstants.NONE) { // we have a cloud shape, add additional padding to node and request refresh				
+				if (shape != null && shape != MindMapNodePropertiesConstants.SHAPE_NONE) { // we have a cloud shape, add additional padding to node and request refresh				
 					diagramShell.setPropertyValue(diagramShellContext, data, "additionalPadding", diagramShell.additionalPadding);	
 					refreshNodePositions = true;				
 				} else if (dynamicObject.additionalPadding) { // no cloud shape needed anymore, remove additional padding from node and request refresh
