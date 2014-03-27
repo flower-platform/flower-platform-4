@@ -1,7 +1,5 @@
 package org.flowerplatform.core.node.remote;
 
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
 import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
 
 import java.util.ArrayList;
@@ -31,18 +29,20 @@ public class NodeServiceRemote {
 		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property, new ServiceContext());	
 	}
 	
-	public void addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Sebastian Solomon
+	 */
+	public String addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
 		Node parent = new Node(parentFullNodeId);
-		Node child;
-		if (properties.get(CorePlugin.TYPE_KEY).equals(CorePlugin.FILE_NODE_TYPE)) {
-			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);
-			child.getProperties().put(FILE_IS_DIRECTORY, properties.get(FILE_IS_DIRECTORY)); 
-			child.getProperties().put(NAME, properties.get(NAME));
-		} else {
-			
-			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);
+		Node child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);
+		ServiceContext context = new ServiceContext();
+
+		for (Map.Entry<String, Object> entry : properties.entrySet()) {
+		    context.add(entry.getKey(), entry.getValue());
 		}
-		CorePlugin.getInstance().getNodeService().addChild(parent, child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null, new ServiceContext());	
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null, context);
+		return child.getFullNodeId();
 	}
 	
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {

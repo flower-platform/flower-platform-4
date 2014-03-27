@@ -33,7 +33,5 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		
 		public var icon:String;
 		
-		public var properties:Object;
-		
 	}
 }

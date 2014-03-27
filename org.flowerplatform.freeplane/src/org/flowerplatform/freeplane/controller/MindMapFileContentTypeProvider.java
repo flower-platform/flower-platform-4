@@ -29,7 +29,7 @@ public class MindMapFileContentTypeProvider extends PropertiesProvider {
 	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext context) {
-		boolean isDirectory = Boolean.parseBoolean((String) node.getProperties().get(FILE_IS_DIRECTORY));
+		boolean isDirectory = (boolean)node.getProperties().get(FILE_IS_DIRECTORY);
 		if (!isDirectory) {
 			String path = (String) node.getProperties().get(NAME);
 			if (path.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {

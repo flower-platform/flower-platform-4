@@ -26,6 +26,7 @@ import org.flowerplatform.util.controller.IDescriptor;
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
+ * @author Sebastian Solomon
  */
 public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
@@ -43,7 +44,9 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	private String title;
 	private String type = STRING;
 	private String category = DEFAULT_CATEGORY;
-
+	private boolean contributeToCreation = false;
+	private boolean isMandatory = false;
+	
 	private boolean readOnly;
 	private List<?> possibleValues;
 	
@@ -133,4 +136,31 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.possibleValues = possibleValues;
 		return this;
 	}
+	
+	public boolean isContributeToCreation() {
+		return contributeToCreation;
+	}
+
+	public void setContributeToCreation(boolean contributeToCreation) {
+		this.contributeToCreation = contributeToCreation;
+	}
+	
+	public PropertyDescriptor setContributeToCreationAs(boolean contributeToCreation) {
+		this.contributeToCreation = contributeToCreation;
+		return this;
+	}
+
+	public boolean getIsMandatory() {
+		return isMandatory;
+	}
+
+	public void setIsMandatory(boolean isMandatory) {
+		this.isMandatory = isMandatory;
+	}
+	
+	public PropertyDescriptor setIsMandatoryAs(boolean isMandatory) {
+		this.isMandatory = isMandatory;
+		return this;
+	}
+	
 }

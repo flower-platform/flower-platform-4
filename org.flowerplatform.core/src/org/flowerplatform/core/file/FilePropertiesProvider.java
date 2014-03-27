@@ -68,12 +68,12 @@ public class FilePropertiesProvider extends PropertiesProvider {
 					node.getProperties().put(entry.getKey().toString(),  new Date(((FileTime)entry.getValue()).toMillis()));
 					break;
 				case "isDirectory": 
-					node.getProperties().put(FILE_IS_DIRECTORY, entry.getValue().toString());
+					node.getProperties().put(FILE_IS_DIRECTORY, entry.getValue());
 					break;
 			}
 		}
 		
-		if (node.getProperties().get(NodePropertiesConstants.FILE_IS_DIRECTORY).equals("true")) {
+		if ((Boolean)node.getProperties().get(NodePropertiesConstants.FILE_IS_DIRECTORY)) {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
 			node.getProperties().put("icons", CorePlugin.getInstance().getResourceUrl("images/file.gif"));

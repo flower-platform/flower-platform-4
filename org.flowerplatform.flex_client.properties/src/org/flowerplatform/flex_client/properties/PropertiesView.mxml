@@ -13,6 +13,7 @@
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -82,10 +83,11 @@
 				// get properties to display
 				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 					.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertyDescriptor.TYPE, node);
-				var currentCategory:String;
+				var currentCategory:String = "";
 				for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {
+					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
 					var formItem:PropertyItemRenderer = new PropertyItemRenderer();
-					var itemCategory:String = propertyDescriptors.getItemAt(i)["category"];
+					var itemCategory:String = propertyDescriptor.category;
 					if (itemCategory != currentCategory) {
 						var categoryItem:CategoryItem = new CategoryItem();
 						
@@ -93,9 +95,8 @@
 						categoryItem.label = currentCategory;
 						propertyForm.addElement(categoryItem);
 					}
-					propertyForm.addElement(formItem);
-					formItem.data = propertyDescriptors.getItemAt(i);
-					
+					propertyForm.addElement(formItem);					
+					formItem.data = propertyDescriptor;	
 				}
 					
 				// get their values from node
