@@ -16,6 +16,7 @@ package org.flowerplatform.flex_client.core {
 		// Node properties
 		//////////////////////////////////
 		
+		public static const CHILDREN:String = "children";
 		public static const HAS_CHILDREN:String = "hasChildren";
 		public static const NAME:String = "name";
 		
@@ -26,6 +27,8 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const IS_SUBSCRIBABLE:String = "isSubscribable";
 		public static const IS_DIRTY:String = "isDirty";
+		
+		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
 		
 		//////////////////////////////////
 		// File node properties
