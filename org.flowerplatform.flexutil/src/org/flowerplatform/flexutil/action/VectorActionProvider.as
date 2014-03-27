@@ -17,7 +17,11 @@
 * license-end
 */
 package org.flowerplatform.flexutil.action {
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	
 	import mx.collections.IList;
+	import mx.events.PropertyChangeEvent;
 	
 	/**
 	 * Simple action provider that contains a vector.
@@ -25,7 +29,7 @@ package org.flowerplatform.flexutil.action {
 	 * @author Mircea negreanu
 	 * @author Cristina Constantinescu
 	 */
-	public class VectorActionProvider implements IActionProvider {
+	public class VectorActionProvider extends EventDispatcher implements IActionProvider {
 		private var _actions:Vector.<IAction>;
 		
 		public function VectorActionProvider() {
@@ -37,7 +41,11 @@ package org.flowerplatform.flexutil.action {
 		}
 		
 		public function addAction(action:IAction):void {
+			var oldActions:Vector.<IAction> = _actions;
+			
 			_actions.push(action);
+			
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "_actions", oldActions, _actions));
 		}
 		
 	}

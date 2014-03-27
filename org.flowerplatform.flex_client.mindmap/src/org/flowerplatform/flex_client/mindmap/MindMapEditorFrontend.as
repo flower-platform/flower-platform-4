@@ -51,11 +51,9 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		override protected function createChildren():void {			
 			super.createChildren();
-			
-			if (!FlexUtilGlobals.getInstance().isMobile) { // don't show icons sidebar on mobile
-				var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
-				editorArea.addElementAt(iconSideBarfactory.newInstance(false), 0);
-			}
+						
+			var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
+			editorArea.addElementAt(iconSideBarfactory.newInstance(false), 0);
 		}	
 		
 	}
