@@ -143,6 +143,6 @@ public class CoreConstants {
 	public static final String UPDATES = "updates";
 	
 	// test
-	public static final String FILE_SYSTEM_PATH = "d:/temp/";
+	public static final String FILE_SYSTEM_PATH = "d:/temp";
 	
 }

@@ -1,8 +1,12 @@
 package org.flowerplatform.core.file;
 
+import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
 import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -27,6 +31,18 @@ public class FileAddNodeController extends AddNodeController {
 
 		if (!fileAccessController.isDirectory(parentFile)) {
 			parentFile = fileAccessController.getParentFile(parentFile);
+			Node fileParentNode;
+			String repositoryPath = new Node(parentNode.getResource()).getIdWithinResource();
+			
+			if (repositoryPath.replace("//", "/").replace('/', '\\')
+					.equals(fileAccessController.getAbsolutePath(parentFile))) {
+				fileParentNode = new Node(FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, repositoryPath, null);
+			} else {
+				fileParentNode = new Node(FILE_NODE_TYPE, parentNode.getResource(), fileAccessController.getAbsolutePath(parentFile), null);
+			}
+			CorePlugin.getInstance().getNodeService().addChild(fileParentNode, child, insertBeforeNode, context);
+			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
+			return;
 		}
 
 		String name = (String)context.get(NAME);
