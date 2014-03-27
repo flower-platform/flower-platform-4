@@ -16,7 +16,7 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.editor.action {
+package org.flowerplatform.flex_client.properties.action {
 	
 	import mx.collections.IList;
 	

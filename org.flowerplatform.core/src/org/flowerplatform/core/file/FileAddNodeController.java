@@ -1,6 +1,8 @@
 package org.flowerplatform.core.file;
 
-import org.flowerplatform.core.CoreConstants;
+import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.CoreConstants.NAME;
+
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -27,10 +29,10 @@ public class FileAddNodeController extends AddNodeController {
 			parentFile = fileAccessController.getParentFile(parentFile);
 		}
 
-		String name = (String)child.getProperties().get(CoreConstants.NAME);
+		String name = (String)context.get(NAME);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
 		child.setIdWithinResource(fileAccessController.getAbsolutePath(fileToCreate));
-		boolean isDir = (Boolean) child.getProperties().get(CoreConstants.FILE_IS_DIRECTORY);
+		boolean isDir = (boolean)context.get(FILE_IS_DIRECTORY);
 		
 		if (fileAccessController.exists(fileToCreate)) {
 			throw new RuntimeException("There is already a file with the same name in this location.");

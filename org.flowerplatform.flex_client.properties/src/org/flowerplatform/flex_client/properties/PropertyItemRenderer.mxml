@@ -20,6 +20,7 @@
 			
 			public var itemRenderer:Class;
 			public var itemRenderedInstance:BasicPropertyRenderer;
+			public var disableSaveProperty:Boolean = false;
 			// Internal variable for the property value.
 			private var _data:Object;
 			
@@ -61,6 +62,7 @@
 					itemRenderedInstance = factory.newInstance(false);
 					itemRenderedInstance.percentWidth = 100;
 					itemRenderedInstance.percentHeight = 100;
+					itemRenderedInstance.disableSaveProperty = disableSaveProperty;
 					this.addElement(itemRenderedInstance);
 				}
 				

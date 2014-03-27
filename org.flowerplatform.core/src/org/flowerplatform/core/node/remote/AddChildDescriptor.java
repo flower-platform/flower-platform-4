@@ -36,22 +36,6 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 	
 	private String icon;
 	
-	private Map<String, Object> properties;
-
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public Map<String, Object> getProperties() {
-		return properties;
-	}
-
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public void setProperties(Map<String, Object> properties) {
-		this.properties = properties;
-	}
-
 	public String getChildType() {
 		return childType;
 	}
@@ -96,14 +80,6 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public AddChildDescriptor setPropertiesAs(Map<String, Object> properties) {
-		this.properties = properties;
-		return this;
-	}
-
 	@Override
 	public String toString() {
 		return String.format("\nAddChildDescriptor [childType = %s, label = %s, orderIndex = %d]", 

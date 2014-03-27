@@ -27,9 +27,10 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
+	import spark.components.Application;
+	
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-	import org.flowerplatform.flex_client.core.editor.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
@@ -69,8 +70,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
 	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
-	
-	import spark.components.Application;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -119,7 +118,7 @@ package org.flowerplatform.flex_client.core {
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
-				
+		
 //		public static const VERSION:String = "2.0.0.M2_2013-06-04";
 //				
 		/**
@@ -128,6 +127,13 @@ package org.flowerplatform.flex_client.core {
 		 */ 
 		public var linkHandlers:Dictionary;
 		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		public function getEditorClassFactoryActionProvider():ClassFactoryActionProvider {
+			return editorClassFactoryActionProvider;
+		}
+		
 		override public function preStart():void {
 			super.preStart();
 			if (INSTANCE != null) {
@@ -135,6 +141,8 @@ package org.flowerplatform.flex_client.core {
 			}
 			INSTANCE = this;
 					
+			correspondingJavaPlugin = "org.flowerplatform.core";
+			
 			resourceNodesManager = new ResourceNodesManager();
 			
 			var channelSet:ChannelSet = new ChannelSet();
@@ -149,7 +157,6 @@ package org.flowerplatform.flex_client.core {
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(textEditorDescriptor);
 								
-			editorClassFactoryActionProvider.addActionClass(AddNodeAction);
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);

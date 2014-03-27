@@ -27,7 +27,7 @@ public class FreeplaneIsSubscribablePropertyProvider extends PropertiesProvider 
 	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext context) {
-		boolean isDirectory = Boolean.parseBoolean((String) node.getProperties().get(CoreConstants.FILE_IS_DIRECTORY));
+		boolean isDirectory = (boolean)node.getProperties().get(CoreConstants.FILE_IS_DIRECTORY);
 		if (!isDirectory) {
 			String path = (String) node.getProperties().get(CoreConstants.NAME);
 			if (path.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
