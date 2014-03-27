@@ -45,7 +45,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
-	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
@@ -263,26 +262,29 @@ package org.flowerplatform.flex_client.core {
 			
 			// add actions to global menu
 			
-			addActionToGlobalMenuActionProvider(getMessage("menu.file"), null, FILE_MENU_ID);
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(getMessage("menu.file")).setId(FILE_MENU_ID));
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
 			globalMenuActionProvider.addAction(resourceNodesManager.reloadAction);
 			
-			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, NAVIGATE_MENU_ID); 
-			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, NAVIGATE_MENU_ID, 
-				function ():void {
-					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
-					.setViewContent(new LinkView())
-					.setWidth(400)
-					.setHeight(450)
-					.show();
-				}
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(getMessage("menu.navigate")).setId(NAVIGATE_MENU_ID));
+			globalMenuActionProvider.addAction(new ActionBase()
+					.setLabel(getMessage("link.title"))
+					.setIcon(FlexUtilGlobals.getInstance().createAbsoluteUrl(getResourceUrl('images/external_link.png')))
+					.setParentId(NAVIGATE_MENU_ID)
+					.setFunctionDelegate(function ():void {
+						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+						.setViewContent(new LinkView())
+						.setWidth(500)
+						.setHeight(250)
+						.show();
+					})
 			);
 			
 			if (debug) {
 				debug_forceUpdateAction = new ForceUpdateAction();
 				globalMenuActionProvider.addAction(debug_forceUpdateAction);
-				addActionToGlobalMenuActionProvider("Debug", null, DEBUG);
+				globalMenuActionProvider.addAction(new ComposedAction().setLabel("Debug").setId(DEBUG));				
 			}
 		}
 		
@@ -356,31 +358,7 @@ package org.flowerplatform.flex_client.core {
 		public function getAppUrl():String {
 			return FlexUtilGlobals.getInstance().rootUrl + MAIN_PAGE;	
 		}
-		
-		/**
-		 * Creates and adds an action to the the actionProvider
-		 * 
-		 * @author Mircea Negreanu
-		 * @author Cristina Constantinescu
-		 */
-		public function addActionToGlobalMenuActionProvider(label:String, icon:String = null, id:String = null, parentId:String = null, functionDelegate:Function = null):void {
-			var action:ActionBase;
-			if (id != null) {
-				action = new ComposedAction();				
-			} else {
-				action = new ActionBase();
-			}
-			
-			action.label = label;
-			action.id = id;
-			action.parentId = parentId;			
-			action.icon = icon != null ? FlexUtilGlobals.getInstance().createAbsoluteUrl(icon) : null;
-			action.functionDelegate = functionDelegate;
-			globalMenuActionProvider.addAction(action);
-			
-			Application(FlexGlobals.topLevelApplication).dispatchEvent(new GlobalActionProviderChangedEvent());
-		}
-		
+				
 		/**
 		 * @return a list with all <code>EditorFrontend</code>s found on workbench.
 		 */ 

@@ -19,6 +19,8 @@
 package org.flowerplatform.flexutil.global_menu {
 	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -36,6 +38,8 @@ package org.flowerplatform.flexutil.global_menu {
 	import mx.core.IFactory;
 	import mx.core.LayoutDirection;
 	import mx.events.MenuEvent;
+	import mx.events.PropertyChangeEvent;
+	import mx.events.PropertyChangeEventKind;
 	import mx.managers.ISystemManager;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -99,11 +103,19 @@ package org.flowerplatform.flexutil.global_menu {
 			return _actionProvider;
 		}
 		
+		/**
+		 * @author Mircea Negreanu
+		 * @author Cristina Constantinescu
+		 */ 
 		public function set actionProvider(ap:IActionProvider):void {
+			if (_actionProvider != null) {
+				IEventDispatcher(_actionProvider).removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, actionProviderUpdatedHandler);
+			}
 			_actionProvider = ap;
 		
 			// also build the menuBar
 			if (actionProvider != null) {
+				IEventDispatcher(_actionProvider).addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, actionProviderUpdatedHandler);
 				var selection:IList = null;
 				// obtaining the selection can give us a NPE so put it in a try/catch block
 				try {
@@ -117,6 +129,13 @@ package org.flowerplatform.flexutil.global_menu {
 				
 				dataProvider = getMenusList(selection, null);
 			}
+		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */ 
+		private function actionProviderUpdatedHandler(event:PropertyChangeEvent):void {
+		 	actionProvider = IActionProvider(event.source);	
 		}
 		
 		/**

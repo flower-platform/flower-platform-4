@@ -34,10 +34,14 @@ package org.flowerplatform.flexutil.resources {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
-	 * @author Cristi
+	 * @author Cristian Spiescu
 	 */
 	public class ResourcesUtils	{
 		
+		/**
+		 * @author Cristian Spiescu
+		 * @author Cristina Constantinescu
+		 */
 		public static function registerMessageBundle(locale:String, messageBundle:String, url:String, object:Object = null):void {
 			var loadedHandler:Function = function(event:Event):void {
 				var urlLoader:URLLoader = URLLoader(event.target);

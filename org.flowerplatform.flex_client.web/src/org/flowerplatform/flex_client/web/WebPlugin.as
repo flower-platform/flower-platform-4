@@ -26,7 +26,6 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -35,10 +34,8 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	
-	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.TextInput;
-	import spark.formatters.DateTimeFormatter;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -97,14 +94,7 @@ package org.flowerplatform.flex_client.web {
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
 			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
-			
-			Application(FlexGlobals.topLevelApplication).addEventListener(GlobalActionProviderChangedEvent.ACTION_PROVIDER_CHANGED,
-				function (event:GlobalActionProviderChangedEvent):void {
-					//update menu provider with new content
-					menuBar.actionProvider = CorePlugin.getInstance().globalMenuActionProvider;
-				}
-			);			
-			
+						
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
 			// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)

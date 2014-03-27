@@ -91,7 +91,7 @@ license-end
 	
 	<fx:Declarations>		
 		<fx:Component className="CopyToClipboardButton">
-			<s:HGroup horizontalAlign="right" verticalAlign="middle">
+			<s:VGroup horizontalAlign="right" verticalAlign="middle">
 				<fx:Script>
 					<![CDATA[
 						import org.flowerplatform.flex_client.core.CorePlugin;
@@ -115,13 +115,14 @@ license-end
 				<fx:Declarations>
 					<s:Fade id="fadeEffect" duration="2000" alphaFrom="1" alphaTo="0" />
 				</fx:Declarations>
-				
-				<s:Label id="lbCopied" text="{CorePlugin.getInstance().getMessage('link.copied')}" color="red" alpha="0"/>
-				
+								
 				<s:Button label="{CorePlugin.getInstance().getMessage('link.copy.clipboard')}" 
 						  icon="{FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(CorePlugin.getInstance().getResourceUrl('images/clipboard-sign-out.png'))}"
 						  click="clickHandler(event)" />
-			</s:HGroup>			
+				
+				<s:Label id="lbCopied" text="{CorePlugin.getInstance().getMessage('link.copied')}" color="red" alpha="0"/>
+				
+			</s:VGroup>			
 		</fx:Component>
 	</fx:Declarations>
 	
@@ -134,20 +135,19 @@ license-end
 	
 	<!-- a) -->
 	<s:Label text="{CorePlugin.getInstance().getMessage('link.to.current.editor')}" width="100%" />	
-	<s:VGroup width="100%" height="30%" horizontalAlign="right">
-		<s:TextArea id="txtCurrentEditor" width="100%" height="100%" focusIn="{txtCurrentEditor.selectAll()}"  />
-		<local:CopyToClipboardButton width="100%" textToCopy="{txtCurrentEditor.text}" />
-	</s:VGroup>
+	<s:HGroup width="100%" horizontalAlign="right" >
+		<s:TextInput id="txtCurrentEditor" width="100%" focusIn="{txtCurrentEditor.selectAll()}"  />
+		<local:CopyToClipboardButton textToCopy="{txtCurrentEditor.text}" />
+	</s:HGroup>
 	
 	<!-- b) -->
 	<s:Label text="{CorePlugin.getInstance().getMessage('link.to.all.editors')}" width="100%" />
-	<s:VGroup width="100%" height="30%" horizontalAlign="right" >
-		<s:TextArea id="txtAllEditors" width="100%" height="100%" focusIn="{txtAllEditors.selectAll()}" />
-		<local:CopyToClipboardButton width="100%" textToCopy="{txtAllEditors.text}" />
-	</s:VGroup>
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:TextInput id="txtAllEditors" width="100%" focusIn="{txtAllEditors.selectAll()}" />
+		<local:CopyToClipboardButton textToCopy="{txtAllEditors.text}" />
+	</s:HGroup>
 	
 	<!-- separator -->
-	<s:Spacer width="100%" height="10%" />
 	<s:Line width="100%">
 		<s:stroke>
 			<s:SolidColorStroke color="gray" weight="1"/>
@@ -156,11 +156,11 @@ license-end
 	
 	<!-- 2) -->
 	<s:Label text="{CorePlugin.getInstance().getMessage('link.option.follow')}" width="100%" />
-	<s:VGroup width="100%" height="30%" horizontalAlign="right">
-		<s:TextArea id="txtFollowLink" width="100%" height="100%" />
+	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle">
+		<s:TextInput id="txtFollowLink" width="100%" />
 		<s:Button label="{CorePlugin.getInstance().getMessage('link.follow')}" 
 				  icon="{FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(CorePlugin.getInstance().getResourceUrl('images/arrow_right.png'))}"
-				  click="{CorePlugin.getInstance().handleLink(txtFollowLink.text)}"/>
-	</s:VGroup>
+				  click="{CorePlugin.getInstance().handleLink(txtFollowLink.text); FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);}"/>
+	</s:HGroup>
 	
 </s:Group>
