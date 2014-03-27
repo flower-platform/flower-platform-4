@@ -4,6 +4,7 @@ import static org.flowerplatform.core.CoreConstants.CONTENT_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_SIZE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
+import static org.flowerplatform.core.CoreConstants.IS_OPENABLE_IN_NEW_EDITOR;
 import static org.flowerplatform.core.CoreConstants.TEXT_CONTENT_TYPE;
 
 import java.io.IOException;
@@ -64,6 +65,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 			node.getProperties().put(FILE_SIZE, folderSize);
 			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
+			node.getProperties().put(IS_OPENABLE_IN_NEW_EDITOR, true);
 			node.getProperties().put(FILE_SIZE, fileAccessController.length(file));
 			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/file.gif"));
 			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);

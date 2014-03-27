@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This is a confirmation dialog to open a node in a new editor. 
+
+<p>
+The result passed to the result handler is <code>true</code> if the action was confirmed and <code>false</code>
+otherwise, so the UI can react accordingly (e.g. expand/collapse nodes in the editor where the action was triggered).
+
+<p>
+The dialog is <b>not</b> shown if this action is set as default (i.e. the "remember setting" checkbox was set
+previously), and a new editor is opened directly.
+
+@author Mariana Gheorghe
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent,org.flowerplatform.flexutil.dialog.IDialog">
+	<s:layout>
+		<s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingBottom="10" paddingRight="10"/>
+	</s:layout>
+	
+	<s:Label text="{CorePlugin.getInstance().getMessage('editor.openInNewEditor.message')}"/>
+	<s:CheckBox id="rememberSetting" label="{CorePlugin.getInstance().getMessage('editor.openInNewEditor.remember')}" selected="true"/>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okClickHandler()"/>
+		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancelClickHandler()"/>
+	</s:HGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			public var node:Node;
+			
+			private const OPEN_IN_NEW_EDITOR:String = "openInNewEditor";
+			
+			/**
+			 * Shows the dialog if the "always open in new editor" is not set.
+			 */
+			public function show():void {
+				if (alwaysOpenInNewEditor) {
+					openInNewEditor();
+				} else {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setViewContent(this)
+						.setTitle(CorePlugin.getInstance().getMessage("editor.openInNewEditor.title"))
+						.setWidth(400)
+						.setHeight(150)
+						.show();
+				}
+			}
+			
+			private function get alwaysOpenInNewEditor():Boolean {
+				var so:SharedObject = SharedObject.getLocal(OPEN_IN_NEW_EDITOR);
+				if (so.data.enabled) {
+					return true;
+				}
+				return false;
+			}
+			
+			private function set alwaysOpenInNewEditor(value:Boolean):void {
+				var so:SharedObject = SharedObject.getLocal(OPEN_IN_NEW_EDITOR);
+				so.data.enabled = true;
+				so.flush();
+			}
+			
+			protected function okClickHandler():void {
+				if (rememberSetting.selected) {
+					alwaysOpenInNewEditor = true;					
+				}
+				openInNewEditor();
+			}
+			
+			protected function cancelClickHandler():void {
+				_resultHandler.handleDialogResult(false);
+				close();
+			}
+			
+			private function openInNewEditor():void {
+				CorePlugin.getInstance().openEditor(node);
+				_resultHandler.handleDialogResult(true);
+				close();
+			}
+			
+			private function close():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
+			
+			private var _viewHost:IViewHost;
+			
+			public function set viewHost(viewHost:IViewHost):void {
+				_viewHost = viewHost;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			private var _resultHandler:IDialogResultHandler;
+			
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				_resultHandler = resultHandler;
+			}
+		]]>
+	</fx:Script>
+	
+</s:Group>

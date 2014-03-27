@@ -33,6 +33,7 @@
 			import mx.core.DPIClassification;
 			import mx.core.FlexGlobals;
 			import mx.events.MoveEvent;
+			import mx.events.PropertyChangeEvent;
 			import mx.events.ResizeEvent;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
@@ -79,7 +80,8 @@
 			override public function activate(context:DiagramShellContext, model:Object):void {
 				super.activate(context, model);			
 					
-				model.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);	
+				model.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+				model.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, nodePropertyChangedHandler);
 				
 				DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
 				DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize);		
@@ -106,6 +108,16 @@
 			protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
 				if (NodeControllerUtils.hasPropertyChanged(node, CoreConstants.HAS_CHILDREN)) {
 					// hasChildren changed -> update display
+					invalidateDisplayList();
+				}
+			}
+			
+			/**
+			 * @author Mariana Gheorghe
+			 */
+			protected function nodePropertyChangedHandler(event:PropertyChangeEvent):void {
+				if (event.property == CoreConstants.CHILDREN) {
+					// children list changed -> update display
 					invalidateDisplayList();
 				}
 			}
@@ -145,7 +157,6 @@
 			
 			protected function circle_mouseClickHandler(event:MouseEvent):void {
 				mindMapDiagramShell.getModelController(context, node).setExpanded(context, node, !mindMapDiagramShell.getModelController(context, node).getExpanded(context, node));
-				vLine.visible = !vLine.visible;
 	
 				event.preventDefault();
 				event.stopImmediatePropagation();

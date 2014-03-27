@@ -18,8 +18,6 @@
 */
 package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -39,18 +37,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		override public function run():void {
-			open(Node(selection.getItemAt(0)));
+			CorePlugin.getInstance().openEditor(Node(selection.getItemAt(0)));
 		}
 		
-		public function open(node:Node):void {
-			var contentType:String = node.properties[CoreConstants.CONTENT_TYPE];
-			if (contentType == null) {
-				contentType = CorePlugin.getInstance().contentTypeRegistry.defaultContentType;
-			}
-			var hideRootNode:Boolean = node.properties[CoreConstants.HIDE_ROOT_NODE];
-			
-			var editorDescriptor:BasicEditorDescriptor = CorePlugin.getInstance().contentTypeRegistry[contentType];
-			editorDescriptor.openEditor(node.fullNodeId, true, hideRootNode);
-		}
 	}
 }

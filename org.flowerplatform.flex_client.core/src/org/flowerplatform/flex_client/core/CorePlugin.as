@@ -27,8 +27,7 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
-	import spark.components.Application;
-	
+	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
@@ -62,7 +61,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.controller.AbstractController;
-	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
@@ -70,6 +68,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
 	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
+	
+	import spark.components.Application;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -288,6 +288,20 @@ package org.flowerplatform.flex_client.core {
 				}
 			}
 			return null;
+		}
+		
+		/**
+		 * @author Mariana Gheorghe
+		 */
+		public function openEditor(node:Node):void {
+			var contentType:String = node.properties[CoreConstants.CONTENT_TYPE];
+			if (contentType == null) {
+				contentType = contentTypeRegistry.defaultContentType;
+			}
+			var hideRootNode:Boolean = node.properties[CoreConstants.HIDE_ROOT_NODE];
+			
+			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
+			editorDescriptor.openEditor(node.fullNodeId, true, hideRootNode);
 		}
 		
 		/**

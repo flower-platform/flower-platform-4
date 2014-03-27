@@ -32,6 +32,8 @@ public class CoreConstants {
 	public static final String IS_DIRTY = "isDirty";
 	public static final String IS_SUBSCRIBABLE = "isSubscribable";
 	
+	public static final String IS_OPENABLE_IN_NEW_EDITOR = "isOpenableInNewEditor";
+	
 	public static final String SIDE = "side";
 	public static final int POSITION_LEFT = -1;
 	public static final int POSITION_RIGHT = 1;
