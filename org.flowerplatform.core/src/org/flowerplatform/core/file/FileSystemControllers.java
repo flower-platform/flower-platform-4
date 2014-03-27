@@ -1,20 +1,21 @@
 package org.flowerplatform.core.file;
 
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_CREATION_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_ACCESS_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_MODIFIED_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_SIZE;
-import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
-import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
-import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.remote.AddChildDescriptor.ADD_CHILD_DESCRIPTOR;
-import static org.flowerplatform.core.node.remote.PropertyDescriptor.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.CorePlugin.*;
+import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.FILE_CREATION_TIME;
+import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.CoreConstants.FILE_LAST_ACCESS_TIME;
+import static org.flowerplatform.core.CoreConstants.FILE_LAST_MODIFIED_TIME;
+import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.FILE_SIZE;
+import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.IS_SUBSCRIBABLE;
+import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
+import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import java.util.HashMap;
 import java.util.Map;

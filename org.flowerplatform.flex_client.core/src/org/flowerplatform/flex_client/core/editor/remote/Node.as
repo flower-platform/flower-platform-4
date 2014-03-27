@@ -17,13 +17,9 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.remote {
-	import flash.events.IEventDispatcher;
-	
 	import mx.collections.ArrayCollection;
-	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -36,8 +32,8 @@ package org.flowerplatform.flex_client.core.editor.remote {
 	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.Node")]
 	public class Node {
-						
-		public static const FULL_NODE_ID_SEPARATOR:String = "|";
+		
+		private static const FULL_NODE_ID_SEPARATOR:String = "|";				
 		
 		private static const FULL_NODE_ID_PATTERN:RegExp = new RegExp("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
 		

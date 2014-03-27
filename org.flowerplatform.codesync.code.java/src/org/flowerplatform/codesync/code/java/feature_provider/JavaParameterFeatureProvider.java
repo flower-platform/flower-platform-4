@@ -18,14 +18,14 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaParameterFeatureProvider extends NodeFeatureProvider {
 	
 	public JavaParameterFeatureProvider() {
-		valueFeatures.add(JavaPropertiesConstants.TYPED_ELEMENT_TYPE);
-		containmentFeatures.add(JavaPropertiesConstants.MODIFIERS);
+		valueFeatures.add(CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE);
+		containmentFeatures.add(CodeSyncCodeJavaConstants.MODIFIERS);
 	}
 	
 }

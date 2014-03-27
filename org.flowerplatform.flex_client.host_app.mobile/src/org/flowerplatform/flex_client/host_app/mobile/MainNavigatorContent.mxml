@@ -39,18 +39,18 @@
 			<s:Button label="Open Editor">
 				<s:click>
 					<![CDATA[
-					CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "(root||)");
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 					]]>
 				</s:click>
 			</s:Button>
-			<s:Button id="closeAppButton" label="Exit" icon="{FlexUtilAssets._exitIcon}"
+			<s:Button id="closeAppButton" label="Exit" icon="{FlexUtilAssets.exitIcon}"
 					  click="NativeApplication.nativeApplication.exit()"/>
 		</fx:Array>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.link.LinkHandler;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			

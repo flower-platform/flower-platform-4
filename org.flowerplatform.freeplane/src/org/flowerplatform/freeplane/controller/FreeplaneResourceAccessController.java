@@ -1,13 +1,12 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLDecoder;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
@@ -49,7 +48,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		logger.debug("Unloaded mindmap {}", resourceNode.getIdWithinResource());
 		
 		CorePlugin.getInstance().getResourceService().unsetRawResourceData(resourceNodeId);
-		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 	
 	/**
@@ -70,7 +69,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		} catch (Exception e) {
 			return;
 		} finally {
-			context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+			context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		}
 		rawNodeData.setSaved(true);		
 	}
@@ -101,7 +100,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		logger.debug("Loaded mindmap {}", resourceNode.getIdWithinResource());
 		
 		CorePlugin.getInstance().getResourceService().setRawResourceData(resourceNodeId, model, resourceCategory);
-		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 	
 	/**
@@ -116,7 +115,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		
 		MapModel model = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
 		
-		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		if (model == null) {
 			return false;
 		}

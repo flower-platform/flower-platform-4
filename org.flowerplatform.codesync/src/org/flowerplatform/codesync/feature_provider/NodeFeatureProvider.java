@@ -18,7 +18,7 @@
  */
 package org.flowerplatform.codesync.feature_provider;
 
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * @author Mariana
@@ -26,7 +26,7 @@ import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 public class NodeFeatureProvider extends FeatureProvider {
 
 	public NodeFeatureProvider() {
-		valueFeatures.add(CodeSyncPropertiesConstants.NAME);
+		valueFeatures.add(CoreConstants.NAME);
 	}
 
 }

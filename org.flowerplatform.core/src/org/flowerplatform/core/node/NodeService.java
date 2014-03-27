@@ -1,17 +1,18 @@
 package org.flowerplatform.core.node;
 
-import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
-import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
-import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
-import static org.flowerplatform.core.ServiceContext.EXECUTE_ONLY_FOR_UPDATER;
-import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
-import static org.flowerplatform.core.node.controller.AddNodeController.ADD_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
-import static org.flowerplatform.core.node.controller.ParentProvider.PARENT_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertySetter.PROPERTY_SETTER;
-import static org.flowerplatform.core.node.controller.RawNodeDataProvider.RAW_NODE_DATA_PROVIDER;
-import static org.flowerplatform.core.node.controller.RemoveNodeController.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.HAS_CHILDREN;
+import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
+import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
+import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
+import static org.flowerplatform.core.CoreConstants.RAW_NODE_DATA_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +20,6 @@ import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
@@ -31,7 +31,6 @@ import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -50,15 +49,6 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeService {
 		
-	/**
-	 * An additive controller may set this option, to ask the {@link UpdatePropertySetterController} to use
-	 * the node given as parameter as the resourceNode where the update will be saved.
-	 * 
-	 * <p>
-	 * An example is {@link NodePropertiesConstants#IS_DIRTY}: if option not set, the update will be registered on parent resource -> bad.
-	 */
-	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
-	
 	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
 	
 	protected TypeDescriptorRegistry registry;

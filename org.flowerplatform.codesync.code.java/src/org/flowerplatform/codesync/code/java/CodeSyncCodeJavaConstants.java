@@ -3,10 +3,33 @@ package org.flowerplatform.codesync.code.java;
 /**
  * @author Mariana Gheorghe
  */
-public class JavaPropertiesConstants {
+public class CodeSyncCodeJavaConstants {
+	
+	public static final String TECHNOLOGY = "java";
 	
 	////////////////////////////////////////////
-	// Properties constants
+	// Node types
+	////////////////////////////////////////////
+	
+	public static final String CLASS = "javaClass";
+	public static final String INTERFACE = "javaInterface";
+	public static final String ENUM = "javaEnum";
+	public static final String ANNOTATION_TYPE = "javaAnnotationType";
+	
+	public static final String ATTRIBUTE = "javaAttribute";
+	public static final String OPERATION = "javaOperation";
+	public static final String ENUM_CONSTANT = "javaEnumConstant";
+	public static final String ANNOTATION_MEMBER = "javaAnnotationMember";
+	
+	public static final String ANNOTATION = "javaAnnotation";
+	public static final String SUPER_INTERFACE = "superInterface";
+	public static final String ENUM_CONSTANT_ARGUMENT = "javaEnumConstantArgument";
+	public static final String MEMBER_VALUE_PAIR = "javaMemberValuePair";
+	public static final String MODIFIER = "javaModifier";
+	public static final String PARAMETER = "javaParameter";
+	
+	////////////////////////////////////////////
+	// Node properties
 	////////////////////////////////////////////
 	
 	// Value features
@@ -19,6 +42,7 @@ public class JavaPropertiesConstants {
 	public static final String OPERATION_HAS_BODY = "hasBody";
 	public static final String ANNOTATION_VALUE_VALUE = "annotationValueValue";
 	public static final String ANNOTATION_MEMBER_DEFAULT_VALUE = "annotationMemberDefaultValue";
+	public final static String SINGLE_MEMBER_ANNOTATION_VALUE_NAME = "_";
 	
 	// Containment features
 	
@@ -29,7 +53,7 @@ public class JavaPropertiesConstants {
 	public static final String ENUM_CONSTANT_ARGUMENTS = "enumConstantArguments";
 
 	////////////////////////////////////////////
-	// Icon and decorator constants
+	// Icons and decorators
 	////////////////////////////////////////////
 	
 	public static final String IMG_PACKAGE = "package_obj.gif";
@@ -75,5 +99,5 @@ public class JavaPropertiesConstants {
 	public static String getImagePathFromPublicResources(String image) {
 		return CodeSyncCodeJavaPlugin.getInstance().getResourceUrl("/images/" + image);
 	}
-	
+
 }

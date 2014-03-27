@@ -18,10 +18,10 @@
  */
 package org.flowerplatform.codesync;
 
-import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
-import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
-import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_RIGHT;
-import static org.flowerplatform.codesync.feature_provider.FeatureProvider.FEATURE_PROVIDER;
+import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_RIGHT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,14 +52,6 @@ import org.slf4j.LoggerFactory;
 public class CodeSyncAlgorithm {
 	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
-	
-	/**
-	 * The value used in case the model adapter does not know about its value.
-	 * It is ignored at equality check, i.e. it equals any other value, including null.
-	 * 
-	 * @author Mariana
-	 */
-	public static final String UNDEFINED = "UNDEFINED_VALUE";
 	
 	protected TypeDescriptorRegistry typeDescriptorRegistry;
 	
@@ -269,7 +261,7 @@ public class CodeSyncAlgorithm {
 	 * @author Mariana
 	 */
 	public static boolean safeEquals(Object a, Object b) {
-		if (UNDEFINED.equals(a) || UNDEFINED.equals(b)) {
+		if (CodeSyncConstants.UNDEFINED.equals(a) || CodeSyncConstants.UNDEFINED.equals(b)) {
 			return true;
 		}
 		return Utils.safeEquals(a, b);

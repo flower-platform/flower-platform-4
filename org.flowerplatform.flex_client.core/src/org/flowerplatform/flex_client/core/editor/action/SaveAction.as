@@ -18,6 +18,7 @@
 */
 package org.flowerplatform.flex_client.core.editor.action {
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
@@ -30,7 +31,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public function SaveAction() {			
 			label = CorePlugin.getInstance().getMessage("save.action.label");
 			icon = FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl("images/disk.png"));
-			parentId = CorePlugin.FILE_MENU_ID;
+			parentId = CoreConstants.FILE_MENU_ID;
 			enabled = false;
 		}
 				

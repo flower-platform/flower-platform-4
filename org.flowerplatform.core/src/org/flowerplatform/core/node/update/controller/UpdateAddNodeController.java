@@ -1,6 +1,6 @@
 package org.flowerplatform.core.node.update.controller;
 
-import static org.flowerplatform.core.node.update.remote.ChildrenUpdate.ADDED;
+import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_ADDED;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -23,7 +23,7 @@ public class UpdateAddNodeController extends AddNodeController {
 			CorePlugin.getInstance().getResourceService()
 				.addUpdate(resourceNode.getFullNodeId(), 
 						new ChildrenUpdate()
-							.setTypeAs(ADDED)
+							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setTargetNodeAs(child)
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeNode != null ? insertBeforeNode.getFullNodeId() : null)
 							.setFullNodeIdAs(node.getFullNodeId()));

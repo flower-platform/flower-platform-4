@@ -35,6 +35,7 @@ license-end
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -69,7 +70,7 @@ license-end
 					editorInputs.push(EditorFrontend(editor).editorInput);				
 				}				
 				if (editorInputs.length != 0) {
-					txtAllEditors.text = getOpenResourcesURLPrefix() + editorInputs.join(LinkHandler.RESOURCES_SEPARATOR);
+					txtAllEditors.text = getOpenResourcesURLPrefix() + editorInputs.join(CoreConstants.OPEN_RESOURCES_SEPARATOR);
 				}
 			
 				// get current active editor
@@ -83,7 +84,7 @@ license-end
 			}
 			
 			private function getOpenResourcesURLPrefix():String {
-				return CorePlugin.getInstance().getAppUrl() + "?" + LinkHandler.OPEN_RESOURCES + "=";
+				return CorePlugin.getInstance().getAppUrl() + "?" + CoreConstants.OPEN_RESOURCES + "=";
 			}
 			
 		]]>

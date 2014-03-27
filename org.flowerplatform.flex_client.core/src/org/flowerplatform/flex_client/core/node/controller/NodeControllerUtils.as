@@ -18,6 +18,7 @@
 */
 package org.flowerplatform.flex_client.core.node.controller {
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
@@ -30,18 +31,18 @@ package org.flowerplatform.flex_client.core.node.controller {
 	public class NodeControllerUtils {
 		
 		public static function getTitleProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
-			return getValueProvider(registry, node, CorePlugin.NODE_TITLE_PROVIDER);
+			return getValueProvider(registry, node, CoreConstants.NODE_TITLE_PROVIDER);
 		}
 		
 		public static function getIconsProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
-			return getValueProvider(registry, node, CorePlugin.NODE_ICONS_PROVIDER);
+			return getValueProvider(registry, node, CoreConstants.NODE_ICONS_PROVIDER);
 		}
 		
 		/**
 		 * @author Cristina Constantinescu
 		 */
 		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
-			return getValueProvider(registry, node, CorePlugin.NODE_SIDE_PROVIDER);
+			return getValueProvider(registry, node, CoreConstants.NODE_SIDE_PROVIDER);
 		}
 		
 		public static function getValueProvider(registry:TypeDescriptorRegistry, 

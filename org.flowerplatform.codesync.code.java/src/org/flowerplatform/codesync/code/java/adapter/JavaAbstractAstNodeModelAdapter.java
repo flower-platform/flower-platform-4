@@ -18,7 +18,8 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.codesync.CodeSyncConstants.FLOWER_UID;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -43,10 +44,10 @@ import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
@@ -66,7 +67,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		// handle modifiers here to avoid using the same code in multiple adapters
-		if (JavaPropertiesConstants.MODIFIERS.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.MODIFIERS.equals(feature)) {
 			if (element instanceof BodyDeclaration) {
 				return ((BodyDeclaration) element).modifiers();
 			}
@@ -81,7 +82,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (JavaPropertiesConstants.DOCUMENTATION.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.DOCUMENTATION.equals(feature)) {
 			return getJavaDoc(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -89,7 +90,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (JavaPropertiesConstants.DOCUMENTATION.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.DOCUMENTATION.equals(feature)) {
 			setJavaDoc(element, (String) value);
 		}
 	}
@@ -97,7 +98,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// handle modifiers here to avoid using the same code in multiple adapters
-		if (JavaPropertiesConstants.MODIFIERS.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.MODIFIERS.equals(feature)) {
 			if (!(element instanceof BodyDeclaration || element instanceof SingleVariableDeclaration)) {
 				return null;
 			} else {
@@ -108,10 +109,10 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 				ASTNode parent = (ASTNode) element;
 				AST ast = parent.getAST();
 				
-				if (JavaModifierModelAdapter.MODIFIER.equals(node.getType())) {
-					String keyword = (String) node.getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME);
+				if (CodeSyncCodeJavaConstants.MODIFIER.equals(node.getType())) {
+					String keyword = (String) node.getOrPopulateProperties().get(CoreConstants.NAME);
 					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
-				} else if (JavaAnnotationModelAdapter.ANNOTATION.equals(node.getType())) {
+				} else if (CodeSyncCodeJavaConstants.ANNOTATION.equals(node.getType())) {
 					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, false)).size();
 					if (valuesCount == 0) {
 						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();

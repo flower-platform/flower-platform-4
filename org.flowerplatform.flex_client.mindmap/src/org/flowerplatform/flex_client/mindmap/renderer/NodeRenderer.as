@@ -5,7 +5,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
@@ -120,8 +120,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		override protected function canDrawCircle():Boolean {			
 			return node != null 
-				&& NodeControllerUtils.hasPropertyChanged(node, NodePropertiesConstants.HAS_CHILDREN)
-				&& Boolean(node.properties[NodePropertiesConstants.HAS_CHILDREN]).valueOf() 
+				&& NodeControllerUtils.hasPropertyChanged(node, CoreConstants.HAS_CHILDREN)
+				&& Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() 
 				&& !mindmapDiagramShell.getModelController(diagramShellContext, node).getExpanded(diagramShellContext, node);
 		}
 		

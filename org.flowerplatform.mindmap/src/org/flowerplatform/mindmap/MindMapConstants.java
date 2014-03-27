@@ -3,11 +3,24 @@ package org.flowerplatform.mindmap;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
+
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapNodePropertiesConstants {
-
+public class MindMapConstants {
+	
+	//////////////////////////////////
+	// Node types
+	//////////////////////////////////
+	
+	public static final String FREEPLANE_PERSISTENCE_NODE_TYPE_KEY = "nodeType";
+	public static final String MINDMAP_NODE_TYPE = "freeplaneNode";
+	
+	//////////////////////////////////
+	// Node properties
+	//////////////////////////////////
+	
 	public static final List<String> FONT_SIZES = new ArrayList<>();
 	static {
 		for (int i = 1; i <= 72; i++) {
@@ -37,5 +50,20 @@ public class MindMapNodePropertiesConstants {
 	
 	public static final String CLOUD_COLOR = "cloudColor";
 	public static final String CLOUD_SHAPE = "cloudShape";
+	
+	//////////////////////////////////
+	// Resource
+	//////////////////////////////////
+	
+	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "freePlaneMindMap";
+	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "freePlanePersistence";
+	public static final String FREEPLANE_MINDMAP_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
+	public static final String FREEPLANE_PERSISTENCE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
+	
+	//////////////////////////////////
+	// Content types
+	//////////////////////////////////
+	
+	public static final String MINDMAP_CONTENT_TYPE = "mindmap";
 	
 }

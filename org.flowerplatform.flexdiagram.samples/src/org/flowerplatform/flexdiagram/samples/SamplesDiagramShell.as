@@ -18,18 +18,13 @@
  */
 package org.flowerplatform.flexdiagram.samples {
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
-	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
 	import org.flowerplatform.flexdiagram.renderer.selection.StandardAnchorsSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.controller.BasicConnectionRendererController;
@@ -44,11 +39,7 @@ package org.flowerplatform.flexdiagram.samples {
 	import org.flowerplatform.flexdiagram.samples.controller.BasicSubModelSelectionController;
 	import org.flowerplatform.flexdiagram.samples.controller.BasicTypeProvider;
 	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
-	import org.flowerplatform.flexdiagram.tool.controller.DragToCreateRelationController;
-	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
-	import org.flowerplatform.flexdiagram.tool.controller.ResizeController;
 	import org.flowerplatform.flexdiagram.tool.controller.SelectOrDragToCreateElementController;
-	import org.flowerplatform.flexdiagram.tool.controller.drag.DragController;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -63,35 +54,35 @@ package org.flowerplatform.flexdiagram.samples {
 			
 			registry = new TypeDescriptorRegistry();
 			registry.getOrCreateTypeDescriptor("basicModel")
-				.addSingleController(AbsoluteLayoutRectangleController.TYPE, new BasicModelAbsoluteLayoutRectangleController())
-				.addSingleController(ModelChildrenController.TYPE, new BasicModelModelChildrenController())
-				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())
-				.addSingleController(VisualChildrenController.TYPE, new SequentialLayoutVisualChildrenController())
-				.addSingleController(RendererController.TYPE, new BasicModelRendererController())
-				.addSingleController(SelectionController.TYPE, new BasicSelectionController(StandardAnchorsSelectionRenderer))
-				.addSingleController(ResizeController.TYPE, new BasicModelResizeController())
-				.addSingleController(DragToCreateRelationController.TYPE, new BasicModelDragToCreateRelationController())
-				.addSingleController(DragController.TYPE, new BasicModelDragController())
-				.addSingleController(SelectOrDragToCreateElementController.TYPE, new SelectOrDragToCreateElementController());
+				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new BasicModelAbsoluteLayoutRectangleController())
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicModelModelChildrenController())
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new SequentialLayoutVisualChildrenController())
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new BasicModelRendererController())
+				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSelectionController(StandardAnchorsSelectionRenderer))
+				.addSingleController(FlexDiagramConstants.RESIZE_CONTROLLER, new BasicModelResizeController())
+				.addSingleController(FlexDiagramConstants.DRAG_TO_CREATE_RELATION_CONTROLLER, new BasicModelDragToCreateRelationController())
+				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new BasicModelDragController())
+				.addSingleController(FlexDiagramConstants.SELECT_OR_DRAG_TO_CREATE_ELEMENT_CONTROLLER, new SelectOrDragToCreateElementController());
 			
 			registry.getOrCreateTypeDescriptor("basicSubModel")
-				.addSingleController(ModelChildrenController.TYPE, new BasicSubModelChildrenProvider())
-				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())				
-				.addSingleController(RendererController.TYPE, new ClassReferenceRendererController(SubModelIconItemRenderer))
-				.addSingleController(SelectionController.TYPE, new BasicSubModelSelectionController())
-				.addSingleController(InplaceEditorController.TYPE, new BasicSubModelInplaceEditorController())				
-				.addSingleController(SelectOrDragToCreateElementController.TYPE, new SelectOrDragToCreateElementController());
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider())
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))
+				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSubModelSelectionController())
+				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new BasicSubModelInplaceEditorController())				
+				.addSingleController(FlexDiagramConstants.SELECT_OR_DRAG_TO_CREATE_ELEMENT_CONTROLLER, new SelectOrDragToCreateElementController());
 			
 			registry.getOrCreateTypeDescriptor("basicConnection")				
-				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())				
-				.addSingleController(RendererController.TYPE, new BasicConnectionRendererController(ConnectionRenderer))					
-				.addSingleController(SelectOrDragToCreateElementController.TYPE, new SelectOrDragToCreateElementController());
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new BasicConnectionRendererController(ConnectionRenderer))					
+				.addSingleController(FlexDiagramConstants.SELECT_OR_DRAG_TO_CREATE_ELEMENT_CONTROLLER, new SelectOrDragToCreateElementController());
 			
 			registry.getOrCreateTypeDescriptor("diagram")				
-				.addSingleController(ModelChildrenController.TYPE, new ParentAwareArrayListModelChildrenController(true))	
-				.addSingleController(ModelExtraInfoController.TYPE, new DynamicModelExtraInfoController())	
-				.addSingleController(VisualChildrenController.TYPE, new AbsoluteLayoutVisualChildrenController())								
-				.addSingleController(SelectOrDragToCreateElementController.TYPE, new SelectOrDragToCreateElementController());
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new ParentAwareArrayListModelChildrenController(true))	
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())	
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new AbsoluteLayoutVisualChildrenController())								
+				.addSingleController(FlexDiagramConstants.SELECT_OR_DRAG_TO_CREATE_ELEMENT_CONTROLLER, new SelectOrDragToCreateElementController());
 		}
 	
 	}

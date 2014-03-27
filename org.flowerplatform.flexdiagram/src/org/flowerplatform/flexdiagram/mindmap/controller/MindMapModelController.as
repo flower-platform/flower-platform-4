@@ -28,8 +28,6 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	 */
 	public class MindMapModelController extends AbstractController {
 		
-		public static const TYPE:String = "MindMapModelController";
-		
 		public function getChildren(context:DiagramShellContext, model:Object):IList {
 			throw new Error("This method needs to be implemented.");
 		}

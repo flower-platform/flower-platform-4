@@ -11,8 +11,6 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class ChildrenProvider extends AbstractController {
 
-	public static final String CHILDREN_PROVIDER = "childrenProvider";
-	
 	public abstract List<Node> getChildren(Node node, ServiceContext context);
 	
 	/**

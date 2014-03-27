@@ -1,5 +1,6 @@
 package org.flowerplatform.flex_client.core.editor.action {
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -13,7 +14,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public function ForceUpdateAction() {
 			super();
 			
-			parentId = CorePlugin.DEBUG;
+			parentId = CoreConstants.DEBUG;
 			updateLabel();			
 		}
 		

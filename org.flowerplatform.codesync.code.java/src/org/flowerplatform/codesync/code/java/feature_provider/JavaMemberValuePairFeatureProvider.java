@@ -18,13 +18,13 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaMemberValuePairFeatureProvider extends NodeFeatureProvider {
 	
 	public JavaMemberValuePairFeatureProvider() {
-		valueFeatures.add(JavaPropertiesConstants.ANNOTATION_VALUE_VALUE);
+		valueFeatures.add(CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE);
 	}
 	
 }

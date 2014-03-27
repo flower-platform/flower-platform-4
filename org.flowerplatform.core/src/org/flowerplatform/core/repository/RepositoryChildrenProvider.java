@@ -2,9 +2,8 @@ package org.flowerplatform.core.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -26,7 +25,7 @@ public class RepositoryChildrenProvider extends ChildrenProvider {
 	}
 	
 	public Node getFileSystem(Node parentnode) {
-		Node node = new Node("fileSystem", CorePlugin.SELF_RESOURCE, parentnode.getIdWithinResource(), null);
+		Node node = new Node("fileSystem", CoreConstants.SELF_RESOURCE, parentnode.getIdWithinResource(), null);
 		return node;
 	}
 

@@ -23,6 +23,7 @@ package  org.flowerplatform.flex_client.core.editor {
 	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
@@ -51,7 +52,6 @@ package  org.flowerplatform.flex_client.core.editor {
 	public class EditorDescriptor extends BasicEditorDescriptor implements IViewProvider {
 		
 		private static const OPEN_FORCED_BY_SERVER_EDITOR_INPUT_MARKER:String = "???___open_forced_by_server";
-		
 		private static const HIDE_ROOT_NODE_MARKER:String = "???___hide_root_node";
 		
 		/**

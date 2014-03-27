@@ -31,8 +31,6 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 	 */
 	public class ModelChildrenController extends AbstractController {
 		
-		public static const TYPE:String = "ModelChildrenController";
-		
 		public function ModelChildrenController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

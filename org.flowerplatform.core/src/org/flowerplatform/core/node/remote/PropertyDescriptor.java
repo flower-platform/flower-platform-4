@@ -18,6 +18,9 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
+
 import java.util.List;
 
 import org.flowerplatform.util.controller.AbstractController;
@@ -29,20 +32,10 @@ import org.flowerplatform.util.controller.IDescriptor;
  */
 public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
-	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
-	
-	public static final String STRING = "String";
-	public static final String BOOLEAN = "Boolean";
-	public static final String NUMBER = "Number";
-	public static final String DROP_DOWN_LIST = "DropDownList";
-	public static final String COLOR_PICKER = "ColorPicker";
-	
-	private static final String DEFAULT_CATEGORY = "";
-	
 	private String name;
 	private String title;
-	private String type = STRING;
-	private String category = DEFAULT_CATEGORY;
+	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
+	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
 
 	private boolean readOnly;
 	private List<?> possibleValues;

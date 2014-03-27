@@ -33,7 +33,7 @@ license-end
 			import mx.collections.ArrayList;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flexdiagram.DiagramShell;
 			import org.flowerplatform.flexutil.Utils;
@@ -46,13 +46,13 @@ license-end
 				
 				for (var i:int=0; i < nodeList.length; i++) {
 					var node:Node = Node(nodeList.getItemAt(i));
-					currentValue = Utils.computeStringTokens(node.properties[NodePropertiesConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
+					currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
 					saveIconProperty(node, currentValue);
 				}
 			}
 			
 			protected function saveIconProperty(node:Node, currentValue:String):void {			
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, NodePropertiesConstants.ICONS, currentValue]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, CoreConstants.ICONS, currentValue]);
 			}
 			
 		]]>

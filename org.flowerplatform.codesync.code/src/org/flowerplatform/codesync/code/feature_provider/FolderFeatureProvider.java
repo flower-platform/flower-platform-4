@@ -18,7 +18,7 @@
  */
 package org.flowerplatform.codesync.code.feature_provider;
 
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 /**
@@ -27,7 +27,7 @@ import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 public class FolderFeatureProvider extends NodeFeatureProvider {
 
 	public FolderFeatureProvider() {
-		containmentFeatures.add(CodeSyncPropertiesConstants.CHILDREN);
+		containmentFeatures.add(CodeSyncConstants.CHILDREN);
 	}
 	
 }

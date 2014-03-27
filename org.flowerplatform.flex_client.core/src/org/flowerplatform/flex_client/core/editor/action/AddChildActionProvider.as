@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -44,7 +45,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			
 			// get the descriptors for the selected parent type from the core dictionary
 			var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-				.getExpectedTypeDescriptor(parentType).getAdditiveControllers(AddChildDescriptor.TYPE, parent);
+				.getExpectedTypeDescriptor(parentType).getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
 			if (descriptors != null) {
 				for each (var descriptor:AddChildDescriptor in descriptors) {
 					result.push(new AddNodeAction(descriptor));

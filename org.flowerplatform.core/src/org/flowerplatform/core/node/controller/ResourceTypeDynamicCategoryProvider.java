@@ -8,7 +8,6 @@ import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.resource.in_memory.ResourceNodeInfo;
 import org.flowerplatform.util.controller.IDynamicCategoryProvider;
-import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * Provides a dynamic category based on a {@link Node}'s resource type.
@@ -26,8 +25,6 @@ import org.flowerplatform.util.controller.TypeDescriptor;
  */
 public class ResourceTypeDynamicCategoryProvider implements IDynamicCategoryProvider {
 
-	public static final String CATEGORY_RESOURCE_PREFIX = TypeDescriptor.CATEGORY_PREFIX + "resource.";
-	
 	@Override
 	public List<String> getDynamicCategories(Object object) {
 		if (object instanceof Node) {

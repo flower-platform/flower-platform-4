@@ -79,7 +79,7 @@ package org.flowerplatform.flexutil.plugin {
 		
 		protected var callbackObject:Object;
 		
-		public static const classNameRegEx:RegExp = new RegExp("/([^/]*?)\\.swc");
+		private static const classNameRegEx:RegExp = new RegExp("/([^/]*?)\\.swc");
 		
 		public function FlexPluginLoadingSession(flexPluginManager:FlexPluginManager) {
 			this.flexPluginManager = flexPluginManager;

@@ -7,14 +7,11 @@ package org.flowerplatform.flexutil.mobile.view_content_host.split {
 	 */
 	public class ToggleOneViewModeLeftViewActiveAction extends ActionBase {
 		
-		[Embed(source="switch_view.png")]
-		public static var ICON:Class;
-		
 		public var splitWrapperView:MobileSplitViewHost;
 		
 		public function ToggleOneViewModeLeftViewActiveAction() {
 			super();
-			icon = ICON;
+			icon = FlexUtilAssets.switch_view;
 		}
 		
 		override public function get label():String {

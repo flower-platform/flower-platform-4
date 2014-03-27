@@ -18,12 +18,12 @@
  */
 package org.flowerplatform.codesync.controller;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
-import static org.flowerplatform.codesync.feature_provider.FeatureProvider.FEATURE_PROVIDER;
 
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
@@ -50,7 +50,7 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		
 		// if the node is newly added or marked removed => propagate sync flag false
-		if (CodeSyncPropertiesConstants.REMOVED.equals(property) || CodeSyncPropertiesConstants.ADDED.equals(property)) {
+		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
 			setSyncFalseAndPropagateToParents(node);
 			return;
 		}

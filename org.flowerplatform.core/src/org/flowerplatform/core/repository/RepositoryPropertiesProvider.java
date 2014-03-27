@@ -1,7 +1,6 @@
 package org.flowerplatform.core.repository;
 
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
-
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.file.IFileAccessController;
@@ -22,7 +21,7 @@ public class RepositoryPropertiesProvider extends PropertiesProvider {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		node.getProperties().put(NAME, fileAccessController.getName(file));
+		node.getProperties().put(CoreConstants.NAME, fileAccessController.getName(file));
 	}
 	
 }

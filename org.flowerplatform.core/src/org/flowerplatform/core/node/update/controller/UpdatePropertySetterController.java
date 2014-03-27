@@ -1,6 +1,6 @@
 package org.flowerplatform.core.node.update.controller;
 
-import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
+import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;

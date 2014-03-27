@@ -32,6 +32,7 @@
     <classEntry path="org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController"/>
     <classEntry path="org.flowerplatform.flexdiagram.util.MultilineLabelItemRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDragTool"/>
+    <classEntry path="org.flowerplatform.flexdiagram.FlexDiagramAssets"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

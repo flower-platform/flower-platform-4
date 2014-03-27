@@ -26,8 +26,6 @@ package org.flowerplatform.flexdiagram.tool.controller {
 	 */ 
 	public class DragToCreateRelationController extends AbstractController {
 		
-		public static const TYPE:String = "DragToCreateRelationController";
-		
 		public function DragToCreateRelationController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

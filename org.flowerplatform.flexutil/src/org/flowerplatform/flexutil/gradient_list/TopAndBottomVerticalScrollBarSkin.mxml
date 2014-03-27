@@ -39,7 +39,7 @@
 	
 	<fx:Script>
 		
-		public static const BUTTON_SIZE:int = 18;
+		static const BUTTON_SIZE:int = 18;
 		
 		[Bindable]
 		public var componentWidth:int = 0;

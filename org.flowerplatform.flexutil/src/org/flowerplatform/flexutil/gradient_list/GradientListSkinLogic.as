@@ -50,40 +50,40 @@ package org.flowerplatform.flexutil.gradient_list {
 	public class GradientListSkinLogic {
 		
 		[SecureSWF(rename="off")]
-		public static const NO_GRADIENT:int = 0;
+		protected static const NO_GRADIENT:int = 0;
 		
 		[SecureSWF(rename="off")]
-		public static const LEFT_GRADIENT:int = 1;
+		protected static const LEFT_GRADIENT:int = 1;
 		
 		[SecureSWF(rename="off")]
-		public static const RIGHT_GRADIENT:int = 2;
+		protected static const RIGHT_GRADIENT:int = 2;
 		
 		[SecureSWF(rename="off")]
-		public static const FULL_GRADIENT:int = 3;
+		protected static const FULL_GRADIENT:int = 3;
 		
 		/** 
 		 * Left and right borders are not visible. 
 		 */ 
 		[SecureSWF(rename="off")]
-		public static const NO_SIDE_BORDER:int = 0;
+		protected static const NO_SIDE_BORDER:int = 0;
 		
 		/**
 		 * Only top, bottom and left border are visible.
 		 */ 
 		[SecureSWF(rename="off")]
-		public static const LEFT_BORDER:int = 1;
+		protected static const LEFT_BORDER:int = 1;
 		
 		/**
 		 * Only top, bottom and right border are visible.
 		 */ 
 		[SecureSWF(rename="off")]
-		public static const RIGHT_BORDER:int = 2;
+		protected static const RIGHT_BORDER:int = 2;
 		
 		/**
 		 * All borders are visible.
 		 */ 
 		[SecureSWF(rename="off")]
-		public static const FULL_SIDE_BORDER:int = 3;
+		protected static const FULL_SIDE_BORDER:int = 3;
 		
 		/**
 		 * Set default styles on the <code>hostComponent</code>.

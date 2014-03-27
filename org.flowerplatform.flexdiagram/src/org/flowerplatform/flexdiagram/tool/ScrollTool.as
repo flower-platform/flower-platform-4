@@ -18,27 +18,13 @@
  */
 package org.flowerplatform.flexdiagram.tool {
 	
-	import flash.display.DisplayObject;
-	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.ui.Keyboard;
-	import flash.ui.Mouse;
 	import flash.ui.Multitouch;
 	
-	import mx.core.IDataRenderer;
-	import mx.core.IVisualElement;
-	import mx.core.IVisualElementContainer;
-	import mx.managers.CursorManager;
-	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.FlexDiagramAssets;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
-	
-	import spark.components.Scroller;
-	import spark.core.IViewport;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -47,9 +33,6 @@ package org.flowerplatform.flexdiagram.tool {
 		
 		public static const ID:String = "ScrollTool";
 		
-		[Embed(source="../icons/move_cursor.png")]
-		private var _moveCursor:Class;
-				
 		public function ScrollTool(diagramShell:DiagramShell) {
 			super(diagramShell);		
 			
@@ -69,7 +52,7 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			
 			if(!Multitouch.supportsGestureEvents) { // don't show cursor on touch screens
-				diagramRenderer.cursorManager.setCursor(_moveCursor, 2, -16, -16);
+				diagramRenderer.cursorManager.setCursor(FlexDiagramAssets.moveCursor, 2, -16, -16);
 			}
 			super.activateAsMainTool();
 		}

@@ -1,16 +1,17 @@
 package org.flowerplatform.core.node.resource;
 
-import static org.flowerplatform.core.NodePropertiesConstants.IS_DIRTY;
-import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
-import static org.flowerplatform.core.ServiceContext.EXECUTE_ONLY_FOR_UPDATER;
-import static org.flowerplatform.core.node.NodeService.NODE_IS_RESOURCE_NODE;
-import static org.flowerplatform.core.node.resource.ResourceAccessController.RESOURCE_ACCESS_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
+import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
+import static org.flowerplatform.core.CoreConstants.RESOURCE_ACCESS_CONTROLLER;
 
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.ServiceContext;
@@ -130,7 +131,7 @@ public class ResourceService {
 				new Node(resourceNodeId), 
 				IS_DIRTY, 
 				isDirty(resourceNodeId, new ServiceContext()), 
-				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	public void reload(String resourceNodeId, ServiceContext context) {
@@ -154,7 +155,7 @@ public class ResourceService {
 		// update isDirty property
 		CorePlugin.getInstance().getNodeService().setProperty(
 				new Node(resourceNodeId), 
-				IS_DIRTY, 
+				CoreConstants.IS_DIRTY, 
 				isDirty(resourceNodeId, new ServiceContext()), 
 				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}

@@ -21,8 +21,8 @@ import org.flowerplatform.util.Utils;
  */
 public class Node {
 	
-	public static final String FULL_NODE_ID_SEPARATOR = "|";
-
+	private static final String FULL_NODE_ID_SEPARATOR = "|";
+	
 	private static final Pattern FULL_NODE_ID_PATTERN = Pattern.compile("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
 	
 	private String type;

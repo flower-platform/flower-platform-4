@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.flowerplatform.util.UtilConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class TypeDescriptorRegistry {
 	private Map<String, TypeDescriptor> typeDescriptors = new HashMap<String, TypeDescriptor>();
 	
 	public TypeDescriptor getOrCreateTypeDescriptor(String type) {
-		if (type.startsWith(CategoryTypeDescriptor.CATEGORY_PREFIX)) {
+		if (type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Please use getOrCreateCategoryTypeDescriptor()");
 		}
 		TypeDescriptor result = typeDescriptors.get(type);
@@ -61,7 +62,7 @@ public class TypeDescriptorRegistry {
 	 * @return
 	 */
 	public TypeDescriptor getOrCreateCategoryTypeDescriptor(String type) {
-		if (!type.startsWith(CategoryTypeDescriptor.CATEGORY_PREFIX)) {
+		if (!type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Category type should be prefixed with 'category.'");
 		}
 		TypeDescriptor result = typeDescriptors.get(type);

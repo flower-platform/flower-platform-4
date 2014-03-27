@@ -18,20 +18,20 @@
  */
 package org.flowerplatform.codesync.code.java.type_provider;
 
-import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelAdapter.ANNOTATION;
-import static org.flowerplatform.codesync.code.java.adapter.JavaAnnotationTypeMemberDeclarationModelAdapter.ANNOTATION_MEMBER;
-import static org.flowerplatform.codesync.code.java.adapter.JavaAttributeModelAdapter.ATTRIBUTE;
-import static org.flowerplatform.codesync.code.java.adapter.JavaEnumConstantDeclarationModelAdapter.ENUM_CONSTANT;
-import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.ENUM_CONSTANT_ARGUMENT;
-import static org.flowerplatform.codesync.code.java.adapter.JavaExpressionModelAdapter.SUPER_INTERFACE;
-import static org.flowerplatform.codesync.code.java.adapter.JavaMemberValuePairModelAdapter.MEMBER_VALUE_PAIR;
-import static org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter.MODIFIER;
-import static org.flowerplatform.codesync.code.java.adapter.JavaOperationModelAdapter.OPERATION;
-import static org.flowerplatform.codesync.code.java.adapter.JavaParameterModelAdapter.PARAMETER;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ANNOTATION_TYPE;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.CLASS;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.ENUM;
-import static org.flowerplatform.codesync.code.java.adapter.JavaTypeDeclarationModelAdapter.INTERFACE;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ANNOTATION;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ANNOTATION_MEMBER;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ANNOTATION_TYPE;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ATTRIBUTE;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.CLASS;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ENUM;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ENUM_CONSTANT;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ENUM_CONSTANT_ARGUMENT;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.INTERFACE;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.MODIFIER;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.OPERATION;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.PARAMETER;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.SUPER_INTERFACE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +51,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
+import org.flowerplatform.codesync.code.CodeSyncCodeConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
@@ -80,9 +80,9 @@ public class JavaTypeProvider implements ITypeProvider {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		if (fileAccessController.isFile(object)) {
 			if (fileAccessController.isDirectory(object)) {
-				return CodeSyncCodePlugin.FOLDER;
+				return CodeSyncCodeConstants.FOLDER;
 			} else {
-				return CodeSyncCodePlugin.FILE;
+				return CodeSyncCodeConstants.FILE;
 			}
 		} else if (object instanceof TypeDeclaration) {
 			if (((TypeDeclaration) object).isInterface()) {

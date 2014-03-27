@@ -7,9 +7,6 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class ChildrenUpdate extends Update {
 
-	public static final String ADDED = "ADDED";
-	public static final String REMOVED = "REMOVED";
-		
 	private String type;
 	
 	private Node targetNode;

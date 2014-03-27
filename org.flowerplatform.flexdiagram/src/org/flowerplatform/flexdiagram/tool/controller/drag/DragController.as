@@ -26,8 +26,6 @@ package org.flowerplatform.flexdiagram.tool.controller.drag {
 	 */ 
 	public class DragController extends AbstractController {
 		
-		public static const TYPE:String = "DragController";
-		
 		public function DragController(orderIndex:int = 0) {
 			super(orderIndex);
 		}
