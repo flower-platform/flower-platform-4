@@ -2,6 +2,7 @@ package org.flowerplatform.core.file;
 
 import static org.flowerplatform.core.CoreConstants.CONTENT_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.CoreConstants.FILE_SIZE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.TEXT_CONTENT_TYPE;
 
@@ -40,36 +41,30 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		Map<String, Object> atributes = null;
 		
 		try {
-			 atributes = Files.readAttributes(path, "size,lastModifiedTime,lastAccessTime,creationTime,isDirectory");
+			 atributes = Files.readAttributes(path, "lastModifiedTime,lastAccessTime,creationTime,isDirectory");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
 		for (Map.Entry<String, Object> entry : atributes.entrySet()) {
 			switch (entry.getKey()) {
-				case CoreConstants.FILE_SIZE:
-					if (node.getProperties().get(FILE_IS_DIRECTORY).equals("true")) {
-						long folderSize = getFolderSize(file);
-						node.getProperties().put(entry.getKey().toString(), folderSize);
-					} else {
-						node.getProperties().put(entry.getKey().toString(), fileAccessController.length(file));
-					}
-					
-					break;
 				case CoreConstants.FILE_LAST_ACCESS_TIME:
 				case CoreConstants.FILE_LAST_MODIFIED_TIME:
 				case CoreConstants.FILE_CREATION_TIME:
-					node.getProperties().put(entry.getKey().toString(),  new Date(((FileTime)entry.getValue()).toMillis()));
+					node.getProperties().put(entry.getKey().toString(), new Date(((FileTime)entry.getValue()).toMillis()));
 					break;
-				case "isDirectory": 
+				case CoreConstants.FILE_IS_DIRECTORY: 
 					node.getProperties().put(FILE_IS_DIRECTORY, entry.getValue());
 					break;
 			}
 		}
 		
 		if ((boolean)node.getProperties().get(FILE_IS_DIRECTORY)) {
+			long folderSize = getFolderSize(file);
+			node.getProperties().put(FILE_SIZE, folderSize);
 			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
+			node.getProperties().put(FILE_SIZE, fileAccessController.length(file));
 			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/file.gif"));
 			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
