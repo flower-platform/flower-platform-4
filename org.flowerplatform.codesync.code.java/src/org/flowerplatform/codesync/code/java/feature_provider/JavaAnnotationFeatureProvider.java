@@ -18,13 +18,13 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaAnnotationFeatureProvider extends NodeFeatureProvider {
 	
 	public JavaAnnotationFeatureProvider() {
-		containmentFeatures.add(JavaPropertiesConstants.ANNOTATION_VALUES);
+		containmentFeatures.add(CodeSyncCodeJavaConstants.ANNOTATION_VALUES);
 	}
 	
 }

@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.UtilConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +52,12 @@ public class ImageComposerServlet extends ResourcesServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final String PATH_PREFIX = "/image-composer";
-
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String requestedFile = request.getPathInfo();
-		if (requestedFile.startsWith(PATH_PREFIX)) {
-			requestedFile = requestedFile.substring(PATH_PREFIX.length());
+		if (requestedFile.startsWith(UtilConstants.IMAGE_COMPOSER_PATH_PREFIX)) {
+			requestedFile = requestedFile.substring(UtilConstants.IMAGE_COMPOSER_PATH_PREFIX.length());
 		}
 		
 		String mapValue = null;
@@ -101,7 +99,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 				send404(request, response);
 				return;
 			}
-			String[] paths = requestedFile.split("\\" + SEPARATOR);
+			String[] paths = requestedFile.split("\\" + UtilConstants.RESOURCE_PATH_SEPARATOR);
 			
 			int width = 0;
 			int height = 0;
@@ -114,7 +112,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 				indexOfSecondSlash = path.indexOf('/', 1);
 				String plugin = path.substring(0, indexOfSecondSlash);
 				path = path.substring(indexOfSecondSlash);
-				requestedFile = "platform:/plugin" + plugin + "/" + AbstractFlowerJavaPlugin.PUBLIC_RESOURCES_DIR + path;
+				requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + path;
 				try {
 					URL url = new URL(requestedFile);
 					BufferedImage image = ImageIO.read(url);
@@ -137,8 +135,8 @@ public class ImageComposerServlet extends ResourcesServlet {
 			}
 			graphics.dispose();
 			// write image into the Temp folder
-	    	if (!TEMP_FOLDER.exists()) {
-	    		TEMP_FOLDER.mkdir();
+	    	if (!UtilConstants.TEMP_FOLDER.exists()) {
+	    		UtilConstants.TEMP_FOLDER.mkdir();
 	    	}
 	    	
 	    	FileOutputStream tempOutput = null;

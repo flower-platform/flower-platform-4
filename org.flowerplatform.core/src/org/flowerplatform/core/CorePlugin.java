@@ -18,10 +18,6 @@
  */
 package org.flowerplatform.core;
 
-import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
-import static org.flowerplatform.core.node.controller.ChildrenProvider.CHILDREN_PROVIDER;
-import static org.flowerplatform.core.node.controller.PropertiesProvider.PROPERTIES_PROVIDER;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
@@ -29,10 +25,7 @@ import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
-import org.flowerplatform.core.node.controller.PropertySetter;
-import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
@@ -48,10 +41,9 @@ import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
 import org.flowerplatform.core.repository.RootChildrenProvider;
 import org.flowerplatform.core.repository.RootPropertiesProvider;
-import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
+import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.flowerplatform.util.servlet.ResourcesServlet;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -61,21 +53,6 @@ import org.osgi.framework.BundleContext;
  */
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
-	public static final String TYPE_KEY = "type";
-	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystem";
-	public static final String FILE_NODE_TYPE = "fileNode";
-	public static final String FILE_SYSTEM_PATH = "d:/temp/";
-	
-	public static final String ROOT_TYPE = "root";
-	public static final String REPOSITORY_TYPE = "repository";
-	public static final String CODE_TYPE = "code";
-	
-	public static final String SELF_RESOURCE = "self";
-	
-	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";
-	public static final String PROPERTY_FOR_ICON_DESCRIPTOR = "propertyForIconDescriptor";
-	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
-	
 	protected static CorePlugin INSTANCE;
 
 	protected IFileAccessController fileAccessController = new PlainFileAccessController();
@@ -136,27 +113,27 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		new ResourceUnsubscriber().start();
 		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new RootPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new RootChildrenProvider());
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.ROOT_TYPE)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootChildrenProvider());
 
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new RepositoryPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new RepositoryChildrenProvider());
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.REPOSITORY_TYPE)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RepositoryPropertiesProvider())
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RepositoryChildrenProvider());
 
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODE_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NodePropertiesConstants.NAME, CODE_TYPE))
-		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(IS_SUBSCRIBABLE, true));
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.CODE_TYPE))
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true));
 		
 		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 				
-		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
-		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
-		.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
-		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController())
-		.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(NodePropertiesConstants.NAME))
-		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(NodePropertiesConstants.SIDE))
-		.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(NodePropertiesConstants.ICONS));
+		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL)
+		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
+		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
+		.addAdditiveController(CoreConstants.PROPERTY_SETTER, new UpdatePropertySetterController())
+		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
+		.addSingleController(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.SIDE))
+		.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
 		
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
@@ -164,7 +141,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		//TODO use Flower property
 		boolean isDeleteTempFolderAtStartProperty = true;
 		if (isDeleteTempFolderAtStartProperty) {
-			FileUtils.deleteDirectory(ResourcesServlet.TEMP_FOLDER);
+			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
 	}
 

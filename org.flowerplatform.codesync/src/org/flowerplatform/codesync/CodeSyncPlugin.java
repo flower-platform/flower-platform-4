@@ -18,10 +18,13 @@
  */
 package org.flowerplatform.codesync;
 
-import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_ANCESTOR;
-import static org.flowerplatform.codesync.adapter.AbstractModelAdapter.MODEL_ADAPTER_LEFT;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
-import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
+import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,13 +41,11 @@ import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
-import org.flowerplatform.core.node.controller.AddNodeController;
-import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
-import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -58,27 +59,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	public static final String CATEGORY_CODESYNC = TypeDescriptor.CATEGORY_PREFIX + "codesync"; 
-			
-	/**
-	 * The location of the CSE mapping file, relative to the project. May be
-	 * configurable in the future.
-	 * 
-	 * @author Mariana
-	 */
-	public String CSE_MAPPING_FILE_LOCATION = "/CSE.notation";
-	
-	/**
-	 * The location of the ACE file, relative to the project. May be configurable
-	 * in the future.
-	 * 
-	 * @author Mariana
-	 */
-	public String ACE_FILE_LOCATION = "/ACE.notation";
-	
 	protected List<String> srcDirs = null;
-	
-	public static final String TOP_LEVEL = "topLevel";
 	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncPlugin.class);
 
@@ -227,16 +208,16 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		addTypeProvider("node", new NodeTypeProvider());
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC)
-		.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
-		.addAdditiveController(PropertySetter.PROPERTY_SETTER, new CodeSyncPropertySetter())
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.NAME))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.ADDED).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.REMOVED).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncPropertiesConstants.CHILDREN_CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
+		.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
+		.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.ADDED).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.REMOVED).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
 		.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor())
 		.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		

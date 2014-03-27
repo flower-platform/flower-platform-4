@@ -10,28 +10,27 @@ import static org.eclipse.jdt.core.dom.Modifier.isStatic;
 import static org.eclipse.jdt.core.dom.Modifier.isSynchronized;
 import static org.eclipse.jdt.core.dom.Modifier.isTransient;
 import static org.eclipse.jdt.core.dom.Modifier.isVolatile;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.DECORATOR_ABSTRACT;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.DECORATOR_FINAL;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.DECORATOR_NATIVE;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.DECORATOR_STATIC;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.DECORATOR_SYNCHRONIZED;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.DECORATOR_TRANSIENT;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.DECORATOR_VOLATILE;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.VISIBILITY_DEFAULT;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.VISIBILITY_PRIVATE;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.VISIBILITY_PROTECTED;
-import static org.flowerplatform.codesync.code.java.JavaPropertiesConstants.getImagePath;
-import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.DECORATOR_ABSTRACT;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.DECORATOR_FINAL;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.DECORATOR_NATIVE;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.DECORATOR_STATIC;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.DECORATOR_SYNCHRONIZED;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.DECORATOR_TRANSIENT;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.DECORATOR_VOLATILE;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.VISIBILITY_DEFAULT;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.VISIBILITY_PRIVATE;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.VISIBILITY_PROTECTED;
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.getImagePath;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
-import org.flowerplatform.codesync.code.java.adapter.JavaModifierModelAdapter;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
@@ -109,7 +108,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 				// don't decorate if the modifier was marked removed
 				continue;
 			}
-			String keyword = (String) modifier.getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME);
+			String keyword = (String) modifier.getOrPopulateProperties().get(CoreConstants.NAME);
 			if (keyword == null || keyword.length() == 0) {
 				continue;
 			}
@@ -122,7 +121,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
 		List<Node> modifiers = new ArrayList<Node>();
 		for (Node child : service.getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true))) {
-			if (JavaModifierModelAdapter.MODIFIER.equals(child.getType())) {
+			if (CodeSyncCodeJavaConstants.MODIFIER.equals(child.getType())) {
 				modifiers.add(child);
 			}
 		}

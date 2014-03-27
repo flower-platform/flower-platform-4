@@ -18,20 +18,20 @@
  */
 package org.flowerplatform.codesync.adapter;
 
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.ADDED;
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
-import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
-import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
@@ -91,7 +91,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrPopulateProperties().get(CodeSyncPropertiesConstants.NAME);
+		return getNode(element).getOrPopulateProperties().get(CoreConstants.NAME);
 	}
 	
 	@Override

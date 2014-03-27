@@ -22,12 +22,11 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 	import flash.events.MouseEvent;
 	import flash.ui.Multitouch;
 	
-	import mx.core.IVisualElement;
 	import mx.events.MoveEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.FlexDiagramAssets;
 	import org.flowerplatform.flexdiagram.tool.ResizeTool;
 	import org.flowerplatform.flexdiagram.ui.ResizeAnchor;
 
@@ -36,21 +35,6 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 	 */
 	public class AnchorsSelectionRenderer extends AbstractSelectionRenderer {
 		
-		[Embed(source="../icons/diag1Cursor.gif")]		
-		protected var diag1Cursor:Class;
-		
-		[Embed(source="../icons/diag2Cursor.gif")]		
-		protected var diag2Cursor:Class;
-		
-		[Embed(source="../icons/horizCursor.gif")]		
-		protected var horizCursor:Class;
-		
-		[Embed(source="../icons/vertCursor.gif")]		
-		protected var vertCursor:Class;
-		
-		[Embed(source="../icons/crossCursor.gif")]
-		protected var crossCursor:Class;
-				
 		override public function activate(context:DiagramShellContext, model:Object):void {
 			super.activate(context, model);			
 			
@@ -91,28 +75,28 @@ package org.flowerplatform.flexdiagram.renderer.selection {
 			if (event.target is ResizeAnchor) {
 				switch (ResizeAnchor(event.target).type) {
 					case ResizeAnchor.LEFT_DOWN:
-						currentCursor = diag2Cursor;
+						currentCursor = FlexDiagramAssets.diag2Cursor;
 						break;
 					case ResizeAnchor.LEFT_MIDDLE:
-						currentCursor = horizCursor;
+						currentCursor = FlexDiagramAssets.horizCursor;
 						break;
 					case ResizeAnchor.LEFT_UP:
-						currentCursor = diag1Cursor;
+						currentCursor = FlexDiagramAssets.diag1Cursor;
 						break;
 					case ResizeAnchor.MIDDLE_DOWN:
-						currentCursor = vertCursor;
+						currentCursor = FlexDiagramAssets.vertCursor;
 						break;
 					case ResizeAnchor.MIDDLE_UP:
-						currentCursor = vertCursor;
+						currentCursor = FlexDiagramAssets.vertCursor;
 						break;
 					case ResizeAnchor.RIGHT_DOWN:
-						currentCursor = diag1Cursor;
+						currentCursor = FlexDiagramAssets.diag1Cursor;
 						break;
 					case ResizeAnchor.RIGHT_MIDDLE:
-						currentCursor = horizCursor;
+						currentCursor = FlexDiagramAssets.horizCursor;
 						break;
 					case ResizeAnchor.RIGHT_UP:
-						currentCursor = diag2Cursor;
+						currentCursor = FlexDiagramAssets.diag2Cursor;
 						break;
 				}
 				cursorManager.removeAllCursors();

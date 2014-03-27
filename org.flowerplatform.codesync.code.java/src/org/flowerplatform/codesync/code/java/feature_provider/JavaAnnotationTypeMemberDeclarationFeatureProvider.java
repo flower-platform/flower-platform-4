@@ -18,17 +18,17 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaAnnotationTypeMemberDeclarationFeatureProvider extends NodeFeatureProvider {
 	
 	public JavaAnnotationTypeMemberDeclarationFeatureProvider() {
-		valueFeatures.add(JavaPropertiesConstants.DOCUMENTATION);
-		valueFeatures.add(JavaPropertiesConstants.TYPED_ELEMENT_TYPE);
-		valueFeatures.add(JavaPropertiesConstants.ANNOTATION_MEMBER_DEFAULT_VALUE);
+		valueFeatures.add(CodeSyncCodeJavaConstants.DOCUMENTATION);
+		valueFeatures.add(CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE);
+		valueFeatures.add(CodeSyncCodeJavaConstants.ANNOTATION_MEMBER_DEFAULT_VALUE);
 		
-		containmentFeatures.add(JavaPropertiesConstants.MODIFIERS);
+		containmentFeatures.add(CodeSyncCodeJavaConstants.MODIFIERS);
 	}
 	
 }

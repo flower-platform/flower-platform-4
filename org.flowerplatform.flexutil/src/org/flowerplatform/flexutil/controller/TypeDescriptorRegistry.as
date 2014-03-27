@@ -4,6 +4,7 @@ package org.flowerplatform.flexutil.controller {
 	import mx.collections.IList;
 	
 	import org.apache.flex.collections.ArrayList;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -23,7 +24,7 @@ package org.flowerplatform.flexutil.controller {
 		private var typeDescriptors:Dictionary = new Dictionary(); /* Map<String, TypeDescriptor> */
 		
 		public function getOrCreateTypeDescriptor(type:String):TypeDescriptor {
-			if (Utils.beginsWith(type, TypeDescriptor.CATEGORY_PREFIX)) {
+			if (Utils.beginsWith(type, FlexUtilConstants.CATEGORY_PREFIX)) {
 				throw new Error("Please use getOrCreateCategoryTypeDescriptor()");
 			}
 			var result:TypeDescriptor = typeDescriptors[type];
@@ -35,7 +36,7 @@ package org.flowerplatform.flexutil.controller {
 		}
 		
 		public function getOrCreateCategoryTypeDescriptor(type:String):TypeDescriptor {
-			if (!Utils.beginsWith(type, TypeDescriptor.CATEGORY_PREFIX)) {
+			if (!Utils.beginsWith(type, FlexUtilConstants.CATEGORY_PREFIX)) {
 				throw new Error("Category type should be prefixed with 'category.'");
 			}
 			

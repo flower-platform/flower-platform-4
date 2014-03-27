@@ -1,13 +1,9 @@
 package org.flowerplatform.core.file;
 
-import static org.flowerplatform.core.NodePropertiesConstants.CONTENT_TYPE;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_CREATION_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_ACCESS_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_LAST_MODIFIED_TIME;
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_SIZE;
-import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.CONTENT_TYPE;
+import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.CoreConstants.ICONS;
+import static org.flowerplatform.core.CoreConstants.TEXT_CONTENT_TYPE;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,8 +13,8 @@ import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.Map;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -27,8 +23,6 @@ import org.flowerplatform.core.node.remote.Node;
  * @author Sebastian Solomon
  */
 public class FilePropertiesProvider extends PropertiesProvider {
-	
-	private static final String TEXT_CONTENT_TYPE = "text";
 	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext context) {
@@ -39,8 +33,8 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		node.getProperties().put(NAME, fileAccessController.getName(file));
-		node.getProperties().put(HAS_CHILDREN, fileAccessController.hasChildren(file));
+		node.getProperties().put(CoreConstants.NAME, fileAccessController.getName(file));
+		node.getProperties().put(CoreConstants.HAS_CHILDREN, fileAccessController.hasChildren(file));
 		
 		Path path = Paths.get(fileAccessController.getAbsolutePath(file));
 		Map<String, Object> atributes = null;
@@ -53,7 +47,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 
 		for (Map.Entry<String, Object> entry : atributes.entrySet()) {
 			switch (entry.getKey()) {
-				case FILE_SIZE:
+				case CoreConstants.FILE_SIZE:
 					if (node.getProperties().get(FILE_IS_DIRECTORY).equals("true")) {
 						long folderSize = getFolderSize(file);
 						node.getProperties().put(entry.getKey().toString(), folderSize);
@@ -62,9 +56,9 @@ public class FilePropertiesProvider extends PropertiesProvider {
 					}
 					
 					break;
-				case FILE_LAST_ACCESS_TIME:
-				case FILE_LAST_MODIFIED_TIME:
-				case FILE_CREATION_TIME:
+				case CoreConstants.FILE_LAST_ACCESS_TIME:
+				case CoreConstants.FILE_LAST_MODIFIED_TIME:
+				case CoreConstants.FILE_CREATION_TIME:
 					node.getProperties().put(entry.getKey().toString(),  new Date(((FileTime)entry.getValue()).toMillis()));
 					break;
 				case "isDirectory": 
@@ -73,10 +67,10 @@ public class FilePropertiesProvider extends PropertiesProvider {
 			}
 		}
 		
-		if (node.getProperties().get(NodePropertiesConstants.FILE_IS_DIRECTORY).equals("true")) {
-			node.getProperties().put(NodePropertiesConstants.ICONS, CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
+		if (node.getProperties().get(FILE_IS_DIRECTORY).equals("true")) {
+			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
 		} else {
-			node.getProperties().put(NodePropertiesConstants.ICONS, CorePlugin.getInstance().getResourceUrl("images/file.gif"));
+			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/file.gif"));
 			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
 	}

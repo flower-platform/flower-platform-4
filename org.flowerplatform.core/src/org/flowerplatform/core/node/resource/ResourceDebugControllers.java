@@ -18,22 +18,18 @@
  */
 package org.flowerplatform.core.node.resource;
 
-import static org.flowerplatform.core.CorePlugin.ROOT_TYPE;
-import static org.flowerplatform.core.RemoteMethodInvocationListener.LAST_UPDATE_TIMESTAMP;
-import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.NodePropertiesConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
-import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.util.UtilConstants;
 
 /**
  * @author Mariana Gheorghe
@@ -42,8 +38,8 @@ public class ResourceDebugControllers {
 
 	private final String DEBUG = "_debug";
 	
-	private final String SESSION_CATEGORY = TypeDescriptor.CATEGORY_PREFIX + "_debugSession";
-	private final String RESOURCE_NODE_INFO_CATEGORY = TypeDescriptor.CATEGORY_PREFIX + "_debugResourceNodeInfo";
+	private final String SESSION_CATEGORY = UtilConstants.CATEGORY_PREFIX + "_debugSession";
+	private final String RESOURCE_NODE_INFO_CATEGORY = UtilConstants.CATEGORY_PREFIX + "_debugResourceNodeInfo";
 	
 	private final String SESSION = "_debugSession";
 	private final String RESOURCE_NODE_INFO2 = "_debugResourceNodeInfo2";
@@ -56,8 +52,8 @@ public class ResourceDebugControllers {
 		
 		// add _debug node to root
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
-		.addAdditiveController(ChildrenProvider.CHILDREN_PROVIDER, new ChildrenProvider() {
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.ROOT_TYPE)
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
 			public boolean hasChildren(Node node, ServiceContext context) {
@@ -66,24 +62,24 @@ public class ResourceDebugControllers {
 			
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
-				return Collections.singletonList(new Node("(" + DEBUG + Node.FULL_NODE_ID_SEPARATOR + Node.FULL_NODE_ID_SEPARATOR + ")"));
+				return Collections.singletonList(new Node("(" + DEBUG + "||)"));
 			}
 		}.setOrderIndexAs(10000));
 		
 		// _debug node
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(DEBUG)
-		.addAdditiveController(ChildrenProvider.CHILDREN_PROVIDER, new ChildrenProvider() {
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
 			public boolean hasChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				return true;
 			}
 			
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				List<Node> children = new ArrayList<Node>();
 				
 				// sessions
@@ -101,44 +97,44 @@ public class ResourceDebugControllers {
 				return children;
 			}
 		})
-		.addAdditiveController(PropertiesProvider.PROPERTIES_PROVIDER, new PropertiesProvider() {
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PropertiesProvider() {
 			
 			@Override
 			public void populateWithProperties(Node node, ServiceContext context) {
-				node.getProperties().put(NodePropertiesConstants.NAME, DEBUG);
+				node.getProperties().put(CoreConstants.NAME, DEBUG);
 			}
 		});
 		
 		// properties for session
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(SESSION_CATEGORY)
-		.addAdditiveController(PropertiesProvider.PROPERTIES_PROVIDER, new PropertiesProvider() {
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PropertiesProvider() {
 			
 			@Override
 			public void populateWithProperties(Node node, ServiceContext context) {
 				String sessionId = node.getIdWithinResource().split(" ")[0];
-				node.getProperties().put(NodePropertiesConstants.NAME, "Session " + sessionId);
+				node.getProperties().put(CoreConstants.NAME, "Session " + sessionId);
 				node.getProperties().put("ip", CorePlugin.getInstance().getResourceService().getSessionProperty(sessionId, "ip"));
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			}
 		}.setOrderIndexAs(-500000))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("ip"));
+		.addAdditiveController(CoreConstants.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("ip"));
 		
 		// session as child of _debug; children are resources
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(SESSION)
 		.addCategory(SESSION_CATEGORY)
-		.addAdditiveController(ChildrenProvider.CHILDREN_PROVIDER, new ChildrenProvider() {
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
 			public boolean hasChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				return true;
 			}
 			
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				List<Node> children = new ArrayList<Node>();
 				String sessionId = node.getIdWithinResource().split(" ")[0];
 				for (String resourceId : CorePlugin.getInstance().getResourceService().getResourcesSubscribedBySession(sessionId)) {
@@ -152,34 +148,34 @@ public class ResourceDebugControllers {
 		// properties for resource
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(RESOURCE_NODE_INFO_CATEGORY)
-		.addAdditiveController(PropertiesProvider.PROPERTIES_PROVIDER, new PropertiesProvider() {
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PropertiesProvider() {
 			
 			@Override
 			public void populateWithProperties(Node node, ServiceContext context) {
 				String resourceId = node.getIdWithinResource().replace("+", "|").split(" ")[0];
-				node.getProperties().put(NodePropertiesConstants.NAME, "Resource " + resourceId);
+				node.getProperties().put(CoreConstants.NAME, "Resource " + resourceId);
 				long timestamp = CorePlugin.getInstance().getResourceService().getUpdateRequestedTimestamp(resourceId);
-				node.getProperties().put(LAST_UPDATE_TIMESTAMP, timestamp);
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				node.getProperties().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			}
 		}.setOrderIndexAs(-500000))
-		.addAdditiveController(PropertyDescriptor.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(LAST_UPDATE_TIMESTAMP));
+		.addAdditiveController(CoreConstants.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.LAST_UPDATE_TIMESTAMP));
 		
 		// resource as child of session; children are sessions
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(RESOURCE_NODE_INFO2)
 		.addCategory(RESOURCE_NODE_INFO_CATEGORY)
-		.addAdditiveController(ChildrenProvider.CHILDREN_PROVIDER, new ChildrenProvider() {
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
 			public boolean hasChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				return true;
 			}
 			
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				
 				List<Node> children = new ArrayList<Node>();
 				String resourceId = node.getIdWithinResource().replace("+", "|");
@@ -199,17 +195,17 @@ public class ResourceDebugControllers {
 		// resource as child of _debug; children are sessions
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(RESOURCE_NODE_INFO)
 		.addCategory(RESOURCE_NODE_INFO_CATEGORY)
-		.addAdditiveController(ChildrenProvider.CHILDREN_PROVIDER, new ChildrenProvider() {
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
 			public boolean hasChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				return true;
 			}
 			
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
-				context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				
 				List<Node> children = new ArrayList<Node>();
 				String resourceId = node.getIdWithinResource().replace("+", "|");

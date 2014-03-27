@@ -2,9 +2,8 @@ package org.flowerplatform.core.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -21,7 +20,7 @@ public class RootChildrenProvider extends ChildrenProvider {
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext context) {
 		List<Node> children = new ArrayList<Node>();
-		children.add(new Node(CorePlugin.REPOSITORY_TYPE, null, CorePlugin.FILE_SYSTEM_PATH + "/repo1", null));
+		children.add(new Node(CoreConstants.REPOSITORY_TYPE, null, CoreConstants.FILE_SYSTEM_PATH + "/repo1", null));
 		return children;	
 	}
 	

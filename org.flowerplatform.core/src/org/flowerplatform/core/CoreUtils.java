@@ -1,8 +1,5 @@
 package org.flowerplatform.core;
 
-import static org.flowerplatform.core.CorePlugin.SELF_RESOURCE;
-import static org.flowerplatform.core.NodePropertiesConstants.IS_SUBSCRIBABLE;
-
 import java.util.Map;
 
 import org.flowerplatform.core.node.remote.Node;
@@ -13,7 +10,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class CoreUtils {
 
 	public static boolean isSubscribable(Map<String, Object> properties) {
-		Boolean isSubscribable = (Boolean) properties.get(IS_SUBSCRIBABLE);
+		Boolean isSubscribable = (Boolean) properties.get(CoreConstants.IS_SUBSCRIBABLE);
 		if (isSubscribable == null) {
 			return false;
 		}
@@ -23,7 +20,7 @@ public class CoreUtils {
 	public static Node getResourceNode(Node node) {
 		if (node.getResource() == null) {
 			return null;
-		} else if (SELF_RESOURCE.equals(node.getResource())) {
+		} else if (CoreConstants.SELF_RESOURCE.equals(node.getResource())) {
 			return node;
 		}
 		return new Node(node.getResource());

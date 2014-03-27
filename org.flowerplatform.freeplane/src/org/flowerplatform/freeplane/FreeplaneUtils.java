@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.mindmap.MindMapPlugin;
+import org.flowerplatform.mindmap.MindMapConstants;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.NodeModel;
@@ -26,14 +26,14 @@ public class FreeplaneUtils {
 		String resourceCategory = CorePlugin.getInstance().getResourceService().getResourceCategory(resource);
 		
 		String type = null;
-		if (MindMapPlugin.FREEPLANE_MINDMAP_CATEGORY.equals(resourceCategory)) {
-			type = MindMapPlugin.MINDMAP_NODE_TYPE;	
-		} else if (MindMapPlugin.FREEPLANE_PERSISTENCE_CATEGORY.equals(resourceCategory)) {
+		if (MindMapConstants.FREEPLANE_MINDMAP_CATEGORY.equals(resourceCategory)) {
+			type = MindMapConstants.MINDMAP_NODE_TYPE;	
+		} else if (MindMapConstants.FREEPLANE_PERSISTENCE_CATEGORY.equals(resourceCategory)) {
 			// get type from attributes table
 			NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);
 			if (attributeTable != null) {
 				for (Attribute attribute : attributeTable.getAttributes()) {
-					if (attribute.getName().equals(MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY)) {
+					if (attribute.getName().equals(MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY)) {
 						type = (String) attribute.getValue();
 						break;
 					}

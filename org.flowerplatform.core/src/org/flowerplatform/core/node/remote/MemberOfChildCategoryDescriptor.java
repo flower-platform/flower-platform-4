@@ -29,8 +29,6 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class MemberOfChildCategoryDescriptor extends AbstractController {
 
-	public static final String MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR = "memberOfChildCategoryDescriptor";
-	
 	private String childCategory;
 
 	public MemberOfChildCategoryDescriptor(String childCategory) {

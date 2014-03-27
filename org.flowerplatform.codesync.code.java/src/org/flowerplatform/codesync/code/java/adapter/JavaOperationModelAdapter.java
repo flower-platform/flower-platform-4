@@ -26,10 +26,10 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link MethodDeclaration}. Children are {@link Modifier}s and parameters (i.e. {@link SingleVariableDeclaration}).
@@ -40,8 +40,6 @@ import org.flowerplatform.codesync.type_provider.ITypeProvider;
  */
 public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
-	public static final String OPERATION = "javaOperation";
-	
 	@Override
 	public List<?> getChildren(Object modelElement) {
 		return Collections.emptyList();
@@ -49,7 +47,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (JavaPropertiesConstants.OPERATION_PARAMETERS.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
 			return ((MethodDeclaration) element).parameters();
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
@@ -57,11 +55,11 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (JavaPropertiesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getMethodDeclaration(element).getReturnType2());
-		} else if (JavaPropertiesConstants.OPERATION_HAS_BODY.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.OPERATION_HAS_BODY.equals(feature)) {
 			return getMethodDeclaration(element).getBody() != null;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -69,7 +67,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			MethodDeclaration method = getMethodDeclaration(element);
 			String name = (String) value;
 			int index = name.indexOf("(");
@@ -78,11 +76,11 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			}
 			name = name.substring(0, index);
 			method.setName(method.getAST().newSimpleName(name));
-		} else if (JavaPropertiesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			MethodDeclaration method = getMethodDeclaration(element);
 			Type type = getTypeFromString(method.getAST(), (String) value);
 			method.setReturnType2(type);
-		} else if (JavaPropertiesConstants.OPERATION_HAS_BODY.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.OPERATION_HAS_BODY.equals(feature)) {
 			// needed to create methods with empty bodies
 			MethodDeclaration method = getMethodDeclaration(element);
 			if (value != null && (boolean) value) {
@@ -98,7 +96,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		if (JavaPropertiesConstants.OPERATION_PARAMETERS.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
 			MethodDeclaration method = (MethodDeclaration) element;
 			AST ast = method.getAST();
 			SingleVariableDeclaration parameter = ast.newSingleVariableDeclaration();

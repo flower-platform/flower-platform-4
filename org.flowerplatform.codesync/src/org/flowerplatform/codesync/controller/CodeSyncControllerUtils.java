@@ -1,13 +1,14 @@
 package org.flowerplatform.codesync.controller;
 
-
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.ADDED;
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CHILDREN_SYNC;
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.CONFLICT;
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.REMOVED;
-import static org.flowerplatform.codesync.CodeSyncPropertiesConstants.SYNC;
-import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.codesync.CodeSyncConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_SYNC;
+import static org.flowerplatform.codesync.CodeSyncConstants.CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CONFLICT_SUFFIX;
+import static org.flowerplatform.codesync.CodeSyncConstants.ORIGINAL_SUFFIX;
+import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncConstants.SYNC;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
@@ -19,9 +20,6 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class CodeSyncControllerUtils {
 
-	public static final String ORIGINAL_SUFFIX = ".original";
-	public static final String CONFLICT_SUFFIX = ".conflict";
-	
 	public static boolean isOriginalPropertyName(String property) {
 		return property.endsWith(ORIGINAL_SUFFIX);
 	}

@@ -27,8 +27,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	 */
 	public class VisualChildrenController extends AbstractController {
 		
-		public static const TYPE:String = "VisualChildrenController";
-		
 		public function VisualChildrenController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

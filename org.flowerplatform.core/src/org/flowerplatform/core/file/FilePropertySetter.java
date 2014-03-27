@@ -1,7 +1,6 @@
 package org.flowerplatform.core.file;
 
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
-
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertySetter;
@@ -16,9 +15,9 @@ public class FilePropertySetter extends PropertySetter {
 	@Override
 	public void setProperty(Node node, String property, PropertyValueWrapper value, ServiceContext context) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
-		if (NAME.equals(property)) {
+		if (CoreConstants.NAME.equals(property)) {
 			Object file;
-			if (!node.getOrPopulateProperties().get(NAME).equals(value.getPropertyValue())) {
+			if (!node.getOrPopulateProperties().get(CoreConstants.NAME).equals(value.getPropertyValue())) {
 				try {
 					throw new UnsupportedOperationException();
 //					file = fileAccessController.getFile(node.getIdWithinResource());

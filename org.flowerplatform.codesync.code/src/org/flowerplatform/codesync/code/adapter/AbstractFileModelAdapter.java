@@ -26,8 +26,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
 import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
 
@@ -57,7 +57,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			return getLabel(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -65,7 +65,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object file, Object feature, Object value) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			filesToRename.put(file, (String) value);
 		}
 	}

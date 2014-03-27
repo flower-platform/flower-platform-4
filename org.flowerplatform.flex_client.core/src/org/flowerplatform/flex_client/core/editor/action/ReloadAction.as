@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	
 	import mx.collections.ArrayCollection;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
@@ -32,7 +33,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public function ReloadAction() {			
 			label = CorePlugin.getInstance().getMessage("reload.action.label");
 			icon = FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png"));
-			parentId = CorePlugin.FILE_MENU_ID;
+			parentId = CoreConstants.FILE_MENU_ID;
 			enabled = false;
 		}
 				

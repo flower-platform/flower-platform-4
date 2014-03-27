@@ -18,13 +18,13 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaEnumConstantDeclarationFeatureProvider extends NodeFeatureProvider {
 	
 	public JavaEnumConstantDeclarationFeatureProvider() {
-		containmentFeatures.add(JavaPropertiesConstants.ENUM_CONSTANT_ARGUMENTS);
+		containmentFeatures.add(CodeSyncCodeJavaConstants.ENUM_CONSTANT_ARGUMENTS);
 	}
 	
 }

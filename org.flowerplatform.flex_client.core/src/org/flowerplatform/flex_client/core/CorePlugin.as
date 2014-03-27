@@ -53,6 +53,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -83,13 +84,6 @@ package org.flowerplatform.flex_client.core {
 		 */ 
 		private static const MAIN_PAGE:String = "main.jsp";
 		
-		public static const FILE_MENU_ID:String = "file";
-		public static const NAVIGATE_MENU_ID:String = "navigate";
-		public static const DEBUG:String = "debug";
-		
-		public static const FILE_NODE_TYPE:String = "fileNode";
-		
-		
 		protected static var INSTANCE:CorePlugin;
 		
 		public var serviceLocator:ServiceLocator;
@@ -102,7 +96,7 @@ package org.flowerplatform.flex_client.core {
 
 		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 		
-		public var updateTimer:UpdateTimer = new UpdateTimer(0);
+		public var updateTimer:UpdateTimer = new UpdateTimer(5000);
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
@@ -113,14 +107,6 @@ package org.flowerplatform.flex_client.core {
 		public var debug:Boolean = isDebug();
 		
 		public var debug_forceUpdateAction:ForceUpdateAction;
-		
-		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
-		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
-		public static const PROPERTY_FOR_SIDE_DESCRIPTOR:String = "propertyForSideDescriptor";
-		
-		public static const NODE_TITLE_PROVIDER:String = "nodeTitleProvider";
-		public static const NODE_ICONS_PROVIDER:String = "nodeIconProvider";
-		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
 		
 		/**
 		 * @author Sebastian Solomon
@@ -160,7 +146,7 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("freeplaneService");
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
-			contentTypeRegistry[TextEditorDescriptor.ID] = textEditorDescriptor;
+			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(textEditorDescriptor);
 								
 			editorClassFactoryActionProvider.addActionClass(AddNodeAction);
@@ -176,7 +162,7 @@ package org.flowerplatform.flex_client.core {
 						
 						// create new type descriptor with remote type
 						var descriptor:TypeDescriptor = null;
-						if (Utils.beginsWith(remote.type, TypeDescriptor.CATEGORY_PREFIX)) {
+						if (Utils.beginsWith(remote.type, FlexUtilConstants.CATEGORY_PREFIX)) {
 							descriptor = nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(remote.type);
 						} else {
 							descriptor = nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(remote.type);
@@ -202,10 +188,10 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 			
-			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL)
-				.addSingleController(NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(PROPERTY_FOR_TITLE_DESCRIPTOR))
-				.addSingleController(NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(PROPERTY_FOR_SIDE_DESCRIPTOR))
-				.addSingleController(NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(PROPERTY_FOR_ICONS_DESCRIPTOR));
+			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
+				.addSingleController(CoreConstants.NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR))
+				.addSingleController(CoreConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR))
+				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			linkHandlers = new Dictionary();
 			
@@ -221,7 +207,7 @@ package org.flowerplatform.flex_client.core {
 		private function isDebug():Boolean {
 			if (ExternalInterface.available) {
 				var params:Object = parseQueryStringParameters(ExternalInterface.call("getURL"));
-				if (params[DEBUG] == "true") {
+				if (params[CoreConstants.DEBUG] == "true") {
 					return true;
 				}
 			}
@@ -261,13 +247,13 @@ package org.flowerplatform.flex_client.core {
 			
 			// add actions to global menu
 			
-			addActionToGlobalMenuActionProvider(getMessage("menu.file"), null, FILE_MENU_ID);
+			addActionToGlobalMenuActionProvider(getMessage("menu.file"), null, CoreConstants.FILE_MENU_ID);
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
 			globalMenuActionProvider.addAction(resourceNodesManager.reloadAction);
 			
-			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, NAVIGATE_MENU_ID); 
-			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, NAVIGATE_MENU_ID, 
+			addActionToGlobalMenuActionProvider(getMessage("menu.navigate"), null, CoreConstants.NAVIGATE_MENU_ID); 
+			addActionToGlobalMenuActionProvider(getMessage("link.title"), getResourceUrl('images/external_link.png'), null, CoreConstants.NAVIGATE_MENU_ID, 
 				function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new LinkView())
@@ -280,7 +266,7 @@ package org.flowerplatform.flex_client.core {
 			if (debug) {
 				debug_forceUpdateAction = new ForceUpdateAction();
 				globalMenuActionProvider.addAction(debug_forceUpdateAction);
-				addActionToGlobalMenuActionProvider("Debug", null, DEBUG);
+				addActionToGlobalMenuActionProvider("Debug", null, CoreConstants.DEBUG);
 			}
 		}
 		

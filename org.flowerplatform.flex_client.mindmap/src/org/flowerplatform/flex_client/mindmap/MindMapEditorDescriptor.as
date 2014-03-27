@@ -28,12 +28,8 @@ package org.flowerplatform.flex_client.mindmap {
 	 */
 	public class MindMapEditorDescriptor extends EditorDescriptor {
 		
-		public static const ID:String = "mindmap";
-		
-		public static const NAME:String = "MindMap Editor";
-		
 		override public function getEditorName():String {
-			return NAME;
+			return MindMapConstants.MINDMAP_EDITOR_NAME;
 		}
 		
 		override protected function createViewInstance():EditorFrontend	{
@@ -41,7 +37,7 @@ package org.flowerplatform.flex_client.mindmap {
 		}
 		
 		public override function getId():String {	
-			return ID;
+			return MindMapConstants.MINDMAP_CONTENT_TYPE;
 		}
 		
 		public override function getIcon(viewLayoutData:ViewLayoutData=null):Object {				
@@ -52,7 +48,7 @@ package org.flowerplatform.flex_client.mindmap {
 			if (viewLayoutData != null) {
 				return viewLayoutData.customData;
 			} else {
-				return NAME;
+				return MindMapConstants.MINDMAP_EDITOR_NAME;
 			}
 		}
 	}

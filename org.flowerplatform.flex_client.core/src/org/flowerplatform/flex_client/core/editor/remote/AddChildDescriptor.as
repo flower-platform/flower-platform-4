@@ -25,8 +25,6 @@ package org.flowerplatform.flex_client.core.editor.remote {
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.AddChildDescriptor")]
 	public class AddChildDescriptor extends AbstractController {
 		
-		public static const TYPE:String = "addChildDescriptor";
-		
 		public var childType:String;
 		
 		public var label:String;

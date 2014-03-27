@@ -5,6 +5,7 @@ package org.flowerplatform.flexutil.controller {
 	import mx.collections.IList;
 	
 	import org.apache.flex.collections.ArrayList;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -14,9 +15,6 @@ package org.flowerplatform.flexutil.controller {
 	 * @author Cristina Constantinescu
 	 */
 	public class TypeDescriptor {
-		
-		public static const CATEGORY_PREFIX:String = "category.";
-		public static const CATEGORY_RESOURCE_PREFIX:String = TypeDescriptor.CATEGORY_PREFIX + "resource.";
 		
 		private var _registry:TypeDescriptorRegistry;
 		
@@ -49,7 +47,7 @@ package org.flowerplatform.flexutil.controller {
 			if (!_registry.isConfigurable()) {
 				throw new Error("Trying to add a new category to a non-configurable registry");
 			}
-			if (!Utils.beginsWith(category, CATEGORY_PREFIX)) {
+			if (!Utils.beginsWith(category, FlexUtilConstants.CATEGORY_PREFIX)) {
 				throw new Error("Category type should be prefixed with 'category.'");
 			}
 			if (_categories == null) {

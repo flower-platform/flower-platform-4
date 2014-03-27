@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.MemberValuePair;
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link MemberValuePair}.
@@ -35,8 +35,6 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePai
  */
 public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
-	public static final String MEMBER_VALUE_PAIR = "javaMemberValuePair";
-	
 	@Override
 	public List<?> getChildren(Object modelElement) {
 		return Collections.emptyList();
@@ -49,9 +47,9 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			return ((MemberValuePair) element).getName().getIdentifier();
-		} else if (JavaPropertiesConstants.ANNOTATION_VALUE_VALUE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE.equals(feature)) {
 			return getStringFromExpression(((MemberValuePair) element).getValue());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -59,11 +57,11 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			MemberValuePair pair = (MemberValuePair) element;
 			String name = (String) value;
 			pair.setName(pair.getAST().newSimpleName(name));
-		} else if (JavaPropertiesConstants.ANNOTATION_VALUE_VALUE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE.equals(feature)) {
 			MemberValuePair pair = (MemberValuePair) element;
 			String expression = (String) value;
 			pair.setValue(getExpressionFromString(pair.getAST(), expression));

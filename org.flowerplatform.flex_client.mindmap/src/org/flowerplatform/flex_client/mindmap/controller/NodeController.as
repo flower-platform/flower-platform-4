@@ -20,10 +20,11 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
 	import mx.core.mx_internal;
 	
-	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDescriptor;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
@@ -57,7 +58,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
 			var rootModel:Node = mindmapDiagramShell.updateProcessor.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).fullNodeId);
 			
-			if (rootModel != null && rootModel.properties[NodePropertiesConstants.CONTENT_TYPE] == MindMapEditorDescriptor.ID) {
+			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) {
 				//root node is mm file -> get side from provider
 				var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getSideProvider(mindmapDiagramShell.registry, model);
 				if (sideProvider != null) {

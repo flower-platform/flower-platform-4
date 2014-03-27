@@ -1,8 +1,5 @@
 package org.flowerplatform.core;
 
-import static org.flowerplatform.core.RemoteMethodInvocationListener.LAST_UPDATE_TIMESTAMP;
-import static org.flowerplatform.core.RemoteMethodInvocationListener.ROOT_NODE_IDS;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,10 +92,10 @@ public class RemoteMethodInvocationInfo {
 	
 	@SuppressWarnings("unchecked")
 	public List<String> getResourceNodeIds() {
-		return (List<String>) getHeaders().get(ROOT_NODE_IDS);
+		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_NODE_IDS);
 	}
 
 	public long getTimestampOfLastRequest() {
-		return ((Number) getHeaders().get(LAST_UPDATE_TIMESTAMP)).longValue();
+		return ((Number) getHeaders().get(CoreConstants.LAST_UPDATE_TIMESTAMP)).longValue();
 	}
 }

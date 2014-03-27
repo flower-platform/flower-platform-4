@@ -1,10 +1,9 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.ServiceContext.DONT_PROCESS_OTHER_CONTROLLERS;
-
 import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.file.FileChildrenProvider;
@@ -16,7 +15,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * Returns the root node from the freeplane file corresponding to the node.
  * It must be invoked <b>before</b> the {@link FileChildrenProvider}
- * and also set the {@link ServiceContext#DONT_PROCESS_OTHER_CONTROLLERS}
+ * and also set the {@link CoreConstants#DONT_PROCESS_OTHER_CONTROLLERS}
  * to make sure that other providers do not return children.
  * 
  * @author Mariana Gheorghe
@@ -38,7 +37,7 @@ public class FreeplaneResourceChildrenProvider extends ChildrenProvider {
 		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
 		List<Node> children = Collections.singletonList(FreeplanePlugin.getInstance().getFreeplaneUtils()
 				.getStandardNode(nodeModel, node.getFullNodeId()));
-		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		return children;
 	}
 

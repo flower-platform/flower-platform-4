@@ -26,8 +26,6 @@ package org.flowerplatform.flexdiagram.tool.controller {
 	 */ 
 	public class SelectOrDragToCreateElementController extends AbstractController {
 		
-		public static const TYPE:String = "SelectOrDragToCreateElementController";
-		
 		public function SelectOrDragToCreateElementController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

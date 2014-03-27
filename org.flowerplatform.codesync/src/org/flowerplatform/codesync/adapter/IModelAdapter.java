@@ -31,16 +31,6 @@ import org.flowerplatform.codesync.type_provider.ITypeProvider;
  */
 public interface IModelAdapter extends IModelAdapterUI {
 
-	public static final int FEATURE_TYPE_DONT_PROCESS = 0;
-	
-	public static final int FEATURE_TYPE_CONTAINMENT = 1;
-	
-	public static final int FEATURE_TYPE_VALUE = 2;
-	
-	public static final int FEATURE_TYPE_REFERENCE = 3;
-	
-	public static final String FLOWER_UID = "@flowerUID";
-	
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable);
 	
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue);

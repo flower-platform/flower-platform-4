@@ -25,9 +25,9 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.event.GlobalActionProviderChangedEvent;
-	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -38,7 +38,6 @@ package org.flowerplatform.flex_client.web {
 	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.TextInput;
-	import spark.formatters.DateTimeFormatter;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -80,7 +79,7 @@ package org.flowerplatform.flex_client.web {
 			textInput.width = 400;
 			textInput.text = "(code|self|D:/temp/repo1/fp-repo-config/FAP-FlowerPlatform4.mm)";
 			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, textInput.text);
+				CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, textInput.text);
 			});
 			hBox.addChild(btn);
 			hBox.addChild(textInput);
@@ -88,7 +87,7 @@ package org.flowerplatform.flex_client.web {
 			var addRootBtn:Button = new Button();
 			addRootBtn.label = "Open Root";
 			addRootBtn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(LinkHandler.OPEN_RESOURCES, "(root||)");
+				CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 			});
 			hBox.addChild(addRootBtn);
 			

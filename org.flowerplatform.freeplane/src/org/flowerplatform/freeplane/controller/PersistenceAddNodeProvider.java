@@ -1,6 +1,6 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.mindmap.MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY;
+import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY;
 
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;

@@ -7,12 +7,6 @@ package org.flowerplatform.flexutil.mobile.view_content_host.split {
 	 */
 	public class ToggleOneViewModeAction extends ActionBase {
 		
-		[Embed(source="switch_view1.png")]
-		public static var ICON_1:Class;
-		
-		[Embed(source="switch_view2.png")]
-		public static var ICON_2:Class;
-
 		public var splitWrapperView:MobileSplitViewHost;
 		
 		public function ToggleOneViewModeAction() {
@@ -21,9 +15,9 @@ package org.flowerplatform.flexutil.mobile.view_content_host.split {
 		
 		override public function get icon():Object {
 			if (splitWrapperView.oneViewMode) {
-				return ICON_2;
+				return FlexUtilAssets.switch_two_views;
 			} else {
-				return ICON_1;
+				return FlexUtilAssets.switch_one_view;
 			}
 		}
 		

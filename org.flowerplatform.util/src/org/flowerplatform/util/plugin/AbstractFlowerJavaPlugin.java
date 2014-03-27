@@ -18,8 +18,6 @@
  */
 package org.flowerplatform.util.plugin;
 
-import static org.flowerplatform.util.servlet.ResourcesServlet.SEPARATOR;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -27,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import org.flowerplatform.util.UtilConstants;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -36,12 +35,6 @@ import org.slf4j.LoggerFactory;
  * @author Cristi
  */
 public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
-
-	public static final String PUBLIC_RESOURCES_DIR = "public-resources";
-	
-	public static final String IMAGE_COMPOSER = "servlet/image-composer/";
-	
-	public static final String MESSAGES_FILE = "messages.properties";
 
 	private final static Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
 	
@@ -58,7 +51,7 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	}
 
 	protected String getMessagesFilePath() {
-		return getBundleContext().getBundle().getSymbolicName() + "/" + PUBLIC_RESOURCES_DIR + "/" + MESSAGES_FILE;
+		return getBundleContext().getBundle().getSymbolicName() + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + UtilConstants.MESSAGES_FILE;
 	}
 	
 	public void registerMessageBundle() throws Exception {
@@ -106,7 +99,7 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	}
 
 	public String getResourceUrl(String resource) {
-		return "servlet/" + PUBLIC_RESOURCES_DIR + "/" + 
+		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + 
 				getBundleContext().getBundle().getSymbolicName() + "/" +
 				resource;
 	}
@@ -130,14 +123,14 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 		String composedUrl = "";
 		for (String resource : resources) {
 			if (resource != null) {
-				composedUrl += (composedUrl.length() > 0 ? SEPARATOR : "") + resource;
+				composedUrl += (composedUrl.length() > 0 ? UtilConstants.RESOURCE_PATH_SEPARATOR : "") + resource;
 			}
 		}
 		if (composedUrl.length() == 0) {
 			return null;
 		}
-		if (composedUrl.indexOf(IMAGE_COMPOSER) < 0) {
-			composedUrl = IMAGE_COMPOSER + composedUrl;
+		if (composedUrl.indexOf(UtilConstants.IMAGE_COMPOSER_SERVLET) < 0) {
+			composedUrl = UtilConstants.IMAGE_COMPOSER_SERVLET + composedUrl;
 		}
 		return composedUrl;
 	}

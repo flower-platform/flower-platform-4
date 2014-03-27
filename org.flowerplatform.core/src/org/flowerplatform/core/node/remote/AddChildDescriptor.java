@@ -30,8 +30,6 @@ import org.flowerplatform.util.controller.IDescriptor;
  */
 public class AddChildDescriptor extends AbstractController implements IDescriptor {
 
-	public static final String ADD_CHILD_DESCRIPTOR = "addChildDescriptor";
-	
 	private String childType;
 	
 	private String label;

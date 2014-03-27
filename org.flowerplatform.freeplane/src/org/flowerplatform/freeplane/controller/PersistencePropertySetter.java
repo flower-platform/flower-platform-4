@@ -1,12 +1,11 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.ServiceContext.EXECUTE_ONLY_FOR_UPDATER;
-
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.mindmap.MindMapPlugin;
+import org.flowerplatform.mindmap.MindMapConstants;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.NodeModel;
@@ -18,13 +17,13 @@ public class PersistencePropertySetter extends PropertySetter {
 
 	@Override
 	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext context) {
-		if (context.getValue(EXECUTE_ONLY_FOR_UPDATER)) {
+		if (context.getValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
 		
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 
-		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
+		if (MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
 			throw new RuntimeException(String.format("Property with name %s shouldn't be set because it's reserved. Please use another key!", property));
 		}
 		
@@ -58,7 +57,7 @@ public class PersistencePropertySetter extends PropertySetter {
 	public void unsetProperty(Node node, String property, ServiceContext context) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
-		if (MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
+		if (MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
 			throw new RuntimeException(String.format("Property with name %s shouldn't be un-set!", property));
 		}
 		

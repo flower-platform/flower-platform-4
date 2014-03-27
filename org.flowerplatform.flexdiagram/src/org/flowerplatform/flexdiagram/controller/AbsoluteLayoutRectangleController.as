@@ -28,8 +28,6 @@ package org.flowerplatform.flexdiagram.controller {
 	 */
 	public class AbsoluteLayoutRectangleController extends AbstractController {
 		
-		public static const TYPE:String = "AbsoluteLayoutRectangleController";
-		
 		public function AbsoluteLayoutRectangleController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

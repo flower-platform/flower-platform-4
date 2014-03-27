@@ -44,16 +44,16 @@ package org.flowerplatform.flexdiagram.tool.controller {
 		private static const DRAG_TO_CREATE_MIN_HEIGHT_DEFAULT:int = 30;
 		private var _dragToCreateMinHeight:Number = DRAG_TO_CREATE_MIN_HEIGHT_DEFAULT;
 		
-		public static const DRAG_TO_CREATE_ALPHA_DEFAULT:Number = 0.4;		
+		private static const DRAG_TO_CREATE_ALPHA_DEFAULT:Number = 0.4;		
 		private var _dragToCreateAlpha:Number = DRAG_TO_CREATE_ALPHA_DEFAULT;
 		
-		public static const DRAG_TO_SELECT_COLOR_DEFAULT:uint = 0x00007F;		
+		private static const DRAG_TO_SELECT_COLOR_DEFAULT:uint = 0x00007F;		
 		private var _dragToSelectColor:uint = DRAG_TO_SELECT_COLOR_DEFAULT;
 		
-		public static const DRAG_TO_CREATE_COLOR_DEFAULT:uint = 0x007F00;		
+		private static const DRAG_TO_CREATE_COLOR_DEFAULT:uint = 0x007F00;		
 		private var _dragToCreateColor:uint = DRAG_TO_CREATE_COLOR_DEFAULT;
 		
-		public static const DRAG_TO_SELECT_ALPHA_DEFAULT:Number = 0.4;		
+		private static const DRAG_TO_SELECT_ALPHA_DEFAULT:Number = 0.4;		
 		private var _dragToSelectAlpha:Number = DRAG_TO_SELECT_ALPHA_DEFAULT;
 		
 		public function get dragToSelectColor():uint {

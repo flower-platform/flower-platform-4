@@ -9,23 +9,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.flowerplatform.util.UtilConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class ResourcesServlet extends HttpServlet {
-	/**
-	 * @see ImageComposerServlet 
-	 */
-	public static final char SEPARATOR = '|';
-
-	public static final String FLOWER_PLATFORM = "flower-platform";
 	
+	private static final long serialVersionUID = 5438373882820622871L;
+
 	protected static Map<String, String> tempFilesMap = new HashMap<String, String>();
 	
 	protected static int counter = 0;
 	
-	public static final File TEMP_FOLDER =  new File (System.getProperty("java.io.tmpdir"), FLOWER_PLATFORM);
-
 	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
 	
 	//TODO replace with flower property
@@ -44,13 +39,13 @@ public abstract class ResourcesServlet extends HttpServlet {
 	* @author Sebastian Solomon
 	*/
 	protected String getTempFilePath(String tempFileName) {
-		return TEMP_FOLDER + "\\" + tempFileName; 
+		return UtilConstants.TEMP_FOLDER + "\\" + tempFileName; 
 	}
 	
 	/**
 	* @author Sebastian Solomon
 	*/
 	protected File getTempFile(String tempFileName) {
-		return new File(TEMP_FOLDER, tempFileName); 
+		return new File(UtilConstants.TEMP_FOLDER, tempFileName); 
 	}
 }

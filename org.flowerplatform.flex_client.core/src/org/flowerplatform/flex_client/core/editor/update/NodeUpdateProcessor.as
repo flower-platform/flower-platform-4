@@ -24,8 +24,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 	import mx.rpc.events.FaultEvent;
 	import mx.utils.ObjectUtil;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.NodePropertiesConstants;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -127,8 +127,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 		protected function removeResourceNodeForProcessor(resourceNode:Node):void {	
 			// change isDirty to false and dispatch event
 			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.fullNodeId);
-			resourceNodeFromRegistry.properties[NodePropertiesConstants.IS_DIRTY] = false;
-			resourceNodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(resourceNodeFromRegistry, new ArrayList([NodePropertiesConstants.IS_DIRTY])));
+			resourceNodeFromRegistry.properties[CoreConstants.IS_DIRTY] = false;
+			resourceNodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(resourceNodeFromRegistry, new ArrayList([CoreConstants.IS_DIRTY])));
 				
 			// refresh maps
 			resourceNodeIds.removeItem(resourceNode.fullNodeId);
@@ -225,7 +225,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 					parent = parent.parent;					
 				}
 				if (parent == node) {
-					var isSubscribable:Boolean = resourceNode.properties[NodePropertiesConstants.IS_SUBSCRIBABLE];
+					var isSubscribable:Boolean = resourceNode.properties[CoreConstants.IS_SUBSCRIBABLE];
 					if (isSubscribable) {
 						if (isResourceNodeDirty(resourceNodeId) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
 							dirtyResourceNodeIds.push(resourceNodeId);
@@ -282,7 +282,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 */
 		public function requestChildren(context:DiagramShellContext, node:Node):void {		
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
-			var isSubscribable:Boolean = node == null ? false : node.properties[NodePropertiesConstants.IS_SUBSCRIBABLE];
+			var isSubscribable:Boolean = node == null ? false : node.properties[CoreConstants.IS_SUBSCRIBABLE];
 			if (!isSubscribable) {
 				requestChildrenFromServer(context, node);
 			} else {
@@ -388,7 +388,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
 					var targetNodeInRegistry:Node = nodeRegistry.getNodeById(childrenUpdate.targetNode.fullNodeId);	
 					switch (childrenUpdate.type) {
-						case ChildrenUpdate.ADDED:	
+						case CoreConstants.UPDATE_CHILD_ADDED:	
 							if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
 								var index:Number = -1; // -> add it last
 								if (childrenUpdate.fullTargetNodeAddedBeforeId != null) {
@@ -414,7 +414,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 								// Nothing to do								
 							}			
 							break;
-						case ChildrenUpdate.REMOVED:	
+						case CoreConstants.UPDATE_CHILD_REMOVED:	
 							if (targetNodeInRegistry != null) {
 								removeNode(diagramShellContext, targetNodeInRegistry, nodeFromRegistry);
 							} else {
@@ -547,13 +547,13 @@ package org.flowerplatform.flex_client.core.editor.update {
 		
 		public function isResourceNodeDirty(resourceNodeId:String):Boolean {
 			var node:Node = nodeRegistry.getNodeById(resourceNodeId);	
-			return node == null ? false : node.properties[NodePropertiesConstants.IS_DIRTY];
+			return node == null ? false : node.properties[CoreConstants.IS_DIRTY];
 		}
 		
 		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
 			var resourceNode:Node = event.node;
-			if (NodeControllerUtils.hasPropertyChanged(resourceNode, NodePropertiesConstants.IS_DIRTY)) {
-				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(resourceNode.properties[NodePropertiesConstants.IS_DIRTY]);
+			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY)) {
+				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(resourceNode.properties[CoreConstants.IS_DIRTY]);
 			}
 		}
 		

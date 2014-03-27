@@ -25,8 +25,6 @@ package org.flowerplatform.flexdiagram.tool.controller {
 	 */ 
 	public class InplaceEditorController extends AbstractController {
 		
-		public static const TYPE:String = "InplaceEditorController";
-		
 		public function InplaceEditorController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

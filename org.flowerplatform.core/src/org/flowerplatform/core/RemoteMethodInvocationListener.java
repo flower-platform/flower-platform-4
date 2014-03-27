@@ -21,19 +21,12 @@ public class RemoteMethodInvocationListener {
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
 
-	public static final String LAST_UPDATE_TIMESTAMP = "timestampOfLastUpdate";
-	public static final String ROOT_NODE_IDS = "resourceNodeIds";
-	public static final String ROOT_NODE_IDS_NOT_FOUND = "resourceNodeIdsNotFound";
-	
-	public static final String MESSAGE_RESULT = "messageResult";
-	public static final String UPDATES = "updates";
-	
 	/**
 	 * Compares the list of resources the client has with the list of resources that the client is subscribed to. For any
 	 * resource that the client is not subscribed to anymore => re-subscribe.
 	 * 
 	 * <p>
-	 * If a resource cannot be reloaded, the result of this invocation will be enriched with a list of {@link #ROOT_NODE_IDS_NOT_FOUND},
+	 * If a resource cannot be reloaded, the result of this invocation will be enriched with a list of {@link CoreConstants#RESOURCE_NODE_IDS_NOT_FOUND},
 	 * so the client can react (e.g. close the obsolete editors).
 	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
@@ -61,7 +54,7 @@ public class RemoteMethodInvocationListener {
 			}
 			
 			if (notFoundResourceNodeIds.size() > 0) {
-				remoteMethodInvocationInfo.getEnrichedReturnValue().put(ROOT_NODE_IDS_NOT_FOUND, notFoundResourceNodeIds);
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND, notFoundResourceNodeIds);
 			}
 		}
 	}
@@ -69,9 +62,9 @@ public class RemoteMethodInvocationListener {
 	/**
 	 * Changes {@link RemoteMethodInvocationInfo#getReturnValue()} to a map containing:
 	 * <ul>
-	 * 	<li> {@link #MESSAGE_RESULT} -> message invocation result
-	 *  <li> {@link #UPDATES} -> map from fullResourceNodeId to a list of recent updates = all updates registered after {@link #LAST_UPDATE_TIMESTAMP}
-	 *  <li> {{@link #LAST_UPDATE_TIMESTAMP} -> server timestamp of this request
+	 * 	<li> {@link CoreConstants#MESSAGE_RESULT} -> message invocation result
+	 *  <li> {@link CoreConstants#UPDATES} -> map from fullResourceNodeId to a list of recent updates = all updates registered after {@link CoreConstants#LAST_UPDATE_TIMESTAMP}
+	 *  <li> {{@link CoreConstants#LAST_UPDATE_TIMESTAMP} -> server timestamp of this request
 	 * </ul>
 	 * 
 	 */
@@ -85,7 +78,7 @@ public class RemoteMethodInvocationListener {
 		}
 		
 		// prepare result
-		remoteMethodInvocationInfo.getEnrichedReturnValue().put(MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
+		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
 		
 		// get info from header
 		List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
@@ -94,7 +87,7 @@ public class RemoteMethodInvocationListener {
 			// only request updates if the client is subscribed to some resource
 			long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
 			long timestamp = new Date().getTime();
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(LAST_UPDATE_TIMESTAMP, timestamp);
+			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
 			
 			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
 			for (String resourceNodeId : resourceNodeIds) {
@@ -103,7 +96,7 @@ public class RemoteMethodInvocationListener {
 				resourceNodeIdToUpdates.put(resourceNodeId, updates);
 			}
 			if (resourceNodeIdToUpdates.size() > 0) {
-				remoteMethodInvocationInfo.getEnrichedReturnValue().put(UPDATES, resourceNodeIdToUpdates);
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);
 			}
 		}
 			

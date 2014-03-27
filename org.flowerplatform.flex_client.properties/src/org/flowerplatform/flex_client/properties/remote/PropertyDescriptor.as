@@ -29,8 +29,6 @@ package org.flowerplatform.flex_client.properties.remote {
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
 	public class PropertyDescriptor extends AbstractController {
 		
-		public static const TYPE:String = "propertyDescriptor";
-
 		public var name:String;
 		
 		public var title:String;

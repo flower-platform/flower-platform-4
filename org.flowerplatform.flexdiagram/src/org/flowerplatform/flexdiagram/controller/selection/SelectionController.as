@@ -27,8 +27,6 @@ package org.flowerplatform.flexdiagram.controller.selection {
 	 */ 
 	public class SelectionController extends AbstractController {
 		
-		public static const TYPE:String = "SelectionController";
-		
 		public function SelectionController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

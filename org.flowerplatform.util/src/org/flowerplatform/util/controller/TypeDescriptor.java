@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.util.UtilConstants;
+
 /**
  * A type descriptor specifies (for a node type):
  * <ul>
@@ -42,8 +44,6 @@ import java.util.Map;
  */
 public class TypeDescriptor {
 
-	public static final String CATEGORY_PREFIX = "category.";
-	
 	private TypeDescriptorRegistry registry;
 	
 	public TypeDescriptorRegistry getRegistry() {
@@ -89,7 +89,7 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new category to a non-configurable registry");
 		}
-		if (!category.startsWith(CATEGORY_PREFIX)) {
+		if (!category.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Category type should be prefixed with 'category.'");
 		}
 		if (categories == null) {

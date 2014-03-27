@@ -9,8 +9,6 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class AddNodeController extends AbstractController {
 
-	public static final String ADD_NODE_CONTROLLER = "addNodeController";
-	
 	public abstract void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context);
 	
 }

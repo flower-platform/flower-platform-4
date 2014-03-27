@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.util.Pair;
-import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.UtilConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +57,6 @@ public class PublicResourcesServlet extends ResourcesServlet {
     private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
 
 	protected static PublicResourcesServlet INSTANCE;
-
-	public static final String PATH_PREFIX = "/public-resources";
 
 	public static PublicResourcesServlet getInstance() {
 		if (INSTANCE == null) {
@@ -128,8 +126,8 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		requestedFile = requestedFile.replaceAll("%(?![0-9a-fA-F]{2})", "%25");
 			
 		requestedFile = URLDecoder.decode(requestedFile, "UTF-8");
-		if (requestedFile.startsWith(PATH_PREFIX)) {
-			requestedFile = requestedFile.substring(PATH_PREFIX.length());
+		if (requestedFile.startsWith(UtilConstants.PUBLIC_RESOURCES_PATH_PREFIX)) {
+			requestedFile = requestedFile.substring(UtilConstants.PUBLIC_RESOURCES_PATH_PREFIX.length());
 		}
 		
 		// this may be an attempt to see files that are not public, i.e. to go to the
@@ -153,7 +151,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		String file = requestedFile.substring(indexOfSecondSlash);
 
 		// if | is supplied => the file is a zip, and we want what's in it
-		int indexOfZipSeparator = file.indexOf(SEPARATOR);
+		int indexOfZipSeparator = file.indexOf(UtilConstants.RESOURCE_PATH_SEPARATOR);
 		String fileInsideZipArchive = null; 
 		if (indexOfZipSeparator >= 0 && indexOfZipSeparator < file.length() - 1) { // has | and | is not the last char in the string
 			fileInsideZipArchive = file.substring(indexOfZipSeparator + 1);
@@ -203,7 +201,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 				}
 			}
 				
-			requestedFile = "platform:/plugin" + plugin + "/" + AbstractFlowerJavaPlugin.PUBLIC_RESOURCES_DIR + file;
+			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
 			
 			// Get content type by filename from the file or file inside zip
 			String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);
@@ -254,8 +252,8 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	            	
 					if (useFilesFromTempProperty) {
 						// write the file from archive in Temp folder
-						if (!TEMP_FOLDER.exists()) {
-							TEMP_FOLDER.mkdir();
+						if (!UtilConstants.TEMP_FOLDER.exists()) {
+							UtilConstants.TEMP_FOLDER.mkdir();
 						}
 						
 						Files.copy(input, getTempFile(mapValue).toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -284,7 +282,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	* @author Sebastian Solomon
 	*/
 	private String createMapKey(String fileName, String fileInsideZipArchive) {
-    	return fileName + SEPARATOR + fileInsideZipArchive;
+    	return fileName + UtilConstants.RESOURCE_PATH_SEPARATOR + fileInsideZipArchive;
     }
 	
 }

@@ -25,20 +25,14 @@ package org.flowerplatform.flex_client.codesync {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AbstractController;
-	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
 	public class CodeSyncPlugin extends AbstractFlowerFlexPlugin {
-		
-		/**
-		 * @author Cristina Constantinescu
-		 */
-		public static const CATEGORY_CODESYNC:String = TypeDescriptor.CATEGORY_PREFIX + "codesync";
 		
 		protected static var INSTANCE:CodeSyncPlugin;
 		
@@ -57,8 +51,8 @@ package org.flowerplatform.flex_client.codesync {
 			}
 			INSTANCE = this;
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CATEGORY_CODESYNC)
-				.addSingleController(RendererController.TYPE, AbstractController(new NodeRendererController(CodeSyncNodeRenderer, -10000)));
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(CodeSyncNodeRenderer, -10000)));
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);

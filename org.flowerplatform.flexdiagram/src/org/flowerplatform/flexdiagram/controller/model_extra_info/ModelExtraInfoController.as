@@ -28,8 +28,6 @@ package org.flowerplatform.flexdiagram.controller.model_extra_info {
 	 */
 	public class ModelExtraInfoController extends AbstractController {
 		
-		public static const TYPE:String = "ModelExtraInfoController";
-		
 		public function getRenderer(context:DiagramShellContext, extraInfo:Object):IVisualElement {
 			throw new Error("This method needs to be implemented.");
 		}

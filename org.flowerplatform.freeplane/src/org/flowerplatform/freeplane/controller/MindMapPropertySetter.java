@@ -1,26 +1,25 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.NodePropertiesConstants.ICONS;
-import static org.flowerplatform.core.NodePropertiesConstants.ICONS_SEPARATOR;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_COLOR;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_SHAPE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_TEXT;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_BOLD;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_FAMILY;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_ITALIC;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
+import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
+import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
+import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MAX_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
+import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -69,11 +68,11 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				NodeSizeModel.createNodeSizeModel(rawNodeData).setMaxNodeWidth(newMaxValue);	
 				isPropertySet = true;
 				break;
-			case ICONS:
+			case CoreConstants.ICONS:
 				String icons = (String) wrapper.getPropertyValue();
 				rawNodeData.getIcons().clear();
 				if (icons != null) {					
-					String[] array = icons.split(ICONS_SEPARATOR);
+					String[] array = icons.split(CoreConstants.ICONS_SEPARATOR);
 					for (String icon : array) {
 						Matcher matcher = ICON_URL_PATTERN.matcher(icon);
 						if (matcher.find()) {

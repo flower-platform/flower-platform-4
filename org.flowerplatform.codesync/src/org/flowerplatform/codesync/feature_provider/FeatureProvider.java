@@ -21,7 +21,7 @@ package org.flowerplatform.codesync.feature_provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -29,8 +29,6 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class FeatureProvider extends AbstractController {
 	
-	public static final String FEATURE_PROVIDER = "featureProvider";
-
 	protected List<Object> valueFeatures = new ArrayList<>();
 	
 	protected List<Object> containmentFeatures = new ArrayList<>();
@@ -45,9 +43,9 @@ public abstract class FeatureProvider extends AbstractController {
 	
 	public int getFeatureType(Object feature) {
 		if (valueFeatures.contains(feature)) {
-			return IModelAdapter.FEATURE_TYPE_VALUE;
+			return CodeSyncConstants.FEATURE_TYPE_VALUE;
 		} else if (containmentFeatures.contains(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
+			return CodeSyncConstants.FEATURE_TYPE_CONTAINMENT;
 		}
 		throw new RuntimeException("Feature " + getFeatureName(feature) + " is not registered");
 	}

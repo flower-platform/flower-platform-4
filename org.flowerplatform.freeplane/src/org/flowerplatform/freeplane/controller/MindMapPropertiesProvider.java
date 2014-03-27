@@ -1,29 +1,26 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.NodePropertiesConstants.ICONS;
-import static org.flowerplatform.core.NodePropertiesConstants.ICONS_SEPARATOR;
-import static org.flowerplatform.core.NodePropertiesConstants.SIDE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_COLOR;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.CLOUD_SHAPE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_BACKGROUND;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.COLOR_TEXT;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.DEFAULT_MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_BOLD;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_FAMILY;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_ITALIC;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.FONT_SIZE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.NONE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.ROUND_RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapNodePropertiesConstants.TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
+import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
+import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
+import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MAX_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
+import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.NONE;
+import static org.flowerplatform.mindmap.MindMapConstants.RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import java.awt.Color;
 import java.util.List;
 
-import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.mindmap.MindMapPlugin;
@@ -48,7 +45,7 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
 		node.getProperties().put(TEXT, rawNodeData.getText());
-		node.getProperties().put(SIDE, rawNodeData.isLeft() ? NodePropertiesConstants.POSITION_LEFT : NodePropertiesConstants.POSITION_RIGHT);
+		node.getProperties().put(CoreConstants.SIDE, rawNodeData.isLeft() ? CoreConstants.POSITION_LEFT : CoreConstants.POSITION_RIGHT);
 		
 		NodeSizeModel nodeSizeModel = NodeSizeModel.getModel(rawNodeData);
 		
@@ -68,12 +65,12 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			StringBuilder sb = new StringBuilder();
 			for (MindIcon icon : icons) {
 				sb.append(MindMapPlugin.getInstance().getResourceUrl(icon.getPath()));
-				sb.append(ICONS_SEPARATOR);
+				sb.append(CoreConstants.ICONS_SEPARATOR);
 			}
 			if (sb.length() > 0) { // remove last icons separator
-				node.getProperties().put(ICONS, sb.substring(0, sb.length() - 1));
+				node.getProperties().put(CoreConstants.ICONS, sb.substring(0, sb.length() - 1));
 			} else {
-				node.getProperties().put(ICONS, null);
+				node.getProperties().put(CoreConstants.ICONS, null);
 			}
 		} 
 

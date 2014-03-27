@@ -18,31 +18,19 @@
  */
 package org.flowerplatform.flexutil.tree {
 	import flash.events.Event;
-	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
-	import flash.system.Capabilities;
 	
-	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
-	import spark.components.Group;
-	import spark.components.HGroup;
 	import spark.components.IconItemRenderer;
 	import spark.components.Image;
-	import spark.primitives.BitmapImage;
-	import spark.primitives.Graphic;
 	
 	public class TreeListItemRenderer extends IconItemRenderer {
 					
 		public var levelWidth:int = 15;
-		
-		[Embed(source="/plus.gif")]			
-		public static const _iconCollapsed:Class;	
-		
-		[Embed(source="/minus.gif")]			
-		public static const _iconExpanded:Class;
 		
 		protected var expandIconDisplay:Image;
 				
@@ -92,7 +80,7 @@ package org.flowerplatform.flexutil.tree {
 			// create Image
 			expandIconDisplay = new Image();
 			// set to temporary emded icon in order to set width/height
-			expandIconDisplay.source = _iconExpanded;
+			expandIconDisplay.source = FlexUtilAssets.iconExpanded;
 			expandIconDisplay.width = 16;
 			expandIconDisplay.height = 16;
 			
@@ -247,9 +235,9 @@ package org.flowerplatform.flexutil.tree {
 			if (!TreeList(owner).hierarchicalModelAdapter.hasChildren(HierarchicalModelWrapper(data).treeNode)) {
 				expandIconDisplay.source = null;
 			} else if (HierarchicalModelWrapper(data).expanded) {
-				expandIconDisplay.source = _iconExpanded;								
+				expandIconDisplay.source = FlexUtilAssets.iconExpanded;								
 			} else {
-				expandIconDisplay.source = _iconCollapsed;								
+				expandIconDisplay.source = FlexUtilAssets.iconCollapsed;								
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package org.flowerplatform.flex_client.core.editor.text {
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.EditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
@@ -8,8 +9,6 @@ package org.flowerplatform.flex_client.core.editor.text {
 	 * @author Mariana Gheorghe
 	 */
 	public class TextEditorDescriptor extends EditorDescriptor {
-		
-		public static const ID:String = "text";
 		
 		override public function getEditorName():String {
 			return "text";
@@ -20,7 +19,7 @@ package org.flowerplatform.flex_client.core.editor.text {
 		}
 		
 		public override function getId():String {	
-			return ID;
+			return CoreConstants.TEXT_CONTENT_TYPE;
 		}
 		
 		public override function getIcon(viewLayoutData:ViewLayoutData=null):Object {				

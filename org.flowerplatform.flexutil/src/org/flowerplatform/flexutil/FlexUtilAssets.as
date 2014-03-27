@@ -28,12 +28,6 @@ package org.flowerplatform.flexutil {
 		[Bindable]
 		public static var INSTANCE:FlexUtilAssets = new FlexUtilAssets(); 
 		
-		[Embed(source="/info.png")]			
-		public static const _iconInfo:Class;
-		
-		[Embed(source="/exit.png")]
-		public static const _exitIcon:Class;
-		
 		/**
 		 * Retrieves a message from the properties files. Parameters can be passed
 		 * and the {?} place holders will be replaced with them.
@@ -43,6 +37,41 @@ package org.flowerplatform.flexutil {
 		public function getMessage(messageId:String, params:Array=null):String {				
 			return ResourceManager.getInstance().getString("org_flowerplatform_flexutil", messageId, params);
 		}
+		
+		//////////////////////////////////
+		// Icons
+		//////////////////////////////////
+		
+		// General
+		
+		[Embed(source="/info.png")]			
+		public static const iconInfo:Class;
+		
+		[Embed(source="/exit.png")]
+		public static const exitIcon:Class;
+		
+		[Embed(source="menu.png")]
+		public static const menuIcon:Class;
+		
+		[Embed(source="/plus.gif")]			
+		public static const iconCollapsed:Class;	
+		
+		[Embed(source="/minus.gif")]			
+		public static const iconExpanded:Class;
+		
+		[Embed(source="resultset_next.png")]
+		public static const rightArrowImage:Class;
+		
+		// Switch view(s)
+		
+		[Embed(source="switch_view.png")]
+		public static const switch_view:Class;
+		
+		[Embed(source="switch_view1.png")]
+		public static const switch_one_view:Class;
+		
+		[Embed(source="switch_view2.png")]
+		public static const switch_two_views:Class;
 		
 	}
 }

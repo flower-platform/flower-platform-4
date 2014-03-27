@@ -25,8 +25,6 @@ package org.flowerplatform.flexdiagram.tool.controller {
 	 */ 
 	public class ResizeController extends AbstractController {
 		
-		public static const TYPE:String = "ResizeController";
-		
 		public function ResizeController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

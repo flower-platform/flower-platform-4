@@ -81,7 +81,7 @@
 				
 				// get properties to display
 				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-					.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertyDescriptor.TYPE, node);
+					.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
 				var currentCategory:String;
 				for (var i:int = 0; i < propertyDescriptors.length; i++) {
 					var formItem:PropertyItemRenderer = new PropertyItemRenderer();

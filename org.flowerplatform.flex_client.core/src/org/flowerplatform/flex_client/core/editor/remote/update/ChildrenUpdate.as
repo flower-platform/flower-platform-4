@@ -7,9 +7,6 @@ package org.flowerplatform.flex_client.core.editor.remote.update {
 	[RemoteClass(alias="org.flowerplatform.core.node.update.remote.ChildrenUpdate")]
 	public class ChildrenUpdate extends Update {
 		
-		public static const ADDED:String = "ADDED";
-		public static const REMOVED:String = "REMOVED";
-		
 		public var type:String;
 		
 		public var targetNode:Node;

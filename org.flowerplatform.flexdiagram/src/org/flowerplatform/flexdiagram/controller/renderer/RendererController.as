@@ -28,8 +28,6 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	 */
 	public class RendererController extends AbstractController {
 		
-		public static const TYPE:String = "RendererController";
-		
 		public function RendererController(orderIndex:int = 0) {
 			super(orderIndex);
 		}

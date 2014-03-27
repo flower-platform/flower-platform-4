@@ -24,9 +24,9 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link SingleVariableDeclaration}. Children are {@link Modifier}s.
@@ -37,8 +37,6 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatu
  */
 public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
-	public static final String PARAMETER = "javaParameter";
-	
 	@Override
 	public List<?> getChildren(Object modelElement) {
 		return Collections.emptyList();
@@ -51,9 +49,9 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			return getVariableDeclaration(element).getName().getIdentifier();
-		} else if (JavaPropertiesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getVariableDeclaration(element).getType());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -61,11 +59,11 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			SingleVariableDeclaration parameter = getVariableDeclaration(element);
 			String name = (String) value;
 			parameter.setName(parameter.getAST().newSimpleName(name));
-		} else if (JavaPropertiesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			SingleVariableDeclaration parameter = getVariableDeclaration(element);
 			Type type = getTypeFromString(parameter.getAST(), (String) value);
 			parameter.setType(type);

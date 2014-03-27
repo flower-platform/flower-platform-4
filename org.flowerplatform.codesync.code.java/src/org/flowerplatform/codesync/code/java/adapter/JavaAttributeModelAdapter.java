@@ -25,9 +25,9 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
-import org.flowerplatform.codesync.code.java.JavaPropertiesConstants;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatureProvider;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link FieldDeclaration}. Children are {@link Modifier}s.
@@ -38,8 +38,6 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatu
  */
 public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
-	public static final String ATTRIBUTE = "javaAttribute";
-	
 	@Override
 	public List<?> getChildren(Object modelElement) {
 		return Collections.emptyList();
@@ -53,11 +51,11 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			return getLabel(element);
-		} else if (JavaPropertiesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getFieldDeclaration(element).getType());
-		} else if (JavaPropertiesConstants.ATTRIBUTE_INITIALIZER.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.ATTRIBUTE_INITIALIZER.equals(feature)) {
 			VariableDeclaration var = (VariableDeclaration) getFieldDeclaration(element).fragments().get(0);
 			return getStringFromExpression(var.getInitializer());
 		}
@@ -66,16 +64,16 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (CodeSyncPropertiesConstants.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			FieldDeclaration field = getFieldDeclaration(element);
 			String name = (String) value;
 			VariableDeclaration var = (VariableDeclaration) field.fragments().get(0);
 			var.setName(field.getAST().newSimpleName(name));
-		} else if (JavaPropertiesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			FieldDeclaration field = getFieldDeclaration(element);
 			Type type = getTypeFromString(field.getAST(), (String) value);
 			field.setType(type);
-		} else if (JavaPropertiesConstants.ATTRIBUTE_INITIALIZER.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.ATTRIBUTE_INITIALIZER.equals(feature)) {
 			VariableDeclaration var = (VariableDeclaration) getFieldDeclaration(element).fragments().get(0);
 			var.setInitializer(getExpressionFromString(var.getAST(), (String) value));
 		}

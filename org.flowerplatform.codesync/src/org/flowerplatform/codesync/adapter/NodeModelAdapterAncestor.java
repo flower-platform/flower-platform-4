@@ -20,7 +20,7 @@ package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
 
-import org.flowerplatform.codesync.CodeSyncPropertiesConstants;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -42,7 +42,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isAdded = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncPropertiesConstants.ADDED);
+				Boolean isAdded = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncConstants.ADDED);
 				if (isAdded != null && isAdded) {
 					return false;
 				}

@@ -11,8 +11,6 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class ResourceAccessController extends AbstractController {
 
-	public static final String RESOURCE_ACCESS_CONTROLLER = "resourceAccessController";
-	
 	public abstract void firstClientSubscribed(String resourceNodeId, ServiceContext context) throws Exception;
 	
 	public abstract void lastClientUnubscribed(String resourceNodeId, ServiceContext context);

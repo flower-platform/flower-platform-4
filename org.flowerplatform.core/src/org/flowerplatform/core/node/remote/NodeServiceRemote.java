@@ -1,8 +1,10 @@
 package org.flowerplatform.core.node.remote;
 
-import static org.flowerplatform.core.NodePropertiesConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.NodePropertiesConstants.NAME;
-import static org.flowerplatform.core.ServiceContext.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +37,13 @@ public class NodeServiceRemote {
 	public void addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
 		Node parent = new Node(parentFullNodeId);
 		Node child;
-		if (properties.get(CorePlugin.TYPE_KEY).equals(CorePlugin.FILE_NODE_TYPE)) {
-			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);
+		if (properties.get(TYPE_KEY).equals(FILE_NODE_TYPE)) {
+			child = new Node((String) properties.get(TYPE_KEY), parent.getResource(), null, null);
 			child.getProperties().put(FILE_IS_DIRECTORY, properties.get(FILE_IS_DIRECTORY)); 
 			child.getProperties().put(NAME, properties.get(NAME));
 		} else {
 			
-			child = new Node((String) properties.get(CorePlugin.TYPE_KEY), parent.getResource(), null, null);
+			child = new Node((String) properties.get(TYPE_KEY), parent.getResource(), null, null);
 		}
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null, new ServiceContext());	
 	}

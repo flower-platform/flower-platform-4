@@ -1,14 +1,10 @@
 package org.flowerplatform.flex_client.core.link {
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	
 	public class LinkHandler implements ILinkHandler {
-		
-		public static const OPEN_RESOURCES:String = "openResources";
-		public static const SELECT_RESOURCE_AT_INDEX:String = "selectResourceAtIndex";
-		
-		public static const RESOURCES_SEPARATOR:String = ",";
 		
 		public var viewId:String;
 		
@@ -17,7 +13,7 @@ package org.flowerplatform.flex_client.core.link {
 		}
 		
 		public function handleLink(command:String, parameters:String):void {
-			if (command == OPEN_RESOURCES) {
+			if (command == CoreConstants.OPEN_RESOURCES) {
 				// parameters format = file1,file2,file3|selectResourceAtIndex=1
 				var files:String = parameters;
 				
@@ -31,7 +27,7 @@ package org.flowerplatform.flex_client.core.link {
 //					}					
 //				}
 				
-				for each (var file:String in files.split(RESOURCES_SEPARATOR)) {
+				for each (var file:String in files.split(CoreConstants.OPEN_RESOURCES_SEPARATOR)) {
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [file], 
 						function(node:Node):void {
 							new OpenAction().open(node);

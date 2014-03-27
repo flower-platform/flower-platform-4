@@ -288,7 +288,7 @@
 		<s:HGroup id="mobileTitleArea" width="100%" horizontalAlign="center" verticalAlign="middle" paddingRight="5" paddingLeft="5">
 			<s:HGroup width="100%" gap="0" verticalAlign="middle">
 				<s:Label  text="{wizardTitle}" fontWeight="bold" width="100%"/>	
-				<s:CalloutButton id="info" icon="{FlexUtilAssets._iconInfo}" verticalPosition="after" >
+				<s:CalloutButton id="info" icon="{FlexUtilAssets.iconInfo}" verticalPosition="after" >
 					<s:calloutDestructionPolicy>auto</s:calloutDestructionPolicy>
 					<s:calloutContent>
 						<s:TextArea text="{wizardDescription}" color="0x000000" width="100%" skinClass="spark.skins.mobile.TextAreaSkin" editable="false"/>
