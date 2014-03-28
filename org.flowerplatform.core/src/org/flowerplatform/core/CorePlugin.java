@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
+import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
@@ -41,6 +42,8 @@ import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
 import org.flowerplatform.core.repository.RootChildrenProvider;
 import org.flowerplatform.core.repository.RootPropertiesProvider;
+import org.flowerplatform.core.session.ComposedSessionListener;
+import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -56,7 +59,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected static CorePlugin INSTANCE;
 
 	protected IFileAccessController fileAccessController = new PlainFileAccessController();
-
+	
+	protected ComposedSessionListener composedSessionListener = new ComposedSessionListener();
+	
 	/**
 	 * @author Sebastian Solomon
 	 */
@@ -65,10 +70,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
-	protected ResourceService resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
+	protected ResourceService resourceService;
+	protected DownloadService downloadService;
 
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
-	
+	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
+
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -103,13 +110,21 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return resourceService;
 	}
 	
+	public DownloadService getDownloadService() {
+		return downloadService;
+	}
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
 			
+		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
+		downloadService = new DownloadService();
+				
 		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("resourceService", new ResourceServiceRemote());
+		getServiceRegistry().registerService("downloadService", downloadService);
 		
 		new ResourceUnsubscriber().start();
 		
@@ -146,6 +161,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
+		scheduledExecutorServiceFactory.dispose();
 		super.stop(bundleContext);
 		INSTANCE = null;
 	}
@@ -176,4 +192,15 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return requestThreadLocal;
 	}
 	
+	public ScheduledExecutorServiceFactory getScheduledExecutorServiceFactory() {
+		return scheduledExecutorServiceFactory;
+	}
+	
+	public ComposedSessionListener getComposedSessionListener() {
+		return composedSessionListener;
+	}
+
+	public void addSessionListener(ISessionListener sessionListener) {
+		composedSessionListener.add(sessionListener);
+	}
 }

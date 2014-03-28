@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
+	import org.flowerplatform.flex_client.core.download.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.AddNodeAction;
@@ -134,7 +135,8 @@ package org.flowerplatform.flex_client.core {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-					
+				
+			correspondingJavaPlugin = "org.flowerplatform.core";
 			resourceNodesManager = new ResourceNodesManager();
 			
 			var channelSet:ChannelSet = new ChannelSet();
@@ -143,7 +145,7 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);
 			serviceLocator.addService("nodeService");
 			serviceLocator.addService("resourceService");
-			serviceLocator.addService("freeplaneService");
+			serviceLocator.addService("downloadService");
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
@@ -153,6 +155,7 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
+			editorClassFactoryActionProvider.addActionClass(DownloadAction);
 			
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
