@@ -1,4 +1,4 @@
-package org.flowerplatform.flex_client.core.download {
+package org.flowerplatform.flex_client.core.editor.action {
 	
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
@@ -57,7 +57,7 @@ package org.flowerplatform.flex_client.core.download {
 					if (result != null) {
 						// result = download URL
 						var request:URLRequest = new URLRequest();
-						request.url = String(result);		
+						request.url = FlexUtilGlobals.getInstance().rootUrl + String(result);		
 						navigateToURL(request);
 					}
 				}

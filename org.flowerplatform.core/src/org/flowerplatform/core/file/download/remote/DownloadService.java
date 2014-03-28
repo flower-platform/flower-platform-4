@@ -15,10 +15,27 @@ import org.flowerplatform.core.file.download.DownloadServlet;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.UtilConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * Manager that handles the download requests from client.
+ * 
+ * <p>
+ * Holds a map between the downloadId used as a download URL request and the {@link DownloadInfo downloadInfo} 
+ * available for that download (path to download, type, ...).
+ * <p>
+ * A scheduler is executed each {@link #downloadCleanSchedulerTimestamp} seconds to clean the old entries.
+ * 
+ * <p>
+ * Manages the creation/modification/deletion of a download temporary directory ({@link #DOWNLOAD_TEMP_FOLDER_NAME})
+ * where data is stored in the process:
+ * <ul>
+ * 	<li> at server startup, the directory is deleted
+ * 	<li> it is created when needed
+ * 	<li> the ZIP archive created to be downloaded is stored in this directory 
+ * 		(it is removed when the download is executed successfully or when the clean scheduler is called)
+ * </ul>
+ * 
+ * @see DownloadServlet 
  * @author Cristina Constantinescu
  */
 public class DownloadService implements ISessionListener {
@@ -106,6 +123,24 @@ public class DownloadService implements ISessionListener {
 		}
 	}
 		
+	/**
+	 * Prepares the download context for given resources before starting the download process. <br>
+	 * Stores in a {@link DownloadInfo} information about this download: path where to download, file type, etc.
+	 * 
+	 * <p>
+	 * Creates a downloadId with the following format:
+	 * <code>sessionId.timestamp</code>
+	 * Registers the downloadId and download info. This data will be used later, when getting
+	 * contents in servlet.
+	 *  
+	 * <p>
+	 * If we have a container resource or multiple resources, then an archive is created and stored in:
+	 * <code>download/sessionId.timestamp.zip</code>
+	 * 
+	 * <p>
+	 * At the end, invokes download method on client side, the URL used has the following format:
+	 * 	<code>servlet/download/downloadId/file_name</code>
+	 */
 	public String prepareDownload(List<String> fullNodeIds) throws Throwable {
 		// get files from fullNodeIds
 		List<Object> files = new ArrayList<>();
@@ -150,7 +185,7 @@ public class DownloadService implements ISessionListener {
 		}
 		downloadIdToDownloadInfo.put(downloadId, downloadInfo);
 		
-		return String.format(".%s/%s/%s", DownloadServlet.DOWNLOAD_SERVLET_NAME, downloadId, fileName); // download link
+		return String.format("%s/%s/%s", DownloadServlet.DOWNLOAD_SERVLET_NAME, downloadId, fileName); // download link
 	}	
 
 }

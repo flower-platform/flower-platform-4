@@ -27,14 +27,15 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
-	import org.flowerplatform.flex_client.core.download.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
+	import org.flowerplatform.flex_client.core.editor.action.UploadAction;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -152,6 +153,7 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("nodeService");
 			serviceLocator.addService("resourceService");
 			serviceLocator.addService("downloadService");
+			serviceLocator.addService("uploadService");
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
@@ -160,7 +162,11 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
-			editorClassFactoryActionProvider.addActionClass(DownloadAction);
+			
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				editorClassFactoryActionProvider.addActionClass(DownloadAction);
+				editorClassFactoryActionProvider.addActionClass(UploadAction);				
+			}
 			
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {

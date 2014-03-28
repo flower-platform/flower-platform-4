@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ @author Cristina Constantinescu
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="org.flowerplatform.flexutil.view_content_host.IViewContent"
+		 creationComplete="creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.layout.IWorkbench;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			private static const ZIP_EXTENSION:String = ".zip";
+			
+			public var uploadLocationAsFullNodeId:String;
+			
+			protected var fileReference:FileReference;
+						
+			protected var _viewhost:IViewHost;
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			public function set viewHost(viewHost:IViewHost):void {
+				_viewhost = viewHost;
+				_viewhost.setLabel(CorePlugin.getInstance().getMessage("action.upload"));
+				_viewhost.setIcon(CorePlugin.getInstance().getResourceUrl("images/upload.png"));
+			}	
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {				
+				fileReference = new FileReference();
+				fileReference.addEventListener(Event.SELECT, onSelectHandler);
+				fileReference.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				fileReference.addEventListener(Event.COMPLETE, onCompleteHandler);		
+				fileReference.addEventListener(IOErrorEvent.IO_ERROR, onIoErrorHandler);
+			}
+						
+			protected function browse_clickHandler(event:MouseEvent):void {
+				fileReference.browse();
+			}
+			
+			protected function upload_clickHandler(event:MouseEvent):void {
+				if (Utils.endsWith(fileReference.name, ZIP_EXTENSION)) {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(CorePlugin.getInstance().getMessage("upload.make.archive"))
+						.setTitle(CorePlugin.getInstance().getMessage("info"))
+						.setWidth(300)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'), function():void {prepareToUpload(true);})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.cancel'), function():void {prepareToUpload();})
+						.showMessageBox();				
+				} else {
+					prepareToUpload();
+				}
+			}
+						
+			protected function prepareToUpload(unzipFile:Boolean=false):void {				
+				CorePlugin.getInstance().serviceLocator.invoke("uploadService.prepareUpload", [uploadLocationAsFullNodeId, fileReference.name, unzipFile], 
+					function(result:Object):void {
+						if (result) {
+							var request:URLRequest = new URLRequest();
+							request.url = FlexUtilGlobals.getInstance().rootUrl + String(result);
+							request.method = "POST";
+							request.contentType = "multipart/form-data";
+							
+							fileReference.upload(request);
+							
+							progressArea.visible = true;
+							uploadBtn.enabled = false;
+							browseBtn.enabled = false;		
+						}
+					}
+				);
+			}
+			
+			protected function onSelectHandler(event:Event):void {
+				locationTxt.text = fileReference.name;	
+				uploadBtn.enabled = true;
+			}
+					
+			protected function onIoErrorHandler(event:IOErrorEvent):void {				
+				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+					.setTitle(CorePlugin.getInstance().getMessage("error"))
+					.setText(event.text)
+					.showMessageBox();
+				closeView();
+			}
+			
+			protected function onProgressHandler(event:ProgressEvent):void {
+				var proc:uint = (event.bytesLoaded / event.bytesTotal) * 100;				
+				progressLabel.text = CorePlugin.getInstance().getMessage("upload.progress", [proc]);
+			}
+			
+			protected function onCompleteHandler(event:Event):void {
+				// refresh node data
+				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
+				var activeComponent:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
+				
+				if (activeComponent is EditorFrontend) {
+					var nodeUpdateProcessor:NodeUpdateProcessor = EditorFrontend(activeComponent).nodeUpdateProcessor;
+					var node:Node = nodeUpdateProcessor.getNodeById(uploadLocationAsFullNodeId);
+					if (node != null) {
+						nodeUpdateProcessor.refresh(EditorFrontend(activeComponent).nodeUpdateProcessor.context, node);
+					}
+				}
+				
+				closeView();
+			}
+			
+			protected function closeView():void {
+				fileReference.cancel();
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	
+	<s:Label text="{CorePlugin.getInstance().getMessage('upload.file')}" paddingTop="5" />
+	<s:HGroup width="100%">			
+		<s:TextInput id="locationTxt" width="100%" editable="false" />
+		<s:Button id="browseBtn" label="{CorePlugin.getInstance().getMessage('upload.browse')}" click="browse_clickHandler(event)" />					
+	</s:HGroup>		
+	<s:Label text="{CorePlugin.getInstance().getMessage('upload.limit.max')}" paddingBottom="15" />
+	<s:HGroup width="100%" id="progressArea" visible="false" verticalAlign="middle">
+		<s:BusyIndicator id="progressSpinner" />
+		<s:Label id="progressLabel" width="100%" />
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingBottom="5">			
+		<s:Button id="uploadBtn" label="{CorePlugin.getInstance().getMessage('upload.label')}" click="upload_clickHandler(event)" enabled="false"/>
+		<s:Button id="cancelBtn" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="closeView()"/>
+	</s:HGroup> 	
+	
+</s:Group>

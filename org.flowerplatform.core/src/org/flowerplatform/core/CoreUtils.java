@@ -1,15 +1,21 @@
 package org.flowerplatform.core;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -96,4 +102,37 @@ public class CoreUtils {
 			}
 		}
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public static void unzipArchive(File archive, File outputDir) throws IOException {
+		ZipFile zipfile = new ZipFile(archive);
+		for (Enumeration e = zipfile.entries(); e.hasMoreElements();) {
+			ZipEntry entry = (ZipEntry) e.nextElement();
+			unzipEntry(zipfile, entry, outputDir);
+		}	
+		zipfile.close();
+	}
+
+	private static void unzipEntry(ZipFile zipfile, ZipEntry entry, File outputDir) throws IOException {
+		if (entry.isDirectory()) {
+			new File(outputDir, entry.getName()).mkdirs();
+			return;
+		}
+
+		File outputFile = new File(outputDir, entry.getName());
+		if (!outputFile.getParentFile().exists()) {
+			outputFile.getParentFile().mkdirs();
+		}
+
+		BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
+		BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+
+		try {
+			IOUtils.copy(inputStream, outputStream);
+		} finally {
+			outputStream.close();
+			inputStream.close();
+		}
+	}
+	
 }

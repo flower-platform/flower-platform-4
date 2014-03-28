@@ -25,6 +25,7 @@ import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
+import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
@@ -72,7 +73,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
 	protected ResourceService resourceService;
 	protected DownloadService downloadService;
-
+	protected UploadService uploadService;
+	
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
 
@@ -113,6 +115,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public DownloadService getDownloadService() {
 		return downloadService;
 	}
+	
+	public UploadService getUploadService() {
+		return uploadService;
+	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -121,10 +127,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			
 		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
 		downloadService = new DownloadService();
-				
+		uploadService = new UploadService();
+		
 		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("resourceService", new ResourceServiceRemote());
 		getServiceRegistry().registerService("downloadService", downloadService);
+		getServiceRegistry().registerService("uploadService", uploadService);
 		
 		new ResourceUnsubscriber().start();
 		

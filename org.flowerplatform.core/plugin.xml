@@ -15,6 +15,10 @@
             alias="/servlet/download"
             class="org.flowerplatform.core.file.download.DownloadServlet">
       </servlet>
+      <servlet
+            alias="/servlet/upload"
+            class="org.flowerplatform.core.file.upload.UploadServlet">
+      </servlet>
    </extension>
 
 </plugin>
