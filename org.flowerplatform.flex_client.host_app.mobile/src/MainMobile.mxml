@@ -24,7 +24,8 @@
 <flexutil_mobile:FlowerViewNavigatorApplication 
 	applicationDPI="160" creationComplete="creationCompleteHandler()"
 	xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:flexutil_mobile="org.flowerplatform.flexutil.mobile.*"   
-	xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mobile="org.flowerplatform.flex_client.host_app.mobile.*">
+	xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mobile="org.flowerplatform.flex_client.host_app.mobile.*"
+	implements="org.flowerplatform.flexutil.dialog.IDialogResultHandler">
 	
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -69,11 +70,18 @@
 		<![CDATA[
 			import com.flextras.mobile.dropDownList.DropDownList;
 			
+			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
+			
+			import spark.components.Alert;
+			import spark.core.ContentCache;
 			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
+			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
+			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsView;
+			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsViewProvider;
 			import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -83,8 +91,6 @@
 			import org.flowerplatform.flexutil.plugin.FlexPluginDescriptor;
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
 			
-			import spark.core.ContentCache;
-			
 			// explicitely write the class name; a simple import won't actually compile this class
 			// used from properties
 			com.flextras.mobile.dropDownList.DropDownList;
@@ -93,6 +99,12 @@
 				return MainMobile(FlexGlobals.topLevelApplication);
 			}
 			
+			public static function openAccountsButtonClickHandler():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+					.setViewIdInWorkbench("serverAccounts")
+					.setTitle("Server Accounts")
+					.show();
+			}
 			/**
 			 * We need to inject the plugin URL, so that the plugins can find resources and messages.
 			 */
@@ -119,6 +131,10 @@
 				}
 			}
 			
+			/**
+			 * @author Cristian Spiescu
+			 * @author Sebastian Solomon
+			 */
 			protected function creationCompleteHandler():void {
 				navigator.defaultPushTransition = crossFadeTransition;
 				navigator.defaultPopTransition = crossFadeTransition;
@@ -133,11 +149,68 @@
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new MobileViewHostPopupHandlerFactory();
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorSpinnerHandlerFactory();
-				FlexUtilGlobals.getInstance().rootUrl = "http://localhost:8080/org.flowerplatform.host.web_app/";
 				
-				startPlugins();
 				
 				navigator.pushView(WorkbenchMobileSplitViewHost);
+				FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new ServerAccountsViewProvider());
+				
+				var serverAccounts:ArrayCollection = SharedObject.getLocal("flower-platform").data.serverAccounts;
+				
+				if (serverAccounts == null || serverAccounts.length == 0 ) { // if no account
+					openEditAccount();
+				} else {
+					var hasDefaultAccout:Boolean = false;
+					for (var i:int=0; i<serverAccounts.length; i++) {
+						if (serverAccounts[i].isDefault == true) {
+							hasDefaultAccout = true;
+							handleDialogResult(serverAccounts[i]);
+							break;
+						}
+					}
+					if (!hasDefaultAccout) { // if no default
+						var serverAccountsView:ServerAccountsView = new ServerAccountsView();
+						serverAccountsView.setResultHandler(this);
+						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+							.setTitle("Select default Server Account")
+							.setViewContent(serverAccountsView)
+							.show();
+						Alert.show("Please select a default Server Account", "", Alert.OK);
+					}
+				}
+				
+//				CommunicationPlugin.getInstance().bridge.addEventListener(BridgeEvent.WELCOME_RECEIVED_FROM_SERVER, welcomeReceivedFromServerHandler);
+			}
+			
+			/**
+			 * @author Sebastian Solomon
+			 */
+			private function openEditAccount():void {
+				var editAccountView:EditServerAccountView = new EditServerAccountView();
+				editAccountView.setResultHandler(this);
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setTitle("Edit Server Account")
+					.setViewContent(editAccountView)
+					.show();
+			}
+			
+			/**
+			 * @author Sebastian Solomon
+			 */
+			public function handleDialogResult(result:Object):void {
+				if (result == null) {
+					Alert.show("No Default Server Account", "", Alert.OK);
+				} else {
+					//TODO add user/password
+					FlexUtilGlobals.getInstance().rootUrl = result.host;
+					startPlugins();
+				}
+			}
+			
+			/**
+			 * @author Sebastian Solomon
+			 */
+			private function openServerAccountsView():void {
+				openAccountsButtonClickHandler();
 			}
 			
 		]]>
