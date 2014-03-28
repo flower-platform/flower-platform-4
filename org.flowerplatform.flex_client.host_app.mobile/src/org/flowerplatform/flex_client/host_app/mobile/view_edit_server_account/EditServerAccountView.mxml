@@ -42,6 +42,7 @@
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
 				if (serverAccountView == null) {
 					Alert.show("Please create a new server account", "", Alert.OK, null, null, null, Alert.OK);
+					cancelAccountButton.enabled = false;
 				} else {
 					if (serverAccount != null) {
 						friendlyName.text = serverAccount.friendlyName;
