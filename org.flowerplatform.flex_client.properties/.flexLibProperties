@@ -5,6 +5,7 @@
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.ColorPickerPropertyRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.PropertiesConstants"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.action.NewComposedAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

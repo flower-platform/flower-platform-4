@@ -40,5 +40,12 @@ package org.flowerplatform.flexutil.action {
 		 * and not later. This way, the property will be available when the actions will be processed.
 		 */ 
 		function get actAsNormalAction():Boolean;
+		
+		/**
+		 * If <code>true</code> and a single childAction is visible, then it delegates the behavior to it.
+		 * 
+		 * @author Cristina Constantinescu
+		 */ 
+		function get delegateIfSingleChild():Boolean;
 	}
 }

@@ -26,37 +26,26 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.properties.CreateNodeView;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */
-	public class AddNodeAction extends ComposedAction {
-		
-		public const ACTION_ID_NEW:String = "new";
-		
+	public class AddNodeAction extends ActionBase {
+			
 		public var childType:String;
 		
 		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
 			super();
-			if (descriptor == null) {
-				label = CorePlugin.getInstance().getMessage("action.add");	
-				icon = CorePlugin.getInstance().getResourceUrl("images/add.png");
-				orderIndex = 10;
-				id = ACTION_ID_NEW;
+			
+			childType = descriptor.childType;
 				
-				actAsNormalAction = false;
-			} else {
-				childType = descriptor.childType;
-				
-				label = descriptor.label;
-				icon = descriptor.icon;
-				orderIndex = descriptor.orderIndex;
-				parentId = ACTION_ID_NEW;
-				
-				actAsNormalAction = true;
-			}
+			label = descriptor.label;
+			icon = descriptor.icon;
+			orderIndex = descriptor.orderIndex;
+			parentId = NewComposedAction.ACTION_ID_NEW;
 		}
 		
 		override public function get visible():Boolean {			

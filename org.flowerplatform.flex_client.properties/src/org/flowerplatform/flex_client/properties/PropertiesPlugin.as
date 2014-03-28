@@ -6,6 +6,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.properties.action.AddNodeAction;
+	import org.flowerplatform.flex_client.properties.action.NewComposedAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
 	import org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.ColorPickerPropertyRenderer;
@@ -45,7 +46,7 @@ package org.flowerplatform.flex_client.properties {
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
-			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(AddNodeAction);
+			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
 		}
 		
 		override public function start():void {
