@@ -33,10 +33,6 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class AbstractModelAdapter extends AbstractController implements IModelAdapter {
 
-	public static final String MODEL_ADAPTER_ANCESTOR = "modelAdapterAncestor";
-	public static final String MODEL_ADAPTER_LEFT = "modelAdapterLeft";
-	public static final String MODEL_ADAPTER_RIGHT = "modelAdapterRight";
-	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		throw new IllegalArgumentException("Attempted to acces value feature " + feature + " for element " + element);

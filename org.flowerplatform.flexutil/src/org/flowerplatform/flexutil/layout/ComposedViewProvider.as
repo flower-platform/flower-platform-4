@@ -127,7 +127,7 @@ package  org.flowerplatform.flexutil.layout {
 			for each (var viewProvider:IViewProvider in viewProviders) {
 				if (viewLayoutData.viewId == viewProvider.getId()) {			
 					var title:String = viewProvider.getTitle(viewLayoutData);
-					var component:UIComponent = FlexUtilGlobals.getInstance().workbench.getComponent(viewLayoutData.viewId, viewLayoutData.customData);
+					var component:UIComponent = FlexUtilGlobals.getInstance().workbench.getComponent(viewLayoutData);
 					if (component is IViewHost) {
 						component = UIComponent(IViewHost(component).activeViewContent);
 					}

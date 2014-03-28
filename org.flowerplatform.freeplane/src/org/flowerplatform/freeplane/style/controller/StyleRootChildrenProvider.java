@@ -5,6 +5,7 @@ import static org.flowerplatform.freeplane.FreeplanePlugin.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -14,7 +15,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class StyleRootChildrenProvider extends ChildrenProvider {
 
 	@Override
-	public List<Node> getChildren(Node node) {
+	public List<Node> getChildren(Node node, ServiceContext context) {
 		List<Node> list = new ArrayList<>(); 
 		Node styleNode = new Node(STYLE_ROOT_NODE ,null, STYLE_ROOT_NODE, null);
 		list.add(styleNode);
@@ -22,7 +23,7 @@ public class StyleRootChildrenProvider extends ChildrenProvider {
 	}
 
 	@Override
-	public boolean hasChildren(Node node) {
+	public boolean hasChildren(Node node, ServiceContext context) {
 		return true;
 	}
 

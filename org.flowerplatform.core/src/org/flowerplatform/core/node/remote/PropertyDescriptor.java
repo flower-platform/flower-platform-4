@@ -18,32 +18,34 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
+
+import java.util.List;
+
 import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IDescriptor;
 
 /**
  * @author Razvan Tache
  * @author Cristina Constantinescu
  * @author Sebastian Solomon
  */
-public class PropertyDescriptor extends AbstractController {
-	
-	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
-	
-	private static final String DEFAULT_TYPE = "String";
-	private static final String DEFAULT_CATEGORY = "";
+public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
 	private String name;
 	private String title;
-	private String type = DEFAULT_TYPE;
+	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
+	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
+	private boolean contributeToCreation = false;
+	private boolean isMandatory = false;
 	
-	private String category = DEFAULT_CATEGORY;
+	private boolean readOnly;
+	private List<?> possibleValues;
 	
 	private Boolean hasChangeCheckbox = false;
-	
 	private Object defaultValue = null;
 
-	private boolean readOnly = true;
-		
 	public String getName() {
 		return name;
 	}
@@ -159,6 +161,45 @@ public class PropertyDescriptor extends AbstractController {
 	
 	public PropertyDescriptor setReadOnlyAs(boolean readOnly) {
 		this.readOnly = readOnly;
+		return this;
+	}
+
+	public List<?> getPossibleValues() {
+		return possibleValues;
+	}
+
+	public void setPossibleValues(List<Object> possibleValues) {
+		this.possibleValues = possibleValues;
+	}
+	
+	public PropertyDescriptor setPossibleValuesAs(List<?> possibleValues) {
+		this.possibleValues = possibleValues;
+		return this;
+	}
+	
+	public boolean isContributeToCreation() {
+		return contributeToCreation;
+	}
+
+	public void setContributeToCreation(boolean contributeToCreation) {
+		this.contributeToCreation = contributeToCreation;
+	}
+	
+	public PropertyDescriptor setContributeToCreationAs(boolean contributeToCreation) {
+		this.contributeToCreation = contributeToCreation;
+		return this;
+	}
+
+	public boolean getIsMandatory() {
+		return isMandatory;
+	}
+
+	public void setIsMandatory(boolean isMandatory) {
+		this.isMandatory = isMandatory;
+	}
+	
+	public PropertyDescriptor setIsMandatoryAs(boolean isMandatory) {
+		this.isMandatory = isMandatory;
 		return this;
 	}
 	

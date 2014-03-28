@@ -18,8 +18,9 @@
  */
 package org.flowerplatform.codesync.controller;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -30,13 +31,14 @@ import org.flowerplatform.core.node.remote.Node;
 public class CodeSyncAddNodeController extends AddNodeController {
 
 	public CodeSyncAddNodeController() {
-		// must be invoked after the persistence controller and update controller
-		setOrderIndex(500000);
+		// must be invoked after the persistence controller
+		// because we need the child to be already added to the model before we set the ADDED marker
+		setOrderIndex(50000);
 	}
 	
 	@Override
-	public void addNode(Node node, Node child, Node insertBeforeNode) {		
-		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncPlugin.ADDED, true);
+	public void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
+		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.ADDED, true, context);
 	}
 
 }

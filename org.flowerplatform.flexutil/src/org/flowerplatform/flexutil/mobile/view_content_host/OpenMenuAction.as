@@ -18,11 +18,10 @@
  */
 package org.flowerplatform.flexutil.mobile.view_content_host {
 	import mx.core.FlexGlobals;
-	import mx.validators.EmailValidator;
 	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
-	import spark.components.View;
 	import spark.components.ViewMenuItem;
 	
 	public class OpenMenuAction extends ActionBase {
@@ -30,12 +29,9 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 		protected var view:MobileViewHostBase;
 		public var viewMenuItems:Vector.<ViewMenuItem>;
 		
-		[Embed(source="menu.png")]
-		public static const menuIcon:Class;
-		
 		public function OpenMenuAction(view:MobileViewHostBase) {
 			this.view = view;
-			icon = menuIcon;
+			icon = FlexUtilAssets.menuIcon;
 		}
 		
 		override public function get enabled():Boolean {

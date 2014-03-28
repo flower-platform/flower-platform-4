@@ -18,25 +18,13 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import java.util.Collections;
-import java.util.List;
-
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaMemberValuePairFeatureProvider extends NodeFeatureProvider {
 	
-	public static final String ANNOTATION_VALUE_VALUE = "annotationValueValue";
+	public JavaMemberValuePairFeatureProvider() {
+		valueFeatures.add(CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE);
+	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		List features = super.getValueFeatures(element);
-		features.add(ANNOTATION_VALUE_VALUE);
-		return features;
-	}
-
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Collections.emptyList();
-	}
 }

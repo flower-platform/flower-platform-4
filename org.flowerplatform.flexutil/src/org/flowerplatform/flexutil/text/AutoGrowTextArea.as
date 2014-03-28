@@ -24,6 +24,8 @@ package org.flowerplatform.flexutil.text {
 	import mx.core.mx_internal;
 	import mx.skins.spark.SparkSkinForHalo;
 	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	
 	import spark.components.RichEditableText;
 	import spark.components.TextArea;
 	
@@ -35,13 +37,17 @@ package org.flowerplatform.flexutil.text {
 	public class AutoGrowTextArea extends TextArea {
 				
 		public function AutoGrowTextArea()	{
-			super();	
-			setStyle("skinClass", AutoGrowSkinnableTextBaseSkin);
+			super();
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				setStyle("skinClass", AutoGrowSkinnableTextBaseSkin);
+			}
 		}
 		
 		protected function kewDownHandler1(event:KeyboardEvent):void {
 			if (event.keyCode == Keyboard.ENTER && !event.ctrlKey) {
-				event.preventDefault();				
+				event.preventDefault();
+				// hide soft keyboard on mobile
+				stage.focus = null;
 				return;
 			}
 			if (event.keyCode == Keyboard.ENTER && event.ctrlKey) {

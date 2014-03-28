@@ -37,7 +37,7 @@ public abstract class MatchActionAddAncestorAbstract extends MatchActionAddAbstr
 	}
 
 	protected IModelAdapter getThisModelAdapter(Match match) {
-		return match.getCodeSyncAlgorithm().getAncestorModelAdapter(getThis(match));
+		return match.getCodeSyncAlgorithm().getAncestorModelAdapter(match, getThis(match));
 	}
 
 	@Override

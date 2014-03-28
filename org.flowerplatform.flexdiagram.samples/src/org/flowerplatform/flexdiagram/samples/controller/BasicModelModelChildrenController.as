@@ -17,28 +17,17 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples.controller {
-	import flash.display.ColorCorrection;
-	import flash.events.Event;
-	
-	import mx.collections.ArrayList;
-	import mx.collections.IList;
-	import mx.events.CollectionEvent;
-	
-	import org.flowerplatform.flexdiagram.controller.ControllerBase;
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	import org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.model.BasicModel;
-	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
+	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
 	public class BasicModelModelChildrenController extends ParentAwareArrayListModelChildrenController {
-		
-		public function BasicModelModelChildrenController(diagramShell:DiagramShell) {
-			super(diagramShell, false);
+				
+		public function BasicModelModelChildrenController(orderIndex:int = 0) {			
+			super(false, orderIndex);
 		}
 		
 		override protected function getParentAwareArrayList(model:Object):ParentAwareArrayList {

@@ -24,19 +24,15 @@
 				autoDrawBackground="true" height="{HEIGHT}" click="clickHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import mx.core.mx_internal;
-			
+			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.action.ActionUtil;
 			import org.flowerplatform.flexutil.action.IAction;
 			
 			public static const HEIGHT:int = 22;
 			
-			public static const HOVER_DELAY_COMPOSED_ACTION:int = 300;
+			protected static const HOVER_DELAY_COMPOSED_ACTION:int = 300;
 			
-			public static const HOVER_DELAY_NORMAL_ACTION:int = 500;
-			
-			[Embed(source="resultset_next.png")]
-			public static const rightArrowImage:Class;
+			protected static const HOVER_DELAY_NORMAL_ACTION:int = 500;
 			
 			protected var executeAftedHoverTimer:Timer;
 			
@@ -49,7 +45,7 @@
 					if (!hasSubActions.visible) {
 						hasSubActions.visible = true;
 						hasSubActions.includeInLayout = true;
-						hasSubActions.source = rightArrowImage;
+						hasSubActions.source = FlexUtilAssets.rightArrowImage;
 					}
 				} else {
 					if (hasSubActions.visible) {

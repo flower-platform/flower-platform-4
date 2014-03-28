@@ -29,6 +29,8 @@ package org.flowerplatform.flexdiagram.ui {
 	
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flexdiagram.FlexDiagramAssets;
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */
@@ -37,11 +39,11 @@ package org.flowerplatform.flexdiagram.ui {
 		// this component changes visual apparence depending on its state
 		// it can be in one of the following states
 		
-		public static const NORMAL:int = 0;
+		private static const NORMAL:int = 0;
 		
-		public static const HIGHLIGHT:int = 1;
+		private static const HIGHLIGHT:int = 1;
 		
-		public static const PRESSED:int = 2;
+		private static const PRESSED:int = 2;
 		
 		// current state
 		private var _state:int = NORMAL;
@@ -52,12 +54,6 @@ package org.flowerplatform.flexdiagram.ui {
 		// keep this reference to add mouse listener on Stage and to be able to remove it
 		private var stageBackup:Stage = null;
 		
-		[Embed(source="../icons/anchor_big.gif")]
-		private var anchor_big:Class;
-		
-		[Embed(source="../icons/anchor_small.gif")]
-		private var anchor_small:Class;
-		
 		/**
 		 * @parameter useSmallAnchor if <code>true</code> this component will display a small arrow: w/h = 16/12
 		 * otherwise will display a bigger arrow : w/h = 20/15
@@ -67,11 +63,11 @@ package org.flowerplatform.flexdiagram.ui {
 			var anchor:Class = null;
 			
 			if (useSmallAnchor) {
-				anchor = anchor_small;
+				anchor = FlexDiagramAssets.anchor_small;
 				width = 16;
 				height = 12;
 			} else {
-				anchor = anchor_big;
+				anchor = FlexDiagramAssets.anchor_big;
 				width = 20;
 				height = 14;
 			}

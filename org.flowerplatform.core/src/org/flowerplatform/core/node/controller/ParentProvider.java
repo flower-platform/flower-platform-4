@@ -1,7 +1,7 @@
 package org.flowerplatform.core.node.controller;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -9,8 +9,6 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class ParentProvider extends AbstractController {
 
-	public static final String PARENT_PROVIDER = "parentProvider";
-	
-	public abstract Pair<Node, Object> getParent(Node node);
+	public abstract Node getParent(Node node, ServiceContext context);
 	
 }

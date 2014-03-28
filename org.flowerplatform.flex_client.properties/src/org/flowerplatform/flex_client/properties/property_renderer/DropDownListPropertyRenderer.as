@@ -17,116 +17,114 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
-	import flash.events.Event;
+	
+	import flash.utils.getDefinitionByName;
 	
 	import mx.binding.utils.BindingUtils;
-	import mx.collections.ArrayCollection;
+	import mx.collections.IList;
 	import mx.events.FlexEvent;
 	
 	import spark.components.DropDownList;
+	import spark.events.DropDownEvent;
 	import spark.events.IndexChangeEvent;
 	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.Pair;
 	
 	/**
+	 * Supported dataProvider item class:
+	 * <ul>
+	 * 	<li> String
+	 * 	<li> Pair -> a = key, b = label
+	 * </ul>
+	 * 
 	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */ 
 	public class DropDownListPropertyRenderer extends BasicPropertyRenderer {
 		
 		[Bindable]
 		public var dropDownList:spark.components.DropDownList;
 		
-		/**
-		 * Signature: function getDataProviderHandler(callbackObject:Object, callbackFunction:Function):void		 
-		 */ 
-		public var requestDataProviderHandler:Function;
-		
-		/**
-		 * Signature: function myLabelFunction(item:Object):String
-		 */ 
-		public var labelFunction:Function;
-		
-		/**
-		 * Signature: function getItemIndexFromList(item:Object, list:ArrayCollection):int
-		 */ 
-		public var getItemIndexFromList:Function;
-		
-		/**
-		 * @author Sebastian Solomon
-		 */
-		private function creationCompleteHandler(event:FlexEvent):void {			
-			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownIndexChangeEventHandler);
-			
+		public function DropDownListPropertyRenderer() {
+			super();
 		}
 		
-		/**
-		 * @author Sebastian Solomon
-		 */
-		protected function dropDownIndexChangeEventHandler(e:Event):void {
+		private function creationCompleteHandler(event:FlexEvent):void {		
+			BindingUtils.bindSetter(valueChanged, data, "value");
+			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownEventHandler);
+		}
+		
+		protected function valueChanged(value:Object = null):void {
+			if (data != null && dropDownList.dataProvider != null) {
+				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
+			}
+		}
+		
+		protected function dropDownEventHandler(e:DropDownEvent):void {
 			saveProperty();
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 * @author Sebastian Solomon
-		 */
 		override protected function createChildren():void {			
 			super.createChildren();
 			
 			if (FlexUtilGlobals.getInstance().isMobile) {
-//				dropDownList = new com.flextras.mobile.dropDownList.DropDownList();										
+				// component for mobile
+				// this class is in the MobileComponents lib from flexutil
+				var mobileClass:Class = Class(getDefinitionByName("com.flextras.mobile.dropDownList.DropDownList"));
+				dropDownList = new mobileClass();
 			} else {
 				dropDownList = new spark.components.DropDownList();											
 			}
-						
+			
 			dropDownList.percentWidth = 100;
 			dropDownList.percentHeight = 100;		
-			dropDownList.labelFunction = labelFunction;
-
-			//get data to fill dropDownList
-			requestDataProviderHandler(this, requestDataProviderCallbackHandler);
-
-			addElementAt(dropDownList, 0);
+			
+			addElement(dropDownList);			
 		}
 		
 		override public function set data(value:Object):void {
 			super.data = value;			
 			dropDownList.enabled = !PropertyDescriptor(data).readOnly;
 			
-			setSelectedIndex();
-			
-			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
-			changeCheckBox.enabled = changeCheckBox.selected;
+			requestDataProvider();
 			
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
-			BindingUtils.bindSetter(setIndex, data, "value")
 		}
 		
-		/**
-		 * @author Sebastian Solomon
-		 */
-		private function setIndex(value:String):void {
-			setSelectedIndex();
-		}
-
-		private function requestDataProviderCallbackHandler(result:ArrayCollection):void {
-			dropDownList.dataProvider = result;		
-			setSelectedIndex();
-		}
-		
-		/**
-		 * Called after the data provider for the dropDownList is set, and after the data is set.
-		 * 
-		 * @author Mariana Gheorghe
-		 */
-		private function setSelectedIndex():void {
-			if (data != null && dropDownList.dataProvider != null) {
-				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
+		protected function requestDataProvider():void {
+			if (data is PropertyDescriptor) {
+				dropDownList.dataProvider = PropertyDescriptor(data).possibleValues;
+				// if list of Pairs, use item.b as label
+				var listItem:Object = dropDownList.dataProvider.getItemAt(0);
+				if (listItem is Pair) {
+					dropDownList.labelField = "b";
+				}
 			}
+			valueChanged();
+		}
+		
+		protected function getItemIndexFromList(itemKey:Object, list:IList):int {
+			if (itemKey != null) {
+				for (var i:int = 0; i < list.length; i++) {
+					var listItem:Object = list.getItemAt(i);
+					if (listItem is Pair) {
+						if (listItem.a == itemKey) {
+							return i;
+						}
+					} else if (itemKey == listItem) {
+						return i;
+					}
+				}
+			}
+			return -1;
 		}
 		
 		override protected function getValue():Object {
+			if (dropDownList.selectedItem is Pair) {
+				return Pair(dropDownList.selectedItem).a;
+			}
 			return dropDownList.selectedItem;	
 		}
 		

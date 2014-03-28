@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+@author Mariana Gheorghe
+-->
+<s:CalloutButton xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark"
+				 xmlns:skins="com.flextras.mobile.shared.skins.*"
+				 label="Editors"
+				 icon="{FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl('images/open_resource.png'))}" 
+				 visible="{splitView.rightComponents.length > 0}" includeInLayout="{splitView.rightComponents.length > 0}">
+	<fx:Declarations>
+		<fx:Component className="EditorFrontendEntry">
+			<s:HGroup width="100%" gap="0">
+				
+				<fx:Script>
+					<![CDATA[
+						import mx.core.IVisualElement;
+						import mx.core.UIComponent;
+						
+						import org.flowerplatform.flex_client.core.CorePlugin;
+						import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+						import org.flowerplatform.flexutil.FlexUtilGlobals;
+						
+						import spark.components.Group;
+						
+						[Bindable]
+						public var editorFrontend:EditorFrontend;
+						
+						public var container:Group;
+						
+						public var splitView:WorkbenchMobileSplitViewHost;
+						
+						protected function switchToEditorFrontend(event:MouseEvent):void {
+							splitView.rightActiveComponent = editorFrontend;
+						}
+						
+						protected function closeEditorFrontend(event:MouseEvent):void {
+							// remove from the list of components
+							splitView.rightComponents.removeItem(editorFrontend);
+							splitView.closeView(editorFrontend);
+							if (splitView.rightActiveComponent == editorFrontend) {
+								// remove it if it was the active component
+								splitView.rightActiveComponent = null;
+								// show the last opened editor
+								var editorsCount:int = splitView.rightComponents.length;
+								if (editorsCount > 0) {
+									splitView.rightActiveComponent = IVisualElement(splitView.rightComponents.getItemAt(editorsCount - 1));
+								}
+							}
+							container.removeElement(this);
+						}
+						
+					]]>
+				</fx:Script>
+				
+				<s:Button id="switchButton" label="{editorFrontend.editorInput}" 
+						  click="switchToEditorFrontend(event)"
+						  width="100%"
+						  skinClass="com.flextras.mobile.shared.skins.ButtonSkinSquare"/>
+				<s:Button id="closeButton" icon="{FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl('images/cancel_delete.png'))}"
+						  click="closeEditorFrontend(event)" 
+						  skinClass="com.flextras.mobile.shared.skins.ButtonSkinSquare"/>
+				
+			</s:HGroup>
+		</fx:Component>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
+			import org.flowerplatform.flex_client.core.CorePlugin;			
+			import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			import mx.core.UIComponent;
+			
+			[Bindable]
+			public var splitView:WorkbenchMobileSplitViewHost;
+			
+			public function addEditorFrontend(editorFrontend:UIComponent):void {
+				var entry:EditorFrontendEntry = new EditorFrontendEntry();
+				entry.editorFrontend = MindMapEditorFrontend(editorFrontend);
+				entry.splitView = splitView;
+				entry.container = contents;
+				contents.addElement(entry);
+			}
+			
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			public function refreshLabels():void {
+				for (var i:int = 0; i < contents.numElements; i++) {
+					var entry:EditorFrontendEntry = EditorFrontendEntry(contents.getElementAt(i));
+					var label:String = entry.editorFrontend.editorInput;					
+					label = entry.editorFrontend.decorateTitle(label); 
+					
+					entry.switchButton.label = label;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup id="contents" width="100%" height="100%" gap="0"/>
+	
+</s:CalloutButton>

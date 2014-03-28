@@ -11,7 +11,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import spark.layouts.HorizontalLayout;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.mindmap.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 
@@ -27,6 +27,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		public var changeCheckBox:CheckBox = new CheckBox();
 		
 		public var changeLabel:Label = new Label();
+		
+		public var disableSaveProperty:Boolean = false;
 		
 		public function BasicPropertyRenderer() {
 			super();
@@ -76,22 +78,27 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		protected function saveProperty():void {			
-			if (!data.readOnly) {
-				if (!validPropertyValue()) {					
-					return;
-				}
-				var value:Object = getValue();
-				if (oldValue != value) {
-					oldValue = value;
-					CorePlugin.getInstance().serviceLocator.invoke(
-						"nodeService.setProperty", 
-						[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, data.name, value]);
+			if (!disableSaveProperty) {
+				if (!data.readOnly) {
+					if (!validPropertyValue()) {					
+						return;
+					}
+					if (oldValue != getValue()) {
+						oldValue = getValue();
+						CorePlugin.getInstance().serviceLocator.invoke(
+							"nodeService.setProperty", 
+							[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, propertyDescriptor.name, getValue()]);
+					}
 				}
 			}
 		}
 
 		protected function getValue():Object {
-			return PropertyDescriptor(data).value;	
+			return propertyDescriptor.value;	
+		}
+		
+		protected function get propertyDescriptor():PropertyDescriptor {
+			return PropertyDescriptor(data);	
 		}
 		
 		protected function keyDownHandler1(event:KeyboardEvent):void {

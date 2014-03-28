@@ -1,16 +1,42 @@
 package org.flowerplatform.flex_client.mindmap {
-	import flash.utils.Dictionary;
-	
-	import mx.collections.IList;
-	
+	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
+	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeDragController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeInplaceEditorController;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
+	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer;
+	import org.flowerplatform.flex_client.mindmap.renderer.NodeSelectionRenderer;
+	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
+	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
+	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+	import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
+	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
+	import org.flowerplatform.flexdiagram.tool.controller.drag.DragController;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.NullController;
+	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapPlugin extends AbstractFlowerFlexPlugin {
-		
+						
 		protected static var INSTANCE:MindMapPlugin;
 				
 		public static function getInstance():MindMapPlugin {
@@ -23,12 +49,59 @@ package org.flowerplatform.flex_client.mindmap {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-		}
-		
-		override protected function registerMessageBundle():void {
+			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
+
+			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
 			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new AbsoluteLayoutVisualChildrenController(-10))
+				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NullController(-10))
+				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new NullController(-10))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NullController(-10))
+				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NullController(-10));	
+						
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new NodeChildrenController())
+				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new NodeController())				
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
+				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MindMapAbsoluteLayoutRectangleController())
+				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NodeDragController())
+				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSelectionController(NodeSelectionRenderer))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(MindMapNodeRenderer))
+				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
+			
+			// register PropertiesPlugin Renderer
+			PropertiesPlugin.getInstance().propertyRendererClasses["MindMapIconsWithButton"] = new FactoryWithInitialization
+				(IconsWithButtonPropertyRenderer, {
+					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object):void {
+						var dialog:MindMapIconsView = new MindMapIconsView();
+						dialog.setResultHandler(itemRendererHandler);
+						dialog.icons = propertyValue;
+						
+						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setViewContent(dialog)						
+						.setWidth(300)
+						.setHeight(320)
+						.show();
+					},
+					
+					getNewIconsPropertyHandler: function (dialogResult:Object):String {
+						return dialogResult.icons;
+					}					
+					
+				});
+			
+			CorePlugin.getInstance().iconSideBarClass = MindMapIconsBar;
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);			
+			
+			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);
+			
+			var mindMapEditorDescriptor:MindMapEditorDescriptor = new MindMapEditorDescriptor();
+			CorePlugin.getInstance().contentTypeRegistry.defaultContentType = MindMapConstants.MINDMAP_CONTENT_TYPE;
+			CorePlugin.getInstance().contentTypeRegistry[MindMapConstants.MINDMAP_CONTENT_TYPE] = mindMapEditorDescriptor;
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);	
 		}
-		
-		
+
 	}
 }

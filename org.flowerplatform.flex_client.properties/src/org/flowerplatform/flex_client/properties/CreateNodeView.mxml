@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Sebastian Solomon
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			import org.flowerplatform.flex_client.core.CoreConstants;
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			public static const SHOW_ALL:String = "showAll";
+			public static const SHOW_CONTRIBUTING_TO_CREATION:String = "showContributingToCreation"; // optional & mandatory 
+			public static const SHOW_MANDATORY:String = "showMandatory";
+			
+			public var nodeType:String;
+			
+			public var option:String = SHOW_CONTRIBUTING_TO_CREATION;
+			
+			protected var _viewHost:IViewHost;
+			
+			protected var parentNode:Node;
+			
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+				
+				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
+					.getExpectedTypeDescriptor(nodeType).getAdditiveControllers("propertyDescriptor", null);
+				
+				var currentCategory:String = "";
+				for ( var i:int = 0; i < propertyDescriptors.length; i++) {
+					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
+					if (option == SHOW_ALL 
+						|| (propertyDescriptor.contributeToCreation && propertyDescriptor.isMandatory)
+						|| (propertyDescriptor.contributeToCreation && option == SHOW_CONTRIBUTING_TO_CREATION)) {
+						
+						var formItem:PropertyItemRenderer = new PropertyItemRenderer();
+						var itemCategory:String = propertyDescriptor.category;
+						if (itemCategory != currentCategory) {
+							var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
+							currentCategory = itemCategory;
+							categoryItem.label = currentCategory;
+							propertyForm.addElement(categoryItem);
+						}
+						propertyForm.addElement(formItem);
+						if (propertyDescriptor.contributeToCreation) {
+							propertyDescriptor.readOnly = false;
+						}
+						formItem.disableSaveProperty = true;
+						propertyDescriptor.value = null;
+						formItem.data = propertyDescriptor;
+					}
+				}
+			}
+			
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function setParentNode(value:Node):void {
+				parentNode = value;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			protected function createNode(evt:MouseEvent = null):void {
+				var properties:Object = new Object();
+				properties.type = nodeType;
+				for (var i:int = 0; i < propertyForm.numElements; i++) {
+					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
+						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
+						if (propertyItemRenderer.data.isMandatory && propertyItemRenderer.data.value == "" && propertyItemRenderer.data.type != "Boolean") {
+							Alert.show("\'" + propertyItemRenderer.data[CoreConstants.NAME] + "\' field is mandatory", "Field required", Alert.OK, null, null, null, Alert.OK);
+							return;
+						}
+						if (propertyItemRenderer.data.contributeToCreation) {
+							properties[propertyItemRenderer.data[CoreConstants.NAME]] = propertyItemRenderer.data.value;
+						}
+							
+					}
+					
+				}
+				
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null], 
+					function(result:Object):void {
+						if (option == SHOW_ALL) {
+							// setProperty for properties that don't contribute to creation.
+							for (var i:int = 0; i < propertyForm.numElements; i++) {
+								if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
+									propertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
+									if (!propertyItemRenderer.data.contributeToCreation) {
+										if (propertyItemRenderer.data.value != null && propertyItemRenderer.data.value != "") {
+											CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result, propertyItemRenderer.data[CoreConstants.NAME], propertyItemRenderer.data.value],null)
+										}
+									}
+								}
+							}
+						}
+						cancel();
+					});				
+			}
+			
+			protected function cancel():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:Scroller width="100%" height="100%">
+		<s:Group width="100%" height="100%">			
+			<s:Form id="propertyForm" width="100%" height="100%" >
+			</s:Form>
+		</s:Group>
+	</s:Scroller>
+	<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+		<s:Button id="okButton" label="OK" click="createNode(event)"/>
+		<s:Button id="cancelButton" label="Cancel" click="cancel()"/>
+	</s:HGroup>
+</s:Group>

@@ -1,7 +1,8 @@
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.mindmap.MindMapPlugin.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY;
+import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
@@ -13,8 +14,8 @@ import org.freeplane.features.map.NodeModel;
 public class PersistenceAddNodeProvider extends MindMapAddNodeController {
 
 	@Override
-	public void addNode(Node node, Node child, Node insertBeforeNode) {		
-		super.addNode(node, child, insertBeforeNode);
+	public void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
+		super.addNode(node, child, insertBeforeNode, context);
 		
 		NodeModel rawNodeData = ((NodeModel) child.getOrRetrieveRawNodeData());
 		// create attributes table and persist the type
@@ -24,6 +25,7 @@ public class PersistenceAddNodeProvider extends MindMapAddNodeController {
 			rawNodeData.addExtension(attributeTable);
 		}		
 		attributeTable.getAttributes().add(new Attribute(FREEPLANE_PERSISTENCE_NODE_TYPE_KEY, child.getType()));
+		rawNodeData.getMap().setSaved(false);
 	}
 		
 }

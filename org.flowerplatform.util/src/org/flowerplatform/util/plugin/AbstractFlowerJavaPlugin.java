@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import org.flowerplatform.util.UtilConstants;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -34,10 +35,6 @@ import org.slf4j.LoggerFactory;
  * @author Cristi
  */
 public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
-
-	public static final String PUBLIC_RESOURCES_DIR = "public-resources";
-	
-	public static final String MESSAGES_FILE = "messages.properties";
 
 	private final static Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
 	
@@ -54,7 +51,7 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	}
 
 	protected String getMessagesFilePath() {
-		return getBundleContext().getBundle().getSymbolicName() + "/" + PUBLIC_RESOURCES_DIR + "/" + MESSAGES_FILE;
+		return getBundleContext().getBundle().getSymbolicName() + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + UtilConstants.MESSAGES_FILE;
 	}
 	
 	public void registerMessageBundle() throws Exception {
@@ -102,9 +99,40 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	}
 
 	public String getResourceUrl(String resource) {
-		return "servlet/" + PUBLIC_RESOURCES_DIR + "/" + 
+		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + 
 				getBundleContext().getBundle().getSymbolicName() + "/" +
 				resource;
+	}
+	
+	/**
+	 * Returns the request string for the image composed from the URLs. 
+	 * E.g. <tt>servlet/image-composer/url1|url2|url3</tt>
+	 * 
+	 * <p>
+	 * Checks if the first URL already contains the image-composer prefix; 
+	 * this way it can be used to append images to the same string.
+	 * 
+	 * @see AbstractFlowerFlexPlugin#getImageComposerUrl()
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public String getImageComposerUrl(String... resources) {
+		if (resources.length == 0) {
+			return null;
+		}
+		String composedUrl = "";
+		for (String resource : resources) {
+			if (resource != null) {
+				composedUrl += (composedUrl.length() > 0 ? UtilConstants.RESOURCE_PATH_SEPARATOR : "") + resource;
+			}
+		}
+		if (composedUrl.length() == 0) {
+			return null;
+		}
+		if (composedUrl.indexOf(UtilConstants.IMAGE_COMPOSER_SERVLET) < 0) {
+			composedUrl = UtilConstants.IMAGE_COMPOSER_SERVLET + composedUrl;
+		}
+		return composedUrl;
 	}
 	
 }

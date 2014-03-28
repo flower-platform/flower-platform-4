@@ -18,12 +18,16 @@
  */
 package org.flowerplatform.tests.codesync;
 
+import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
+
 import java.io.File;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.mindmap.MindMapPlugin;
 import org.flowerplatform.tests.EclipseDependentTestSuiteBase;
-import org.flowerplatform.tests.TestUtil;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -39,6 +43,13 @@ import org.junit.runners.Suite.SuiteClasses;
 })
 public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		startPlugin(new CodeSyncPlugin());
+		startPlugin(new FreeplanePlugin());
+		startPlugin(new MindMapPlugin());
+	}
+	
 	// TODO CS/need centralized project get/set/copy/etc
 	public static File getProject(String project) {
 //		String absolutePath = /*"/org/ws_trunk/" +*/ project;
@@ -49,7 +60,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 //			throw new RuntimeException(String.format("Error while getting resource %s", absolutePath), e);
 //		}
 //		return (File) CodeSyncPlugin.getInstance().getProjectAccessController().getContainingProjectForFile(resource);
-		return new File(TestUtil.getWorkspacePath());
+		return new File("workspace");
 	}
 	
 	public static File getFile(String path) {

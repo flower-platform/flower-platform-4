@@ -63,7 +63,7 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		// process value features 
 		IModelAdapter thisMa = getThisModelAdapter(match);
 		IModelAdapter oppositeMa = getOppositeModelAdapter(match);
-		FeatureProvider featureProvider = match.getCodeSyncAlgorithm().getFeatureProvider(this_);
+		FeatureProvider featureProvider = match.getCodeSyncAlgorithm().getFeatureProvider(match);
 		for (Object childFeature : featureProvider.getValueFeatures(this_)) {
 			Object value = thisMa.getValueFeatureValue(this_, childFeature, null);
 			Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null);

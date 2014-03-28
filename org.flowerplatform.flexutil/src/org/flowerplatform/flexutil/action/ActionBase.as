@@ -34,126 +34,99 @@ package org.flowerplatform.flexutil.action {
 		private var _label:String;
 		private var _icon:Object;
 		private var _selection:IList;
+		
 		/**
 		 * @author Cristina Constantinescu
 		 */
 		private var _context:Object;
+		
 		/**
 		 * @author Mircea Negreanu
 		 */
 		private var _functionDelegate:Function;
 		
-		public function get id():String
-		{
+		public function get id():String {
 			return _id;
 		}
 		
-		public function set id(value:String):void
-		{
+		public function set id(value:String):void {
 			_id = value;
 		}
 		
-		public function get parentId():String
-		{
+		public function setId(value:String):ActionBase {
+			id = value;
+			return this;
+		}
+		
+		public function get parentId():String {
 			return _parentId;
 		}
 		
-		public function set parentId(value:String):void
-		{
+		public function set parentId(value:String):void {
 			_parentId = value;
 		}
 	
-		public function get orderIndex():Number
-		{
+		public function setParentId(value:String):ActionBase {
+			parentId = value;
+			return this;
+		}
+		
+		public function get orderIndex():Number	{
 			return _orderIndex;
 		}
 
-		public function set orderIndex(value:Number):void
-		{
+		public function set orderIndex(value:Number):void {
 			_orderIndex = value;
 		}
 
-		public function get preferShowOnActionBar():Boolean
-		{
-			return _preferShowOnActionBar;
+		public function setOrderIndex(value:Number):ActionBase {
+			orderIndex = value;
+			return this;
 		}
-
-		public function set preferShowOnActionBar(value:Boolean):void
-		{
-			_preferShowOnActionBar = value;
-		}
-
-		public function get visible():Boolean
-		{
-			return _visible;
-		}
-
-		public function set visible(value:Boolean):void
-		{
-			_visible = value;
-		}
-
-		public function get enabled():Boolean
-		{
-			return _enabled;
-		}
-
-		public function set enabled(value:Boolean):void
-		{
-			_enabled = value;
-		}
-
-		public function get label():String
-		{
+		
+		public function get label():String {
 			return _label;
 		}
 
-		public function set label(value:String):void
-		{
+		public function set label(value:String):void {
 			_label = value;
 		}
 
-		public function get icon():Object
-		{
+		public function setLabel(value:String):ActionBase {
+			label = value;
+			return this;
+		}
+		
+		public function get icon():Object {
 			return _icon;
 		}
 
-		public function set icon(value:Object):void
-		{
+		public function set icon(value:Object):void {
 			_icon = value;
 		}
 		
-		public function get selection():IList
-		{
-			return _selection;
+		public function setIcon(value:Object):ActionBase {
+			icon = value;
+			return this;
 		}
 		
-		public function set selection(value:IList):void
-		{
-			_selection = value;
+		public function get preferShowOnActionBar():Boolean	{
+			return _preferShowOnActionBar;
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 */
-		public function get context():Object
-		{
-			return _context;
+		public function set preferShowOnActionBar(value:Boolean):void {
+			_preferShowOnActionBar = value;
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 */
-		public function set context(value:Object):void
-		{
-			_context = value;
+		public function setPreferShowOnActionBar(value:Boolean):ActionBase {
+			preferShowOnActionBar = value;
+			return this;
 		}
 		
 		/**
 		 * @author Mircea Negreanu
 		 */
-		public function get functionDelegate():Function 
-		{
+		public function get functionDelegate():Function {
 			return _functionDelegate;
 		}
 		
@@ -164,6 +137,49 @@ package org.flowerplatform.flexutil.action {
 			_functionDelegate = value;
 		}
 		
+		public function setFunctionDelegate(value:Function):ActionBase {
+			functionDelegate = value;
+			return this;
+		}
+		
+		public function get visible():Boolean {
+			return _visible;
+		}
+		
+		public function set visible(value:Boolean):void {
+			_visible = value;
+		}
+		
+		public function get enabled():Boolean {
+			return _enabled;
+		}
+		
+		public function set enabled(value:Boolean):void {
+			_enabled = value;
+		}
+		
+		public function get selection():IList {
+			return _selection;
+		}
+		
+		public function set selection(value:IList):void {
+			_selection = value;
+		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function get context():Object {
+			return _context;
+		}
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function set context(value:Object):void {
+			_context = value;
+		}
+				
 		/**
 		 * Use functionDelegate, if any exists.
 		 * 

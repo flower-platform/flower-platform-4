@@ -1,5 +1,5 @@
 # Project Description
 
-Flex Client library.
+Flex library.
 
-Contains diagram mechanism.
+Contains the diagram logic.

@@ -23,14 +23,10 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.Type;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaExpressionFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link Expression} and {@link Type}.
- * 
- * @see JavaExpressionFeatureProvider
  * 
  * @author Mariana Gheorghe
  */
@@ -49,7 +45,7 @@ public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter 
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			return element.toString();
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

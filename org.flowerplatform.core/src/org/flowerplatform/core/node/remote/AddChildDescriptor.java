@@ -18,23 +18,24 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import java.util.Map;
+
 import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IDescriptor;
 
 /**
  * Used to register client-side Add actions for a node type.
  * 
  * @author Mariana Gheorghe
  */
-public class AddChildDescriptor extends AbstractController {
+public class AddChildDescriptor extends AbstractController implements IDescriptor {
 
-	public static final String ADD_CHILD_DESCRIPTOR = "addChildDescriptor";
-	
 	private String childType;
 	
 	private String label;
 	
 	private String icon;
-
+	
 	public String getChildType() {
 		return childType;
 	}
@@ -78,7 +79,7 @@ public class AddChildDescriptor extends AbstractController {
 		setOrderIndex(orderIndex);
 		return this;
 	}
-
+	
 	@Override
 	public String toString() {
 		return String.format("\nAddChildDescriptor [childType = %s, label = %s, orderIndex = %d]", 

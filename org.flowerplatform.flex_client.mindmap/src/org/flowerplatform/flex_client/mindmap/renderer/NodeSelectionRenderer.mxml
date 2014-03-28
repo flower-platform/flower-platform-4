@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+@author Cristina Constantinescu
+-->
+<selection:AbstractSelectionRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+									xmlns:s="library://ns.adobe.com/flex/spark" 
+									xmlns:mx="library://ns.adobe.com/flex/mx" 
+									xmlns:selection="org.flowerplatform.flexdiagram.renderer.selection.*"
+									xmlns:ui="org.flowerplatform.flexdiagram.ui.*"
+									depth="{int.MAX_VALUE}" initialize="setCircleRadius()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.DPIClassification;
+			import mx.core.FlexGlobals;
+			import mx.events.MoveEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.events.ResizeEvent;
+			
+			import org.flowerplatform.flex_client.core.CoreConstants;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			import spark.primitives.Ellipse;
+						
+			[Bindable]
+			public var circleRadius:int = 10;
+			
+			public var padding:int = 3;
+			
+			/**
+			 * Sets the circle radius depending on the platform.
+			 * 
+			 * @author Mariana Gheorghe
+			 */
+			protected function setCircleRadius():void {
+				if (FlexUtilGlobals.getInstance().isMobile) {
+					switch (FlexGlobals.topLevelApplication.applicationDPI) {
+						case DPIClassification.DPI_320:	{
+							circleRadius = 40;
+							break;
+						}
+						case DPIClassification.DPI_240:	{
+							circleRadius = 30;
+							break;
+						}
+						default: {
+							// default PPI160
+							circleRadius = 20;
+							break;
+						}
+					}
+				}
+			}
+			
+			override public function activate(context:DiagramShellContext, model:Object):void {
+				super.activate(context, model);			
+					
+				model.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+				model.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, nodePropertyChangedHandler);
+				
+				DisplayObject(target).addEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);	
+				DisplayObject(target).addEventListener(MoveEvent.MOVE, handleTargetMoveResize);		
+			
+				// update position
+				handleTargetMoveResize(null);				
+			}
+			
+			override public function deactivate(context:DiagramShellContext, model:Object):void {
+				try {
+					context.diagramShell.diagramRenderer.removeElement(circle);
+				} catch (e:ArgumentError) {					
+				}				
+							
+				model.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+				
+				// remove resize listeners				
+				DisplayObject(target).removeEventListener(ResizeEvent.RESIZE, handleTargetMoveResize);			
+				DisplayObject(target).removeEventListener(MoveEvent.MOVE, handleTargetMoveResize);	
+	
+				super.deactivate(context, model);
+			}
+			
+			protected function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
+				if (NodeControllerUtils.hasPropertyChanged(node, CoreConstants.HAS_CHILDREN)) {
+					// hasChildren changed -> update display
+					invalidateDisplayList();
+				}
+			}
+			
+			/**
+			 * @author Mariana Gheorghe
+			 */
+			protected function nodePropertyChangedHandler(event:PropertyChangeEvent):void {
+				if (event.property == CoreConstants.CHILDREN) {
+					// children list changed -> update display
+					invalidateDisplayList();
+				}
+			}
+	
+			protected function handleTargetMoveResize(event:Event):void {
+				setLayoutBoundsPosition(target.x, target.y);
+				setLayoutBoundsSize(target.width, target.height);
+			}
+		
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				if (node.properties != null && Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() &&
+					ControllerUtils.getModelChildrenController(context, node).getParent(context, node) != null) {	
+					vLine.visible = !mindMapDiagramShell.getModelController(context, node).getExpanded(context, node);
+					context.diagramShell.diagramRenderer.addElement(circle);
+				} else {
+					if (circle.parent != null) {
+						context.diagramShell.diagramRenderer.removeElement(circle);
+					}
+				}
+							
+				graphics.clear();
+				graphics.lineStyle(2, 0x3C37FE);		
+				graphics.drawRoundRect(-padding, - padding, target.width + padding * 2, target.height + padding * 2, 10, 10);			
+				
+				var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(context, node);
+				var side:int = mindMapDiagramShell.getModelController(context, node).getSide(context, node);
+				if (side == MindMapDiagramShell.POSITION_LEFT) {
+					circle.x = dynamicObject.x - circleRadius * 2;						
+					circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;
+				} else if (side == MindMapDiagramShell.POSITION_RIGHT) {
+					circle.x = dynamicObject.x + dynamicObject.width;
+					circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;							
+				}
+			}
+			
+			protected function circle_mouseClickHandler(event:MouseEvent):void {
+				mindMapDiagramShell.getModelController(context, node).setExpanded(context, node, !mindMapDiagramShell.getModelController(context, node).getExpanded(context, node));
+	
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+			
+			protected function circle_mouseDownUpHandler(event:MouseEvent):void {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+			
+			private function get node():Node {
+				return Node(model);
+			}
+				
+			private function get mindMapDiagramShell():MindMapDiagramShell {
+				return MindMapDiagramShell(context.diagramShell);
+			}
+			
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+			<s:Group id="circle" 
+					 click="circle_mouseClickHandler(event)" 
+					 mouseDown="circle_mouseDownUpHandler(event)" mouseUp="circle_mouseDownUpHandler(event)"
+					 width="{circleRadius * 2}" height="{circleRadius * 2}" depth="{int.MAX_VALUE}">		
+				<s:layout>				
+					<s:BasicLayout />
+				</s:layout>				
+				<s:Ellipse id="ellipse" width="100%" height="100%" >				
+					<s:stroke>
+						<s:SolidColorStroke color="#808080" weight="1" />
+					</s:stroke>
+					<s:fill>
+						<s:SolidColor color="white" />
+					</s:fill>			
+				</s:Ellipse>
+				<s:Line id="hLine" yFrom="{circleRadius -1/2}"  xFrom="{circleRadius/2}" yTo="{circleRadius -1/2}" xTo="{circleRadius * 2 - circleRadius/2}">
+					<s:stroke>
+						<s:SolidColorStroke color="#808080" weight="1" />
+					</s:stroke>
+				</s:Line>
+				<s:Line id="vLine" xFrom="{circleRadius - 1/2}"  yFrom="{circleRadius/2}" xTo="{circleRadius - 1/2}" yTo="{circleRadius * 2 - circleRadius/2}">
+					<s:stroke>
+						<s:SolidColorStroke color="#808080" weight="1" />
+					</s:stroke>
+				</s:Line>
+			</s:Group>		
+	</fx:Declarations>
+	
+</selection:AbstractSelectionRenderer>

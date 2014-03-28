@@ -1,8 +1,7 @@
 package org.flowerplatform.freeplane.style.controller;
 
-import static org.flowerplatform.core.NodePropertiesConstants.HAS_CHILDREN;
-import static org.flowerplatform.core.NodePropertiesConstants.TEXT;
-
+import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -12,9 +11,9 @@ import org.flowerplatform.core.node.remote.Node;
 public class StyleRootPropertiesProvider extends PropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node) {
-		node.getProperties().put(TEXT, "styles");
-		node.getProperties().put(HAS_CHILDREN, true);
+	public void populateWithProperties(Node node, ServiceContext context) {
+		node.getProperties().put(CoreConstants.NAME, "styles[read only]");
+		node.getProperties().put(CoreConstants.HAS_CHILDREN, true);
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.crispico.flower.util.popup {
 	
 	import com.crispico.flower.util.layout.Workbench;
-	import com.crispico.flower.util.spinner.ModalSpinner;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
@@ -10,6 +9,8 @@ package com.crispico.flower.util.popup {
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 	import org.flowerplatform.flexutil.popup.IPopupHandler;
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.flexutil.spinner.ModalSpinnerViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 
 	/**
@@ -59,7 +60,7 @@ package com.crispico.flower.util.popup {
 					}
 				}
 				// verify if viewId component already exists on workbench; if true, reuse component
-				var component:UIComponent = workbench.getComponent(String(_viewIdInWorkbench));
+				var component:UIComponent = workbench.getComponentById(String(_viewIdInWorkbench));
 				if (component != null) {
 					workbench.closeView(component, false);
 				}				

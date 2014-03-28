@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!---
+Has a semi-transparent canvas and a spinner. It must be activated
+and deactivated using the static methods: <code>addModalSpinner()</code> and
+<code>removeModalSpinner()</code>.
+
+<p>
+This class may be extended if a custom UI is needed for the spinner, using the 
+<code>childrenUnderSpinner</code> property (for MXML: this is the default property).
+
+<p>
+The modal spinner can only be activated on absolute layout <code>Container</code>s:
+e.g. <code>Canvas</code>, <code>Panel</code> with layout="absolute" or on <code>Container</code>s
+that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow</code>).
+
+@see #addModalSpinner()
+@see #removeModalSpinner()
+@author Cristi
+-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:spinner="org.flowerplatform.flexutil.spinner.*"
+		   addedEffect="{fadeIn}" verticalAlign="middle" horizontalAlign="center">
+	<fx:Metadata>
+		[DefaultProperty("childrenUnderSpinner")]
+	</fx:Metadata>
+	<fx:Declarations>
+		<mx:Fade id="fadeIn" duration="400" alphaFrom="0" alphaTo="1"/>
+		<mx:Fade id="fadeOut" duration="300" alphaFrom="1" alphaTo="0" effectEnd="fadeOutEffectEndHandler()"/>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace spinner "com.crispico.flower.util.spinner.*";
+		
+		.childUnderSpinner {
+			color: #0D78FF;
+		}
+		
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.containers.Panel;
+			import mx.core.Container;
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			import mx.core.mx_internal;
+			import mx.events.EffectEvent;
+			import mx.managers.ISystemManager;
+			import mx.managers.PopUpManager;
+			import mx.managers.SystemManager;
+			
+			import spark.components.Label;
+			
+			public var dontShowSpinner:Boolean;
+			
+			public var spinner:Spinner;
+			
+			public var childrenUnderSpinner:Array;
+			
+			/**
+			 * This static method needs to be used to add a modal spinner on a component. If a modal spinner
+			 * already exists for the given container, this call will have no effect (i.e. no support for
+			 * nested modal spinners).
+			 * 
+			 * <p>
+			 * In order to hide the modal spinner, call <code>removeModalSpinner</code> with the <b>SAME</b> <code>container</code>
+			 * parameter as for the call of this method.
+			 * 
+			 * @param container - The container that will own this spinner. 
+			 * @param text - A text that will be displayed under the spinner. If <code>null</code>, nothing is displayed,
+			 * 		and the corresponding <code>Label</code> component is not created.
+			 * @param modalSpinner - An instance of an already instantiated <code>ModalSpinner</code> (or probably a subclass). If
+			 * 		nothing is provided, a plain <code>ModalSpinner</code> is instantiated.
+			 * @param initDefaultProperties - When <code>true</code> (i.e. by default), <code>initDefaultProperties()</code> is invoked
+			 * 		before showing the modal spinner.
+			 * @see #removeModalSpinner()
+			 */
+			public static function addModalSpinner(container:Container, text:String = null, modalSpinner:ModalSpinner = null, initDefaultProperties:Boolean = true):void {
+				if (container == null) {
+					return;
+				}
+				
+				var existingModalSpinner:ModalSpinner;
+			
+				if (container is ModalSpinnerSupport) {
+					if (ModalSpinnerSupport(container).modalSpinner != null) {
+						existingModalSpinner = ModalSpinnerSupport(container).modalSpinner;
+					}
+				} else {
+					for (var i:int = 0; i < container.numChildren; i++) {
+						if (container.getChildAt(i) is ModalSpinner) {
+							existingModalSpinner = ModalSpinner(container.getChildAt(i));
+						}
+					}
+				}
+				
+				if (existingModalSpinner != null) {
+					if (existingModalSpinner.fadeOut.isPlaying) {
+						// a modal spinner exists, and it's closing => remove it quickly
+						// i.e. the end handler will be called, and the component will be
+						// immediately removed
+						var existingModalSpinnerAlpha:Number = existingModalSpinner.alpha;
+						existingModalSpinner.fadeOut.end();
+					} else {
+						// normal spinner => exit, because we don't allow spinner over spinner
+						return;
+					}
+				}
+				 
+				if (modalSpinner == null) {
+					modalSpinner = new ModalSpinner();
+					initDefaultProperties = true;
+				}
+				
+				if (initDefaultProperties) {
+					modalSpinner.initDefaultProperties(container);
+				}
+				
+				if (text != null) {
+					var label:Label = new Label();
+					label.text = text;
+					modalSpinner.childrenUnderSpinner = [label];
+				}
+
+				if (existingModalSpinner != null) {
+					// a modal spinner that was closing has been remove; 
+					// resume the fade from the existing alpha; however a slight
+					// flicker is shown, as a result of the the previous modal spinner
+					// being removed
+					modalSpinner.fadeIn.alphaFrom = existingModalSpinnerAlpha;
+				}
+				modalSpinner.addToContainer(container);
+			}
+			
+			protected function addToContainer(container:Container):void {
+				if (container is ModalSpinnerSupport) {
+					ModalSpinnerSupport(container).modalSpinner = this;
+					container.rawChildren.addChild(this);
+				} else {
+					container.addChild(this);
+				}				
+			}
+			
+			/**
+			 * Adds a modal spinner over the application.
+			 * 
+			 * @see ModalSpinner#addModalSpinner()
+			 * @author Mariana
+			 */ 
+			public static function addGlobalModalSpinner(text:String = null, modalSpinner:ModalSpinner = null):void {
+				var existingModalSpinner:ModalSpinner;
+				var systemManager:ISystemManager = FlexGlobals.topLevelApplication.systemManager;
+				for (var i:int = 0; i < systemManager.numChildren; i++) {
+					var obj:Object = systemManager.getChildAt(i);
+					if (obj is ModalSpinner) {
+						existingModalSpinner = ModalSpinner(obj);
+						break;
+					}
+				}
+
+				if (existingModalSpinner != null) {
+					if (existingModalSpinner.fadeOut.isPlaying) {
+						var existingModalSpinnerAlpha:Number = existingModalSpinner.alpha;
+						existingModalSpinner.fadeOut.end();
+					} else {
+						return;
+					}
+				}
+				
+				if (modalSpinner == null) {
+					modalSpinner = new ModalSpinner();
+				}
+				
+				// must be transparent since it is added as a modal popup
+				modalSpinner.setStyle("backgroundAlpha", 0);
+				
+				if (text != null) {
+					var label:Label = new Label();
+					label.text = text;
+					modalSpinner.childrenUnderSpinner = [label];
+				}
+				
+				if (existingModalSpinner != null) {
+					modalSpinner.fadeIn.alphaFrom = existingModalSpinnerAlpha;
+				}
+				
+				modalSpinner.addToApplication();
+			}
+			
+			/**
+			 * This modal spinner will be added as a popup over the application, to ensure that any other 
+			 * popup that may be opened will be covered.
+			 * 
+			 * @author Mariana
+			 */ 
+			protected function addToApplication():void {
+				PopUpManager.addPopUp(this, FlexGlobals.topLevelApplication as DisplayObject, true);
+				PopUpManager.centerPopUp(this);
+			}
+			
+			
+			/**
+			 * This static method needs to be used to close a modal spinner (that was added
+			 * using <code>addModalSpinner()</code>.
+			 * 
+			 * <p>
+			 * If the <code>container</code> doens't have a modal spinner, or has one which is 
+			 * closing, this method won't do anything.
+			 * 
+			 * @param container - The container for which the modal spinner will be removed.
+			 * @see #addModalSpinner()
+			 */
+			public static function removeModalSpinner(container:Container):void {
+				var modalSpinner:ModalSpinner = null;
+				if (container is ModalSpinnerSupport) {
+					modalSpinner = ModalSpinnerSupport(container).modalSpinner;
+				} else {
+					for (var i:int = 0; i < container.numChildren; i++) {
+						var obj:Object = container.getChildAt(i);
+						if (obj is ModalSpinner) {
+							modalSpinner = ModalSpinner(obj); 
+							break;
+						}
+					}
+				}
+				
+				if (modalSpinner != null) {
+					modalSpinner.removeFromContainer();
+				}
+			}
+			
+			/**
+			 * Removes the modal spinner added over the application, if there is one.
+			 * 
+			 * @see ModalSpinner#removeModalSpinner()
+			 * @author Mariana
+			 */ 
+			public static function removeGlobalModalSpinner():void {
+				var modalSpinner:ModalSpinner = null;
+				var container:Container = FlexGlobals.topLevelApplication as Container;
+				var systemManager:ISystemManager = (FlexGlobals.topLevelApplication as Container).systemManager;
+				for (var i:int = 0; i < systemManager.numChildren; i++) {
+					var obj:Object = systemManager.getChildAt(i);
+					if (obj is ModalSpinner) {
+						modalSpinner = ModalSpinner(obj);
+						break;
+					}
+				}
+				
+				if (modalSpinner != null) {
+					modalSpinner.removeFromContainer();
+				}
+			}
+			
+			protected function removeFromContainer():void {
+				if (!fadeOut.isPlaying) {
+					// start the fade effect only if the closing is in progress
+					fadeOut.play([this]);
+				}
+			}
+			
+			/**
+			 * We don't use the simpler "removedEffect" of this class, because
+			 * a piece of logic form EffectManager gets triggered (because the component
+			 * is being removed during effect play), and an error is thrown, because the component
+			 * is not found is the children list (which is normal, because it is in rawChildren list).
+			 */
+			protected function fadeOutEffectEndHandler():void {
+				if (parent is ModalSpinnerSupport) {
+					ModalSpinnerSupport(parent).modalSpinner = null;
+					Container(parent).rawChildren.removeChild(this);
+				} else {					
+					parent.removeChild(this);
+				}
+			}
+			
+			/**
+			 * Adjusts some graphic properties and styles.
+			 */
+			protected function initDefaultProperties(parentComponent:Container):void {
+				setStyle("backgroundAlpha", parentComponent.getStyle("modalTransparency"));
+				setStyle("backgroundColor", parentComponent.getStyle("modalTransparencyColor"));
+				percentWidth = 100;
+				percentHeight = 100;
+			}
+
+			override protected function createChildren():void {
+				super.createChildren();
+				if (!dontShowSpinner) {
+					spinner = new Spinner();
+					spinner.setStyle("tickColor", 0x66aaff);
+					addChild(spinner);
+				}
+				if (childrenUnderSpinner != null) {
+					for each (var child:DisplayObject in childrenUnderSpinner) {
+						if (child is UIComponent) {
+							UIComponent(child).styleName = "childUnderSpinner";
+						}
+						addChild(child);
+					}
+				}
+			}			
+			
+		]]>
+	</fx:Script>
+</mx:VBox>

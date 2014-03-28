@@ -21,7 +21,7 @@
 <!---
 @author Cristian Spiescu
 -->
-<s:DataRenderer implements="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable, org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"
+<s:DataRenderer implements="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable, org.flowerplatform.flexdiagram.IDiagramShellContextAware"
 	cacheAsBitmap="true"
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
@@ -33,20 +33,22 @@
 		<![CDATA[
 			import mx.events.PropertyChangeEvent;
 			
-			import org.flowerplatform.flexdiagram.DiagramShell;
-			import org.flowerplatform.flexdiagram.controller.visual_children.IVisualChildrenController;
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
+			import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 			
-			private var _diagramShell:DiagramShell;
-			protected var visualChildrenController:IVisualChildrenController;
+			protected var visualChildrenController:VisualChildrenController;
 			private var _shouldRefreshVisualChildren:Boolean;
 			
-			public function get diagramShell():DiagramShell {
-				return _diagramShell;
+			protected var _context:DiagramShellContext;
+			
+			public function get diagramShellContext():DiagramShellContext {			
+				return _context;
 			}
 			
-			public function set diagramShell(value:DiagramShell):void {
-				_diagramShell = value;
-			}
+			public function set diagramShellContext(value:DiagramShellContext):void {
+				this._context = value;
+			}	
 			
 			public function get shouldRefreshVisualChildren():Boolean {
 				return _shouldRefreshVisualChildren;
@@ -64,7 +66,7 @@
 				if (data == null) {
 					visualChildrenController = null;
 				} else {
-					visualChildrenController = diagramShell.getControllerProvider(data).getVisualChildrenController(data);
+					visualChildrenController = ControllerUtils.getVisualChildrenController(diagramShellContext, data);
 				}
 				if (data != null) {
 					x = data.x;
@@ -94,7 +96,7 @@
 			
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
 				if (visualChildrenController != null) {
-					visualChildrenController.refreshVisualChildren(data);
+					visualChildrenController.refreshVisualChildren(diagramShellContext, data);
 				}
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.util.Pair;
+import org.flowerplatform.util.UtilConstants;
 
 /**
  * A type descriptor specifies (for a node type):
@@ -44,8 +44,6 @@ import org.flowerplatform.util.Pair;
  */
 public class TypeDescriptor {
 
-	public static final String CATEGORY_PREFIX = "category.";
-	
 	private TypeDescriptorRegistry registry;
 	
 	public TypeDescriptorRegistry getRegistry() {
@@ -91,7 +89,7 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new category to a non-configurable registry");
 		}
-		if (!category.startsWith(CATEGORY_PREFIX)) {
+		if (!category.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Category type should be prefixed with 'category.'");
 		}
 		if (categories == null) {
@@ -106,7 +104,7 @@ public class TypeDescriptor {
 	 * 
 	 * @see #additiveControllers
 	 */
-	protected Map<String, Pair<AbstractController, Boolean>> singleControllers = new HashMap<String, Pair<AbstractController, Boolean>>();
+	protected Map<String, ControllerEntry<AbstractController>> singleControllers = new HashMap<String, ControllerEntry<AbstractController>>();
 
 	/**
 	 * @return For a given controller type, the single controller 
@@ -123,10 +121,10 @@ public class TypeDescriptor {
 	protected <T extends AbstractController> T getCachedSingleController(String controllerType, Object object, boolean includeDynamicCategoryProviders) {
 		getRegistry().configurable = false;
 		
-		Pair<AbstractController, Boolean> pair = getSingleControllerPair(controllerType);
-		if (pair.b) {
+		ControllerEntry<AbstractController> entry = getSingleControllerEntry(controllerType);
+		if (entry.wasCached()) {
 			// categories were processed before; return the controller
-			return (T) pair.a;
+			return (T) entry.getCachedValue();
 		}
 		
 		// else => let's scan now the categories
@@ -148,20 +146,23 @@ public class TypeDescriptor {
 			
 			T categoryController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
 			if (categoryController != null) {
-				// found a controller from a category; cache it
-				pair.a = categoryController;
-				if (pair.b) {
-					throw new RuntimeException(String.format(
-							"Object with type %s registered multiple categories with controllers of type %s", type, controllerType));
+				// found a controller from a category
+				// keep it if it has a lower order index than the existing one
+				if (entry.getCachedValue() == null || entry.getCachedValue().getOrderIndex() > categoryController.getOrderIndex()) {
+					entry.setCachedValue(categoryController);
 				}
-				pair.b = true;
 			}
 		}
 		
-		// finished scanning the categories
-		pair.b = true;
+		if (entry.getCachedValue() instanceof NullController) {
+			// means we must ignore all registered controllers
+			entry.setCachedValue(null);
+		}
 		
-		return (T) pair.a;
+		// finished scanning the categories
+		entry.setCached(true);
+		
+		return (T) entry.getCachedValue();
 	}
 		
 	/**
@@ -176,18 +177,19 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new single controller to a non-configurable registry");
 		}
-		Pair<AbstractController, Boolean> pair = getSingleControllerPair(type);
-		pair.a = controller;
+		ControllerEntry<AbstractController> entry = getSingleControllerEntry(type);
+		entry.setSelfValue(controller);
+		entry.setCachedValue(controller);
 		return this;
 	}
 	
-	private Pair<AbstractController, Boolean> getSingleControllerPair(String type) {
-		Pair<AbstractController, Boolean> pair = singleControllers.get(type);
-		if (pair == null) {
-			pair = new Pair<AbstractController, Boolean>(null, false);
-			singleControllers.put(type, pair);
+	private ControllerEntry<AbstractController> getSingleControllerEntry(String type) {
+		ControllerEntry<AbstractController> entry = singleControllers.get(type);
+		if (entry == null) {
+			entry = new ControllerEntry<AbstractController>();
+			singleControllers.put(type, entry);
 		}
-		return pair;
+		return entry;
 	}
 	
 	/**
@@ -208,7 +210,7 @@ public class TypeDescriptor {
 	 * 
 	 * @see #singleControllers
 	 */
-	protected Map<String, Pair<List<? extends AbstractController>, Boolean>> additiveControllers = new HashMap<String, Pair<List<? extends AbstractController>,Boolean>>();
+	protected Map<String, ControllerEntry<List<? extends AbstractController>>> additiveControllers = new HashMap<String, ControllerEntry<List<? extends AbstractController>>>();
 
 	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType, Object object) {
 		return  getCachedAdditiveControllers(controllerType, object, true);
@@ -222,9 +224,9 @@ public class TypeDescriptor {
 	protected <T extends AbstractController> List<T> getCachedAdditiveControllers(String controllerType, Object object, boolean includeDynamicCategoryProviders) {
 		getRegistry().configurable = false;
 		
-		Pair<List<? extends AbstractController>, Boolean> pair = getAdditiveControllersPair(controllerType);
-		List<T> controllers = (List<T>) pair.a;
-		if (pair.b) {
+		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(controllerType);
+		List<T> controllers = (List<T>) entry.getCachedValue();
+		if (entry.wasCached()) {
 			// categories were processed before; return the controllers
 			return controllers;
 		}
@@ -247,11 +249,11 @@ public class TypeDescriptor {
 			}
 			
 			controllers.addAll((Collection<? extends T>) categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false));
-			pair.b = true;
+			entry.setCached(true);
 		}
 		
 		// finished scanning the categories
-		pair.b = true;
+		entry.setCached(true);
 		
 		Collections.sort(controllers);
 		return controllers;
@@ -270,18 +272,26 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new additive controller to a non-configurable registry");
 		}
-		Pair<List<? extends AbstractController>, Boolean> pair = getAdditiveControllersPair(type);
-		((List<AbstractController>) pair.a).add(controller);
+		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(type);
+		((List<AbstractController>) entry.getSelfValue()).add(controller);
+		((List<AbstractController>) entry.getCachedValue()).add(controller);
 		return this;
 	}
 	
-	private Pair<List<? extends AbstractController>, Boolean> getAdditiveControllersPair(String type) {
-		Pair<List<? extends AbstractController>, Boolean> pair = additiveControllers.get(type);
-		if (pair == null) {
-			pair = new Pair<List<? extends AbstractController>, Boolean>(new ArrayList<AbstractController>(), false);
-			additiveControllers.put(type, pair);
+	private ControllerEntry<List<? extends AbstractController>> getAdditiveControllersEntry(String type) {
+		ControllerEntry<List<? extends AbstractController>> entry = additiveControllers.get(type);
+		if (entry == null) {
+			entry = new ControllerEntry<List<? extends AbstractController>>();
+			entry.setSelfValue(new ArrayList<AbstractController>());
+			entry.setCachedValue(new ArrayList<AbstractController>());
+			additiveControllers.put(type, entry);
 		}
-		return pair;
+		return entry;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s [type = %s]", this.getClass().getSimpleName(), type);
 	}
 			
 }

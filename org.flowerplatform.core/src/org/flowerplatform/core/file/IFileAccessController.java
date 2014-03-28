@@ -27,9 +27,7 @@ public interface IFileAccessController {
 	
 	Object getFile(Object parent, String name);
 	
-	boolean createNewFile(Object file);
-	
-	boolean createNewDirectory(Object directory);
+	boolean createFile(Object file, boolean isDirectory);
 	
 	boolean exists(Object file);
 	
@@ -45,14 +43,17 @@ public interface IFileAccessController {
 	
 	Object[] listFiles(Object folder);
 
-	boolean delete(Object child);
+	void delete(Object child);
 	
 	String getParent(Object file);
 	
-	void rename(Object file, Object dest);
+	boolean rename(Object file, Object dest);
 	
 	String readFileToString(Object file);
 	
 	void writeStringToFile(Object file, String str);
 	
+	boolean hasChildren(Object file);
+	
+	long length(Object file);
 }

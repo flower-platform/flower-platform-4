@@ -1,15 +1,14 @@
 package org.flowerplatform.flexutil.service {
 	import flash.utils.Dictionary;
 	
-	import mx.controls.Alert;
 	import mx.messaging.ChannelSet;
-	import mx.messaging.channels.AMFChannel;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
@@ -48,7 +47,12 @@ package org.flowerplatform.flexutil.service {
 			if (responder.faultHandler != null) {
 				responder.faultHandler(event);
 			} else {
-				Alert.show("Error while sending request to server: " + event.fault.faultString + "\n" + event.fault.content);
+				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+					.setWidth(300)
+					.setHeight(200)
+					.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
+					.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [event.fault.faultString, event.fault.content]))
+					.showMessageBox();
 			}			
 		}
 		

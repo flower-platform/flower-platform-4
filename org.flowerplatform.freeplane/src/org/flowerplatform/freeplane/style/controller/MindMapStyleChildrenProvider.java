@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
@@ -20,9 +22,11 @@ import org.freeplane.features.styles.MapStyleModel;
 public class MindMapStyleChildrenProvider extends ChildrenProvider {
 
 	@Override
-	public List<Node> getChildren(Node node) {
+	public List<Node> getChildren(Node node, ServiceContext serviceContext) {
 		// TODO replace with getRoot
-		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel("ID_85319927");
+//		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel("ID_85319927");
+		NodeModel nodeModel = ((MapModel) CorePlugin.getInstance().getResourceService()
+					.getRawResourceData(node.getFullNodeId())).getRootNode();
 		
 		final MapModel map = nodeModel.getMap();
 		final MapStyleModel mapStyleModel = MapStyleModel.getExtension(map);
@@ -38,7 +42,7 @@ public class MindMapStyleChildrenProvider extends ChildrenProvider {
 		
 		while(enumeration.hasMoreElements()){
 			for (NodeModel styleNodeModel : enumeration.nextElement().getChildren()) {
-				children.add(FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(styleNodeModel));
+				children.add(FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(styleNodeModel, node.getResource()));
 			}
 		}
 		
@@ -47,7 +51,7 @@ public class MindMapStyleChildrenProvider extends ChildrenProvider {
 	
 	
 	@Override
-	public boolean hasChildren(Node node) {
+	public boolean hasChildren(Node node, ServiceContext serviceContext) {
 		if (node.getType().equals(MIND_MAP_STYLE)) {
 			return false;
 		}

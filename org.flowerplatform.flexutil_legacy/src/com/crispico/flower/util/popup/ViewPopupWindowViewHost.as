@@ -1,6 +1,5 @@
 package com.crispico.flower.util.popup {
 	import com.crispico.flower.util.layout.view.ViewPopupWindow;
-	import com.crispico.flower.util.spinner.ModalSpinner;
 	
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
@@ -9,6 +8,7 @@ package com.crispico.flower.util.popup {
 	import mx.containers.ControlBar;
 	
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	

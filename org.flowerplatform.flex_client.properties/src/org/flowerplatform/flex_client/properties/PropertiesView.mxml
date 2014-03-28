@@ -10,15 +10,16 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.NodePropertiesConstants;
-			import org.flowerplatform.flex_client.core.mindmap.remote.Node;
-			import org.flowerplatform.flex_client.core.mindmap.update.event.NodeUpdatedEvent;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
+			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -63,42 +64,51 @@
 						
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				var node:Node;
-				
+													
+				propertyForm.removeAllElements();
+				label.text = "";
+
+				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view					
+					return;
+				}
 				// get new selected node
 				node = Node(event.selection.getItemAt(0));
 				
-				propertyForm.removeAllElements();
+				if (node.parent == null && node.children == null) { // root node, don't populate with properties
+					return;					
+				}
 				
 				// get properties to display
-				CorePlugin.getInstance().serviceLocator.invoke(
-					"nodeService.getPropertyDescriptors", [node.fullNodeId], 
-					function(result:Object):void {
-						var currentCategory:String;
-						for ( var i:int = 0; i < ArrayCollection(result).length; i++ ) {
-							var formItem:PropertyItemRenderer = new PropertyItemRenderer();
-							var itemCategory:String = result.getItemAt(i)["category"];
-							if (itemCategory != currentCategory) {
-								var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
-								
-								currentCategory = itemCategory;
-								categoryItem.label = currentCategory;
-								propertyForm.addElement(categoryItem);
-							}
-							propertyForm.addElement(formItem);
-							formItem.data = ArrayCollection(result).getItemAt(i);
-							
-						}
-							
-						// get their values from node
-						nodeUpdatedHandler(new NodeUpdatedEvent(node));
+				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
+						.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
+
+				var currentCategory:String = "";
+				for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {
+					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
+					var formItem:PropertyItemRenderer = new PropertyItemRenderer();
+					var itemCategory:String = propertyDescriptor.category;
+					if (itemCategory != currentCategory) {
+						var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
 						
-						label.text = (node.properties == null)? null : node.properties[NodePropertiesConstants.TEXT];
-						
-						// store new selection and listen for node upates
-						PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
-						node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+						currentCategory = itemCategory;
+						categoryItem.label = currentCategory;
+						propertyForm.addElement(categoryItem);
 					}
-				);		
+					propertyForm.addElement(formItem);
+					formItem.data = propertyDescriptor;
+					
+				}
+					
+				// get their values from node
+				nodeUpdatedHandler(new NodeUpdatedEvent(node));
+				
+				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(
+					CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
+				label.text = String(titleProvider.getValue(node));
+				
+				// store new selection and listen for node upates
+				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+				node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 			}
 			
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
@@ -108,8 +118,8 @@
 					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
 						if (node.properties != null) {
-							if (node.properties.hasOwnProperty(propertyItemRenderer.label)) {
-								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.label];
+							if (node.properties.hasOwnProperty(propertyItemRenderer.propertyDescriptor.name)) {
+								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];
 							}
 						}
 					}

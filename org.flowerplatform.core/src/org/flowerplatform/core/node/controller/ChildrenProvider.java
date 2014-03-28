@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.controller;
 
 import java.util.List;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.controller.AbstractController;
 
@@ -10,13 +11,11 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class ChildrenProvider extends AbstractController {
 
-	public static final String CHILDREN_PROVIDER = "childrenProvider";
-	
-	public abstract List<Node> getChildren(Node node);
+	public abstract List<Node> getChildren(Node node, ServiceContext context);
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public abstract boolean hasChildren(Node node);
+	public abstract boolean hasChildren(Node node, ServiceContext context);
 	
 }

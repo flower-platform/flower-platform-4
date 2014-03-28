@@ -18,17 +18,14 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider.ANNOTATION_MEMBER_DEFAULT_VALUE;
-
 import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider;
-import org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.core.NodePropertiesConstants;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped by {@link AnnotationTypeMemberDeclaration}. Children are {@link Modifier}s.
@@ -38,8 +35,6 @@ import org.flowerplatform.core.NodePropertiesConstants;
  * @author Mariana
  */
 public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstractAstNodeModelAdapter {
-
-	public static final String ANNOTATION_MEMBER = "javaAnnotationMember";
 	
 	@Override
 	public Object getMatchKey(Object element) {
@@ -48,11 +43,11 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			return getMatchKey(element);
-		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			return getStringFromExpression(getAnnotationMember(element).getDefault());
-		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getAnnotationMember(element).getType());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -60,13 +55,13 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		if (FeatureProvider.NAME.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
 			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
 			member.setName(member.getAST().newSimpleName((String) value));
-		} else if (ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
 			member.setDefault(getExpressionFromString(member.getAST(), (String) value));
-		} else if (JavaFeaturesConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
 			member.setType(getTypeFromString(member.getAST(), (String) value));
 		}

@@ -18,43 +18,18 @@
  */
 package org.flowerplatform.codesync.code.java.feature_provider;
 
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.DOCUMENTATION;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.MODIFIERS;
-import static org.flowerplatform.codesync.code.java.feature_provider.JavaFeaturesConstants.TYPED_ELEMENT_TYPE;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 
 public class JavaOperationFeatureProvider extends NodeFeatureProvider {
 	
-	public static final String OPERATION_PARAMETERS = "operationParameters";
-	public static final String HAS_BODY = "hasBody";
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public List<?> getValueFeatures(Object element) {
-		List features = super.getValueFeatures(element);
-		features.addAll(Arrays.asList(
-				DOCUMENTATION,
-				TYPED_ELEMENT_TYPE,
-				HAS_BODY));
-		return features;
-	}
-
-	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return Arrays.asList(MODIFIERS, OPERATION_PARAMETERS);
-	}
-	
-	@Override
-	public int getFeatureType(Object feature) {
-		if (MODIFIERS.equals(feature) || OPERATION_PARAMETERS.equals(feature)) {
-			return IModelAdapter.FEATURE_TYPE_CONTAINMENT;
-		}
-		return super.getFeatureType(feature);
+	public JavaOperationFeatureProvider() {
+		valueFeatures.add(CodeSyncCodeJavaConstants.DOCUMENTATION);
+		valueFeatures.add(CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE);
+		valueFeatures.add(CodeSyncCodeJavaConstants.OPERATION_HAS_BODY);
+		
+		containmentFeatures.add(CodeSyncCodeJavaConstants.MODIFIERS);
+		containmentFeatures.add(CodeSyncCodeJavaConstants.OPERATION_PARAMETERS);
 	}
 
 }

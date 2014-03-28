@@ -17,6 +17,9 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.remote {
+	import mx.collections.ArrayCollection;
+	
+	import org.flowerplatform.flexutil.controller.AbstractController;
 
 	/**
 	 * @author Razvan Tache
@@ -25,8 +28,8 @@ package org.flowerplatform.flex_client.properties.remote {
 	 */
 	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
-	public class PropertyDescriptor {
-
+	public class PropertyDescriptor extends AbstractController {
+		
 		public var name:String;
 		
 		public var title:String;
@@ -37,17 +40,17 @@ package org.flowerplatform.flex_client.properties.remote {
 		
 		public var type:String;
 		
-	    /**
-	     * @author Sebastian Solomon
-	     */
 		public var category:String;
 		
-		/**
-		 * @author Sebastian Solomon
-		 */
 		public var hasChangeCheckbox:Boolean;
 		
 		public var defaultValue:Object;
+		
+		public var possibleValues:ArrayCollection;
+		
+		public var contributeToCreation:Boolean;
+		
+		public var isMandatory:Boolean;
 		
 	}
 }

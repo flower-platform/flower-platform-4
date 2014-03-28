@@ -1,6 +1,10 @@
 package org.flowerplatform.core.node.update.controller;
 
+import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
+
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -17,22 +21,28 @@ public class UpdatePropertySetterController extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String key, PropertyValueWrapper wrapper) {	
-		setUnsetProperty(node, key, wrapper.getPropertyValue(), false);
+	public void setProperty(Node node, String key, PropertyValueWrapper wrapper, ServiceContext context) {	
+		setUnsetProperty(node, key, wrapper.getPropertyValue(), false, context);
 	}
 
 	@Override
-	public void unsetProperty(Node node, String key) {
-		setUnsetProperty(node, key, node.getOrPopulateProperties().get(key), false);
+	public void unsetProperty(Node node, String key, ServiceContext context) {
+		setUnsetProperty(node, key, node.getOrPopulateProperties().get(key), false, context);
 	}
 	
-	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset) {
-		Node rootNode = CorePlugin.getInstance().getNodeService().getRootNode(node);
-		if (rootNode == null) {
-			return;
+	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext context) {		
+		Node resourceNode;
+		if (context.getValue(NODE_IS_RESOURCE_NODE)) {
+			resourceNode = node;
+		} else {
+			resourceNode = CoreUtils.getResourceNode(node);
+			if (resourceNode == null) {
+				return;
+			}
 		}
-		CorePlugin.getInstance().getUpdateService().getUpdateDAO()
-			.addUpdate(rootNode, new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
+
+		CorePlugin.getInstance().getResourceService()
+			.addUpdate(resourceNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
 	}
 
 }

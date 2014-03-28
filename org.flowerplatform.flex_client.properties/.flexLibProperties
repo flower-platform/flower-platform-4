@@ -2,6 +2,9 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.NumberPropertyRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.ColorPickerPropertyRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.PropertiesConstants"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

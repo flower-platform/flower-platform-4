@@ -2,18 +2,9 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flexdiagram.DiagramShell"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.ComposedControllerProvider"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.ControllerBase"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.IAbsoluteLayoutRectangleController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.IControllerProvider"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.IModelChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.model_extra_info.IModelExtraInfoController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_extra_info.LightweightModelExtraInfoController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.renderer.IRendererController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.selection.ISelectionController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.IVisualChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.DiagramRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer"/>

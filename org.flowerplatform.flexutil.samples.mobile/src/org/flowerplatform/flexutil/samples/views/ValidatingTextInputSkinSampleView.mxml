@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="ValidatingTextInputSkinSampleView" xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:layout>
+		<s:VerticalLayout gap="10"/>
+	</s:layout>
+	
+	<s:Spacer height="20"/>
+	
+	<s:Label width="100%" text="This is a TextInput with the default skin (StageTextInputSkin). Validation does not work."/>
+	<s:TextInput id="defaultSkin"/>
+	
+	<s:Spacer height="20"/>
+	
+	<s:Label width="100%" text="This is a TextInput with the TextInputSkin. Text is added when the component is created, triggering validation; the text is already show as invalid when the screen is shown. Also, validation is not done on focus out."/>
+	<s:TextInput id="textInputSkin" skinClass="spark.skins.mobile.TextInputSkin"/>
+	
+	<s:Spacer height="20"/>
+	
+	<s:Label width="100%" text="This is a TextInput with the ValidatingTextInputSkin. Prevents adding text, so the validation works fine. Also has a listener to trigger validation on focus out."/>
+	<s:TextInput id="validatingSkin" skinClass="org.flowerplatform.flexutil.mobile.text.ValidatingTextInputSkin"/>
+	
+	<fx:Declarations>
+		
+		<mx:StringValidator source="{defaultSkin}" property="text" required="true"/>
+		<mx:StringValidator source="{textInputSkin}" property="text" required="true"/>
+		<mx:StringValidator source="{validatingSkin}" property="text" required="true"/>
+		
+	</fx:Declarations>
+	
+</s:View>

@@ -18,21 +18,22 @@
  */
 package org.flowerplatform.codesync.adapter;
 
-import static org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -60,7 +61,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
-		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), true);
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), new ServiceContext().add(POPULATE_WITH_PROPERTIES, true));
 		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
 
 			@Override
@@ -90,12 +91,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrPopulateProperties().get(FeatureProvider.NAME);
+		return getNode(element).getOrPopulateProperties().get(CoreConstants.NAME);
 	}
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {		
-		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue);
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, new ServiceContext());
 	}
 	
 	/**
@@ -126,8 +127,8 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
 						
-				Node child = new Node(type, "freePlanePersistence://path_to_resource", null, null);
-				CorePlugin.getInstance().getNodeService().addChild(parent, child, null);
+				Node child = new Node(type, parent.getResource(), null, null);
+				CorePlugin.getInstance().getNodeService().addChild(parent, child, null, new ServiceContext());
 				return child;
 //		}
 //		
@@ -136,7 +137,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child));
+		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), new ServiceContext());
 	}
 
 	@Override
@@ -159,12 +160,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public void setConflict(Object element, Object feature, Object oppositeValue) {		
-		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, CorePlugin.getInstance().getNodeService());
+		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue);
 	}
 	
 	@Override
 	public void unsetConflict(Object element, Object feature) {		
-		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), CorePlugin.getInstance().getNodeService());
+		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString());
 	}
 
 	protected Node getNode(Object element) {
@@ -176,12 +177,14 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.ADDED)) {
-					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
+				if (childNode.getOrPopulateProperties().containsKey(ADDED)) {
+					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED, new ServiceContext());
 				}
 			} else {
-				if (childNode.getOrPopulateProperties().containsKey(CodeSyncPlugin.REMOVED)) {
-					CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
+				if (childNode.getOrPopulateProperties().containsKey(REMOVED)) {
+					CorePlugin.getInstance().getNodeService().removeChild(node, childNode, new ServiceContext());
+					// set childrenSync now, because after this match is synced, the parent won't be notified because this child is already removed
+					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node);
 				}
 			}
 		}
@@ -193,58 +196,27 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 * @param childMatchKey 
 	 */
 	protected Object findChild(Match parentMatch, Object feature, boolean childAdded, Object matchKey) {
-		if (matchKey == null)
+		if (matchKey == null) {
 			return null;
-		for (Object existingChild : getChildrenFromMatch(parentMatch, feature, childAdded)) {
-			if (existingChild == null) {
-				continue;
-			}
-			Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(existingChild).getMatchKey(existingChild);
-			if (matchKey.equals(childMatchKey)) {
-				return existingChild;
-			}
 		}
-		return null;
-	}
 
-	
-	protected void processContainmentFeatureAfterActionPerformed(Node node, List<Object> children, ActionResult result, CodeSyncAlgorithm codeSyncAlgorithm) {
-		Object child = findChild(codeSyncAlgorithm, children, result.childMatchKey);
-		if (child != null && child instanceof Node) {
-			Node childNode = (Node) child;
-			if (result.childAdded) {
-				CorePlugin.getInstance().getNodeService().unsetProperty(childNode, CodeSyncPlugin.ADDED);
-			} else {
-				CorePlugin.getInstance().getNodeService().removeChild(node, childNode);
-			}
-		}
-	}
-	
-	protected List<Object> getChildrenFromMatch(Match parentMatch, Object feature, boolean childAdded) {
-		List<Object> children = new ArrayList<Object>();
 		for (Match match : parentMatch.getSubMatches()) {
+			Object child = null;
 			if (match.getFeature().equals(feature)) {
 				if (childAdded) {
-					children.add(match.getLeft());
+					child = match.getLeft();
 				} else {
-					children.add(match.getAncestor());
+					child = match.getAncestor();
+				}
+			}
+			if (child != null) {
+				Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(match, child).getMatchKey(child);
+				if (matchKey.equals(childMatchKey)) {
+					return child;
 				}
 			}
 		}
-		return children;
-	}
-	
-	/**
-	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
-	 */
-	protected Object findChild(CodeSyncAlgorithm codeSyncAlgorithm, List list, Object matchKey) {
-		if (matchKey == null)
-			return null;
-		for (Object existingChild : list) {
-			if (matchKey.equals(codeSyncAlgorithm.getLeftModelAdapter(existingChild).getMatchKey(existingChild))) {
-				return existingChild;
-			}
-		}
+		
 		return null;
 	}
 	

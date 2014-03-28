@@ -18,108 +18,60 @@
  */
 package org.flowerplatform.core;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
+import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.AddNodeController;
-import org.flowerplatform.core.node.controller.PropertySetter;
-import org.flowerplatform.core.node.controller.RemoveNodeController;
+import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
+import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.update.InMemoryUpdateDAO;
-import org.flowerplatform.core.node.update.UpdateService;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.resource.ResourceDebugControllers;
+import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
+import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
 import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
-import org.flowerplatform.core.node.update.remote.UpdateServiceRemote;
-import org.flowerplatform.util.controller.AllDynamicCategoryProvider;
-import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.core.repository.RepositoryChildrenProvider;
+import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
+import org.flowerplatform.core.repository.RootChildrenProvider;
+import org.flowerplatform.core.repository.RootPropertiesProvider;
+import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
-import org.flowerplatform.util.servlet.ResourcesServlet;
 import org.osgi.framework.BundleContext;
 
 /**
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
+ * @author Mariana Gheorghe
  */
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
-	public static final String RESOURCE_KEY = "resource";
-	public static final String TYPE_KEY = "type";
-	
 	protected static CorePlugin INSTANCE;
-		
-	public static CorePlugin getInstance() {
-		return INSTANCE;
-	}
-	
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		INSTANCE = this;
-		
-		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
-		getServiceRegistry().registerService("updateService", new UpdateServiceRemote());
-		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
-				
-		TypeDescriptor updaterDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(AllDynamicCategoryProvider.CATEGORY_ALL);
-		updaterDescriptor.addAdditiveController(AddNodeController.ADD_NODE_CONTROLLER, new UpdateAddNodeController());
-		updaterDescriptor.addAdditiveController(RemoveNodeController.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController());
-		updaterDescriptor.addAdditiveController(PropertySetter.PROPERTY_SETTER, new UpdatePropertySetterController());
-			
-		setFileAccessController(new PlainFileAccessController());
 
-		setRemoteMethodInvocationListener(new RemoteMethodInvocationListener());
-		
-		//TODO use Flower property
-		boolean isDeleteTempFolderAtStartProperty = true;
-		if (isDeleteTempFolderAtStartProperty) {
-			FileUtils.deleteDirectory(ResourcesServlet.TEMP_FOLDER);
-		}
-	}
-
-	public void stop(BundleContext bundleContext) throws Exception {
-		super.stop(bundleContext);
-		INSTANCE = null;
-	}
-
-	private ServiceRegistry serviceRegistry = new ServiceRegistry();
-
-	public ServiceRegistry getServiceRegistry() {
-		return serviceRegistry;
-	}
-	
-	private TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
-
-	public TypeDescriptorRegistry getNodeTypeDescriptorRegistry() {
-		return nodeTypeDescriptorRegistry;
-	}
-
-	protected IFileAccessController fileAccessController;
-	
-	/**
-	 * @author Mariana Gheorghe
-	 */
-	public IFileAccessController getFileAccessController() {
-		return fileAccessController;
-	}
-
-	public void setFileAccessController(IFileAccessController fileAccessController) {
-		this.fileAccessController = fileAccessController;
-	}
-	
-	@Override
-	public void registerMessageBundle() throws Exception {
-		// no messages yet
-	}
+	protected IFileAccessController fileAccessController = new PlainFileAccessController();
 
 	/**
 	 * @author Sebastian Solomon
 	 */
-	protected RemoteMethodInvocationListener remoteMethodInvocationListener;
+	protected RemoteMethodInvocationListener remoteMethodInvocationListener = new RemoteMethodInvocationListener();
+
+	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
+	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
+	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
+	protected ResourceService resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
+
+	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
+	
+	public static CorePlugin getInstance() {
+		return INSTANCE;
+	}
 	
 	/**
 	 * @author Sebastian Solomon
@@ -129,28 +81,94 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	}
 	
 	/**
-	 * @author Sebastian Solomon
+	 * @author Mariana Gheorghe
 	 */
-	public void setRemoteMethodInvocationListener(RemoteMethodInvocationListener remoteMethodInvocationListener) {
-		this.remoteMethodInvocationListener = remoteMethodInvocationListener;
+	public IFileAccessController getFileAccessController() {
+		return fileAccessController;
 	}
 	
-	protected NodeService nodeService;
-	
+	public ServiceRegistry getServiceRegistry() {
+		return serviceRegistry;
+	}
+
+	public TypeDescriptorRegistry getNodeTypeDescriptorRegistry() {
+		return nodeTypeDescriptorRegistry;
+	}
+
 	public NodeService getNodeService() {
-		if (nodeService == null) {
-			nodeService = new NodeService(nodeTypeDescriptorRegistry);
-		}
 		return nodeService;
 	}
+
+	public ResourceService getResourceService() {
+		return resourceService;
+	}
 	
-	protected UpdateService updateService;
-	
-	public UpdateService getUpdateService() {
-		if (updateService == null) {
-			updateService = new UpdateService(new InMemoryUpdateDAO());
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		INSTANCE = this;
+			
+		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
+		getServiceRegistry().registerService("resourceService", new ResourceServiceRemote());
+		
+		new ResourceUnsubscriber().start();
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.ROOT_TYPE)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootChildrenProvider());
+
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.REPOSITORY_TYPE)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RepositoryPropertiesProvider())
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RepositoryChildrenProvider());
+
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.CODE_TYPE))
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true));
+		
+		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
+				
+		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL)
+		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
+		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
+		.addAdditiveController(CoreConstants.PROPERTY_SETTER, new UpdatePropertySetterController())
+		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
+		.addSingleController(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.SIDE))
+		.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
+		
+		new FileSystemControllers().registerControllers();
+		new ResourceDebugControllers().registerControllers();
+		
+		//TODO use Flower property
+		boolean isDeleteTempFolderAtStartProperty = true;
+		if (isDeleteTempFolderAtStartProperty) {
+			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
-		return updateService;
+	}
+
+	public void stop(BundleContext bundleContext) throws Exception {
+		super.stop(bundleContext);
+		INSTANCE = null;
+	}
+
+	/**
+	 * Setting/removing must be done from a try/finally block to make sure that 
+	 * the request is cleared, i.e.
+	 * 
+	 * <pre>
+	 * try {
+	 * 	CorePlugin.getInstance().getRequestThreadLocal().set(request);
+	 * 	
+	 * 	// specific logic here
+	 * 
+	 * } finally {
+	 * 	CorePlugin.getInstance().getRequestThreadLocal().remove()
+	 * }
+	 * </pre> 
+	 * 
+	 * @see FlowerMessageBrokerServlet
+	 */
+	public ThreadLocal<HttpServletRequest> getRequestThreadLocal() {
+		return requestThreadLocal;
 	}
 	
 }

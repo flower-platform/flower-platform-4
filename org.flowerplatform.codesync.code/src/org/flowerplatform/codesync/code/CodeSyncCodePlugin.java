@@ -31,17 +31,6 @@ import org.slf4j.LoggerFactory;
  */
 public class CodeSyncCodePlugin extends AbstractFlowerJavaPlugin {
 	
-	public static final String FOLDER = "Folder";
-	public static final String FILE = "File";
-	
-	public static String MARKER_ANNOTATION = "_MARKER";
-	
-	public static String SINGLE_MEMBER_ANNOTATION = "_SINGLE_MEMBER";
-	 
-	public static String NORMAL_ANNOTATION = "_NORMAL";
-	
-	public final static String SINGLE_MEMBER_ANNOTATION_VALUE_NAME = "_";
-	
 	protected static CodeSyncCodePlugin INSTANCE;
 	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncCodePlugin.class);

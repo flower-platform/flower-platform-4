@@ -21,12 +21,14 @@ package org.flowerplatform.core.node.remote;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
+ * Used to filter the children of a node into categories (e.g. a Java class has three categories of children, 
+ * body declarations, modifiers and super interfaces). This descriptor is a single controller, and is added
+ * on the child type.
+ * 
  * @author Mariana Gheorghe
  */
 public class MemberOfChildCategoryDescriptor extends AbstractController {
 
-	public static final String MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR = "memberOfChildCategoryDescriptor";
-	
 	private String childCategory;
 
 	public MemberOfChildCategoryDescriptor(String childCategory) {

@@ -17,24 +17,18 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool {
-	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
-	import flash.events.SoftKeyboardEvent;
-	import flash.events.SoftKeyboardTrigger;
 	import flash.ui.Keyboard;
 	
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
-	import mx.events.FlexEvent;
 	
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.tool.controller.IInplaceEditorController;
-	
-	import spark.components.RichEditableText;
-	import spark.core.IDisplayText;
-	import spark.core.IEditableText;
+	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -51,7 +45,8 @@ package org.flowerplatform.flexdiagram.tool {
 			WakeUpTool.wakeMeUpIfEventOccurs(diagramShell, this, WakeUpTool.MOUSE_UP);			
 		}
 		
-		public function wakeUp(eventType:String, initialEvent:MouseEvent):Boolean {	
+		public function wakeUp(eventType:String, initialEvent:MouseEvent):Boolean {
+			context.shellContext = diagramShell.getNewDiagramShellContext();			
 			if (eventType == WakeUpTool.MOUSE_RIGHT_CLICK) {
 				// right click event performed (opens menu) -> don't activate
 				context.wakedByRightClickEvent = true;
@@ -60,7 +55,7 @@ package org.flowerplatform.flexdiagram.tool {
 				var renderer:IVisualElement = getRendererFromDisplayCoordinates();
 				if (renderer is IDataRenderer && !(renderer is DiagramRenderer)) {
 					var model:Object = IDataRenderer(renderer).data;
-					if (diagramShell.getControllerProvider(model).getInplaceEditorController(model) != null) {
+					if (ControllerUtils.getInplaceEditorController(context.shellContext, model) != null) {
 						var selected:Boolean = isSelected(renderer);
 						if (!selected || (selected && diagramShell.selectedItems.length > 1)) {
 							// if not selected or multiple selection
@@ -89,10 +84,10 @@ package org.flowerplatform.flexdiagram.tool {
 			
 			diagramRenderer.addEventListener(MouseEvent.CLICK, mouseClickHandler);
 			
-			var inplaceEditorController:IInplaceEditorController = diagramShell.getControllerProvider(context.model).getInplaceEditorController(context.model);
+			var inplaceEditorController:InplaceEditorController = ControllerUtils.getInplaceEditorController(context.shellContext, context.model);
 			if (inplaceEditorController != null) {
-				if (inplaceEditorController.canActivate(context.model)) {
-					inplaceEditorController.activate(context.model);
+				if (inplaceEditorController.canActivate(context.shellContext, context.model)) {
+					inplaceEditorController.activate(context.shellContext, context.model);
 					if (context.wakedByMouseDownEvent) {
 						diagramRenderer.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);	
 					}
@@ -102,15 +97,17 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 				
 		override public function deactivateAsMainTool():void {
-			var inplaceEditorController:IInplaceEditorController = diagramShell.getControllerProvider(context.model).getInplaceEditorController(context.model);
+			var inplaceEditorController:InplaceEditorController = ControllerUtils.getInplaceEditorController(context.shellContext, context.model);
 			if (inplaceEditorController != null) {
-				inplaceEditorController.deactivate(context.model);
+				inplaceEditorController.deactivate(context.shellContext, context.model);
 				if (context.wakedByMouseDownEvent) {
 					diagramRenderer.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);	
 				}
 			}
 			
-			delete context.model;			
+			delete context.model;		
+			delete context.shellContext;
+			
 			diagramRenderer.removeEventListener(MouseEvent.CLICK, mouseClickHandler);	
 			super.deactivateAsMainTool();
 		}
@@ -123,21 +120,20 @@ package org.flowerplatform.flexdiagram.tool {
 			switch (event.keyCode) {
 				case Keyboard.F2: // active tool
 					var model:Object = IDataRenderer(getRendererFromDisplayCoordinates()).data;
-					var inplaceEditorController:IInplaceEditorController = diagramShell.getControllerProvider(model).getInplaceEditorController(model);
+					context.shellContext = diagramShell.getNewDiagramShellContext();
+					var inplaceEditorController:InplaceEditorController = ControllerUtils.getInplaceEditorController(context.shellContext, model);
 					if (inplaceEditorController != null) {
 						diagramShell.mainTool = this;
 					}
 					break;
 				case Keyboard.ENTER: // commit value			
 					if (!event.ctrlKey && this == diagramShell.mainTool) {
-						diagramShell.getControllerProvider(context.model).
-							getInplaceEditorController(context.model).commit(context.model);
+						ControllerUtils.getInplaceEditorController(context.shellContext, context.model).commit(context.shellContext, context.model);
 					}					
 					break;
 				case Keyboard.ESCAPE: // abort
 					if (this == diagramShell.mainTool) {
-						diagramShell.getControllerProvider(context.model).
-							getInplaceEditorController(context.model).abort(context.model);
+						ControllerUtils.getInplaceEditorController(context.shellContext, context.model).abort(context.shellContext, context.model);
 					}
 					break;
 			}
@@ -146,10 +142,8 @@ package org.flowerplatform.flexdiagram.tool {
 		private function mouseClickHandler(event:MouseEvent):void {			
 			var renderer:IVisualElement = getRendererFromDisplayCoordinates(true);
 			if (renderer == null || IDataRenderer(renderer).data != context.model) { // abort if click somewhere else
-				if (diagramShell.getControllerProvider(context.model).
-					getInplaceEditorController(context.model).canActivate(context.model)) {
-					diagramShell.getControllerProvider(context.model).
-						getInplaceEditorController(context.model).commit(context.model);
+				if (ControllerUtils.getInplaceEditorController(context.shellContext, context.model).canActivate(context.shellContext, context.model)) {
+					ControllerUtils.getInplaceEditorController(context.shellContext, context.model).commit(context.shellContext, context.model);
 				}
 			}
 		}
@@ -166,7 +160,7 @@ package org.flowerplatform.flexdiagram.tool {
 		private function isSelected(renderer:IVisualElement):Boolean {
 			if (renderer is IDataRenderer) {	
 				var model:Object = IDataRenderer(renderer).data;				
-				if (diagramShell.getControllerProvider(model).getSelectionController(model) != null) {
+				if (ControllerUtils.getSelectionController(context.shellContext, model) != null) {
 					return diagramShell.selectedItems.getItemIndex(model) != -1;
 				}								
 			}			 	

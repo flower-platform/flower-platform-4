@@ -18,8 +18,6 @@
  */
 package org.flowerplatform.codesync;
 
-import static org.flowerplatform.codesync.CodeSyncAlgorithm.UNDEFINED;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,15 +218,15 @@ public class Match {
 	public Object[] getDelegateAndModelAdapter(CodeSyncAlgorithm algorithm) {
 		Object delegate = null;
 		IModelAdapter modelAdapter = null;
-		if (getAncestor() != null && !getAncestor().equals(CodeSyncAlgorithm.UNDEFINED)) {
+		if (getAncestor() != null && !getAncestor().equals(CodeSyncConstants.UNDEFINED)) {
 			delegate = getAncestor();
-			modelAdapter = algorithm.getAncestorModelAdapter(delegate);
-		} else if (getLeft() != null && !getLeft().equals(CodeSyncAlgorithm.UNDEFINED)) {
+			modelAdapter = algorithm.getAncestorModelAdapter(this, delegate);
+		} else if (getLeft() != null && !getLeft().equals(CodeSyncConstants.UNDEFINED)) {
 			delegate = getLeft();
-			modelAdapter = algorithm.getLeftModelAdapter(delegate);
-		} else if (getRight() != null && !getRight().equals(CodeSyncAlgorithm.UNDEFINED)) {
+			modelAdapter = algorithm.getLeftModelAdapter(this, delegate);
+		} else if (getRight() != null && !getRight().equals(CodeSyncConstants.UNDEFINED)) {
 			delegate = getRight();
-			modelAdapter = algorithm.getRightModelAdapter(delegate);
+			modelAdapter = algorithm.getRightModelAdapter(this, delegate);
 		}
 		
 		if (delegate == null)
@@ -531,13 +529,13 @@ public class Match {
 	 * @author Mariana
 	 */
 	public boolean isEmptyMatch() {
-		if (getAncestor() != null && !getAncestor().equals(UNDEFINED)) {
+		if (getAncestor() != null && !getAncestor().equals(CodeSyncConstants.UNDEFINED)) {
 			return false;
 		}
-		if (getLeft() != null && !getLeft().equals(UNDEFINED)) {
+		if (getLeft() != null && !getLeft().equals(CodeSyncConstants.UNDEFINED)) {
 			return false;
 		}
-		if (getRight() != null && !getRight().equals(UNDEFINED)) {
+		if (getRight() != null && !getRight().equals(CodeSyncConstants.UNDEFINED)) {
 			return false;
 		}
 		return true;

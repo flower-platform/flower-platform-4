@@ -1,5 +1,5 @@
 # Project Description
 
-Flex Client plugin.
+Equinox plugin and Flex Client plugin.
 
-Contains the mindmap specific controllers.
+TODO: update description, when we'll be done with the refactor.
