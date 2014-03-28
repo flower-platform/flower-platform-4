@@ -1,7 +1,9 @@
-
+== Icons to be mentioned in license file ==
 
 images/clipboard-sign-out.png -> https://www.iconfinder.com/icons/25957/clipboard_copy_cut_icon#size=16
 images/arrow-right.png -> http://www.doublejdesign.co.uk
 images/disk.png http://www.famfamfam.com/lab/icons/silk/
 images/disk_multiple.png http://www.famfamfam.com/lab/icons/silk/
+
+== Icons allowed for commercial use (NO link required) ==
 

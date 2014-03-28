@@ -20,7 +20,7 @@ package org.flowerplatform.flex_client.mindmap {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
-	import org.flowerplatform.flex_client.core.editor.action.AddChildActionProvider;
+	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;

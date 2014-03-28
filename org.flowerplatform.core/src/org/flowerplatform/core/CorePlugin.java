@@ -166,11 +166,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = null;
 	}
 
-	@Override
-	public void registerMessageBundle() throws Exception {
-		// no messages yet
-	}
-	
 	/**
 	 * Setting/removing must be done from a try/finally block to make sure that 
 	 * the request is cleared, i.e.

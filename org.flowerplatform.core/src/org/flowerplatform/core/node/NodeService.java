@@ -75,18 +75,20 @@ public class NodeService {
 		for (ChildrenProvider provider : providers) {
 			// we take the children ...
 			List<Node> childrenFromCurrentProvider = provider.getChildren(node, context);
-			for (Node currentChild : childrenFromCurrentProvider) {
-				if (context.getValue(POPULATE_WITH_PROPERTIES)) {
-					// ... and then populate them
-					currentChild.getOrPopulateProperties();
+			if (childrenFromCurrentProvider != null) {
+				for (Node currentChild : childrenFromCurrentProvider) {
+					if (context.getValue(POPULATE_WITH_PROPERTIES)) {
+						// ... and then populate them
+						currentChild.getOrPopulateProperties();
+					}
+					
+					// and add them to the result list
+					if (children == null) {
+						// lazy init of the list
+						children = new ArrayList<Node>();
+					}
+					children.add(currentChild);
 				}
-				
-				// and add them to the result list
-				if (children == null) {
-					// lazy init of the list
-					children = new ArrayList<Node>();
-				}
-				children.add(currentChild);
 			}
 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -214,7 +216,7 @@ public class NodeService {
 			// dirty state changed -> change resourceNode isDirty property
 			CorePlugin.getInstance().getNodeService().setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
-		setProperty(node, HAS_CHILDREN, true, new ServiceContext());
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext()), new ServiceContext());
 	}
 	
 	public void removeChild(Node node, Node child, ServiceContext context) {	

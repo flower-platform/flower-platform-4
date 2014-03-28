@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.properties.remote {
 	/**
 	 * @author Razvan Tache
 	 * @author Cristina Constantinescu
+	 * @author Sebastian Solomon
 	 */
 	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
@@ -39,12 +40,13 @@ package org.flowerplatform.flex_client.properties.remote {
 		
 		public var type:String;
 
-	    /**
-	     * @author Sebastian Solomon
-	     */
 		public var category:String;
 		
 		public var possibleValues:ArrayCollection;
+		
+		public var contributeToCreation:Boolean;
+		
+		public var isMandatory:Boolean;
 		
 	}
 }

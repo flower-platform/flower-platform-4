@@ -71,12 +71,6 @@ package org.flowerplatform.flex_client.core.service {
 		override public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {			
 			var result:Object = event.result;
 			
-			// get message invocation result and send it to be processed by resultHandler
-			var messageResult:Object = result[CoreConstants.MESSAGE_RESULT];
-			if (responder.resultHandler != null) {
-				responder.resultHandler(messageResult);
-			}
-			
 			if (result.hasOwnProperty(CoreConstants.LAST_UPDATE_TIMESTAMP)) {
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient = new Date().time;
@@ -98,6 +92,12 @@ package org.flowerplatform.flex_client.core.service {
 			if (reconnectingViewContent != null) {
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(reconnectingViewContent);
 				reconnectingViewContent = null;
+			}
+			
+			// get message invocation result and send it to be processed by resultHandler
+			var messageResult:Object = result[CoreConstants.MESSAGE_RESULT];
+			if (responder.resultHandler != null) {
+				responder.resultHandler(messageResult);
 			}
 		}
 		

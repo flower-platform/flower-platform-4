@@ -18,16 +18,14 @@
  */
 package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
-	import mx.core.mx_internal;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.editor.OpenInNewEditorDialog;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.MindMapEditorDescriptor;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
@@ -37,7 +35,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	 * @author Cristina Constantinescu
 	 */
 	public class NodeController extends MindMapModelController {
-								
+		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList {			
 			return Node(model).children;
 		}
@@ -46,12 +44,41 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			return Node(model).children != null && Node(model).children.length > 0;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Mariana Gheorghe
+		 */
 		override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
+			var node:Node = Node(model);
 			if (value) {
-				MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, Node(model));
+				// open in new editor?
+				if (node.properties[CoreConstants.IS_OPENABLE_IN_NEW_EDITOR]) {
+					var dialog:OpenInNewEditorDialog = new OpenInNewEditorDialog();
+					dialog.node = node;
+					dialog.setResultHandler(new OpenInNewEditorDialogResultHandler(function(result:Object):void {
+						if (result) {
+							// opened in new editor => collapse
+							collapse(context, node);
+						} else {
+							// default behaviour => expand node
+							expand(context, node);
+						}
+					}));
+					dialog.show();
+				} else {
+					expand(context, node);
+				}
 			} else {				
-				MindMapEditorDiagramShell(context.diagramShell).updateProcessor.removeChildren(context, Node(model));
+				collapse(context, node);
 			}		
+		}
+		
+		private function expand(context:DiagramShellContext, node:Node):void {
+			MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, node);
+		}
+		
+		private function collapse(context:DiagramShellContext, node:Node):void {
+			MindMapEditorDiagramShell(context.diagramShell).updateProcessor.removeChildren(context, node);
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {
@@ -81,6 +108,22 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		override public function isRoot(context:DiagramShellContext, model:Object):Boolean {			
 			return Node(model).parent == null;
 		}
+	}
+}
+import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+
+/**
+ * @author Mariana Gheorghe
+ */
+class OpenInNewEditorDialogResultHandler implements IDialogResultHandler {
 	
+	private var callbackFunction:Function;
+	
+	public function OpenInNewEditorDialogResultHandler(callbackFunction:Function) {
+		this.callbackFunction = callbackFunction;
+	}
+	
+	public function handleDialogResult(result:Object):void {
+		callbackFunction(result);
 	}
 }

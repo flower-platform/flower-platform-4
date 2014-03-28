@@ -28,9 +28,9 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.channels.AMFChannel;
 	
 	import org.flowerplatform.flex_client.core.download.DownloadAction;
+	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-	import org.flowerplatform.flex_client.core.editor.action.AddNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
@@ -62,7 +62,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.controller.AbstractController;
-	import org.flowerplatform.flexutil.controller.AllDynamicCategoryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
@@ -120,7 +119,7 @@ package org.flowerplatform.flex_client.core {
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
-				
+		
 //		public static const VERSION:String = "2.0.0.M2_2013-06-04";
 //				
 		/**
@@ -128,6 +127,13 @@ package org.flowerplatform.flex_client.core {
 		 * value = parameters as String (e.g. text://file1,file2,file3)
 		 */ 
 		public var linkHandlers:Dictionary;
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		public function getEditorClassFactoryActionProvider():ClassFactoryActionProvider {
+			return editorClassFactoryActionProvider;
+		}
 		
 		override public function preStart():void {
 			super.preStart();
@@ -151,7 +157,6 @@ package org.flowerplatform.flex_client.core {
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(textEditorDescriptor);
 								
-			editorClassFactoryActionProvider.addActionClass(AddNodeAction);
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
@@ -284,6 +289,20 @@ package org.flowerplatform.flex_client.core {
 				}
 			}
 			return null;
+		}
+		
+		/**
+		 * @author Mariana Gheorghe
+		 */
+		public function openEditor(node:Node):void {
+			var contentType:String = node.properties[CoreConstants.CONTENT_TYPE];
+			if (contentType == null) {
+				contentType = contentTypeRegistry.defaultContentType;
+			}
+			var hideRootNode:Boolean = node.properties[CoreConstants.HIDE_ROOT_NODE];
+			
+			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
+			editorDescriptor.openEditor(node.fullNodeId, true, hideRootNode);
 		}
 		
 		/**

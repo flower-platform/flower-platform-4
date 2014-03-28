@@ -16,12 +16,15 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.editor.action {
+package org.flowerplatform.flex_client.properties.action {
+	
+	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.ui.CreateFileDialogView;
+	import org.flowerplatform.flex_client.properties.CreateNodeView;
+	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	
@@ -34,8 +37,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public const ACTION_ID_NEW:String = "new";
 		
 		public var childType:String;
-		
-		public var descriptorProperties:Object;
 		
 		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
 			super();
@@ -51,7 +52,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 				
 				label = descriptor.label;
 				icon = descriptor.icon;
-				descriptorProperties = descriptor.properties;
 				orderIndex = descriptor.orderIndex;
 				parentId = ACTION_ID_NEW;
 				
@@ -63,36 +63,42 @@ package org.flowerplatform.flex_client.core.editor.action {
 			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Sebastian Solomon
+		 */
 		override public function run():void {
 			var parent:Node = Node(selection.getItemAt(0));
 			
 			var properties:Object = new Object();
 			properties.type = childType;
 			
-			if (Node(selection.getItemAt(0)).type != "fileNode" && 
-				Node(selection.getItemAt(0)).type != "fileSystem") { 
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parent.fullNodeId, properties, null]);		
-			} else {
-				var view:CreateFileDialogView = new CreateFileDialogView();
-				view.isDir = Boolean(descriptorProperties.isDirectory);
-				view.setParentNode(Node(selection.getItemAt(0)));
-				if (view.isDir) {
-					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-						.setTitle("New directory")
-						.setWidth(300)
-						.setHeight(100)
-						.setViewContent(view)
-						.show();
-				} else {
-					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-						.setTitle("New file")
-						.setWidth(300)
-						.setHeight(100)
-						.setViewContent(view)
-						.show();
+			var parentNode:Node = Node(selection.getItemAt(0));
+			
+			var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
+				.getExpectedTypeDescriptor(childType).getAdditiveControllers("propertyDescriptor", null);
+			
+			var hasContributingDescriptors:Boolean = false;
+			for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {
+				if (PropertyDescriptor(propertyDescriptors.getItemAt(i)).contributeToCreation) {
+					hasContributingDescriptors = true;
+					break;
 				}
 			}
 			
+			if (hasContributingDescriptors) {
+				var createNodeView:CreateNodeView = new CreateNodeView();
+				createNodeView.setParentNode(parentNode);
+				createNodeView.nodeType = childType;
+				// TODO take this value from a property.
+				createNodeView.option = CreateNodeView.SHOW_CONTRIBUTING_TO_CREATION;
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setTitle("New file/folder")
+					.setViewContent(createNodeView)
+					.show();
+			} else {
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parent.fullNodeId, properties, null]);
+			}
 		}
 		
 	}

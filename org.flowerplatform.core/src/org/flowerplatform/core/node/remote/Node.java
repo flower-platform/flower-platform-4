@@ -34,6 +34,7 @@ public class Node {
 	private String cachedFullNodeId;
 	
 	private Map<String, Object> properties;
+	
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
@@ -152,7 +153,7 @@ public class Node {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString() {
 		return String.format("Node [fullNodeId = %s]", getFullNodeId());

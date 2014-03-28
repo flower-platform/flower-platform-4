@@ -13,6 +13,10 @@
 			import mx.events.FlexEvent;
 
 			protected function creationCompleteHandler(event:FlexEvent):void {
+				if (data.value == null) {
+					propertyValue.text = "0 bytes";
+					return;
+				}
 				var unit:Array = [' bytes', ' KB', ' MB', ' GB', ' TB'];
 				var index:uint = Math.floor(Math.log(data.value)/Math.log(1024));
 				if (index == 0) {
