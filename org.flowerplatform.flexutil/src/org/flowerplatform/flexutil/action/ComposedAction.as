@@ -17,6 +17,7 @@
  * license-end
  */
 package org.flowerplatform.flexutil.action {
+	import spark.supportClasses.INavigator;
 
 	/**
 	 * @see IComposedAction
@@ -25,9 +26,9 @@ package org.flowerplatform.flexutil.action {
 	public class ComposedAction extends ActionBase implements IComposedAction {
 
 		private var _childActions:Vector.<IAction>;
-
 		private var _actAsNormalAction:Boolean;
-
+		private var _delegateIfSingleChild:Boolean;
+		
 		public function get childActions():Vector.<IAction> {
 			return _childActions;
 		}
@@ -36,37 +37,76 @@ package org.flowerplatform.flexutil.action {
 			_childActions = value;
 		}
 		
-		override public function get visible():Boolean {
-			if (actAsNormalAction) {
-				return super.visible;
-			}
-			if (childActions == null) {
-				return false;
-			} else {
-				for (var i:int = 0; i < childActions.length; i++) {
-					var childAction:IAction = childActions[i];
-					childAction.selection = selection;
-					childAction.context = context;
-					try {
-						if (childAction.visible) {
-							// at least one visible => the composed action is visible
-							return true;
-						}
-					} finally {
-						childAction.selection = null;
-						childAction.context = null;
-					}
-				}
-				return false;
-			}
-		}
-		
 		public function get actAsNormalAction():Boolean {
 			return _actAsNormalAction;
 		}
 		
 		public function set actAsNormalAction(value:Boolean):void {
 			_actAsNormalAction = value;
+		}
+		
+		public function get delegateIfSingleChild():Boolean {
+			return _delegateIfSingleChild;
+		}
+		
+		public function set delegateIfSingleChild(value:Boolean):void {
+			_delegateIfSingleChild = value;
+		}
+		
+		override public function get visible():Boolean {
+			if (actAsNormalAction) {
+				return super.visible;
+			}			
+			if (childActions == null) {
+				return false;
+			} 
+			
+			var visibleChildActions:Array = getVisibleChildActions();
+			if (visibleChildActions.length >= 1) {
+				if (delegateIfSingleChild && visibleChildActions.length == 1) {
+					label = label + " " + visibleChildActions[0].label;
+					actAsNormalAction = true;	
+				}
+				return true;
+			}
+			return false;			
+		}	
+		
+		override public function run():void {			
+			if (delegateIfSingleChild) {
+				var visibleChildActions:Array = getVisibleChildActions();
+				if (visibleChildActions.length == 1) {
+					var singleVisibleChildAction:IAction = visibleChildActions[0];
+					try {
+						singleVisibleChildAction.selection = selection;
+						singleVisibleChildAction.context = context;
+						singleVisibleChildAction.run();
+					} finally {										
+						singleVisibleChildAction.selection = null;
+						singleVisibleChildAction.context = null;
+					}
+					return;
+				}				
+			}
+			super.run();						
+		}
+		
+		private function getVisibleChildActions():Array {			
+			var visibleChildActions:Array = [];
+			for (var i:int = 0; i < childActions.length; i++) {
+				var childAction:IAction = childActions[i];
+				childAction.selection = selection;
+				childAction.context = context;
+				try {
+					if (childAction.visible) {						
+						visibleChildActions.push(childAction);
+					}
+				} finally {
+					childAction.selection = null;
+					childAction.context = null;
+				}
+			}			
+			return visibleChildActions;
 		}
 		
 	}

@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.properties.action {
 			}
 			
 			var result:Vector.<IAction> = new Vector.<IAction>();
-			
+				
 			// get the type of the selected parent
 			var parent:Node = Node(selection.getItemAt(0));
 			var parentType:String = parent.type;
