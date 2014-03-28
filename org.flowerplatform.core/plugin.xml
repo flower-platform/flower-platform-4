@@ -11,6 +11,14 @@
             alias="/servlet/image-composer"
             class="org.flowerplatform.util.servlet.ImageComposerServlet">
       </servlet>
+      <servlet
+            alias="/servlet/download"
+            class="org.flowerplatform.core.file.download.DownloadServlet">
+      </servlet>
+      <servlet
+            alias="/servlet/upload"
+            class="org.flowerplatform.core.file.upload.UploadServlet">
+      </servlet>
    </extension>
 
 </plugin>

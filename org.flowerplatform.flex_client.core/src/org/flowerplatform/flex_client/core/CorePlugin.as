@@ -30,10 +30,12 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
+	import org.flowerplatform.flex_client.core.editor.action.UploadAction;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -140,9 +142,8 @@ package org.flowerplatform.flex_client.core {
 				throw new Error("An instance of plugin " + Utils.getClassNameForObject(this, true) + " already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-					
+				
 			correspondingJavaPlugin = "org.flowerplatform.core";
-			
 			resourceNodesManager = new ResourceNodesManager();
 			
 			var channelSet:ChannelSet = new ChannelSet();
@@ -151,7 +152,8 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);
 			serviceLocator.addService("nodeService");
 			serviceLocator.addService("resourceService");
-			serviceLocator.addService("freeplaneService");
+			serviceLocator.addService("downloadService");
+			serviceLocator.addService("uploadService");
 			
 			updateTimer = new UpdateTimer(5000);
 			
@@ -162,6 +164,11 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
+			
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				editorClassFactoryActionProvider.addActionClass(DownloadAction);
+				editorClassFactoryActionProvider.addActionClass(UploadAction);				
+			}
 			
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {

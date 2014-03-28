@@ -24,8 +24,8 @@ package org.flowerplatform.flexutil.action {
 				return false;
 			}
 			
-			for each (var object:Object in selection) {
-				if (!isVisibleForSelectedElement(object)) {
+			for (var i:int = 0; i < selection.length; i++) {
+				if (!isVisibleForSelectedElement(selection.getItemAt(i))) {
 					return false;
 				}
 			}

@@ -59,7 +59,7 @@ public class FilePropertiesProvider extends PropertiesProvider {
 					break;
 			}
 		}
-		
+
 		if ((boolean)node.getProperties().get(FILE_IS_DIRECTORY)) {
 			long folderSize = getFolderSize(file);
 			node.getProperties().put(FILE_SIZE, folderSize);
