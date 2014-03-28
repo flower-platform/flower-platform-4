@@ -123,6 +123,7 @@
 			];
 			
 			private function startPlugins():void {
+				setBackButtonEnabled(true);
 				for each (var plugin:AbstractFlexPlugin in plugins) {
 					plugin.preStart();
 				}
@@ -158,6 +159,7 @@
 				
 				if (serverAccounts == null || serverAccounts.length == 0 ) { // if no account
 					openEditAccount();
+					setBackButtonEnabled(false);
 				} else {
 					var hasDefaultAccout:Boolean = false;
 					for (var i:int=0; i<serverAccounts.length; i++) {
@@ -168,6 +170,7 @@
 						}
 					}
 					if (!hasDefaultAccout) { // if no default
+						setBackButtonEnabled(false);
 						var serverAccountsView:ServerAccountsView = new ServerAccountsView();
 						serverAccountsView.setResultHandler(this);
 						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
@@ -211,6 +214,18 @@
 			 */
 			private function openServerAccountsView():void {
 				openAccountsButtonClickHandler();
+			}
+			
+			/**
+			 * @author Sebastian Solomon
+			 */
+			private function setBackButtonEnabled(enabled:Boolean):void {
+				for (var i: int = 0; i < navigator.navigationContent.length; i++) {
+					if (navigator.navigationContent[i].id == "backButton") {
+						navigator.navigationContent[i].enabled = enabled;
+						return;
+					}
+				}
 			}
 			
 		]]>
