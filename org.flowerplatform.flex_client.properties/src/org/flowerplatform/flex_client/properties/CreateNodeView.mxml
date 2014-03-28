@@ -27,6 +27,8 @@
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
+			import spark.components.Label;
+			
 			public static const SHOW_ALL:String = "showAll";
 			public static const SHOW_CONTRIBUTING_TO_CREATION:String = "showContributingToCreation"; // optional & mandatory 
 			public static const SHOW_MANDATORY:String = "showMandatory";
@@ -67,6 +69,12 @@
 						propertyDescriptor.value = null;
 						formItem.data = propertyDescriptor;
 					}
+				}
+				// TODO MG: remove after the custom UI logic is implemented
+				if (nodeType == CoreConstants.FILE_NODE_TYPE) {
+					var label:Label = new Label();
+					label.text = "Please append the .mm extension to add a MindMap file.";
+					propertyForm.addElement(label);
 				}
 			}
 			
