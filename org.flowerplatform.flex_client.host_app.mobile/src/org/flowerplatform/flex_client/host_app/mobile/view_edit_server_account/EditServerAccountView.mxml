@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Sebastian Solomon
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent, org.flowerplatform.flexutil.dialog.IDialog">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.components.Alert;
+			
+			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccount;
+			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsView;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			protected var _viewHost:IViewHost;
+			
+			protected var serverAccount:ServerAccount;
+			
+			protected var serverAccountView:ServerAccountsView;
+			
+			private var resultHandler:IDialogResultHandler;
+			
+			private static const EDIT_ACCOUNT:int = 0;
+			private static const NEW_ACCOUNT:int = 1;
+			private static const FIRST_ACCOUNT:int = 2;
+			
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+				if (serverAccountView == null) {
+					Alert.show("Please create a new server account", "", Alert.OK, null, null, null, Alert.OK);
+					cancelAccountButton.enabled = false;
+				} else {
+					if (serverAccount != null) {
+						friendlyName.text = serverAccount.friendlyName;
+						host.text = serverAccount.host;
+						user.text = serverAccount.user;
+						password.text = serverAccount.user;
+					}
+				}
+			}
+			
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				this.resultHandler = resultHandler; 
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function setServerAccount(value:ServerAccount):void {
+				serverAccount = value
+			}
+			
+			public function setServerAccountView(value:ServerAccountsView):void {
+				serverAccountView = value
+			}
+			
+			public function getServerAccountView():ServerAccountsView {
+				return serverAccountView;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				if (serverAccount != null) {
+					var vector:Vector.<IAction> = new Vector.<IAction>;
+					var removeAccount:RemoveServerAccountAction = new RemoveServerAccountAction();
+					removeAccount.setIndexToDelete(getSharedObjectAccountIndex(serverAccount));
+					removeAccount.setEditAccountView(this);
+					vector[0] = removeAccount;
+					return vector;
+				}
+				return null;
+			}
+			
+			public function getSharedObjectAccountIndex(serverAccount:ServerAccount):int {
+				var accountArray:ArrayCollection = ServerAccountsView.getSharedObjectServerAccountList();
+				for (var i:int=0; i<accountArray.length; i++) {
+					if (serverAccount.user == accountArray[i].user &&
+						serverAccount.host == accountArray[i].host &&
+						serverAccount.password == accountArray[i].password) {
+						return i;
+					}
+				}
+				return -1;
+			}
+			
+			protected function saveAccountHandler(event:MouseEvent):void {
+				if (validHostValue()) {
+					if (serverAccountView == null) {
+						saveAccount(true, FIRST_ACCOUNT);
+					} else if (serverAccount == null) {
+						Alert.show("Would you like to make this server account the default one?", "", Alert.YES | Alert.NO, null, defaultAccountDialogHandler, null, Alert.NO);
+					} else {// edit element
+						saveAccount(false, EDIT_ACCOUNT);
+					}
+				}
+			}
+			
+			private function saveAccount(setDefault:Boolean, event:int):void {
+				var sharedObject:SharedObject = ServerAccountsView.getSharedObject();
+				var accountArray:ArrayCollection = sharedObject.data.serverAccounts;
+				var serverAccountToSave:ServerAccount = getServerAccountToSave();
+				if (setDefault) {
+					serverAccountToSave.isDefault = true;
+				}
+				if (event == EDIT_ACCOUNT) {
+					var index:int = getSharedObjectAccountIndex(serverAccount);
+					accountArray[index] = serverAccountToSave;
+				} else { // event == NEW_ACCOUNT | FIRST_ACCOUNT
+					if (accountArray == null) {
+						accountArray = new ArrayCollection();
+					}
+					accountArray.addItem(serverAccountToSave);
+				}
+				sharedObject.data.serverAccounts = accountArray;
+				var flushStatus:String = sharedObject.flush(10000);
+				if (event == FIRST_ACCOUNT) {
+					resultHandler.handleDialogResult(serverAccountToSave);
+					FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+				} else {
+					serverAccountView.refresh();
+					cancelAccountHandler();
+				}
+			}
+			
+			private function getServerAccountToSave():ServerAccount {
+				var serverAccountToSave:ServerAccount = new ServerAccount();
+				serverAccountToSave.friendlyName = friendlyName.text;
+				serverAccountToSave.host = host.text;
+				serverAccountToSave.user = user.text;
+				serverAccountToSave.password = password.text;
+				return serverAccountToSave;
+			}
+			
+			protected function cancelAccountHandler(event:MouseEvent=null):void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+				if (serverAccountView == null) {
+					resultHandler.handleDialogResult(null);
+				}
+			}
+			
+			private function defaultAccountDialogHandler(event:CloseEvent):void {
+				if (serverAccountView != null) {
+					if (event.detail == Alert.YES) {
+						serverAccountView.deselectDefaultAccount();
+						saveAccount(true, NEW_ACCOUNT)
+					} else {
+						saveAccount(false, NEW_ACCOUNT)
+					}
+				} else {
+					cancelAccountHandler();
+				}
+			}
+			
+			protected function validHostValue():Boolean {
+				if (host.text != "") {
+					return true;
+				}
+				else {
+					Alert.show("Host field is mandatory", "Field required", Alert.OK, null, null, null, Alert.OK);
+					return false;
+				}
+				return true;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Form width="100%">
+		<s:FormItem label="Friendly Name:" width="100%">
+			<s:TextInput id="friendlyName" width="100%"/>
+		</s:FormItem>
+			
+		<s:FormItem label="Host:" width="100%" required="true">
+			<s:TextInput id="host" width="100%" />
+		</s:FormItem>
+			
+		<s:FormItem label="User:" width="100%">
+			<s:TextInput id="user" width="100%"/>
+		</s:FormItem>
+			
+		<s:FormItem label="Password:" width="100%">
+			<s:TextInput id="password" width="100%" displayAsPassword="true"/>
+		</s:FormItem>
+			
+		<s:HGroup alignmentBaseline="ideographicCenter" horizontalAlign="center" width="100%">
+			<s:Button id="saveAccountButton" label="Save" click="saveAccountHandler(event)"/>
+			<s:Button id="cancelAccountButton" label="Cancel" click="cancelAccountHandler(event)"/>
+		</s:HGroup>
+	</s:Form>
+			 
+</s:Group>
+

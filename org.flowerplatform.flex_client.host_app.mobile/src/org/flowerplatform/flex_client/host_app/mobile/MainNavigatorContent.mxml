@@ -25,7 +25,7 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark">
 	<fx:Declarations>
 		<fx:Array id="navigatorContent">
-			<s:Button label="Back" visible="{navigator.length > 1}" includeInLayout="{navigator.length > 1}">
+			<s:Button id = "backButton" label="Back" visible="{navigator.length > 1}" includeInLayout="{navigator.length > 1}">
 				<s:click>
 					<![CDATA[
 					// button is only visible if there are more than 1 views
@@ -42,6 +42,9 @@
 					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 					]]>
 				</s:click>
+			</s:Button>
+			<s:Button id="openAccountsView" label="Open Accounts"
+					  click = "MainMobile.openAccountsButtonClickHandler()">
 			</s:Button>
 			<s:Button id="closeAppButton" label="Exit" icon="{FlexUtilAssets.exitIcon}"
 					  click="NativeApplication.nativeApplication.exit()"/>

@@ -97,7 +97,7 @@ package org.flowerplatform.flex_client.core {
 
 		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
 		
-		public var updateTimer:UpdateTimer = new UpdateTimer(5000);
+		public var updateTimer:UpdateTimer;
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
@@ -108,7 +108,7 @@ package org.flowerplatform.flex_client.core {
 		public var debug:Boolean = isDebug();
 		
 		public var debug_forceUpdateAction:ForceUpdateAction;
-		
+
 		/**
 		 * @author Sebastian Solomon
 		 */
@@ -154,6 +154,8 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("resourceService");
 			serviceLocator.addService("downloadService");
 			serviceLocator.addService("uploadService");
+			
+			updateTimer = new UpdateTimer(5000);
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
