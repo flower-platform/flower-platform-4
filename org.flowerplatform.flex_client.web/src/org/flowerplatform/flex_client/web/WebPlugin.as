@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.web {
 	import flash.external.ExternalInterface;
 	
 	import mx.containers.HBox;
+	import mx.core.Container;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	
@@ -33,6 +34,7 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
 	import spark.components.Button;
 	import spark.components.TextInput;
@@ -95,10 +97,12 @@ package org.flowerplatform.flex_client.web {
 			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
 						
-			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
+			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);		
 			
 			// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
-			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));		
+			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));	
+			
+			ModalSpinner.removeGlobalModalSpinner();
 		}
 		
 		override protected function registerMessageBundle():void {			
