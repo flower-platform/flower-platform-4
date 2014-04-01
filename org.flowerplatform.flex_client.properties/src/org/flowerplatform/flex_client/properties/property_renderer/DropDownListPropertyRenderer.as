@@ -62,7 +62,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			}
 		}
 		
-		protected function dropDownEventHandler(e:DropDownEvent):void {
+		protected function dropDownEventHandler(e:IndexChangeEvent):void {
 			saveProperty();
 		}
 		

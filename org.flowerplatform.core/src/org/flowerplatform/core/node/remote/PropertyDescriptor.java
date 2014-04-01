@@ -44,7 +44,6 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	private List<?> possibleValues;
 	
 	private Boolean hasChangeCheckbox = false;
-	private Object defaultValue = null;
 
 	public String getName() {
 		return name;
@@ -126,28 +125,6 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	 */
 	public PropertyDescriptor setHasChangeCheckboxAs(Boolean hasChangeCheckbox) {
 		this.hasChangeCheckbox = hasChangeCheckbox;
-		return this;
-	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public Object getDefaultValue() {
-		return defaultValue;
-	}
-
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public void setDefaultValue(Object defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public PropertyDescriptor setDefaultValueAs(Object defaultValue) {
-		this.defaultValue = defaultValue;
 		return this;
 	}
 	

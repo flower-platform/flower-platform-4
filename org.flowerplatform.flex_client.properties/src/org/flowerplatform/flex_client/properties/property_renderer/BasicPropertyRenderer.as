@@ -69,8 +69,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 				[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, data.name]);
 		}
 		public function updateCheckBox(val:String):void {
-			changeCheckBox.selected = (data.value != data.defaultValue);
-			changeLabel.enabled = (data.value != data.defaultValue);
+//			changeCheckBox.selected = (data.value != data.defaultValue);
+//			changeLabel.enabled = (data.value != data.defaultValue);
 		}
 		
 		protected function validPropertyValue():Boolean {

@@ -2,6 +2,7 @@ package org.flowerplatform.freeplane;
 
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
@@ -13,6 +14,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.controller.IsPropertyDefaultPropertiesProvider;
 import org.flowerplatform.freeplane.controller.FreeplaneIsSubscribablePropertyProvider;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceAccessController;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceChildrenProvider;
@@ -64,13 +66,15 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY)		
 		.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider())
-		.addAdditiveController("stylePropertyProvider", new MindMapStylePropertyProvider())
+		.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new MindMapStylePropertyProvider())
 		.addAdditiveController(PROPERTY_SETTER, new MindMapPropertySetter())
 		.addSingleController(PARENT_PROVIDER, new MindMapParentProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapAddNodeController())
-		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController());
+		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController())
+//		.addAdditiveController(CHILDREN_PROVIDER, new StyleRootChildrenProvider())
+		.addAdditiveController(PROPERTIES_PROVIDER, new IsPropertyDefaultPropertiesProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_PERSISTENCE_CATEGORY)
 		.addAdditiveController(PROPERTIES_PROVIDER, new PersistencePropertiesProvider())		
@@ -79,8 +83,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new PersistenceAddNodeProvider())
-		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController())
-		.addAdditiveController(CHILDREN_PROVIDER, new StyleRootChildrenProvider());
+		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController());
 		
 		TypeDescriptor stylesRootTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STYLE_ROOT_NODE);
 		stylesRootTypeDescriptor

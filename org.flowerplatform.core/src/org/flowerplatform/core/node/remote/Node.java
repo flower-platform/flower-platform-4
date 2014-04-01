@@ -141,6 +141,17 @@ public class Node {
 		rawNodeDataRetrieved = true;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Object getPropertyValue(String property) {
+		if (properties.containsKey(property)) {
+			return properties.get(property);
+		} else {
+			return CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(this, property);
+		}
+	}
+	
 	@Override
 	public int hashCode() {
 		return getFullNodeId().hashCode();

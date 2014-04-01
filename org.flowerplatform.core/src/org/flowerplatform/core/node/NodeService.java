@@ -13,7 +13,7 @@ import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
-import static org.flowerplatform.core.node.controller.StylePropertyProvider.STYLE_PROPERTY_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,7 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
-import org.flowerplatform.core.node.controller.StylePropertyProvider;
+import org.flowerplatform.core.node.controller.DefaultPropertyValueProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -123,11 +123,11 @@ public class NodeService {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public Object getStylePropertyValue(Node node, String property) {
+	public Object getDefaultPropertyValue(Node node, String property) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		List<StylePropertyProvider> styleProviders = descriptor.getAdditiveControllers(STYLE_PROPERTY_PROVIDER, node);
-		for (StylePropertyProvider provider : styleProviders) {
-			Object propertyValue = provider.getStylePropertyValue(node, property);
+		List<DefaultPropertyValueProvider> defaultPropertyProviders = descriptor.getAdditiveControllers(DEFAULT_PROPERTY_PROVIDER, node);
+		for (DefaultPropertyValueProvider provider : defaultPropertyProviders) {
+			Object propertyValue = provider.getDefaultValue(node, property);
  			if (propertyValue != null) {
 				return propertyValue;
 			}
@@ -302,5 +302,5 @@ public class NodeService {
 		}
 		return rawNodeDataProvider.getRawNodeData(node, context);	
 	}
-
+	
 }

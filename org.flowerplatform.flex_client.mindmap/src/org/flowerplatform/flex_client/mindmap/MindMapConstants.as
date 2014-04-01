@@ -28,7 +28,7 @@ package org.flowerplatform.flex_client.mindmap {
 				
 		public static const TEXT:String = "text";
 		
-		public static const MIN_WIDTH:String = "miWidth";
+		public static const MIN_WIDTH:String = "minWidth";
 		public static const MAX_WIDTH:String = "maxWidth";
 		public static const FONT_FAMILY:String = "fontFamily";
 		public static const FONT_SIZE:String = "fontSize";

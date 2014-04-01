@@ -16,8 +16,9 @@ public class StyleRootChildrenProvider extends ChildrenProvider {
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext context) {
+		//TODO test if node is root 
 		List<Node> list = new ArrayList<>(); 
-		Node styleNode = new Node(STYLE_ROOT_NODE ,null, STYLE_ROOT_NODE, null);
+		Node styleNode = new Node(STYLE_ROOT_NODE , null, new Node(node.getResource()).getIdWithinResource(), null);
 		list.add(styleNode);
  		return list;
 	}
