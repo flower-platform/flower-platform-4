@@ -14,6 +14,7 @@
 			import mx.collections.IList;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -39,8 +40,8 @@
 			[Bindable]
 			public var labelForMultipleResourceNodes:String;
 			
-			public var iconForSingleResourceNode:String;
-			public var iconForMultipleResourceNodes:String;
+			public var iconForSingleResourceNode:Object;
+			public var iconForMultipleResourceNodes:Object;
 			
 			public function getActions(selection:IList):Vector.<IAction> {
 				return null;
@@ -136,8 +137,8 @@
 		</s:List>
 		
 		<s:HGroup horizontalAlign="left" width="100%">
-			<s:Button label="{CorePlugin.getInstance().getMessage('select.all')}" click="setAllSelected(true)"/>
-			<s:Button label="{CorePlugin.getInstance().getMessage('deselect.all')}" click="setAllSelected(false)" />
+			<s:Button label="{Resources.getMessage('select.all')}" click="setAllSelected(true)"/>
+			<s:Button label="{Resources.getMessage('deselect.all')}" click="setAllSelected(false)" />
 		</s:HGroup>
 	</s:VGroup>
 	

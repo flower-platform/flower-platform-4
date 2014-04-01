@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <actionScriptProperties analytics="false" mainApplicationPath="FlexHostApp.mxml" projectUUID="a1fcafa5-76b3-4644-bd83-bb2edd6c1358" version="10">
-  <compiler additionalCompilerArguments="-locale en_US -include-libraries+=../../org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc -include-libraries+=../../org.flowerplatform.flexutil_legacy/bin/org.flowerplatform.flexutil_legacy.swc -include-libraries+=../../org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc -theme+=${flexlib}/themes/Halo/halo.swc -theme+=${flexlib}/themes/Spark/spark.css -keep-as3-metadata+=Embed -keep-as3-metadata+=ResourceBundle -keep-as3-metadata+=SecureSWF -swf-version=15 -keep-all-type-selectors=true" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+  <compiler additionalCompilerArguments="-locale en_US -include-libraries+=../../org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc -include-libraries+=../../org.flowerplatform.flexutil_legacy/bin/org.flowerplatform.flexutil_legacy.swc -include-libraries+=../../org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc -include-libraries+=../../org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc -theme+=${flexlib}/themes/Halo/halo.swc -theme+=${flexlib}/themes/Spark/spark.css -keep-as3-metadata+=Embed -keep-as3-metadata+=ResourceBundle -keep-as3-metadata+=SecureSWF -swf-version=15 -keep-all-type-selectors=true" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="1">
       <libraryPathEntry kind="4" path="">
@@ -12,6 +12,7 @@
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil_legacy/bin/org.flowerplatform.flexutil_legacy.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

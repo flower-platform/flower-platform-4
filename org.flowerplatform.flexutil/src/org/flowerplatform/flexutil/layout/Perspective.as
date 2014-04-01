@@ -58,7 +58,7 @@ package org.flowerplatform.flexutil.layout {
 		 * 
 		 * 
 		 */
-		public function get iconUrl():String {			
+		public function get iconUrl():Object {			
 			throw new Error("This method needs to be implemented.");
 		}
 		

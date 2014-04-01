@@ -2311,7 +2311,7 @@ package  com.crispico.flower.util.layout {
 			_componentToLayoutData[component] = viewLayoutData;
 			
 			popup.title = _viewProvider.getTitle(viewLayoutData);
-			popup.titleIconURL = String(_viewProvider.getIcon(viewLayoutData));
+			popup.titleIconURL = _viewProvider.getIcon(viewLayoutData);
 			
 			popup.workbench = this;
 			popup.viewLayoutData = viewLayoutData;
@@ -2518,7 +2518,7 @@ package  com.crispico.flower.util.layout {
 					// need to set also on tab, otherwise will not work
 					tab.setStyle("iconURL", newIcon);	
 				} else {
-					ViewPopupWindow(Container(view).parent).titleIconURL = String(newIcon);
+					ViewPopupWindow(Container(view).parent).titleIconURL = newIcon;
 				}
 			}
 		}

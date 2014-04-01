@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.flowerplatform.core,
  org.flowerplatform.util,
  org.eclipse.osgi,
- org.flowerplatform.mindmap
+ org.flowerplatform.mindmap,
+ org.flowerplatform.resources
 Bundle-ClassPath: lib/commons-lang-2.6.jar,
  lib/freeplaneeditor_modified.jar,
  lib/freeplaneviewer.jar,

@@ -56,7 +56,7 @@ package com.crispico.flower.util.popup {
 		}
 		
 		public function setIcon(value:Object):void {
-			titleIconURL = String(value);
+			titleIconURL = value;
 		}
 		
 		public function setLabel(value:String):void {

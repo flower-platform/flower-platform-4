@@ -19,6 +19,7 @@
 			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
@@ -40,8 +41,8 @@
 			
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewhost = viewHost;
-				_viewhost.setLabel(CorePlugin.getInstance().getMessage("action.upload"));
-				_viewhost.setIcon(CorePlugin.getInstance().getResourceUrl("images/upload.png"));
+				_viewhost.setLabel(Resources.getMessage("action.upload"));
+				_viewhost.setIcon(Resources.uploadIcon);
 			}	
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {				
@@ -59,8 +60,8 @@
 			protected function upload_clickHandler(event:MouseEvent):void {
 				if (Utils.endsWith(fileReference.name, ZIP_EXTENSION)) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-						.setText(CorePlugin.getInstance().getMessage("upload.make.archive"))
-						.setTitle(CorePlugin.getInstance().getMessage("info"))
+						.setText(Resources.getMessage("upload.make.archive"))
+						.setTitle(Resources.getMessage("info"))
 						.setWidth(300)
 						.setHeight(200)
 						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'), function():void {prepareToUpload(true);})
@@ -97,7 +98,7 @@
 					
 			protected function onIoErrorHandler(event:IOErrorEvent):void {				
 				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setTitle(CorePlugin.getInstance().getMessage("error"))
+					.setTitle(Resources.getMessage("error"))
 					.setText(event.text)
 					.showMessageBox();
 				closeView();
@@ -105,7 +106,7 @@
 			
 			protected function onProgressHandler(event:ProgressEvent):void {
 				var proc:uint = (event.bytesLoaded / event.bytesTotal) * 100;				
-				progressLabel.text = CorePlugin.getInstance().getMessage("upload.progress", [proc]);
+				progressLabel.text = Resources.getMessage("upload.progress", [proc]);
 			}
 			
 			protected function onCompleteHandler(event:Event):void {
@@ -135,19 +136,19 @@
 		<s:VerticalLayout />
 	</s:layout>
 	
-	<s:Label text="{CorePlugin.getInstance().getMessage('upload.file')}" paddingTop="5" />
+	<s:Label text="{Resources.getMessage('upload.file')}" paddingTop="5" />
 	<s:HGroup width="100%">			
 		<s:TextInput id="locationTxt" width="100%" editable="false" />
-		<s:Button id="browseBtn" label="{CorePlugin.getInstance().getMessage('upload.browse')}" click="browse_clickHandler(event)" />					
+		<s:Button id="browseBtn" label="{Resources.getMessage('upload.browse')}" click="browse_clickHandler(event)" />					
 	</s:HGroup>		
-	<s:Label text="{CorePlugin.getInstance().getMessage('upload.limit.max')}" paddingBottom="15" />
+	<s:Label text="{Resources.getMessage('upload.limit.max')}" paddingBottom="15" />
 	<s:HGroup width="100%" id="progressArea" visible="false" verticalAlign="middle">
 		<s:BusyIndicator id="progressSpinner" />
 		<s:Label id="progressLabel" width="100%" />
 	</s:HGroup>
 	
 	<s:HGroup width="100%" horizontalAlign="right" paddingBottom="5">			
-		<s:Button id="uploadBtn" label="{CorePlugin.getInstance().getMessage('upload.label')}" click="upload_clickHandler(event)" enabled="false"/>
+		<s:Button id="uploadBtn" label="{Resources.getMessage('upload.label')}" click="upload_clickHandler(event)" enabled="false"/>
 		<s:Button id="cancelBtn" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="closeView()"/>
 	</s:HGroup> 	
 	

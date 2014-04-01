@@ -35,6 +35,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -137,8 +138,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 		
 		protected function showSubscriptionError(event:FaultEvent):void {
 			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-				.setText(CorePlugin.getInstance().getMessage("editor.error.subscribe.message", [event.fault.faultString]))
-				.setTitle(CorePlugin.getInstance().getMessage("editor.error.subscribe.title"))
+				.setText(Resources.getMessage("editor.error.subscribe.message", [event.fault.faultString]))
+				.setTitle(Resources.getMessage("editor.error.subscribe.title"))
 				.setWidth(300)
 				.setHeight(200)
 				.showMessageBox();

@@ -33,8 +33,7 @@ license-end
 		<![CDATA[
 			import mx.collections.IList;
 			
-			import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
-			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
@@ -54,8 +53,8 @@ license-end
 			
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewHost = viewHost;
-				_viewHost.setLabel(MindMapPlugin.getInstance().getMessage('manageIcons.action.label'));
-				_viewHost.setIcon(MindMapPlugin.getInstance().getResourceUrl('images/images.png'));
+				_viewHost.setLabel(Resources.getMessage('manageIcons.action.label'));
+				_viewHost.setIcon(Resources.imagesIcon);
 			}
 					
 			public function setResultHandler(resultHandler:IDialogResultHandler):void {

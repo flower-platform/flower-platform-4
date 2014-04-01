@@ -18,11 +18,10 @@
 */
 package org.flowerplatform.flex_client.mindmap.action {
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
+	import org.flowerplatform.flex_client.resources.Resources;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -30,8 +29,8 @@ package org.flowerplatform.flex_client.mindmap.action {
 	public class RefreshAction extends DiagramShellAwareActionBase {
 						
 		public function RefreshAction() {
-			label = MindMapPlugin.getInstance().getMessage("mindmap.action.refresh");
-			icon = CorePlugin.getInstance().getResourceUrl("images/refresh.gif");
+			label = Resources.getMessage("mindmap.action.refresh");
+			icon = Resources.refreshIcon;
 			orderIndex = 40;					
 		}
 				

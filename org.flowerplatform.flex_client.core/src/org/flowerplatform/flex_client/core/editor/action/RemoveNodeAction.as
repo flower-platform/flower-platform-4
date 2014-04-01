@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
@@ -29,8 +30,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 		
 		public function RemoveNodeAction() {
 			super();
-			label = CorePlugin.getInstance().getMessage("action.remove");	
-			icon = CorePlugin.getInstance().getResourceUrl("images/cancel_delete.png");
+			label = Resources.getMessage("action.remove");	
+			icon = Resources.deleteIcon;
 			orderIndex = 20;
 		}
 		

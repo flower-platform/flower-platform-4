@@ -22,6 +22,7 @@
 			import mx.collections.IList;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -59,7 +60,7 @@
 				server.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
 				var client:Date = new Date();
 				client.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
-				return CorePlugin.getInstance().getMessage('reconnect.message', [formatter.format(client), formatter.format(server)]);
+				return Resources.getMessage('reconnect.message', [formatter.format(client), formatter.format(server)]);
 			}
 			
 			private var _viewHost:IViewHost;
@@ -81,13 +82,13 @@
 	
 	<s:Label text="{getReconnectingMessage()}" textAlign="center" width="100%"/>
 	
-	<s:Label text="{CorePlugin.getInstance().getMessage('reconnect.automatic', [CorePlugin.getInstance().updateTimer.updateInterval / 1000])}"
+	<s:Label text="{Resources.getMessage('reconnect.automatic', [CorePlugin.getInstance().updateTimer.updateInterval / 1000])}"
 			 visible="{reconnectingAutomatically}" includeInLayout="{reconnectingAutomatically}" textAlign="center" width="100%"/>
 	
 	<s:HGroup>
 		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancel()"
 				  visible="{reconnectingAutomatically}" includeInLayout="{reconnectingAutomatically}"/>
-		<s:Button label="{CorePlugin.getInstance().getMessage('reconnect')}" click="reconnect()"
+		<s:Button label="{Resources.getMessage('reconnect')}" click="reconnect()"
 				  visible="{!reconnectingAutomatically}" includeInLayout="{!reconnectingAutomatically}"/>
 	</s:HGroup>
 	

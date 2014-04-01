@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>org.flowerplatform.flex_client.resources</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.flexlibnature</nature>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>images</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/org.flowerplatform.resources/public-resources/images</locationURI>
+		</link>
+		<link>
+			<name>messages</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/org.flowerplatform.resources/public-resources/messages</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

@@ -23,7 +23,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.events.ValidationResultEvent;
 	import mx.validators.ValidationResult;
 	
-	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	import spark.validators.NumberValidator;
@@ -54,7 +54,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			if (validationResultEvent.type == ValidationResultEvent.INVALID) {	
 				// show validation error to client
 				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setTitle(PropertiesPlugin.getInstance().getMessage("properties.view"))
+					.setTitle(Resources.getMessage("properties.view"))
 					.setText(ValidationResult(validationResultEvent.results[0]).errorMessage)
 					.setWidth(300)
 					.setHeight(200)					

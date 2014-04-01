@@ -20,8 +20,8 @@ previously), and a new editor is opened directly.
 		<s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingBottom="10" paddingRight="10"/>
 	</s:layout>
 	
-	<s:Label text="{CorePlugin.getInstance().getMessage('editor.openInNewEditor.message')}"/>
-	<s:CheckBox id="rememberSetting" label="{CorePlugin.getInstance().getMessage('editor.openInNewEditor.remember')}" selected="true"/>
+	<s:Label text="{Resources.getMessage('editor.openInNewEditor.message')}"/>
+	<s:CheckBox id="rememberSetting" label="{Resources.getMessage('editor.openInNewEditor.remember')}" selected="true"/>
 	
 	<s:HGroup width="100%" horizontalAlign="right">
 		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okClickHandler()"/>
@@ -34,6 +34,7 @@ previously), and a new editor is opened directly.
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -53,7 +54,7 @@ previously), and a new editor is opened directly.
 				} else {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 						.setViewContent(this)
-						.setTitle(CorePlugin.getInstance().getMessage("editor.openInNewEditor.title"))
+						.setTitle(Resources.getMessage("editor.openInNewEditor.title"))
 						.setWidth(400)
 						.setHeight(150)
 						.show();

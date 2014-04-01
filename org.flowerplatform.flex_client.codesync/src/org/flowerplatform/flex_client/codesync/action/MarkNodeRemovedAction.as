@@ -18,9 +18,9 @@
 */
 package org.flowerplatform.flex_client.codesync.action {
 	
-	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
@@ -30,7 +30,7 @@ package org.flowerplatform.flex_client.codesync.action {
 		
 		public function MarkNodeRemovedAction() {
 			super();
-			label = CodeSyncPlugin.getInstance().getMessage("codesync.action.markRemoved");
+			label = Resources.getMessage("codesync.action.markRemoved");
 			orderIndex = 20;
 		}
 		

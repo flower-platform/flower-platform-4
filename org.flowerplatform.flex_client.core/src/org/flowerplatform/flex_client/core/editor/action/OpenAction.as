@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
@@ -29,7 +30,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public function OpenAction() {
 			super();
 			
-			label = CorePlugin.getInstance().getMessage("editor.action.open");
+			label = Resources.getMessage("editor.action.open");
 		}
 		
 		override public function get visible():Boolean {			

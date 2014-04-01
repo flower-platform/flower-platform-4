@@ -20,6 +20,7 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.resources.ResourcesPlugin;
 
 /**
  * @author Sebastian Solomon
@@ -63,11 +64,11 @@ public class FilePropertiesProvider extends PropertiesProvider {
 		if ((boolean)node.getProperties().get(FILE_IS_DIRECTORY)) {
 			long folderSize = getFolderSize(file);
 			node.getProperties().put(FILE_SIZE, folderSize);
-			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/folder.gif"));
+			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/folder.gif"));
 		} else {
 			node.getProperties().put(IS_OPENABLE_IN_NEW_EDITOR, true);
 			node.getProperties().put(FILE_SIZE, fileAccessController.length(file));
-			node.getProperties().put(ICONS, CorePlugin.getInstance().getResourceUrl("images/file.gif"));
+			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"));
 			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
 	}

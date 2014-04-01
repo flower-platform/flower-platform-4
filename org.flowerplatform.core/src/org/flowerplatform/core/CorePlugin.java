@@ -82,6 +82,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return INSTANCE;
 	}
 	
+	@Override
+	public void registerMessageBundle() throws Exception {
+		// messages come from .resources
+	}
+
 	/**
 	 * @author Sebastian Solomon
 	 */

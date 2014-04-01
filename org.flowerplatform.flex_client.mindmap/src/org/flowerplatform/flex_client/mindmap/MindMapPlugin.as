@@ -16,6 +16,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
@@ -23,8 +24,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
-	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
-	import org.flowerplatform.flexdiagram.tool.controller.drag.DragController;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -102,6 +101,9 @@ package org.flowerplatform.flex_client.mindmap {
 			CorePlugin.getInstance().contentTypeRegistry[MindMapConstants.MINDMAP_CONTENT_TYPE] = mindMapEditorDescriptor;
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);	
 		}
-
+		
+		override protected function registerMessageBundle():void {
+			// messages come from .flex_client.resources
+		}
 	}
 }

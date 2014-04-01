@@ -20,12 +20,10 @@ package org.flowerplatform.flex_client.web {
 	
 	import mx.collections.ArrayCollection;
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.properties.PropertiesViewProvider;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.layout.SashLayoutData;
-	import org.flowerplatform.flexutil.layout.StackLayoutData;
 	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 
 	/**
@@ -40,11 +38,11 @@ package org.flowerplatform.flex_client.web {
 		}
 		
 		public override function get name():String {
-			return WebPlugin.getInstance().getMessage("flower.perspective");
+			return Resources.getMessage("flower.perspective");
 		}
 		
-		public override function get iconUrl():String {			
-			return CorePlugin.getInstance().getResourceUrl("images/icon_flower.gif");
+		public override function get iconUrl():Object {			
+			return Resources.flowerIcon;
 		}
 		
 		public override function resetPerspective(workbench:IWorkbench):void {

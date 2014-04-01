@@ -23,7 +23,7 @@ import java.util.List;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.mindmap.MindMapPlugin;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudController;
 import org.freeplane.features.cloud.CloudModel;
@@ -64,7 +64,7 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		if (icons != null) {
 			StringBuilder sb = new StringBuilder();
 			for (MindIcon icon : icons) {
-				sb.append(MindMapPlugin.getInstance().getResourceUrl(icon.getPath()));
+				sb.append(ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/" + icon.getFileName()));
 				sb.append(CoreConstants.ICONS_SEPARATOR);
 			}
 			if (sb.length() > 0) { // remove last icons separator

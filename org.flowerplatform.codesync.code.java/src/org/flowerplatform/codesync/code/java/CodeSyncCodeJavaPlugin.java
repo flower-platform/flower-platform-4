@@ -105,6 +105,7 @@ import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -369,7 +370,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 	}
 	
 	private String getLabel(String key) {
-		return CodeSyncCodeJavaPlugin.getInstance().getMessage(key);
+		return ResourcesPlugin.getInstance().getMessage(key);
 	}
 
 	public FolderModelAdapter getFolderModelAdapter() {
@@ -381,4 +382,9 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = null;
 	}
 
+	@Override
+	public void registerMessageBundle() throws Exception {
+		// messages come from .resources
+	}
+	
 }

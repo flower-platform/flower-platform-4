@@ -28,6 +28,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.editor.ui.RichTextWithRendererView;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 	
@@ -39,8 +40,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 		private var view:RichTextWithRendererView;
 		
 		public function RenameAction() {			
-			label = CorePlugin.getInstance().getMessage("action.rename");
-			icon = CorePlugin.getInstance().getResourceUrl("images/edit.png");
+			label = Resources.getMessage("action.rename");
+			icon = Resources.editIcon;
 			orderIndex = 30;
 		}
 				

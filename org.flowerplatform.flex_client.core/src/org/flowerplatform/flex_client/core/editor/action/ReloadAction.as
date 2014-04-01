@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
@@ -31,8 +32,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	public class ReloadAction extends EditorFrontendAwareAction {
 		
 		public function ReloadAction() {			
-			label = CorePlugin.getInstance().getMessage("reload.action.label");
-			icon = FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png"));
+			label = Resources.getMessage("reload.action.label");
+			icon = Resources.reloadIcon;
 			parentId = CoreConstants.FILE_MENU_ID;
 			enabled = false;
 		}

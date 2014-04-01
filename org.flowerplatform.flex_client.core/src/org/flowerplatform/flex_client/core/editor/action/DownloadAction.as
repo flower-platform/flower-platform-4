@@ -10,6 +10,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -23,8 +24,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 		
 		public function DownloadAction() {
 			super();
-			label = CorePlugin.getInstance().getMessage("action.download");
-			icon = CorePlugin.getInstance().getResourceUrl("images/download.png");
+			label = Resources.getMessage("action.download");
+			icon = Resources.downloadIcon;
 		}
 		
 		override protected function isVisibleForSelectedElement(element:Object):Boolean {
@@ -40,8 +41,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 			if (selection.length > 1 || (selection.length == 1 && Node(selection.getItemAt(0)).properties[CoreConstants.FILE_IS_DIRECTORY])) {
 				// single directory or multiple files -> zip archive will be created, show info to client
 				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setText(CorePlugin.getInstance().getMessage("download.zip"))
-					.setTitle(CorePlugin.getInstance().getMessage("info"))
+					.setText(Resources.getMessage("download.zip"))
+					.setTitle(Resources.getMessage("info"))
 					.setWidth(300)
 					.setHeight(200)
 					.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'), function():void {prepareToDownload(fullNodeIds);})

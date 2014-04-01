@@ -71,6 +71,9 @@ package com.crispico.flower.flexdiagram.util.tabNavigator {
 				newButton.label = label.substr(0, indexURL);
 				newButton.setStyle(ButtonUtils.iconURLStyleName, label.substr(indexURL+PATTERN_URL.length));
 			}
+			if (icon != null) {
+				newButton.setStyle(ButtonUtils.iconURLStyleName, icon);
+			}
 			return newButton;
 		}
 		
@@ -83,9 +86,12 @@ package com.crispico.flower.flexdiagram.util.tabNavigator {
 			// get the item's label
 			var label:String = super.itemToLabel(data);
 			// if the item has "iconURL" set, add it to the label
-			var iconURLstyle:String = data.getStyle(ButtonUtils.iconURLStyleName);
-			if (iconURLstyle != null) {
+			var iconURLstyle:Object = data.getStyle(ButtonUtils.iconURLStyleName);
+			if (iconURLstyle is String) {
 				label += PATTERN_URL + iconURLstyle;
+			} else {
+				// set the icon to be used in createNavItem
+				data.icon = iconURLstyle;
 			}
 			// return the new label
 			// the label will be split in <code>createNavItem</code>

@@ -9,6 +9,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
@@ -213,12 +214,12 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			saveView.resourceNodes = dirtyResourceNodes;
 			saveView.handler = handler;
 			saveView.serverMethodToInvokeForSelection = "resourceService.save";
-			saveView.title = CorePlugin.getInstance().getMessage("save.title");
-			saveView.labelForSingleResourceNode = CorePlugin.getInstance().getMessage('save.singleResourceNode.message', 
+			saveView.title = Resources.getMessage("save.title");
+			saveView.labelForSingleResourceNode = Resources.getMessage('save.singleResourceNode.message', 
 				[getResourceNodeLabel(dirtyResourceNodes.getItemAt(0).resourceNodeId)])
-			saveView.labelForMultipleResourceNodes = CorePlugin.getInstance().getMessage('save.multipleResourceNodes.label');
-			saveView.iconForSingleResourceNode = CorePlugin.getInstance().getResourceUrl("images/disk.png");
-			saveView.iconForMultipleResourceNodes = CorePlugin.getInstance().getResourceUrl("images/disk_multiple.png");
+			saveView.labelForMultipleResourceNodes = Resources.getMessage('save.multipleResourceNodes.label');
+			saveView.iconForSingleResourceNode = Resources.saveIcon;
+			saveView.iconForMultipleResourceNodes = Resources.saveAllIcon;
 			
 			showPopup(saveView, dirtyResourceNodes.length == 1);
 		}
@@ -243,10 +244,9 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			reloadView.resourceNodes = resourceNodes;
 			reloadView.handler = function():void {};
 			reloadView.serverMethodToInvokeForSelection = "resourceService.reload";
-			reloadView.title = CorePlugin.getInstance().getMessage("reload.title");
-			reloadView.labelForMultipleResourceNodes = CorePlugin.getInstance().getMessage('reload.multipleResourceNodes.label');
-			reloadView.iconForSingleResourceNode = reloadView.iconForMultipleResourceNodes =
-				CorePlugin.getInstance().getResourceUrl("images/refresh_blue.png");
+			reloadView.title = Resources.getMessage("reload.title");
+			reloadView.labelForMultipleResourceNodes = Resources.getMessage('reload.multipleResourceNodes.label');
+			reloadView.iconForSingleResourceNode = reloadView.iconForMultipleResourceNodes = Resources.reloadIcon;
 			
 			showPopup(reloadView, resourceNodes.length == 1);
 		}

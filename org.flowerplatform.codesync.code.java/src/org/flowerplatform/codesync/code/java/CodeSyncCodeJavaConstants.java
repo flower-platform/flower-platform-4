@@ -1,5 +1,7 @@
 package org.flowerplatform.codesync.code.java;
 
+import org.flowerplatform.resources.ResourcesPlugin;
+
 /**
  * @author Mariana Gheorghe
  */
@@ -93,11 +95,11 @@ public class CodeSyncCodeJavaConstants {
 	public static final String VISIBILITY_DEFAULT = "_default";
 	
 	public static String getImagePath(String image) {
-		return "org.flowerplatform.codesync.code.java/images/" + image;
+		return "org.flowerplatform.resources/images/codesync.java/" + image;
 	}
 	
 	public static String getImagePathFromPublicResources(String image) {
-		return CodeSyncCodeJavaPlugin.getInstance().getResourceUrl("/images/" + image);
+		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.java/" + image);
 	}
 
 }

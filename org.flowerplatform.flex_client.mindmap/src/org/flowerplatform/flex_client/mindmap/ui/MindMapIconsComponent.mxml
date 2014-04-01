@@ -29,8 +29,8 @@ license-end
 	<fx:Script>
 		<![CDATA[
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-			import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.Utils;
 			
 			import spark.components.Group;
@@ -53,18 +53,18 @@ license-end
 				super.createChildren();
 				
 				var btnRemoveAll:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-				btnRemoveAll.iconUrl = "/images/icon_trash.png";
-				btnRemoveAll.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.all.label');
+				btnRemoveAll.setStyle("icon", Resources.removeAllIconsIcon);
+				btnRemoveAll.toolTip = Resources.getMessage('manageIcons.remove.all.label');
 				btnRemoveAll.addEventListener(MouseEvent.CLICK, btnRemoveAll_clickHandler);
 				
 				var btnRemoveFirst:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-				btnRemoveFirst.iconUrl = "/images/remove_first_icon.png";
-				btnRemoveFirst.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.first.label');
+				btnRemoveFirst.setStyle("icon", Resources.removeFirstIconIcon);
+				btnRemoveFirst.toolTip = Resources.getMessage('manageIcons.remove.first.label');
 				btnRemoveFirst.addEventListener(MouseEvent.CLICK, btnRemoveFirst_clickHandler);
 				
 				var btnRemoveLast:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-				btnRemoveLast.iconUrl = "/images/remove_last_icon.png";
-				btnRemoveLast.toolTip = MindMapPlugin.getInstance().getMessage('manageIcons.remove.last.label');
+				btnRemoveLast.setStyle("icon", Resources.removeLastIconIcon);
+				btnRemoveLast.toolTip = Resources.getMessage('manageIcons.remove.last.label');
 				btnRemoveLast.addEventListener(MouseEvent.CLICK, btnRemoveLast_clickHandler);
 				
 				removeGroup.addElement(btnRemoveAll);				
@@ -74,7 +74,8 @@ license-end
 				var icons:Array = MindMapConstants.ICONS_LIST.split(';');
 				for (var i:int=0; i < icons.length; i++) {
 					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-					btnImage.iconUrl = "images/icons/" + icons[i] + ".png";
+					btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+					btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
 					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
 					
 					imageGroup.addElement(btnImage);
@@ -102,7 +103,8 @@ license-end
 			protected function btnImage_clickHandler(event:MouseEvent):void {
 				var result:Object = new Object();
 				result.type = Utils.ADD;
-				result.iconUrl = MindMapPlugin.getInstance().getResourceUrl(MindMapButtonWithIcon(event.target).iconUrl);
+				var iconUrl:String = MindMapButtonWithIcon(event.target).iconUrl;
+				result.iconUrl = Resources.getResourceUrl(iconUrl);
 				handleClick(result);
 			}
 			

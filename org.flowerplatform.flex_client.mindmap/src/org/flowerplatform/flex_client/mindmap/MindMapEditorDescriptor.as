@@ -21,6 +21,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**
@@ -41,7 +42,7 @@ package org.flowerplatform.flex_client.mindmap {
 		}
 		
 		public override function getIcon(viewLayoutData:ViewLayoutData=null):Object {				
-			return CorePlugin.getInstance().getResourceUrl("images/icon_flower.gif");
+			return Resources.flowerIcon;
 		}
 		
 		public override function getTitle(viewLayoutData:ViewLayoutData=null):String {		

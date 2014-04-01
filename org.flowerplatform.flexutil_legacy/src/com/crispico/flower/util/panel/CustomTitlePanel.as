@@ -45,7 +45,7 @@ package com.crispico.flower.util.panel
 		/**
 		 * The icon URL displayed in the title bar.
 		 */ 
-		public var titleIconURL:String;
+		public var titleIconURL:Object;
 		
 		/**
 		 * If <code>titleIconURL</code> is set, replaces the image class

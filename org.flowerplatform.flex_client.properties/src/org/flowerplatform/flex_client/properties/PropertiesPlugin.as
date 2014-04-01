@@ -17,6 +17,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.properties.property_renderer.NumericStepperPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -52,6 +53,10 @@ package org.flowerplatform.flex_client.properties {
 		override public function start():void {
 			super.start();
 			registerPropertyProviders();
+		}
+		
+		override protected function registerMessageBundle():void {
+			// messages come from .flex_client.resources
 		}
 		
 		override protected function registerClassAliases():void {

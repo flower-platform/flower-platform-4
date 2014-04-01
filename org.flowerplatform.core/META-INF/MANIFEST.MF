@@ -19,7 +19,8 @@ Bundle-ClassPath: lib/commons-fileupload-1.3.1.jar,
  .
 Require-Bundle: org.flowerplatform.util,
  org.eclipse.osgi,
- org.eclipse.equinox.http.registry
+ org.eclipse.equinox.http.registry,
+ org.flowerplatform.resources
 Bundle-Activator: org.flowerplatform.core.CorePlugin
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet,

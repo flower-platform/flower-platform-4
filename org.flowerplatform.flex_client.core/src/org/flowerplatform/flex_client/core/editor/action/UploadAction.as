@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.UploadView;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.MultipleSelectionActionBase;
 	
@@ -14,8 +15,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 		
 		public function UploadAction() {
 			super();
-			label = CorePlugin.getInstance().getMessage("action.upload");
-			icon = CorePlugin.getInstance().getResourceUrl("images/upload.png");
+			label = Resources.getMessage("action.upload");
+			icon = Resources.uploadIcon;
 		}
 		
 		override public function get visible():Boolean {

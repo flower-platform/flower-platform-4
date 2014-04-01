@@ -53,7 +53,7 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 		}
 		
 		private function getSyncMarkerPath(marker:String):String {
-			return "org.flowerplatform.codesync/images/sync-markers/" + marker;
+			return "org.flowerplatform.resources/images/codesync/sync-markers/" + marker;
 		}
 		
 	}

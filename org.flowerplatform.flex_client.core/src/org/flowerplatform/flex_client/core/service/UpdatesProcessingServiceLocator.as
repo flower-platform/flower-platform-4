@@ -11,9 +11,9 @@ package org.flowerplatform.flex_client.core.service {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
@@ -146,8 +146,8 @@ package org.flowerplatform.flex_client.core.service {
 				idsList += "\n* " + resourceNodeId;
 			}
 			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-			.setText(CorePlugin.getInstance().getMessage("editor.error.subscribe.message", [idsList]))
-			.setTitle(CorePlugin.getInstance().getMessage("editor.error.subscribe.title"))
+			.setText(Resources.getMessage("editor.error.subscribe.message", [idsList]))
+			.setTitle(Resources.getMessage("editor.error.subscribe.title"))
 			.setWidth(300)
 			.setHeight(200)
 			.showMessageBox();

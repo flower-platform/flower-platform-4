@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.flowerplatform.mindmap;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.flowerplatform.core,
  org.flowerplatform.util,
+ org.flowerplatform.resources,
  org.eclipse.osgi
 Bundle-Activator: org.flowerplatform.mindmap.MindMapPlugin
 Bundle-ActivationPolicy: lazy

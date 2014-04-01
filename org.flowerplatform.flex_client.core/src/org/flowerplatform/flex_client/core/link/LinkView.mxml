@@ -38,6 +38,7 @@ license-end
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -57,8 +58,8 @@ license-end
 			
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewHost = viewHost;
-				_viewHost.setLabel(CorePlugin.getInstance().getMessage('link.title'));
-				_viewHost.setIcon(CorePlugin.getInstance().getResourceUrl('images/external_link.png'));
+				_viewHost.setLabel(Resources.getMessage('link.title'));
+				_viewHost.setIcon(Resources.externalLinkIcon);
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
@@ -96,6 +97,7 @@ license-end
 				<fx:Script>
 					<![CDATA[
 						import org.flowerplatform.flex_client.core.CorePlugin;
+						import org.flowerplatform.flex_client.resources.Resources;
 						import org.flowerplatform.flexutil.FlexUtilGlobals;
 						
 						public var textToCopy:String;
@@ -117,11 +119,11 @@ license-end
 					<s:Fade id="fadeEffect" duration="2000" alphaFrom="1" alphaTo="0" />
 				</fx:Declarations>
 								
-				<s:Button label="{CorePlugin.getInstance().getMessage('link.copy.clipboard')}" 
-						  icon="{FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(CorePlugin.getInstance().getResourceUrl('images/clipboard-sign-out.png'))}"
+				<s:Button label="{Resources.getMessage('link.copy.clipboard')}" 
+						  icon="{Resources.clipboardIcon}"
 						  click="clickHandler(event)" />
 				
-				<s:Label id="lbCopied" text="{CorePlugin.getInstance().getMessage('link.copied')}" color="red" alpha="0"/>
+				<s:Label id="lbCopied" text="{Resources.getMessage('link.copied')}" color="red" alpha="0"/>
 				
 			</s:VGroup>			
 		</fx:Component>
@@ -132,17 +134,17 @@ license-end
 	</s:layout>
 		
 	<!-- 1) -->
-	<s:Label text="{CorePlugin.getInstance().getMessage('link.option.to')}" width="100%" paddingBottom="5" />
+	<s:Label text="{Resources.getMessage('link.option.to')}" width="100%" paddingBottom="5" />
 	
 	<!-- a) -->
-	<s:Label text="{CorePlugin.getInstance().getMessage('link.to.current.editor')}" width="100%" />	
+	<s:Label text="{Resources.getMessage('link.to.current.editor')}" width="100%" />	
 	<s:HGroup width="100%" horizontalAlign="right" >
 		<s:TextInput id="txtCurrentEditor" width="100%" focusIn="{txtCurrentEditor.selectAll()}"  />
 		<local:CopyToClipboardButton textToCopy="{txtCurrentEditor.text}" />
 	</s:HGroup>
 	
 	<!-- b) -->
-	<s:Label text="{CorePlugin.getInstance().getMessage('link.to.all.editors')}" width="100%" />
+	<s:Label text="{Resources.getMessage('link.to.all.editors')}" width="100%" />
 	<s:HGroup width="100%" horizontalAlign="right">
 		<s:TextInput id="txtAllEditors" width="100%" focusIn="{txtAllEditors.selectAll()}" />
 		<local:CopyToClipboardButton textToCopy="{txtAllEditors.text}" />
@@ -156,11 +158,11 @@ license-end
 	</s:Line>
 	
 	<!-- 2) -->
-	<s:Label text="{CorePlugin.getInstance().getMessage('link.option.follow')}" width="100%" />
+	<s:Label text="{Resources.getMessage('link.option.follow')}" width="100%" />
 	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle">
 		<s:TextInput id="txtFollowLink" width="100%" />
-		<s:Button label="{CorePlugin.getInstance().getMessage('link.follow')}" 
-				  icon="{FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(CorePlugin.getInstance().getResourceUrl('images/arrow_right.png'))}"
+		<s:Button label="{Resources.getMessage('link.follow')}" 
+				  icon="{Resources.arrowRightIcon}"
 				  click="{CorePlugin.getInstance().handleLink(txtFollowLink.text); FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);}"/>
 	</s:HGroup>
 	

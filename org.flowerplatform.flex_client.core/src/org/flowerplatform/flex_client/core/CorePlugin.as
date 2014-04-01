@@ -22,7 +22,6 @@ package org.flowerplatform.flex_client.core {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
@@ -53,6 +52,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -67,11 +67,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
 	import org.flowerplatform.flexutil.layout.Perspective;
-	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
-	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
-	
-	import spark.components.Application;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -216,8 +212,32 @@ package org.flowerplatform.flex_client.core {
 				ExternalInterface.addCallback("handleLink", handleLink);
 			}			
 			
-			// when adding actions to global menu, the messages must be fully loaded
-			Application(FlexGlobals.topLevelApplication).addEventListener(ResourceUpdatedEvent.RESOURCE_UPDATED, messageResourceUpdatedHandler);
+			// add actions to global menu
+			
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.file")).setId(CoreConstants.FILE_MENU_ID));
+			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
+			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
+			globalMenuActionProvider.addAction(resourceNodesManager.reloadAction);
+			
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID));
+			globalMenuActionProvider.addAction(new ActionBase()
+				.setLabel(Resources.getMessage("link.title"))
+				.setIcon(Resources.externalLinkIcon)
+				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
+				.setFunctionDelegate(function ():void {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+					.setViewContent(new LinkView())
+					.setWidth(500)
+					.setHeight(250)
+					.show();
+				})
+			);
+			
+			if (debug) {
+				debug_forceUpdateAction = new ForceUpdateAction();
+				globalMenuActionProvider.addAction(debug_forceUpdateAction);
+				globalMenuActionProvider.addAction(new ComposedAction().setLabel("Debug").setId(CoreConstants.DEBUG));				
+			}
 		}
 		
 		private function isDebug():Boolean {
@@ -245,49 +265,8 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(Pair);
 		}
 		
-		/**
-		 * Overriden to add FlexGlobals.topLevelApplication as <code>object</code> parameter.
-		 * Needed in <code>ResourceUtils</code> to dispatch <code>ResourceUpdatedEvent</code>.
-		 */ 
 		override protected function registerMessageBundle():void {
-			ResourcesUtils.registerMessageBundle("en_US", resourcesUrl, getResourceUrl(MESSAGES_FILE), FlexGlobals.topLevelApplication);
-		}
-		
-		private function messageResourceUpdatedHandler(event:ResourceUpdatedEvent):void {		
-			if (event.resourceURL != getResourceUrl(MESSAGES_FILE)) {
-				return;
-			}
-			
-			// message resource is loaded
-			
-			Application(FlexGlobals.topLevelApplication).removeEventListener(ResourceUpdatedEvent.RESOURCE_UPDATED, messageResourceUpdatedHandler);
-			
-			// add actions to global menu
-			
-			globalMenuActionProvider.addAction(new ComposedAction().setLabel(getMessage("menu.file")).setId(CoreConstants.FILE_MENU_ID));
-			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
-			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
-			globalMenuActionProvider.addAction(resourceNodesManager.reloadAction);
-			
-			globalMenuActionProvider.addAction(new ComposedAction().setLabel(getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID));
-			globalMenuActionProvider.addAction(new ActionBase()
-					.setLabel(getMessage("link.title"))
-					.setIcon(FlexUtilGlobals.getInstance().createAbsoluteUrl(getResourceUrl('images/external_link.png')))
-					.setParentId(CoreConstants.NAVIGATE_MENU_ID)
-					.setFunctionDelegate(function ():void {
-						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
-						.setViewContent(new LinkView())
-						.setWidth(500)
-						.setHeight(250)
-						.show();
-					})
-			);
-			
-			if (debug) {
-				debug_forceUpdateAction = new ForceUpdateAction();
-				globalMenuActionProvider.addAction(debug_forceUpdateAction);
-				globalMenuActionProvider.addAction(new ComposedAction().setLabel("Debug").setId(CoreConstants.DEBUG));				
-			}
+			// messages come from .flex_client.resources
 		}
 		
 		public function getPerspective(id:String):Perspective {

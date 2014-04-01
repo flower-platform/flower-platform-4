@@ -1,9 +1,9 @@
 package org.flowerplatform.flex_client.codesync.action {
 	
-	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -12,7 +12,8 @@ package org.flowerplatform.flex_client.codesync.action {
 		
 		public function SynchronizeAction() {
 			super();
-			label = CodeSyncPlugin.getInstance().getMessage("codesync.action.synchronize");
+			label = Resources.getMessage("codesync.action.synchronize");
+			icon = Resources.synchronizeIcon;
 		}
 		
 		override public function get visible():Boolean {

@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.properties {
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
@@ -40,11 +41,11 @@ package org.flowerplatform.flex_client.properties {
 		}
 		
 		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
-			return PropertiesPlugin.getInstance().getMessage("properties.view");
+			return Resources.getMessage("properties.view");
 		}
 		
 		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
-			return PropertiesPlugin.getInstance().getResourceUrl("images/properties.gif");
+			return Resources.propertiesIcon;
 		}
 	
 	}

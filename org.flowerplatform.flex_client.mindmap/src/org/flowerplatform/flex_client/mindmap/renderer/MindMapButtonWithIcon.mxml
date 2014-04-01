@@ -29,7 +29,6 @@ license-end
 				<![CDATA[
 					import mx.events.FlexEvent;
 					
-					import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 					import org.flowerplatform.flexutil.FlexUtilGlobals;
 					
 					public var iconUrl:String;
@@ -45,8 +44,7 @@ license-end
 						if (!FlexUtilGlobals.getInstance().isMobile) {
 							width = 22;
 							height = 22;
-						}	
-						setStyle("icon", FlexUtilGlobals.getInstance().createAbsoluteUrl(MindMapPlugin.getInstance().getResourceUrl(iconUrl)));
+						}
 					}
 				]]>
 			</fx:Script>				 

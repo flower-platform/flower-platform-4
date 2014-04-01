@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -30,8 +31,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	public class SaveAllAction extends ActionBase {
 		
 		public function SaveAllAction() {			
-			label = CorePlugin.getInstance().getMessage("saveAll.action.label");
-			icon = FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl("images/disk_multiple.png"));
+			label = Resources.getMessage("saveAll.action.label");
+			icon = Resources.saveAllIcon;
 			parentId = CoreConstants.FILE_MENU_ID;
 			enabled = false;
 		}

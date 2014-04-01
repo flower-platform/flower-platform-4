@@ -2,6 +2,7 @@ package org.flowerplatform.flex_client.properties.action {
 	
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.PropertiesViewProvider;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -12,8 +13,8 @@ package org.flowerplatform.flex_client.properties.action {
 		
 		public function ShowPropertiesAction(){
 			super();
-			label = PropertiesPlugin.getInstance().getMessage("properties.action.show");
-			icon = PropertiesPlugin.getInstance().getResourceUrl("images/properties.gif");
+			label = Resources.getMessage("properties.action.show");
+			icon = Resources.propertiesIcon;
 			orderIndex = 500;
 		}
 			

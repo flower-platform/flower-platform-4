@@ -25,6 +25,7 @@ package org.flowerplatform.flex_client.codesync {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AbstractController;
@@ -59,5 +60,8 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(SynchronizeAction);
 		}
 		
+		override protected function registerMessageBundle():void {
+			// messages come from .flex_client.resources
+		}
 	}
 }

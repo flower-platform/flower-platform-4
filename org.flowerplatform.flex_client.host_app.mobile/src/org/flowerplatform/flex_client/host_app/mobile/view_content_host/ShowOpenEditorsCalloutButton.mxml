@@ -25,7 +25,7 @@
 				 xmlns:s="library://ns.adobe.com/flex/spark"
 				 xmlns:skins="com.flextras.mobile.shared.skins.*"
 				 label="Editors"
-				 icon="{FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl('images/open_resource.png'))}" 
+				 icon="{Resources.openResourceIcon}" 
 				 visible="{splitView.rightComponents.length > 0}" includeInLayout="{splitView.rightComponents.length > 0}">
 	<fx:Declarations>
 		<fx:Component className="EditorFrontendEntry">
@@ -38,6 +38,7 @@
 						
 						import org.flowerplatform.flex_client.core.CorePlugin;
 						import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+						import org.flowerplatform.flex_client.resources.Resources;
 						import org.flowerplatform.flexutil.FlexUtilGlobals;
 						
 						import spark.components.Group;
@@ -76,7 +77,7 @@
 						  click="switchToEditorFrontend(event)"
 						  width="100%"
 						  skinClass="com.flextras.mobile.shared.skins.ButtonSkinSquare"/>
-				<s:Button id="closeButton" icon="{FlexUtilGlobals.getInstance().createAbsoluteUrl(CorePlugin.getInstance().getResourceUrl('images/cancel_delete.png'))}"
+				<s:Button id="closeButton" icon="{Resources.deleteIcon}"
 						  click="closeEditorFrontend(event)" 
 						  skinClass="com.flextras.mobile.shared.skins.ButtonSkinSquare"/>
 				
@@ -86,6 +87,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
 			import org.flowerplatform.flex_client.core.CorePlugin;			
 			import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
