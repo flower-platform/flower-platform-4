@@ -25,6 +25,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.ActionUtil;
 			import org.flowerplatform.flexutil.action.IAction;
 			
@@ -121,7 +122,7 @@
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle" paddingLeft="5" paddingRight="5"/>
 	</s:layout>
-	<s:BitmapImage id="iconComponent" width="16"/>
+	<s:BitmapImage id="iconComponent" width="16" contentLoader="{FlexUtilGlobals.getInstance().imageContentCache}"/>
 	<s:Label id="labelComponent" width="100%"/>
 	<s:BitmapImage id="hasSubActions" visible="false" includeInLayout="false"/>
 </s:ItemRenderer>
