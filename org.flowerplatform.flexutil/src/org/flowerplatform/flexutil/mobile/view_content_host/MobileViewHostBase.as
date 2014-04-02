@@ -148,6 +148,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			}
 
 			iconComponent = new BitmapImage();
+			iconComponent.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
 			labelComponent = new Label();
 			titleContent = [iconComponent, labelComponent]; 
 		}

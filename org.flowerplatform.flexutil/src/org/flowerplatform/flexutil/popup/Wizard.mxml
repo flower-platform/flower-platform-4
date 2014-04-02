@@ -72,13 +72,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			import mx.collections.IList;
 			import mx.states.State;
 			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 		
 			[Bindable]
 			public var wizardTitle:String;
@@ -281,7 +281,7 @@
 				<mx:Text width="100%" paddingLeft="8" text="{wizardDescription}"/>
 			</s:VGroup>
 			<s:VGroup id="wizardImageContainer" width="75" height="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:BitmapImage id="wizardImage"/>
+				<s:BitmapImage id="wizardImage" contentLoader="{FlexUtilGlobals.getInstance().imageContentCache}"/>
 			</s:VGroup>
 		</s:HGroup>
 		

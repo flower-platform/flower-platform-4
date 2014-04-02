@@ -19,7 +19,6 @@
 package org.flowerplatform.flexutil.global_menu {
 	import flash.display.DisplayObject;
 	
-	import mx.controls.Image;
 	import mx.controls.menuClasses.MenuBarItem;
 	
 	import org.flowerplatform.flexutil.action.IAction;
@@ -32,6 +31,8 @@ package org.flowerplatform.flexutil.global_menu {
 	 * @author Mircea Negreanu
 	 */ 
 	public class GlobalMenuBarItem extends MenuBarItem {
+		
+		private var cachedImage:CachedImage;
 		
 		/**
 		 * @author Mariana
@@ -51,15 +52,15 @@ package org.flowerplatform.flexutil.global_menu {
 		 * @author Mariana
 		 * @author Mircea Negreanu
 		 */
-		private function createIconFromUrl(img:Image = null):Image {
+		private function createIconFromUrl(cachedImage:CachedImage = null):CachedImage {
 			if (data is IAction && IAction(data).icon is String) {
-				if (img == null) {
-					img = new Image();
+				if (cachedImage == null) {
+					cachedImage = new CachedImage();
 				}
-				img.source = IAction(data).icon;
-				img.maxWidth = 16;
-				img.maxHeight = 16;
-				return img;
+				cachedImage.source = IAction(data).icon;
+				cachedImage.maxWidth = 16;
+				cachedImage.maxHeight = 16;
+				return cachedImage;
 			}
 			return null;
 		}

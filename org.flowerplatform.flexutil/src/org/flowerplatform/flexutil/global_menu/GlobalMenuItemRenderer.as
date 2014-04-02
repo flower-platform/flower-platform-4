@@ -20,7 +20,6 @@ package org.flowerplatform.flexutil.global_menu {
 	
 	import flash.display.DisplayObject;
 	
-	import mx.controls.Image;
 	import mx.controls.menuClasses.MenuItemRenderer;
 	import mx.core.IFlexDisplayObject;
 	
@@ -37,20 +36,21 @@ package org.flowerplatform.flexutil.global_menu {
 	 */ 
 	public class GlobalMenuItemRenderer extends MenuItemRenderer {
 		
+		private var cachedImage:CachedImage;
+		
 		/**
 		 * @author Cristina
 		 * @author Mircea Negreanu
 		 */
 		override protected function commitProperties():void {
 			super.commitProperties();
-			
 			if (icon == null) {
 				var newIcon:IFlexDisplayObject = createIcon();
 				if (newIcon != null) {
 					icon = newIcon;
 					addChild(DisplayObject(icon));
 				}
-			}
+			}	
 		}
 		
 		/**
@@ -59,15 +59,17 @@ package org.flowerplatform.flexutil.global_menu {
 		 */
 		protected function createIcon():IFlexDisplayObject {			
 			if (data is IAction && IAction(data).icon is String) {
-				var img:Image = new Image();
-				img.source = IAction(data).icon;
-				img.maxWidth = 16;
-				img.maxHeight = 16;
-				return img;
+				if (cachedImage == null) {
+					cachedImage = new CachedImage();
+					cachedImage.source = IAction(data).icon;
+					cachedImage.maxWidth = 16;
+					cachedImage.maxHeight = 16;
+				}
+				return cachedImage;
 			} else {
 				return null;
 			}
 		} 
-
+		
 	}
 }

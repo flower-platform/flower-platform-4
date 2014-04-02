@@ -19,6 +19,7 @@
 package com.crispico.flower.util.layout {
 	import flash.events.MouseEvent;
 	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionUtil;
 	import org.flowerplatform.flexutil.action.IAction;
 	
@@ -48,6 +49,18 @@ package com.crispico.flower.util.layout {
 					action.context = null;
 				}
 			}
+		}
+		
+		/**
+		 * Use the global image content cache for the icon component.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		override protected function partAdded(partName:String, instance:Object):void {							 
+			if (instance == iconDisplay) {
+				iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;								
+			}
+			super.partAdded(partName, instance);
 		}
 	}
 }
