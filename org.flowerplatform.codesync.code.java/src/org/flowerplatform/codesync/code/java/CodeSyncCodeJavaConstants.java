@@ -24,7 +24,7 @@ public class CodeSyncCodeJavaConstants {
 	public static final String ANNOTATION_MEMBER = "javaAnnotationMember";
 	
 	public static final String ANNOTATION = "javaAnnotation";
-	public static final String SUPER_INTERFACE = "superInterface";
+	public static final String SUPER_INTERFACE = "javaSuperInterface";
 	public static final String ENUM_CONSTANT_ARGUMENT = "javaEnumConstantArgument";
 	public static final String MEMBER_VALUE_PAIR = "javaMemberValuePair";
 	public static final String MODIFIER = "javaModifier";

@@ -18,6 +18,8 @@
 */
 package org.flowerplatform.flex_client.core.node.remote {
 	
+	import mx.utils.StringUtil;
+	
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
@@ -27,6 +29,11 @@ package org.flowerplatform.flex_client.core.node.remote {
 	public class GenericValueDescriptor extends AbstractController {
 		
 		public var value:Object;
+		
+		override public function toString():String {
+			return StringUtil.substitute("GenericValueDescriptor [value = {0}, orderIndex = {1}]",
+				value, orderIndex);
+		}
 		
 	}
 }

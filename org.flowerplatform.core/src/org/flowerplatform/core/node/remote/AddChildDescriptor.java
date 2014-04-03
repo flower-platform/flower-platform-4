@@ -18,8 +18,6 @@
  */
 package org.flowerplatform.core.node.remote;
 
-import java.util.Map;
-
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
 
@@ -82,7 +80,7 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 	
 	@Override
 	public String toString() {
-		return String.format("\nAddChildDescriptor [childType = %s, label = %s, orderIndex = %d]", 
+		return String.format("AddChildDescriptor [childType = %s, label = %s, orderIndex = %d]", 
 				childType, label, getOrderIndex());
 	}
 }

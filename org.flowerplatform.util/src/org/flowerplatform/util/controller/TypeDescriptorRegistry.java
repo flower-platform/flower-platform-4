@@ -1,7 +1,6 @@
 package org.flowerplatform.util.controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,10 +104,12 @@ public class TypeDescriptorRegistry {
 	}
 	
 	/**
-	 * @return All the registered type descriptors.
+	 * @return All the registered types.
 	 */
-	public Collection<TypeDescriptor> getTypeDescriptors() {
-		return typeDescriptors.values();
+	public List<String> getRegisteredTypes() {
+		List<String> types = new ArrayList<String>();
+		types.addAll(typeDescriptors.keySet());
+		return types;
 	}
 	
 	/**

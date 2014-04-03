@@ -68,5 +68,10 @@ public abstract class AbstractController implements Comparable<AbstractControlle
 	public int compareTo(AbstractController o) {
 		return Integer.compare(getOrderIndex(), o.getOrderIndex());
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s [orderIndex = %d]", getClass().getSimpleName(), getOrderIndex());
+	}
 	
 }
