@@ -57,7 +57,7 @@
             attributes.name = "FlexHostApp";
             attributes.align = "middle";
             
-            var swfLink = "flex_client.host_app/FlexHostApp.swf?" + getQueryString();
+            var swfLink = 'flex_client.host_app/FlexHostApp.swf?<%= System.getProperty("flower.version")%>' + getQueryString();
             
             swfobject.embedSWF(
             	swfLink, "flashContent", 

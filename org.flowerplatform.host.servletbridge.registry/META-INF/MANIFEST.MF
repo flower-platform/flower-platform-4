@@ -9,3 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.flowerplatform.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Import-Package: javax.servlet.http,
+ org.eclipse.equinox.jsp.jasper,
+ org.eclipse.equinox.jsp.jasper.registry
+Export-Package: org.flowerplatform.host.servletbridge.registry
