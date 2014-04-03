@@ -11,8 +11,8 @@
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.core/public-resources/swc/org.flowerplatform.flex_client.core.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.mindmap/public-resources/swc/org.flowerplatform.flex_client.mindmap.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.mindmap/public-resources/swc/org.flowerplatform.flex_client.mindmap.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

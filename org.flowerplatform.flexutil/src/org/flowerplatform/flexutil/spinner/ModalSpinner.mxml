@@ -61,15 +61,11 @@ that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.containers.Panel;
 			import mx.core.Container;
 			import mx.core.FlexGlobals;
 			import mx.core.UIComponent;
-			import mx.core.mx_internal;
-			import mx.events.EffectEvent;
 			import mx.managers.ISystemManager;
 			import mx.managers.PopUpManager;
-			import mx.managers.SystemManager;
 			
 			import spark.components.Label;
 			
@@ -258,9 +254,8 @@ that implement <code>ModalSpinnerSupport</code> (e.g. <code>ResizablePopupWindow
 			 * @author Mariana
 			 */ 
 			public static function removeGlobalModalSpinner():void {
-				var modalSpinner:ModalSpinner = null;
-				var container:Container = FlexGlobals.topLevelApplication as Container;
-				var systemManager:ISystemManager = (FlexGlobals.topLevelApplication as Container).systemManager;
+				var modalSpinner:ModalSpinner = null;				
+				var systemManager:ISystemManager = FlexGlobals.topLevelApplication.systemManager;
 				for (var i:int = 0; i < systemManager.numChildren; i++) {
 					var obj:Object = systemManager.getChildAt(i);
 					if (obj is ModalSpinner) {

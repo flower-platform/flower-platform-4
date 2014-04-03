@@ -68,7 +68,10 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
+	import spark.components.Application;
+
 	/**
 	 * @author Cristian Spiescu
 	 * @author Cristina Constantinescu
@@ -117,8 +120,8 @@ package org.flowerplatform.flex_client.core {
 			return INSTANCE;
 		}
 		
-//		public static const VERSION:String = "2.0.0.M2_2013-06-04";
-//				
+		public static const VERSION:String = "1.0.0.M1_2014-04-02";
+				
 		/**
 		 * key = command name as String (e.g. "openResources")
 		 * value = parameters as String (e.g. text://file1,file2,file3)
@@ -146,6 +149,7 @@ package org.flowerplatform.flex_client.core {
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
 			
 			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);
+			serviceLocator.addService("coreService");
 			serviceLocator.addService("nodeService");
 			serviceLocator.addService("resourceService");
 			serviceLocator.addService("downloadService");

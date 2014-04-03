@@ -84,23 +84,19 @@ license-end
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
 			
-			import spark.core.ContentCache;
-			import spark.formatters.DateTimeFormatter;
-			import spark.layouts.TileLayout;
-			import spark.utils.DataItem;
-			import spark.validators.NumberValidator;
-			
-			import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
-			import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
+			import org.flowerplatform.flexutil.spinner.LogoSpinner;
+			import org.flowerplatform.flexutil.spinner.ModalSpinner;
 			
 			import spark.core.ContentCache;
 			import spark.formatters.DateTimeFormatter;
 			import spark.layouts.TileLayout;
 			import spark.utils.DataItem;
 			import spark.validators.NumberValidator;
+
 			
 			
 			
@@ -197,6 +193,8 @@ license-end
 					throw new Error("No pluginUrls have been specified. Flower Platform cannot start.");
 				}
 								
+				ModalSpinner.addGlobalModalSpinner("Initializing ...", new LogoSpinner(FlexUtilAssets.logoFlower));
+				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
 			}

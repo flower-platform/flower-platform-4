@@ -22,18 +22,25 @@ package org.flowerplatform.flex_client.web {
 	import flash.external.ExternalInterface;
 	
 	import mx.containers.HBox;
+	import mx.core.Container;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
+	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
+	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
+	import org.flowerplatform.flexutil.resources.ResourcesUtils;
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
+	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.TextInput;
 	
@@ -57,7 +64,7 @@ package org.flowerplatform.flex_client.web {
 		
 			if (ExternalInterface.available) { 
 				ExternalInterface.addCallback("invokeSaveResourcesDialog", invokeSaveResourcesDialog); 
-			}
+			}			
 		}
 		
 		override public function start():void {
@@ -97,13 +104,28 @@ package org.flowerplatform.flex_client.web {
 						
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
-			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));		
+			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CorePlugin.VERSION], 
+				function (result:Object):void {
+					// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
+					CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
+					ModalSpinner.removeGlobalModalSpinner();
+				},
+				function (event:FaultEvent):void {					
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+					.setTitle(Resources.getMessage('version.error'))
+					.setText(Resources.getMessage('version.error.message', [CorePlugin.VERSION, event.message.body]))
+					.setWidth(400)
+					.setHeight(300)
+					.showMessageBox();	
+					ModalSpinner.removeGlobalModalSpinner();
+				}
+			);
 		}
 		
-		override protected function registerMessageBundle():void {			
+		override protected function registerMessageBundle():void {
+			// messages come from .flex_client.resources
 		}	
-			
+		
 		public function invokeSaveResourcesDialog():Boolean {
 			CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors();
 			return CorePlugin.getInstance().resourceNodesManager.getGlobalDirtyState();
