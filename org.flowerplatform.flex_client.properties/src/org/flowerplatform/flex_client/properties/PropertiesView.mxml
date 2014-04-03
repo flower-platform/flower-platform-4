@@ -107,6 +107,7 @@
 				
 				// store new selection and listen for node upates
 				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+				node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 				node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 			}
 			
