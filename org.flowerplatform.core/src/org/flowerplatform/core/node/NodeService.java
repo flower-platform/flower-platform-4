@@ -10,9 +10,11 @@ import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +31,10 @@ import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.RawNodeDataProvider;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
+import org.flowerplatform.core.node.controller.DefaultPropertyValueProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -108,7 +112,7 @@ public class NodeService {
 		}
 		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
 		for (ChildrenProvider provider : childrenProviders) {
-			if (provider.hasChildren(node, context)) {
+ 			if (provider.hasChildren(node, context)) {
 				return true;
 			}
 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
@@ -116,6 +120,29 @@ public class NodeService {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Object getDefaultPropertyValue(Node node, String property) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		List<DefaultPropertyValueProvider> defaultPropertyProviders = descriptor.getAdditiveControllers(DEFAULT_PROPERTY_PROVIDER, node);
+		for (DefaultPropertyValueProvider provider : defaultPropertyProviders) {
+			Object propertyValue = provider.getDefaultValue(node, property);
+ 			if (propertyValue != null) {
+				return propertyValue;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public List<AbstractController> getPropertyDescriptors(Node node, String property) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
 	}
 		
 	/**
@@ -285,5 +312,5 @@ public class NodeService {
 		}
 		return rawNodeDataProvider.getRawNodeData(node, context);	
 	}
-
+	
 }

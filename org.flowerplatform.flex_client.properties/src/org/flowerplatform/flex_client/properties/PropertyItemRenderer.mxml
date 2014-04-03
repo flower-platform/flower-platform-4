@@ -7,7 +7,6 @@
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
 				   fontWeight="normal"
 				   implements="mx.core.IDataRenderer, mx.managers.IFocusManagerComponent">
-	
 	<fx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;
@@ -21,6 +20,7 @@
 			public var itemRenderer:Class;
 			public var itemRenderedInstance:BasicPropertyRenderer;
 			public var disableSaveProperty:Boolean = false;
+			public var defaultValue:Object;
 			// Internal variable for the property value.
 			private var _data:Object;
 			
@@ -67,9 +67,9 @@
 				}
 				
 				itemRenderedInstance.data = propertyDescriptor;
+//				itemRenderedInstance.defaultValue = defaultValu
 			}
 
 		]]>
 	</fx:Script>
-	
 </s:FormItem>

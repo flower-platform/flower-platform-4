@@ -39,8 +39,10 @@ package org.flowerplatform.flex_client.properties.remote {
 		public var readOnly:Boolean;
 		
 		public var type:String;
-
+		
 		public var category:String;
+		
+		public var hasChangeCheckbox:Boolean;
 		
 		public var possibleValues:ArrayCollection;
 		

@@ -27,7 +27,7 @@ public class UpdatePropertySetterController extends PropertySetter {
 
 	@Override
 	public void unsetProperty(Node node, String key, ServiceContext context) {
-		setUnsetProperty(node, key, null, true, context);
+		setUnsetProperty(node, key, node.getOrPopulateProperties().get(key), false, context);
 	}
 	
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext context) {		

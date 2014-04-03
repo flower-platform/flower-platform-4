@@ -18,7 +18,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		protected var colorPicker:ColorPicker;
 		
 		override protected function createChildren():void {
-			super.createChildren();
 			
 			colorPicker = new ColorPicker();
 			colorPicker.percentWidth = 100;
@@ -28,6 +27,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			colorPicker.addEventListener(FlexEvent.CREATION_COMPLETE, colorPicker_creationCompleteHandler);
 			
 			addElement(colorPicker);
+			super.createChildren();
 		}
 		
 		private function colorPicker_creationCompleteHandler(event:FlexEvent):void {		
@@ -41,7 +41,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		private function colorChangeEventHandler(event:ColorPickerEvent):void {
-			saveProperty(null);
+			saveProperty();
 		}
 		
 		override public function set data(value:Object):void {

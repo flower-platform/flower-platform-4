@@ -21,7 +21,6 @@ package org.flowerplatform.flex_client.properties {
 	
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
-	import org.flowerplatform.flexutil.layout.IViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**

@@ -9,6 +9,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import spark.components.Button;
 	import spark.layouts.HorizontalLayout;
 	
+	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
@@ -39,7 +40,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			iconsComponentExtension = new IconsComponentExtension(this);
 			
 			var hLayout:HorizontalLayout = new HorizontalLayout();
-			hLayout.gap = 2;
+			hLayout.gap = 5;
 			hLayout.paddingBottom = 2;
 			hLayout.paddingTop = 2;
 			hLayout.paddingLeft = 2;
@@ -86,10 +87,10 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		override protected function createChildren():void {
 			super.createChildren();
-			
+
 			var spacer:Spacer = new Spacer();	
 			spacer.percentWidth = 100;
-			addElement(spacer);
+			addElementAt(spacer, 0);
 			
 			var button:Button = new Button();			
 			button.percentHeight = 100;
@@ -97,7 +98,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			button.width = 32;
 			button.addEventListener(MouseEvent.CLICK, clickHandlerInternal);
 			
-			addElement(button);
+			addElementAt(button, 1);
 		}
 		
 		private function clickHandlerInternal(event:MouseEvent):void {
@@ -112,11 +113,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 
 			if (currentValue != newValue) {
 				currentValue = newValue;
-				saveProperty(null);
+				saveProperty();
 			}
 		}
 				
-		public function newIconIndex():int {			
+		public function newIconIndex():int {
+			if (PropertyDescriptor(data).hasChangeCheckbox) {
+				return numElements - 4;
+			}
 			return numElements - 2;
 		}
 		

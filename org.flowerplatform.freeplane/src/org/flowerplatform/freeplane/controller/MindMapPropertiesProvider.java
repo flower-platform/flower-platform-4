@@ -4,8 +4,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
-import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
@@ -32,9 +30,11 @@ import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 import org.freeplane.features.nodestyle.NodeStyleController;
+import org.freeplane.features.styles.LogicalStyleModel;
 
 /**
  * @author Cristina Constantinescu
+ * @author Sebastian Solomon
  */
 public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 	
@@ -49,16 +49,25 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		
 		NodeSizeModel nodeSizeModel = NodeSizeModel.getModel(rawNodeData);
 		
+		String styleName;	
+		if (rawNodeData.getExtensions().get(LogicalStyleModel.class) != null) {
+			styleName = ((LogicalStyleModel)rawNodeData.getExtensions().get(LogicalStyleModel.class)).getStyle().toString();
+			node.getProperties().put("styleName", styleName);
+		} else { //for style nodes
+			node.getProperties().put("styleName", node.getProperties().get(TEXT));
+		}
+		
 		if (nodeSizeModel != null && nodeSizeModel.getMinNodeWidth() != NodeSizeModel.NOT_SET) { // property set by user, use it
 			node.getProperties().put(MIN_WIDTH, nodeSizeModel.getMinNodeWidth());
-		} else { // otherwise, use default value
-			node.getProperties().put(MIN_WIDTH, DEFAULT_MIN_WIDTH);
+		} else { // otherwise, use style value
+			node.getProperties().put(MIN_WIDTH, node.getPropertyValue(MIN_WIDTH));
 		}
+		
 		if (nodeSizeModel != null && nodeSizeModel.getMaxNodeWidth() != NodeSizeModel.NOT_SET) { // property set by user, use it
 			node.getProperties().put(MAX_WIDTH, nodeSizeModel.getMaxNodeWidth());
-		} else { // otherwise, use default value
-			node.getProperties().put(MAX_WIDTH, DEFAULT_MAX_WIDTH);
-		}
+		} else { // otherwise, use style value
+			node.getProperties().put(MAX_WIDTH, node.getPropertyValue(MAX_WIDTH));
+		} 
 				
 		List<MindIcon> icons = rawNodeData.getIcons();
 		if (icons != null) {
@@ -72,7 +81,9 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			} else {
 				node.getProperties().put(CoreConstants.ICONS, null);
 			}
-		} 
+		} else {
+			node.getProperties().put(CoreConstants.ICONS, node.getPropertyValue(CoreConstants.ICONS));
+		}
 
 		// get styles from node if available, or from node's style if available, or from default style
 		node.getProperties().put(FONT_FAMILY, NodeStyleController.getController().getFontFamilyName(rawNodeData));
@@ -86,15 +97,21 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		
 		// get background color -> is null if no color set (doesn't get the default style value)
 		color = NodeStyleController.getController().getBackgroundColor(rawNodeData);
-		node.getProperties().put(COLOR_BACKGROUND, color == null ? ColorUtils.colorToString(Color.WHITE) : ColorUtils.colorToString(color));	
 		
+		if (color != null) {
+			node.getProperties().put(COLOR_BACKGROUND, ColorUtils.colorToString(color));
+		} else {
+			node.getProperties().put(COLOR_BACKGROUND, node.getPropertyValue(COLOR_BACKGROUND));
+		}
 		// cloud		
 		String cloudShape = SHAPE_NONE;
-		String cloudColor = ColorUtils.colorToString(CloudController.getStandardColor());
-		
+		String standardColor = ColorUtils.colorToString(CloudController.getStandardColor());
 		CloudModel cloudModel = CloudController.getController().getCloud(rawNodeData);		
 		if (cloudModel != null) {
-			cloudColor = ColorUtils.colorToString(cloudModel.getColor());
+			String cloudColor = ColorUtils.colorToString(cloudModel.getColor());
+			if (!standardColor.equals(cloudColor)) {
+				node.getProperties().put(CLOUD_COLOR, cloudColor);
+			}
 			
 			Shape shape = cloudModel.getShape();
 			if (Shape.RECT.equals(shape)) {
@@ -102,9 +119,11 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			} else if (Shape.ROUND_RECT.equals(shape)) {
 				cloudShape = SHAPE_ROUND_RECTANGLE;
 			}
-		}		
-		node.getProperties().put(CLOUD_COLOR, cloudColor);
-		node.getProperties().put(CLOUD_SHAPE, cloudShape);
+			node.getProperties().put(CLOUD_SHAPE, cloudShape);
+		}
+		String propertyColor = (String)node.getPropertyValue(CLOUD_COLOR);
+		node.getProperties().put(CLOUD_COLOR, propertyColor == null ? standardColor : propertyColor );
+		node.getProperties().put(CLOUD_SHAPE, node.getPropertyValue(CLOUD_SHAPE));
 	}
 
 }

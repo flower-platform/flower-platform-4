@@ -54,6 +54,7 @@ public class CoreConstants {
 	
 	public static final String ADD_NODE_CONTROLLER = "addNodeController";
 	public static final String CHILDREN_PROVIDER = "childrenProvider";
+	public static final String DEFAULT_PROPERTY_PROVIDER = "defaultPropertyProvider";
 	public static final String PARENT_PROVIDER = "parentProvider";
 	public static final String PROPERTIES_PROVIDER = "propertiesProvider";
 	public static final String PROPERTY_SETTER = "propertySetter";

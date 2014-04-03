@@ -21,9 +21,8 @@
 			}
 			
 			protected function clickHandler(event:MouseEvent):void {
-				saveProperty(null);
+				saveProperty();
 			}
-			
 		]]>
 	</fx:Script>
 	
@@ -31,5 +30,4 @@
 				selected="{data.value}"
 				enabled="{!data.readOnly}" 
 				click="clickHandler(event)"/>
-	
 </ns:BasicPropertyRenderer>
