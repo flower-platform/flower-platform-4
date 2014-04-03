@@ -1,4 +1,4 @@
-package org.flowerplatform.freeplane.style.controller;
+package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
@@ -32,7 +32,7 @@ import org.freeplane.features.styles.MapStyleModel;
 /**
  * @author Sebastian Solomon
  */
-public class MindMapStylePropertyProvider extends DefaultPropertyValueProvider {
+public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValueProvider {
 	public final static String DEFAULT_STYLE = "Default";
 	
 	NodeModel nodeModel = null;
@@ -70,9 +70,10 @@ public class MindMapStylePropertyProvider extends DefaultPropertyValueProvider {
 	
 	private NodeModel getStyleNodeModel(NodeModel nodeModel, String styleName ) {
 		final MapModel map = nodeModel.getMap();
-		final MapModel styleMap = MapStyleModel.getExtension(map).getStyleMap();
+		MapModel styleMap = MapStyleModel.getExtension(map).getStyleMap();
+		
 		if(styleMap == null){
-			return null;
+			styleMap = map;
 		}
 		Enumeration<NodeModel> enumeration = styleMap.getRootNode().children();
 		
@@ -127,7 +128,7 @@ public class MindMapStylePropertyProvider extends DefaultPropertyValueProvider {
 			case ROUND_RECT:
 				defaultPropertyValue = SHAPE_ROUND_RECTANGLE;
 				break;
-			// TODO to add "ARC & STAR" when this are supported. 
+			// TODO add "ARC & STAR" when this are supported. 
 			default:
 				defaultPropertyValue = SHAPE_NONE;
 				break;

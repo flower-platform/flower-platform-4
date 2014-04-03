@@ -12,8 +12,7 @@ public class StyleRootPropertiesProvider extends PropertiesProvider {
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext context) {
-		node.getProperties().put(CoreConstants.NAME, "styles[read only]");
-		node.getProperties().put(CoreConstants.HAS_CHILDREN, true);
+		node.getProperties().put(CoreConstants.NAME, "styles [read only]");
 	}
 
 }

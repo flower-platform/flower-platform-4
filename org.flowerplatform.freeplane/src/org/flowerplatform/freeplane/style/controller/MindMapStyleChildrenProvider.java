@@ -11,7 +11,6 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.mindmap.MindMapConstants;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.NodeModel;
@@ -25,12 +24,6 @@ public class MindMapStyleChildrenProvider extends ChildrenProvider {
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext serviceContext) {
-		// TODO replace with getRoot
-//		NodeModel nodeModel = FreeplanePlugin.getInstance().getFreeplaneUtils().getNodeModel("ID_85319927");
-//		NodeModel nodeModel =  (NodeModel)node.getOrRetrieveRawNodeData();
-//		NodeModel nodeModel = (NodeModel) new Node(node.getIdWithinResource()).getOrRetrieveRawNodeData();
-		
-//		nodeModel = (NodeModel) new Node(node.getResource()).getOrRetrieveRawNodeData();
 		Node resourceNode = new Node(CoreConstants.FILE_NODE_TYPE, new Node(CoreConstants.FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, "d:/temp/repo1", null).getFullNodeId(), node.getIdWithinResource(), null);
 		NodeModel nodeModel = ((MapModel) CorePlugin.getInstance().getResourceService()
 					.getRawResourceData(resourceNode.getFullNodeId())).getRootNode();
@@ -49,11 +42,9 @@ public class MindMapStyleChildrenProvider extends ChildrenProvider {
 		
 		while(enumeration.hasMoreElements()){
 			for (NodeModel styleNodeModel : enumeration.nextElement().getChildren()) {
-//				children.add(FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(styleNodeModel, node.getResource()));
 				children.add(new Node(MindMapConstants.MINDMAP_NODE_TYPE, node.getResource(), styleNodeModel.createID(), styleNodeModel));
 			}
 		}
-		
 		return children;
 	}
 	

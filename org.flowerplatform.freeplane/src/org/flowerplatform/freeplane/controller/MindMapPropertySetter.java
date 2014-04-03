@@ -160,10 +160,34 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			case MAX_WIDTH:
 				((NodeSizeModel)rawNodeData.getExtension(NodeSizeModel.class)).setMaxNodeWidth(NodeSizeModel.NOT_SET);
 				break;
+			case COLOR_BACKGROUND:
+				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setBackgroundColor(null);
+				break;
+			case COLOR_TEXT:
+				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setColor(null);
+				break;
+			case FONT_BOLD:
+				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setBold(null);
+				break;
+			case FONT_FAMILY:
+				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setFontFamilyName(null);
+				break;
+			case FONT_ITALIC:
+				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setItalic(null);
+				break;
+			case FONT_SIZE:
+				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setFontSize(null);
+				break;
+			case CLOUD_COLOR:
+				CloudModel.createModel(rawNodeData).setColor(null);				
+				break;
+			case CLOUD_SHAPE:
+				rawNodeData.removeExtension(CloudModel.class);
+				break;
+			default:
+				break;
 		}
-		// remove the property from the node instance too
 		node.getOrPopulateProperties();
-//		node.getOrPopulateProperties().remove(property);
 	}
 		
 }

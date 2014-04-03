@@ -96,7 +96,6 @@
 					}
 					propertyForm.addElement(formItem);
 					formItem.data = propertyDescriptor;
-					
 				}
 					
 				// get their values from node
@@ -118,7 +117,10 @@
 					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
 						if (node.properties != null) {
-							if (node.properties.hasOwnProperty(propertyItemRenderer.propertyDescriptor.name)) {
+							if (NodeControllerUtils.hasPropertyChanged(node, propertyItemRenderer.propertyDescriptor.name, event)) {
+								if (node.properties.hasOwnProperty(propertyItemRenderer.propertyDescriptor.name + ".default")) {
+									propertyItemRenderer.itemRenderedInstance.defaultValue = node.properties[propertyItemRenderer.propertyDescriptor.name + ".default"];
+								}								
 								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];
 							}
 						}

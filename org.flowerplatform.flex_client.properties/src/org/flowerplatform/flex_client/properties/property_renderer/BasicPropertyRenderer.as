@@ -30,13 +30,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		public var disableSaveProperty:Boolean = false;
 		
+		public var defaultValue:Object;
+		
 		public function BasicPropertyRenderer() {
 			super();
 			layout = new HorizontalLayout;
 		}
 		
 		override protected function createChildren():void {
-			// TODO Auto Generated method stub
 			super.createChildren();
 			
 			addElement(changeCheckBox);
@@ -49,28 +50,28 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super.data = value;			
 			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
 			changeCheckBox.includeInLayout = PropertyDescriptor(data).hasChangeCheckbox;
-			changeLabel.includeInLayout = PropertyDescriptor(data).hasChangeCheckbox;
 			changeLabel.visible = PropertyDescriptor(data).hasChangeCheckbox;
+			changeLabel.includeInLayout = PropertyDescriptor(data).hasChangeCheckbox;
 			
 			if(PropertyDescriptor(data).hasChangeCheckbox) {
-				changeCheckBox.addEventListener(Event.CHANGE, hangeCheckboxClickHandler);	
+				changeCheckBox.addEventListener(Event.CHANGE, changeCheckboxClickHandler);	
 			}
 				
 			if (!data.readOnly) {
-				BindingUtils.bindProperty( changeCheckBox, "enabled", changeCheckBox, "selected" );
+				BindingUtils.bindProperty(changeCheckBox, "enabled", changeCheckBox, "selected" );
 				BindingUtils.bindSetter(updateCheckBox, data, "value")
 			}
 		}
 		
 		
-		private function hangeCheckboxClickHandler(event:Event):void {
+		private function changeCheckboxClickHandler(event:Event):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.unsetProperty", 
 				[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, data.name]);
 		}
+		
 		public function updateCheckBox(val:String):void {
-//			changeCheckBox.selected = (data.value != data.defaultValue);
-//			changeLabel.enabled = (data.value != data.defaultValue);
+			changeCheckBox.selected = !(data.value == defaultValue || ((data.value == null || data.value == "")  && defaultValue == null));
 		}
 		
 		protected function validPropertyValue():Boolean {

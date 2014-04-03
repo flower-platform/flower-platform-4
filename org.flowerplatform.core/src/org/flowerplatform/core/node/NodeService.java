@@ -10,6 +10,7 @@ import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
@@ -33,6 +34,7 @@ import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.controller.DefaultPropertyValueProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
@@ -133,6 +135,14 @@ public class NodeService {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public List<AbstractController> getPropertyDescriptors(Node node, String property) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
 	}
 		
 	/**

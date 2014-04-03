@@ -53,8 +53,8 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		if (rawNodeData.getExtensions().get(LogicalStyleModel.class) != null) {
 			styleName = ((LogicalStyleModel)rawNodeData.getExtensions().get(LogicalStyleModel.class)).getStyle().toString();
 			node.getProperties().put("styleName", styleName);
-		} else {
-			styleName = null;
+		} else { //for style nodes
+			node.getProperties().put("styleName", node.getProperties().get(TEXT));
 		}
 		
 		if (nodeSizeModel != null && nodeSizeModel.getMinNodeWidth() != NodeSizeModel.NOT_SET) { // property set by user, use it
@@ -105,10 +105,13 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		}
 		// cloud		
 		String cloudShape = SHAPE_NONE;
-		String cloudColor = ColorUtils.colorToString(CloudController.getStandardColor());
+		String standardColor = ColorUtils.colorToString(CloudController.getStandardColor());
 		CloudModel cloudModel = CloudController.getController().getCloud(rawNodeData);		
 		if (cloudModel != null) {
-			cloudColor = ColorUtils.colorToString(cloudModel.getColor());
+			String cloudColor = ColorUtils.colorToString(cloudModel.getColor());
+			if (!standardColor.equals(cloudColor)) {
+				node.getProperties().put(CLOUD_COLOR, cloudColor);
+			}
 			
 			Shape shape = cloudModel.getShape();
 			if (Shape.RECT.equals(shape)) {
@@ -116,12 +119,11 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			} else if (Shape.ROUND_RECT.equals(shape)) {
 				cloudShape = SHAPE_ROUND_RECTANGLE;
 			}
-		} else {
-			cloudColor = (String)node.getPropertyValue(CLOUD_COLOR);
-			cloudShape = (String)node.getPropertyValue(CLOUD_SHAPE);
+			node.getProperties().put(CLOUD_SHAPE, cloudShape);
 		}
-		node.getProperties().put(CLOUD_COLOR, cloudColor);
-		node.getProperties().put(CLOUD_SHAPE, cloudShape);
+		String propertyColor = (String)node.getPropertyValue(CLOUD_COLOR);
+		node.getProperties().put(CLOUD_COLOR, propertyColor == null ? standardColor : propertyColor );
+		node.getProperties().put(CLOUD_SHAPE, node.getPropertyValue(CLOUD_SHAPE));
 	}
 
 }

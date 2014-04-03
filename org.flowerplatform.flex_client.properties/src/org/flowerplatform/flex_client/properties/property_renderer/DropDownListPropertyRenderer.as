@@ -51,7 +51,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			super();
 		}
 		
-		private function creationCompleteHandler(event:FlexEvent):void {		
+		private function creationCompleteHandler(event:FlexEvent):void {
 			BindingUtils.bindSetter(valueChanged, data, "value");
 			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownEventHandler);
 		}
@@ -67,8 +67,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		override protected function createChildren():void {			
-			super.createChildren();
-			
 			if (FlexUtilGlobals.getInstance().isMobile) {
 				// component for mobile
 				// this class is in the MobileComponents lib from flexutil
@@ -81,7 +79,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			dropDownList.percentWidth = 100;
 			dropDownList.percentHeight = 100;		
 			
-			addElement(dropDownList);			
+			addElement(dropDownList);		
+			super.createChildren();
 		}
 		
 		override public function set data(value:Object):void {
