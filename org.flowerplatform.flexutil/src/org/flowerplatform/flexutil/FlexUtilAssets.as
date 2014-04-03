@@ -72,6 +72,8 @@ package org.flowerplatform.flexutil {
 		
 		[Embed(source="switch_view2.png")]
 		public static const switch_two_views:Class;
-		
+				
+		[Embed(source="logo_flower.png")]
+		public static const logoFlower:Class;
 	}
 }

@@ -201,13 +201,20 @@ public class ResourceService implements ISessionListener {
 	/**
 	 * Called by the registered {@link ResourceSessionListener} when a new session
 	 * is created.
+	 * 
+	 * @author Mariana Gheorghe
+	 * @author Cristina Constantinescu
 	 */
-	public void sessionCreated(String sessionId) {
+	public void sessionCreated(String sessionId) {		
+		HttpServletRequest request = CorePlugin.getInstance().getRequestThreadLocal().get();
+		if (request == null) {
+			// request doesn't come from FlowerMessageBrokerServlet, ignore it
+			return;
+		}
 		logger.debug("Session created {}", sessionId);
 		
 		resourceDao.sessionCreated(sessionId);
 		
-		HttpServletRequest request = CorePlugin.getInstance().getRequestThreadLocal().get();
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
 		if (ipAddress == null) {
 			ipAddress = request.getRemoteAddr();

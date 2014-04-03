@@ -3,4 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Flex_host_app
 Bundle-SymbolicName: org.flowerplatform.flex_client.host_app;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.equinox.http.registry
+Require-Bundle: org.eclipse.equinox.http.registry,
+ org.flowerplatform.host.servletbridge.registry
