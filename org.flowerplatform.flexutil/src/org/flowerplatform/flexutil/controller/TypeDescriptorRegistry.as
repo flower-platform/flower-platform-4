@@ -2,10 +2,13 @@ package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.IList;
+	import mx.core.mx_internal;
 	
 	import org.apache.flex.collections.ArrayList;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
+	
+	use namespace mx_internal;
 	
 	/**
 	 * Ported from the similar mechanism from Java.
@@ -21,7 +24,7 @@ package org.flowerplatform.flexutil.controller {
 			return configurable;
 		}
 		
-		private var typeDescriptors:Dictionary = new Dictionary(); /* Map<String, TypeDescriptor> */
+		mx_internal var typeDescriptors:Dictionary = new Dictionary(); /* Map<String, TypeDescriptor> */
 		
 		public function getOrCreateTypeDescriptor(type:String):TypeDescriptor {
 			if (Utils.beginsWith(type, FlexUtilConstants.CATEGORY_PREFIX)) {

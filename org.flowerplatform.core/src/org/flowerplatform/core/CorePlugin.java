@@ -29,6 +29,7 @@ import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
+import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -170,6 +171,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
+		new TypeDescriptorRegistryDebugControllers().registerControllers();
 		
 		//TODO use Flower property
 		boolean isDeleteTempFolderAtStartProperty = true;

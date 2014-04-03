@@ -180,4 +180,14 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("PropertiesDescriptor [name = %s, title = %s, category = %s, " +
+				"\ntype = %s, readOnly = %b, possibleValues = %s, " +
+				"\ncontributeToCreation = %b, isMandatory = %b, orderIndex = %d]", 
+				getName(), getTitle(), getCategory(),
+				getType(), getReadOnly(), getPossibleValues(),
+				isContributeToCreation(), getIsMandatory(), getOrderIndex());
+	}
+	
 }

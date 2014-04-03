@@ -301,7 +301,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 				function (result:Object):void {requestChildrenHandler(context, node, ArrayCollection(result));});
 		}
 		
-		protected function requestChildrenHandler(context:DiagramShellContext, node:Node, children:ArrayCollection):void {
+		public function requestChildrenHandler(context:DiagramShellContext, node:Node, children:ArrayCollection):void {
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
 			if (node == null) {	// root node				
 				if (diagramShell.showRootModelAsRootNode) {

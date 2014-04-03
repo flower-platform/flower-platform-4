@@ -17,6 +17,8 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.remote {
+	import mx.utils.StringUtil;
+	
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
@@ -30,6 +32,12 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		public var label:String;
 		
 		public var icon:String;
+		
+		override public function toString():String {
+			return StringUtil.substitute("AddChildDescriptor [childType = {0}, label = {1}, orderIndex = {2}]", 
+				childType, label, orderIndex)
+		}
+		
 		
 	}
 }

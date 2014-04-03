@@ -39,4 +39,10 @@ public class ConstantValuePropertyProvider extends PropertiesProvider {
 	public void setValue(Object value) {
 		this.value = value;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("ConstantValueProvider [property = %s, value = %s, orderIndex = %d]", 
+				property, value, getOrderIndex());
+	}
 }
