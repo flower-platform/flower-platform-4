@@ -1,12 +1,16 @@
 package org.flowerplatform.flexutil.controller {
+	
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
+	import mx.core.mx_internal;
 	
 	import org.apache.flex.collections.ArrayList;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
+	
+	use namespace mx_internal;
 	
 	/**
 	 * Ported from the similar mechanism from Java.
@@ -57,22 +61,24 @@ package org.flowerplatform.flexutil.controller {
 			return this;
 		}
 		
-		protected var singleControllers:Dictionary = new Dictionary(); /* Map<String, ControllerEntry<AbstractController>> */
+		mx_internal var singleControllers:Dictionary = new Dictionary(); /* Map<String, ControllerEntry<AbstractController>> */
 		
 		public function getSingleController(controllerType:String, object:Object):AbstractController {		
-			return getCachedSingleController(controllerType, object, true);
+			return getCachedSingleController(controllerType, object, true, true);
 		}
 		
-		protected function getCachedSingleController(controllerType:String, object:Object, includeDynamicCategoryProviders:Boolean):AbstractController {
+		mx_internal function getCachedSingleController(controllerType:String, object:Object, includeDynamicCategoryProviders:Boolean, keepCached:Boolean):AbstractController {
 			registry.configurable = false;
 			
 			var entry:ControllerEntry = getSingleControllerEntry(controllerType);
 			if (entry.wasCached) {
 				// categories were processed before; return the controller
-				return entry.cachedValue as AbstractController;
+				return AbstractController(entry.cachedValue);
 			}
 			
 			// else => let's scan now the categories
+			var controller:AbstractController = AbstractController(entry.selfValue);
+			
 			var allCategories:ArrayCollection = new ArrayCollection();
 			allCategories.addAll(categories);
 			if (includeDynamicCategoryProviders) {
@@ -93,25 +99,28 @@ package org.flowerplatform.flexutil.controller {
 					continue;
 				}
 				
-				var categoryController:AbstractController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
+				var categoryController:AbstractController = categoryDescriptor.getCachedSingleController(controllerType, object, false, keepCached);
 				if (categoryController != null) {
 					// found a controller from a category
 					// keep it if it has a lower order index than the existing one
-					if (entry.cachedValue == null || AbstractController(entry.cachedValue).orderIndex > categoryController.orderIndex) {
-						entry.cachedValue = categoryController;
+					if (controller == null || controller.orderIndex > categoryController.orderIndex) {
+						controller = categoryController;
 					}
 				}
 			}
 			
-			if (entry.cachedValue is NullController) {
+			if (controller is NullController) {
 				// means we must ignore all registered controllers
-				entry.cachedValue = null;
+				controller = null;
 			}
 			
 			// finished scanning the categories
-			entry.wasCached = true;
+			if (keepCached) {
+				entry.wasCached = true;
+				entry.cachedValue = controller;
+			}
 			
-			return AbstractController(entry.cachedValue);
+			return AbstractController(controller);
 		}
 		
 		public function addSingleController(type:String, controller:AbstractController):TypeDescriptor {
@@ -120,7 +129,6 @@ package org.flowerplatform.flexutil.controller {
 			}
 			var entry:ControllerEntry = getSingleControllerEntry(type);
 			entry.selfValue = controller;
-			entry.cachedValue = controller;
 			return this;
 		}
 	
@@ -133,23 +141,25 @@ package org.flowerplatform.flexutil.controller {
 			return entry;
 		}
 		
-		protected var additiveControllers:Dictionary = new Dictionary(); /* Map<String, ControllerEntry<List<? extends AbstractController>>> */
+		mx_internal var additiveControllers:Dictionary = new Dictionary(); /* Map<String, ControllerEntry<List<? extends AbstractController>>> */
 		
 		public function getAdditiveControllers(controllerType:String, object:Object):IList {
-			return getCachedAdditiveControllers(controllerType, object, true);
+			return getCachedAdditiveControllers(controllerType, object, true, true);
 		}
 		
-		protected function getCachedAdditiveControllers(controllerType:String, object:Object, includeDynamicCategoryProviders:Boolean):IList {
+		mx_internal function getCachedAdditiveControllers(controllerType:String, object:Object, includeDynamicCategoryProviders:Boolean, keepCached:Boolean):IList {
 			registry.configurable = false;
 			
 			var entry:ControllerEntry = getAdditiveControllersEntry(controllerType);
-			var controllers:ArrayCollection = entry.cachedValue as ArrayCollection;
 			if (entry.wasCached) {
 				// categories were processed before; return the controllers
-				return controllers;
+				return IList(entry.cachedValue);
 			}
 			
 			// else => let's scan now the categories
+			var controllers:ArrayCollection = new ArrayCollection();
+			controllers.addAll(IList(entry.selfValue));
+			
 			var allCategories:ArrayCollection = new ArrayCollection();
 			allCategories.addAll(categories);
 			if (includeDynamicCategoryProviders) {
@@ -170,12 +180,14 @@ package org.flowerplatform.flexutil.controller {
 					continue;
 				}
 				
-				controllers.addAll(categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false));
-				entry.wasCached = true;
+				controllers.addAll(categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false, keepCached));
 			}
 			
 			// finished scanning the categories
-			entry.wasCached = true;
+			if (keepCached) {
+				entry.wasCached = true;
+				entry.cachedValue = controllers;
+			}
 			
 			controllers.source.sortOn("orderIndex", Array.NUMERIC);
 			
@@ -188,7 +200,6 @@ package org.flowerplatform.flexutil.controller {
 			}
 			var entry:ControllerEntry = getAdditiveControllersEntry(type);
 			ArrayCollection(entry.selfValue).addItem(controller);
-			ArrayCollection(entry.cachedValue).addItem(controller);
 			return this;
 		}
 		

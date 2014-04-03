@@ -18,6 +18,8 @@
 */
 package org.flowerplatform.flex_client.core.node.controller {
 	
+	import mx.utils.StringUtil;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
@@ -57,5 +59,11 @@ package org.flowerplatform.flex_client.core.node.controller {
 			
 			return String(genericDescriptor.value);
 		}
+		
+		override public function toString():String {
+			return StringUtil.substitute("GenericValueProviderFromDescriptor [genericDescriptorName = {0}, orderIndex = {1}]", 
+				genericDescriptorName, orderIndex);
+		}
+		
 	}
 }

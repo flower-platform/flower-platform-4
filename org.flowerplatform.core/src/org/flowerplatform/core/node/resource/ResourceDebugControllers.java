@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.core.node.resource;
 
+import static org.flowerplatform.core.CoreConstants.DEBUG;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,17 +38,17 @@ import org.flowerplatform.util.UtilConstants;
  */
 public class ResourceDebugControllers {
 
-	private final String DEBUG = "_debug";
+	private final String RESOURCES = DEBUG + "Resources";
 	
-	private final String SESSION_CATEGORY = UtilConstants.CATEGORY_PREFIX + "_debugSession";
-	private final String RESOURCE_NODE_INFO_CATEGORY = UtilConstants.CATEGORY_PREFIX + "_debugResourceNodeInfo";
+	private final String SESSION = DEBUG + "Session";
+	private final String RESOURCE_NODE_INFO2 = DEBUG + "ResourceNodeInfo2";
+	private final String SESSION2 = DEBUG + "Session2";
 	
-	private final String SESSION = "_debugSession";
-	private final String RESOURCE_NODE_INFO2 = "_debugResourceNodeInfo2";
-	private final String SESSION2 = "_debugSession2";
+	private final String RESOURCE_NODE_INFO = DEBUG + "ResourceNodeInfo";
+	private final String SESSION3 = DEBUG + "Session3";
 	
-	private final String RESOURCE_NODE_INFO = "_debugResourceNodeInfo";
-	private final String SESSION3 = "_debugSession3";
+	private final String SESSION_CATEGORY = UtilConstants.CATEGORY_PREFIX + SESSION;
+	private final String RESOURCE_NODE_INFO_CATEGORY = UtilConstants.CATEGORY_PREFIX + RESOURCE_NODE_INFO;
 	
 	public void registerControllers() {
 		
@@ -62,24 +64,50 @@ public class ResourceDebugControllers {
 			
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
-				return Collections.singletonList(new Node("(" + DEBUG + "||)"));
+				return Collections.singletonList(new Node(DEBUG, null, null, null));
 			}
 		}.setOrderIndexAs(10000));
 		
-		// _debug node
-		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(DEBUG)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PropertiesProvider() {
+			
+			@Override
+			public void populateWithProperties(Node node, ServiceContext context) {
+				node.getProperties().put(CoreConstants.NAME, DEBUG);
+			}
+		})
 		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
 			public boolean hasChildren(Node node, ServiceContext context) {
-				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 				return true;
 			}
 			
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
-				context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+				return Collections.singletonList(new Node(RESOURCES, DEBUG, null, null));
+			}
+		});
+		
+		// _debug node
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(RESOURCES)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PropertiesProvider() {
+			
+			@Override
+			public void populateWithProperties(Node node, ServiceContext context) {
+				node.getProperties().put(CoreConstants.NAME, "Resources");
+			}
+		})
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+			
+			@Override
+			public boolean hasChildren(Node node, ServiceContext context) {
+				return true;
+			}
+			
+			@Override
+			public List<Node> getChildren(Node node, ServiceContext context) {
 				List<Node> children = new ArrayList<Node>();
 				
 				// sessions
@@ -95,13 +123,6 @@ public class ResourceDebugControllers {
 				}
 				
 				return children;
-			}
-		})
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PropertiesProvider() {
-			
-			@Override
-			public void populateWithProperties(Node node, ServiceContext context) {
-				node.getProperties().put(CoreConstants.NAME, DEBUG);
 			}
 		});
 		

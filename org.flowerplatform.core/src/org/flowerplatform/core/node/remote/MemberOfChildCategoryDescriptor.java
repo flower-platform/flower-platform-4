@@ -43,4 +43,10 @@ public class MemberOfChildCategoryDescriptor extends AbstractController {
 		this.childCategory = childCategory;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("MemberOfChildCategoryDescriptor [childCategory = %s, orderIndex = %d]", 
+				getChildCategory(), getOrderIndex());
+	}
+	
 }
