@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.core.service {
 	 */ 
 	public class UpdatesProcessingServiceLocator extends ServiceLocator {
 		
-		private var reconnectingViewContent:IViewContent;
+		private var communicationErrorViewContent:IViewContent;
 		
 		public function UpdatesProcessingServiceLocator(channelSet:ChannelSet) {
 			super(channelSet);
@@ -89,9 +89,9 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			
 			CorePlugin.getInstance().updateTimer.restart();
-			if (reconnectingViewContent != null) {
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(reconnectingViewContent);
-				reconnectingViewContent = null;
+			if (communicationErrorViewContent != null) {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(communicationErrorViewContent);
+				communicationErrorViewContent = null;
 			}
 			
 			// get message invocation result and send it to be processed by resultHandler
@@ -102,14 +102,25 @@ package org.flowerplatform.flex_client.core.service {
 		}
 		
 		override public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
-			if (event.fault.faultCode == "Channel.Call.Failed" || event.fault.faultCode == "Client.Error.MessageSend") {
-				if (reconnectingViewContent == null) {
-					reconnectingViewContent = new ReconnectingViewContent();
+			if (event.fault.faultCode == "Channel.Call.Failed" /*|| event.fault.faultCode == "Client.Error.MessageSend")*/) {
+				if (communicationErrorViewContent == null) {
+					communicationErrorViewContent = new ReconnectingViewContent();
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-						.setViewContent(reconnectingViewContent)
+						.setViewContent(communicationErrorViewContent)
 						.showModalOverAllApplication();
 				}
-			} else {
+			} else if (event.fault.faultCode == "Client.Error.MessageSend") {
+				if (communicationErrorViewContent == null) {
+					if (FlexUtilGlobals.getInstance().clientCommunicationErrorViewContent == null) {
+						communicationErrorViewContent = new ReconnectingViewContent();
+					} else {
+						communicationErrorViewContent = new (FlexUtilGlobals.getInstance().clientCommunicationErrorViewContent)();
+					}
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setViewContent(communicationErrorViewContent)
+						.showModalOverAllApplication();
+				}
+			}else {
 				super.faultHandler(event, responder);
 			}
 		}

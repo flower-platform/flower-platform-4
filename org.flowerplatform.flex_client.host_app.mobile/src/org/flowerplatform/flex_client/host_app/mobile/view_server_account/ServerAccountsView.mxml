@@ -18,6 +18,8 @@
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
+			import org.flowerplatform.flex_client.core.CoreConstants;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
@@ -26,6 +28,15 @@
 			protected var _viewHost:IViewHost;
 			
 			protected var resultHandler:IDialogResultHandler;
+			
+			public static function  getSharedObjectServerAccountList():ArrayCollection {
+				var sharedObject:SharedObject = getSharedObject();
+				return sharedObject.data.serverAccounts;
+			}
+			
+			public static function  getSharedObject():SharedObject {
+				return SharedObject.getLocal(CoreConstants.FLOWER_PLATFORM);
+			}
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
 				refresh();
@@ -55,17 +66,9 @@
 				var vector:Vector.<IAction> = new Vector.<IAction>;
 				var addAccountAction:AddServerAccountAction = new AddServerAccountAction();
 				addAccountAction.serverAccountView = this;
+				addAccountAction.icon = Resources.addIcon;
 				vector[0] = addAccountAction;
 				return vector;
-			}
-			
-			public static function  getSharedObjectServerAccountList():ArrayCollection {
-				var sharedObject:SharedObject = SharedObject.getLocal("flower-platform");
-				return sharedObject.data.serverAccounts;
-			}
-			
-			public static function  getSharedObject():SharedObject {
-				return SharedObject.getLocal("flower-platform");
 			}
 			
 			public function deselectDefaultAccount():ArrayCollection {
@@ -91,14 +94,13 @@
 						accountList[i].isDefault = true;
 						var serverAccountRenderer:ServerAccountDataRenderer = this.accountList.dataGroup.getElementAt(i) as ServerAccountDataRenderer;
 						serverAccountRenderer.checkBox.selected = true;
-						break;
 					}
 				}
 				saveAccountsToSharedObject(accountList);
 			}
 			
 			public function saveAccountsToSharedObject(accountList:ArrayCollection):void {
-				var sharedObject:SharedObject = SharedObject.getLocal("flower-platform");
+				var sharedObject:SharedObject = getSharedObject();
 				sharedObject.data.serverAccounts = accountList;
 				sharedObject.flush(10000);
 			}

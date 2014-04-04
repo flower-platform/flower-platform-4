@@ -15,6 +15,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
 			public var serverAccountView:ServerAccountsView;
@@ -41,9 +42,7 @@
 				var accountList:ArrayCollection = serverAccountView.deselectDefaultAccount();				
 				if (checkBox.selected) { // set default value
 					setThisAsDefaultAccount();
-				} else { // default accaunt deselected. do nothing default account already deselected.
 				}
-				
 			}
 			
 			private function setThisAsDefaultAccount():void {
@@ -67,7 +66,7 @@
 					editAccountView.setServerAccountView(serverAccountView);
 						
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-						.setTitle("Edit Server Account")
+						.setTitle(Resources.getMessage("mobile.edit.server.account.title"))
 						.setViewContent(editAccountView)
 						.show();
 				}

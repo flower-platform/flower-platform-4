@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.host_app.mobile.view_server_account {
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
@@ -38,7 +39,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_server_account {
 		}
 		
 		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
-			return "Server Accounts";
+			return Resources.getMessage("mobile.server.accounts.title");
 		}
 		
 //		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
