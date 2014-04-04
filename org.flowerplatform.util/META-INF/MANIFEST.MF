@@ -4,7 +4,8 @@ Bundle-Name: Util
 Bundle-SymbolicName: org.flowerplatform.util
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.apache.commons.io,
+Export-Package: ch.qos.logback.core,
+ org.apache.commons.io,
  org.flowerplatform.util,
  org.flowerplatform.util.controller,
  org.flowerplatform.util.plugin,
@@ -15,4 +16,8 @@ Bundle-ClassPath: lib/logback-classic-1.0.7.jar,
  lib/slf4j-api-1.6.4.jar,
  .,
  lib/commons-io-1.3.2.jar
-Require-Bundle: org.eclipse.osgi
+Require-Bundle: org.eclipse.osgi,
+ org.eclipse.core.runtime
+Import-Package: javax.servlet.http,
+ org.eclipse.equinox.jsp.jasper,
+ org.eclipse.equinox.jsp.jasper.registry

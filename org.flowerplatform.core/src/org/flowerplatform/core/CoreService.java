@@ -6,8 +6,8 @@ package org.flowerplatform.core;
 public class CoreService {
 
 	public void helloServer(String clientAppVersion) throws Exception {
-		if (!CorePlugin.VERSION.equals(clientAppVersion)) {
-			throw new Exception(CorePlugin.VERSION);
+		if (!CoreConstants.VERSION.equals(clientAppVersion)) {
+			throw new Exception(CoreConstants.VERSION);
 		}
 	}
 	

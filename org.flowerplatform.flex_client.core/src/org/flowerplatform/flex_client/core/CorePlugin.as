@@ -119,8 +119,6 @@ package org.flowerplatform.flex_client.core {
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
-		
-		public static const VERSION:String = "1.0.0.M1_2014-04-02";
 				
 		/**
 		 * key = command name as String (e.g. "openResources")

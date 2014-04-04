@@ -17,7 +17,7 @@
    <extension
          point="org.flowerplatform.host.servletbridge.registry.listeners">
       <listener
-            runnable="org.flowerplatform.core.session.AddSessionListenerRunnable">
+            runnable="org.flowerplatform.core.session.ServletBridgeRegistryListenerRunnable">
       </listener>
    </extension>
 

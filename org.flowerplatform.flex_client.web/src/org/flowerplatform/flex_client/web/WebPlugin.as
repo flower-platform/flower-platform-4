@@ -25,6 +25,7 @@ package org.flowerplatform.flex_client.web {
 	import mx.core.Container;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
+	import mx.messaging.messages.ErrorMessage;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -104,7 +105,7 @@ package org.flowerplatform.flex_client.web {
 						
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CorePlugin.VERSION], 
+			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
 				function (result:Object):void {
 					// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
 					CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
@@ -113,7 +114,7 @@ package org.flowerplatform.flex_client.web {
 				function (event:FaultEvent):void {					
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 					.setTitle(Resources.getMessage('version.error'))
-					.setText(Resources.getMessage('version.error.message', [CorePlugin.VERSION, event.message.body]))
+					.setText(Resources.getMessage('version.error.message', [CoreConstants.VERSION, ErrorMessage(event.message).rootCause.message]))
 					.setWidth(400)
 					.setHeight(300)
 					.showMessageBox();	

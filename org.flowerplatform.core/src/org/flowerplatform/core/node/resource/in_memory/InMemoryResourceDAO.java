@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.resource.IResourceDAO;
 import org.flowerplatform.core.node.update.remote.Update;
 
@@ -146,7 +147,8 @@ public class InMemoryResourceDAO implements IResourceDAO {
 			return updatesAddedAfterLastRequest;
 		}
 		
-		if (timestampOfLastRequest > 0 && info.getLoadedTimestamp() > timestampOfLastRequest) {
+		if (timestampOfLastRequest > 0 && 
+			info.getLoadedTimestamp() > timestampOfLastRequest + Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(IResourceDAO.PROP_RESOURCE_UPDATES_MARGIN))) {
 			// if resource was reloaded after -> tell client to perform full refresh
 			return null;
 		}
