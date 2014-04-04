@@ -1,4 +1,4 @@
-package org.flowerplatform.core.log;
+package org.flowerplatform.util.log;
 
 import ch.qos.logback.core.PropertyDefinerBase;
 

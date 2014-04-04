@@ -1,4 +1,4 @@
-package org.flowerplatform.core.log;
+package org.flowerplatform.util.log;
 
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 

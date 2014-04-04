@@ -11,8 +11,8 @@
 		Unfortunately a property definer can define only a single property, MDC.setProperty with %X doesn't seem to work.
 		@author Sorin 
 	 -->
-	<define name="tomcatLocation" class="org.flowerplatform.core.log.TomcatLocationPropertyDefiner"/>
-	<define name="applicationServerContext" class="org.flowerplatform.util.core.ApplicationServerContextPropertyDefiner"/>
+	<define name="tomcatLocation" class="org.flowerplatform.util.log.TomcatLocationPropertyDefiner"/>
+	<define name="applicationServerContext" class="org.flowerplatform.util.log.ApplicationServerContextPropertyDefiner"/>
 	
 	
 	<conversionRule conversionWord="flowerHighlight" converterClass="org.flowerplatform.util.log.LogUtil$FlowerHighlightingCompositeConverter" />
@@ -82,7 +82,7 @@
 		Loggers
 	######################################################################################
 	-->
-	<root level="all">
+	<root level="debug">
 		<!-- <appender-ref ref="FILE_CSV_INTERNAL" /> -->
 		<appender-ref ref="STDOUT" />
 		<!-- <appender-ref ref="STDOUT_YELLOW" /> -->
