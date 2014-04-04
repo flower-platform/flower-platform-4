@@ -29,6 +29,7 @@ import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
+import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -219,6 +220,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
+		new TypeDescriptorRegistryDebugControllers().registerControllers();
 		
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);

@@ -35,7 +35,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			if (!data.readOnly) {
 				BindingUtils.bindProperty( data, "value", propertyValue, "text" );
 			}
-			
 		}
 		
 		override protected function createChildren():void {
@@ -63,9 +62,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		public function handleDialogResult(result:Object):void {
 			// set new value after closing dialog
 			propertyValue.text = getNewPropertyValueHandler(result);
-			saveProperty(null);			
+			saveProperty();			
 		}
-		
 		
 	}
 }

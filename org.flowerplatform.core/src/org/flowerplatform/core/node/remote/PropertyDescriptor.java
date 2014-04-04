@@ -43,6 +43,8 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	private boolean readOnly;
 	private List<?> possibleValues;
 	
+	private Boolean hasChangeCheckbox = false;
+
 	public String getName() {
 		return name;
 	}
@@ -104,6 +106,28 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Boolean getHasChangeCheckbox() {
+		return hasChangeCheckbox;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public void setHasChangeCheckbox(Boolean hasChangeCheckbox) {
+		this.hasChangeCheckbox = hasChangeCheckbox;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public PropertyDescriptor setHasChangeCheckboxAs(Boolean hasChangeCheckbox) {
+		this.hasChangeCheckbox = hasChangeCheckbox;
+		return this;
+	}
+	
 	public boolean getReadOnly() {
 		return readOnly;
 	}
@@ -154,6 +178,16 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	public PropertyDescriptor setIsMandatoryAs(boolean isMandatory) {
 		this.isMandatory = isMandatory;
 		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("PropertiesDescriptor [name = %s, title = %s, category = %s, " +
+				"\ntype = %s, readOnly = %b, possibleValues = %s, " +
+				"\ncontributeToCreation = %b, isMandatory = %b, orderIndex = %d]", 
+				getName(), getTitle(), getCategory(),
+				getType(), getReadOnly(), getPossibleValues(),
+				isContributeToCreation(), getIsMandatory(), getOrderIndex());
 	}
 	
 }

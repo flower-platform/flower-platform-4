@@ -51,5 +51,11 @@ public class GenericValueDescriptor extends AbstractController implements IDescr
 	public void setValue(Object value) {
 		this.value = value;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("GenericValueDescriptor [value = %s, orderIndex = %d]", 
+				getValue(), getOrderIndex());
+	}
 	
 }

@@ -111,14 +111,14 @@ public class TypeDescriptor {
 	 * (collected from this node type, as well as its categories OR from object's dynamic category providers). 
 	 */
 	public <T extends AbstractController> T getSingleController(String controllerType, Object object) {		
-		return getCachedSingleController(controllerType, object, true);
+		return getCachedSingleController(controllerType, object, true, true);
 	}
 	
 	/**
 	 * @return For a given controller type, the single controller (collected from this node type, as well as its categories). 
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends AbstractController> T getCachedSingleController(String controllerType, Object object, boolean includeDynamicCategoryProviders) {
+	protected <T extends AbstractController> T getCachedSingleController(String controllerType, Object object, boolean includeDynamicCategoryProviders, boolean keepCached) {
 		getRegistry().configurable = false;
 		
 		ControllerEntry<AbstractController> entry = getSingleControllerEntry(controllerType);
@@ -128,6 +128,8 @@ public class TypeDescriptor {
 		}
 		
 		// else => let's scan now the categories
+		T controller = (T) entry.getSelfValue();
+		
 		List<String> categories =  new ArrayList<String>();
 		categories.addAll(getCategories());
 		if (includeDynamicCategoryProviders) {
@@ -144,25 +146,28 @@ public class TypeDescriptor {
 				continue;
 			}
 			
-			T categoryController = categoryDescriptor.getCachedSingleController(controllerType, object, false);
+			T categoryController = categoryDescriptor.getCachedSingleController(controllerType, object, false, keepCached);
 			if (categoryController != null) {
 				// found a controller from a category
 				// keep it if it has a lower order index than the existing one
-				if (entry.getCachedValue() == null || entry.getCachedValue().getOrderIndex() > categoryController.getOrderIndex()) {
-					entry.setCachedValue(categoryController);
+				if (controller == null || controller.getOrderIndex() > categoryController.getOrderIndex()) {
+					controller = categoryController;
 				}
 			}
 		}
 		
-		if (entry.getCachedValue() instanceof NullController) {
+		if (controller instanceof NullController) {
 			// means we must ignore all registered controllers
-			entry.setCachedValue(null);
+			controller = null;
 		}
 		
 		// finished scanning the categories
-		entry.setCached(true);
+		if (keepCached) {
+			entry.setCached(true);
+			entry.setCachedValue(controller);
+		}
 		
-		return (T) entry.getCachedValue();
+		return controller;
 	}
 		
 	/**
@@ -179,7 +184,6 @@ public class TypeDescriptor {
 		}
 		ControllerEntry<AbstractController> entry = getSingleControllerEntry(type);
 		entry.setSelfValue(controller);
-		entry.setCachedValue(controller);
 		return this;
 	}
 	
@@ -213,7 +217,7 @@ public class TypeDescriptor {
 	protected Map<String, ControllerEntry<List<? extends AbstractController>>> additiveControllers = new HashMap<String, ControllerEntry<List<? extends AbstractController>>>();
 
 	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType, Object object) {
-		return  getCachedAdditiveControllers(controllerType, object, true);
+		return  getCachedAdditiveControllers(controllerType, object, true, true);
 	}
 		
 	/**
@@ -221,17 +225,19 @@ public class TypeDescriptor {
 	 * (collected from this node type, as well as its categories AND from object's dynamic category providers). 
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends AbstractController> List<T> getCachedAdditiveControllers(String controllerType, Object object, boolean includeDynamicCategoryProviders) {
+	protected <T extends AbstractController> List<T> getCachedAdditiveControllers(String controllerType, Object object, boolean includeDynamicCategoryProviders, boolean keepCached) {
 		getRegistry().configurable = false;
 		
 		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(controllerType);
-		List<T> controllers = (List<T>) entry.getCachedValue();
 		if (entry.wasCached()) {
 			// categories were processed before; return the controllers
-			return controllers;
+			return (List<T>) entry.getCachedValue();
 		}
 		
 		// else => let's scan now the categories
+		
+		List<T> controllers = new ArrayList<T>();
+		controllers.addAll((Collection<? extends T>) entry.getSelfValue());
 		
 		List<String> categories =  new ArrayList<String>();
 		categories.addAll(getCategories());
@@ -248,12 +254,14 @@ public class TypeDescriptor {
 				continue;
 			}
 			
-			controllers.addAll((Collection<? extends T>) categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false));
-			entry.setCached(true);
+			controllers.addAll((Collection<? extends T>) categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false, keepCached));
 		}
 		
 		// finished scanning the categories
-		entry.setCached(true);
+		if (keepCached) {
+			entry.setCached(true);
+			entry.setCachedValue(controllers);
+		}
 		
 		Collections.sort(controllers);
 		return controllers;
@@ -274,7 +282,6 @@ public class TypeDescriptor {
 		}
 		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(type);
 		((List<AbstractController>) entry.getSelfValue()).add(controller);
-		((List<AbstractController>) entry.getCachedValue()).add(controller);
 		return this;
 	}
 	
@@ -283,7 +290,6 @@ public class TypeDescriptor {
 		if (entry == null) {
 			entry = new ControllerEntry<List<? extends AbstractController>>();
 			entry.setSelfValue(new ArrayList<AbstractController>());
-			entry.setCachedValue(new ArrayList<AbstractController>());
 			additiveControllers.put(type, entry);
 		}
 		return entry;

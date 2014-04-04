@@ -56,5 +56,11 @@ public abstract class FeatureProvider extends AbstractController {
 		}
 		throw new RuntimeException("Feature is null");
 	}
+
+	@Override
+	public String toString() {
+		return String.format("FeatureProvider [containment = %s, value = %s, orderIndex = %d]", 
+				containmentFeatures, valueFeatures, getOrderIndex());
+	}
 	
 }

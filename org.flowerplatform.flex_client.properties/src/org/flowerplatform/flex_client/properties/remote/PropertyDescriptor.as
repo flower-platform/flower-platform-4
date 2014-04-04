@@ -18,6 +18,7 @@
 */
 package org.flowerplatform.flex_client.properties.remote {
 	import mx.collections.ArrayCollection;
+	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flexutil.controller.AbstractController;
 
@@ -39,14 +40,25 @@ package org.flowerplatform.flex_client.properties.remote {
 		public var readOnly:Boolean;
 		
 		public var type:String;
-
+		
 		public var category:String;
+		
+		public var hasChangeCheckbox:Boolean;
 		
 		public var possibleValues:ArrayCollection;
 		
 		public var contributeToCreation:Boolean;
 		
 		public var isMandatory:Boolean;
+		
+		override public function toString():String {
+			return StringUtil.substitute("PropertiesDescriptor [name = {0}, title = {1}, category = {2}, " +
+				"\ntype = {3}, readOnly = {4}, possibleValues = {5}, " +
+				"\ncontributeToCreation = {6}, isMandatory = {7}, orderIndex = {8}]", 
+				name, title, category,
+				type, readOnly, possibleValues,
+				contributeToCreation, isMandatory, orderIndex);
+		}
 		
 	}
 }

@@ -21,7 +21,7 @@
 			}
 			
 			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
-				saveProperty(null);
+				saveProperty();
 			}
 			
 		]]>
@@ -30,5 +30,6 @@
 					  value="{data.value}"
 					  stepSize="1" 
 					  focusOut="propertyValue_focusOutHandler(event)"
-					  keyUp="keyHandler(event)"/>
+					  keyDown="keyDownHandler1(event)"/>
+	
 </ns:BasicPropertyRenderer>

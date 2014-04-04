@@ -64,7 +64,6 @@ package org.flowerplatform.flex_client.properties {
 		}
 				
 		private function registerPropertyProviders():void {
-			propertyRendererClasses[null] = new FactoryWithInitialization(StringPropertyRenderer);
 			propertyRendererClasses["String"] = new FactoryWithInitialization(StringPropertyRenderer);
 			propertyRendererClasses["Boolean"] = new FactoryWithInitialization(BooleanPropertyRenderer);
 			propertyRendererClasses["Number"] = new FactoryWithInitialization(NumberPropertyRenderer);

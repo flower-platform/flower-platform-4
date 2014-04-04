@@ -55,5 +55,10 @@ public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	public List<?> getChildren(Object modelElement) {
 		return Collections.emptyList();
 	}
+
+	@Override
+	public String toString() {
+		return String.format("JavaExpressionModelAdapter [type = %s, orderIndex = %d]", type, getOrderIndex());
+	}
 	
 }

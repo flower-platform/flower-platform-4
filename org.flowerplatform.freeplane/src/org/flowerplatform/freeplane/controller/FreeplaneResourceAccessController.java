@@ -126,4 +126,10 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		return path.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION);
 	}
 
+	@Override
+	public String toString() {
+		return String.format("FreeplaneResourceAccessController [resourceCategory = %s, orderIndex = %d]", 
+				resourceCategory, getOrderIndex());
+	}
+
 }

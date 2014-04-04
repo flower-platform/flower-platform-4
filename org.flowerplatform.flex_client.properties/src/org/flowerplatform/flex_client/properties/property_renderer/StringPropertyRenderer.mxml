@@ -18,8 +18,10 @@
 			}
 			
 			protected function propertyValue_focusOutHandler(event:FocusEvent):void {
-				saveProperty(null);
+				saveProperty();
 			}
+			
+			
 			
 		]]>
 	</fx:Script>
@@ -28,6 +30,6 @@
 				 text="{data.value}"
 				 editable="{!data.readOnly}" 
 				 focusOut="propertyValue_focusOutHandler(event)"
-				 keyUp="keyHandler(event)"/>
+				 keyUp="keyDownHandler1(event)"/>
 	
 </ns:BasicPropertyRenderer>

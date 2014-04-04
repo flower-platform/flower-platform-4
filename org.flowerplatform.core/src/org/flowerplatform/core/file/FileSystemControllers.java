@@ -52,12 +52,12 @@ public class FileSystemControllers {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new FilePropertiesProvider())
 		.addAdditiveController(PROPERTY_SETTER, new FilePropertySetter())
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getResourceUrl("file.name")).setContributeToCreationAs(true).setIsMandatoryAs(true).setOrderIndexAs(-10))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setTitleAs(ResourcesPlugin.getInstance().getResourceUrl("file.size")).setTypeAs("FileSize"))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setTitleAs(ResourcesPlugin.getInstance().getResourceUrl("file.is.directory")).setReadOnlyAs(true).setContributeToCreationAs(true).setIsMandatoryAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setOrderIndexAs(-5))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setTitleAs(ResourcesPlugin.getInstance().getResourceUrl("file.creation.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(10))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setTitleAs(ResourcesPlugin.getInstance().getResourceUrl("file.modified.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(11))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setTitleAs(ResourcesPlugin.getInstance().getResourceUrl("file.accessed.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(12))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.name")).setContributeToCreationAs(true).setIsMandatoryAs(true).setOrderIndexAs(-10))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.size")).setTypeAs("FileSize"))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.is.directory")).setReadOnlyAs(true).setContributeToCreationAs(true).setIsMandatoryAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setOrderIndexAs(-5))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.creation.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(10))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.modified.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(11))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.accessed.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(12))
 		.addCategory("category.fileContainer");
 	}
 
