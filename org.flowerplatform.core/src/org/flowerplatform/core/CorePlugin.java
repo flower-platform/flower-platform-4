@@ -49,6 +49,7 @@ import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.flowerplatform.util.servlet.ServletUtils;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -60,11 +61,14 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CorePlugin INSTANCE;
 
-	public static final String VERSION = "1.0.0.M1_2014-04-01";
-	
+	protected static final String PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP = "deleteTemporaryDirectoryAtServerStartup"; 
+	protected static final String PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP = "true"; 
+		
 	protected IFileAccessController fileAccessController = new PlainFileAccessController();
 	
 	protected ComposedSessionListener composedSessionListener = new ComposedSessionListener();
+	
+	private FlowerProperties flowerProperties = new FlowerProperties(this.getClass().getClassLoader().getResourceAsStream("META-INF/flower.properties"));
 	
 	/**
 	 * @author Sebastian Solomon
@@ -127,14 +131,59 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public UploadService getUploadService() {
 		return uploadService;
 	}
+	
+	/**
+	 * Setting/removing must be done from a try/finally block to make sure that 
+	 * the request is cleared, i.e.
+	 * 
+	 * <pre>
+	 * try {
+	 * 	CorePlugin.getInstance().getRequestThreadLocal().set(request);
+	 * 	
+	 * 	// specific logic here
+	 * 
+	 * } finally {
+	 * 	CorePlugin.getInstance().getRequestThreadLocal().remove()
+	 * }
+	 * </pre> 
+	 * 
+	 * @see FlowerMessageBrokerServlet
+	 */
+	public ThreadLocal<HttpServletRequest> getRequestThreadLocal() {
+		return requestThreadLocal;
+	}
+	
+	public ScheduledExecutorServiceFactory getScheduledExecutorServiceFactory() {
+		return scheduledExecutorServiceFactory;
+	}
+	
+	public ComposedSessionListener getComposedSessionListener() {
+		return composedSessionListener;
+	}
+
+	public void addSessionListener(ISessionListener sessionListener) {
+		composedSessionListener.add(sessionListener);
+	}
+	
+	public FlowerProperties getFlowerProperties() {
+		return flowerProperties;
+	}
+
+	public CorePlugin() {
+		super();
+		
+		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP, PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP));
+		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));
+		
+	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
 			
-		System.getProperties().put("flower.version", VERSION);
-		
+		System.getProperties().put("flower.version", CoreConstants.VERSION);
+	
 		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
 		downloadService = new DownloadService();
 		uploadService = new UploadService();
@@ -173,9 +222,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		new ResourceDebugControllers().registerControllers();
 		new TypeDescriptorRegistryDebugControllers().registerControllers();
 		
-		//TODO use Flower property
-		boolean isDeleteTempFolderAtStartProperty = true;
-		if (isDeleteTempFolderAtStartProperty) {
+		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
 	}
@@ -186,36 +233,4 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = null;
 	}
 
-	/**
-	 * Setting/removing must be done from a try/finally block to make sure that 
-	 * the request is cleared, i.e.
-	 * 
-	 * <pre>
-	 * try {
-	 * 	CorePlugin.getInstance().getRequestThreadLocal().set(request);
-	 * 	
-	 * 	// specific logic here
-	 * 
-	 * } finally {
-	 * 	CorePlugin.getInstance().getRequestThreadLocal().remove()
-	 * }
-	 * </pre> 
-	 * 
-	 * @see FlowerMessageBrokerServlet
-	 */
-	public ThreadLocal<HttpServletRequest> getRequestThreadLocal() {
-		return requestThreadLocal;
-	}
-	
-	public ScheduledExecutorServiceFactory getScheduledExecutorServiceFactory() {
-		return scheduledExecutorServiceFactory;
-	}
-	
-	public ComposedSessionListener getComposedSessionListener() {
-		return composedSessionListener;
-	}
-
-	public void addSessionListener(ISessionListener sessionListener) {
-		composedSessionListener.add(sessionListener);
-	}
 }

@@ -1,0 +1,35 @@
+<project name="Config files merger" default="merge-all" basedir="../">
+
+	<!-- ================================= 
+          target: Merge all              
+         ================================= -->
+    <target name="merge-all" depends="merge-flower.properties"/>
+
+	<property name="NL" value="&#xa;"/>
+	
+	<property name="headerText">
+################################################################
+# WARNING. Do not modify manually.
+#		
+# This file has been merged. Modify the *.default, *.default.override-global (persisted in SVN) or 
+# *.default.override-local (ignored by SVN, i.e. local to user).
+#
+# Please always end the above files with at least 2 new lines (in order to have a correct merge).
+################################################################
+
+</property>
+		
+	<!-- ================================= 
+          target: Merge flower.properties              
+         ================================= -->
+    <target name="merge-flower.properties">
+
+    	<concat destfile="META-INF/flower.properties">
+    		<header>${headerText}</header>
+    		<sort>
+    			<fileset dir="config_properties" includes="flower.properties.*"/>
+    		</sort>
+    	</concat>
+    </target>
+
+</project> 

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.FlowerProperties;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.update.remote.Update;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Mariana Gheorghe
  */
 public class ResourceService implements ISessionListener {
-
+	
 	private final static Logger logger = LoggerFactory.getLogger(ResourceService.class);
 	
 	private TypeDescriptorRegistry registry;
@@ -38,6 +39,8 @@ public class ResourceService implements ISessionListener {
 		this.registry = registry;
 		this.resourceDao = resourceDao;	
 		CorePlugin.getInstance().addSessionListener(this);
+		
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(IResourceDAO.PROP_RESOURCE_UPDATES_MARGIN, IResourceDAO.PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
 	}
 	
 	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId, ServiceContext context) {

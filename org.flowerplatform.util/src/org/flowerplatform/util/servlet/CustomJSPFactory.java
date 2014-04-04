@@ -1,4 +1,4 @@
-package org.flowerplatform.host.servletbridge.registry;
+package org.flowerplatform.util.servlet;
 
 import java.lang.reflect.Field;
 
@@ -10,7 +10,7 @@ import org.osgi.framework.Bundle;
 /**
  * Returns {@link CustomJSPServlet} as extension class.
  * 
- * @see Activator#instanceManager
+ * @see servletbridge.registry Activator
  * 
  * @author Cristina Constantinescu
  */

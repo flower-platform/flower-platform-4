@@ -15,7 +15,7 @@
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/main.jsp"
-            class="org.flowerplatform.host.servletbridge.registry.CustomJSPFactory:/WebContent/main.jsp">
+            class="org.flowerplatform.util.servlet.CustomJSPFactory:/WebContent/main.jsp">
       </servlet>
    </extension>
 </plugin>
