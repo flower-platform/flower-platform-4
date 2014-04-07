@@ -96,7 +96,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var fontSizeChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_SIZE, event);
 			if (fontSizeChanged) {
-				labelDisplay.setStyle("fontSize", data.properties[MindMapConstants.FONT_SIZE]);
+				labelDisplay.setStyle("fontSize", MindMapConstants.FONT_SCALE_FACTOR * data.properties[MindMapConstants.FONT_SIZE]);
 			}
 			
 			var fontBoldChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_BOLD, event);
