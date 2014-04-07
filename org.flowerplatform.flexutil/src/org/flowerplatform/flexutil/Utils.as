@@ -22,14 +22,14 @@ package org.flowerplatform.flexutil {
 	import flash.text.StyleSheet;
 	import flash.utils.getQualifiedClassName;
 	
-	import flashx.textLayout.utils.CharacterUtil;
-	
 	import mx.core.ITextInput;
 	import mx.utils.StringUtil;
 	
 	import spark.components.TextInput;
 	import spark.components.supportClasses.RegExPatterns;
 	import spark.components.supportClasses.SkinnableTextBase;
+	
+	import flashx.textLayout.utils.CharacterUtil;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -199,7 +199,11 @@ package org.flowerplatform.flexutil {
 		}
 		
 		public static function convertColorToString(color:uint):String {
-			return "#" + color.toString(16); 
+			var hexColor:String = color.toString(16);
+			for (var i:int=hexColor.length; i < 6; i++) {
+				hexColor = 0 + hexColor;
+			}
+			return "#" + hexColor; 
 		}
 		
 		/**
