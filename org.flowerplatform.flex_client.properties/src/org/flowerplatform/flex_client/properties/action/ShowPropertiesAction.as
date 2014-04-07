@@ -1,6 +1,5 @@
 package org.flowerplatform.flex_client.properties.action {
 	
-	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.PropertiesViewProvider;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -15,7 +14,7 @@ package org.flowerplatform.flex_client.properties.action {
 			super();
 			label = Resources.getMessage("properties.action.show");
 			icon = Resources.propertiesIcon;
-			orderIndex = 500;
+			orderIndex = 1000;
 		}
 			
 		override public function get visible():Boolean {

@@ -21,7 +21,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
@@ -35,6 +34,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			icon = Resources.saveAllIcon;
 			parentId = CoreConstants.FILE_MENU_ID;
 			enabled = false;
+			orderIndex = 120;
 		}
 				
 		override public function run():void {

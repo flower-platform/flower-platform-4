@@ -37,8 +37,7 @@ public class FileSystemControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new FileChildrenProvider())
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new FileAddNodeController())
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE_NODE_TYPE).setLabelAs("File/Folder")
-			.setIconAs(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif")));
+		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE_NODE_TYPE).setLabelAs(ResourcesPlugin.getInstance().getMessage("file.folder")).setOrderIndexAs(10));
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
