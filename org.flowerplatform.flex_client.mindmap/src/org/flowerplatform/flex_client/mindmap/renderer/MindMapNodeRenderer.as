@@ -13,13 +13,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 */ 
 	public class MindMapNodeRenderer extends NodeRenderer {
 		
-		public function MindMapNodeRenderer() {
-			super();
-			
-			// don't allow super to clear graphics, I'm doing that
-			allowBaseRendererToClearGraphics = false;
-		}
-		
 		override protected function unassignData():void {
 			super.unassignData();
 			
@@ -44,18 +37,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					invalidateDisplayList();
 			}
 		}
-				
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {		
-			// clear all graphics
-			graphics.clear();
-			
-			if (drawGraphicsOnlyFromBaseClass) {
-				super.updateDisplayList(unscaledWidth, unscaledHeight);	
-				return;
-			}
-			
-			// start drawing
-			
+		
+		override protected function drawGraphics(unscaledWidth:Number, unscaledHeight:Number):void {			
 			// draw could shape
 			var shape:String = data.properties[MindMapConstants.CLOUD_SHAPE];
 			if (shape != null && shape != MindMapConstants.SHAPE_NONE) {				
@@ -70,7 +53,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				var height:Number = diagramShell.getPropertyValue(diagramShellContext, data, "height");
 				var expandedWidth:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth");
 				var expandedHeight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeight");
-								
+				
 				var shapeX:Number = - cloudPadding/2;
 				var shapeY:Number = - diagramShell.getDeltaBetweenExpandedHeightAndHeight(diagramShellContext, data, true)/2;
 				var shapeWidth:Number = expandedWidth + cloudPadding;
@@ -86,12 +69,9 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				}
 				graphics.endFill();
 			}
-			
-			// end drawing
-			
-			super.updateDisplayList(unscaledWidth, unscaledHeight);			
+			super.drawGraphics(unscaledWidth, unscaledHeight);
 		}
-		
+						
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
 			
