@@ -42,7 +42,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public function RenameAction() {			
 			label = Resources.getMessage("action.rename");
 			icon = Resources.editIcon;
-			orderIndex = 30;
+			orderIndex = 80;
 		}
 				
 		override public function get visible():Boolean {			

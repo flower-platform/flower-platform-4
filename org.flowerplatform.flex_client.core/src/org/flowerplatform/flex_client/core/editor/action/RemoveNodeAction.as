@@ -32,7 +32,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			super();
 			label = Resources.getMessage("action.remove");	
 			icon = Resources.deleteIcon;
-			orderIndex = 20;
+			orderIndex = 50;
 		}
 		
 		override public function get visible():Boolean {			

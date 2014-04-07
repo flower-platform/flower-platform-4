@@ -19,13 +19,11 @@
 package org.flowerplatform.flex_client.codesync {
 	
 	
-	import org.flowerplatform.flex_client.codesync.action.MarkNodeRemovedAction;
 	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
 	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AbstractController;
@@ -56,7 +54,6 @@ package org.flowerplatform.flex_client.codesync {
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(CodeSyncNodeRenderer, -10000)));
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MarkNodeRemovedAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(SynchronizeAction);
 		}
 		
