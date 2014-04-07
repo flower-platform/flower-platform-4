@@ -65,7 +65,7 @@
 				
 				renderer = new FactoryWithInitialization(rendererClass).newInstance();
 				renderer.diagramShellContext = diagramShellContext;		
-				renderer.drawGraphicsOnlyFromBaseClass = true;
+				renderer.drawOnlyBorderGraphics = true;
 				renderer.depth = 1;
 				rendererArea.addElement(renderer);				
 			}

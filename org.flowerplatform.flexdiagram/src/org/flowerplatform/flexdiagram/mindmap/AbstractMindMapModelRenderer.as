@@ -1,5 +1,7 @@
 package org.flowerplatform.flexdiagram.mindmap
 {
+	import flash.display.Sprite;
+	
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
@@ -38,18 +40,17 @@ package org.flowerplatform.flexdiagram.mindmap
 		protected var iconsComponentExtension:IconsComponentExtension;
 		
 		protected var backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
-		
-		protected var allowBaseRendererToClearGraphics:Boolean = true;
-		
+				
 		/**
 		 * If <code>true</code>, draw only this class graphics (border and small circle on right).
 		 */ 
-		public var drawGraphicsOnlyFromBaseClass:Boolean = false;
+		public var drawOnlyBorderGraphics:Boolean = false;
 		
 		public function AbstractMindMapModelRenderer() {
 			super();
 			addEventListener(FlexEvent.INITIALIZE, initializeHandler);	
-								
+			mouseEnabledWhereTransparent = true;
+			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				minHeight = 22;
 				minWidth = 10;
@@ -140,17 +141,23 @@ package org.flowerplatform.flexdiagram.mindmap
 			addElement(labelDisplay);
 		}
 		
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {				
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 						
-			if (allowBaseRendererToClearGraphics) {
-				graphics.clear();
-			}
+			graphics.clear();
 			
+			drawBorder(unscaledWidth, unscaledHeight);
+			
+			if (!drawOnlyBorderGraphics) {
+				drawGraphics(unscaledWidth, unscaledHeight);
+			}			
+		}
+		
+		protected function drawBorder(unscaledWidth:Number, unscaledHeight:Number):void {
 			graphics.lineStyle(1, 0x808080);
 			graphics.beginFill(backgroundColor, 1);
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
-						
+			
 			if (canDrawCircle()) {
 				graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
 				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
@@ -160,8 +167,13 @@ package org.flowerplatform.flexdiagram.mindmap
 					graphics.drawCircle(width + circleRadius, height/2, circleRadius);
 				}
 			}
+			graphics.endFill();
 		}
-				
+		
+		protected function drawGraphics(unscaledWidth:Number, unscaledHeight:Number):void {	
+			drawBorder(unscaledWidth, unscaledHeight);
+		}
+		
 		protected function canDrawCircle():Boolean {
 			throw new Error("This method needs to be implemented.");
 		}
