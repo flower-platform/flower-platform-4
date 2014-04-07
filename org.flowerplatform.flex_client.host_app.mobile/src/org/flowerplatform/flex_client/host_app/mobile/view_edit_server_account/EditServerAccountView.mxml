@@ -147,11 +147,24 @@
 			private function getServerAccountToSave():ServerAccount {
 				var serverAccountToSave:ServerAccount = new ServerAccount();
 				serverAccountToSave.friendlyName = friendlyName.text;
-				serverAccountToSave.host = host.text;
+				serverAccountToSave.host = editHost(host.text);
 				serverAccountToSave.user = user.text;
 				serverAccountToSave.password = password.text;
 				serverAccountToSave.isDefault = serverAccount == null ? null : serverAccount.isDefault;
 				return serverAccountToSave;
+			}
+			/**
+			 * Adds "http://" at the beginning of the expresion, and "/" at the end.
+			 */
+			private function editHost(host:String):String {
+				if (host.substring(0,7) != "http://") {
+					host = "http://" + host;
+				}
+				
+				if (host.charAt(host.length) != '/') {
+					host = host + '/';
+				}
+				return host;
 			}
 			
 			protected function cancelAccountHandler(event:MouseEvent=null):void {
