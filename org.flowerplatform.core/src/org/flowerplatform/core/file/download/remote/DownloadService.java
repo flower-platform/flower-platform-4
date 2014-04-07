@@ -186,7 +186,7 @@ public class DownloadService implements ISessionListener {
 			// create ZIP archive
 			List<String> paths = new ArrayList<String>();
 			for (Object file : files) {
-				paths.add(CorePlugin.getInstance().getFileAccessController().getPath(file));					
+				paths.add(CorePlugin.getInstance().getFileAccessController().getAbsolutePath(file));					
 			}			
 			try {
 				CoreUtils.zipFiles(paths, zipPath, String.valueOf(timestamp));

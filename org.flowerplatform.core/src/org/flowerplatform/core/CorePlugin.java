@@ -21,6 +21,7 @@ package org.flowerplatform.core;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -169,6 +170,21 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return flowerProperties;
 	}
 
+	/**
+	 * @return workspace location from OSGI property
+	 * @author Cristina Constantinescu
+	 */
+	@SuppressWarnings("restriction")
+	public String getWorkspaceLocation() {
+		String location = FrameworkProperties.getProperty("osgi.instance.area");
+		
+		// if property value starts with "file:/", remove it
+		if (location.startsWith("file:/")) {
+			location = location.substring("file:/".length());
+		}
+		return location;
+	}
+	
 	public CorePlugin() {
 		super();
 		

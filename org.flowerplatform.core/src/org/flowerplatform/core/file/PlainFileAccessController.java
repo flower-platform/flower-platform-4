@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.flowerplatform.core.CorePlugin;
 
 /**
  * @author Cristina Constantinescu
@@ -171,16 +172,21 @@ public class PlainFileAccessController implements IFileAccessController {
 		return ((File)file).getAbsolutePath();
 	}
 
-	// TODO MG: these two methods may need to work with files relative to the workspace root on web
-	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@Override
 	public String getPath(Object file) {
-		return ((File)file).getPath();
+		return getPathRelativeToFile((File) file, new File(CorePlugin.getInstance().getWorkspaceLocation()));
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@Override
 	public Object getFile(String path) throws Exception {
-		return new File(path);
+		// path == null -> path to workspace location
+		return new File(CorePlugin.getInstance().getWorkspaceLocation(), path == null ? "" : path);
 	}
 
 	@Override

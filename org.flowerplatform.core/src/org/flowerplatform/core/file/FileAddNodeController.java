@@ -35,10 +35,10 @@ public class FileAddNodeController extends AddNodeController {
 			String repositoryPath = new Node(parentNode.getResource()).getIdWithinResource();
 			
 			if (repositoryPath.replace("//", "/").replace('/', '\\')
-					.equals(fileAccessController.getAbsolutePath(parentFile))) {
+					.equals(fileAccessController.getPath(parentFile))) {
 				fileParentNode = new Node(FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, repositoryPath, null);
 			} else {
-				fileParentNode = new Node(FILE_NODE_TYPE, parentNode.getResource(), fileAccessController.getAbsolutePath(parentFile), null);
+				fileParentNode = new Node(FILE_NODE_TYPE, parentNode.getResource(), fileAccessController.getPath(parentFile), null);
 			}
 			CorePlugin.getInstance().getNodeService().addChild(fileParentNode, child, insertBeforeNode, context);
 			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
@@ -47,7 +47,7 @@ public class FileAddNodeController extends AddNodeController {
 
 		String name = (String)context.get(NAME);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
-		child.setIdWithinResource(fileAccessController.getAbsolutePath(fileToCreate));
+		child.setIdWithinResource(fileAccessController.getPath(fileToCreate));
 		boolean isDir = (boolean)context.get(FILE_IS_DIRECTORY);
 		
 		if (fileAccessController.exists(fileToCreate)) {
