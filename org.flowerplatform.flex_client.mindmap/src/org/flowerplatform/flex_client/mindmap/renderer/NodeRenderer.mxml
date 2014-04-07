@@ -155,6 +155,8 @@
 			}
 			
 			protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+				var invalidateDisplayListFlag:Boolean = false;
+				
 				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(mindMapDiagramShell.registry, node);
 				var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(node);
 				var titleChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, titleProperty, event);
@@ -164,7 +166,7 @@
 					// if text contains html tag, display it as html, otherwise plain text
 					labelDisplay.textFlow = TextConverter.importToFlow(title , Utils.isHTMLText(title) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
 					invalidateSize();
-					invalidateDisplayList();
+					invalidateDisplayListFlag = true;
 				}
 				
 				var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(mindMapDiagramShell.registry, node);
@@ -180,6 +182,9 @@
 				}
 				if (NodeControllerUtils.hasPropertyChanged(node, CoreConstants.HAS_CHILDREN)) {
 					// hasChildren changed -> update display
+					invalidateDisplayListFlag = true;					
+				}
+				if (invalidateDisplayListFlag) {
 					invalidateDisplayList();
 				}
 			}

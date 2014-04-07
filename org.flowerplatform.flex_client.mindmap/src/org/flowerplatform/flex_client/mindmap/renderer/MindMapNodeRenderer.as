@@ -138,10 +138,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				diagramShell.refreshModelPositions(diagramShellContext, data);
 			}
 			
-			if (minWidthChanged || maxWidthChanged || backgroundColorChanged || cloudColorChanged) {
-				invalidateSize();
+			if (minWidthChanged || maxWidthChanged) {
+				invalidateSize();				
+			}	
+			if (minWidthChanged || maxWidthChanged || backgroundColorChanged || cloudColorChanged) {			
 				invalidateDisplayList();
-			}			
+			}					
 		}
 		
 	}
