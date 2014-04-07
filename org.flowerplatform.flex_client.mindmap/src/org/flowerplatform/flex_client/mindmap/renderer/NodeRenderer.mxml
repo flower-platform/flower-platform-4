@@ -34,7 +34,16 @@
 			[Bindable]
 			public var circleRadius:int = 10;
 				
-			private var sprite:SpriteVisualElement;
+			/**
+			 * Custom <code>hitArea</code> for this renderer.
+			 * Consists of two areas:
+			 * <ul>
+			 * 	<li> node bounds rectangle
+			 *  <li> circle area (seen as a rectangle)
+			 * </ul>
+			 * Needed when adding/removing <code>circle</code> element from renderer at mouse over/out.
+			 */ 
+			private var rendererHitArea:SpriteVisualElement;
 					
 			override protected function initializeHandler(event:FlexEvent):void {
 				super.initializeHandler(event);
@@ -140,10 +149,9 @@
 			override protected function createChildren():void {			
 				super.createChildren();
 				
-				sprite = new SpriteVisualElement();				
-				sprite.mouseEnabled = false;
-				sprite.depth = int.MAX_VALUE;
-				addElementAt(sprite, 0);				
+				rendererHitArea = new SpriteVisualElement();				
+				rendererHitArea.mouseEnabled = false;
+				addElementAt(rendererHitArea, 0);				
 			}
 			
 			protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
@@ -179,9 +187,9 @@
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 
-				sprite.graphics.clear();				
-				sprite.graphics.beginFill(0xFF0000, 0);
-				sprite.graphics.drawRect(0, -unscaledHeight/2, unscaledWidth, unscaledHeight);	
+				rendererHitArea.graphics.clear();				
+				rendererHitArea.graphics.beginFill(0xFF0000, 0);
+				rendererHitArea.graphics.drawRect(0, -unscaledHeight/2, unscaledWidth, unscaledHeight);	
 												
 				if (circle.parent != null) {	
 					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
@@ -191,16 +199,16 @@
 					if (side == MindMapDiagramShell.POSITION_LEFT) {
 						circle.x = dynamicObject.x - circleRadius * 2;						
 						circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;
-						sprite.graphics.drawRect(-circleRadius * 2, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
+						rendererHitArea.graphics.drawRect(-circleRadius * 2, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
 					} else if (side == MindMapDiagramShell.POSITION_RIGHT) {
 						circle.x = dynamicObject.x + dynamicObject.width;
 						circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;	
-						sprite.graphics.drawRect(unscaledWidth, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
+						rendererHitArea.graphics.drawRect(unscaledWidth, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
 					}
 				}
 														
-				sprite.graphics.endFill();
-				hitArea = sprite;
+				rendererHitArea.graphics.endFill();
+				hitArea = rendererHitArea;
 			}	
 						
 			override protected function canDrawCircle():Boolean {			
@@ -224,7 +232,7 @@
 						DiagramRenderer(mindMapDiagramShell.diagramRenderer).addElement(circle);						
 						invalidateDisplayList();
 					}
-				}				
+				}
 			}
 			
 			protected function mouseOutHandler(event:MouseEvent):void {				
