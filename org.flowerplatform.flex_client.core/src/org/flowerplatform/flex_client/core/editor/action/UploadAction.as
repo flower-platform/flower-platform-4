@@ -17,6 +17,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			super();
 			label = Resources.getMessage("action.upload");
 			icon = Resources.uploadIcon;
+			orderIndex = 310;
 		}
 		
 		override public function get visible():Boolean {

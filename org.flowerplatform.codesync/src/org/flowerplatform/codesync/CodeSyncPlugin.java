@@ -25,6 +25,7 @@ import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
+import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -210,6 +211,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
 		.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
+		.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController())
 		.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.ADDED).setTypeAs("Boolean").setReadOnlyAs(true))

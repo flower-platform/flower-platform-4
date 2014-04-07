@@ -154,7 +154,7 @@
 				return serverAccountToSave;
 			}
 			/**
-			 * Adds "http://" at the beginning of the expresion, and "/" at the end.
+			 * Adds "http://" at the beginning of the expression, and "/" at the end.
 			 */
 			private function editHost(host:String):String {
 				if (host.substring(0,7) != "http://") {

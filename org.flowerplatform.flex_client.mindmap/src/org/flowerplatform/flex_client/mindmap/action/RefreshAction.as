@@ -31,7 +31,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 		public function RefreshAction() {
 			label = Resources.getMessage("mindmap.action.refresh");
 			icon = Resources.refreshIcon;
-			orderIndex = 40;					
+			orderIndex = 200;					
 		}
 				
 		override protected function isVisibleForSelectedElement(element:Object):Boolean {

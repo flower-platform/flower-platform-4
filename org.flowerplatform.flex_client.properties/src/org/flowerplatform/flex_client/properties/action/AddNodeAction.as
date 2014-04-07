@@ -27,7 +27,6 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-	import org.flowerplatform.flexutil.action.ComposedAction;
 	
 	/**
 	 * @author Cristina Constantinescu
