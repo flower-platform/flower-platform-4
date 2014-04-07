@@ -30,9 +30,13 @@ public class FileChildrenProvider extends ChildrenProvider {
 		Object[] files = fileAccessController.listFiles(file);
 		List<Node> children = new ArrayList<Node>();
 		for (Object object : files) {
-			children.add(new Node("fileNode", 
+			if (".metadata".equals(fileAccessController.getName(object)) && path == null) {
+				// TODO CC: temporary code; don't show .metadata directory from workspace
+				continue;
+			}
+			children.add(new Node(CoreConstants.FILE_NODE_TYPE, 
 					node.getType().equals(CoreConstants.FILE_SYSTEM_NODE_TYPE) ? node.getFullNodeId() : node.getResource(),
-					fileAccessController.getAbsolutePath(object), null));
+					fileAccessController.getPath(object), null));
 		}
 		return children;
 	}

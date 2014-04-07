@@ -24,7 +24,8 @@ public class MindMapStyleChildrenProvider extends ChildrenProvider {
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext serviceContext) {
-		Node resourceNode = new Node(CoreConstants.FILE_NODE_TYPE, new Node(CoreConstants.FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, "d:/temp/repo1", null).getFullNodeId(), node.getIdWithinResource(), null);
+		// idWithinResource == null -> path to workspace location
+		Node resourceNode = new Node(CoreConstants.FILE_NODE_TYPE, new Node(CoreConstants.FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, null, null).getFullNodeId(), node.getIdWithinResource(), null);
 		NodeModel nodeModel = ((MapModel) CorePlugin.getInstance().getResourceService()
 					.getRawResourceData(resourceNode.getFullNodeId())).getRootNode();
 		
