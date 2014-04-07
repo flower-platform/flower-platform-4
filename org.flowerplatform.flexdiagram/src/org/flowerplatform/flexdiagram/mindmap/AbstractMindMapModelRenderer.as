@@ -1,6 +1,8 @@
 package org.flowerplatform.flexdiagram.mindmap
 {
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.geom.Rectangle;
 	
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
@@ -192,6 +194,10 @@ package org.flowerplatform.flexdiagram.mindmap
 		
 		protected function unassignData():void {
 			throw new Error("This method needs to be implemented.");
+		}
+		
+		public function getLabelDisplay():RichText {
+			return labelDisplay;
 		}
 		
 		public function newIconIndex():int {			
