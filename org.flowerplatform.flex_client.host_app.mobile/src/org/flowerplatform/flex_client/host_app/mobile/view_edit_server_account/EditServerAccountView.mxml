@@ -15,13 +15,12 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
-			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
-			
-			import spark.components.Alert;
 			
 			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccount;
 			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsView;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
@@ -41,15 +40,13 @@
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
 				if (serverAccountView == null) {
-					Alert.show("Please create a new server account", "", Alert.OK, null, null, null, Alert.OK);
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("mobile.create.server.account.message"))
+						.setWidth(300)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
+						.showMessageBox();
 					cancelAccountButton.enabled = false;
-				} else {
-					if (serverAccount != null) {
-						friendlyName.text = serverAccount.friendlyName;
-						host.text = serverAccount.host;
-						user.text = serverAccount.user;
-						password.text = serverAccount.user;
-					}
 				}
 			}
 			
@@ -83,6 +80,7 @@
 					var removeAccount:RemoveServerAccountAction = new RemoveServerAccountAction();
 					removeAccount.setIndexToDelete(getSharedObjectAccountIndex(serverAccount));
 					removeAccount.setEditAccountView(this);
+					removeAccount.icon = Resources.deleteIcon;
 					vector[0] = removeAccount;
 					return vector;
 				}
@@ -106,7 +104,13 @@
 					if (serverAccountView == null) {
 						saveAccount(true, FIRST_ACCOUNT);
 					} else if (serverAccount == null) {
-						Alert.show("Would you like to make this server account the default one?", "", Alert.YES | Alert.NO, null, defaultAccountDialogHandler, null, Alert.NO);
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+							.setText(Resources.getMessage("mobile.make.this.account.default.message"))
+							.setWidth(300)
+							.setHeight(200)
+							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {defaultAccountDialogHandler(true);})
+							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'), function():void {defaultAccountDialogHandler(false);})
+							.showMessageBox();
 					} else {// edit element
 						saveAccount(false, EDIT_ACCOUNT);
 					}
@@ -146,6 +150,7 @@
 				serverAccountToSave.host = host.text;
 				serverAccountToSave.user = user.text;
 				serverAccountToSave.password = password.text;
+				serverAccountToSave.isDefault = serverAccount == null ? null : serverAccount.isDefault;
 				return serverAccountToSave;
 			}
 			
@@ -156,9 +161,9 @@
 				}
 			}
 			
-			private function defaultAccountDialogHandler(event:CloseEvent):void {
+			private function defaultAccountDialogHandler(yesClicked:Boolean):void {
 				if (serverAccountView != null) {
-					if (event.detail == Alert.YES) {
+					if (yesClicked) {
 						serverAccountView.deselectDefaultAccount();
 						saveAccount(true, NEW_ACCOUNT)
 					} else {
@@ -174,7 +179,13 @@
 					return true;
 				}
 				else {
-					Alert.show("Host field is mandatory", "Field required", Alert.OK, null, null, null, Alert.OK);
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("mobile.host.field.is.mandatory.message"))
+						.setTitle(Resources.getMessage("mobile.field.required.title"))
+						.setWidth(300)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
+						.showMessageBox();
 					return false;
 				}
 				return true;
@@ -183,20 +194,20 @@
 		]]>
 	</fx:Script>
 	<s:Form width="100%">
-		<s:FormItem label="Friendly Name:" width="100%">
-			<s:TextInput id="friendlyName" width="100%"/>
+		<s:FormItem label="Friendly Name:" width="100%" >
+			<s:TextInput id="friendlyName" width="100%" text="{serverAccount.friendlyName}"/>
 		</s:FormItem>
 			
 		<s:FormItem label="Host:" width="100%" required="true">
-			<s:TextInput id="host" width="100%" />
+			<s:TextInput id="host" width="100%" text="{serverAccount.host}"/>
 		</s:FormItem>
 			
 		<s:FormItem label="User:" width="100%">
-			<s:TextInput id="user" width="100%"/>
+			<s:TextInput id="user" width="100%" text="{serverAccount.user}"/>
 		</s:FormItem>
 			
-		<s:FormItem label="Password:" width="100%">
-			<s:TextInput id="password" width="100%" displayAsPassword="true"/>
+		<s:FormItem label="Password:" width="100%" >
+			<s:TextInput id="password" width="100%" displayAsPassword="true" text="{serverAccount.password}"/>
 		</s:FormItem>
 			
 		<s:HGroup alignmentBaseline="ideographicCenter" horizontalAlign="center" width="100%">

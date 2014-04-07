@@ -20,6 +20,8 @@ package org.flowerplatform.flexutil {
 	import mx.collections.ArrayCollection;
 	import mx.utils.LoaderUtil;
 	
+	import spark.core.ContentCache;
+	
 	import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
 	import org.flowerplatform.flexutil.layout.ComposedViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
@@ -30,8 +32,6 @@ package org.flowerplatform.flexutil {
 	import org.flowerplatform.flexutil.popup.IProgressMonitorFactory;
 	import org.flowerplatform.flexutil.selection.SelectionManager;
 	import org.flowerplatform.flexutil.shortcut.KeyBindings;
-	
-	import spark.core.ContentCache;
 
 	public class FlexUtilGlobals {
 
@@ -63,6 +63,8 @@ package org.flowerplatform.flexutil {
 		 * @author Cristina Contantinescu
 		 */
 		public var progressMonitorHandlerFactory:IProgressMonitorFactory;
+		
+		public var clientCommunicationErrorViewContent:Class;
 		
 		public var isMobile:Boolean;
 		

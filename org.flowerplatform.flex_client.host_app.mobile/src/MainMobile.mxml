@@ -73,17 +73,19 @@
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			
-			import spark.components.Alert;
 			import spark.core.ContentCache;
 			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
+			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.CommunicationErrorView;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
 			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsView;
 			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsViewProvider;
 			import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.mobile.view_content_host.MobileViewHostPopupHandlerFactory;
 			import org.flowerplatform.flexutil.mobile.view_content_host.ProgressMonitorSpinnerHandlerFactory;
@@ -101,8 +103,8 @@
 			
 			public static function openAccountsButtonClickHandler():void {
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
-					.setViewIdInWorkbench("serverAccounts")
-					.setTitle("Server Accounts")
+					.setViewIdInWorkbench(ServerAccountsViewProvider.ID)
+					.setTitle(Resources.getMessage("mobile.server.accounts.title"))
 					.show();
 			}
 			/**
@@ -112,6 +114,7 @@
 				var descriptor:FlexPluginDescriptor = new FlexPluginDescriptor();
 				descriptor.url = url;
 				plugin.flexPluginDescriptor = descriptor;
+				
 				return plugin;
 			}
 			
@@ -154,8 +157,8 @@
 				
 				navigator.pushView(WorkbenchMobileSplitViewHost);
 				FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new ServerAccountsViewProvider());
-				
-				var serverAccounts:ArrayCollection = SharedObject.getLocal("flower-platform").data.serverAccounts;
+				FlexUtilGlobals.getInstance().clientCommunicationErrorViewContent = CommunicationErrorView;
+				var serverAccounts:ArrayCollection = ServerAccountsView.getSharedObject().data.serverAccounts;
 				
 				if (serverAccounts == null || serverAccounts.length == 0 ) { // if no account
 					openEditAccount();
@@ -174,10 +177,15 @@
 						var serverAccountsView:ServerAccountsView = new ServerAccountsView();
 						serverAccountsView.setResultHandler(this);
 						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-							.setTitle("Select default Server Account")
+							.setTitle(Resources.getMessage("mobile.select.server.account.title"))
 							.setViewContent(serverAccountsView)
 							.show();
-						Alert.show("Please select a default Server Account", "", Alert.OK);
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+							.setText(Resources.getMessage("mobile.select.default.account.message"))
+							.setWidth(300)
+							.setHeight(200)
+							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
+							.showMessageBox();
 					}
 				}
 				
@@ -191,7 +199,7 @@
 				var editAccountView:EditServerAccountView = new EditServerAccountView();
 				editAccountView.setResultHandler(this);
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-					.setTitle("Edit Server Account")
+					.setTitle(Resources.getMessage("mobile.edit.server.account.title"))
 					.setViewContent(editAccountView)
 					.show();
 			}
@@ -201,7 +209,12 @@
 			 */
 			public function handleDialogResult(result:Object):void {
 				if (result == null) {
-					Alert.show("No Default Server Account", "", Alert.OK);
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("mobile.no.default.account.message"))
+						.setWidth(300)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
+						.showMessageBox();
 				} else {
 					//TODO add user/password
 					FlexUtilGlobals.getInstance().rootUrl = result.host;
