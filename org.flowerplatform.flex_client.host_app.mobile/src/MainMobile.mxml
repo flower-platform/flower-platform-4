@@ -72,10 +72,11 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
-			
-			import spark.core.ContentCache;
+			import mx.messaging.messages.ErrorMessage;
+			import mx.rpc.events.FaultEvent;
 			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.CommunicationErrorView;
@@ -92,6 +93,10 @@
 			import org.flowerplatform.flexutil.plugin.AbstractFlexPlugin;
 			import org.flowerplatform.flexutil.plugin.FlexPluginDescriptor;
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
+			import org.flowerplatform.flexutil.spinner.LogoSpinner;
+			import org.flowerplatform.flexutil.spinner.ModalSpinner;
+			
+			import spark.core.ContentCache;
 			
 			// explicitely write the class name; a simple import won't actually compile this class
 			// used from properties
@@ -216,9 +221,28 @@
 						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
 						.showMessageBox();
 				} else {
+					ModalSpinner.addGlobalModalSpinner("Initializing ...", new LogoSpinner(FlexUtilAssets.logoFlower));
+					
 					//TODO add user/password
 					FlexUtilGlobals.getInstance().rootUrl = result.host;
+					
 					startPlugins();
+					
+					// check version
+					CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
+						function (result:Object):void {			
+							ModalSpinner.removeGlobalModalSpinner();
+						},
+						function (event:FaultEvent):void {					
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+							.setTitle(Resources.getMessage('version.error'))
+							.setText(Resources.getMessage('version.error.message', [CoreConstants.VERSION, ErrorMessage(event.message).rootCause.message]))
+							.setWidth(400)
+							.setHeight(300)
+							.showMessageBox();	
+							ModalSpinner.removeGlobalModalSpinner();
+						}
+					);					
 				}
 			}
 			

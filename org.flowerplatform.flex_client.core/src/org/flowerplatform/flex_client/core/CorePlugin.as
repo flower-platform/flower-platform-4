@@ -25,6 +25,10 @@ package org.flowerplatform.flex_client.core {
 	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
+	import mx.messaging.events.ChannelEvent;
+	import mx.messaging.events.ChannelFaultEvent;
+	import mx.messaging.messages.ErrorMessage;
+	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
@@ -108,13 +112,7 @@ package org.flowerplatform.flex_client.core {
 		public var debug:Boolean = isDebug();
 		
 		public var debug_forceUpdateAction:ForceUpdateAction;
-
-		/**
-		 * @author Sebastian Solomon
-		 */
-		// TODO to delete when mm classes from core will be moved in .mindmap project
-		public var iconSideBarClass:Class;
-				
+					
 		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
 				
 		public static function getInstance():CorePlugin {
@@ -146,7 +144,7 @@ package org.flowerplatform.flex_client.core {
 			
 			var channelSet:ChannelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
-			
+		
 			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);
 			serviceLocator.addService("coreService");
 			serviceLocator.addService("nodeService");

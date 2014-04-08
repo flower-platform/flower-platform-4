@@ -28,6 +28,7 @@
 			
 			protected var _viewHost:IViewHost;
 			
+			[Bindable]
 			protected var serverAccount:ServerAccount;
 			
 			protected var serverAccountView:ServerAccountsView;
@@ -39,13 +40,7 @@
 			private static const FIRST_ACCOUNT:int = 2;
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
-				if (serverAccountView == null) {
-					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-						.setText(Resources.getMessage("mobile.create.server.account.message"))
-						.setWidth(300)
-						.setHeight(200)
-						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
-						.showMessageBox();
+				if (serverAccountView == null) {					
 					cancelAccountButton.enabled = false;
 				}
 			}
@@ -99,22 +94,23 @@
 				return -1;
 			}
 			
+			/**
+			 * @author Cristina Constantinescu
+			 * @author Sebastian Solomon
+			 */ 
 			protected function saveAccountHandler(event:MouseEvent):void {
-				if (validHostValue()) {
-					if (serverAccountView == null) {
-						saveAccount(true, FIRST_ACCOUNT);
-					} else if (serverAccount == null) {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-							.setText(Resources.getMessage("mobile.make.this.account.default.message"))
-							.setWidth(300)
-							.setHeight(200)
-							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {defaultAccountDialogHandler(true);})
-							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'), function():void {defaultAccountDialogHandler(false);})
-							.showMessageBox();
-					} else {// edit element
-						saveAccount(false, EDIT_ACCOUNT);
-					}
+				if (host.text == "") {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("mobile.host.field.is.mandatory.message"))
+						.setTitle(Resources.getMessage("mobile.field.required.title"))
+						.setWidth(300)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
+						.showMessageBox();
+					return;
 				}
+				
+				verifyIfHostOk(host.text);				
 			}
 			
 			private function saveAccount(setDefault:Boolean, event:int):void {
@@ -187,25 +183,47 @@
 				}
 			}
 			
-			protected function validHostValue():Boolean {
-				if (host.text != "") {
-					return true;
-				}
-				else {
-					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-						.setText(Resources.getMessage("mobile.host.field.is.mandatory.message"))
-						.setTitle(Resources.getMessage("mobile.field.required.title"))
-						.setWidth(300)
-						.setHeight(200)
-						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
-						.showMessageBox();
-					return false;
-				}
-				return true;
+			/**
+			 * @author Cristina Constantinescu
+			 */ 
+			protected function verifyIfHostOk(host:String):void {
+				var urlLoader:URLLoader = new URLLoader(new URLRequest(host + "/mobile-host-check-helper.html"));
+				urlLoader.addEventListener(Event.COMPLETE, verifyIfHostOkHandler);
+				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, verifyIfHostOkHandler);
+				urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, verifyIfHostOkHandler);
 			}
 			
+			/**
+			 * @author Cristina Constantinescu
+			 * @author Sebastian Solomon
+			 */ 
+			protected function verifyIfHostOkHandler(event:Event):void {
+				if (event is IOErrorEvent || event is SecurityErrorEvent || (URLLoader(event.target).data != "flower-platform")) {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("mobile.host.invalid"))
+						.setWidth(300)
+						.setHeight(200)						
+						.showMessageBox();
+					return;
+				}
+				
+				if (serverAccountView == null) {
+					saveAccount(true, FIRST_ACCOUNT);
+				} else if (serverAccount == null) {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("mobile.make.this.account.default.message"))
+						.setWidth(300)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {defaultAccountDialogHandler(true);})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'), function():void {defaultAccountDialogHandler(false);})
+						.showMessageBox();
+				} else {// edit element
+					saveAccount(false, EDIT_ACCOUNT);
+				}			
+			}
 		]]>
 	</fx:Script>
+		
 	<s:Form width="100%">
 		<s:FormItem label="Friendly Name:" width="100%" >
 			<s:TextInput id="friendlyName" width="100%" text="{serverAccount.friendlyName}"/>

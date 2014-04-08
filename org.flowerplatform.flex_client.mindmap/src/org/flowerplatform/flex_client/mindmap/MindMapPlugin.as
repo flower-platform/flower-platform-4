@@ -90,8 +90,7 @@ package org.flowerplatform.flex_client.mindmap {
 					}					
 					
 				});
-			
-			CorePlugin.getInstance().iconSideBarClass = MindMapIconsBar;
+					
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);			
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);
