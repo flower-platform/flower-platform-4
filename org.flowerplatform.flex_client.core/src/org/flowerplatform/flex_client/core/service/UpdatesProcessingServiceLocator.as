@@ -75,9 +75,7 @@ package org.flowerplatform.flex_client.core.service {
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient = new Date().time;
 				
-				if (CorePlugin.getInstance().debug) {
-					CorePlugin.getInstance().debug_forceUpdateAction.updateLabel();
-				}
+				CorePlugin.getInstance().debug_forceUpdateAction.updateLabel();
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.UPDATES)) { // updates exists, process them
