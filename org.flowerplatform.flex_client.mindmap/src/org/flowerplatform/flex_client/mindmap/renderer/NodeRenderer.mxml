@@ -224,10 +224,7 @@
 			}
 			
 			protected function mouseClickHandler(event:MouseEvent):void {
-				if (circle.parent == null) {
-					DiagramRenderer(mindMapDiagramShell.diagramRenderer).addElement(circle);
-					invalidateDisplayList();
-				}
+				mouseOverHandler(event);
 			}
 			
 			protected function mouseOverHandler(event:MouseEvent):void {
