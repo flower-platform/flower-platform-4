@@ -15,6 +15,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
+			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccount;
@@ -24,6 +25,7 @@
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+			import org.flowerplatform.flexutil.popup.IMessageBox;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			protected var _viewHost:IViewHost;
@@ -104,12 +106,13 @@
 					if (serverAccountView == null) {
 						saveAccount(true, FIRST_ACCOUNT);
 					} else if (serverAccount == null) {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						var makeDefaultDialog:IMessageBox =	FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 							.setText(Resources.getMessage("mobile.make.this.account.default.message"))
 							.setWidth(300)
 							.setHeight(200)
-							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {defaultAccountDialogHandler(true);})
-							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'), function():void {defaultAccountDialogHandler(false);})
+							
+						makeDefaultDialog.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {defaultAccountDialogHandler(true, makeDefaultDialog);})
+							.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'), function():void {defaultAccountDialogHandler(false, makeDefaultDialog);})
 							.showMessageBox();
 					} else {// edit element
 						saveAccount(false, EDIT_ACCOUNT);
@@ -126,7 +129,9 @@
 				}
 				if (event == EDIT_ACCOUNT) {
 					var index:int = getSharedObjectAccountIndex(serverAccount);
-					accountArray[index] = serverAccountToSave;
+					if (index >= 0) {
+						accountArray[index] = serverAccountToSave;
+					}
 				} else { // event == NEW_ACCOUNT | FIRST_ACCOUNT
 					if (accountArray == null) {
 						accountArray = new ArrayCollection();
@@ -174,7 +179,7 @@
 				}
 			}
 			
-			private function defaultAccountDialogHandler(yesClicked:Boolean):void {
+			private function defaultAccountDialogHandler(yesClicked:Boolean, messageBox:IMessageBox):void {
 				if (serverAccountView != null) {
 					if (yesClicked) {
 						serverAccountView.deselectDefaultAccount();
@@ -182,6 +187,8 @@
 					} else {
 						saveAccount(false, NEW_ACCOUNT)
 					}
+					FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(IVisualElement(messageBox));
+					FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 				} else {
 					cancelAccountHandler();
 				}

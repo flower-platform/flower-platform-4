@@ -17,12 +17,13 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.action {
-	import avmplus.getQualifiedClassName;
-	
 	import flash.utils.getDefinitionByName;
 	
 	import mx.utils.ObjectUtil;
 	
+	import avmplus.getQualifiedClassName;
+	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.RichTextWithRendererView;
@@ -45,8 +46,19 @@ package org.flowerplatform.flex_client.core.editor.action {
 			orderIndex = 80;
 		}
 				
-		override public function get visible():Boolean {			
-			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node;
+		override public function get visible():Boolean {
+			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
+				var type:String = Node(selection.getItemAt(0)).type;
+				if (type == CoreConstants.ROOT_TYPE || 
+					type == CoreConstants.REPOSITORY_TYPE || 
+					type == CoreConstants.FILE_SYSTEM_NODE_TYPE ||
+					type == CoreConstants.CODE_TYPE) {
+					
+					return false;
+				}
+				return true;
+			}
+			return false;
 		}
 		
 		public function handleDialogResult(result:Object):void {
