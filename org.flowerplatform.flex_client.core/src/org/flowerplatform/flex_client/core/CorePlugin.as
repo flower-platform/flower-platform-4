@@ -49,6 +49,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodeIdsToNodeUpdateProcessors;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
+	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
@@ -73,9 +74,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
-	import org.flowerplatform.flexutil.spinner.ModalSpinner;
-	
-	import spark.components.Application;
 
 	/**
 	 * @author Cristian Spiescu
@@ -108,9 +106,7 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeProvider:ITypeProvider;
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
-		
-		public var debug:Boolean = isDebug();
-		
+			
 		public var debug_forceUpdateAction:ForceUpdateAction;
 					
 		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
@@ -236,23 +232,33 @@ package org.flowerplatform.flex_client.core {
 				})
 			);
 			
-			if (debug) {
-				debug_forceUpdateAction = new ForceUpdateAction();
-				globalMenuActionProvider.addAction(debug_forceUpdateAction);
-				globalMenuActionProvider.addAction(new ComposedAction().setLabel("Debug").setId(CoreConstants.DEBUG));				
-			}
+			debug_forceUpdateAction = new ForceUpdateAction();
+			globalMenuActionProvider.addAction(debug_forceUpdateAction);
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.debug")).setId(CoreConstants.DEBUG));	
+			
+			globalMenuActionProvider.addAction(new ActionBase()
+				.setLabel(Resources.getMessage("open.node.action.label"))
+				.setIcon(Resources.openResourceIcon)
+				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
+				.setFunctionDelegate(function ():void {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+					.setViewContent(new OpenNodeView())
+					.setWidth(400)
+					.setHeight(110)
+					.show();
+				})
+			);
+				
+			globalMenuActionProvider.addAction(new ActionBase()
+				.setLabel(Resources.getMessage("open.root.action.label"))
+				.setIcon(Resources.openIcon)
+				.setParentId(CoreConstants.DEBUG)
+				.setFunctionDelegate(function ():void {
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
+				})
+			);
 		}
-		
-		private function isDebug():Boolean {
-			if (ExternalInterface.available) {
-				var params:Object = parseQueryStringParameters(ExternalInterface.call("getURL"));
-				if (params[CoreConstants.DEBUG] == "true") {
-					return true;
-				}
-			}
-			return false;
-		}
-		
+				
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
