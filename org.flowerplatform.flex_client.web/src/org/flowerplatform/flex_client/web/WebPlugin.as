@@ -76,29 +76,8 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().perspectives.push(new FlowerPerspective());
 					
-			var hBox:HBox = new HBox();
-			hBox.percentWidth = 100;
-						
-			var btn:Button = new Button();
-			btn.label = "Open Editor";
-			var textInput:TextInput = new TextInput();
-			textInput.width = 400;
-			textInput.text = "(code|self|D:/temp/repo1/fp-repo-config/FAP-FlowerPlatform4.mm)";
-			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, textInput.text);
-			});
-			hBox.addChild(btn);
-			hBox.addChild(textInput);
-				
-			var addRootBtn:Button = new Button();
-			addRootBtn.label = "Open Root";
-			addRootBtn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
-			});
-			hBox.addChild(addRootBtn);
-			
-			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
-
+			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
+		
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
 			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
@@ -110,6 +89,7 @@ package org.flowerplatform.flex_client.web {
 					// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
 					CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 					ModalSpinner.removeGlobalModalSpinner();
+					
 				},
 				function (event:FaultEvent):void {					
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
