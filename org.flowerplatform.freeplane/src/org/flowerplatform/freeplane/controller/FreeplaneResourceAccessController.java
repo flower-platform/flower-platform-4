@@ -65,7 +65,7 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
 		
 		try {		
-			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File(URLDecoder.decode(rawNodeData.getURL().getPath())));
+			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File(URLDecoder.decode(rawNodeData.getURL().getPath(), "UTF-8")));
 		} catch (Exception e) {
 			return;
 		} finally {
