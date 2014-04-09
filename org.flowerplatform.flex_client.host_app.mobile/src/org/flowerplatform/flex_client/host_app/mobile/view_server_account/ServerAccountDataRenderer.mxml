@@ -2,7 +2,7 @@
 <!---
 @author Sebastian Solomon
 -->
-<s:DataRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				creationComplete="creationCompleteHandler(event)">
 	<s:layout>
@@ -27,7 +27,7 @@
 				} else {
 					text += data.host;
 				}
-				label.text = text;
+				labelAccount.text = text;
 				
 				if(data.isDefault) {
 					checkBox.selected = true;
@@ -74,6 +74,6 @@
 		]]>
 	</fx:Script>
 	<s:CheckBox id="checkBox" click="checkboxClickHandler(event)"/>
-	<s:Label id="label" click="labelClickHandler(event) "/>
+	<s:Label id="labelAccount" click="labelClickHandler(event) "/>
 	
-</s:DataRenderer>
+</s:ItemRenderer>

@@ -69,26 +69,28 @@
         size will not be thwarted by this skin part's minimum size.   This is a compromise,
         more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
     -->
-    <s:Group id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
-		<s:layout>
-			<s:VerticalLayout gap="3"/>
-		</s:layout>
-		
-		<s:HGroup id="removeGroup" width="100%" gap="2">
-		</s:HGroup>
-		
-		<s:Line width="100%" >
-			<s:stroke>
-				<s:SolidColorStroke color="gray" weight="1"/>
-			</s:stroke>
-		</s:Line>
-		
-		<s:Group id="imageGroup" width="100%" height="100%" >
+	<s:Scroller height="100%">
+	    <s:Group id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
 			<s:layout>
-				<s:TileLayout horizontalGap="2" verticalGap="2"/>
-			</s:layout>		
-		</s:Group>
-		
-    </s:Group>
+				<s:VerticalLayout gap="3"/>
+			</s:layout>
+			
+			<s:HGroup id="removeGroup" width="100%" gap="2">
+			</s:HGroup>
+			
+			<s:Line width="100%" >
+				<s:stroke>
+					<s:SolidColorStroke color="gray" weight="1"/>
+				</s:stroke>
+			</s:Line>
+			
+			<s:Group id="imageGroup" width="100%" height="100%" >
+				<s:layout>
+					<s:TileLayout horizontalGap="2" verticalGap="2"/>
+				</s:layout>		
+			</s:Group>
+			
+	    </s:Group>
+	</s:Scroller>
 
 </s:Skin>

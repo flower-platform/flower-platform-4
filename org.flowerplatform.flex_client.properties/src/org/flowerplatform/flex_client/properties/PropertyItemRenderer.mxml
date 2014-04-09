@@ -67,7 +67,6 @@
 				}
 				
 				itemRenderedInstance.data = propertyDescriptor;
-//				itemRenderedInstance.defaultValue = defaultValu
 			}
 
 		]]>

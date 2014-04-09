@@ -23,7 +23,7 @@ package org.flowerplatform.flex_client.codesync.action {
 		override public function get visible():Boolean {
 			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) { 
 			var categorysList:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(Node(selection.getItemAt(0)).type).categories;
-				for (var i:int=0; i< categorysList.length; i++) {
+				for (var i:int=0; i < categorysList.length; i++) {
 					if (categorysList.getItemAt(i) == CodeSyncConstants.CATEGORY_CODESYNC) {
 						return true;
 					}

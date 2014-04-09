@@ -47,7 +47,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		override public function set data(value:Object):void {
-			super.data = value;			
+			super.data = value;
 			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
 			changeCheckBox.includeInLayout = PropertyDescriptor(data).hasChangeCheckbox;
 			changeLabel.visible = PropertyDescriptor(data).hasChangeCheckbox;

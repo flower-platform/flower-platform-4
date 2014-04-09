@@ -12,7 +12,12 @@ package org.flowerplatform.flex_client.core {
 		// Node types
 		//////////////////////////////////
 		
+		public static const TYPE_KEY:String = "type";
+		public static const FILE_SYSTEM_NODE_TYPE:String = "fileSystem";
 		public static const FILE_NODE_TYPE:String = "fileNode";
+		public static const ROOT_TYPE:String = "root";
+		public static const REPOSITORY_TYPE:String = "repository";
+		public static const CODE_TYPE:String = "code";
 		
 		//////////////////////////////////
 		// Node properties

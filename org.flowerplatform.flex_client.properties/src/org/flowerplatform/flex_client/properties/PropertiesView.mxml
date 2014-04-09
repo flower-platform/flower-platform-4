@@ -12,6 +12,7 @@
 		<![CDATA[
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.utils.ObjectUtil;
 			
@@ -104,6 +105,7 @@
 				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(
 					CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
 				label.text = String(titleProvider.getValue(node));
+				label.maxWidth = UIComponent(_viewHost).width - 20;
 				
 				// store new selection and listen for node upates
 				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());

@@ -5,8 +5,8 @@
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_AIR_PUBLISHER_ID" value=""/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_AIR_SECURITY_POLICY_FILE" value="security-policies/default.xml"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_APPLICATION" value="src/MainMobile.mxml"/>
-<booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_CLEAR_APP_DATA" value="true"/>
-<stringAttribute key="com.adobe.flexbuilder.debug.ATTR_MOBILE_DEVICE_NAME" value="Samsung Galaxy Tab"/>
+<booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_CLEAR_APP_DATA" value="false"/>
+<stringAttribute key="com.adobe.flexbuilder.debug.ATTR_MOBILE_DEVICE_NAME" value="Samsung Galaxy Ace"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_MOBILE_LAUNCH_HANDLER" value="com.adobe.flexide.launching.multiplatform.launchhandlers.MultiPlatformADLLaunchHandler"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_MOBILE_PLATFORM" value="com.adobe.flexide.multiplatform.android.platform"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_PROJECT" value="org.flowerplatform.flex_client.host_app.mobile"/>
