@@ -110,7 +110,7 @@
 					return;
 				}
 				
-				verifyIfHostOk(host.text);				
+				verifyIfHostOk(editHost(host.text));				
 			}
 			
 			private function saveAccount(setDefault:Boolean, event:int):void {

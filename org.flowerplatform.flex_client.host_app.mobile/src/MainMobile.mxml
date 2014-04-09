@@ -25,7 +25,7 @@
 	applicationDPI="160" creationComplete="creationCompleteHandler()"
 	xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:flexutil_mobile="org.flowerplatform.flexutil.mobile.*"   
 	xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mobile="org.flowerplatform.flex_client.host_app.mobile.*"
-	implements="org.flowerplatform.flexutil.dialog.IDialogResultHandler">
+	implements="org.flowerplatform.flexutil.dialog.IDialogResultHandler" >
 	
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -132,10 +132,10 @@
 			
 			private function startPlugins():void {
 				setBackButtonEnabled(true);
-				for each (var plugin:AbstractFlexPlugin in plugins) {
+				for each (var plugin:AbstractFlexPlugin in plugins) {					
 					plugin.preStart();
 				}
-				for each (plugin in plugins) {
+				for each (plugin in plugins) {					
 					plugin.start();
 				}
 			}
@@ -230,10 +230,11 @@
 					
 					// check version
 					CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
-						function (result:Object):void {			
+						function (result:Object):void {							
+							CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 							ModalSpinner.removeGlobalModalSpinner();
 						},
-						function (event:FaultEvent):void {					
+						function (event:FaultEvent):void {							
 							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 							.setTitle(Resources.getMessage('version.error'))
 							.setText(Resources.getMessage('version.error.message', [CoreConstants.VERSION, ErrorMessage(event.message).rootCause.message]))
@@ -269,6 +270,6 @@
 	</fx:Script>
 	<fx:Declarations>
 		<mobile:MainNavigatorContent id="mainNavigatorContent" navigator="{navigator}"/>
-		<s:CrossFadeViewTransition id="crossFadeTransition"/>
+		<s:CrossFadeViewTransition id="crossFadeTransition"/>		
 	</fx:Declarations>
 </flexutil_mobile:FlowerViewNavigatorApplication>
