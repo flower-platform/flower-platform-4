@@ -45,21 +45,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public function set diagramShellContext(value:DiagramShellContext):void	{
 			this._context = value;
 		}		
-		
-		public function doRun():void {			
-		}
-		
-		/**
-		 * @author Cristina Constantinescu
-		 */ 
-		override public function run():void {
-			try {
-				doRun();
-			} finally {
-				// avoid memory leak by setting context to null after executing this action
-				_context = null;
-			}
-		}
-		
+					
 	}
 }

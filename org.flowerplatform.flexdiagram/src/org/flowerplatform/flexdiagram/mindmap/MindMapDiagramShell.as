@@ -27,6 +27,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
@@ -105,6 +106,14 @@ package org.flowerplatform.flexdiagram.mindmap {
 				return MindMapRootModelWrapper(rootModel).children.getItemAt(0);
 			}
 			return null;
+		}
+		
+		public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
+			return 0;
+		}
+		
+		public function getRootNodeY(context:DiagramShellContext, rootNode:Object):Number {
+			return 0;
 		}
 		
 		public function refreshRootModelChildren(context:DiagramShellContext):void {			
@@ -206,6 +215,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 			
 			var side:int = getModelController(context, model).getSide(context, model);
 			var isRoot:Boolean = getModelController(context, model).isRoot(context, model);			
+			
+			if (model == getRoot(context)) {
+				setPropertyValue(context, model, "x", getRootNodeX(context, model));	
+				setPropertyValue(context, model, "y", getRootNodeY(context, model));	
+			}
 			
 			calculateRootExpandedWidthAndHeight(context, side);
 			
