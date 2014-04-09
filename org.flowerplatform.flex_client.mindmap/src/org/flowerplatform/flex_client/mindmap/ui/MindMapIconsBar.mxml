@@ -32,9 +32,10 @@ license-end
 		<![CDATA[
 			import mx.collections.ArrayList;
 			
-			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.CoreConstants;
+			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 			import org.flowerplatform.flexdiagram.DiagramShell;
 			import org.flowerplatform.flexutil.Utils;
 			
@@ -47,7 +48,10 @@ license-end
 				for (var i:int=0; i < nodeList.length; i++) {
 					var node:Node = Node(nodeList.getItemAt(i));
 					currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
-					saveIconProperty(node, currentValue);
+					if (node.type == MindMapConstants.MINDMAP_NODE_TYPE) {
+						saveIconProperty(node, currentValue);
+					}
+					
 				}
 			}
 			
