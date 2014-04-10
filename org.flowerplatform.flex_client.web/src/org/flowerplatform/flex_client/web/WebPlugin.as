@@ -22,7 +22,6 @@ package org.flowerplatform.flex_client.web {
 	import flash.external.ExternalInterface;
 	
 	import mx.containers.HBox;
-	import mx.core.Container;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	import mx.rpc.events.FaultEvent;
@@ -34,13 +33,13 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
+	import org.flowerplatform.flexutil.iframe.EmbedView;
+	import org.flowerplatform.flexutil.iframe.EmbedViewProvider;
+	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
-	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
-	import spark.components.Application;
 	import spark.components.Button;
 	import spark.components.TextInput;
 	
@@ -120,6 +119,14 @@ package org.flowerplatform.flex_client.web {
 					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
+			
+			// test for embedded IFrame
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new EmbedViewProvider());
+			var viewLayoutData:ViewLayoutData = new ViewLayoutData();
+			viewLayoutData.viewId = EmbedViewProvider.ID;
+			viewLayoutData.customData = "test.html";
+			viewLayoutData.isEditor = true;
+			FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);
 		}
 		
 		override protected function registerMessageBundle():void {

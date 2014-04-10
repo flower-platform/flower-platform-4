@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/test.js"></script>
+
+<!-- Should be included only for embed/web -->
+<script type="text/javascript" src="js/embed.js"></script> 
+</head>
+
+<body>
+
+<hr width="100%"/>
+
+<button onclick="getBtnHandler()">GET</button>
+<button onclick="postBtnHandler()">POST</button>
+
+<label id="result"></label>
+
+<p>
+
+<button onclick="overrideMeHandler()">Override from Flex</button>
+<label id="override"></label>
+
+<script type="text/javascript">
+
+var isMobile = getURLParam('isMobile');
+if (isMobile == "true") {
+	document.write("<script src='js/StageWebViewBridge.js'><\/script><script src='js/embed-mobile.js'><\/script>");
+}
+
+function getURLParam(name) {
+	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  	var regexS = "[\\?&]"+name+"=([^&#]*)";
+  	var regex = new RegExp(regexS);
+ 	var results = regex.exec(window.location.href);
+ 	if (results == null) {
+   	 	return "";
+  	} else {
+    	return results[1];
+  	}
+}	
+
+function getBtnHandler() {
+	get("servlet/rest/testService/listTyped", null, function(data, textStatus, jqXHR) { 
+		$("#result").text(JSON.stringify(data));
+	});
+}
+
+function postBtnHandler() {
+	post("servlet/rest/testService/set", JSON.stringify({ name: 'Client' }), function(data, textStatus, jqXHR) {
+		$("#result").text(JSON.stringify(data));
+	});
+}
+
+</script>
+
+</body>
+</html>
