@@ -97,6 +97,10 @@
 			}
 			
 			override protected function resizeHandler(event:ResizeEvent):void {
+				if (height == 0 || width == 0) {
+					// don't change values if first resize, wait until component fully initialized
+					return;
+				}
 				var refresh:Boolean = false;
 				if (mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "width") != width) {
 					mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "width", width);
