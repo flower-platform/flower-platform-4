@@ -219,7 +219,7 @@ public class NodeService {
 		}
 	}
 	
-	public void addChild(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
+	public void addChild(Node node, Node child, ServiceContext context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -231,7 +231,7 @@ public class NodeService {
 				
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
-			controller.addNode(node, child, insertBeforeNode, context);
+			controller.addNode(node, child, context);
 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}

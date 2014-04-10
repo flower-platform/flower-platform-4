@@ -37,7 +37,7 @@ public class CodeSyncAddNodeController extends AddNodeController {
 	}
 	
 	@Override
-	public void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
+	public void addNode(Node node, Node child, ServiceContext context) {		
 		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.ADDED, true, context);
 	}
 

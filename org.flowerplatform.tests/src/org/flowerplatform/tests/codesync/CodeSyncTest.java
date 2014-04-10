@@ -253,7 +253,7 @@ public class CodeSyncTest {
 		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext());
 		Node superInterface = new Node(CodeSyncCodeJavaConstants.SUPER_INTERFACE, root.getResource(), null, null);
-		nodeService.addChild(cls, superInterface, null, new ServiceContext());
+		nodeService.addChild(cls, superInterface, new ServiceContext());
 		nodeService.setProperty(superInterface, CoreConstants.NAME, "IFromModel", new ServiceContext());
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
 //		Node val = new Node();
@@ -264,7 +264,7 @@ public class CodeSyncTest {
 
 		// add class
 		Node internalCls = new Node(CodeSyncCodeJavaConstants.CLASS, root.getResource(), null, null);
-		nodeService.addChild(cls, internalCls, null, new ServiceContext());
+		nodeService.addChild(cls, internalCls, new ServiceContext());
 		nodeService.setProperty(internalCls, CoreConstants.NAME, "InternalClassFromModel", new ServiceContext());
 
 		// change typed element type
@@ -274,7 +274,7 @@ public class CodeSyncTest {
 		// change modifiers + annotations
 		Node test = getChild(cls, new String[] {"test(String)"});
 		Node privateModif = new Node(CodeSyncCodeJavaConstants.MODIFIER, root.getResource(), null, null);
-		nodeService.addChild(test, privateModif, null, new ServiceContext());
+		nodeService.addChild(test, privateModif, new ServiceContext());
 		nodeService.setProperty(privateModif, CoreConstants.NAME, "private", new ServiceContext());
 		Node publicModif = getChild(test, new String[] {"public"});
 		nodeService.setProperty(publicModif, REMOVED, true, new ServiceContext());
@@ -282,14 +282,14 @@ public class CodeSyncTest {
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext());
 		Node orphanRemoval = new Node(CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR, root.getResource(), null, null);
-		nodeService.addChild(a, orphanRemoval, null, new ServiceContext());
+		nodeService.addChild(a, orphanRemoval, new ServiceContext());
 		nodeService.setProperty(orphanRemoval, CoreConstants.NAME, "orphanRemoval", new ServiceContext());
 		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true", new ServiceContext());
 		
 		// change parameters
 		Node getTest = getChild(cls, new String[] {"getTest()"});
 		Node param = new Node(CodeSyncCodeJavaConstants.PARAMETER, root.getResource(), null, null);
-		nodeService.addChild(getTest, param, null, new ServiceContext());
+		nodeService.addChild(getTest, param, new ServiceContext());
 		nodeService.setProperty(param, CoreConstants.NAME, "a", new ServiceContext());
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int", new ServiceContext());
 		Node staticModif = getChild(getTest, new String[] {"static"});
@@ -319,12 +319,12 @@ public class CodeSyncTest {
 
 		// add element
 		Node t = new Node(CodeSyncCodeJavaConstants.ATTRIBUTE, root.getResource(), null, null);
-		nodeService.addChild(cls, t, null, new ServiceContext());
+		nodeService.addChild(cls, t, new ServiceContext());
 		nodeService.setProperty(t, CoreConstants.NAME, "t", new ServiceContext());
 		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int", new ServiceContext());
 //		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
 		publicModif = new Node(CodeSyncCodeJavaConstants.MODIFIER, root.getResource(), null, null);
-		nodeService.addChild(t, publicModif, null, new ServiceContext());
+		nodeService.addChild(t, publicModif, new ServiceContext());
 		nodeService.setProperty(publicModif, CoreConstants.NAME, "public", new ServiceContext());
 		
 		// remove element
