@@ -76,8 +76,6 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().perspectives.push(new FlowerPerspective());
 					
-			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
-		
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
 			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
@@ -101,6 +99,7 @@ package org.flowerplatform.flex_client.web {
 					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
+			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 		}
 		
 		override protected function registerMessageBundle():void {

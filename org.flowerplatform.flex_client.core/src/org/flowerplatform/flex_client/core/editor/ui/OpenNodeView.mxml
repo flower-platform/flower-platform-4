@@ -36,6 +36,7 @@ license-end
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
@@ -58,11 +59,7 @@ license-end
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
-				link.text = "(code|self|FAP-FlowerPlatform4.mm)";
-			}
-			
-			private function getOpenResourcesURLPrefix():String {
-				return CorePlugin.getInstance().getAppUrl() + "?" + CoreConstants.OPEN_RESOURCES + "=";
+				focusManager.setFocus(link);
 			}
 			
 			protected function okButtonHandler(event:MouseEvent):void {
@@ -82,12 +79,12 @@ license-end
 	</s:layout>
 		
 	<s:HGroup width="100%" verticalAlign="middle">
-		<s:Label text="node:"/>
-		<s:TextInput id="link" width="95%"/>
+		<s:Label text="{Resources.getMessage('open.node.view.label.text')}"/>
+		<s:TextInput id="link" width="100%"/>
 	</s:HGroup>
 	<s:HGroup width="100%" horizontalAlign="center">
-		<s:Button label="Ok" click="okButtonHandler(event)"/>
-		<s:Button label="Cancel" click="cancel()"/>
+		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okButtonHandler(event)"/>
+		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancel()"/>
 	</s:HGroup>
 	
 </s:Group>
