@@ -25,7 +25,7 @@ public class MindMapFileAddNodeController extends AddNodeController {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context) {
+	public void addNode(Node node, Node child, ServiceContext context) {
 		String filename = (String) child.getOrPopulateProperties().get(CoreConstants.NAME);
 		if (!filename.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
 			return;

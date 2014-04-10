@@ -62,7 +62,7 @@
 					itemRenderedInstance = factory.newInstance(false);
 					itemRenderedInstance.percentWidth = 100;
 					itemRenderedInstance.percentHeight = 100;
-					itemRenderedInstance.disableSaveProperty = disableSaveProperty;
+					itemRenderedInstance.savePropertyEnabled = disableSaveProperty;
 					this.addElement(itemRenderedInstance);
 				}
 				

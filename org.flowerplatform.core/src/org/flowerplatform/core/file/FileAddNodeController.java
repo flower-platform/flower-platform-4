@@ -18,7 +18,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class FileAddNodeController extends AddNodeController {
 
 	@Override
-	public void addNode(Node parentNode, Node child, Node insertBeforeNode, ServiceContext context) {
+	public void addNode(Node parentNode, Node child, ServiceContext context) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance()
 				.getFileAccessController();
 		Object parentFile;
@@ -40,7 +40,7 @@ public class FileAddNodeController extends AddNodeController {
 			} else {
 				fileParentNode = new Node(FILE_NODE_TYPE, parentNode.getResource(), fileAccessController.getPath(parentFile), null);
 			}
-			CorePlugin.getInstance().getNodeService().addChild(fileParentNode, child, insertBeforeNode, context);
+			CorePlugin.getInstance().getNodeService().addChild(fileParentNode, child, context);
 			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
 			return;
 		}

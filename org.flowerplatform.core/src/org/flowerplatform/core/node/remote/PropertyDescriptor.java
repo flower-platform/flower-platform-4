@@ -37,8 +37,8 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	private String title;
 	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
 	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
-	private boolean contributeToCreation = false;
-	private boolean isMandatory = false;
+	private boolean contributesToCreation = false;
+	private boolean mandatory = false;
 	
 	private boolean readOnly;
 	private List<?> possibleValues;
@@ -154,29 +154,29 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
-	public boolean isContributeToCreation() {
-		return contributeToCreation;
+	public boolean getContributesToCreation() {
+		return contributesToCreation;
 	}
 
-	public void setContributeToCreation(boolean contributeToCreation) {
-		this.contributeToCreation = contributeToCreation;
+	public void setContributesToCreation(boolean contributeToCreation) {
+		this.contributesToCreation = contributeToCreation;
 	}
 	
-	public PropertyDescriptor setContributeToCreationAs(boolean contributeToCreation) {
-		this.contributeToCreation = contributeToCreation;
+	public PropertyDescriptor setContributesToCreationAs(boolean contributeToCreation) {
+		this.contributesToCreation = contributeToCreation;
 		return this;
 	}
 
-	public boolean getIsMandatory() {
-		return isMandatory;
+	public boolean getMandatory() {
+		return mandatory;
 	}
 
-	public void setIsMandatory(boolean isMandatory) {
-		this.isMandatory = isMandatory;
+	public void setMandatory(boolean mandatory) {
+		this.mandatory = mandatory;
 	}
 	
-	public PropertyDescriptor setIsMandatoryAs(boolean isMandatory) {
-		this.isMandatory = isMandatory;
+	public PropertyDescriptor setMandatoryAs(boolean mandatory) {
+		this.mandatory = mandatory;
 		return this;
 	}
 	
@@ -187,7 +187,7 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 				"\ncontributeToCreation = %b, isMandatory = %b, orderIndex = %d]", 
 				getName(), getTitle(), getCategory(),
 				getType(), getReadOnly(), getPossibleValues(),
-				isContributeToCreation(), getIsMandatory(), getOrderIndex());
+				getContributesToCreation(), getMandatory(), getOrderIndex());
 	}
 	
 }

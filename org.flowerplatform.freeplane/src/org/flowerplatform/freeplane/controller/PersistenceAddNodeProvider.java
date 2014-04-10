@@ -14,8 +14,8 @@ import org.freeplane.features.map.NodeModel;
 public class PersistenceAddNodeProvider extends MindMapAddNodeController {
 
 	@Override
-	public void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
-		super.addNode(node, child, insertBeforeNode, context);
+	public void addNode(Node node, Node child, ServiceContext context) {		
+		super.addNode(node, child, context);
 		
 		NodeModel rawNodeData = ((NodeModel) child.getOrRetrieveRawNodeData());
 		// create attributes table and persist the type

@@ -14,6 +14,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flex_client.resources.Resources;
 
 	/**
 	 * @author Razvan Tache
@@ -28,7 +29,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		public var changeLabel:Label = new Label();
 		
-		public var disableSaveProperty:Boolean = false;
+		public var savePropertyEnabled:Boolean = false;
 		
 		public var defaultValue:Object;
 		
@@ -42,7 +43,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			
 			addElement(changeCheckBox);
 			addElement(changeLabel)
-			changeLabel.text = "Change";
+			changeLabel.text = Resources.getMessage("change");
 			changeLabel.setStyle("paddingTop", 4);
 		}
 		
@@ -79,7 +80,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		protected function saveProperty():void {			
-			if (!disableSaveProperty) {
+			if (!savePropertyEnabled) {
 				if (!data.readOnly) {
 					if (!validPropertyValue()) {					
 						return;
