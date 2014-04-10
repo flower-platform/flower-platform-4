@@ -11,10 +11,15 @@ import org.flowerplatform.core.node.remote.Node;
  * @author Sebastian Solomon
  */
 public class CodeSyncRemoveNodeController extends RemoveNodeController {
+	
+	public CodeSyncRemoveNodeController() {
+		// must be executed before others.
+		setOrderIndex(-100000);
+	}
 
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext context) {
-		CorePlugin.getInstance().getNodeService().setProperty(node, CodeSyncConstants.REMOVED, true, new ServiceContext());
+		CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.REMOVED, true, new ServiceContext());
 		context.put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 
