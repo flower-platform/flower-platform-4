@@ -5,6 +5,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.Utils;
 	
@@ -135,7 +136,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			
 			if (refreshNodePositions) {
-				diagramShell.refreshModelPositions(diagramShellContext, data);
+				var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, data).getParent(diagramShellContext, data);
+				mindMapDiagramShell.refreshModelPositions(diagramShellContext, parent != null ? parent : data);
 			}
 			
 			if (minWidthChanged || maxWidthChanged) {

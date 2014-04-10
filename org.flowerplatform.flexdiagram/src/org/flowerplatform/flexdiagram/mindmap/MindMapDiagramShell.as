@@ -163,6 +163,20 @@ package org.flowerplatform.flexdiagram.mindmap {
 					return 10;	// minWidth
 				case "height":
 				case "oldHeight":
+					if (FlexUtilGlobals.getInstance().isMobile) {
+						switch (FlexGlobals.topLevelApplication.applicationDPI) {
+							case DPIClassification.DPI_320:	{
+								return 88;								
+							}
+							case DPIClassification.DPI_240:	{
+								return 66;								
+							}
+							default: {
+								// default PPI160
+								return 44;								
+							}
+						}
+					}
 					return 22;	// minHeight							
 				case "expandedHeight":
 					return getPropertyValue(context, model, "height");
