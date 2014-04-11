@@ -1,7 +1,5 @@
 package org.flowerplatform.core.node.remote;
 
-import static org.flowerplatform.core.CoreConstants.INSERT_BEFORE_FULL_NODE_ID;
-import static org.flowerplatform.core.CoreConstants.INSERT_BEFORE_NODE;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 
@@ -45,11 +43,7 @@ public class NodeServiceRemote {
 		ServiceContext context = new ServiceContext();
 
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			if (entry.getKey().equals(INSERT_BEFORE_FULL_NODE_ID)) {
-				context.add(INSERT_BEFORE_NODE, new Node((String)entry.getValue()));
-			} else {
-				context.add(entry.getKey(), entry.getValue());
-			}
+			context.add(entry.getKey(), entry.getValue());
 		}
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
 		return child.getFullNodeId();

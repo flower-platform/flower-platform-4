@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		public var changeCheckBox:CheckBox = new CheckBox();
 		
-		public var savePropertyEnabled:Boolean = false;
+		public var savePropertyEnabled:Boolean = true;
 		
 		public var defaultValue:Object;
 		
@@ -71,7 +71,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		protected function saveProperty():void {			
-			if (!savePropertyEnabled) {
+			if (savePropertyEnabled) {
 				if (!data.readOnly) {
 					if (!validPropertyValue()) {					
 						return;
