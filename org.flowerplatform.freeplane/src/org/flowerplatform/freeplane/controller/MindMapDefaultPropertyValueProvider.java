@@ -1,5 +1,6 @@
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
@@ -17,6 +18,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
 import java.awt.Color;
 import java.util.Enumeration;
 
+import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.DefaultPropertyValueProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.core.util.ColorUtils;
@@ -35,10 +37,14 @@ import org.freeplane.features.styles.MapStyleModel;
 public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValueProvider {
 	public final static String DEFAULT_STYLE = "Default";
 	
-	NodeModel nodeModel = null;
+	public MindMapDefaultPropertyValueProvider() {
+		setOrderIndex(-10000);
+	}
+	
 	@Override
-	public Object getDefaultValue(Node node, String property) {
-		nodeModel =  (NodeModel)node.getOrRetrieveRawNodeData();
+	public Object getDefaultValue(Node node, String property, ServiceContext serviceContext) {
+		serviceContext.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
+		NodeModel nodeModel =  (NodeModel)node.getOrRetrieveRawNodeData();
 		String styleName = (String)node.getProperties().get("styleName");
 		
 		NodeModel styleNodeModel = getStyleNodeModel(nodeModel, styleName);
@@ -51,15 +57,15 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 		case FONT_FAMILY:
 		case FONT_ITALIC:
 		case FONT_SIZE:
-			stylePropertyValue = getNodeFontDefaultProperty(property, styleNodeModel);
+			stylePropertyValue = getNodeFontDefaultProperty(property, styleNodeModel, nodeModel);
 			break;
 		case MAX_WIDTH:
 		case MIN_WIDTH:
-			stylePropertyValue = getNodeSizeDefaultProperty(property, styleNodeModel);
+			stylePropertyValue = getNodeSizeDefaultProperty(property, styleNodeModel, nodeModel);
 			break;
 		case CLOUD_COLOR:
 		case CLOUD_SHAPE:
-			stylePropertyValue = getNodeCloudDefaultProperty(property, styleNodeModel);
+			stylePropertyValue = getNodeCloudDefaultProperty(property, styleNodeModel, nodeModel);
 			break;
 		default:
 			stylePropertyValue = null;
@@ -87,7 +93,7 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 		return null;
 	}
 	
-	private Object getNodeSizeDefaultProperty(String property, NodeModel styleNodeModel) {
+	private Object getNodeSizeDefaultProperty(String property, NodeModel styleNodeModel, NodeModel nodeModel) {
 		Object defaultPropertyValue = null;
 		if (styleNodeModel == null) {
 			styleNodeModel = getStyleNodeModel(nodeModel, DEFAULT_STYLE);
@@ -101,12 +107,12 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 		
 		if ((defaultPropertyValue == null || (int)defaultPropertyValue == NodeSizeModel.NOT_SET) && !styleNodeModel.getText().equals(DEFAULT_STYLE)) {
 			NodeModel defaultStyleNodeModel = getStyleNodeModel(nodeModel, DEFAULT_STYLE);
-			defaultPropertyValue = getNodeSizeDefaultProperty(property, defaultStyleNodeModel);
+			defaultPropertyValue = getNodeSizeDefaultProperty(property, defaultStyleNodeModel, nodeModel);
 		}
 		return defaultPropertyValue;
 	}
 	
-	private Object getNodeCloudDefaultProperty(String property, NodeModel styleNodeModel) {
+	private Object getNodeCloudDefaultProperty(String property, NodeModel styleNodeModel, NodeModel nodeModel) {
 		Object defaultPropertyValue = null;
 		CloudModel cloudModel = null;
 		if (styleNodeModel == null || ((cloudModel = CloudController.getController().getCloud(styleNodeModel)) == null )) {
@@ -138,7 +144,7 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 		return defaultPropertyValue;
 	}
 	
-	private Object getNodeFontDefaultProperty(String property, NodeModel styleNodeModel) {
+	private Object getNodeFontDefaultProperty(String property, NodeModel styleNodeModel, NodeModel nodeModel) {
 		Object defaultPropertyValue = null;
 		
 		if (styleNodeModel == null) {
