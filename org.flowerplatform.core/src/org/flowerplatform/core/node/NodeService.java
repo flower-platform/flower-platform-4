@@ -125,24 +125,28 @@ public class NodeService {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public Object getDefaultPropertyValue(Node node, String property) {
+	public Object getDefaultPropertyValue(Node node, String property, ServiceContext context) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
 		List<DefaultPropertyValueProvider> defaultPropertyProviders = descriptor.getAdditiveControllers(DEFAULT_PROPERTY_PROVIDER, node);
+		Object propertyValue = null;
 		for (DefaultPropertyValueProvider provider : defaultPropertyProviders) {
-			Object propertyValue = provider.getDefaultValue(node, property);
- 			if (propertyValue != null) {
-				return propertyValue;
+			propertyValue = provider.getDefaultValue(node, property, context);
+ 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+ 				break;
 			}
 		}
-		return null;
+		return propertyValue;
 	}
 	
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public List<AbstractController> getPropertyDescriptors(Node node, String property) {
+	public List<AbstractController> getPropertyDescriptors(Node node) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
+		return descriptor == null ? null : descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
 	}
 		
 	/**

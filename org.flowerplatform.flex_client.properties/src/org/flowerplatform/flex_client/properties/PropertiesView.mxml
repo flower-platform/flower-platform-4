@@ -15,6 +15,7 @@
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -65,6 +66,13 @@
 						
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				var node:Node;
+				
+				var previousSelectionList:IList = PropertiesPlugin.getInstance().currentSelection;
+				if (previousSelectionList != null) {
+					for ( var i:int = 0; i < previousSelectionList.length; i++) {
+						Node(previousSelectionList.getItemAt(i)).removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+					}
+				}
 													
 				propertyForm.removeAllElements();
 				label.text = "";
@@ -84,7 +92,7 @@
 						.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
 
 				var currentCategory:String = "";
-				for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {
+				for (i = 0; i < propertyDescriptors.length; i++ ) {
 					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
 					var formItem:PropertyItemRenderer = new PropertyItemRenderer();
 					var itemCategory:String = propertyDescriptor.category;
@@ -105,11 +113,10 @@
 				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(
 					CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
 				label.text = String(titleProvider.getValue(node));
-				label.maxWidth = UIComponent(_viewHost).width - 20;
+				label.maxWidth = UIComponent(this).width;
 				
 				// store new selection and listen for node upates
 				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
-				node.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 				node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 			}
 			
@@ -121,7 +128,7 @@
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
 						if (node.properties != null) {
 							if (NodeControllerUtils.hasPropertyChanged(node, propertyItemRenderer.propertyDescriptor.name, event)) {
-								if (node.properties.hasOwnProperty(propertyItemRenderer.propertyDescriptor.name + ".default")) {
+								if (node.properties.hasOwnProperty(StringUtil.substitute("{0}.default", propertyItemRenderer.propertyDescriptor.name))) {
 									propertyItemRenderer.itemRenderedInstance.defaultValue = node.properties[propertyItemRenderer.propertyDescriptor.name + ".default"];
 								}								
 								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];

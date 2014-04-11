@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
@@ -29,6 +31,7 @@ import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
+import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
@@ -228,6 +231,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 				
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL)
 		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
+		.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider())
 		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
 		.addAdditiveController(CoreConstants.PROPERTY_SETTER, new UpdatePropertySetterController())
 		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))

@@ -37,6 +37,8 @@ package org.flowerplatform.flex_client.properties.remote {
 		
 		public var value:Object;
 		
+		public var defaultValue:Object;
+		
 		public var readOnly:Boolean;
 		
 		public var type:String;

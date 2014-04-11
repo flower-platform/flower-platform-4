@@ -7,7 +7,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	
 	import spark.components.CheckBox;
 	import spark.components.DataRenderer;
-	import spark.components.Label;
 	import spark.layouts.HorizontalLayout;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -27,8 +26,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		public var changeCheckBox:CheckBox = new CheckBox();
 		
-		public var changeLabel:Label = new Label();
-		
 		public var savePropertyEnabled:Boolean = false;
 		
 		public var defaultValue:Object;
@@ -36,34 +33,28 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		public function BasicPropertyRenderer() {
 			super();
 			layout = new HorizontalLayout;
+			HorizontalLayout(layout).verticalAlign = "middle";
 		}
 		
 		override protected function createChildren():void {
 			super.createChildren();
 			
 			addElement(changeCheckBox);
-			addElement(changeLabel)
-			changeLabel.text = Resources.getMessage("change");
-			changeLabel.setStyle("paddingTop", 4);
+			changeCheckBox.label = Resources.getMessage("change");
+
+			changeCheckBox.addEventListener(Event.CHANGE, changeCheckboxClickHandler);
+			BindingUtils.bindProperty(changeCheckBox, "enabled", changeCheckBox, "selected" );
 		}
 		
 		override public function set data(value:Object):void {
 			super.data = value;
 			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
 			changeCheckBox.includeInLayout = PropertyDescriptor(data).hasChangeCheckbox;
-			changeLabel.visible = PropertyDescriptor(data).hasChangeCheckbox;
-			changeLabel.includeInLayout = PropertyDescriptor(data).hasChangeCheckbox;
 			
-			if(PropertyDescriptor(data).hasChangeCheckbox) {
-				changeCheckBox.addEventListener(Event.CHANGE, changeCheckboxClickHandler);	
-			}
-				
 			if (!data.readOnly) {
-				BindingUtils.bindProperty(changeCheckBox, "enabled", changeCheckBox, "selected" );
 				BindingUtils.bindSetter(updateCheckBox, data, "value")
 			}
 		}
-		
 		
 		private function changeCheckboxClickHandler(event:Event):void {
 			CorePlugin.getInstance().serviceLocator.invoke(

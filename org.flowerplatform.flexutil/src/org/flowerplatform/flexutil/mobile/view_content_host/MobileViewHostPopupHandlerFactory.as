@@ -35,8 +35,9 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 		
 		public function removePopup(viewContent:IVisualElement):void {
 			var viewNavigator:ViewNavigator = ViewNavigator(FlexGlobals.topLevelApplication.navigator);
-			var view:View = View(viewNavigator.activeView);		
-			if (view is MobileViewHost && view.numElements > 0 && Scroller(view.getElementAt(0)).viewport == viewContent) {
+			var view:View = View(viewNavigator.activeView);	
+			// for MindMapIconsBar, because of the skin, (viewport != viewContent)
+			if (view is MobileViewHost && view.numElements > 0 && (Scroller(view.getElementAt(0)).viewport == viewContent || Scroller(view.getElementAt(0)).viewport == viewContent.parent)) {
 				viewNavigator.popView();
 			}
 		}

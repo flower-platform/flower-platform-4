@@ -45,6 +45,8 @@ public class CoreConstants {
 	public static final int POSITION_LEFT = -1;
 	public static final int POSITION_RIGHT = 1;
 	
+	public static final String PROPERTY_DEFAULT_FORMAT = "%s.default";
+	
 	//////////////////////////////////
 	// File node properties
 	//////////////////////////////////
