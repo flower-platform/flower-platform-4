@@ -39,7 +39,6 @@ public class CoreConstants {
 	public static final String IS_OPENABLE_IN_NEW_EDITOR = "isOpenableInNewEditor";
 	
 	public static final String INSERT_BEFORE_FULL_NODE_ID = "insertBeforeFullNodeId"; 
-	public static final String INSERT_BEFORE_NODE = "insertBeforeNode";
 	
 	public static final String SIDE = "side";
 	public static final int POSITION_LEFT = -1;

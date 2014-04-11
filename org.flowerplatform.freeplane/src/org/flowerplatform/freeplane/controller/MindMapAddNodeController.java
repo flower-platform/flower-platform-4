@@ -15,7 +15,7 @@ public class MindMapAddNodeController extends AddNodeController {
 	public void addNode(Node node, Node child, ServiceContext context) {
 		NodeModel parentRawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		NodeModel currentModelAtInsertionPoint = null;
-		Node insertBeforeNode = (Node)context.get(CoreConstants.INSERT_BEFORE_NODE);
+		Node insertBeforeNode = new Node((String)context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID));
 		if (insertBeforeNode != null) {
 			currentModelAtInsertionPoint = ((NodeModel) insertBeforeNode.getOrRetrieveRawNodeData());
 		}

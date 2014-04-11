@@ -1,8 +1,8 @@
 package org.flowerplatform.core.node.update.controller;
 
-import static org.flowerplatform.core.CoreConstants.INSERT_BEFORE_NODE;
 import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_ADDED;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.ServiceContext;
@@ -20,14 +20,14 @@ public class UpdateAddNodeController extends AddNodeController {
 	@Override
 	public void addNode(Node node, Node child, ServiceContext context) {		
 		Node resourceNode = CoreUtils.getResourceNode(node);
-		Node insertBeforeNode = (Node)context.get(INSERT_BEFORE_NODE);
+		String insertBeforeFullNodeId = (String)context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (resourceNode != null) {
 			CorePlugin.getInstance().getResourceService()
 				.addUpdate(resourceNode.getFullNodeId(), 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setTargetNodeAs(child)
-							.setFullTargetNodeAddedBeforeIdAs(insertBeforeNode != null ? insertBeforeNode.getFullNodeId() : null)
+							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
 							.setFullNodeIdAs(node.getFullNodeId()));
 			
 		}
