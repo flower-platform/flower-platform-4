@@ -90,7 +90,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 				var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getSideProvider(mindmapDiagramShell.registry, model);
 				if (sideProvider != null) {
 					var side:int = int(sideProvider.getValue(Node(model)));
-					if (side == 0) { // no side -> get side from parent
+					if (side == 0 && Node(model).parent != null) { // no side -> get side from parent
 						side = getSide(context, Node(model).parent);
 					}
 					if (side != 0) { // side found (left/right)
