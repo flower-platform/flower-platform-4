@@ -31,14 +31,13 @@ public class FileAddNodeController extends AddNodeController {
 
 		if (!fileAccessController.isDirectory(parentFile)) {
 			parentFile = fileAccessController.getParentFile(parentFile);
+			String path = fileAccessController.getPath(parentFile);
 			Node fileParentNode;
-			String repositoryPath = new Node(parentNode.getResource()).getIdWithinResource();
 			
-			if (repositoryPath.replace("//", "/").replace('/', '\\')
-					.equals(fileAccessController.getPath(parentFile))) {
-				fileParentNode = new Node(FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, repositoryPath, null);
+			if (path.length() != 0) { // parent File is not the FileSystem node
+				fileParentNode = new Node(FILE_NODE_TYPE, parentNode.getResource(), path, null);
 			} else {
-				fileParentNode = new Node(FILE_NODE_TYPE, parentNode.getResource(), fileAccessController.getPath(parentFile), null);
+				fileParentNode = new Node(FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, null, null);
 			}
 			CorePlugin.getInstance().getNodeService().addChild(fileParentNode, child, context);
 			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
