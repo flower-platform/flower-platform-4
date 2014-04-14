@@ -38,6 +38,10 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
 		
+		public static const PROPERTY_DESCRIPTOR:String = "propertyDescriptor";
+		
+		public static const PROPERTY_DEFAULT_FORMAT:String = "{0}.default";
+		
 		//////////////////////////////////
 		// File node properties
 		//////////////////////////////////

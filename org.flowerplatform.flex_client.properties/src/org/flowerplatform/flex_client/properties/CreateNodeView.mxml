@@ -36,14 +36,14 @@
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			public static const SHOW_ALL:String = "showAll";
-			public static const SHOW_CONTRIBUTING_TO_CREATION:String = "showContributingToCreation"; // mandatory & optional
-			public static const SHOW_MANDATORY:String = "showMandatory";
+			public static const SHOW_ONLY_CONTRIBUTES_TO_CREATION:String = "showOnlyContributingToCreation"; // mandatory & optional
+			public static const SHOW_ONLY_MANDATORY:String = "showOnlyMandatory";
 			
 			public var nodeType:String;
 			
 			public var parentNode:Node;
 			
-			public var option:String = SHOW_CONTRIBUTING_TO_CREATION;
+			public var option:String = SHOW_ONLY_CONTRIBUTES_TO_CREATION;
 			
 			protected var _viewHost:IViewHost;
 			
@@ -58,12 +58,12 @@
 						case SHOW_ALL:
 							addFormItem(propertyDescriptor, currentCategory);
 							break;
-						case SHOW_CONTRIBUTING_TO_CREATION:
+						case SHOW_ONLY_CONTRIBUTES_TO_CREATION:
 							if (propertyDescriptor.contributesToCreation) {
 								addFormItem(propertyDescriptor, currentCategory);
 							}
 							break;
-						case SHOW_MANDATORY:
+						case SHOW_ONLY_MANDATORY:
 						default:
 							if (propertyDescriptor.contributesToCreation && propertyDescriptor.mandatory) {
 								addFormItem(propertyDescriptor, currentCategory);
@@ -95,7 +95,7 @@
 				if (propertyDescriptor.contributesToCreation) {
 					propertyDescriptor.readOnly = false;
 				}
-				formItem.disableSaveProperty = true;
+				formItem.savePropertyEnabled = false;
 				formItem.data = propertyDescriptor;
 			}
 			
@@ -125,7 +125,6 @@
 								.setTitle("\'" + propertyItemRenderer.data[CoreConstants.NAME] + "\' " + Resources.getMessage("field_is_mandatory_message"))
 								.setWidth(300)
 								.setHeight(200)
-								.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
 								.showMessageBox();
 							return;
 						}

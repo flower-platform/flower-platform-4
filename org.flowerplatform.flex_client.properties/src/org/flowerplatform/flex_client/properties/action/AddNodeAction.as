@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.properties.action {
 	
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -65,7 +66,7 @@ package org.flowerplatform.flex_client.properties.action {
 			var parentNode:Node = Node(selection.getItemAt(0));
 			
 			var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-				.getExpectedTypeDescriptor(childType).getAdditiveControllers("propertyDescriptor", null);
+				.getExpectedTypeDescriptor(childType).getAdditiveControllers(CoreConstants.PROPERTY_DESCRIPTOR, null);
 			
 			var hasContributesToCreationDescriptors:Boolean = false;
 			for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {

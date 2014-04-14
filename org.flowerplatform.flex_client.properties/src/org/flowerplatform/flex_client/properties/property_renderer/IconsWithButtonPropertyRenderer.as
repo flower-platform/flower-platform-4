@@ -121,7 +121,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 				
 		public function newIconIndex():int {
 			if (PropertyDescriptor(data).hasChangeCheckbox) {
-				return numElements - 4;
+				return numElements - 3;
 			}
 			return numElements - 2;
 		}

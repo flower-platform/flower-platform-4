@@ -148,7 +148,7 @@ public class Node {
 		if (properties.containsKey(property)) {
 			return properties.get(property);
 		} else {
-			return CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(this, property);
+			return CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(this, property, new ServiceContext());
 		}
 	}
 	

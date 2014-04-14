@@ -14,7 +14,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.controller.SetPropertyDefaultPropertiesProvider;
+import org.flowerplatform.core.node.controller.DefaultPropertiesProvider;
 import org.flowerplatform.freeplane.controller.FreeplaneIsSubscribablePropertyProvider;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceAccessController;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceChildrenProvider;
@@ -75,7 +75,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapAddNodeController())
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController())
 		.addAdditiveController(CHILDREN_PROVIDER, new StyleRootChildrenProvider())
-		.addAdditiveController(PROPERTIES_PROVIDER, new SetPropertyDefaultPropertiesProvider());
+		.addAdditiveController(PROPERTIES_PROVIDER, new DefaultPropertiesProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_PERSISTENCE_CATEGORY)
 		.addAdditiveController(PROPERTIES_PROVIDER, new PersistencePropertiesProvider())		
