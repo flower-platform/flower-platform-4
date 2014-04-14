@@ -55,6 +55,9 @@ public class PersistencePropertySetter extends PropertySetter {
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext context) {
+		if (context.getValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return;
+		}
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		
 		if (MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {

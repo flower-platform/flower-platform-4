@@ -1,7 +1,5 @@
 package org.flowerplatform.freeplane;
 
-import java.io.IOException;
-
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.mindmap.MindMapConstants;
@@ -42,10 +40,5 @@ public class FreeplaneUtils {
 		}
 		return new Node(type, resource, nodeModel.createID(), nodeModel);
 	}
-	
-	@SuppressWarnings("deprecation")
-	public void save(String resource) throws IOException {
-//		MapModel newModel = maps.get(resource);
-//		((MFileManager) UrlManager.getController()).writeToFile(newModel, newModel.getFile());	
-	}
+
 }

@@ -17,11 +17,14 @@ import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZES;
 import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_NODE_TYPE;
+import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import java.awt.GraphicsEnvironment;
@@ -57,8 +60,10 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 				.setTitleAs(ResourcesPlugin.getInstance().getMessage("mindmap.min_width.title")).setCategoryAs(ResourcesPlugin.getInstance().getMessage("nodeShape")).setOrderIndexAs(300))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_NUMBER).setNameAs(MAX_WIDTH).setHasChangeCheckboxAs(true)
 				.setTitleAs(ResourcesPlugin.getInstance().getMessage("mindmap.max_width.title")).setCategoryAs(ResourcesPlugin.getInstance().getMessage("nodeShape")).setOrderIndexAs(310))	
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs("MindMapIconsWithButton").setNameAs(ICONS).setHasChangeCheckboxAs(true)
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE).setNameAs(ICONS).setHasChangeCheckboxAs(true)
 				.setTitleAs(ResourcesPlugin.getInstance().getMessage("mindmap.icons")).setOrderIndexAs(-10000))	
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE).setNameAs(STYLE_NAME).setHasChangeCheckboxAs(true)
+				.setTitleAs(ResourcesPlugin.getInstance().getMessage("mindmap.style.name")).setOrderIndexAs(-20000))	
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setNameAs(FONT_FAMILY).setHasChangeCheckboxAs(true)
 				.setTitleAs(ResourcesPlugin.getInstance().getMessage("mindmap.font.family")).setPossibleValuesAs(Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()))
 				.setCategoryAs(ResourcesPlugin.getInstance().getMessage("mindmap.font")).setOrderIndexAs(200))

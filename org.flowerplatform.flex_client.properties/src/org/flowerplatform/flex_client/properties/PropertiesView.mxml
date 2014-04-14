@@ -88,6 +88,8 @@
 					return;					
 				}
 				
+				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+				
 				// get properties to display
 				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 						.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
@@ -116,8 +118,7 @@
 				label.text = String(titleProvider.getValue(node));
 				label.maxWidth = UIComponent(this).width;
 				
-				// store new selection and listen for node upates
-				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+				// store new selection and listen for node upates				
 				node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 			}
 			

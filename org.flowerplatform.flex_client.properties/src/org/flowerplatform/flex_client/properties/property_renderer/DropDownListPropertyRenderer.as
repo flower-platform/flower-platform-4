@@ -24,13 +24,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.collections.IList;
 	import mx.events.FlexEvent;
 	
-	import spark.components.DropDownList;
-	import spark.events.DropDownEvent;
-	import spark.events.IndexChangeEvent;
-	
+	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
+	
+	import spark.components.DropDownList;
+	import spark.events.DropDownEvent;
+	import spark.events.IndexChangeEvent;
 	
 	/**
 	 * Supported dataProvider item class:
@@ -47,6 +48,11 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		[Bindable]
 		public var dropDownList:spark.components.DropDownList;
 		
+		/**
+		 * Signature: function requestDataProviderHandler(node:Node, callbackFunction:Function):void
+		 */ 
+		public var requestDataProviderHandler:Function;
+		
 		public function DropDownListPropertyRenderer() {
 			super();
 		}
@@ -58,7 +64,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		protected function valueChanged(value:Object = null):void {
 			if (data != null && dropDownList.dataProvider != null) {
-				dropDownList.selectedIndex = getItemIndexFromList(PropertyDescriptor(data).value, dropDownList.dataProvider);
+				dropDownList.selectedIndex = getItemIndexFromList(propertyDescriptor.value, dropDownList.dataProvider);
 			}
 		}
 		
@@ -85,7 +91,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		override public function set data(value:Object):void {
 			super.data = value;			
-			dropDownList.enabled = !PropertyDescriptor(data).readOnly;
+			dropDownList.enabled = !propertyDescriptor.readOnly;
 			
 			requestDataProvider();
 			
@@ -93,14 +99,21 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		protected function requestDataProvider():void {
-			if (data is PropertyDescriptor) {
-				dropDownList.dataProvider = PropertyDescriptor(data).possibleValues;
-				// if list of Pairs, use item.b as label
-				var listItem:Object = dropDownList.dataProvider.getItemAt(0);
-				if (listItem is Pair) {
-					dropDownList.labelField = "b";
-				}
+			if (propertyDescriptor.possibleValues == null) {
+				requestDataProviderHandler(PropertiesPlugin.getInstance().currentSelection.getItemAt(0), requestDataProviderCallbackHandler);
+				return;
 			}
+			dropDownList.dataProvider = propertyDescriptor.possibleValues;
+			// if list of Pairs, use item.b as label
+			var listItem:Object = dropDownList.dataProvider.getItemAt(0);
+			if (listItem is Pair) {
+				dropDownList.labelField = "b";
+			}			
+			valueChanged();
+		}
+		
+		protected function requestDataProviderCallbackHandler(dataProvider:IList):void {
+			dropDownList.dataProvider = dataProvider;
 			valueChanged();
 		}
 		
