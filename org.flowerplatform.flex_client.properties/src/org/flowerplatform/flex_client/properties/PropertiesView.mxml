@@ -17,6 +17,7 @@
 			import mx.utils.ObjectUtil;
 			import mx.utils.StringUtil;
 			
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
@@ -128,8 +129,9 @@
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
 						if (node.properties != null) {
 							if (NodeControllerUtils.hasPropertyChanged(node, propertyItemRenderer.propertyDescriptor.name, event)) {
-								if (node.properties.hasOwnProperty(StringUtil.substitute("{0}.default", propertyItemRenderer.propertyDescriptor.name))) {
-									propertyItemRenderer.itemRenderedInstance.defaultValue = node.properties[propertyItemRenderer.propertyDescriptor.name + ".default"];
+								var defaultPropertyName:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyItemRenderer.propertyDescriptor.name);
+								if (node.properties.hasOwnProperty(defaultPropertyName)) {
+									propertyItemRenderer.itemRenderedInstance.defaultValue = node.properties[defaultPropertyName];
 								}								
 								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];
 							}

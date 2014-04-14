@@ -23,14 +23,11 @@ public class DefaultPropertiesProvider extends PropertiesProvider {
 	public void populateWithProperties(Node node, ServiceContext context) {
 		List<AbstractController> propDescriptors =  CorePlugin.getInstance().getNodeService().getPropertyDescriptors(node); 
 		for (AbstractController element : propDescriptors) {
-			PropertyDescriptor propertyDescriptor;
-			if (element instanceof PropertyDescriptor) {
-				propertyDescriptor = (PropertyDescriptor)element;
-				if (propertyDescriptor.getHasChangeCheckbox()) {
-					Object nodeDefaultPropertyValue = CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(node, propertyDescriptor.getName(), new ServiceContext());
-					node.getProperties().put(String.format(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyDescriptor.getName()), nodeDefaultPropertyValue);
-				}
-			}
+			PropertyDescriptor propertyDescriptor = (PropertyDescriptor) element;			
+			if (propertyDescriptor.getHasChangeCheckbox()) {
+				Object nodeDefaultPropertyValue = CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(node, propertyDescriptor.getName(), new ServiceContext());
+				node.getProperties().put(String.format(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyDescriptor.getName()), nodeDefaultPropertyValue);
+			}			
 		}
 	}
 }

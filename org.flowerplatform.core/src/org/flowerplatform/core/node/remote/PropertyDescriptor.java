@@ -190,7 +190,7 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.defaultValue = defaultValue;
 	}
 	
-	public PropertyDescriptor setDefaultValueAS(Object defaultValue) {
+	public PropertyDescriptor setDefaultValueAs(Object defaultValue) {
 		this.defaultValue = defaultValue;
 		return this;
 	}
@@ -199,7 +199,7 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	public String toString() {
 		return String.format("PropertiesDescriptor [name = %s, title = %s, category = %s, " +
 				"\ntype = %s, readOnly = %b, possibleValues = %s, " +
-				"\ncontributeToCreation = %b, isMandatory = %b, orderIndex = %d]", 
+				"\ncontributesToCreation = %b, mandatory = %b, orderIndex = %d]", 
 				getName(), getTitle(), getCategory(),
 				getType(), getReadOnly(), getPossibleValues(),
 				getContributesToCreation(), getMandatory(), getOrderIndex());

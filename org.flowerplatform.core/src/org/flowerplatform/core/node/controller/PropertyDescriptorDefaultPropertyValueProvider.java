@@ -15,11 +15,9 @@ public class PropertyDescriptorDefaultPropertyValueProvider extends DefaultPrope
 		List<AbstractController> propertyDescriptorList = CorePlugin.getInstance().getNodeService().getPropertyDescriptors(node);
 		
 		for (AbstractController element : propertyDescriptorList) {
-			if (element instanceof PropertyDescriptor) {
-				PropertyDescriptor propertyDescriptor = (PropertyDescriptor)element;
-				if (propertyDescriptor.getName().equals(property)) {
-					return propertyDescriptor.getDefaultValue();
-				}
+			PropertyDescriptor propertyDescriptor = (PropertyDescriptor) element;
+			if (propertyDescriptor.getName().equals(property)) {
+				return propertyDescriptor.getDefaultValue();
 			}
 		}
 		return null;

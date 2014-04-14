@@ -15,11 +15,13 @@
 			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
-
 			
 			public var itemRenderedInstance:BasicPropertyRenderer;
+			
 			public var savePropertyEnabled:Boolean = true;
+			
 			public var defaultValue:Object;
+			
 			// Internal variable for the property value.
 			private var _data:Object;
 			

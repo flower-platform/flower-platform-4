@@ -23,13 +23,12 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	public class BasicPropertyRenderer extends DataRenderer {
 		
 		protected var oldValue:Object;
-		
-		public var changeCheckBox:CheckBox = new CheckBox();
+		public var defaultValue:Object;
 		
 		public var savePropertyEnabled:Boolean = true;
 		
-		public var defaultValue:Object;
-		
+		public var changeCheckBox:CheckBox = new CheckBox();
+					
 		public function BasicPropertyRenderer() {
 			super();
 			layout = new HorizontalLayout;
@@ -48,22 +47,22 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		override public function set data(value:Object):void {
 			super.data = value;
-			changeCheckBox.visible = PropertyDescriptor(data).hasChangeCheckbox;
-			changeCheckBox.includeInLayout = PropertyDescriptor(data).hasChangeCheckbox;
+			changeCheckBox.visible = propertyDescriptor.hasChangeCheckbox;
+			changeCheckBox.includeInLayout = propertyDescriptor.hasChangeCheckbox;
 			
-			if (!data.readOnly) {
-				BindingUtils.bindSetter(updateCheckBox, data, "value")
+			if (!propertyDescriptor.readOnly) {
+				BindingUtils.bindSetter(updateCheckBox, propertyDescriptor, "value");
 			}
 		}
 		
 		private function changeCheckboxClickHandler(event:Event):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.unsetProperty", 
-				[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, data.name]);
+				[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, propertyDescriptor.name]);
 		}
 		
 		public function updateCheckBox(val:String):void {
-			changeCheckBox.selected = !(data.value == defaultValue || ((data.value == null || data.value == "")  && defaultValue == null));
+			changeCheckBox.selected = !(propertyDescriptor.value == defaultValue || ((propertyDescriptor.value == null || propertyDescriptor.value == "")  && defaultValue == null));
 		}
 		
 		protected function validPropertyValue():Boolean {
@@ -71,19 +70,17 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		protected function saveProperty():void {			
-			if (savePropertyEnabled) {
-				if (!data.readOnly) {
-					if (!validPropertyValue()) {					
-						return;
-					}
-					if (oldValue != getValue()) {
-						oldValue = getValue();
-						CorePlugin.getInstance().serviceLocator.invoke(
-							"nodeService.setProperty", 
-							[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, propertyDescriptor.name, getValue()]);
-					}
+			if (savePropertyEnabled && !propertyDescriptor.readOnly) {				
+				if (!validPropertyValue()) {					
+					return;
 				}
-			}
+				if (oldValue != getValue()) {
+					oldValue = getValue();
+					CorePlugin.getInstance().serviceLocator.invoke(
+						"nodeService.setProperty", 
+						[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, propertyDescriptor.name, getValue()]);
+				}
+			}			
 		}
 
 		protected function getValue():Object {

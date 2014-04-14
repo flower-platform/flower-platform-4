@@ -146,7 +146,10 @@ public class NodeService {
 	 */
 	public List<AbstractController> getPropertyDescriptors(Node node) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
-		return descriptor == null ? null : descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
+		if (descriptor == null) {
+			return null;
+		}
+		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
 	}
 		
 	/**
