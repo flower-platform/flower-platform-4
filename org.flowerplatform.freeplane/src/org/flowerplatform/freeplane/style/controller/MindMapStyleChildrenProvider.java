@@ -26,26 +26,18 @@ public class MindMapStyleChildrenProvider extends ChildrenProvider {
 	public List<Node> getChildren(Node node, ServiceContext serviceContext) {
 		// idWithinResource == null -> path to workspace location
 		Node resourceNode = new Node(CoreConstants.FILE_NODE_TYPE, new Node(CoreConstants.FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, null, null).getFullNodeId(), node.getIdWithinResource(), null);
-		NodeModel nodeModel = ((MapModel) CorePlugin.getInstance().getResourceService()
-					.getRawResourceData(resourceNode.getFullNodeId())).getRootNode();
+		NodeModel nodeModel = ((MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId())).getRootNode();
 		
-		final MapModel map = nodeModel.getMap();
-		final MapStyleModel mapStyleModel = MapStyleModel.getExtension(map);
-		final MapModel styleMap = mapStyleModel.getStyleMap();
-		
-		if(styleMap == null){
-			// no style found in map
+		Enumeration<NodeModel> styles = MapStyleModel.getExtension(nodeModel.getMap()).getStyleMap().getRootNode().children();
+		if (styles == null) {	
 			return null;
 		}
-		
 		List<Node> children = new ArrayList<Node>();
-		Enumeration<NodeModel> enumeration = styleMap.getRootNode().children();
-		
-		while(enumeration.hasMoreElements()){
-			for (NodeModel styleNodeModel : enumeration.nextElement().getChildren()) {
+		while (styles.hasMoreElements()) {
+			for (NodeModel styleNodeModel : styles.nextElement().getChildren()) {
 				children.add(new Node(MindMapConstants.MINDMAP_NODE_TYPE, node.getResource(), styleNodeModel.createID(), styleNodeModel));
 			}
-		}
+		}		
 		return children;
 	}
 	

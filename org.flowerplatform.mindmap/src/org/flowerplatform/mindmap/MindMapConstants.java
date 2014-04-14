@@ -51,6 +51,11 @@ public class MindMapConstants {
 	public static final String CLOUD_COLOR = "cloudColor";
 	public static final String CLOUD_SHAPE = "cloudShape";
 	
+	public static final String STYLE_NAME = "styleName";
+	
+	public static final String MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE = "MindMapIconsWithButton";
+	public static final String MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE = "MindMapStyles";
+		
 	//////////////////////////////////
 	// Resource
 	//////////////////////////////////

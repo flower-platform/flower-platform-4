@@ -1,6 +1,7 @@
 package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
@@ -15,6 +16,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
@@ -51,6 +53,7 @@ package org.flowerplatform.flex_client.mindmap {
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
 
 			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
+			CorePlugin.getInstance().serviceLocator.addService("mindmapService");
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
@@ -71,7 +74,7 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
 			
 			// register PropertiesPlugin Renderer
-			PropertiesPlugin.getInstance().propertyRendererClasses["MindMapIconsWithButton"] = new FactoryWithInitialization
+			PropertiesPlugin.getInstance().propertyRendererClasses[MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE] = new FactoryWithInitialization
 				(IconsWithButtonPropertyRenderer, {
 					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object):void {
 						var dialog:MindMapIconsView = new MindMapIconsView();
@@ -90,7 +93,13 @@ package org.flowerplatform.flex_client.mindmap {
 					}					
 					
 				});
-					
+			PropertiesPlugin.getInstance().propertyRendererClasses[MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE] = new FactoryWithInitialization
+				(DropDownListPropertyRenderer, {	
+					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
+						CorePlugin.getInstance().serviceLocator.invoke("mindmapService.getStyles", [node.fullNodeId], callbackFunction);
+					}
+			});	
+			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);			
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);

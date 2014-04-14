@@ -32,7 +32,7 @@ import org.flowerplatform.freeplane.controller.MindMapRemoveNodeController;
 import org.flowerplatform.freeplane.controller.PersistenceAddNodeProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertiesProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertySetter;
-import org.flowerplatform.freeplane.remote.FreeplaneService;
+import org.flowerplatform.freeplane.remote.MindMapServiceRemote;
 import org.flowerplatform.freeplane.style.controller.MindMapStyleChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
@@ -102,9 +102,9 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
 		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_PERSISTENCE_CATEGORY))
 		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
-		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());
+		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());		
 		
-		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneService());
+		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
