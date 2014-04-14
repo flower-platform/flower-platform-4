@@ -18,11 +18,8 @@
  */
 package org.flowerplatform.flex_client.web {
 	import flash.events.EventDispatcher;
-	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
 	
-	import mx.containers.HBox;
-	import mx.core.Container;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
 	import mx.messaging.messages.ErrorMessage;
@@ -37,13 +34,7 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flexutil.resources.ResourceUpdatedEvent;
-	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
-	
-	import spark.components.Application;
-	import spark.components.Button;
-	import spark.components.TextInput;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -85,6 +76,7 @@ package org.flowerplatform.flex_client.web {
 			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
 				function (result:Object):void {
 					// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 					CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 					ModalSpinner.removeGlobalModalSpinner();
 					
@@ -99,7 +91,6 @@ package org.flowerplatform.flex_client.web {
 					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
-			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 		}
 		
 		override protected function registerMessageBundle():void {
