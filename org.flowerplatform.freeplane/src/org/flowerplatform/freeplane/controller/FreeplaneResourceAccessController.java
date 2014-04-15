@@ -1,7 +1,6 @@
 package org.flowerplatform.freeplane.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -16,7 +15,6 @@ import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.url.UrlManager;
 import org.freeplane.features.url.mindmapmode.MFileManager;
-import org.freeplane.n3.nanoxml.XMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

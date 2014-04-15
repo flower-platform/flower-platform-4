@@ -45,6 +45,8 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const CLOUD_COLOR:String = "cloudColor";
 		public static const CLOUD_SHAPE:String = "cloudShape";
 		
+		public static const STYLE_NAME:String = "styleName";
+		
 		public static const ICONS_LIST:String = 
 			"help;yes;button_ok;button_cancel;bookmark;idea;messagebox_warning;stop-sign;closed;info;clanbomber;checked;unchecked;" 
 			+ "wizard;gohome;knotify;password;pencil;xmag;bell;bookmark;launch;broken-line;stop;prepare;go;"
@@ -66,6 +68,9 @@ package org.flowerplatform.flex_client.mindmap {
 		 * When screenDPI = 72 DPI, the font size is a little bit too small to display, so use 92 DPI instead.
 		 */ 
 		public static const FONT_SCALE_FACTOR:Number = (Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72;
+		
+		public static const MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE:String = "MindMapIconsWithButton";
+		public static const MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE:String = "MindMapStyles";
 		
 		//////////////////////////////////
 		// Editor

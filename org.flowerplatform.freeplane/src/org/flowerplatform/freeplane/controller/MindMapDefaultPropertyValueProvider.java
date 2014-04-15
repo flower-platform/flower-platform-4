@@ -14,6 +14,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 
 import java.awt.Color;
 import java.util.Enumeration;
@@ -35,6 +36,7 @@ import org.freeplane.features.styles.MapStyleModel;
  * @author Sebastian Solomon
  */
 public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValueProvider {
+	
 	public final static String DEFAULT_STYLE = "Default";
 	
 	public MindMapDefaultPropertyValueProvider() {
@@ -44,8 +46,8 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 	@Override
 	public Object getDefaultValue(Node node, String property, ServiceContext serviceContext) {
 		serviceContext.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
-		NodeModel nodeModel =  (NodeModel)node.getOrRetrieveRawNodeData();
-		String styleName = (String)node.getProperties().get("styleName");
+		NodeModel nodeModel =  (NodeModel) node.getOrRetrieveRawNodeData();
+		String styleName = (String) node.getProperties().get(STYLE_NAME);
 		
 		NodeModel styleNodeModel = getStyleNodeModel(nodeModel, styleName);
 		

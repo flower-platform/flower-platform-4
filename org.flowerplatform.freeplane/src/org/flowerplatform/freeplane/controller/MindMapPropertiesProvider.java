@@ -13,6 +13,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import java.awt.Color;
@@ -31,7 +32,9 @@ import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 import org.freeplane.features.nodestyle.NodeStyleController;
 import org.freeplane.features.note.NoteModel;
+import org.freeplane.features.styles.IStyle;
 import org.freeplane.features.styles.LogicalStyleModel;
+import org.freeplane.features.styles.MapStyleModel;
 
 /**
  * @author Cristina Constantinescu
@@ -50,14 +53,9 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		
 		NodeSizeModel nodeSizeModel = NodeSizeModel.getModel(rawNodeData);
 		
-		String styleName;	
-		if (rawNodeData.getExtensions().get(LogicalStyleModel.class) != null) {
-			styleName = ((LogicalStyleModel)rawNodeData.getExtensions().get(LogicalStyleModel.class)).getStyle().toString();
-			node.getProperties().put("styleName", styleName);
-		} else { //for style nodes
-			node.getProperties().put("styleName", node.getProperties().get(TEXT));
-		}
-		
+		IStyle style = LogicalStyleModel.getStyle(rawNodeData);
+		node.getProperties().put(STYLE_NAME, style == null ? MapStyleModel.DEFAULT_STYLE.toString() : style.toString());
+				
 		if (nodeSizeModel != null && nodeSizeModel.getMinNodeWidth() != NodeSizeModel.NOT_SET) { // property set by user, use it
 			node.getProperties().put(MIN_WIDTH, nodeSizeModel.getMinNodeWidth());
 		} else { // otherwise, use style value
@@ -68,7 +66,7 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			node.getProperties().put(MAX_WIDTH, nodeSizeModel.getMaxNodeWidth());
 		} else { // otherwise, use style value
 			node.getProperties().put(MAX_WIDTH, node.getPropertyValue(MAX_WIDTH));
-		} 
+		}
 				
 		List<MindIcon> icons = rawNodeData.getIcons();
 		if (icons != null) {

@@ -1,7 +1,6 @@
 package org.flowerplatform.freeplane.controller;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
