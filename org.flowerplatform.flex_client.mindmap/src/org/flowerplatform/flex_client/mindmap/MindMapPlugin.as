@@ -3,6 +3,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.action.EditNoteInDialogAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
@@ -91,7 +92,9 @@ package org.flowerplatform.flex_client.mindmap {
 					
 				});
 					
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);			
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);
+			
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNoteInDialogAction);
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);
 			

@@ -80,7 +80,17 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 						}											
 					}
 				}
+				
 				isPropertySet = true;
+				break;
+			case "note":
+				String note = (String) wrapper.getPropertyValue();
+				if (note.length() > 0) {
+					// TODO
+				} else {
+					// TODO
+				}
+				node.getProperties().put("note", note);
 				break;
 			case FONT_FAMILY:	
 				String fontFamily = (String) wrapper.getPropertyValue();

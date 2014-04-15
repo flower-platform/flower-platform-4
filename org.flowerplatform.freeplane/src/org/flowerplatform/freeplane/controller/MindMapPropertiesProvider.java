@@ -30,6 +30,7 @@ import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 import org.freeplane.features.nodestyle.NodeStyleController;
+import org.freeplane.features.note.NoteModel;
 import org.freeplane.features.styles.LogicalStyleModel;
 
 /**
@@ -76,6 +77,13 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 				sb.append(ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/" + icon.getFileName()));
 				sb.append(CoreConstants.ICONS_SEPARATOR);
 			}
+			
+			// notes icon
+			if (NoteModel.getNoteText(rawNodeData) != null && NoteModel.getNoteText(rawNodeData).length() > 0) {
+				sb.append(ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/" + "knotes.png"));
+				sb.append(CoreConstants.ICONS_SEPARATOR);
+			}
+			
 			if (sb.length() > 0) { // remove last icons separator
 				node.getProperties().put(CoreConstants.ICONS, sb.substring(0, sb.length() - 1));
 			} else {
@@ -124,6 +132,12 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		String propertyColor = (String)node.getPropertyValue(CLOUD_COLOR);
 		node.getProperties().put(CLOUD_COLOR, propertyColor == null ? standardColor : propertyColor );
 		node.getProperties().put(CLOUD_SHAPE, node.getPropertyValue(CLOUD_SHAPE));
+		
+		// note
+		String text = NoteModel.getNoteText(rawNodeData);
+		if (text != null) {
+			node.getProperties().put("note", text);
+		}
 	}
 
 }
