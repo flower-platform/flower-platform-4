@@ -47,8 +47,8 @@ license-end
 				
 				for (var i:int=0; i < nodeList.length; i++) {
 					var node:Node = Node(nodeList.getItemAt(i));
-					currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
 					if (node.type == MindMapConstants.MINDMAP_NODE_TYPE) {
+						currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
 						saveIconProperty(node, currentValue);
 					}
 					

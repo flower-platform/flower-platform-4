@@ -58,8 +58,7 @@ package org.flowerplatform.flex_client.properties.action {
 		 * @author Sebastian Solomon
 		 */
 		override public function run():void {
-			var parent:Node = Node(selection.getItemAt(0));
-			
+
 			var properties:Object = new Object();
 			properties.type = childType;
 			
@@ -85,7 +84,7 @@ package org.flowerplatform.flex_client.properties.action {
 					.setViewContent(createNodeView)
 					.show();
 			} else {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parent.fullNodeId, properties, null]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
 			}
 		}
 		

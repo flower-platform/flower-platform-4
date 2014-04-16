@@ -386,6 +386,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/icons/division.png")]
 		public static const mindmap_divisionIcon:Class;
 		
+		[Embed(source="/mindmap/knotes.png")]
+		public static const mindmap_knotesIcon:Class;
+		
 		public static const mindmapIcons:Object = {
 			"help" : mindmap_helpIcon,
 			"yes" : mindmap_yesIcon,

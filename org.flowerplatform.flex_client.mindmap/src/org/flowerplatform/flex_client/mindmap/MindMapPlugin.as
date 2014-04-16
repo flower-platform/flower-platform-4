@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.action.EditNoteInDialogAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
@@ -104,7 +105,9 @@ package org.flowerplatform.flex_client.mindmap {
 					}
 			});	
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);			
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);
+			
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNoteInDialogAction);
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);
 			

@@ -72,6 +72,8 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE:String = "MindMapIconsWithButton";
 		public static const MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE:String = "MindMapStyles";
 		
+		public static const NOTE:String = "note";
+		
 		//////////////////////////////////
 		// Editor
 		//////////////////////////////////
