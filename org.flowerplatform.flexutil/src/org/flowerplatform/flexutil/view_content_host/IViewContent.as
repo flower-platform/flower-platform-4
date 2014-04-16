@@ -17,8 +17,8 @@
  * license-end
  */
 package org.flowerplatform.flexutil.view_content_host {
-	import mx.collections.IList;
 	import mx.core.IVisualElement;
+	
 	import org.flowerplatform.flexutil.action.IActionProvider;
 
 	/**

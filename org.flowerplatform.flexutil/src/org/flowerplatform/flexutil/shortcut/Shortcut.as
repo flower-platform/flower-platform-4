@@ -17,8 +17,6 @@
  * license-end
  */
 package org.flowerplatform.flexutil.shortcut {
-	
-	import mx.controls.Alert;
 
 	/**
 	 * @author Florin

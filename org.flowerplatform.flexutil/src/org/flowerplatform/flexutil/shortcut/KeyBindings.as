@@ -41,9 +41,6 @@ package org.flowerplatform.flexutil.shortcut {
 	 */
 	public class KeyBindings {
 				
-		/**
-		 * 
-		 */
 		private var bindings:Dictionary = new Dictionary();
 
 		public function KeyBindings():void {
@@ -61,7 +58,6 @@ package org.flowerplatform.flexutil.shortcut {
 				
 		/**
 		 * Action can be an IAction or a Function.
-		 * 
 		 */
 		public function registerBinding(shortcut:Shortcut, action:Object): void {
 			if (!(action is IAction) && !(action is Function)) {
@@ -80,7 +76,6 @@ package org.flowerplatform.flexutil.shortcut {
 		}
 
 		/**
-		 * 
 		 * @author Cristi
 		 * @author Daniela
 		 */
@@ -110,7 +105,6 @@ package org.flowerplatform.flexutil.shortcut {
 		}
 		
 		/** 
-		 * 
 		 * @author Cristi
 		 * @author Daniela
 		 */

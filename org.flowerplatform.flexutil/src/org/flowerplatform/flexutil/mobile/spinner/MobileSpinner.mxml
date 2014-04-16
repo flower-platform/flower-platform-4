@@ -27,11 +27,7 @@
 			
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
 			
-			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-						
 			[Bindable]
 			public var text:String;
 			

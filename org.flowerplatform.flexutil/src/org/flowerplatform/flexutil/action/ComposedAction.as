@@ -17,7 +17,6 @@
  * license-end
  */
 package org.flowerplatform.flexutil.action {
-	import spark.supportClasses.INavigator;
 
 	/**
 	 * @see IComposedAction

@@ -27,7 +27,7 @@ package org.flowerplatform.flexutil.spinner {
 	 * <ul>
 	 * 	<li>have a backing field for the <code>modalSpinner</code> property
 	 * 	<li>should override <code>updateDisplayList</code> and call <code>setActualSize()</code>
-	 * 		for the <code>modalSpinner</code> property (if present). Other logic may be executed
+	 * 		for the <code>modalSpinner</code> paroperty (if present). Other logic may be executed
 	 * 		there as well (e.g. reposition the component to not cover the tile bar).
 	 * <ul>
 	 *
