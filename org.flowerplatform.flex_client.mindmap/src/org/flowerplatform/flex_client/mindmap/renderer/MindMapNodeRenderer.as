@@ -5,6 +5,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.Utils;
 	
@@ -12,13 +13,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 * @author Cristina Constantinescu
 	 */ 
 	public class MindMapNodeRenderer extends NodeRenderer {
-		
-		public function MindMapNodeRenderer() {
-			super();
-			
-			// don't allow super to clear graphics, I'm doing that
-			allowBaseRendererToClearGraphics = false;
-		}
 		
 		override protected function unassignData():void {
 			super.unassignData();
@@ -44,18 +38,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					invalidateDisplayList();
 			}
 		}
-				
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {		
-			// clear all graphics
-			graphics.clear();
-			
-			if (drawGraphicsOnlyFromBaseClass) {
-				super.updateDisplayList(unscaledWidth, unscaledHeight);	
-				return;
-			}
-			
-			// start drawing
-			
+		
+		override protected function drawGraphics(unscaledWidth:Number, unscaledHeight:Number):void {			
 			// draw could shape
 			var shape:String = data.properties[MindMapConstants.CLOUD_SHAPE];
 			if (shape != null && shape != MindMapConstants.SHAPE_NONE) {				
@@ -70,7 +54,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				var height:Number = diagramShell.getPropertyValue(diagramShellContext, data, "height");
 				var expandedWidth:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth");
 				var expandedHeight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeight");
-								
+				
 				var shapeX:Number = - cloudPadding/2;
 				var shapeY:Number = - diagramShell.getDeltaBetweenExpandedHeightAndHeight(diagramShellContext, data, true)/2;
 				var shapeWidth:Number = expandedWidth + cloudPadding;
@@ -86,12 +70,9 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				}
 				graphics.endFill();
 			}
-			
-			// end drawing
-			
-			super.updateDisplayList(unscaledWidth, unscaledHeight);			
+			super.drawGraphics(unscaledWidth, unscaledHeight);
 		}
-		
+						
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
 			
@@ -116,7 +97,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var fontSizeChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_SIZE, event);
 			if (fontSizeChanged) {
-				labelDisplay.setStyle("fontSize", data.properties[MindMapConstants.FONT_SIZE]);
+				labelDisplay.setStyle("fontSize", MindMapConstants.FONT_SCALE_FACTOR * data.properties[MindMapConstants.FONT_SIZE]);
 			}
 			
 			var fontBoldChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_BOLD, event);
@@ -155,13 +136,16 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			
 			if (refreshNodePositions) {
-				diagramShell.refreshModelPositions(diagramShellContext, data);
+				var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, data).getParent(diagramShellContext, data);
+				mindMapDiagramShell.refreshModelPositions(diagramShellContext, parent != null ? parent : data);
 			}
 			
-			if (minWidthChanged || maxWidthChanged || backgroundColorChanged || cloudColorChanged) {
-				invalidateSize();
+			if (minWidthChanged || maxWidthChanged) {
+				invalidateSize();				
+			}	
+			if (minWidthChanged || maxWidthChanged || backgroundColorChanged || cloudColorChanged) {			
 				invalidateDisplayList();
-			}			
+			}					
 		}
 		
 	}

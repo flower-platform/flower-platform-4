@@ -2,7 +2,7 @@
 <!---
 @author Sebastian Solomon
 -->
-<s:DataRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark"
 				creationComplete="creationCompleteHandler(event)">
 	<s:layout>
@@ -15,6 +15,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
 			public var serverAccountView:ServerAccountsView;
@@ -26,7 +27,7 @@
 				} else {
 					text += data.host;
 				}
-				label.text = text;
+				labelAccount.text = text;
 				
 				if(data.isDefault) {
 					checkBox.selected = true;
@@ -41,9 +42,7 @@
 				var accountList:ArrayCollection = serverAccountView.deselectDefaultAccount();				
 				if (checkBox.selected) { // set default value
 					setThisAsDefaultAccount();
-				} else { // default accaunt deselected. do nothing default account already deselected.
 				}
-				
 			}
 			
 			private function setThisAsDefaultAccount():void {
@@ -67,7 +66,7 @@
 					editAccountView.setServerAccountView(serverAccountView);
 						
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-						.setTitle("Edit Server Account")
+						.setTitle(Resources.getMessage("mobile.edit.server.account.title"))
 						.setViewContent(editAccountView)
 						.show();
 				}
@@ -75,6 +74,6 @@
 		]]>
 	</fx:Script>
 	<s:CheckBox id="checkBox" click="checkboxClickHandler(event)"/>
-	<s:Label id="label" click="labelClickHandler(event) "/>
+	<s:Label id="labelAccount" click="labelClickHandler(event) "/>
 	
-</s:DataRenderer>
+</s:ItemRenderer>

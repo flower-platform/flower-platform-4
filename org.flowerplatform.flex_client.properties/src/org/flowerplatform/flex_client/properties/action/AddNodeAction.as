@@ -20,14 +20,15 @@ package org.flowerplatform.flex_client.properties.action {
 	
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.properties.CreateNodeView;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-	import org.flowerplatform.flexutil.action.ComposedAction;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -65,24 +66,22 @@ package org.flowerplatform.flex_client.properties.action {
 			var parentNode:Node = Node(selection.getItemAt(0));
 			
 			var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-				.getExpectedTypeDescriptor(childType).getAdditiveControllers("propertyDescriptor", null);
+				.getExpectedTypeDescriptor(childType).getAdditiveControllers(CoreConstants.PROPERTY_DESCRIPTOR, null);
 			
-			var hasContributingDescriptors:Boolean = false;
+			var hasContributesToCreationDescriptors:Boolean = false;
 			for ( var i:int = 0; i < propertyDescriptors.length; i++ ) {
-				if (PropertyDescriptor(propertyDescriptors.getItemAt(i)).contributeToCreation) {
-					hasContributingDescriptors = true;
+				if (PropertyDescriptor(propertyDescriptors.getItemAt(i)).contributesToCreation) {
+					hasContributesToCreationDescriptors = true;
 					break;
 				}
 			}
 			
-			if (hasContributingDescriptors) {
+			if (hasContributesToCreationDescriptors) {
 				var createNodeView:CreateNodeView = new CreateNodeView();
-				createNodeView.setParentNode(parentNode);
+				createNodeView.parentNode = parentNode;
 				createNodeView.nodeType = childType;
-				// TODO take this value from a property.
-				createNodeView.option = CreateNodeView.SHOW_CONTRIBUTING_TO_CREATION;
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-					.setTitle("New file/folder")
+					.setTitle(Resources.getMessage("new.file.folder"))
 					.setViewContent(createNodeView)
 					.show();
 			} else {

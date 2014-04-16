@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.mindmap {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
+	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
@@ -52,8 +53,9 @@ package org.flowerplatform.flex_client.mindmap {
 		override protected function createChildren():void {			
 			super.createChildren();
 						
-			var iconSideBarfactory:FactoryWithInitialization = new FactoryWithInitialization(CorePlugin.getInstance().iconSideBarClass, {diagramShell:diagramShell});
-			editorArea.addElementAt(iconSideBarfactory.newInstance(false), 0);
+			var iconSideBar:MindMapIconsBar = new MindMapIconsBar();
+			iconSideBar.diagramShell = diagramShell;
+			editorArea.addElementAt(iconSideBar, 0);
 		}	
 		
 	}

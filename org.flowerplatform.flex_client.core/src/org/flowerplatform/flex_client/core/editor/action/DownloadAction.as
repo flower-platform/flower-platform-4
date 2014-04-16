@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			super();
 			label = Resources.getMessage("action.download");
 			icon = Resources.downloadIcon;
+			orderIndex = 300;
 		}
 		
 		override protected function isVisibleForSelectedElement(element:Object):Boolean {

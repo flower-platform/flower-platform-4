@@ -5,6 +5,8 @@ import org.flowerplatform.util.UtilConstants;
 
 public class CoreConstants {
 
+	public static final String VERSION = "1.0.0.M1_2014-04-01";
+	
 	//////////////////////////////////
 	// Node types
 	//////////////////////////////////
@@ -36,9 +38,13 @@ public class CoreConstants {
 	
 	public static final String IS_OPENABLE_IN_NEW_EDITOR = "isOpenableInNewEditor";
 	
+	public static final String INSERT_BEFORE_FULL_NODE_ID = "insertBeforeFullNodeId"; 
+	
 	public static final String SIDE = "side";
 	public static final int POSITION_LEFT = -1;
 	public static final int POSITION_RIGHT = 1;
+	
+	public static final String PROPERTY_DEFAULT_FORMAT = "%s.default";
 	
 	//////////////////////////////////
 	// File node properties

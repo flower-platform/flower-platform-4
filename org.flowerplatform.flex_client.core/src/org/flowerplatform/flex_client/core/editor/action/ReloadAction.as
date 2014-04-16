@@ -36,6 +36,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			icon = Resources.reloadIcon;
 			parentId = CoreConstants.FILE_MENU_ID;
 			enabled = false;
+			orderIndex = 100;
 		}
 				
 		override public function run():void {

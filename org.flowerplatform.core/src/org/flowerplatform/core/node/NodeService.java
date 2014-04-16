@@ -125,23 +125,30 @@ public class NodeService {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public Object getDefaultPropertyValue(Node node, String property) {
+	public Object getDefaultPropertyValue(Node node, String property, ServiceContext context) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
 		List<DefaultPropertyValueProvider> defaultPropertyProviders = descriptor.getAdditiveControllers(DEFAULT_PROPERTY_PROVIDER, node);
+		Object propertyValue = null;
 		for (DefaultPropertyValueProvider provider : defaultPropertyProviders) {
-			Object propertyValue = provider.getDefaultValue(node, property);
- 			if (propertyValue != null) {
-				return propertyValue;
+			propertyValue = provider.getDefaultValue(node, property, context);
+ 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+ 				break;
 			}
 		}
-		return null;
+		return propertyValue;
 	}
 	
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public List<AbstractController> getPropertyDescriptors(Node node, String property) {
+	public List<AbstractController> getPropertyDescriptors(Node node) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		if (descriptor == null) {
+			return null;
+		}
 		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
 	}
 		
@@ -219,7 +226,7 @@ public class NodeService {
 		}
 	}
 	
-	public void addChild(Node node, Node child, Node insertBeforeNode, ServiceContext context) {		
+	public void addChild(Node node, Node child, ServiceContext context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -231,7 +238,7 @@ public class NodeService {
 				
 		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (AddNodeController controller : controllers) {
-			controller.addNode(node, child, insertBeforeNode, context);
+			controller.addNode(node, child, context);
 			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}

@@ -128,7 +128,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				String type = typeProvider.getType(correspondingChild);
 						
 				Node child = new Node(type, parent.getResource(), null, null);
-				CorePlugin.getInstance().getNodeService().addChild(parent, child, null, new ServiceContext());
+				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext());
 				return child;
 //		}
 //		

@@ -41,6 +41,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/open_resource.png")]
 		public static const openResourceIcon:Class;
 		
+		[Embed(source="/core/open.png")]
+		public static const openIcon:Class;
+		
 		[Embed(source="/core/download.png")]
 		public static const downloadIcon:Class;
 		

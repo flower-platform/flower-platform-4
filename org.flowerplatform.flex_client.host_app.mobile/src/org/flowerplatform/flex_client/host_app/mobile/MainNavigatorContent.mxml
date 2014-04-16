@@ -36,13 +36,7 @@
 					]]>
 				</s:click>
 			</s:Button>
-			<s:Button label="Open Editor">
-				<s:click>
-					<![CDATA[
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
-					]]>
-				</s:click>
-			</s:Button>
+			
 			<s:Button id="openAccountsView" label="Open Accounts"
 					  click = "MainMobile.openAccountsButtonClickHandler()">
 			</s:Button>

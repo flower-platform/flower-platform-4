@@ -92,7 +92,7 @@ public class UploadService implements ISessionListener {
 		long timestamp = System.currentTimeMillis();
 		String uploadId = String.format("%s.%s", sessionId, timestamp);	
 				
-		String location = CorePlugin.getInstance().getFileAccessController().getPath(file);		
+		String location = CorePlugin.getInstance().getFileAccessController().getAbsolutePath(file);		
 		UploadInfo uploadInfo = new UploadInfo().setLocation(location).setTimestamp(timestamp).setSessionId(sessionId).setUnzipFile(unzipfile);		
 		if (!unzipfile) {
 			uploadInfo.setTmpLocation(location);			

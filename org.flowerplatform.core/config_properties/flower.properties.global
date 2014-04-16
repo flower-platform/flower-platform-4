@@ -1,0 +1,10 @@
+########################################################################
+# Properties overrides; global / for all team / committed on GIT
+# 
+# If you want to override something locally (just for you without commit,
+# use *.local file.
+########################################################################
+
+########################################################################
+# Properties overrides; global / for all team / committed on GIT: END
+########################################################################

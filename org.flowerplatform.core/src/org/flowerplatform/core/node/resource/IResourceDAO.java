@@ -9,6 +9,9 @@ import org.flowerplatform.core.node.update.remote.Update;
  */
 public interface IResourceDAO {
 
+	static final String PROP_RESOURCE_UPDATES_MARGIN = "resourceUpdatesMargin"; 
+	static final String PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN = "0"; 
+	
 	public void sessionSubscribedToResource(String resourceNodeId, String sessionId);
 	
 	public void sessionUnsubscribedFromResource(String resourceNodeId, String sessionId);

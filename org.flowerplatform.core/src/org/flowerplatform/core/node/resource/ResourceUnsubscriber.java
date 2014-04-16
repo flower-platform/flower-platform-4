@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.FlowerProperties;
 import org.flowerplatform.core.ServiceContext;
 
 /**
@@ -18,9 +19,14 @@ import org.flowerplatform.core.ServiceContext;
  */
 public class ResourceUnsubscriber extends TimerTask {
 
-	// get this from a property?
-	public static long RESOURCE_UNSUBSCRIBER_DELAY = 600000; // ms
-	
+	protected static final String PROP_RESOURCE_UNSUBSCRIBER_DELAY = "resourceUnsubscriberDelay"; 
+	protected static final String PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY = "600000"; 
+		
+	public ResourceUnsubscriber() {
+		super();
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY, PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY));
+	}
+
 	@Override
 	public void run() {
 		long now = new Date().getTime();
@@ -28,7 +34,7 @@ public class ResourceUnsubscriber extends TimerTask {
 		List<String> resourceNodeIds = service.getResources();
 		for (String resourceNodeId : resourceNodeIds) {
 			long lastPing = service.getUpdateRequestedTimestamp(resourceNodeId);
-			if (now - lastPing > RESOURCE_UNSUBSCRIBER_DELAY) {
+			if (now - lastPing > Long.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY))) {
 				List<String> sessionIds = service.getSessionsSubscribedToResource(resourceNodeId);
 				for (int i = sessionIds.size() - 1; i >= 0; i--) {
 					service.sessionUnsubscribedFromResource(resourceNodeId, sessionIds.get(i), new ServiceContext());
@@ -38,7 +44,7 @@ public class ResourceUnsubscriber extends TimerTask {
 	}
 	
 	public void start() {
-		new Timer().schedule(this, 0, RESOURCE_UNSUBSCRIBER_DELAY);
+		new Timer().schedule(this, 0, Long.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY)));
 	}
 	
 }

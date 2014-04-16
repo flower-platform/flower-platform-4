@@ -56,6 +56,7 @@ package org.flowerplatform.flex_client.host_app.mobile.stage_web_view {
 			percentHeight = 100;
 			percentWidth = 100;
 			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
 		}
 		
 		public function set url(url:String):void {
@@ -109,6 +110,12 @@ package org.flowerplatform.flex_client.host_app.mobile.stage_web_view {
 			} else if (_text) {
 				_stageWebView.loadString(_text);
 			}
+		}
+		
+		protected function removedFromStageHandler(event:Event):void {
+			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			
+			_stageWebView.dispose();
 		}
 		
 		protected function completeHandler(event:Event):void {

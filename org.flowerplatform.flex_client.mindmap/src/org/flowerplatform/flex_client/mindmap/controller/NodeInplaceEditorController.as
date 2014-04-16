@@ -17,6 +17,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap.controller {
+	import flash.display.DisplayObject;
 	import flash.events.FocusEvent;
 	import flash.geom.Rectangle;
 	
@@ -27,8 +28,11 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
 	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
+	
+	import spark.components.RichText;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -41,19 +45,27 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			return model is Node;
 		}
 				
-		override public function activate(context:DiagramShellContext, model:Object):void {			
-			var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);
-			var bounds:Rectangle = controller.getBounds(context, model);
-		
+		override public function activate(context:DiagramShellContext, model:Object):void {
+			var renderer:AbstractMindMapModelRenderer = AbstractMindMapModelRenderer(context.diagramShell.getRendererForModel(context, model));
+			var rendererLabelDisplay:RichText = renderer.getLabelDisplay();
+			var bounds:Rectangle = rendererLabelDisplay.getBounds(DisplayObject(context.diagramShell.diagramRenderer));
+			
 			// create text area (auto grow width & height at CTRL + ENTER) 
 			var textArea:AutoGrowTextArea = new AutoGrowTextArea();
 			textArea.depth = int.MAX_VALUE; // model has depth, so put ied above
 			textArea.x = bounds.x;
 			textArea.y = bounds.y;			
 			textArea.minWidth = bounds.width;
-			textArea.maxWidth = MAX_WIDTH; // needed for width auto grow
+			textArea.maxWidth = renderer.maxWidth; // needed for width auto grow
 			textArea.minHeight = bounds.height;			
-			
+						
+			// get styles from node's labelDisplay renderer
+			textArea.setStyle("fontFamily", rendererLabelDisplay.getStyle("fontFamily"));
+			textArea.setStyle("fontSize", rendererLabelDisplay.getStyle("fontSize"));
+			textArea.setStyle("fontWeight", rendererLabelDisplay.getStyle("fontWeight"));
+			textArea.setStyle("fontStyle", rendererLabelDisplay.getStyle("fontStyle"));
+			textArea.setStyle("color", rendererLabelDisplay.getStyle("color"));
+					
 			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
 			textArea.text = String(titleProvider.getValue(Node(model)));			
 			// set focus on text
@@ -69,10 +81,15 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		override public function commit(context:DiagramShellContext, model:Object):void {		
 			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, 
-				titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text], function(data:Object):void {
-					context.diagramShell.mainToolFinishedItsJob();
-				});
+			
+			if (titleProvider.getValue(Node(model)) != textArea.text) {
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, 
+					titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text], function(data:Object):void {
+						context.diagramShell.mainToolFinishedItsJob();
+					});
+			} else {
+				abort(context, model);
+			}
 		}
 		
 		override public function abort(context:DiagramShellContext, model:Object):void {

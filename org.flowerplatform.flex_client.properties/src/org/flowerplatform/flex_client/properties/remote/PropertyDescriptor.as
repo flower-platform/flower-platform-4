@@ -37,6 +37,8 @@ package org.flowerplatform.flex_client.properties.remote {
 		
 		public var value:Object;
 		
+		public var defaultValue:Object;
+		
 		public var readOnly:Boolean;
 		
 		public var type:String;
@@ -47,9 +49,9 @@ package org.flowerplatform.flex_client.properties.remote {
 		
 		public var possibleValues:ArrayCollection;
 		
-		public var contributeToCreation:Boolean;
+		public var contributesToCreation:Boolean;
 		
-		public var isMandatory:Boolean;
+		public var mandatory:Boolean;
 		
 		override public function toString():String {
 			return StringUtil.substitute("PropertiesDescriptor [name = {0}, title = {1}, category = {2}, " +
@@ -57,7 +59,7 @@ package org.flowerplatform.flex_client.properties.remote {
 				"\ncontributeToCreation = {6}, isMandatory = {7}, orderIndex = {8}]", 
 				name, title, category,
 				type, readOnly, possibleValues,
-				contributeToCreation, isMandatory, orderIndex);
+				contributesToCreation, mandatory, orderIndex);
 		}
 		
 	}

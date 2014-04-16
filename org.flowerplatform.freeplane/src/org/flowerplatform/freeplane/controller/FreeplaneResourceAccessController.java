@@ -64,8 +64,8 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		
 		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
 		
-		try {
-			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File (URLDecoder.decode(rawNodeData.getURL().getPath())));
+		try {		
+			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File(URLDecoder.decode(rawNodeData.getURL().getPath(), "UTF-8")));
 		} catch (Exception e) {
 			return;
 		} finally {
@@ -75,14 +75,14 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	}
 
 	@Override
-	public void reload(String resourceNodeId, ServiceContext context) throws IOException, XMLException {
+	public void reload(String resourceNodeId, ServiceContext context) throws Exception {
 		Node resourceNode = new Node(resourceNodeId);
 		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return;
 		}
 		
 		MapModel model = null;
-		URL url = new File(resourceNode.getIdWithinResource()).toURI().toURL();
+		URL url = ((File) CorePlugin.getInstance().getFileAccessController().getFile(resourceNode.getIdWithinResource())).toURI().toURL();
 		InputStreamReader urlStreamReader = null;
 		try {
 			urlStreamReader = new InputStreamReader(url.openStream());

@@ -184,6 +184,12 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			case CLOUD_SHAPE:
 				rawNodeData.removeExtension(CloudModel.class);
 				break;
+			case CoreConstants.ICONS:
+				int length = rawNodeData.getIcons().size();
+				for (int i = 0; i < length; i++) {
+					rawNodeData.removeIcon();
+				}
+				break;
 			default:
 				break;
 		}

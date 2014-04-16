@@ -37,13 +37,15 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	private String title;
 	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
 	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
-	private boolean contributeToCreation = false;
-	private boolean isMandatory = false;
+	private boolean contributesToCreation = false;
+	private boolean mandatory = false;
 	
 	private boolean readOnly;
 	private List<?> possibleValues;
 	
 	private Boolean hasChangeCheckbox = false;
+	
+	private Object defaultValue = null;
 
 	public String getName() {
 		return name;
@@ -154,29 +156,42 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
-	public boolean isContributeToCreation() {
-		return contributeToCreation;
+	public boolean getContributesToCreation() {
+		return contributesToCreation;
 	}
 
-	public void setContributeToCreation(boolean contributeToCreation) {
-		this.contributeToCreation = contributeToCreation;
+	public void setContributesToCreation(boolean contributeToCreation) {
+		this.contributesToCreation = contributeToCreation;
 	}
 	
-	public PropertyDescriptor setContributeToCreationAs(boolean contributeToCreation) {
-		this.contributeToCreation = contributeToCreation;
+	public PropertyDescriptor setContributesToCreationAs(boolean contributeToCreation) {
+		this.contributesToCreation = contributeToCreation;
 		return this;
 	}
 
-	public boolean getIsMandatory() {
-		return isMandatory;
+	public boolean getMandatory() {
+		return mandatory;
 	}
 
-	public void setIsMandatory(boolean isMandatory) {
-		this.isMandatory = isMandatory;
+	public void setMandatory(boolean mandatory) {
+		this.mandatory = mandatory;
 	}
 	
-	public PropertyDescriptor setIsMandatoryAs(boolean isMandatory) {
-		this.isMandatory = isMandatory;
+	public PropertyDescriptor setMandatoryAs(boolean mandatory) {
+		this.mandatory = mandatory;
+		return this;
+	}
+	
+	public Object getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(Object defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+	
+	public PropertyDescriptor setDefaultValueAs(Object defaultValue) {
+		this.defaultValue = defaultValue;
 		return this;
 	}
 	
@@ -184,10 +199,10 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	public String toString() {
 		return String.format("PropertiesDescriptor [name = %s, title = %s, category = %s, " +
 				"\ntype = %s, readOnly = %b, possibleValues = %s, " +
-				"\ncontributeToCreation = %b, isMandatory = %b, orderIndex = %d]", 
+				"\ncontributesToCreation = %b, mandatory = %b, orderIndex = %d]", 
 				getName(), getTitle(), getCategory(),
 				getType(), getReadOnly(), getPossibleValues(),
-				isContributeToCreation(), getIsMandatory(), getOrderIndex());
+				getContributesToCreation(), getMandatory(), getOrderIndex());
 	}
 	
 }

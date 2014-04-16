@@ -18,12 +18,12 @@
  */
 package org.flowerplatform.flex_client.web {
 	import flash.events.EventDispatcher;
-	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
 	
 	import mx.containers.HBox;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
+	import mx.messaging.messages.ErrorMessage;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -74,45 +74,24 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().perspectives.push(new FlowerPerspective());
 					
-			var hBox:HBox = new HBox();
-			hBox.percentWidth = 100;
-						
-			var btn:Button = new Button();
-			btn.label = "Open Editor";
-			var textInput:TextInput = new TextInput();
-			textInput.width = 400;
-			textInput.text = "(code|self|D:/temp/repo1/fp-repo-config/FAP-FlowerPlatform4.mm)";
-			btn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, textInput.text);
-			});
-			hBox.addChild(btn);
-			hBox.addChild(textInput);
-				
-			var addRootBtn:Button = new Button();
-			addRootBtn.label = "Open Root";
-			addRootBtn.addEventListener(MouseEvent.CLICK, function(evt:MouseEvent):void {
-				CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
-			});
-			hBox.addChild(addRootBtn);
-			
-			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(hBox, 0);		
-
 			var menuBar:GlobalMenuBar = new GlobalMenuBar(CorePlugin.getInstance().globalMenuActionProvider);
 			menuBar.percentWidth = 100;
 			IVisualElementContainer(FlexGlobals.topLevelApplication).addElementAt(menuBar, 0);		
 						
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CorePlugin.VERSION], 
+			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
 				function (result:Object):void {
 					// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 					CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 					ModalSpinner.removeGlobalModalSpinner();
+					
 				},
 				function (event:FaultEvent):void {					
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 					.setTitle(Resources.getMessage('version.error'))
-					.setText(Resources.getMessage('version.error.message', [CorePlugin.VERSION, event.message.body]))
+					.setText(Resources.getMessage('version.error.message', [CoreConstants.VERSION, ErrorMessage(event.message).rootCause.message]))
 					.setWidth(400)
 					.setHeight(300)
 					.showMessageBox();	

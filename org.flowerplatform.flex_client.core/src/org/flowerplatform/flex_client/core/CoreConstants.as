@@ -5,12 +5,19 @@ package org.flowerplatform.flex_client.core {
 	 * @author Cristina Constantinescu
 	 */
 	public class CoreConstants {
+				
+		public static const VERSION:String = "1.0.0.M1_2014-04-01";
 		
 		//////////////////////////////////
 		// Node types
 		//////////////////////////////////
 		
+		public static const TYPE_KEY:String = "type";
+		public static const FILE_SYSTEM_NODE_TYPE:String = "fileSystem";
 		public static const FILE_NODE_TYPE:String = "fileNode";
+		public static const ROOT_TYPE:String = "root";
+		public static const REPOSITORY_TYPE:String = "repository";
+		public static const CODE_TYPE:String = "code";
 		
 		//////////////////////////////////
 		// Node properties
@@ -30,6 +37,10 @@ package org.flowerplatform.flex_client.core {
 		public static const IS_DIRTY:String = "isDirty";
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
+		
+		public static const PROPERTY_DESCRIPTOR:String = "propertyDescriptor";
+		
+		public static const PROPERTY_DEFAULT_FORMAT:String = "{0}.default";
 		
 		//////////////////////////////////
 		// File node properties
@@ -102,5 +113,10 @@ package org.flowerplatform.flex_client.core {
 		public static const NAVIGATE_MENU_ID:String = "navigate";
 		public static const DEBUG:String = "debug";
 		
+		//////////////////////////////////
+		// General
+		//////////////////////////////////
+		
+		public static const FLOWER_PLATFORM:String = "flower-platform";
 	}
 }

@@ -52,7 +52,7 @@ package org.flowerplatform.flexutil.text {
 			}
 			if (event.keyCode == Keyboard.ENTER && event.ctrlKey) {
 				heightInLines++;
-				textDisplay.appendText("\n");
+				textDisplay.insertText("\n");
 			}
 		}
 		

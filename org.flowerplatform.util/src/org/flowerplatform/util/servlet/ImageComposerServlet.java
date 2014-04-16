@@ -62,7 +62,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 		
 		String mapValue = null;
 		String mapKey;
-		if (useFilesFromTempProperty) {
+		if (useFilesFromTemporaryDirectory) {
 			mapKey = requestedFile.intern();
 		} else {
 			// we don't need synchronization if useFilesFromTempProperty is false (so we don't use .intern)
@@ -70,7 +70,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 		}
 		
 		synchronized (mapKey) {
-			if (useFilesFromTempProperty) {
+			if (useFilesFromTemporaryDirectory) {
 				mapValue = tempFilesMap.get(requestedFile);
 				if (mapValue != null) {
 					if (getTempFile(mapValue).exists()) {
@@ -140,7 +140,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 	    	}
 	    	
 	    	FileOutputStream tempOutput = null;
-	    	if (useFilesFromTempProperty) {
+	    	if (useFilesFromTemporaryDirectory) {
 		    	tempOutput = new FileOutputStream(getTempFilePath(mapValue));
 	    	}
 		    	OutputStream output = response.getOutputStream();

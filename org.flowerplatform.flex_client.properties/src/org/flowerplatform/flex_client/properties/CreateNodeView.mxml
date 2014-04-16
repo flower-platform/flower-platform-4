@@ -16,68 +16,88 @@
 			import mx.collections.IList;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.managers.IFocusManagerComponent;
 			import mx.utils.ObjectUtil;
 			
+			import spark.components.FormItem;
+			import spark.components.Label;
+			
+			import org.apache.flex.collections.ArrayList;
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-			import spark.components.Label;
-			
 			public static const SHOW_ALL:String = "showAll";
-			public static const SHOW_CONTRIBUTING_TO_CREATION:String = "showContributingToCreation"; // optional & mandatory 
-			public static const SHOW_MANDATORY:String = "showMandatory";
+			public static const SHOW_ONLY_CONTRIBUTES_TO_CREATION:String = "showOnlyContributingToCreation"; // mandatory & optional
+			public static const SHOW_ONLY_MANDATORY:String = "showOnlyMandatory";
 			
 			public var nodeType:String;
 			
-			public var option:String = SHOW_CONTRIBUTING_TO_CREATION;
+			public var parentNode:Node;
+			
+			public var option:String = SHOW_ONLY_CONTRIBUTES_TO_CREATION;
 			
 			protected var _viewHost:IViewHost;
-			
-			protected var parentNode:Node;
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
 				
 				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 					.getExpectedTypeDescriptor(nodeType).getAdditiveControllers("propertyDescriptor", null);
-				
 				var currentCategory:String = "";
 				for ( var i:int = 0; i < propertyDescriptors.length; i++) {
 					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
-					if (option == SHOW_ALL 
-						|| (propertyDescriptor.contributeToCreation && propertyDescriptor.isMandatory)
-						|| (propertyDescriptor.contributeToCreation && option == SHOW_CONTRIBUTING_TO_CREATION)) {
-						
-						var formItem:PropertyItemRenderer = new PropertyItemRenderer();
-						var itemCategory:String = propertyDescriptor.category;
-						if (itemCategory != currentCategory) {
-							var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
-							currentCategory = itemCategory;
-							categoryItem.label = currentCategory;
-							propertyForm.addElement(categoryItem);
-						}
-						propertyForm.addElement(formItem);
-						if (propertyDescriptor.contributeToCreation) {
-							propertyDescriptor.readOnly = false;
-						}
-						formItem.disableSaveProperty = true;
-						propertyDescriptor.value = null;
-						formItem.data = propertyDescriptor;
+					switch(option) {
+						case SHOW_ALL:
+							addFormItem(propertyDescriptor, currentCategory);
+							break;
+						case SHOW_ONLY_CONTRIBUTES_TO_CREATION:
+							if (propertyDescriptor.contributesToCreation) {
+								addFormItem(propertyDescriptor, currentCategory);
+							}
+							break;
+						case SHOW_ONLY_MANDATORY:
+						default:
+							if (propertyDescriptor.contributesToCreation && propertyDescriptor.mandatory) {
+								addFormItem(propertyDescriptor, currentCategory);
+							}
+							break;
 					}
 				}
+				
 				// TODO MG: remove after the custom UI logic is implemented
 				if (nodeType == CoreConstants.FILE_NODE_TYPE) {
 					var label:Label = new Label();
 					label.text = "Please append the .mm extension to add a MindMap file.";
 					propertyForm.addElement(label);
 				}
+				focusManager.setFocus(BasicPropertyRenderer(FormItem(propertyForm.getElementAt(0)).getElementAt(0)).getElementAt(0) as IFocusManagerComponent)
+				
 			}
 			
+			private function addFormItem(propertyDescriptor:PropertyDescriptor, currentCategory:String):void {
+				var formItem:PropertyItemRenderer = new PropertyItemRenderer();
+				var itemCategory:String = propertyDescriptor.category;
+				if (itemCategory != currentCategory) {
+					var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
+					currentCategory = itemCategory;
+					categoryItem.label = currentCategory;
+					propertyForm.addElement(categoryItem);
+				}
+				propertyForm.addElement(formItem);
+				if (propertyDescriptor.contributesToCreation) {
+					propertyDescriptor.readOnly = false;
+				}
+				formItem.savePropertyEnabled = false;
+				formItem.data = propertyDescriptor;
+			}
 			
 			public function get viewHost():IViewHost {
 				return _viewHost;
@@ -85,54 +105,51 @@
 			
 			public function set viewHost(value:IViewHost):void {
 				_viewHost = value;
-			}
-			
-			public function setParentNode(value:Node):void {
-				parentNode = value;
+				_viewHost.setIcon(Resources.addIcon);
 			}
 			
 			public function getActions(selection:IList):Vector.<IAction> {
 				return null;
 			}
 			
-			protected function createNode(evt:MouseEvent = null):void {
+			protected function okHandler(evt:MouseEvent = null):void {
+				var propertiesToSetAfterAddingNode:ArrayList = new ArrayList();
 				var properties:Object = new Object();
 				properties.type = nodeType;
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
-						if (propertyItemRenderer.data.isMandatory && propertyItemRenderer.data.value == "" && propertyItemRenderer.data.type != "Boolean") {
-							Alert.show("\'" + propertyItemRenderer.data[CoreConstants.NAME] + "\' field is mandatory", "Field required", Alert.OK, null, null, null, Alert.OK);
+						if (PropertyDescriptor(propertyItemRenderer.data).mandatory && propertyItemRenderer.data.value == "" && propertyItemRenderer.data.type != "Boolean") {
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+								.setText(Resources.getMessage("field_required_title"))
+								.setTitle("\'" + propertyItemRenderer.data[CoreConstants.NAME] + "\' " + Resources.getMessage("field_is_mandatory_message"))
+								.setWidth(300)
+								.setHeight(200)
+								.showMessageBox();
 							return;
 						}
-						if (propertyItemRenderer.data.contributeToCreation) {
+						if (PropertyDescriptor(propertyItemRenderer.data).contributesToCreation) {
 							properties[propertyItemRenderer.data[CoreConstants.NAME]] = propertyItemRenderer.data.value;
+						} else {
+							if (propertyItemRenderer.data.value != null && propertyItemRenderer.data.value != "") {
+								propertiesToSetAfterAddingNode.addItem(propertyItemRenderer.data);
+							}
 						}
-							
 					}
-					
 				}
 				
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null], 
 					function(result:Object):void {
-						if (option == SHOW_ALL) {
 							// setProperty for properties that don't contribute to creation.
-							for (var i:int = 0; i < propertyForm.numElements; i++) {
-								if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
-									propertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
-									if (!propertyItemRenderer.data.contributeToCreation) {
-										if (propertyItemRenderer.data.value != null && propertyItemRenderer.data.value != "") {
-											CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result, propertyItemRenderer.data[CoreConstants.NAME], propertyItemRenderer.data.value],null)
-										}
-									}
-								}
-							}
+						for (var i:int=0; i < propertiesToSetAfterAddingNode.length; i++) {
+							var propDescriptor:PropertyDescriptor = PropertyDescriptor(propertiesToSetAfterAddingNode.getItemAt(i));
+							CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result, propDescriptor.name, propDescriptor.value], null);
 						}
-						cancel();
+						cancelHandler();
 					});				
 			}
 			
-			protected function cancel():void {
+			protected function cancelHandler():void {
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			
@@ -141,12 +158,12 @@
 
 	<s:Scroller width="100%" height="100%">
 		<s:Group width="100%" height="100%">			
-			<s:Form id="propertyForm" width="100%" height="100%" >
+			<s:Form id="propertyForm" width="100%" height="100%">
 			</s:Form>
 		</s:Group>
 	</s:Scroller>
 	<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
-		<s:Button id="okButton" label="OK" click="createNode(event)"/>
-		<s:Button id="cancelButton" label="Cancel" click="cancel()"/>
+		<s:Button id="okButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okHandler(event)"/>
+		<s:Button id="cancelButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancelHandler()"/>
 	</s:HGroup>
 </s:Group>

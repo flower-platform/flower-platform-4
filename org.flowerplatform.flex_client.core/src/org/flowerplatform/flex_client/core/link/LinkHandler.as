@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.core.link {
 //				}
 				
 				for each (var file:String in files.split(CoreConstants.OPEN_RESOURCES_SEPARATOR)) {
+					file = decodeURI(file);
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [file], 
 						function(node:Node):void {
 							CorePlugin.getInstance().openEditor(node);

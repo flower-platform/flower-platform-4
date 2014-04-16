@@ -11,5 +11,5 @@
                value="org.flowerplatform.js_client.server.ServicesConfig">
          </init-param>
       </servlet>
-	</extension>
+   </extension>
 </plugin>

@@ -15,12 +15,13 @@
 			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
-
 			
-			public var itemRenderer:Class;
 			public var itemRenderedInstance:BasicPropertyRenderer;
-			public var disableSaveProperty:Boolean = false;
+			
+			public var savePropertyEnabled:Boolean = true;
+			
 			public var defaultValue:Object;
+			
 			// Internal variable for the property value.
 			private var _data:Object;
 			
@@ -54,20 +55,13 @@
 				
 				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);			
 					
-				if (itemRenderedInstance != null && itemRenderedInstance is factory.generator) {
-					trace("Reciclying item renderer");
-				} else {
-					if (itemRenderedInstance != null) {
-					}
-					itemRenderedInstance = factory.newInstance(false);
-					itemRenderedInstance.percentWidth = 100;
-					itemRenderedInstance.percentHeight = 100;
-					itemRenderedInstance.disableSaveProperty = disableSaveProperty;
-					this.addElement(itemRenderedInstance);
-				}
+				itemRenderedInstance = factory.newInstance(false);
+				itemRenderedInstance.percentWidth = 100;
+				itemRenderedInstance.percentHeight = 100;
+				itemRenderedInstance.savePropertyEnabled = savePropertyEnabled;
+				this.addElement(itemRenderedInstance);
 				
 				itemRenderedInstance.data = propertyDescriptor;
-//				itemRenderedInstance.defaultValue = defaultValu
 			}
 
 		]]>

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
@@ -37,13 +38,14 @@ public class NodeServiceRemote {
 	 */
 	public String addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
 		Node parent = new Node(parentFullNodeId);
-		Node child = new Node((String) properties.get(TYPE_KEY), parent.getResource(), null, null);
+		
+		Node child = new Node((String) properties.get(TYPE_KEY), parent.getType().equals(CoreConstants.FILE_SYSTEM_NODE_TYPE) ? parent.getFullNodeId() : parent.getResource(), null, null);
 		ServiceContext context = new ServiceContext();
 
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-		    context.add(entry.getKey(), entry.getValue());
+			context.add(entry.getKey(), entry.getValue());
 		}
-		CorePlugin.getInstance().getNodeService().addChild(parent, child, insertBeforeFullNodeId != null ? new Node(insertBeforeFullNodeId) : null, context);
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
 		return child.getFullNodeId();
 	}
 	

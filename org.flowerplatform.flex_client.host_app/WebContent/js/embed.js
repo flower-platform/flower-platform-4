@@ -32,6 +32,14 @@ function callFlexCallback(callback /* : String */, args) /* : Function */ {
 	parent.getFlexApp()[callback](JSON.stringify(args));
 }
 
+//function getJSessionId() {
+//	return parent.getFlexApp().getJSessionId();
+//}
+
 function overrideMeHandler() {
 	$("#override").text("Override from Flex! Original is in test.js");
+}
+
+function setFlexSessionId(sessionId) {
+	console.log(sessionId);
 }

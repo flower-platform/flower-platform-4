@@ -4,10 +4,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.events.ColorPickerEvent;
 	import mx.events.FlexEvent;
 	
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.Utils;
-	
-	import spark.events.ColorChangeEvent;
 	
 	/**
 	 * @author Cristina Constantinescu

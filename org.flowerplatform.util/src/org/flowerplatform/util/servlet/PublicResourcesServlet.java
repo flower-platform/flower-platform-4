@@ -56,16 +56,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	
     private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
 
-	protected static PublicResourcesServlet INSTANCE;
-
-	public static PublicResourcesServlet getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new PublicResourcesServlet();
-		}
-		return INSTANCE;
-	}
-
-	private static void close(Closeable resource) {
+    private static void close(Closeable resource) {
         if (resource != null) {
             try {
                 resource.close();
@@ -164,7 +155,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		// if the file is in a zip, search first in the Temp folder
 		if (fileInsideZipArchive != null) {
 			mapKey = createMapKey(file, fileInsideZipArchive).intern();
-			if (useFilesFromTempProperty) {
+			if (useFilesFromTemporaryDirectory) {
 				mapValue = tempFilesMap.get(mapKey);
 			}
 		} else {
@@ -173,7 +164,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 		}
 		
 		synchronized (mapKey) {
-			if (useFilesFromTempProperty) {
+			if (useFilesFromTemporaryDirectory) {
 				if (fileInsideZipArchive != null) {
 					if (mapValue != null) { // file exists in 'tempFilesMap'
 						if (getTempFile(mapValue).exists()) {
@@ -250,7 +241,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	            	input = pair.a;
 	            	inputCloseable = pair.b;
 	            	
-					if (useFilesFromTempProperty) {
+					if (useFilesFromTemporaryDirectory) {
 						// write the file from archive in Temp folder
 						if (!UtilConstants.TEMP_FOLDER.exists()) {
 							UtilConstants.TEMP_FOLDER.mkdir();

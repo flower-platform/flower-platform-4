@@ -29,8 +29,9 @@ package org.flowerplatform.flex_client.core.editor.action {
 		
 		public function OpenAction() {
 			super();
-			
+			orderIndex = 20;
 			label = Resources.getMessage("editor.action.open");
+			icon = Resources.openIcon;
 		}
 		
 		override public function get visible():Boolean {			

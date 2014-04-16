@@ -1,4 +1,6 @@
 package org.flowerplatform.flex_client.mindmap {
+	import flash.system.Capabilities;
+	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
@@ -10,6 +12,8 @@ package org.flowerplatform.flex_client.mindmap {
 		//////////////////////////////////
 		// Node types and categories
 		//////////////////////////////////
+		
+		public static const MINDMAP_NODE_TYPE:String = "freeplaneNode"
 		
 		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "freePlaneMindMap";
 		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "freePlanePersistence";
@@ -56,6 +60,13 @@ package org.flowerplatform.flex_client.mindmap {
 			+ "forward;back;up;down;"
 			+ "addition;subtraction;multiplication;division";
 
+		
+		/**
+		 * Font size correction.
+		 * When screenDPI = 72 DPI, the font size is a little bit too small to display, so use 92 DPI instead.
+		 */ 
+		public static const FONT_SCALE_FACTOR:Number = (Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72;
+		
 		//////////////////////////////////
 		// Editor
 		//////////////////////////////////

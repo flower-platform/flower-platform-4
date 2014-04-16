@@ -12,6 +12,7 @@
     // -->
     <head>
         <title>Flower Platform</title>
+         <link rel="SHORTCUT ICON" href="favicon.ico"/>
         <meta name="google" value="notranslate" />         
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 

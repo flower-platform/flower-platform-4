@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,9 +24,19 @@ public abstract class ResourcesServlet extends HttpServlet {
 	protected static int counter = 0;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
-	
-	//TODO replace with flower property
-	protected static boolean useFilesFromTempProperty = false; 
+		
+	protected boolean useFilesFromTemporaryDirectory = false; 
+		
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException {		
+		super.init(config);
+		ServletUtils.addAllAdditionalAttributesToServletContext(getServletContext());	
+		
+		useFilesFromTemporaryDirectory = Boolean.valueOf((String) getServletContext().getAttribute(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY));
+	}
 	
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {

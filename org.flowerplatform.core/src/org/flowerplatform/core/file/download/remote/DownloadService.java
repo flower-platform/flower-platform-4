@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.FlowerProperties.AddBooleanProperty;
+import org.flowerplatform.core.FlowerProperties.AddProperty;
 import org.flowerplatform.core.file.download.DownloadInfo;
 import org.flowerplatform.core.file.download.DownloadServlet;
 import org.flowerplatform.core.node.remote.Node;
@@ -43,10 +45,12 @@ public class DownloadService implements ISessionListener {
 	private static final String DOWNLOAD_TEMP_FOLDER_NAME = "download";
 	private static final String ARCHIVE_EXTENSION = ".zip";
 	
-	// TODO CC: make properties
-	private final long downloadCleanSchedulerTimestamp = 3600;
-	private final boolean deleteFilesAfterSessionRemoved = true;
-	
+	private static final String PROP_DOWNLOAD_CLEAN_SCHEDULER = "download.clean-scheduler";
+	private static final String PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER = "3600";
+
+	protected static final String PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT = "download.deleteFilesAfterDisconnect";
+	protected static final String PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT = "true";
+
 	private Map<String, DownloadInfo> downloadIdToDownloadInfo = new ConcurrentHashMap<String, DownloadInfo>();
 	
 	private ScheduledExecutorService scheduler = CorePlugin.getInstance().getScheduledExecutorServiceFactory().createScheduledExecutorService();
@@ -62,20 +66,27 @@ public class DownloadService implements ISessionListener {
 		@Override
 		public void run() {
 			for (Map.Entry<String, DownloadInfo> entry : downloadIdToDownloadInfo.entrySet()) {	
-				if (entry.getValue().getTimestamp()/100 < System.currentTimeMillis()/100 - downloadCleanSchedulerTimestamp) {
+				if (entry.getValue().getTimestamp()/100 < System.currentTimeMillis()/100 - Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER))) {
 					removeDownloadInfo(entry.getKey());
 				}
 			}
-			parentScheduler.schedule(this, downloadCleanSchedulerTimestamp, TimeUnit.SECONDS);
+			parentScheduler.schedule(this, Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
 		}
 	}
 	
 	public DownloadService() {
-		super();
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER) {			
+			@Override
+			protected String validateProperty(String input) {				
+				return null;
+			}
+		});
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
+				
 		CorePlugin.getInstance().addSessionListener(this);
 		
 		deleteTemporaryDownloadFolder();
-		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), downloadCleanSchedulerTimestamp, TimeUnit.SECONDS);
+		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
 	}
 	
 	public DownloadInfo getDownloadInfo(String downloadId) {
@@ -114,7 +125,7 @@ public class DownloadService implements ISessionListener {
 
 	@Override
 	public void sessionRemoved(String sessionId) {
-		if (deleteFilesAfterSessionRemoved) {			
+		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT))) {			
 			for (Map.Entry<String, DownloadInfo> entry : downloadIdToDownloadInfo.entrySet()) {
 				if (entry.getValue().getSessionId().equals(sessionId)) {
 					removeDownloadInfo(entry.getKey());
@@ -175,7 +186,7 @@ public class DownloadService implements ISessionListener {
 			// create ZIP archive
 			List<String> paths = new ArrayList<String>();
 			for (Object file : files) {
-				paths.add(CorePlugin.getInstance().getFileAccessController().getPath(file));					
+				paths.add(CorePlugin.getInstance().getFileAccessController().getAbsolutePath(file));					
 			}			
 			try {
 				CoreUtils.zipFiles(paths, zipPath, String.valueOf(timestamp));

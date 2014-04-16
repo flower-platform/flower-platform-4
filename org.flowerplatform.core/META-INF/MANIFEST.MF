@@ -4,6 +4,7 @@ Bundle-Name: Core
 Bundle-SymbolicName: org.flowerplatform.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Eclipse-BuddyPolicy: registered
 Export-Package: org.flowerplatform.core,
  org.flowerplatform.core.file,
  org.flowerplatform.core.file.download,
@@ -17,11 +18,11 @@ Export-Package: org.flowerplatform.core,
 Bundle-ClassPath: lib/commons-fileupload-1.3.1.jar,
  lib/commons-io-2.4.jar,
  .
-Require-Bundle: org.flowerplatform.util,
- org.eclipse.osgi,
+Require-Bundle: org.eclipse.osgi,
  org.eclipse.equinox.http.registry,
- org.flowerplatform.resources
+ org.flowerplatform.resources,
+ org.flowerplatform.util
 Bundle-Activator: org.flowerplatform.core.CorePlugin
-Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet,
  javax.servlet.http
+Bundle-ActivationPolicy: lazy

@@ -3,6 +3,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_server_account {
 	/**
 	 * @author Sebastian Solomon
 	 */
+	[Bindable]
 	public class ServerAccount {
 			public var friendlyName:String;
 			
@@ -14,13 +15,6 @@ package org.flowerplatform.flex_client.host_app.mobile.view_server_account {
 			
 			public var isDefault:Boolean;
 			
-//		public function ServerAccount() {
-//			friendlyName = "friendlyName";
-//			host = "host";
-//			user = "user";
-//			password = "password";
-//		}
-		
 		public function setData(data:Object):void {
 			friendlyName = data.friendlyName;
 			host = data.host;

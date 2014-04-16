@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
@@ -24,7 +25,7 @@ public class MindMapFileAddNodeController extends AddNodeController {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void addNode(Node node, Node child, Node insertBeforeNode, ServiceContext context) {
+	public void addNode(Node node, Node child, ServiceContext context) {
 		String filename = (String) child.getOrPopulateProperties().get(CoreConstants.NAME);
 		if (!filename.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
 			return;
@@ -32,8 +33,8 @@ public class MindMapFileAddNodeController extends AddNodeController {
 		
 		try {
 			MapModel model = Controller.getCurrentModeController().getMapController().newModel();
-			((MFileManager) UrlManager.getController()).writeToFile(model, new File (child.getIdWithinResource()));
-		} catch (IOException e) {
+			((MFileManager) UrlManager.getController()).writeToFile(model, (File) CorePlugin.getInstance().getFileAccessController().getFile(child.getIdWithinResource()));
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

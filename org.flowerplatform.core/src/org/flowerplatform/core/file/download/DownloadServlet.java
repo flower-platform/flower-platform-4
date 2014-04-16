@@ -37,9 +37,15 @@ public class DownloadServlet extends ResourcesServlet {
 			// no data to download
 			return;
 		}
-		File file = new File(downloadInfo.getPath());			
-		if (!file.exists()) {
-			return;
+		
+		File file = null;
+		try {
+			file = new File(downloadInfo.getPath());			
+			if (!file.exists()) {
+				return;
+			}
+		} catch (Exception e) {
+			throw new IOException(e);
 		}
 		logger.trace("Downloading: {}", file.getAbsolutePath());
 		
