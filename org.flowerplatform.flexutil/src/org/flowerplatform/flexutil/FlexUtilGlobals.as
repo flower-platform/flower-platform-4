@@ -17,7 +17,6 @@
  * license-end
  */
 package org.flowerplatform.flexutil {
-	import mx.collections.ArrayCollection;
 	import mx.utils.LoaderUtil;
 	
 	import spark.core.ContentCache;
@@ -25,7 +24,6 @@ package org.flowerplatform.flexutil {
 	import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
 	import org.flowerplatform.flexutil.layout.ComposedViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
-	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	import org.flowerplatform.flexutil.plugin.FlexPluginManager;
 	import org.flowerplatform.flexutil.popup.IMessageBoxFactory;
 	import org.flowerplatform.flexutil.popup.IPopupHandlerFactory;
@@ -51,7 +49,6 @@ package org.flowerplatform.flexutil {
 			}
 			return _keyBindings;
 		}
-
 		
 		public var composedViewProvider:ComposedViewProvider = new ComposedViewProvider();
 		

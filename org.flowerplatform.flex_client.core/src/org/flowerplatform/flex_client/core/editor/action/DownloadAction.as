@@ -4,8 +4,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import flash.net.navigateToURL;
 	
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
-	import mx.core.FlexGlobals;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -13,9 +11,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.action.MultipleSelectionActionBase;
-	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
 	/**
 	 * @author Cristina Constantinescu

@@ -17,13 +17,6 @@
  * license-end
  */
 package org.flowerplatform.flexutil.plugin {
-	import flash.display.Loader;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.net.URLRequest;
-	import flash.system.ApplicationDomain;
-	import flash.system.LoaderContext;
-	
 	import mx.collections.ArrayCollection;
 
 	/**

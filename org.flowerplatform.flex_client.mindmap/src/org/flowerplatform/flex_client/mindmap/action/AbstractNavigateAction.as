@@ -193,8 +193,10 @@ package org.flowerplatform.flex_client.mindmap.action {
 			if (!(editor is MindMapEditorFrontend)) { // not a mindmap editor
 				return false;
 			}
-			// has at least one node selected
-			return MindMapEditorFrontend(editor).diagramShell.mainSelectedItem != null && MindMapEditorFrontend(editor).diagramShell.mainSelectedItem is Node;
+			
+			return MindMapEditorFrontend(editor).diagramShell != null && // may happen in mobile, at startup
+				MindMapEditorFrontend(editor).diagramShell.mainSelectedItem != null && // has at least one node selected 
+				MindMapEditorFrontend(editor).diagramShell.mainSelectedItem is Node;
 		}
 		
 		override public function run():void {

@@ -19,12 +19,10 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeSelectionRenderer;
-	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
