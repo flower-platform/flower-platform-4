@@ -204,7 +204,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(model, property, oldValue, value));
 		}
 		
-		protected function getChildrenBasedOnSide(context:DiagramShellContext, model:Object, side:int = 0):IList {
+		public function getChildrenBasedOnSide(context:DiagramShellContext, model:Object, side:int = 0):IList {
 			if (side == 0) {
 				side = getModelController(context, model).getSide(context, model);
 			}

@@ -282,23 +282,23 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 * <p>
 		 * If the node is subscribable, first subscribe, then request the children if the subscribe was successful.
 		 */
-		public function requestChildren(context:DiagramShellContext, node:Node):void {		
+		public function requestChildren(context:DiagramShellContext, node:Node, handler:Function = null):void {		
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
 			var isSubscribable:Boolean = node == null ? false : node.properties[CoreConstants.IS_SUBSCRIBABLE];
 			if (!isSubscribable) {
-				requestChildrenFromServer(context, node);
+				requestChildrenFromServer(context, node, handler);
 			} else {
 				subscribeToSelfOrParentResource(node.fullNodeId, function(resourceNode:Node):void {
-						requestChildrenFromServer(context, node);
+						requestChildrenFromServer(context, node, handler);
 					});
 			}
 		}
 		
-		private function requestChildrenFromServer(context:DiagramShellContext, node:Node):void {
+		private function requestChildrenFromServer(context:DiagramShellContext, node:Node, handler:Function = null):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
 				[node == null ? Node(MindMapRootModelWrapper(context.diagramShell.rootModel).model).fullNodeId : node.fullNodeId, true], 
-				function (result:Object):void {requestChildrenHandler(context, node, ArrayCollection(result));});
+				function (result:Object):void {requestChildrenHandler(context, node, ArrayCollection(result)); if (handler) handler();});
 		}
 		
 		public function requestChildrenHandler(context:DiagramShellContext, node:Node, children:ArrayCollection):void {

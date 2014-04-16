@@ -4,6 +4,12 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageUpAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeRightAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
@@ -108,6 +114,19 @@ package org.flowerplatform.flex_client.mindmap {
 			CorePlugin.getInstance().contentTypeRegistry.defaultContentType = MindMapConstants.MINDMAP_CONTENT_TYPE;
 			CorePlugin.getInstance().contentTypeRegistry[MindMapConstants.MINDMAP_CONTENT_TYPE] = mindMapEditorDescriptor;
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);	
+			
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeUpAction());
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeDownAction());
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageDownAction());
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageUpAction());
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeLeftAction());
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeRightAction());
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeUpAction(true));
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeDownAction(true));
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageDownAction(true));
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageUpAction(true));
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeLeftAction(true));
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeRightAction(true));
 		}
 		
 		override protected function registerMessageBundle():void {
