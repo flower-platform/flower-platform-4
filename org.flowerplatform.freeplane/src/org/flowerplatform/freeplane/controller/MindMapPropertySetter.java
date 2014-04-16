@@ -13,6 +13,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
@@ -38,6 +39,7 @@ import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 import org.freeplane.features.nodestyle.NodeStyleModel;
+import org.freeplane.features.note.NoteModel;
 import org.freeplane.features.styles.IStyle;
 import org.freeplane.features.styles.LogicalStyleModel;
 import org.freeplane.features.styles.MapStyleModel;
@@ -101,19 +103,16 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				
 				isPropertySet = true;
 				break;
-			case "note":
+			case NOTE:
 				String note = (String) wrapper.getPropertyValue();
-				if (note.length() > 0) {
-					// TODO
-				} else {
-					// TODO
-				}
-				node.getProperties().put("note", note);
+				NoteModel.createNote(rawNodeData).setHtml(note);
+				addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+				addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
+				node.getProperties().put(NOTE, note);
 				break;
 			case FONT_FAMILY:	
 				String fontFamily = (String) wrapper.getPropertyValue();
-				NodeStyleModel styleModel = NodeStyleModel.createNodeStyleModel(rawNodeData);
-				styleModel.setFontFamilyName(fontFamily);	
+				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);
 				isPropertySet = true;
 				break;
 			case FONT_SIZE:	
@@ -184,7 +183,9 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 					rawNodeData.removeExtension(LogicalStyleModel.class);
 				}
 				isPropertySet = true;
-				addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+				if (addAdditionalSetPropertyUpdatesFor == null) {
+					addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+				}
 				break;
 		}
 				

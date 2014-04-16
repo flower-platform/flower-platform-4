@@ -10,6 +10,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
@@ -76,12 +77,6 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 				sb.append(CoreConstants.ICONS_SEPARATOR);
 			}
 			
-			// notes icon
-			if (NoteModel.getNoteText(rawNodeData) != null && NoteModel.getNoteText(rawNodeData).length() > 0) {
-				sb.append(ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/" + "knotes.png"));
-				sb.append(CoreConstants.ICONS_SEPARATOR);
-			}
-			
 			if (sb.length() > 0) { // remove last icons separator
 				node.getProperties().put(CoreConstants.ICONS, sb.substring(0, sb.length() - 1));
 			} else {
@@ -133,8 +128,8 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		
 		// note
 		String text = NoteModel.getNoteText(rawNodeData);
-		if (text != null) {
-			node.getProperties().put("note", text);
+		if (text != null && text.length() > 0) {
+			node.getProperties().put(NOTE, text);
 		}
 	}
 

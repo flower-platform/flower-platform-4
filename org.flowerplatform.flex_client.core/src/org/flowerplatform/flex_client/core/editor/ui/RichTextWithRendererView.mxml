@@ -59,6 +59,8 @@
 					renderer.data = rendererModel;
 					var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
 					textEditor.text = String(titleProvider.getValue(rendererModel));
+				} else {
+					_viewhost.setIcon(Resources.mindmap_knotesIcon);
 				}
 			}
 			

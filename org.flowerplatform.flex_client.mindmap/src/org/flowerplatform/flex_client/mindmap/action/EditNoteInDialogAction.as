@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.RichTextWithRendererView;
+	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -40,9 +41,9 @@ package org.flowerplatform.flex_client.mindmap.action {
 		public function EditNoteInDialogAction(descriptor:AddChildDescriptor = null)	{
 			super();
 				
-			label = "Notes";
+			label = Resources.getMessage("edit_note_in_dialog_label");
 			icon = Resources.mindmap_knotesIcon;
-//			orderIndex = descriptor.orderIndex;
+			orderIndex = 90;
 		}
 		
 		override public function get visible():Boolean {	
@@ -62,14 +63,14 @@ package org.flowerplatform.flex_client.mindmap.action {
 			}
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-				.setTitle("Note")
+				.setTitle(Resources.getMessage("note_title"))
 				.setViewContent(richTextWithRendererView)
 				.show();
 		}
 		
 		public function handleDialogResult(result:Object):void {
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selectedNode.fullNodeId, 
-				"note", result]);
+				MindMapConstants.NOTE, result]);
 		}
 		
 	}

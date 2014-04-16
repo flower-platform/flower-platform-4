@@ -17,5 +17,5 @@
 			<s:SolidColor color="white" alpha="0.95"/>
 		</s:fill>
 	</s:Rect>	
-	<s:RichText id="noteText" paddingRight="5"/>
+	<s:RichText id="noteText" paddingRight="5" paddingLeft="5" paddingTop="5" paddingBottom="5"/>
 </s:Group>

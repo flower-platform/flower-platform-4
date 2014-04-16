@@ -7,12 +7,16 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import flashx.textLayout.conversion.TextConverter;
 	
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
 	import org.flowerplatform.flex_client.mindmap.ui.NoteComponentExtension;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
+	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -83,6 +87,15 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 						
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
 			super.nodeUpdatedHandler(event);
+			
+			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
+			var icon:String = iconsProvider.getValue(node) as String;
+			
+			if (node.properties.note != null && String(node.properties.note).length > 0) {
+				var noteIcon:String = Resources.getResourceUrl("/images/mindmap/knotes.png");   
+				icon = noteIcon + (icon == null ? "" : (Utils.ICONS_SEPARATOR + icon));
+				icons = new FlowerArrayList(icon.split(Utils.ICONS_SEPARATOR));
+			} 
 			
 			var refreshNodePositions:Boolean = false;
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
@@ -158,12 +171,13 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		override protected function mouseOverHandler(event:MouseEvent):void {
 			super.mouseOverHandler(event);
-			if (node.properties.hasOwnProperty("note") && String(node.properties.note).length > 0 && noteComponentExtension.parent == null) {
+			if (node.properties.hasOwnProperty(MindMapConstants.NOTE) && String(node.properties.note).length > 0 && noteComponentExtension.parent == null) {
 				var text:String = String(node.properties.note);
 				text = Utils.getCompatibleHTMLText(text);
 				// if text contains html tag, display it as html, otherwise plain text
 				noteComponentExtension.noteText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
 				DiagramRenderer(mindMapDiagramShell.diagramRenderer).addElement(noteComponentExtension)
+					
 				if (noteComponentExtension.parent != null) {
 					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
 					noteComponentExtension.x = dynamicObject.x ;

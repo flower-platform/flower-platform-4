@@ -21,6 +21,8 @@ public class MindMapConstants {
 	// Node properties
 	//////////////////////////////////
 	
+	public static final String NOTE = "note";
+	
 	public static final List<String> FONT_SIZES = new ArrayList<>();
 	static {
 		for (int i = 1; i <= 72; i++) {
