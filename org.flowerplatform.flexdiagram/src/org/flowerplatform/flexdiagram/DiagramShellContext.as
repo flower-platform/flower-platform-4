@@ -5,7 +5,7 @@ package org.flowerplatform.flexdiagram {
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
-	public class DiagramShellContext extends Dictionary {
+	public dynamic class DiagramShellContext extends Dictionary {
 		
 		public var diagramShell:DiagramShell;
 		

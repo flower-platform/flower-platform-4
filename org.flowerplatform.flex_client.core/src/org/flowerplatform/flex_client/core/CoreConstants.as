@@ -49,6 +49,12 @@ package org.flowerplatform.flex_client.core {
 		public static const FILE_IS_DIRECTORY:String = "isDirectory";
 		
 		//////////////////////////////////
+		// Context
+		//////////////////////////////////
+		
+		public static const HANDLER:String = "handler";
+		
+		//////////////////////////////////
 		// Controllers
 		//////////////////////////////////
 		

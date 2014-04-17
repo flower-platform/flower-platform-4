@@ -56,6 +56,9 @@
 			}
 						
 			protected function handleTargetMoveResize(event:Event):void {
+				if (event == null || event is ResizeEvent) { // make all node visible if selected
+					context.diagramShell.makeModelRendererVisible(model, context);
+				}
 				setLayoutBoundsPosition(target.x, target.y);
 				setLayoutBoundsSize(target.width, target.height);
 			}
