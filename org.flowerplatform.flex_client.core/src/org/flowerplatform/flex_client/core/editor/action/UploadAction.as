@@ -28,7 +28,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}	
 		
 		override protected function isVisibleForSelectedElement(element:Object):Boolean {
-			return element is Node && Node(element).type == CoreConstants.FILE_NODE_TYPE && Node(element).properties[CoreConstants.FILE_IS_DIRECTORY];
+			return element is Node && (Node(element).type == CoreConstants.FILE_NODE_TYPE && Node(element).properties[CoreConstants.FILE_IS_DIRECTORY] || Node(element).type == CoreConstants.FILE_SYSTEM_NODE_TYPE);
 		}
 		
 		override public function run():void {	
