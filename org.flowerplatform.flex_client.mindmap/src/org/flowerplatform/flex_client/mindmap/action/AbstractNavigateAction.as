@@ -199,7 +199,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 		}
 		
 		override public function get showInMenu():Boolean {
-			return true;
+			return false;
 		}
 		
 		override public function get visible():Boolean {
