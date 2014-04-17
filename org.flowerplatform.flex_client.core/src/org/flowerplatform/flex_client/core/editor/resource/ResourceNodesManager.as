@@ -1,4 +1,6 @@
 package org.flowerplatform.flex_client.core.editor.resource {
+	import flash.ui.Keyboard;
+	
 	import mx.collections.ArrayList;
 	import mx.core.UIComponent;
 	
@@ -29,7 +31,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function get saveAction():SaveAction {
 			if (_saveAction == null) {
 				_saveAction = new SaveAction();
-				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, "s"), saveAction); // Ctrl + S
+				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.S), saveAction); // Ctrl + S
 			}
 			return _saveAction;
 		}
@@ -37,7 +39,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function get saveAllAction():SaveAllAction {
 			if (_saveAllAction == null) {
 				_saveAllAction = new SaveAllAction();
-				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, true, "s"), saveAllAction); // Ctrl + Shift + S
+				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, true, false, Keyboard.S), saveAllAction); // Ctrl + Shift + S
 			}
 			return _saveAllAction;
 		}

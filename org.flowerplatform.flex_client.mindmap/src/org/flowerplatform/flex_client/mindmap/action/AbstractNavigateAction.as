@@ -19,6 +19,9 @@
 package org.flowerplatform.flex_client.mindmap.action {
 	
 	import flash.geom.Point;
+	import flash.net.getClassByAlias;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
@@ -26,16 +29,19 @@ package org.flowerplatform.flex_client.mindmap.action {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
+	import org.flowerplatform.flexutil.shortcut.Shortcut;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -44,10 +50,14 @@ package org.flowerplatform.flex_client.mindmap.action {
 		
 		protected var appendNodesToCurrentSelection:Boolean = false;
 		
-		public function AbstractNavigateAction(label:String, appendNodesToCurrentSelection:Boolean = false) {
-			this.parentId = CoreConstants.NAVIGATE_MENU_ID;
+		public function AbstractNavigateAction(label:String, shortcut:Shortcut, appendNodesToCurrentSelection:Boolean = false) {
+			if (appendNodesToCurrentSelection) {
+				this.id += "+";
+			}
 			this.appendNodesToCurrentSelection = appendNodesToCurrentSelection;
 			this.label = appendNodesToCurrentSelection ? Resources.getMessage("mindmap.navigate.action.append", [label]) : label;
+			
+			FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, id);
 		}
 		
 		private function getSibling(node:Node, context:DiagramShellContext, side:int, previous:Boolean):Node {
@@ -93,11 +103,14 @@ package org.flowerplatform.flex_client.mindmap.action {
 			} while (sibling == null && parent != null);
 								
 			if (sibling != null) {
-				
-				// sibling found -> iterate on sibling's branch and try to get the first/last child having the depth closer to the initial node's depth -> that will be our new sibling
-				children = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, sibling, side);
-				while (context.diagramShell.getDynamicObject(context, sibling).depth < context.diagramShell.getDynamicObject(context, node).depth && children.length > 0) {
-					sibling = Node(children.getItemAt(down ? 0 : children.length - 1));
+				// sibling found -> iterate on sibling's branch and try to get the first/last child having the depth closer to the initial node's depth -> that will be our new sibling				
+				while (context.diagramShell.getDynamicObject(context, sibling).depth < context.diagramShell.getDynamicObject(context, node).depth) {
+					children = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, sibling, side);
+					if (children.length > 0) {
+						sibling = Node(children.getItemAt(down ? 0 : children.length - 1));
+					} else {
+						break;
+					}
 				}
 			}
 			var nodes:Array = [];		
@@ -125,7 +138,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 			var nodes:Array;
 			
 			// if not root and must get nodes from the opposite direction -> get parent node
-			if (node.parent != null && direction != MindMapDiagramShell(context.diagramShell).getModelController(context, node).getSide(context, node)) {
+			if (node.parent != null && direction != ControllerUtils.getMindMapModelController(context, node).getSide(context, node)) {
 				nodes = [node.parent];
 				if (appendNodesToCurrentSelection) { 
 					// add all nodes from parent's branch 					
@@ -135,11 +148,12 @@ package org.flowerplatform.flex_client.mindmap.action {
 			}		
 			
 			// if node has children, but it's collapsed -> expand node and after getting all children from server, run this action again to select the preferred nodes
-			if (Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() && !MindMapDiagramShell(context.diagramShell).getModelController(context, node).getExpanded(context, node)) {
-				MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, node, function ():void {run()});
+			if (Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() && !ControllerUtils.getMindMapModelController(context, node).getExpanded(context, node)) {
+				context[CoreConstants.HANDLER] = run; 
+				ControllerUtils.getMindMapModelController(context, node).setExpanded(context, node, true);				
 				return null;
 			}
-						
+
 			// node is expanded or it doesn't have children
 			
 			// no children -> return
@@ -175,14 +189,17 @@ package org.flowerplatform.flex_client.mindmap.action {
 				if (distance < minDistance) {
 					minDistance = distance;
 					preferredChild = child;
-				}
-				
+				}				
 			}
 			return [preferredChild];					
 		}
 				
 		protected function getNodes(node:Node, context:DiagramShellContext):Array {
 			throw new Error("This must be implemented!");
+		}
+		
+		override public function get showInMenu():Boolean {
+			return true;
 		}
 		
 		override public function get visible():Boolean {

@@ -46,6 +46,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
 	import org.flowerplatform.flexdiagram.tool.IWakeUpableTool;
 	import org.flowerplatform.flexdiagram.tool.Tool;
@@ -448,6 +449,24 @@ package org.flowerplatform.flexdiagram {
 		
 		public function getDynamicObject(context:DiagramShellContext, model:Object):Object {
 			return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model)).getDynamicObject(context, model);
+		}
+		
+		public function makeModelRendererVisible(model:Object, context:DiagramShellContext, padding:int = 10):void {
+			var dynamicObject:Object = context.diagramShell.getDynamicObject(context, model);
+			var diagramRenderer:DiagramRenderer = DiagramRenderer(context.diagramShell.diagramRenderer);
+			
+			var scrollRect:Rectangle = diagramRenderer.scrollRect;
+			
+			if (scrollRect.x > dynamicObject.x) {
+				diagramRenderer.horizontalScrollPosition += dynamicObject.x - scrollRect.x - padding;
+			} else if (scrollRect.x + scrollRect.width < dynamicObject.x + dynamicObject.width) {
+				diagramRenderer.horizontalScrollPosition += dynamicObject.x + dynamicObject.width - scrollRect.x - scrollRect.width + padding;
+			}
+			if (scrollRect.y > dynamicObject.y) {
+				diagramRenderer.verticalScrollPosition += dynamicObject.y - scrollRect.y - padding;
+			} else if (scrollRect.y + scrollRect.height < dynamicObject.y + dynamicObject.height) {
+				diagramRenderer.verticalScrollPosition += dynamicObject.y + dynamicObject.height - scrollRect.y - scrollRect.height + padding;
+			}
 		}
 		
 	}

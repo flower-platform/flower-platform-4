@@ -41,6 +41,7 @@ package  com.crispico.flower.util.layout {
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	
 	import flexlib.containers.SuperTabNavigator;
@@ -236,7 +237,7 @@ package  com.crispico.flower.util.layout {
 			
 			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.
 			//(new KeyBindings()).registerBinding(new Shortcut(true, false, "m"), maximizeRestoreActiveStackLayoutData);
-			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, "m"), maximizeRestoreActiveStackLayoutData); // CTRL + M
+			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.M), maximizeRestoreActiveStackLayoutData); // CTRL + M
 			
 			// prepare default actions for the right click menu on a tab name
 			fillActions();

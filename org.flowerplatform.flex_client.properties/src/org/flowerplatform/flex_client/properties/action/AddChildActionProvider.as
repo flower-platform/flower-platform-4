@@ -33,7 +33,7 @@ package org.flowerplatform.flex_client.properties.action {
 	public class AddChildActionProvider implements IActionProvider {
 		
 		public function getActions(selection:IList):Vector.<IAction> {
-			if (selection.length != 1 || !(selection.getItemAt(0) is Node)) {
+			if (selection == null || selection.length != 1 || !(selection.getItemAt(0) is Node)) {
 				return null;
 			}
 			
