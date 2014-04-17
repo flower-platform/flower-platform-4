@@ -30,8 +30,8 @@ public class FileChildrenProvider extends ChildrenProvider {
 		Object[] files = fileAccessController.listFiles(file);
 		List<Node> children = new ArrayList<Node>();
 		for (Object object : files) {
-			if (".metadata".equals(fileAccessController.getName(object)) && path == null) {
-				// TODO CC: temporary code; don't show .metadata directory from workspace
+			if (CoreConstants.METADATA.equals(fileAccessController.getName(object)) && path == null) {
+				// don't show metadata directory from workspace
 				continue;
 			}
 			children.add(new Node(CoreConstants.FILE_NODE_TYPE, 
@@ -49,7 +49,16 @@ public class FileChildrenProvider extends ChildrenProvider {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return fileAccessController.hasChildren(file);
+		Object[] files = fileAccessController.listFiles(file);
+		if (files == null) {
+			return false;
+		}
+		if (files.length == 1 && CoreConstants.METADATA.equals(fileAccessController.getName(files[0]))) {
+			// calculate hasChildren without metadata directory
+			return false;
+		
+		}
+		return files.length > 0;
 	}
 
 }

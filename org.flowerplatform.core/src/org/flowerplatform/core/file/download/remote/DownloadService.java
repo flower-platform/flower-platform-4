@@ -177,7 +177,7 @@ public class DownloadService implements ISessionListener {
 		if (isSingle) { // single file -> no need to create ZIP or store it in temporary directory
 			Object file = files.get(0);
 			fileName = CorePlugin.getInstance().getFileAccessController().getName(file);
-			downloadInfo.setPath(CorePlugin.getInstance().getFileAccessController().getPath(file)).setType(DownloadInfo.FILE_TYPE);
+			downloadInfo.setPath(CorePlugin.getInstance().getFileAccessController().getAbsolutePath(file)).setType(DownloadInfo.FILE_TYPE);
 		} else { // directory or multiple files selected	
 			fileName = timestamp + ARCHIVE_EXTENSION;
 			String zipPath = String.format("%s/%s.%s", getTemporaryDownloadFolder(), downloadId, fileName);			

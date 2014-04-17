@@ -64,8 +64,8 @@
 						.setTitle(Resources.getMessage("info"))
 						.setWidth(300)
 						.setHeight(200)
-						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'), function():void {prepareToUpload(true);})
-						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.cancel'), function():void {prepareToUpload();})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {prepareToUpload(true);})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'), function():void {prepareToUpload();})
 						.showMessageBox();				
 				} else {
 					prepareToUpload();

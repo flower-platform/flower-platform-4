@@ -153,7 +153,10 @@ public class CoreConstants {
 	public static final String LAST_UPDATE_TIMESTAMP = "timestampOfLastUpdate";
 	public static final String UPDATES = "updates";
 	
-	// test
-	public static final String FILE_SYSTEM_PATH = "d:/temp";
+	//////////////////////////////////
+	// Others
+	//////////////////////////////////
 	
+	public static final String METADATA = ".metadata";
+		
 }
