@@ -31,6 +31,12 @@ package org.flowerplatform.flexutil.action {
 		function get label():String;
 		
 		/**
+		 * If <code>true</code> action will be displayed in menu.
+		 * (e.g. navigation actions -> are used as shortcuts, aren't displayed in menu)
+		 */
+		function get showInMenu():Boolean;
+		
+		/**
 		 * The system sets this before invoking: visible, enabled, run(). After
 		 * these invocations, the context is removed in a try/finally block
 		 * @author Cristina Constantinescu

@@ -18,6 +18,10 @@
  
 	license-end
 -->
+<!--
+ @author Cristian Spiescu
+ @author Cristina Constantinescu
+-->
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
@@ -28,6 +32,7 @@
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.ActionUtil;
 			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.shortcut.Shortcut;
 			
 			public static const HEIGHT:int = 22;
 			
@@ -52,6 +57,20 @@
 					if (hasSubActions.visible) {
 						hasSubActions.visible = false;
 						hasSubActions.includeInLayout = false;
+					}
+				}
+				
+				var shortcut:Shortcut = FlexUtilGlobals.getInstance().keyBindings.actionIdsToShortcuts[IAction(value).id];
+				if (shortcut) {
+					if (!shortcutComponent.visible) {
+						shortcutComponent.visible = true;
+						shortcutComponent.includeInLayout = true;
+						shortcutComponent.text = shortcut.toString();
+					}
+				} else {
+					if (shortcutComponent.visible) {
+						shortcutComponent.visible = false;
+						shortcutComponent.includeInLayout = false;
 					}
 				}
 			}
@@ -124,5 +143,6 @@
 	</s:layout>
 	<s:BitmapImage id="iconComponent" width="16" contentLoader="{FlexUtilGlobals.getInstance().imageContentCache}"/>
 	<s:Label id="labelComponent" width="100%"/>
+	<s:Label id="shortcutComponent" visible="false" includeInLayout="false" />
 	<s:BitmapImage id="hasSubActions" visible="false" includeInLayout="false"/>
 </s:ItemRenderer>

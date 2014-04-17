@@ -1,4 +1,6 @@
 package org.flowerplatform.flex_client.mindmap {
+	import mx.core.FlexGlobals;
+	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -36,6 +38,8 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
+	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.controller.NullController;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
@@ -113,20 +117,7 @@ package org.flowerplatform.flex_client.mindmap {
 			var mindMapEditorDescriptor:MindMapEditorDescriptor = new MindMapEditorDescriptor();
 			CorePlugin.getInstance().contentTypeRegistry.defaultContentType = MindMapConstants.MINDMAP_CONTENT_TYPE;
 			CorePlugin.getInstance().contentTypeRegistry[MindMapConstants.MINDMAP_CONTENT_TYPE] = mindMapEditorDescriptor;
-			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);	
-			
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeUpAction());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeDownAction());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageDownAction());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageUpAction());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeLeftAction());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeRightAction());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeUpAction(true));
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeDownAction(true));
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageDownAction(true));
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodePageUpAction(true));
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeLeftAction(true));
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new NodeRightAction(true));
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(mindMapEditorDescriptor);			
 		}
 		
 		override protected function registerMessageBundle():void {

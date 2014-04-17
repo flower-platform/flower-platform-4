@@ -18,9 +18,12 @@
  */
 package org.flowerplatform.flexdiagram.controller.selection {
 	
+	import flash.geom.Rectangle;
+	
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.renderer.selection.AbstractSelectionRenderer;
 	
 	/**
@@ -43,6 +46,10 @@ package org.flowerplatform.flexdiagram.controller.selection {
 			}
 			
 			if (renderer == null) {
+				if (isSelected) {
+					// this will trigger renderer to be displayed in diagram
+					context.diagramShell.makeModelRendererVisible(model, context);
+				}
 				return;
 			}
 			

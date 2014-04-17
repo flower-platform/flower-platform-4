@@ -20,11 +20,18 @@ package org.flowerplatform.flex_client.mindmap {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
+	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageUpAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeRightAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.VectorActionProvider;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -36,6 +43,22 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			actionProvider.actionProviders.push(CorePlugin.getInstance().editorClassFactoryActionProvider);
 			actionProvider.actionProviders.push(new AddChildActionProvider());
+			
+			var shortcutsActionProvider:VectorActionProvider = new VectorActionProvider();
+			shortcutsActionProvider.addAction(new NodeUpAction());
+			shortcutsActionProvider.addAction(new NodeDownAction());
+			shortcutsActionProvider.addAction(new NodePageDownAction());
+			shortcutsActionProvider.addAction(new NodePageUpAction());
+			shortcutsActionProvider.addAction(new NodeLeftAction());
+			shortcutsActionProvider.addAction(new NodeRightAction());
+			shortcutsActionProvider.addAction(new NodeUpAction(true));
+			shortcutsActionProvider.addAction(new NodeDownAction(true));
+			shortcutsActionProvider.addAction(new NodePageDownAction(true));
+			shortcutsActionProvider.addAction(new NodePageUpAction(true));
+			shortcutsActionProvider.addAction(new NodeLeftAction(true));
+			shortcutsActionProvider.addAction(new NodeRightAction(true));
+			
+			actionProvider.actionProviders.push(shortcutsActionProvider);			
 		}
 		
 		/**

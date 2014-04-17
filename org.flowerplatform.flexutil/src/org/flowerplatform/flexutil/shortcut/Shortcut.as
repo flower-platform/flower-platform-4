@@ -18,7 +18,15 @@
  */
 package org.flowerplatform.flexutil.shortcut {
 	
+	import flash.ui.Keyboard;
+	import flash.ui.KeyboardType;
+	
 	import mx.controls.Alert;
+	import mx.utils.StringUtil;
+	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
+	import org.flowerplatform.flexutil.Utils;
 
 	/**
 	 * @author Florin
@@ -26,23 +34,45 @@ package org.flowerplatform.flexutil.shortcut {
 	 */
 	public class Shortcut {
 	
-		public var ctrl:Boolean; // 17 
+		public var ctrlKey:Boolean;		
+		public var shiftKey:Boolean;
+		public var altKey:Boolean;
 		
-		public var shift:Boolean; // 16
+		public var keyCode:uint;
 		
-		public var lowerCaseCode:int;
-		
-		public var upperCaseCode:int;
-		
-		public function Shortcut(ctrl: Boolean, shift: Boolean, key:String) {
-			this.ctrl = ctrl;
-			this.shift = shift;
-			this.lowerCaseCode = key.charCodeAt(0);
-			this.upperCaseCode = key.toUpperCase().charCodeAt(0);
-		}   
+		public function Shortcut(ctrlKey:Boolean, shiftKey:Boolean, altKey:Boolean, keyCode:uint) {
+			this.ctrlKey = ctrlKey;
+			this.shiftKey = shiftKey;
+			this.altKey = altKey;			
+			this.keyCode = keyCode;
+		}
 
-		public function equals(other:Shortcut):Boolean {
-			return this.ctrl == other.ctrl && this.shift == other.shift && this.lowerCaseCode == other.lowerCaseCode;
+		public function equals(other:Object):Boolean {
+			if (this == other) {
+				return true;
+			}
+			if (!(other is Shortcut) || other == null) {
+				return false;
+			}
+			return this.ctrlKey == other.ctrlKey && this.shiftKey == other.shiftKey && this.altKey == other.altKey && this.keyCode == other.keyCode;
+		}
+		
+		public function toString():String {
+			var str:String = "";
+			var delimiter:String = FlexUtilAssets.INSTANCE.getMessage("shortcut.delimiter");
+			if (ctrlKey) {
+				str += FlexUtilAssets.INSTANCE.getMessage("keyboard.ctrl") + delimiter;
+			}
+			if (altKey) {
+				str += FlexUtilAssets.INSTANCE.getMessage("keyboard.alt") + delimiter;
+			}
+			if (shiftKey) {
+				str += FlexUtilAssets.INSTANCE.getMessage("keyboard.shift") + delimiter;
+			}
+			if (keyCode) {
+				str += Utils.getKeyNameFromKeyCode(keyCode);
+			}
+			return str;
 		}
 		
 	}

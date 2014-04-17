@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.core {
 
 	import flash.external.ExternalInterface;
+	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
@@ -74,6 +75,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
+	import org.flowerplatform.flexutil.shortcut.KeyBindings;
 
 	/**
 	 * @author Cristian Spiescu
@@ -257,6 +259,8 @@ package org.flowerplatform.flex_client.core {
 					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 				})
 			);
+						
+			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts = [Keyboard.CONTROL, Keyboard.COMMAND, Keyboard.SHIFT, Keyboard.ALTERNATE, Keyboard.DOWN, Keyboard.UP, Keyboard.RIGHT, Keyboard.LEFT, Keyboard.PAGE_DOWN, Keyboard.PAGE_UP];		
 		}
 				
 		override protected function registerClassAliases():void {		

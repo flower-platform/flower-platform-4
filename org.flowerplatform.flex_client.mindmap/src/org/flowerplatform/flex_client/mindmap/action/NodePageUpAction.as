@@ -18,6 +18,8 @@
 */
 package org.flowerplatform.flex_client.mindmap.action {
 	
+	import flash.ui.Keyboard;
+	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
@@ -31,6 +33,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
+	import org.flowerplatform.flexutil.shortcut.Shortcut;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -38,7 +41,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 	public class NodePageUpAction extends AbstractNavigateAction {
 		
 		public function NodePageUpAction(appendNodesToCurrentSelection:Boolean = false) {
-			super(Resources.getMessage("mindmap.pageup"), appendNodesToCurrentSelection);			
+			super(Resources.getMessage("mindmap.pageup"), new Shortcut(false, appendNodesToCurrentSelection, false, Keyboard.PAGE_UP), appendNodesToCurrentSelection);			
 		}
 		
 		override protected function getNodes(node:Node, context:DiagramShellContext):Array {

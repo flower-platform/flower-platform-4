@@ -74,7 +74,7 @@ package org.flowerplatform.flexutil.action {
 				try {
 					action.selection = selection;
 					action.context = context;
-					if (action.visible) {
+					if (action.showInMenu && action.visible) {
 						forEachCallbackFunction.call(forEachCallbackObject, action);
 					}
 				} finally {

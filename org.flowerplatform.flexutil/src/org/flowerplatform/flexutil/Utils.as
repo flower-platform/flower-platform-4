@@ -20,7 +20,10 @@ package org.flowerplatform.flexutil {
 	import flash.text.Font;
 	import flash.text.FontType;
 	import flash.text.StyleSheet;
+	import flash.ui.Keyboard;
 	import flash.utils.getQualifiedClassName;
+	
+	import flashx.textLayout.utils.CharacterUtil;
 	
 	import mx.core.ITextInput;
 	import mx.utils.StringUtil;
@@ -28,8 +31,6 @@ package org.flowerplatform.flexutil {
 	import spark.components.TextInput;
 	import spark.components.supportClasses.RegExPatterns;
 	import spark.components.supportClasses.SkinnableTextBase;
-	
-	import flashx.textLayout.utils.CharacterUtil;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -235,6 +236,54 @@ package org.flowerplatform.flexutil {
 			// add here other replacements
 			
 			return text;
+		}
+		
+		public static function getKeyNameFromKeyCode(keyCode:uint):String {
+			switch (keyCode) {
+				case Keyboard.PAGE_DOWN:
+					return Keyboard.KEYNAME_PAGEDOWN;
+				case Keyboard.PAGE_UP:
+					return Keyboard.KEYNAME_PAGEUP;
+				case Keyboard.UP:
+					return Keyboard.KEYNAME_UPARROW;
+				case Keyboard.DOWN:
+					return Keyboard.KEYNAME_DOWNARROW;
+				case Keyboard.LEFT:
+					return Keyboard.KEYNAME_LEFTARROW;
+				case Keyboard.RIGHT:
+					return Keyboard.KEYNAME_RIGHTARROW;
+				case Keyboard.F1:
+					return Keyboard.KEYNAME_F1;
+				case Keyboard.F2:
+					return Keyboard.KEYNAME_F2;
+				case Keyboard.F3:
+					return Keyboard.KEYNAME_F3;
+				case Keyboard.F4:
+					return Keyboard.KEYNAME_F4;
+				case Keyboard.F5:
+					return Keyboard.KEYNAME_F5;
+				case Keyboard.F6:
+					return Keyboard.KEYNAME_F6;
+				case Keyboard.F7:
+					return Keyboard.KEYNAME_F7;
+				case Keyboard.F8:
+					return Keyboard.KEYNAME_F8;
+				case Keyboard.F9:
+					return Keyboard.KEYNAME_F9;
+				case Keyboard.F10:
+					return Keyboard.KEYNAME_F10;
+				case Keyboard.F11:
+					return Keyboard.KEYNAME_F11;
+				case Keyboard.F12:
+					return Keyboard.KEYNAME_F12;
+				case Keyboard.INSERT:
+					return Keyboard.KEYNAME_INSERT;
+				case Keyboard.END:
+					return Keyboard.KEYNAME_END;
+				case Keyboard.HOME:
+					return Keyboard.KEYNAME_HOME;
+			}
+			return String.fromCharCode(keyCode);
 		}
 		
 	}
