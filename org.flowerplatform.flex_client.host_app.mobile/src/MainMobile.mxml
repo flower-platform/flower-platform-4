@@ -221,7 +221,7 @@
 						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
 						.showMessageBox();
 				} else {
-					ModalSpinner.addGlobalModalSpinner("Initializing ...", new LogoSpinner(FlexUtilAssets.logoFlower));
+					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
 					
 					//TODO add user/password
 					FlexUtilGlobals.getInstance().rootUrl = result.host;
