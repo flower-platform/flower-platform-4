@@ -5,8 +5,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/hk2-api-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hk2-locator-2.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hk2-utils-2.2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-jaxrs-1.9.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-jaxrs-1.9.13.jar" sourcepath="C:/Users/NormalUser/.m2/repository/org/codehaus/jackson/jackson-jaxrs/1.9.13/jackson-jaxrs-1.9.13-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.13.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-xc-1.9.13.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/javassist-3.18.1-GA.jar"/>

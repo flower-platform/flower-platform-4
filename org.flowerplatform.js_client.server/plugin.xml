@@ -12,4 +12,11 @@
          </init-param>
       </servlet>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/js-app"
+            base-name="/WebContent">
+      </resource>
+   </extension>
 </plugin>

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
@@ -39,7 +41,9 @@ public class Node {
 
 	private Object rawNodeData;
 	private boolean rawNodeDataRetrieved;
-		
+
+	public Node() {}
+	
 	public Node(String type, String resource, String idWithinResource, Object rawNodeData) {		
 		this.type = type;
 		this.resource = resource;
@@ -119,6 +123,7 @@ public class Node {
 	 * 
 	 * @return The properties map (populated if not already populated).
 	 */
+	@JsonIgnore
 	public Map<String, Object> getOrPopulateProperties() {
 		if (!propertiesPopulated) {	
 			// lazy population
@@ -127,7 +132,8 @@ public class Node {
 		}
 		return getProperties();
 	}
-			
+	
+	@JsonIgnore
 	public Object getOrRetrieveRawNodeData() {
 		if (!rawNodeDataRetrieved) {
 			// lazy initialization
@@ -144,6 +150,7 @@ public class Node {
 	/**
 	 * @author Sebastian Solomon
 	 */
+	@JsonIgnore
 	public Object getPropertyValue(String property) {
 		if (properties.containsKey(property)) {
 			return properties.get(property);

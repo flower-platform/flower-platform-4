@@ -1,0 +1,18 @@
+body {
+	padding: 20px;
+}
+
+.list-body {
+	padding: 0px;	
+}
+
+.list-body > table > tbody > tr > td {
+	vertical-align: middle;
+}
+
+.form {
+	padding-left: 80px;
+	padding-right: 80px;
+}
+
+

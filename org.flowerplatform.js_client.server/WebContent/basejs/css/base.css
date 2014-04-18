@@ -1,0 +1,54 @@
+table  thead  tr  th.relativeTableHeader {
+	position: relative;
+	padding-right: 33px;
+}
+
+table  thead  tr  th a.absoluteFilterButton {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	padding-right: 5px;
+}
+
+table  thead  tr  th.sortable {
+	background-image: url("../img/bg.gif");
+	background-repeat: no-repeat;
+	background-position: left center;
+	cursor: pointer;
+	padding-left: 21px;
+}
+
+table  thead  tr  th.sortableTop {
+	background-image: url("../img/bg.gif");
+	background-repeat: no-repeat;
+	background-position: left 12px;
+	cursor: pointer;
+	padding-left: 21px;
+}
+
+table  thead  tr  th div.sortableTop {
+	background-image: url("../img/bg.gif");
+	background-repeat: no-repeat;
+	background-position: left 5px;
+	cursor: pointer;
+	padding-left: 21px;
+}
+
+table  thead  tr  th div.sortasc {
+	background-image: url("../img/desc.gif");
+	background-color: #D9EDF7;
+}
+
+table  thead  tr  th div.sortdesc {
+	background-image: url("../img/asc.gif");
+	background-color: #D9EDF7;
+}
+
+.ajax-loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -32px; /* -1 * image width / 2 */
+    margin-top: -32px;  /* -1 * image height / 2 */
+    display: block;     
+}

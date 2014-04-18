@@ -1,0 +1,49 @@
+	<% if (firstPage != currentPage) { %> 
+		<a href="#" class="btn btn-info btn-xs" data-page="<%= firstPage %>"> 
+	<% } else { %> 
+		<button class="btn btn-info btn-xs" disabled="disabled"> 
+	<% } %>
+			<span class="glyphicon glyphicon-fast-backward"></span>
+	<% if (firstPage != currentPage) { %>
+		</a> 
+	<% } else { %> 
+		</button> 
+	<% } %>
+
+	<% if (previousPage != currentPage) { %> 
+		<a href="#" class="btn btn-info btn-xs" data-page="<%= previousPage %>">
+	<% } else { %>
+		<button class="btn btn-info btn-xs" disabled="disabled">
+	<% } %>
+			<span class="glyphicon glyphicon-step-backward"></span>
+	<% if (previousPage != currentPage) {%>
+		</a>
+	<% } else { %>
+		</button>
+	<% } %>
+	
+		<%= currentPage %> / <%= maxPage %>
+		
+	<% if (nextPage != currentPage) { %>
+		<a href="#" class="btn btn-info btn-xs" data-page="<%= nextPage %>">
+	<% } else { %>
+		<button class="btn btn-info btn-xs" disabled="disabled">
+	<% } %>
+			<span class="glyphicon glyphicon-step-forward"></span>
+	<% if(nextPage != currentPage) { %>
+		</a>
+	<% } else { %>
+		</button>
+	<% } %>
+	
+	<% if (maxPage != currentPage) { %>
+		<a href="#" class="btn btn-info btn-xs" data-page="<%= maxPage %>">
+	<% } else { %>
+		<button class="btn btn-info btn-xs" disabled="disabled">
+	<% } %>
+			<span class="glyphicon glyphicon-fast-forward"></span>
+	<% if (maxPage != currentPage) { %>
+		</a>
+	<% } else { %>
+		</button>
+	<% } %>

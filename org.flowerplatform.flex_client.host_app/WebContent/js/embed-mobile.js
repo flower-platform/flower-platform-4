@@ -11,7 +11,3 @@ function callFlexCallback(callback /* : String */, args) /* : Function */ {
 function overrideMeHandler() {
 	$("#override").text("Override from Flex mobile! Original is in test.js");
 }
-
-//function setJSessionId(id) {
-//	jSessionId = id;
-//}

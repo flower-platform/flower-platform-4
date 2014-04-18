@@ -1,0 +1,13 @@
+<div class="btn-group model-filter">
+	<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+		<%if (models.length > 0) {%>
+		<%=models[0].attributes[labelField]%>
+		<%}%>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu" aria-labelledby="model-filter">
+		<%_.each(models, function(model){%>
+			<li role="presentation"><a role="menuitem"  data-model-id="<%=model.attributes.id%>"><%=model.attributes[labelField]%></a></li>
+		<%});%>
+	</ul>
+</div>
