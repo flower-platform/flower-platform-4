@@ -19,12 +19,13 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 
 /**
@@ -41,7 +42,7 @@ public class FileSystemControllers {
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
-			public void populateWithProperties(Node node, ServiceContext context) {
+			public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 				node.getProperties().put(NAME, FILE_SYSTEM_NODE_TYPE);
 			}
 		})

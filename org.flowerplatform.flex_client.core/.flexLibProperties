@@ -6,6 +6,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.UploadAction"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.ui.UploadView"/>
+    <classEntry path="org.flowerplatform.flex_client.core.node.remote.ServiceContext"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

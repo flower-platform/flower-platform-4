@@ -13,8 +13,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -49,12 +50,12 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
-			public boolean hasChildren(Node node, ServiceContext context) {
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 				return true;
 			}
 			
 			@Override
-			public List<Node> getChildren(Node node, ServiceContext context) {
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 				return Collections.singletonList(new Node(TYPES, DEBUG, null, null));
 			}
 		});
@@ -64,12 +65,12 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
-			public boolean hasChildren(Node node, ServiceContext context) {
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 				return true;
 			}
 			
 			@Override
-			public List<Node> getChildren(Node node, ServiceContext context) {
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 				return Arrays.asList(new Node(TYPES_FLEX, TYPES, null, null), new Node(TYPES_JAVA, TYPES, null, null));
 			}
 		});
@@ -79,12 +80,12 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
-			public boolean hasChildren(Node node, ServiceContext context) {
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 				return true;
 			}
 			
 			@Override
-			public List<Node> getChildren(Node node, ServiceContext context) {
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 				// should not be called from client
 				return Collections.emptyList();
 			}
@@ -99,12 +100,12 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
-			public boolean hasChildren(Node node, ServiceContext context) {
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 				return true;
 			}
 			
 			@Override
-			public List<Node> getChildren(Node node, ServiceContext context) {
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 				List<Node> children = new ArrayList<Node>();
 				List<String> types = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getRegisteredTypes();
 				Collections.sort(types); // show them in alphabetical order for better readability
@@ -123,7 +124,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
 			
 			@Override
-			public void populateWithProperties(Node node, ServiceContext context) {
+			public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 				node.getProperties().put(NAME, node.getIdWithinResource());
 				node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/idea.png"));
 			}
@@ -131,12 +132,12 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
-			public boolean hasChildren(Node node, ServiceContext context) {
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 				return true;
 			}
 			
 			@Override
-			public List<Node> getChildren(Node node, ServiceContext context) {
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 				String type = node.getIdWithinResource();
 				TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
 				List<Node> children = new ArrayList<Node>();
@@ -170,7 +171,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
 			
 			@Override
-			public void populateWithProperties(Node node, ServiceContext context) {
+			public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 				node.getProperties().put(NAME, node.getIdWithinResource());
 				node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/folder.png"));
 			}
@@ -184,7 +185,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
 			
 			@Override
-			public void populateWithProperties(Node node, ServiceContext context) {
+			public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 				// node: CONTROLLER_KEY_SINGLE|descriptorType|controllerKey
 				node.getProperties().put(NAME, node.getIdWithinResource());
 				String icons = ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/full-1.png");
@@ -198,12 +199,12 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
-			public boolean hasChildren(Node node, ServiceContext context) {
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 				return true;
 			}
 			
 			@Override
-			public List<Node> getChildren(Node node, ServiceContext context) {
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 				// parent: CONTROLLER_KEY_SINGLE|type|controllerKey
 				List<Node> children = new ArrayList<Node>();
 				TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getResource());
@@ -240,7 +241,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
 			
 			@Override
-			public void populateWithProperties(Node node, ServiceContext context) {
+			public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 				// node: CONTROLLER_KEY_ADDITIVE|descriptorType|controllerKey
 				node.getProperties().put(NAME, node.getIdWithinResource());
 				String icons = ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/positive.png");
@@ -254,12 +255,12 @@ public class TypeDescriptorRegistryDebugControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, new ChildrenProvider() {
 			
 			@Override
-			public boolean hasChildren(Node node, ServiceContext context) {
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 				return true;
 			}
 			
 			@Override
-			public List<Node> getChildren(Node node, ServiceContext context) {
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 				// parent: CONTROLLER_KEY_ADDITIVE|type|controllerKey
 				List<Node> children = new ArrayList<Node>();
 				TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getResource());

@@ -15,8 +15,9 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.FlowerProperties;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -43,7 +44,7 @@ public class ResourceService implements ISessionListener {
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(IResourceDAO.PROP_RESOURCE_UPDATES_MARGIN, IResourceDAO.PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
 	}
 	
-	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId, ServiceContext context) {
+	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId, ServiceContext<ResourceService> context) {
 		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeId);
 		
 		Node node = new Node(nodeId);
@@ -62,7 +63,7 @@ public class ResourceService implements ISessionListener {
 		sessionSubscribedToResource(subscribableNode.getFullNodeId(), sessionId, context);
 		
 		// populate resourceNode with isDirty			
-		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getFullNodeId(), new ServiceContext()));
+		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getFullNodeId(), new ServiceContext<ResourceService>(context.getService())));
 				
 		return subscribableNode;
 	}
@@ -72,7 +73,7 @@ public class ResourceService implements ISessionListener {
 	 * Notifies all registered subscription listeners if this is the first client to subscribe
 	 * to this node.
 	 */
-	public void sessionSubscribedToResource(String resourceNodeId, String sessionId, ServiceContext context) {
+	public void sessionSubscribedToResource(String resourceNodeId, String sessionId, ServiceContext<ResourceService> context) {
 		boolean firstSubscription = false;
 		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
 			// first subscription
@@ -80,7 +81,7 @@ public class ResourceService implements ISessionListener {
 			for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 				try {
 					controller.firstClientSubscribed(resourceNodeId, context);
-					if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+					if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 						break;
 					}
 				} catch (Exception e) {
@@ -101,7 +102,7 @@ public class ResourceService implements ISessionListener {
 	 * Notifies all registered subscription listeners if this is the last client to unsubscribe
 	 * from this node.
 	 */
-	public void sessionUnsubscribedFromResource(String resourceNodeId, String sessionId, ServiceContext context) {
+	public void sessionUnsubscribedFromResource(String resourceNodeId, String sessionId, ServiceContext<ResourceService> context) {
 		resourceDao.sessionUnsubscribedFromResource(resourceNodeId, sessionId);
 		boolean lastUnsubscription = false;
 		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
@@ -109,7 +110,7 @@ public class ResourceService implements ISessionListener {
 			lastUnsubscription = true;
 			for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 				controller.lastClientUnubscribed(resourceNodeId, context);
-				if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+				if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 					break;
 				}
 			}
@@ -123,10 +124,10 @@ public class ResourceService implements ISessionListener {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public void save(String resourceNodeId, ServiceContext context) {
+	public void save(String resourceNodeId, ServiceContext<ResourceService> context) {
 		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 			controller.save(resourceNodeId, context);
-			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
 		}
@@ -135,15 +136,15 @@ public class ResourceService implements ISessionListener {
 		CorePlugin.getInstance().getNodeService().setProperty(
 				new Node(resourceNodeId), 
 				IS_DIRTY, 
-				isDirty(resourceNodeId, new ServiceContext()), 
-				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+				isDirty(resourceNodeId, new ServiceContext<ResourceService>(context.getService())), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
-	public void reload(String resourceNodeId, ServiceContext context) {
+	public void reload(String resourceNodeId, ServiceContext<ResourceService> context) {
 		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 			try {
 				controller.reload(resourceNodeId, context);
-				if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+				if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 					break;
 				}
 			} catch (Exception e) {
@@ -151,7 +152,7 @@ public class ResourceService implements ISessionListener {
 				// unsubscribe all other clients
 				List<String> sessionIds = getSessionsSubscribedToResource(resourceNodeId);
 				for (int i = sessionIds.size() - 1; i >= 0; i--) {
-					sessionUnsubscribedFromResource(resourceNodeId, sessionIds.get(i), new ServiceContext());
+					sessionUnsubscribedFromResource(resourceNodeId, sessionIds.get(i), new ServiceContext<ResourceService>(context.getService()));
 				}
 				throw new RuntimeException(e);
 			}
@@ -161,18 +162,18 @@ public class ResourceService implements ISessionListener {
 		CorePlugin.getInstance().getNodeService().setProperty(
 				new Node(resourceNodeId), 
 				CoreConstants.IS_DIRTY, 
-				isDirty(resourceNodeId, new ServiceContext()), 
-				new ServiceContext().add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+				isDirty(resourceNodeId, new ServiceContext<ResourceService>(context.getService())), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public boolean isDirty(String resourceNodeId, ServiceContext context) {
+	public boolean isDirty(String resourceNodeId, ServiceContext<ResourceService> context) {
 		boolean isDirty = false;
 		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
 			isDirty = controller.isDirty(resourceNodeId, context);
-			if (context.getValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
+			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
 		}
@@ -234,7 +235,7 @@ public class ResourceService implements ISessionListener {
 		
 		List<String> resources = resourceDao.getResourcesSubscribedBySession(sessionId);
 		for (int i = resources.size() - 1; i >= 0; i--) {
-			sessionUnsubscribedFromResource(resources.get(i), sessionId, new ServiceContext());
+			sessionUnsubscribedFromResource(resources.get(i), sessionId, new ServiceContext<ResourceService>(this));
 		}
 		
 		resourceDao.sessionRemoved(sessionId);

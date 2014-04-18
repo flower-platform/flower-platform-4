@@ -1,9 +1,10 @@
 package org.flowerplatform.freeplane.controller;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.freeplane.features.map.NodeModel;
 
 /**
@@ -12,7 +13,7 @@ import org.freeplane.features.map.NodeModel;
 public class MindMapAddNodeController extends AddNodeController {
 
 	@Override
-	public void addNode(Node node, Node child, ServiceContext context) {
+	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
 		NodeModel parentRawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
 		NodeModel currentModelAtInsertionPoint = null;
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);

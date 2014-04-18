@@ -2,10 +2,11 @@ package org.flowerplatform.core.file;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
  * @author Sebastian Solomon
@@ -13,7 +14,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class FilePropertySetter extends PropertySetter {
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper value, ServiceContext context) {
+	public void setProperty(Node node, String property, PropertyValueWrapper value, ServiceContext<NodeService> context) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		if (CoreConstants.NAME.equals(property)) {
 			Object file;
@@ -40,7 +41,7 @@ public class FilePropertySetter extends PropertySetter {
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property, ServiceContext context) {
+	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		node.getOrPopulateProperties().remove(property);
 	}
 	

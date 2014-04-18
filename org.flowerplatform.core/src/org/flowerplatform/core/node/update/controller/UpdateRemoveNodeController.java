@@ -4,9 +4,10 @@ import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_REMOVED;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 
 /**
@@ -20,7 +21,7 @@ public class UpdateRemoveNodeController extends RemoveNodeController {
 	}
 	
 	@Override
-	public void removeNode(Node node, Node child, ServiceContext context) {
+	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
 		Node resourceNode = CoreUtils.getResourceNode(node);
 		if (resourceNode != null) {
 			CorePlugin.getInstance().getResourceService()

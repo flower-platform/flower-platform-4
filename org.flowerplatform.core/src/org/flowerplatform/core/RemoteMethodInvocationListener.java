@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,7 @@ public class RemoteMethodInvocationListener {
 				// the client is not subscribed to this resource anymore, maybe he went offline?
 				// subscribe the client to this resource
 				try {
-					CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(clientResourceNodeId, sessionId, new ServiceContext());
+					CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(clientResourceNodeId, sessionId, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 				} catch (Exception e) {
 					// the resource could not be loaded; inform the client
 					notFoundResourceNodeIds.add(clientResourceNodeId);

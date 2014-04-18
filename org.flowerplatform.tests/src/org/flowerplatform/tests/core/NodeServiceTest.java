@@ -1,20 +1,19 @@
 package org.flowerplatform.tests.core;
 
+import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-import static org.flowerplatform.core.CoreConstants.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.junit.BeforeClass;
@@ -179,7 +178,7 @@ public class NodeServiceTest {
 	 */
 	@Test
 	public void testPriority() {
-		assertEquals(nodeService.getChildren(new Node("root", null, "0", null), new ServiceContext()), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("root", null, "0", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
 				new Node("a", null, "1", null),
 				new Node("a", null, "2", null),
 				new Node("b", null, "10", null),
@@ -188,12 +187,12 @@ public class NodeServiceTest {
 				new Node("c", null, "18", null),
 				new Node("all", null, "0", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("a", null, "1", null), new ServiceContext()), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("a", null, "1", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
 				new Node("a", null, "12", null),
 				new Node("a", null, "3", null),
 				new Node("all", null, "0", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("a", null, "2", null), new ServiceContext()), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("a", null, "2", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
 				new Node("a", null, "4", null),
 				new Node("a", null, "5", null),
 				new Node("b", null, "6", null),
@@ -202,25 +201,25 @@ public class NodeServiceTest {
 				new Node("c", null, "9", null),
 				new Node("all", null, "0", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("b", null, "10", null), new ServiceContext()), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("b", null, "10", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
 				new Node("b", null, "11", null),
 				new Node("b", null, "13", null),
 				new Node("fileSystem", null, "23", null),
 				new Node("all", null, "0", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("b", null, "14", null), new ServiceContext()), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("b", null, "14", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
 				new Node("b", null, "15", null),
 				new Node("b", null, "16", null),
 				new Node("fileSystem", null, "24", null),
 				new Node("all", null, "0", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("c", null, "17", null), new ServiceContext()), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("c", null, "17", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
 				new Node("c", null, "19", null),
 				new Node("c", null, "20", null),
 				new Node("fileSystem", null, "25", null),
 				new Node("all", null, "0", null)));
 		
-		assertEquals(nodeService.getChildren(new Node("c", null, "18", null), new ServiceContext()), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node("c", null, "18", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
 				new Node("c", null, "21", null),
 				new Node("c", null, "22", null),
 				new Node("fileSystem", null, "26", null),

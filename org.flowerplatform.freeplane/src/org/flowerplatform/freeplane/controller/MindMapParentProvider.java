@@ -1,8 +1,9 @@
 package org.flowerplatform.freeplane.controller;
 
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ParentProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.map.NodeModel;
 
@@ -12,7 +13,7 @@ import org.freeplane.features.map.NodeModel;
 public class MindMapParentProvider extends ParentProvider {
 
 	@Override
-	public Node getParent(Node node, ServiceContext context) {
+	public Node getParent(Node node, ServiceContext<NodeService> context) {
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());		
 		NodeModel parentNodeModel = rawNodeData.getParentNode();
 		if (parentNodeModel == null) {

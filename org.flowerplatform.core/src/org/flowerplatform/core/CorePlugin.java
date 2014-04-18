@@ -83,9 +83,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
 	protected ResourceService resourceService;
-	protected DownloadService downloadService;
-	protected UploadService uploadService;
-	
+		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
 
@@ -126,14 +124,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	public ResourceService getResourceService() {
 		return resourceService;
-	}
-	
-	public DownloadService getDownloadService() {
-		return downloadService;
-	}
-	
-	public UploadService getUploadService() {
-		return uploadService;
 	}
 	
 	/**
@@ -192,8 +182,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		super();
 		
 		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP, PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP));
-		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));
-		
+		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));	
 	}
 
 	@Override
@@ -204,14 +193,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		System.getProperties().put("flower.version", CoreConstants.VERSION);
 	
 		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
-		downloadService = new DownloadService();
-		uploadService = new UploadService();
 		
 		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("resourceService", new ResourceServiceRemote());
 		getServiceRegistry().registerService("coreService", new CoreService());
-		getServiceRegistry().registerService("downloadService", downloadService);
-		getServiceRegistry().registerService("uploadService", uploadService);
+		getServiceRegistry().registerService("downloadService", new DownloadService());
+		getServiceRegistry().registerService("uploadService", new UploadService());
 		
 		new ResourceUnsubscriber().start();
 		

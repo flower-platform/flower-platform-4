@@ -16,6 +16,7 @@ import org.apache.commons.fileupload.servlet.FileCleanerCleanup;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +48,9 @@ public class UploadServlet extends HttpServlet {
 		}
 		// entire URL displayed after servlet name ("servlet/upload") -> /uploadId/file_to_upload_name			
 		String uploadId = request.getPathInfo().substring(1, request.getPathInfo().lastIndexOf("/"));
+		UploadService uploadService = ((UploadService) CorePlugin.getInstance().getServiceRegistry().getService("uploadService"));
 		
-		UploadInfo uploadInfo = CorePlugin.getInstance().getUploadService().getUploadInfo(uploadId);
+		UploadInfo uploadInfo = uploadService.getUploadInfo(uploadId);
 		if (uploadInfo.getTmpLocation() == null) {
 			return;
 		}
@@ -64,7 +66,7 @@ public class UploadServlet extends HttpServlet {
 		// Create a factory for disk-based file items
 
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		factory.setRepository(CorePlugin.getInstance().getUploadService().getTemporaryUploadDirectory());
+		factory.setRepository(uploadService.getTemporaryUploadDirectory());
 		factory.setFileCleaningTracker(FileCleanerCleanup.getFileCleaningTracker(request.getServletContext()));
 		
 		// Create a new file upload handler

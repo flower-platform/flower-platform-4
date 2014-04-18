@@ -19,9 +19,10 @@ import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import java.awt.Color;
 import java.util.Enumeration;
 
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.DefaultPropertyValueProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudController;
 import org.freeplane.features.cloud.CloudModel;
@@ -44,7 +45,7 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 	}
 	
 	@Override
-	public Object getDefaultValue(Node node, String property, ServiceContext serviceContext) {
+	public Object getDefaultValue(Node node, String property, ServiceContext<NodeService> serviceContext) {
 		serviceContext.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
 		NodeModel nodeModel =  (NodeModel) node.getOrRetrieveRawNodeData();
 		String styleName = (String) node.getProperties().get(STYLE_NAME);

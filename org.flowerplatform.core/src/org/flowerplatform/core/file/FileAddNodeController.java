@@ -8,9 +8,10 @@ import static org.flowerplatform.core.CoreConstants.NAME;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
  * @author Sebastian Solomon
@@ -18,7 +19,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class FileAddNodeController extends AddNodeController {
 
 	@Override
-	public void addNode(Node parentNode, Node child, ServiceContext context) {
+	public void addNode(Node parentNode, Node child, ServiceContext<NodeService> context) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance()
 				.getFileAccessController();
 		Object parentFile;
@@ -39,15 +40,15 @@ public class FileAddNodeController extends AddNodeController {
 			} else {
 				fileParentNode = new Node(FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, null, null);
 			}
-			CorePlugin.getInstance().getNodeService().addChild(fileParentNode, child, context);
+			context.getService().addChild(fileParentNode, child, context);
 			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
 			return;
 		}
 
-		String name = (String)context.get(NAME);
+		String name = (String) context.get(NAME);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
 		child.setIdWithinResource(fileAccessController.getPath(fileToCreate));
-		boolean isDir = (boolean)context.get(FILE_IS_DIRECTORY);
+		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
 		
 		if (fileAccessController.exists(fileToCreate)) {
 			throw new RuntimeException("There is already a file with the same name in this location.");

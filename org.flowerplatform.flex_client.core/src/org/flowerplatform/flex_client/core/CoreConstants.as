@@ -54,6 +54,8 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const HANDLER:String = "handler";
 		
+		public static const POPULATE_WITH_PROPERTIES:String = "populateWithProperties";
+		
 		//////////////////////////////////
 		// Controllers
 		//////////////////////////////////

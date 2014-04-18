@@ -4,9 +4,10 @@ import java.io.File;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.url.UrlManager;
@@ -24,7 +25,7 @@ public class MindMapFileAddNodeController extends AddNodeController {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void addNode(Node node, Node child, ServiceContext context) {
+	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
 		String filename = (String) child.getOrPopulateProperties().get(CoreConstants.NAME);
 		if (!filename.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
 			return;

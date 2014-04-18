@@ -1,7 +1,8 @@
 package org.flowerplatform.core.node.controller;
 
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
  * Adds a constant value for {@link #property} to the properties map of a node (e.g. icon).
@@ -20,7 +21,7 @@ public class ConstantValuePropertyProvider extends PropertiesProvider {
 	}
 
 	@Override
-	public void populateWithProperties(Node node, ServiceContext context) {
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(property, value);
 	}
 

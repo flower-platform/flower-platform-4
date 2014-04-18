@@ -19,13 +19,11 @@
 			import mx.managers.IFocusManagerComponent;
 			import mx.utils.ObjectUtil;
 			
-			import spark.components.FormItem;
-			import spark.components.Label;
-			
 			import org.apache.flex.collections.ArrayList;
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
@@ -34,6 +32,9 @@
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			import spark.components.FormItem;
+			import spark.components.Label;
 			
 			public static const SHOW_ALL:String = "showAll";
 			public static const SHOW_ONLY_CONTRIBUTES_TO_CREATION:String = "showOnlyContributingToCreation"; // mandatory & optional
@@ -47,8 +48,7 @@
 			
 			protected var _viewHost:IViewHost;
 			
-			protected function creationCompleteHandler(flexvent:FlexEvent):void {
-				
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {				
 				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 					.getExpectedTypeDescriptor(nodeType).getAdditiveControllers("propertyDescriptor", null);
 				var currentCategory:String = "";
@@ -78,8 +78,7 @@
 					label.text = "Please append the .mm extension to add a MindMap file.";
 					propertyForm.addElement(label);
 				}
-				focusManager.setFocus(BasicPropertyRenderer(FormItem(propertyForm.getElementAt(0)).getElementAt(0)).getElementAt(0) as IFocusManagerComponent)
-				
+				focusManager.setFocus(BasicPropertyRenderer(FormItem(propertyForm.getElementAt(0)).getElementAt(0)).getElementAt(0) as IFocusManagerComponent);			
 			}
 			
 			private function addFormItem(propertyDescriptor:PropertyDescriptor, currentCategory:String):void {
@@ -114,8 +113,8 @@
 			
 			protected function okHandler(evt:MouseEvent = null):void {
 				var propertiesToSetAfterAddingNode:ArrayList = new ArrayList();
-				var properties:Object = new Object();
-				properties.type = nodeType;
+				var context:ServiceContext = new ServiceContext();
+				context.add("type", nodeType);
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
 						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
@@ -129,7 +128,7 @@
 							return;
 						}
 						if (PropertyDescriptor(propertyItemRenderer.data).contributesToCreation) {
-							properties[propertyItemRenderer.data[CoreConstants.NAME]] = propertyItemRenderer.data.value;
+							context.add(propertyItemRenderer.data[CoreConstants.NAME], propertyItemRenderer.data.value);
 						} else {
 							if (propertyItemRenderer.data.value != null && propertyItemRenderer.data.value != "") {
 								propertiesToSetAfterAddingNode.addItem(propertyItemRenderer.data);
@@ -138,7 +137,7 @@
 					}
 				}
 				
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context], 
 					function(result:Object):void {
 							// setProperty for properties that don't contribute to creation.
 						for (var i:int=0; i < propertiesToSetAfterAddingNode.length; i++) {
