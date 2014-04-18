@@ -33,9 +33,10 @@ import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
@@ -61,7 +62,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
-		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), new ServiceContext().add(POPULATE_WITH_PROPERTIES, true));
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, true));
 		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
 
 			@Override
@@ -96,7 +97,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object newValue) {		
-		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, new ServiceContext());
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/**
@@ -128,7 +129,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				String type = typeProvider.getType(correspondingChild);
 						
 				Node child = new Node(type, parent.getResource(), null, null);
-				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext());
+				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 				return child;
 //		}
 //		
@@ -137,7 +138,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), new ServiceContext());
+		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
 	@Override
@@ -160,12 +161,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 
 	@Override
 	public void setConflict(Object element, Object feature, Object oppositeValue) {		
-		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue);
+		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, CorePlugin.getInstance().getNodeService());
 	}
 	
 	@Override
 	public void unsetConflict(Object element, Object feature) {		
-		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString());
+		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), CorePlugin.getInstance().getNodeService());
 	}
 
 	protected Node getNode(Object element) {
@@ -173,18 +174,19 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	protected void processContainmentFeatureAfterActionPerformed(Node node, Object feature, ActionResult result, Match match) {
+		NodeService service = CorePlugin.getInstance().getNodeService();
 		Object child = findChild(match, feature, result.childAdded, result.childMatchKey);
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
 				if (childNode.getOrPopulateProperties().containsKey(ADDED)) {
-					CorePlugin.getInstance().getNodeService().unsetProperty(childNode, ADDED, new ServiceContext());
+					service.unsetProperty(childNode, ADDED, new ServiceContext<NodeService>(service));
 				}
 			} else {
 				if (childNode.getOrPopulateProperties().containsKey(REMOVED)) {
-					CorePlugin.getInstance().getNodeService().removeChild(node, childNode, new ServiceContext());
+					service.removeChild(node, childNode, new ServiceContext<NodeService>(service));
 					// set childrenSync now, because after this match is synced, the parent won't be notified because this child is already removed
-					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node);
+					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node, service);
 				}
 			}
 		}

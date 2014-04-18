@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.file.FileChildrenProvider;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.freeplane.features.map.NodeModel;
 
@@ -29,7 +30,7 @@ public class FreeplaneResourceChildrenProvider extends ChildrenProvider {
 	}
 	
 	@Override
-	public List<Node> getChildren(Node node, ServiceContext context) {
+	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		if (!CoreUtils.isSubscribable(node.getOrPopulateProperties())) {
 			return Collections.emptyList();
 		}
@@ -37,12 +38,12 @@ public class FreeplaneResourceChildrenProvider extends ChildrenProvider {
 		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
 		List<Node> children = Collections.singletonList(FreeplanePlugin.getInstance().getFreeplaneUtils()
 				.getStandardNode(nodeModel, node.getFullNodeId()));
-		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		return children;
 	}
 
 	@Override
-	public boolean hasChildren(Node node, ServiceContext context) {
+	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		return CoreUtils.isSubscribable(node.getProperties());
 	}
 	

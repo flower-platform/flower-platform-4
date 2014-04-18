@@ -5,10 +5,11 @@ import static org.flowerplatform.core.CoreConstants.HIDE_ROOT_NODE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.file.FilePropertiesProvider;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.freeplane.features.url.UrlManager;
 
 /**
@@ -31,7 +32,7 @@ public class MindMapFileContentTypeProvider extends PropertiesProvider {
 	}
 	
 	@Override
-	public void populateWithProperties(Node node, ServiceContext context) {
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		boolean isDirectory = (boolean) node.getProperties().get(CoreConstants.FILE_IS_DIRECTORY);
 		if (!isDirectory) {
 			String path = (String) node.getProperties().get(CoreConstants.NAME);

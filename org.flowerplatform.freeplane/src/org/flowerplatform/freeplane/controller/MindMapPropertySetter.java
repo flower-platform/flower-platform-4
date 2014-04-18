@@ -28,9 +28,10 @@ import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
@@ -52,8 +53,8 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 	private static final Pattern ICON_URL_PATTERN = Pattern.compile("((.*?/)+)(.*?).png");
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext context) {
-		if (context.getValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
@@ -201,19 +202,19 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (addAdditionalSetPropertyUpdatesFor != null) {
 			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
-					CorePlugin.getInstance().getNodeService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext().add(EXECUTE_ONLY_FOR_UPDATER, true));
+					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {
 				for (String entry : addAdditionalSetPropertyUpdatesFor) {
-					CorePlugin.getInstance().getNodeService().setProperty(node, entry, node.getOrPopulateProperties().get(entry), new ServiceContext().add(EXECUTE_ONLY_FOR_UPDATER, true));
+					context.getService().setProperty(node, entry, node.getOrPopulateProperties().get(entry), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}
 			}
 		}
 	}
 	
 	@Override
-	public void unsetProperty(Node node, String property, ServiceContext serviceContext) {
-		if (serviceContext.getValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+	public void unsetProperty(Node node, String property, ServiceContext<NodeService> serviceContext) {
+		if (serviceContext.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
 		
@@ -290,11 +291,11 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (addAdditionalUnsetPropertyUpdatesFor != null) {
 			if (addAdditionalUnsetPropertyUpdatesFor.isEmpty()) {
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
-					CorePlugin.getInstance().getNodeService().unsetProperty(node, entry.getKey(), new ServiceContext().add(EXECUTE_ONLY_FOR_UPDATER, true));
+					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {
 				for (String entry : addAdditionalUnsetPropertyUpdatesFor) {
-					CorePlugin.getInstance().getNodeService().unsetProperty(node, entry, new ServiceContext().add(EXECUTE_ONLY_FOR_UPDATER, true));
+					serviceContext.getService().unsetProperty(node, entry, new ServiceContext<NodeService>(serviceContext.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}
 			}
 		}

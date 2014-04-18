@@ -57,6 +57,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
+	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -276,6 +277,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
 			registerClassAliasFromAnnotation(Pair);
+			registerClassAliasFromAnnotation(ServiceContext);
 		}
 		
 		override protected function registerMessageBundle():void {

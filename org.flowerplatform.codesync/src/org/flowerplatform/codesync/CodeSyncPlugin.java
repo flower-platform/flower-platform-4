@@ -44,9 +44,10 @@ import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -416,8 +417,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		URI uri = EditorModelPlugin.getInstance().getModelAccessController().getURIFromFile(file);
 //		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
 //		return getResource(resourceSet, uri, fileExists);
+		NodeService service = CorePlugin.getInstance().getNodeService();
 		Node node = new Node((String) file);
-		return CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true)).get(0);
+		return service.getChildren(node, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true)).get(0);
 	}
 	
 //	
@@ -517,7 +519,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	 * @author Mariana
 	 */
 	public Node getSrcDir(Node root, String name) {
-		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(root, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true));
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(root, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true));
 		for (Node child : children) {
 			if (name.equals(child.getOrPopulateProperties().get(NAME))) {
 				return child;

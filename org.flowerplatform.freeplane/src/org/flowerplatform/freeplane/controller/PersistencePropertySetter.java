@@ -1,10 +1,11 @@
 package org.flowerplatform.freeplane.controller;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.mindmap.MindMapConstants;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
@@ -16,8 +17,8 @@ import org.freeplane.features.map.NodeModel;
 public class PersistencePropertySetter extends PropertySetter {
 
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext context) {
-		if (context.getValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
 		
@@ -54,8 +55,8 @@ public class PersistencePropertySetter extends PropertySetter {
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property, ServiceContext context) {
-		if (context.getValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
 		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.util.servlet.ResourcesServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class DownloadServlet extends ResourcesServlet {
 		String info = req.getPathInfo();
 		String downloadId = info.substring(1, info.lastIndexOf("/"));
 	
-		DownloadInfo downloadInfo = CorePlugin.getInstance().getDownloadService().getDownloadInfo(downloadId);
+		DownloadInfo downloadInfo = ((DownloadService) CorePlugin.getInstance().getServiceRegistry().getService("downloadService")).getDownloadInfo(downloadId);
 		if (downloadInfo == null) {
 			// no data to download
 			return;

@@ -7,9 +7,10 @@ import java.net.URLDecoder;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceAccessController;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.mode.Controller;
@@ -32,12 +33,12 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	}
 	
 	@Override
-	public void firstClientSubscribed(String resourceNodeId, ServiceContext context) throws Exception {
+	public void firstClientSubscribed(String resourceNodeId, ServiceContext<ResourceService> context) throws Exception {
 		reload(resourceNodeId, context);
 	}
 
 	@Override
-	public void lastClientUnubscribed(String resourceNodeId, ServiceContext context) {
+	public void lastClientUnubscribed(String resourceNodeId, ServiceContext<ResourceService> context) {
 		Node resourceNode = new Node(resourceNodeId);
 		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return;
@@ -45,8 +46,8 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		
 		logger.debug("Unloaded mindmap {}", resourceNode.getIdWithinResource());
 		
-		CorePlugin.getInstance().getResourceService().unsetRawResourceData(resourceNodeId);
-		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.getService().unsetRawResourceData(resourceNodeId);
+		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 	
 	/**
@@ -54,26 +55,26 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public void save(String resourceNodeId, ServiceContext context) {
+	public void save(String resourceNodeId, ServiceContext<ResourceService> context) {
 		Node resourceNode = new Node(resourceNodeId);
 		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return;
 		}
 		
-		MapModel rawNodeData = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
+		MapModel rawNodeData = (MapModel) context.getService().getRawResourceData(resourceNode.getFullNodeId());
 		
 		try {		
 			((MFileManager) UrlManager.getController()).writeToFile(rawNodeData, new File(URLDecoder.decode(rawNodeData.getURL().getPath(), "UTF-8")));
 		} catch (Exception e) {
 			return;
 		} finally {
-			context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		}
 		rawNodeData.setSaved(true);		
 	}
 
 	@Override
-	public void reload(String resourceNodeId, ServiceContext context) throws Exception {
+	public void reload(String resourceNodeId, ServiceContext<ResourceService> context) throws Exception {
 		Node resourceNode = new Node(resourceNodeId);
 		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return;
@@ -97,23 +98,23 @@ public class FreeplaneResourceAccessController extends ResourceAccessController 
 		
 		logger.debug("Loaded mindmap {}", resourceNode.getIdWithinResource());
 		
-		CorePlugin.getInstance().getResourceService().setRawResourceData(resourceNodeId, model, resourceCategory);
-		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.getService().setRawResourceData(resourceNodeId, model, resourceCategory);
+		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public boolean isDirty(String resourceNodeId, ServiceContext context) {
+	public boolean isDirty(String resourceNodeId, ServiceContext<ResourceService> context) {
 		Node resourceNode = new Node(resourceNodeId);
 		if (!canHandleResource(resourceNode.getIdWithinResource())) {
 			return false;
 		}
 		
-		MapModel model = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(resourceNode.getFullNodeId());
+		MapModel model = (MapModel) context.getService().getRawResourceData(resourceNode.getFullNodeId());
 		
-		context.put(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		if (model == null) {
 			return false;
 		}

@@ -26,11 +26,11 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.set
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
@@ -46,12 +46,10 @@ public class CodeSyncPropertySetter extends PropertySetter {
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext context) {		
-		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
-		
+	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext<NodeService> context) {
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
-			setSyncFalseAndPropagateToParents(node);
+			setSyncFalseAndPropagateToParents(node, context.getService());
 			return;
 		}
 		
@@ -76,20 +74,20 @@ public class CodeSyncPropertySetter extends PropertySetter {
 		if (!Utils.safeEquals(originalValue, wrapper.getPropertyValue())) {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
-				service.setProperty(node, originalProperty, originalValue, new ServiceContext());
-				setSyncFalseAndPropagateToParents(node);
+				context.getService().setProperty(node, originalProperty, originalValue, new ServiceContext<NodeService>(context.getService()));
+				setSyncFalseAndPropagateToParents(node, context.getService());
 			}
 		} else {
 			if (isOriginalPropertySet) {
 				// trying to set the same value as the original (a revert operation); unset the original value
-				service.unsetProperty(node, originalProperty, new ServiceContext());
-				setSyncTrueAndPropagateToParents(node);
+				context.getService().unsetProperty(node, originalProperty, new ServiceContext<NodeService>(context.getService()));
+				setSyncTrueAndPropagateToParents(node, context.getService());
 			}
 		}
 	}
 
 	@Override
-	public void unsetProperty(Node node, String property, ServiceContext context) {
+	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		// nothing to do
 	}
 	

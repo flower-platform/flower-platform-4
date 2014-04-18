@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.properties.CreateNodeView;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -58,9 +59,8 @@ package org.flowerplatform.flex_client.properties.action {
 		 * @author Sebastian Solomon
 		 */
 		override public function run():void {
-
-			var properties:Object = new Object();
-			properties.type = childType;
+			var context:ServiceContext = new ServiceContext();
+			context.add("type", childType);
 			
 			var parentNode:Node = Node(selection.getItemAt(0));
 			
@@ -84,7 +84,7 @@ package org.flowerplatform.flex_client.properties.action {
 					.setViewContent(createNodeView)
 					.show();
 			} else {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, properties, null]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context]);
 			}
 		}
 		

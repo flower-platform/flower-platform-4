@@ -1,8 +1,9 @@
 package org.flowerplatform.freeplane.controller;
 
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.RemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.freeplane.features.map.NodeModel;
 
 /**
@@ -11,7 +12,7 @@ import org.freeplane.features.map.NodeModel;
 public class MindMapRemoveNodeController extends RemoveNodeController {
 
 	@Override
-	public void removeNode(Node node, Node child, ServiceContext context) {
+	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
 		NodeModel rawNodeData = ((NodeModel) child.getOrRetrieveRawNodeData());
 		rawNodeData.removeFromParent();
 		rawNodeData.getMap().unregistryNodes(rawNodeData);

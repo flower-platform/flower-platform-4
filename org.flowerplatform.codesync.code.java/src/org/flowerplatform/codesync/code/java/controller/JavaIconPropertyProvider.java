@@ -31,11 +31,10 @@ import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
  * Sets the icon property, depending on the element's modifiers. The base icon depends on the 
@@ -54,8 +53,8 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 
 	@Override
-	public void populateWithProperties(Node node, ServiceContext context) {
-		int flags = getModifiersFlags(node);
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
+		int flags = getModifiersFlags(node, context);
 		
 		// get the icon depending on visibility
 		String icon = getVisibilityDefault();
@@ -101,9 +100,9 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		return CodeSyncCodeJavaPlugin.getInstance().getImageComposerUrl(icon, getImagePath(decorator));
 	}
 
-	protected int getModifiersFlags(Node node) {
+	protected int getModifiersFlags(Node node, ServiceContext<NodeService> context) {
 		int flags = 0;
-		for (Node modifier : getModifiers(node)) {
+		for (Node modifier : getModifiers(node, context)) {
 			if (CodeSyncControllerUtils.isRemoved(modifier)) {
 				// don't decorate if the modifier was marked removed
 				continue;
@@ -117,10 +116,9 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		return flags;
 	}
 	
-	protected List<Node> getModifiers(Node node) {
-		NodeService service = (NodeService) CorePlugin.getInstance().getNodeService();
+	protected List<Node> getModifiers(Node node, ServiceContext<NodeService> context) {	
 		List<Node> modifiers = new ArrayList<Node>();
-		for (Node child : service.getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true))) {
+		for (Node child : context.getService().getChildren(node, new ServiceContext<NodeService>(context.getService()).add(POPULATE_WITH_PROPERTIES, true))) {
 			if (CodeSyncCodeJavaConstants.MODIFIER.equals(child.getType())) {
 				modifiers.add(child);
 			}

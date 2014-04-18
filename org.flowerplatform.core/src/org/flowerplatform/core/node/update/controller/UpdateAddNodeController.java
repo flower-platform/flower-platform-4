@@ -5,9 +5,10 @@ import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_ADDED;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 
 public class UpdateAddNodeController extends AddNodeController {
@@ -18,9 +19,9 @@ public class UpdateAddNodeController extends AddNodeController {
 	}
 	
 	@Override
-	public void addNode(Node node, Node child, ServiceContext context) {		
+	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {		
 		Node resourceNode = CoreUtils.getResourceNode(node);
-		String insertBeforeFullNodeId = (String)context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
+		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (resourceNode != null) {
 			CorePlugin.getInstance().getResourceService()
 				.addUpdate(resourceNode.getFullNodeId(), 

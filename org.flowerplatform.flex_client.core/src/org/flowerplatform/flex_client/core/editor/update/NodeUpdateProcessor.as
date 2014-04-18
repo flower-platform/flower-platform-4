@@ -35,6 +35,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -297,7 +298,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		private function requestChildrenFromServer(context:DiagramShellContext, node:Node):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? Node(MindMapRootModelWrapper(context.diagramShell.rootModel).model).fullNodeId : node.fullNodeId, true], 
+				[node == null ? Node(MindMapRootModelWrapper(context.diagramShell.rootModel).model).fullNodeId : node.fullNodeId, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
 				function (result:Object):void {
 					requestChildrenHandler(context, node, ArrayCollection(result)); 
 					
