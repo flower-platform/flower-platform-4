@@ -34,16 +34,15 @@ package org.flowerplatform.flex_client.mindmap.action {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public class EditNoteInDialogAction extends ActionBase implements IDialogResultHandler {
+	public class EditNodeDetailsInDialogAction extends ActionBase implements IDialogResultHandler {
 		
 		private var selectedNode:Node;
 			
-		public function EditNoteInDialogAction(descriptor:AddChildDescriptor = null)	{
+		public function EditNodeDetailsInDialogAction(descriptor:AddChildDescriptor = null)	{
 			super();
-				
-			label = Resources.getMessage("edit_note_in_dialog_label");
-			icon = Resources.mindmap_knotesIcon;
-			orderIndex = 90;
+			label = Resources.getMessage("edit_node_details_in_dialog_label");
+			icon = Resources.editDetailsInDialogActionIcon;
+			orderIndex = 85;
 		}
 		
 		override public function get visible():Boolean {	
@@ -52,26 +51,26 @@ package org.flowerplatform.flex_client.mindmap.action {
 		
 		override public function run():void {
 			selectedNode = Node(selection.getItemAt(0));
-			var note:String = selectedNode.properties.note;
+			var nodeDetails:String = selectedNode.properties[MindMapConstants.NODE_DETAILS];
 			
 			var richTextWithRendererView:RichTextWithRendererView = new RichTextWithRendererView();
 			richTextWithRendererView.setResultHandler(this);
-			richTextWithRendererView.icon = Resources.mindmap_knotesIcon;
-			if (note != null) {
-				note = Utils.getCompatibleHTMLText(note);
+			richTextWithRendererView.icon = Resources.editDetailsInDialogActionIcon;
+			if (nodeDetails != null) {
+				nodeDetails = Utils.getCompatibleHTMLText(nodeDetails);
 				// if text contains html tag, display it as html, otherwise plain text
-				richTextWithRendererView.textEditor.textFlow = TextConverter.importToFlow(note , Utils.isHTMLText(note) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
+				richTextWithRendererView.textEditor.textFlow = TextConverter.importToFlow(nodeDetails , Utils.isHTMLText(nodeDetails) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
 			}
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-				.setTitle(Resources.getMessage("note_title"))
+				.setTitle(Resources.getMessage("node_details_title"))
 				.setViewContent(richTextWithRendererView)
 				.show();
 		}
 		
 		public function handleDialogResult(result:Object):void {
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selectedNode.fullNodeId, 
-				MindMapConstants.NOTE, result]);
+				MindMapConstants.NODE_DETAILS, result]);
 		}
 		
 	}

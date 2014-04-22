@@ -73,6 +73,7 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE:String = "MindMapStyles";
 		
 		public static const NOTE:String = "note";
+		public static const NODE_DETAILS:String = "nodeDetails";
 		
 		//////////////////////////////////
 		// Editor

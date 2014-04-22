@@ -11,6 +11,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
+import static org.flowerplatform.mindmap.MindMapConstants.NODE_DETAILS;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
@@ -36,6 +37,7 @@ import org.freeplane.features.note.NoteModel;
 import org.freeplane.features.styles.IStyle;
 import org.freeplane.features.styles.LogicalStyleModel;
 import org.freeplane.features.styles.MapStyleModel;
+import org.freeplane.features.text.DetailTextModel;
 
 /**
  * @author Cristina Constantinescu
@@ -130,6 +132,12 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		String text = NoteModel.getNoteText(rawNodeData);
 		if (text != null && text.length() > 0) {
 			node.getProperties().put(NOTE, text);
+		}
+		
+		// note details
+		text = DetailTextModel.getDetailTextText(rawNodeData);
+		if (text != null && text.length() > 0) {
+			node.getProperties().put(NODE_DETAILS, text);
 		}
 	}
 

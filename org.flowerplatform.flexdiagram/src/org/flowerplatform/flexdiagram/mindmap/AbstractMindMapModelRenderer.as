@@ -76,6 +76,10 @@ package org.flowerplatform.flexdiagram.mindmap
 			
 			iconsComponentExtension = new IconsComponentExtension(this);
 			
+			setLayout();
+		}
+		
+		public function setLayout():void {
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;
 			hLayout.paddingBottom = 2;
@@ -85,6 +89,10 @@ package org.flowerplatform.flexdiagram.mindmap
 			hLayout.verticalAlign = "middle";
 			
 			this.layout = hLayout;
+		}
+		
+		public function getIconParentComponent():UIComponent {
+			return this;
 		}
 		
 		public function get diagramShellContext():DiagramShellContext {			

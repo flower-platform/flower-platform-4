@@ -1,4 +1,6 @@
 package org.flowerplatform.flexutil.renderer {
+	import mx.core.UIComponent;
+	
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	
 	/**
@@ -14,6 +16,8 @@ package org.flowerplatform.flexutil.renderer {
 		 * @return - index in list of component's children for a new icon. 
 		 */ 
 		function newIconIndex():int;
+		
+		function getIconParentComponent():UIComponent;
 		
 		/**
 		 * Validate methods must be overridden to validate also the icons from extension.

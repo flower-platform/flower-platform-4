@@ -14,6 +14,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
+import static org.flowerplatform.mindmap.MindMapConstants.NODE_DETAILS;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
@@ -43,6 +44,7 @@ import org.freeplane.features.note.NoteModel;
 import org.freeplane.features.styles.IStyle;
 import org.freeplane.features.styles.LogicalStyleModel;
 import org.freeplane.features.styles.MapStyleModel;
+import org.freeplane.features.text.DetailTextModel;
 
 /**
  * @author Cristina Constantinescu
@@ -106,10 +108,14 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			case NOTE:
 				String note = (String) wrapper.getPropertyValue();
 				NoteModel.createNote(rawNodeData).setHtml(note);
-				addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+				if (addAdditionalSetPropertyUpdatesFor == null) {
+					addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+				}
 				addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
-				node.getProperties().put(NOTE, note);
 				break;
+			case NODE_DETAILS:
+				String nodeDetails = (String) wrapper.getPropertyValue();
+				DetailTextModel.createDetailText(rawNodeData).setHtml(nodeDetails);
 			case FONT_FAMILY:	
 				String fontFamily = (String) wrapper.getPropertyValue();
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);

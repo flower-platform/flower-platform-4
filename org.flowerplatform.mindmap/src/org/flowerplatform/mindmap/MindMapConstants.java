@@ -23,6 +23,8 @@ public class MindMapConstants {
 	
 	public static final String NOTE = "note";
 	
+	public static final String NODE_DETAILS = "nodeDetails";
+	
 	public static final List<String> FONT_SIZES = new ArrayList<>();
 	static {
 		for (int i = 1; i <= 72; i++) {

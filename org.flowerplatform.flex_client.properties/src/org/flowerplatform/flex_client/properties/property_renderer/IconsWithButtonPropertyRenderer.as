@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	
 	import mx.binding.utils.BindingUtils;
 	import mx.controls.Spacer;
+	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
 	import spark.components.Button;
@@ -50,6 +51,10 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			this.layout = hLayout;
 			
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);			
+		}
+		
+		public function getIconParentComponent():UIComponent {
+			return this;
 		}
 		
 		public function get icons():FlowerArrayList {
