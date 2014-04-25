@@ -5,6 +5,9 @@ import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_COLOR;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_STYLE;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
@@ -27,6 +30,7 @@ import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudController;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
+import org.freeplane.features.edge.EdgeController;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
@@ -69,6 +73,11 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 		case CLOUD_COLOR:
 		case CLOUD_SHAPE:
 			stylePropertyValue = getNodeCloudDefaultProperty(property, styleNodeModel, nodeModel);
+			break;
+		case EDGE_COLOR:
+		case EDGE_STYLE:
+		case EDGE_WIDTH:
+			stylePropertyValue = getNodeEdgeDefaultProperty(property, styleNodeModel, nodeModel);
 			break;
 		default:
 			stylePropertyValue = null;
@@ -174,6 +183,23 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 			break;
 		case FONT_SIZE:
 			defaultPropertyValue = NodeStyleController.getController().getFontSize(styleNodeModel);
+			break;
+		}
+		return defaultPropertyValue;
+	}
+	
+	private Object getNodeEdgeDefaultProperty(String property,
+			NodeModel styleNodeModel, NodeModel nodeModel) {
+		Object defaultPropertyValue = null;
+		switch (property) {
+		case EDGE_COLOR:
+			defaultPropertyValue = ColorUtils.colorToString(EdgeController.getController().getColor(nodeModel, true));
+			break;
+		case EDGE_STYLE:
+			defaultPropertyValue = EdgeController.getController().getStyle(nodeModel, true).toString();
+			break;
+		case EDGE_WIDTH:
+			defaultPropertyValue = EdgeController.getController().getWidth(nodeModel, true);
 			break;
 		}
 		return defaultPropertyValue;

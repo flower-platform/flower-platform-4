@@ -1,18 +1,10 @@
 package org.flowerplatform.flex_client.mindmap {
-	import mx.core.FlexGlobals;
-	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.action.EditNoteInDialogAction;
-	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
-	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
-	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
-	import org.flowerplatform.flex_client.mindmap.action.NodePageUpAction;
-	import org.flowerplatform.flex_client.mindmap.action.NodeRightAction;
-	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
@@ -37,8 +29,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
-	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
-	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.controller.NullController;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 

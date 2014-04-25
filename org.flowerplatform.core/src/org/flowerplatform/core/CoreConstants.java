@@ -85,6 +85,7 @@ public class CoreConstants {
 		public static final String PROPERTY_DESCRIPTOR_TYPE_STRING = "String";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_BOOLEAN = "Boolean";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER = "Number";
+		public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER = "NumberStepper";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST = "DropDownList";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER = "ColorPicker";
 		public static final String PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY = "";
