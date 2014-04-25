@@ -17,24 +17,22 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap.controller {
-	import flash.utils.getDefinitionByName;
-	
 	import mx.collections.IList;
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapConnector;
+	import org.flowerplatform.flexdiagram.mindmap.GenericMindMapConnector;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapModelRendererController extends ClassReferenceRendererController {
-			
+		
+		public var mindMapConnectorClass:Class;
+		
 		public function MindMapModelRendererController(rendererClass:Class, orderIndex:int = 0) {
 			super(rendererClass, orderIndex);
 			removeRendererIfModelIsDisposed = true;
@@ -52,11 +50,18 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 				
 		private function removeConnector(context:DiagramShellContext, model:Object):void {		
 			var dynamicObject:Object = context.diagramShell.getDynamicObject(context, model);
-			var connector:MindMapConnector = dynamicObject.connector;
+			var connector:GenericMindMapConnector = dynamicObject.connector;
 			if (connector != null) {
 				context.diagramShell.diagramRenderer.removeElement(connector);
 				delete dynamicObject.connector;
 			}
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		protected function createMindMapConnector():GenericMindMapConnector {
+			return new mindMapConnectorClass();
 		}
 		
 		private function addConnector(context:DiagramShellContext, model:Object):void {
@@ -64,7 +69,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			if (modelParent == null) { // root node, no connectors
 				return;
 			}
-			var connector:MindMapConnector = new MindMapConnector().setSource(model).setTarget(modelParent).setContext(context);
+			var connector:GenericMindMapConnector = createMindMapConnector().setSource(model).setTarget(modelParent).setContext(context);
 			context.diagramShell.getDynamicObject(context, model).connector = connector;
 			context.diagramShell.diagramRenderer.addElementAt(connector, 0);		
 		}

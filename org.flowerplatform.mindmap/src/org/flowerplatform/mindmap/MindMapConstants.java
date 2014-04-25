@@ -47,6 +47,18 @@ public class MindMapConstants {
 	public static final String FONT_BOLD = "fontBold";
 	public static final String FONT_ITALIC = "fontItalic";
 	
+	public static final String EDGE_WIDTH = "edgeWidth";
+	public static final String EDGE_STYLE = "edgeStyle";
+	public static final String EDGE_COLOR = "edgeColor";
+	
+	// EDGE STYLES
+	public static final String EDGE_SMOOTHLY_CURVED = "bezier";
+	public static final String EDGE_HIDE = "hide_edge";
+	public static final String EDGE_HORIZONTAL = "horizontal";
+	public static final String EDGE_LINEAR = "linear";
+	public static final String EDGE_SHARP_LINEAR = "sharp_linear";
+	public static final String EDGE_SHARPLY_CURVED = "sharp_bezier";
+	
 	public static final String COLOR_TEXT = "colorText";
 	public static final String COLOR_BACKGROUND = "colorBackground";
 	

@@ -16,8 +16,12 @@ import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_COLOR;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_STYLE;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_WIDTH;
 
 import java.awt.Color;
+import java.awt.image.SampleModel;
 import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
@@ -29,6 +33,8 @@ import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudController;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
+import org.freeplane.features.edge.EdgeModel;
+import org.freeplane.features.edge.EdgeStyle;
 import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
@@ -132,6 +138,34 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		if (text != null && text.length() > 0) {
 			node.getProperties().put(NOTE, text);
 		}
+		
+		// edges
+		EdgeModel edgeModel = EdgeModel.getModel(rawNodeData);
+		
+		if (edgeModel != null && edgeModel.getWidth() != EdgeModel.DEFAULT_WIDTH) {
+			node.getProperties().put(EDGE_WIDTH, edgeModel.getWidth());
+		} else {
+			node.getProperties().put(EDGE_WIDTH, node.getPropertyValue(EDGE_WIDTH));
+		}
+		
+		if (edgeModel != null && edgeModel.getStyle() != null) {
+			if (edgeModel.getStyle().equals(EdgeStyle.EDGESTYLE_SHARP_BEZIER)) { // SHARP_BEZIER not yet supported, display as BEZIER
+				node.getProperties().put(EDGE_STYLE, EdgeStyle.EDGESTYLE_BEZIER.toString());
+			} else if (edgeModel.getStyle().equals(EdgeStyle.EDGESTYLE_SHARP_LINEAR)) { // SHARP_LINEAR not yet supported, display as LINEAR
+				node.getProperties().put(EDGE_STYLE, EdgeStyle.EDGESTYLE_LINEAR.toString());
+			} else {
+				node.getProperties().put(EDGE_STYLE, edgeModel.getStyle().toString());
+			}
+		} else {
+			node.getProperties().put(EDGE_STYLE, node.getPropertyValue(EDGE_STYLE));
+		}
+		
+		if (edgeModel != null && edgeModel.getColor() != null) {
+			node.getProperties().put(EDGE_COLOR, ColorUtils.colorToString(edgeModel.getColor()));
+		} else {
+			node.getProperties().put(EDGE_COLOR, node.getPropertyValue(EDGE_COLOR));
+		}
+		
 	}
 
 }

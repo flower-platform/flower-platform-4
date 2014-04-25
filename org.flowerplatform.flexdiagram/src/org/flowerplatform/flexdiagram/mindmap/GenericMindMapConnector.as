@@ -26,12 +26,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapConnector extends UIComponent {
+	public class GenericMindMapConnector extends UIComponent {
 		
 		public var source:Object;
 		
@@ -39,38 +38,146 @@ package org.flowerplatform.flexdiagram.mindmap {
 				
 		private var context:DiagramShellContext;
 		
-		public function MindMapConnector() {
+		public function GenericMindMapConnector() {
 			depth = int.MAX_VALUE; // model has depth, so put connector above
 			mouseEnabled = false;
+			
 		}
 		
-		public function setSource(value:Object):MindMapConnector {
+		public function setSource(value:Object):GenericMindMapConnector {
 			this.source = value;
 			return this;
 		}
 		
-		public function setTarget(value:Object):MindMapConnector {
+		public function setTarget(value:Object):GenericMindMapConnector {
 			this.target = value;
 			return this;
 		}
 		
-		public function setContext(value:DiagramShellContext):MindMapConnector {
+		public function setContext(value:DiagramShellContext):GenericMindMapConnector {
 			this.context = value;
 			return this;
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		protected function getColor():uint {
+			return 0x808080;
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		protected function getEdgeWidth():int {
+			return 1;
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		protected function getEdgeStyle():String {
+			return "bezier";
 		}
 		
 		private function get diagramShell():MindMapDiagramShell {
 			return MindMapDiagramShell(context.diagramShell);
 		}
 		
+		/**
+		 * @author Sebastian Solomon
+		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			var edgeStyle:String = getEdgeStyle();
 			
+			switch(edgeStyle) {
+				case "hide_edge": {
+					graphics.clear();
+					break;
+				}
+				case "bezier": {
+					smoothlyCurvedEdge(unscaledWidth, unscaledHeight);
+					break;
+				}
+				case "horizontal": {
+					horizontalEdge(unscaledWidth, unscaledHeight);
+					break;
+				}
+				case "linear": {
+					linearEdge(unscaledWidth, unscaledHeight);
+					break;
+				}
+			}
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		private function horizontalEdge(unscaledWidth:Number, unscaledHeight:Number):void {
 			var sourceBounds:Array = getEndBounds(source);
 			var targetBounds:Array = getEndBounds(target);
 			
+			var edgeWidth:int = getEdgeWidth();
+			var color:uint = getColor();
+			
 			graphics.clear();
-			graphics.lineStyle(1, 0x808080);
+			graphics.lineStyle(edgeWidth, color);
+			
+			var sourcePoint:Point;
+			var targetPoint:Point;
+			
+			if (diagramShell.getModelController(context, source).getSide(context, source) == MindMapDiagramShell.POSITION_LEFT) {
+				sourcePoint = new Point(sourceBounds[0] + sourceBounds[2], sourceBounds[1] + sourceBounds[3]/2);
+				targetPoint = new Point(targetBounds[0], targetBounds[1] + targetBounds[3]/2);
+			} else {
+				sourcePoint = new Point(sourceBounds[0], sourceBounds[1] + sourceBounds[3]/2);
+				targetPoint = new Point(targetBounds[0] + targetBounds[2], targetBounds[1] + targetBounds[3]/2);
+			}		
+			graphics.moveTo(sourcePoint.x, sourcePoint.y);
+			graphics.lineTo(targetPoint.x/2 + sourcePoint.x/2, sourcePoint.y);
+			graphics.lineTo(targetPoint.x/2 + sourcePoint.x/2, targetPoint.y);
+			graphics.lineTo(targetPoint.x, targetPoint.y);
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		private function linearEdge(unscaledWidth:Number, unscaledHeight:Number):void {
+			var sourceBounds:Array = getEndBounds(source);
+			var targetBounds:Array = getEndBounds(target);
+			
+			var edgeWidth:int = getEdgeWidth();
+			var color:uint = getColor();
+			
+			graphics.clear();
+			graphics.lineStyle(edgeWidth, color);
+			
+			var sourcePoint:Point;
+			var targetPoint:Point;
+			
+			if (diagramShell.getModelController(context, source).getSide(context, source) == MindMapDiagramShell.POSITION_LEFT) {
+				sourcePoint = new Point(sourceBounds[0] + sourceBounds[2], sourceBounds[1] + sourceBounds[3]/2);
+				targetPoint = new Point(targetBounds[0], targetBounds[1] + targetBounds[3]/2);
+				graphics.moveTo(sourcePoint.x, sourcePoint.y);
+				graphics.lineTo(targetPoint.x, targetPoint.y);
+			} else {
+				sourcePoint = new Point(sourceBounds[0], sourceBounds[1] + sourceBounds[3]/2);
+				targetPoint = new Point(targetBounds[0] + targetBounds[2], targetBounds[1] + targetBounds[3]/2);
+				graphics.moveTo(sourcePoint.x, sourcePoint.y);			
+				graphics.lineTo(targetPoint.x, targetPoint.y);
+			}			
+		}
+		
+		private function smoothlyCurvedEdge (unscaledWidth:Number, unscaledHeight:Number):void {
+			var sourceBounds:Array = getEndBounds(source);
+			var targetBounds:Array = getEndBounds(target);
+			
+			var edgeWidth:int = getEdgeWidth();
+			var color:uint = getColor();
+			
+			graphics.clear();
+			graphics.lineStyle(edgeWidth, color);
 			
 			var sourcePoint:Point;
 			var targetPoint:Point;
@@ -122,9 +229,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 						targetPoint.x, 
 						targetPoint.y);
 				}
-			}					
+			}				
 		}
-		
 		private function getLeftTopControlPoint(x:Number, y:Number):Point {
 			return new Point(x - diagramShell.horizontalPadding/2, y);
 		}

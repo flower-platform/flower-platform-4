@@ -1,23 +1,7 @@
 package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
-import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
-import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
-import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
-import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
-import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
-import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
-import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
-import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +19,8 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
+import org.freeplane.features.edge.EdgeModel;
+import org.freeplane.features.edge.EdgeStyle;
 import org.freeplane.features.icon.MindIcon;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.NodeModel;
@@ -141,6 +127,40 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(ColorUtils.stringToColor(backgroundColor));				
 				isPropertySet = true;
 				break;
+			case EDGE_COLOR:
+				String edgeColor = (String) wrapper.getPropertyValue();
+				EdgeModel.createEdgeModel(rawNodeData).setColor(ColorUtils.stringToColor(edgeColor));
+				isPropertySet = true;
+				break;
+			case EDGE_WIDTH:
+				int edgeWidth = (int) wrapper.getPropertyValue();
+				EdgeModel.createEdgeModel(rawNodeData).setWidth(edgeWidth);
+				isPropertySet = true;
+				break;
+			case EDGE_STYLE:
+				String edgeStyleProperty = (String) wrapper.getPropertyValue();
+				EdgeStyle edgeStyle = null;
+				switch (edgeStyleProperty) {
+				case EDGE_SMOOTHLY_CURVED:
+					edgeStyle = EdgeStyle.EDGESTYLE_BEZIER;
+					break;
+				case EDGE_LINEAR:
+					edgeStyle = EdgeStyle.EDGESTYLE_LINEAR;
+					break;
+				case EDGE_HORIZONTAL:
+					edgeStyle = EdgeStyle.EDGESTYLE_HORIZONTAL;
+					break;
+				case EDGE_HIDE:
+					edgeStyle = EdgeStyle.EDGESTYLE_HIDDEN;
+					break;
+				default:
+					edgeStyle = EdgeStyle.EDGESTYLE_BEZIER;
+					break;
+				}
+				EdgeModel.createEdgeModel(rawNodeData).setStyle(edgeStyle);;
+				isPropertySet = true;
+				break;
+				
 			case CLOUD_COLOR:
 				String cloudColor = (String) wrapper.getPropertyValue();				
 				CloudModel.createModel(rawNodeData).setColor(ColorUtils.stringToColor(cloudColor));				
@@ -276,6 +296,19 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			case STYLE_NAME:
 				rawNodeData.removeExtension(LogicalStyleModel.class);
 				addAdditionalUnsetPropertyUpdatesFor = new ArrayList<>();
+				isPropertyUnset = true;
+				break;
+			// edge	
+			case EDGE_WIDTH:
+				((EdgeModel)rawNodeData.getExtension(EdgeModel.class)).setWidth(EdgeModel.DEFAULT_WIDTH);
+				isPropertyUnset = true;
+				break;
+			case EDGE_STYLE:
+				((EdgeModel)rawNodeData.getExtension(EdgeModel.class)).setStyle(null);
+				isPropertyUnset = true;
+				break;
+			case EDGE_COLOR:
+				rawNodeData.getExtension(EdgeModel.class).setColor(null);
 				isPropertyUnset = true;
 				break;
 			default:
