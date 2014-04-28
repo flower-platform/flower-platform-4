@@ -103,7 +103,7 @@ package org.flowerplatform.flex_client.web {
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new EmbedViewProvider());
 			var viewLayoutData:ViewLayoutData = new ViewLayoutData();
 			viewLayoutData.viewId = EmbedViewProvider.ID;
-			viewLayoutData.customData = "test.html";
+			viewLayoutData.customData = "js-app/users.html";
 			viewLayoutData.isEditor = true;
 			FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);
 		}

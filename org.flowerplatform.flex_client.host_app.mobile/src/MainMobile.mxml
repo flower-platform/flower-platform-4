@@ -147,14 +147,17 @@
 				var isAndroid:Boolean = true;
 				if (isAndroid) {
 					CorePlugin.getInstance().serviceLocator.invoke("coreService.getSessionId", null, function(sessionId:String):void {
-						StageWebViewDisk.initialize(MainMobile.mainApp.stage);
-						var jsBridge:StageWebViewBridge = new StageWebViewBridge();
-						jsBridge.visible = false;
-						jsBridge.addEventListener(StageWebViewBridgeEvent.DOM_LOADED, function(event:StageWebViewBridgeEvent):void {
-							jsBridge.call("setSessionId", null, sessionId);
-							jsBridge.call("login");
+						StageWebViewDisk.addEventListener(StageWebviewDiskEvent.END_DISK_PARSING, function onDiskCacheEnd(e:StageWebviewDiskEvent):void {
+							var jsBridge:StageWebViewBridge = new StageWebViewBridge();
+							jsBridge.addEventListener(StageWebViewBridgeEvent.DOM_LOADED, function(event:StageWebViewBridgeEvent):void {
+								jsBridge.call("setSessionId", null, sessionId);
+								jsBridge.call("login");
+							});
+							jsBridge.loadURL(FlexUtilGlobals.getInstance().createAbsoluteUrl("login.html?isMobile=true"));
 						});
-						jsBridge.loadURL(FlexUtilGlobals.getInstance().createAbsoluteUrl("login.html?isMobile=true"));
+						
+						//
+						StageWebViewDisk.initialize(MainMobile.mainApp.stage);
 					});
 				}
 			}

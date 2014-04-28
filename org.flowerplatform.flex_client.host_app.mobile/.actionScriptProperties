@@ -7,7 +7,7 @@
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.core/public-resources/swc/org.flowerplatform.flex_client.core.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/mx/mx.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/lib/MobileComponents45.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/lib/StageWebViewBridge.swc" sourcepath="D:/dwn/StageWebViewBridge-master/StageWebViewBridge-master/StageWebViewBridge" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/lib/StageWebViewBridge.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="4" path="">
         <excludedEntries>
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/qtp.swc" useDefaultLinkType="false"/>
@@ -37,9 +37,6 @@
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
     </libraryPath>
-    <sourceAttachmentPath>
-      <sourceAttachmentPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/lib/StageWebViewBridge.swc" sourcepath="D:/dwn/StageWebViewBridge-master/StageWebViewBridge-master/StageWebViewBridge" useDefaultLinkType="false"/>
-    </sourceAttachmentPath>
   </compiler>
   <applications>
     <application path="MainMobile.mxml">
