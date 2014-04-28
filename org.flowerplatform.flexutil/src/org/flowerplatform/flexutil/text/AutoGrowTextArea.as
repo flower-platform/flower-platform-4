@@ -22,6 +22,7 @@ package org.flowerplatform.flexutil.text {
 	import flash.ui.Keyboard;
 	
 	import mx.core.mx_internal;
+	import mx.events.FlexEvent;
 	import mx.skins.spark.SparkSkinForHalo;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -41,6 +42,11 @@ package org.flowerplatform.flexutil.text {
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				setStyle("skinClass", AutoGrowSkinnableTextBaseSkin);
 			}
+			addEventListener(Event.REMOVED_FROM_STAGE, function (event:Event):void {
+				if (textDisplay) {
+					textDisplay.removeEventListener(KeyboardEvent.KEY_DOWN, kewDownHandler1, false);
+				}
+			});
 		}
 		
 		protected function kewDownHandler1(event:KeyboardEvent):void {

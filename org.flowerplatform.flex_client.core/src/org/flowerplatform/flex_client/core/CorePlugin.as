@@ -289,7 +289,9 @@ package org.flowerplatform.flex_client.core {
 				})
 			);
 						
-			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts = [Keyboard.CONTROL, Keyboard.COMMAND, Keyboard.SHIFT, Keyboard.ALTERNATE, Keyboard.DOWN, Keyboard.UP, Keyboard.RIGHT, Keyboard.LEFT, Keyboard.PAGE_DOWN, Keyboard.PAGE_UP];		
+			// initial filterShortcuts
+			// other filterShortcut must be added by corresponding keyboard action
+			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts = [Keyboard.CONTROL, Keyboard.COMMAND, Keyboard.SHIFT, Keyboard.ALTERNATE];		
 		}
 				
 		override protected function registerClassAliases():void {		

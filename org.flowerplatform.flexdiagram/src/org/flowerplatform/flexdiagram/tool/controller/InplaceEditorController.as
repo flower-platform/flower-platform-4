@@ -40,11 +40,7 @@ package org.flowerplatform.flexdiagram.tool.controller {
 		public function commit(context:DiagramShellContext, model:Object):void {
 			throw new Error("This method needs to be implemented.");
 		}
-		
-		public function abort(context:DiagramShellContext, model:Object):void {
-			throw new Error("This method needs to be implemented.");
-		}
-		
+				
 		public function deactivate(context:DiagramShellContext, model:Object):void {
 			throw new Error("This method needs to be implemented.");
 		}

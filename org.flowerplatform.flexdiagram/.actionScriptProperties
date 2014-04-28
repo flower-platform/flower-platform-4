@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flexdiagram.as" projectUUID="08810144-09a1-4a2b-b2f0-90aef8e6d708" version="11">
-  <compiler additionalCompilerArguments="-locale en_US -swf-version=15" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flexdiagram.as" projectUUID="08810144-09a1-4a2b-b2f0-90aef8e6d708" version="10">
+  <compiler additionalCompilerArguments="-locale en_US -swf-version=15" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath>
       <compilerSourcePathEntry kind="1" linkType="1" path="icons"/>
     </compilerSourcePath>
@@ -21,7 +21,6 @@
     <application path="org.flowerplatform.flexdiagram.as"/>
   </applications>
   <modules/>
-  <workers/>
   <buildCSSFiles/>
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
 </actionScriptProperties>

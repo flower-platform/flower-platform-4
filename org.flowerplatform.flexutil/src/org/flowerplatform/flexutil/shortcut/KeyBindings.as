@@ -54,6 +54,8 @@ package org.flowerplatform.flexutil.shortcut {
 		
 		public var actionIdsToShortcuts:Dictionary = new Dictionary();
 		
+		public var allowKeyBindingsToProcessEvents:Boolean = true;
+		
 		public function KeyBindings() {
 			if (UIComponent(FlexGlobals.topLevelApplication).stage != null) {
 				registerKeyListener();
@@ -90,10 +92,10 @@ package org.flowerplatform.flexutil.shortcut {
 			return true;
 		}
 
-		private function onKeyUp(event:KeyboardEvent):void {
+		private function onKeyUp(event:KeyboardEvent):void {		
 			if (!canProcessEvent(event)) {
 				return;
-			}
+			}			
 			var shortcut:Shortcut = getRegisteredShortcut(new Shortcut(event.ctrlKey, event.shiftKey, event.altKey, event.keyCode));
 			if (shortcut == null) { // no shortcut registered for this event
 				return;
@@ -121,7 +123,7 @@ package org.flowerplatform.flexutil.shortcut {
 					for (var i:int = 0; i < actions.length; i++) {
 						action = actions[i];
 						if (action.id == handler) {						
-							if (action.visible && action.enabled) {
+							if (action.visible && action.enabled) {								
 								action.run(); 
 							}
 							break;
@@ -141,10 +143,11 @@ package org.flowerplatform.flexutil.shortcut {
 		}
 	
 		private function canProcessEvent(event:KeyboardEvent):Boolean {
-			if (event.ctrlKey && (filterShortcuts.indexOf(Keyboard.CONTROL) != -1 || filterShortcuts.indexOf(Keyboard.COMMAND) != -1) ||
+			if (allowKeyBindingsToProcessEvents &&
+				(event.ctrlKey && (filterShortcuts.indexOf(Keyboard.CONTROL) != -1 || filterShortcuts.indexOf(Keyboard.COMMAND) != -1) ||
 				event.altKey && (filterShortcuts.indexOf(Keyboard.ALTERNATE) != -1) ||
 				event.shiftKey && (filterShortcuts.indexOf(Keyboard.SHIFT) != -1) ||
-				event.keyCode && (filterShortcuts.indexOf(event.keyCode) != -1)) {				
+				event.keyCode && (filterShortcuts.indexOf(event.keyCode) != -1))) {				
 				return true;
 			}
 			return false;
