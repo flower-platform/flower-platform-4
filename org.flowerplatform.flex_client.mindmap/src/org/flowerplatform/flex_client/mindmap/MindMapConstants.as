@@ -47,7 +47,19 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		public static const STYLE_NAME:String = "styleName";
 		
-		public static const ICONS_LIST:String = 
+		// EDGE STYLES
+		public static const EDGE_SMOOTHLY_CURVED:String = "bezier";
+		public static const EDGE_HIDE:String = "hide_edge";
+		public static const EDGE_HORIZONTAL:String = "horizontal";
+		public static const EDGE_LINEAR:String = "linear";
+		// public static const EDGE_SHARP_LINEAR:String = "sharp_linear";
+		// public static const EDGE_SHARPLY_CURVED:String = "sharp_bezier";
+		
+		public static const EDGE_WIDTH:String = "edgeWidth";
+		public static const EDGE_STYLE:String = "edgeStyle";
+		public static const EDGE_COLOR:String = "edgeColor";
+		
+		public static const ICONS_LIST:String =
 			"help;yes;button_ok;button_cancel;bookmark;idea;messagebox_warning;stop-sign;closed;info;clanbomber;checked;unchecked;" 
 			+ "wizard;gohome;knotify;password;pencil;xmag;bell;bookmark;launch;broken-line;stop;prepare;go;"
 			+ "very_negative;negative;neutral;positive;very_positive;"

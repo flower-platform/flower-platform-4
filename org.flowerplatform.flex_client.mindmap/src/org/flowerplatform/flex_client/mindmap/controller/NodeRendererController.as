@@ -3,6 +3,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeRemovedEvent;
+	import org.flowerplatform.flex_client.mindmap.MindMapConnector;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	
@@ -13,6 +14,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		
 		public function NodeRendererController(rendererClass:Class, orderIndex:int = 0) {
 			super(rendererClass, orderIndex);
+			mindMapConnectorClass = MindMapConnector;
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {				
