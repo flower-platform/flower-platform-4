@@ -77,6 +77,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.shortcut.KeyBindings;
+	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 
 	/**
 	 * @author Cristian Spiescu
@@ -166,6 +167,33 @@ package org.flowerplatform.flex_client.core {
 				editorClassFactoryActionProvider.addActionClass(UploadAction);				
 			}
 			
+			// check version compatibility with server side
+			serviceLocator.invoke("coreService.getVersions", null, 
+				function (result:Object):void {					
+					if (_appVersion != result[0]) { // application version is old 
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setTitle(Resources.getMessage('version.error'))
+						.setText(Resources.getMessage('version.error.message', [_appVersion, result[0], Resources.getMessage('version.error.details')]))
+						.setWidth(400)
+						.setHeight(300)
+						.showMessageBox();						
+					} else if (_apiVersion != result[1]) { // API version is old
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setTitle(Resources.getMessage('version.error'))
+						.setText(Resources.getMessage('version.error.message', [_apiVersion, result[1], Resources.getMessage('version.error.details')]))
+						.setWidth(400)
+						.setHeight(300)
+						.showMessageBox();
+					} else { // versions ok 
+						_appVersion = result[0];
+						_apiVersion = result[1];						
+					}
+					
+					// INITIALIZATION SPINNER END
+					ModalSpinner.removeGlobalModalSpinner();
+				}
+			);
+				
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
 					var list:ArrayCollection = ArrayCollection(result);

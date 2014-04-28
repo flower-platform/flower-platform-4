@@ -296,7 +296,7 @@ package org.flowerplatform.flexutil.plugin {
 			var lastPackage:String = individualPackages[individualPackages.length - 1];
 			
 			// do we have custom plugin class?
-			var customPluginClassRegEx:RegExp = new RegExp("[\\?&]pluginClass=(.*?)\\z|&");
+			var customPluginClassRegEx:RegExp = new RegExp("[\\?&]pluginClass=(.*?)[\\z|&]");
 			var customPluginClassRegExGroups:Array = customPluginClassRegEx.exec(url);
 			if (customPluginClassRegExGroups != null && customPluginClassRegExGroups.length == 2) {
 				return groups[1] + "." + customPluginClassRegExGroups[1];

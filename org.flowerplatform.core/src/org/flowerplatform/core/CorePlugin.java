@@ -72,7 +72,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	
 	protected ComposedSessionListener composedSessionListener = new ComposedSessionListener();
 	
-	private FlowerProperties flowerProperties = new FlowerProperties(this.getClass().getClassLoader().getResourceAsStream("META-INF/flower.properties"));
+	private FlowerProperties flowerProperties = new FlowerProperties(this.getClass().getClassLoader().getResourceAsStream("META-INF/flower-platform.properties"));
 	
 	/**
 	 * @author Sebastian Solomon
@@ -190,7 +190,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		super.start(context);
 		INSTANCE = this;
 			
-		System.getProperties().put("flower.version", CoreConstants.VERSION);
+		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
 		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
 		

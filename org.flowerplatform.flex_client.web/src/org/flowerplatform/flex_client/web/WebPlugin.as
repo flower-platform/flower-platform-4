@@ -73,24 +73,8 @@ package org.flowerplatform.flex_client.web {
 						
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
-				function (result:Object):void {
-					// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
-					CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
-					ModalSpinner.removeGlobalModalSpinner();
-					
-				},
-				function (event:FaultEvent):void {					
-					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setTitle(Resources.getMessage('version.error'))
-					.setText(Resources.getMessage('version.error.message', [CoreConstants.VERSION, ErrorMessage(event.message).rootCause.message]))
-					.setWidth(400)
-					.setHeight(300)
-					.showMessageBox();	
-					ModalSpinner.removeGlobalModalSpinner();
-				}
-			);
+			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
+			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 		}
 		
 		override protected function registerMessageBundle():void {

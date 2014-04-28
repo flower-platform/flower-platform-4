@@ -11,8 +11,8 @@
 ################################################################
 # WARNING. Do not modify manually.
 #		
-# This file has been merged. Modify the *.default, *.default.override-global (persisted in SVN) or 
-# *.default.override-local (ignored by SVN, i.e. local to user).
+# This file has been merged. Modify the *.default, *.global (persisted in GIT) or 
+# *.local (ignored by GIT, i.e. local to user).
 #
 # Please always end the above files with at least 2 new lines (in order to have a correct merge).
 ################################################################
@@ -24,10 +24,10 @@
          ================================= -->
     <target name="merge-flower.properties">
 
-    	<concat destfile="META-INF/flower.properties">
+    	<concat destfile="META-INF/flower-platform.properties">
     		<header>${headerText}</header>
     		<sort>
-    			<fileset dir="config_properties" includes="flower.properties.*"/>
+    			<fileset dir="config_properties" includes="flower-platform.properties.*"/>
     		</sort>
     	</concat>
     </target>

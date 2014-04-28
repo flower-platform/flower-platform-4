@@ -6,8 +6,6 @@ package org.flowerplatform.flex_client.core {
 	 */
 	public class CoreConstants {
 				
-		public static const VERSION:String = "1.0.0.M1_2014-04-01";
-		
 		//////////////////////////////////
 		// Node types
 		//////////////////////////////////

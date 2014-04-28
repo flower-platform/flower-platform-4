@@ -189,10 +189,14 @@ license-end
 				if (pluginUrlsAsString == null) {
 					throw new Error("No pluginUrls have been specified. Flower Platform cannot start.");
 				}
-								
+				
+				// INITIALIZATION SPINNER START
 				ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
 				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
+				for (var i:int = 0; i < pluginUrls.length; i++) {
+					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
+				}
 				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
 			}
 		]]>
