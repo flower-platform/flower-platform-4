@@ -190,7 +190,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		super.start(context);
 		INSTANCE = this;
 			
-		System.getProperties().put("flower.version", CoreConstants.VERSION);
+		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
 		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
 		

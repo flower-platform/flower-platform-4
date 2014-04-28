@@ -221,29 +221,15 @@
 						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'))
 						.showMessageBox();
 				} else {
+					// INITIALIZATION SPINNER START
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
 					
 					//TODO add user/password
 					FlexUtilGlobals.getInstance().rootUrl = result.host;
 					
 					startPlugins();
-					
-					// check version
-					CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
-						function (result:Object):void {							
-							CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
-							ModalSpinner.removeGlobalModalSpinner();
-						},
-						function (event:FaultEvent):void {							
-							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-							.setTitle(Resources.getMessage('version.error'))
-							.setText(Resources.getMessage('version.error.message', [CoreConstants.VERSION, ErrorMessage(event.message).rootCause.message]))
-							.setWidth(400)
-							.setHeight(300)
-							.showMessageBox();	
-							ModalSpinner.removeGlobalModalSpinner();
-						}
-					);					
+														
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 				}
 			}
 			
