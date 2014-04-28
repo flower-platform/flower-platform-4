@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.mindmap {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.action.InplaceEditorAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
@@ -57,6 +58,8 @@ package org.flowerplatform.flex_client.mindmap {
 			shortcutsActionProvider.addAction(new NodePageUpAction(true));
 			shortcutsActionProvider.addAction(new NodeLeftAction(true));
 			shortcutsActionProvider.addAction(new NodeRightAction(true));
+			
+			shortcutsActionProvider.addAction(new InplaceEditorAction());
 			
 			actionProvider.actionProviders.push(shortcutsActionProvider);			
 		}

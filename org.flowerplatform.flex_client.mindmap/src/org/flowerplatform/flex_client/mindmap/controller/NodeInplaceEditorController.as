@@ -29,6 +29,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
 	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
 	
@@ -88,20 +89,17 @@ package org.flowerplatform.flex_client.mindmap.controller {
 						context.diagramShell.mainToolFinishedItsJob();
 					});
 			} else {
-				abort(context, model);
+				context.diagramShell.mainToolFinishedItsJob();
 			}
-		}
-		
-		override public function abort(context:DiagramShellContext, model:Object):void {
-			// here can be placed a warning
-			context.diagramShell.mainToolFinishedItsJob();
 		}
 		
 		override public function deactivate(context:DiagramShellContext, model:Object):void {
 			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			context.diagramShell.diagramRenderer.removeElement(textArea);
 			
-			delete context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;			
+			delete context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;		
+			
+			DiagramRenderer(context.diagramShell.diagramRenderer).setFocus();
 		}
 		
 	}

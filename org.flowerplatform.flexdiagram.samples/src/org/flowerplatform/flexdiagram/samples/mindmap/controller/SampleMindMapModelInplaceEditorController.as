@@ -59,12 +59,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller
 			
 			context.diagramShell.mainToolFinishedItsJob();
 		}
-		
-		override public function abort(context:DiagramShellContext, model:Object):void {
-			// here can be placed a warning
-			context.diagramShell.mainToolFinishedItsJob();
-		}
-		
+				
 		override public function deactivate(context:DiagramShellContext, model:Object):void {
 			var textField:TextInput = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
 			context.diagramShell.diagramRenderer.removeElement(textField);
