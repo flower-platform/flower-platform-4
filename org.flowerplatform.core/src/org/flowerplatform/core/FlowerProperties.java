@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +44,28 @@ public class FlowerProperties extends Properties {
 
 	private static final Logger logger = LoggerFactory.getLogger(FlowerProperties.class);
 	
-	public static final long DB_VERSION = 8;
+	public static final long DB_VERSION = 0;
 	
-	/* package */ FlowerProperties(InputStream inputStream) {
+	private static final String PROPERTIES_FILE = "META-INF/flower-platform.properties";
+	private static final String PROPERTIES_FILE_LOCAL = PROPERTIES_FILE + ".local";
+	
+	/* package */ FlowerProperties() {
 		super();
 		
 		defaults = new Properties();
 		
+		// get properties from global and local file, if exists
 		try {
-			this.load(inputStream);
-			inputStream.close();
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE_LOCAL);
+			if (is != null) {
+				this.load(is);
+				IOUtils.closeQuietly(is);
+			} 
+			
+			is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);			
+			this.load(is);
+			IOUtils.closeQuietly(is);
+			
 		} catch (IOException e) {
 			throw new RuntimeException("Error while loading properties from local file.", e);
 		}
