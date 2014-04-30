@@ -13,6 +13,11 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.ResizeEvent;
 	import mx.managers.IFocusManagerComponent;
 	
+	import spark.components.DataRenderer;
+	import spark.components.Label;
+	import spark.components.RichText;
+	import spark.layouts.HorizontalLayout;
+	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
@@ -20,11 +25,6 @@ package org.flowerplatform.flexdiagram.mindmap
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
-	
-	import spark.components.DataRenderer;
-	import spark.components.Label;
-	import spark.components.RichText;
-	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -169,15 +169,22 @@ package org.flowerplatform.flexdiagram.mindmap
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 			
 			if (canDrawCircle()) {
-				graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
-				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
-				if (side == MindMapDiagramShell.POSITION_LEFT) {
-					graphics.drawCircle(-circleRadius, height/2, circleRadius);
-				} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
-					graphics.drawCircle(width + circleRadius, height/2, circleRadius);
-				}
+				drawLittleCircle();
 			}
 			graphics.endFill();
+		}
+		
+		protected function drawLittleCircle(circleY:Number=NaN):void {
+			if (isNaN(circleY)) {
+				circleY = height/2;
+			}
+			graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
+			var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
+			if (side == MindMapDiagramShell.POSITION_LEFT) {
+				graphics.drawCircle(-circleRadius, circleY, circleRadius);
+			} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
+				graphics.drawCircle(width + circleRadius, circleY, circleRadius);
+			}
 		}
 		
 		protected function drawGraphics(unscaledWidth:Number, unscaledHeight:Number):void {	

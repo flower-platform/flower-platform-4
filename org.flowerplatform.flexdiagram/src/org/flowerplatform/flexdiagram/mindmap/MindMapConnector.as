@@ -143,15 +143,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected function getEndBounds(model:Object):Array {
 			var endRenderer:IVisualElement = diagramShell.getRendererForModel(context, model);
-			if (endRenderer == null) {
-				// the renderer is not on the screen; => provide estimates
-				var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);				
-				var rect:Rectangle = controller.getBounds(context, model);
-				return [rect.x, rect.y, rect.width, rect.height];
-			} else {
-				// renderer on screen => provide real data from renderer							
-				return [diagramShell.getPropertyValue(context, model, "x"), diagramShell.getPropertyValue(context, model, "y"), diagramShell.getPropertyValue(context, model, "width"), diagramShell.getPropertyValue(context, model, "height")];
-			}
+
+			// the renderer is not on the screen; => provide estimates
+			var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);				
+			var rect:Rectangle = controller.getBounds(context, model);
+			return [rect.x, rect.y, rect.width, rect.height];
 		}
 	}
 }

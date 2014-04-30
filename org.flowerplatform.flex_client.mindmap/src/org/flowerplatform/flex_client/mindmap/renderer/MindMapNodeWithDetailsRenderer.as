@@ -25,8 +25,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 */ 
 	public class MindMapNodeWithDetailsRenderer extends MindMapNodeRenderer {
 		
+		public var horizontalLine:Line;
 		protected var nodeGroup:Group;
-		protected var horizontalLine:Line;
 		protected var detailsGroup:Group;
 		protected var detailsIcon:Image;
 		protected var detailsText:RichText;
@@ -56,6 +56,15 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			addElement(detailsGroup);
 		}
 		
+		override protected function setHitArea(unscaledWidth:Number, unscaledHeight:Number):void {
+			if (horizontalLine.visible) {
+				super.setHitArea(unscaledWidth, horizontalLine.y);
+			} else {
+				super.setHitArea(unscaledWidth, unscaledHeight);
+			}
+			nodeGroup.hitArea = hitArea;
+		}
+
 		private function createNodeGroup():void {
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;
@@ -79,20 +88,24 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		private function createDetailsGroup():void {
 			detailsGroup = new Group();
-			detailsGroup.layout = new HorizontalLayout();
+			detailsGroup.layout = new HorizontalLayout();;
+			detailsGroup.percentWidth = 100;
 			
 			detailsText = new RichText();
+			detailsText.percentWidth = 100;
+
 			detailsIcon = new Image();
-			detailsIcon.addEventListener(MouseEvent.CLICK, click_Handler);
+			detailsIcon.addEventListener(MouseEvent.CLICK, detailsIconClickHandler);
+
 			detailsGroup.addElement(detailsIcon);
 			detailsGroup.addElement(detailsText);
 		}
 		
 		
-		protected function click_Handler(event:MouseEvent):void {
+		protected function detailsIconClickHandler(event:MouseEvent):void {
 			if (detailsText.includeInLayout) {
 				detailsText.visible = false;
-				detailsText.includeInLayout = !detailsText.includeInLayout;
+				detailsText.includeInLayout = false;
 				detailsIcon.source = Resources.arrowDownIcon;
 			} else {
 				detailsText.includeInLayout = true;
@@ -109,7 +122,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			super.nodeUpdatedHandler(event);
 			if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
 				setDetailsGroupVisibile(true);
-				
 				detailsIcon.source = Resources.arrowUpIcon;
 				
 				var text:String = node.properties[MindMapConstants.NODE_DETAILS] as String;
@@ -166,8 +178,24 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					
 					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
 					noteComponentExtension.x = dynamicObject.x ;
-					noteComponentExtension.y = dynamicObject.y + dynamicObject.height;
+					if (horizontalLine.visible) {
+						noteComponentExtension.y = dynamicObject.y + horizontalLine.y;
+					} else {
+						noteComponentExtension.y = dynamicObject.y + dynamicObject.height;	
+					}
 				}
+			}
+		}
+		
+		override protected function getMouseEventParent():UIComponent {
+			return nodeGroup;
+		}
+		
+		override protected function drawLittleCircle(y:Number=NaN):void {
+			if (horizontalLine.visible) {
+				super.drawLittleCircle(horizontalLine.y/2);
+			} else {
+				super.drawLittleCircle();
 			}
 		}
 		
