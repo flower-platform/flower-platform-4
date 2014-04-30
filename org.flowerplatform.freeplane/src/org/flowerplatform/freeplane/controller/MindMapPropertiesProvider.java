@@ -4,24 +4,24 @@ import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_COLOR;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_STYLE;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
 import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
 import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.NODE_DETAILS;
 import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
-import static org.flowerplatform.mindmap.MindMapConstants.EDGE_COLOR;
-import static org.flowerplatform.mindmap.MindMapConstants.EDGE_STYLE;
-import static org.flowerplatform.mindmap.MindMapConstants.EDGE_WIDTH;
 
 import java.awt.Color;
-import java.awt.image.SampleModel;
 import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
@@ -43,6 +43,7 @@ import org.freeplane.features.note.NoteModel;
 import org.freeplane.features.styles.IStyle;
 import org.freeplane.features.styles.LogicalStyleModel;
 import org.freeplane.features.styles.MapStyleModel;
+import org.freeplane.features.text.DetailTextModel;
 
 /**
  * @author Cristina Constantinescu
@@ -166,6 +167,11 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 			node.getProperties().put(EDGE_COLOR, node.getPropertyValue(EDGE_COLOR));
 		}
 		
+		// note details
+		text = DetailTextModel.getDetailTextText(rawNodeData);
+		if (text != null && text.length() > 0) {
+			node.getProperties().put(NODE_DETAILS, text);
+		}
 	}
 
 }

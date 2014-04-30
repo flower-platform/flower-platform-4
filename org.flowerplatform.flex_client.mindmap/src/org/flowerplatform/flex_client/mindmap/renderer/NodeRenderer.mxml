@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mindmap:AbstractMindMapModelRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 									  xmlns:s="library://ns.adobe.com/flex/spark" 
-									  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*" 
-									  mouseOver="mouseOverHandler(event)" mouseOut="mouseOutHandler(event)"  >
-	
+									  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.core.DPIClassification;
 			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.events.ResizeEvent;
@@ -68,6 +67,14 @@
 						}
 					}
 				}
+				
+				var mouseEventParent:UIComponent = getMouseEventParent();
+				mouseEventParent.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+				mouseEventParent.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+			}
+			
+			protected function getMouseEventParent():UIComponent {
+				return this;
 			}
 			
 			protected function get node():Node {
@@ -193,11 +200,20 @@
 			
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
-
+				setHitArea(unscaledWidth, unscaledHeight);
+			}	
+			
+			/**
+			 * @author Cristina Constantinescu
+			 * @author Solomon Sebastian
+			 */
+			protected function setHitArea(unscaledWidth:Number, unscaledHeight:Number):void {
+				var paddingLeft:Number = 2;
+				var paddingTop:Number = 2;
+				
 				rendererHitArea.graphics.clear();				
 				rendererHitArea.graphics.beginFill(0xFF0000, 0);
-				rendererHitArea.graphics.drawRect(0, -unscaledHeight/2, unscaledWidth, unscaledHeight);	
-												
+				rendererHitArea.graphics.drawRect(-paddingLeft, -paddingTop, unscaledWidth, unscaledHeight);	
 				if (circle.parent != null) {	
 					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
 					var side:int = mindMapDiagramShell.getModelController(diagramShellContext, node).getSide(diagramShellContext, node);
@@ -205,18 +221,18 @@
 					vLine.visible = !mindMapDiagramShell.getModelController(diagramShellContext, node).getExpanded(diagramShellContext, node);	
 					if (side == MindMapDiagramShell.POSITION_LEFT) {
 						circle.x = dynamicObject.x - circleRadius * 2;						
-						circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;
-						rendererHitArea.graphics.drawRect(-circleRadius * 2, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
+						circle.y = dynamicObject.y + unscaledHeight / 2 - circleRadius;
+						rendererHitArea.graphics.drawRect(-circleRadius * 2 - paddingLeft, -paddingTop, circleRadius * 2, unscaledHeight);
 					} else if (side == MindMapDiagramShell.POSITION_RIGHT) {
 						circle.x = dynamicObject.x + dynamicObject.width;
-						circle.y = dynamicObject.y + dynamicObject.height / 2 - circleRadius;	
-						rendererHitArea.graphics.drawRect(unscaledWidth, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
+						circle.y = dynamicObject.y + unscaledHeight / 2 - circleRadius;
+						rendererHitArea.graphics.drawRect(dynamicObject.width - paddingLeft , -paddingTop, circleRadius * 2, unscaledHeight);
 					}
 				}
-														
+				
 				rendererHitArea.graphics.endFill();
 				hitArea = rendererHitArea;
-			}	
+			}
 						
 			override protected function canDrawCircle():Boolean {			
 				return node != null 

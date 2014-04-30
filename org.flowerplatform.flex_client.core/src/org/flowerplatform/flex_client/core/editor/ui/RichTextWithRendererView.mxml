@@ -35,6 +35,8 @@
 			public var rendererModel:Node;
 			public var diagramShellContext:DiagramShellContext;
 			
+			public var icon:Object;
+			
 			protected var renderer:AbstractMindMapModelRenderer;
 			
 			protected var _viewhost:IViewHost;
@@ -60,7 +62,7 @@
 					var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, rendererModel);
 					textEditor.text = String(titleProvider.getValue(rendererModel));
 				} else {
-					_viewhost.setIcon(Resources.mindmap_knotesIcon);
+					_viewhost.setIcon(icon);
 				}
 			}
 			

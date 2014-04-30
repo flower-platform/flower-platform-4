@@ -152,7 +152,7 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("downloadService");
 			serviceLocator.addService("uploadService");
 			
-			updateTimer = new UpdateTimer(5000);
+ 			updateTimer = new UpdateTimer(5000);
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;

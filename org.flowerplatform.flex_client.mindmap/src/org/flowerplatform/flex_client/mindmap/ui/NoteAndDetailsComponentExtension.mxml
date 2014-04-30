@@ -3,8 +3,9 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" depth="{int.MAX_VALUE}">
 	
-	<fx:Script>
+		<fx:Script>
 		<![CDATA[
+			import org.flowerplatform.flex_client.resources.Resources;
 			
 		]]>
 	</fx:Script>
@@ -16,6 +17,13 @@
 		<s:fill>
 			<s:SolidColor color="white" alpha="0.95"/>
 		</s:fill>
-	</s:Rect>	
-	<s:RichText id="noteText" paddingRight="5" paddingLeft="5" paddingTop="5" paddingBottom="5"/>
+	</s:Rect>
+	<s:Group>
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:RichText id="nodeDetails"  paddingLeft="1" paddingRight="2" paddingTop="5" paddingBottom="5"/>
+		<s:Image id="noteIcon" source="{Resources.mindmap_knotesBlackIcon}"/>
+		<s:RichText id="noteText" paddingLeft="1" paddingRight="2" paddingTop="0" paddingBottom="5"/>
+	</s:Group>
 </s:Group>
