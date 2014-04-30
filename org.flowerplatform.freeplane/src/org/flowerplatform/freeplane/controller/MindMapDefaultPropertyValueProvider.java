@@ -31,6 +31,8 @@ import org.freeplane.features.cloud.CloudController;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
 import org.freeplane.features.edge.EdgeController;
+import org.freeplane.features.edge.EdgeModel;
+import org.freeplane.features.edge.EdgeStyle;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
@@ -191,15 +193,47 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 	private Object getNodeEdgeDefaultProperty(String property,
 			NodeModel styleNodeModel, NodeModel nodeModel) {
 		Object defaultPropertyValue = null;
+		EdgeModel edgeModel = null;
+		if (styleNodeModel != null) {
+			edgeModel = (EdgeModel)styleNodeModel.getExtension(EdgeModel.class);
+		}
+		
 		switch (property) {
 		case EDGE_COLOR:
-			defaultPropertyValue = ColorUtils.colorToString(EdgeController.getController().getColor(nodeModel, true));
+			Color styleColor = edgeModel == null ? null : edgeModel.getColor();
+			if (styleColor == null) {// get color from parent
+				if (nodeModel.getParentNode() != null) {
+					defaultPropertyValue = ColorUtils.colorToString(EdgeController.getController().getColor(nodeModel.getParentNode()));
+				} else { //root node, return the default value
+					defaultPropertyValue =  "#808080";
+				}
+			} else {
+				defaultPropertyValue =  ColorUtils.colorToString(styleColor);
+			}
 			break;
 		case EDGE_STYLE:
-			defaultPropertyValue = EdgeController.getController().getStyle(nodeModel, true).toString();
+			EdgeStyle styleEdgeStyle = edgeModel == null ? null : edgeModel.getStyle();
+			if (styleEdgeStyle == null) {// get style from parent
+				if (nodeModel.getParentNode() != null) {
+					defaultPropertyValue = EdgeController.getController().getStyle(nodeModel.getParentNode()).toString();
+				} else { // the root node style has no edgeStyle, return the default edge style
+					defaultPropertyValue = EdgeStyle.EDGESTYLE_BEZIER.toString();
+				}
+			} else {
+				defaultPropertyValue = styleEdgeStyle.toString();
+			}
 			break;
 		case EDGE_WIDTH:
-			defaultPropertyValue = EdgeController.getController().getWidth(nodeModel, true);
+			Integer styleEdgeWidth = edgeModel == null ? -1 : edgeModel.getWidth();
+			if (styleEdgeWidth == -1) { // get edge_width from parent
+				if (nodeModel.getParentNode() != null) {
+					defaultPropertyValue = EdgeController.getController().getWidth(nodeModel.getParentNode());
+				} else {
+					defaultPropertyValue = 0;
+				}
+			} else {
+				defaultPropertyValue =  styleEdgeWidth;
+			}
 			break;
 		}
 		return defaultPropertyValue;
