@@ -166,6 +166,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					text = node.properties[MindMapConstants.NOTE] as String
 					text = Utils.getCompatibleHTMLText(text);
 					noteComponentExtension.noteText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
+					noteComponentExtension.noteIcon.includeInLayout = true;
 					noteComponentExtension.noteText.includeInLayout = true;
 					hasText = true;
 				} else {
