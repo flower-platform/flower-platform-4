@@ -3,9 +3,7 @@ package org.flowerplatform.util.servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
-import org.apache.tomcat.InstanceManager;
 import org.eclipse.equinox.jsp.jasper.JspServlet;
-import org.flowerplatform.util.servlet.ServletUtils;
 import org.osgi.framework.Bundle;
 
 /**

@@ -2,7 +2,6 @@ package org.flowerplatform.host.servletbridge.registry;
 
 import javax.servlet.ServletContext;
 
-import org.apache.tomcat.InstanceManager;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.http.servlet.HttpServiceServlet;
@@ -40,7 +39,11 @@ public class Activator implements BundleActivator {
 		 * @see CustomJSPFactory
 		 * @see CustomJSPServlet
 		 */
-		ServletUtils.addServletContextAdditionalAttributes(InstanceManager.class.getName(), httpServiceServlet.getServletContext().getAttribute(InstanceManager.class.getName()));
+		String instanceManagerClass = "org.apache.tomcat.InstanceManager";
+		if (Class.forName(instanceManagerClass) == null) {
+			throw new RuntimeException("The application is not running in a Tomcat servlet container! Please contact the Flower team if you need support for other servlet containers.");
+		}
+		ServletUtils.addServletContextAdditionalAttributes(instanceManagerClass, httpServiceServlet.getServletContext().getAttribute(instanceManagerClass));
 		
 		IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.flowerplatform.host.servletbridge.registry.listeners");
 		for (IConfigurationElement configurationElement : configurationElements) {

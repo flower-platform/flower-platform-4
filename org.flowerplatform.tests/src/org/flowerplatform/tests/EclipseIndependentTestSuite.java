@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
+import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.resources.ResourcesPlugin;
@@ -41,6 +42,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Mariana Gheorghe
  */
+@SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	CodeSyncTestSuite.class,
@@ -54,9 +56,9 @@ public class EclipseIndependentTestSuite {
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
+		FrameworkProperties.getProperties().put("osgi.instance.area", ".");
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
-		
 		nodeService = CorePlugin.getInstance().getNodeService();
 	}
 	
@@ -85,7 +87,11 @@ public class EclipseIndependentTestSuite {
 		Field field = AbstractFlowerJavaPlugin.class.getDeclaredField("resourceBundle");
 		field.setAccessible(true);
 		field.set(plugin, resourceBundle);
-		plugin.start(context);
+		try {
+			plugin.start(context);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

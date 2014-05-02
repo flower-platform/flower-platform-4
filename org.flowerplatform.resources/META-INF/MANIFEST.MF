@@ -8,3 +8,4 @@ Require-Bundle: org.flowerplatform.util,
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.resources.ResourcesPlugin
 Export-Package: org.flowerplatform.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

@@ -245,6 +245,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			throw new RuntimeException(osgiInstanceArea + " workspace location not found", e);
 		}
 		properties.put("osgi.instance.area", "file:" + osgiInstanceArea);
+		properties.put(OSGI_INSTALL_AREA, osgiConfigurationArea + "/..");
 		
 		properties.put("flower.server.app.context", context.getContextPath().substring(1));
 		properties.put("flower.server.app.location", context.getRealPath(File.separator));

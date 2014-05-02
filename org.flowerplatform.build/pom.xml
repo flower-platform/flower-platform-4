@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>org.flowerplatform</groupId>
+	<artifactId>parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	
+	<!-- list of plugins to build -->
+	<modules>
+		<module>../org.flowerplatform.util</module>
+		<module>../org.flowerplatform.resources</module>
+		<module>../org.flowerplatform.core</module>
+		<module>../org.flowerplatform.mindmap</module>
+		<module>../org.flowerplatform.freeplane</module>
+		<module>../org.flowerplatform.codesync</module>
+		<module>../org.flowerplatform.codesync.code</module>
+		<module>../org.flowerplatform.codesync.code.java</module>
+		
+		<module>../org.flowerplatform.host.servletbridge.registry</module>
+		<module>../org.flowerplatform.host.servletbridge.extensionbundle</module>
+		
+		<module>../org.flowerplatform.flex_client.core</module>
+		<module>../org.flowerplatform.flex_client.properties</module>
+		<module>../org.flowerplatform.flex_client.mindmap</module>
+		<module>../org.flowerplatform.flex_client.codesync</module>
+		<module>../org.flowerplatform.flex_client.host_app</module>
+		<module>../org.flowerplatform.flex_client.host_app.config.web</module>
+		<module>../org.flowerplatform.flex_client.web</module>
+		<module>../org.flowerplatform.flex_client.server</module>
+		
+		<module>../org.flowerplatform.product</module>
+		
+<!-- 		<module>../org.flowerplatform.tests</module> -->
+	</modules>
+
+	<properties>
+		<build-project>org.flowerplatform.build</build-project>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+		<tycho.version>0.20.0</tycho.version>
+		<eclipse-repo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipse-repo.url>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<url>${eclipse-repo.url}</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<outputDirectory>../${build-project}/classes/${module-name}</outputDirectory>
+		<directory>../${build-project}/distr/${module-name}</directory>
+	
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<!-- ignore access restriction error on javax.servlet -->
+					<compilerArgument>-err:-forbidden</compilerArgument>
+					
+					<!-- classpath elements needed at compile time -->
+					<!-- provided by the servlet container at runtime -->
+					<extraClasspathElements>
+						<extraClasspathElement>
+							<groupId>javax.servlet</groupId>
+							<artifactId>javax.servlet-api</artifactId>
+							<version>3.0.1</version>
+						</extraClasspathElement>
+						<extraClasspathElement>
+							<groupId>org.flowerplatform.host</groupId>
+							<artifactId>org.flowerplatform.host.web_app</artifactId>
+							<version>1.0.0-SNAPSHOT</version>
+						</extraClasspathElement>
+					</extraClasspathElements>
+				</configuration>
+			</plugin>
+		
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<dependencies>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>javax.servlet</artifactId>
+						</dependency>
+					</dependencies>
+				</configuration>
+			</plugin>
+				
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<!-- resources to be packaged -->
+					<additionalFileSets>
+						<fileSet>
+							<directory>public-resources</directory>
+							<prefix>public-resources/</prefix>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<excludes>
+								<exclude>*.local</exclude>
+								<exclude>*.merge</exclude>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileSet>
+						<fileSet>
+							<directory>WebContent</directory>
+							<prefix>WebContent/</prefix>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileSet>
+					</additionalFileSets>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<environments>
+<!-- 						<environment> -->
+<!-- 							<os>linux</os> -->
+<!-- 							<ws>gtk</ws> -->
+<!-- 							<arch>x86</arch> -->
+<!-- 						</environment> -->
+<!-- 						<environment> -->
+<!-- 							<os>linux</os> -->
+<!-- 							<ws>gtk</ws> -->
+<!-- 							<arch>x86_64</arch> -->
+<!-- 						</environment> -->
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+<!-- 						<environment> -->
+<!-- 							<os>macosx</os> -->
+<!-- 							<ws>cocoa</ws> -->
+<!-- 							<arch>x86_64</arch> -->
+<!-- 						</environment> -->
+					</environments>
+				</configuration>
+			</plugin>
+		</plugins>
+		
+		<pluginManagement>
+	        <plugins>
+	            <!-- get rid of errors when building from the IDE -->
+	            <!-- this has no effect on the tycho build -->
+	            <plugin>
+	                <groupId>org.eclipse.m2e</groupId>
+	                <artifactId>lifecycle-mapping</artifactId>
+	                <version>1.0.0</version>
+	                <configuration>
+	                    <lifecycleMappingMetadata>
+	                        <pluginExecutions>
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.eclipse.tycho</groupId>
+	                                    <artifactId>tycho-compiler-plugin</artifactId>
+	                                    <versionRange>[${tycho.version},)</versionRange>
+	                                    <goals>
+	                                        <goal>compile</goal>
+	                                    </goals>
+	                                </pluginExecutionFilter>
+	                                <action>
+	                                    <ignore/>
+	                                </action>
+	                            </pluginExecution>
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.eclipse.tycho</groupId>
+	                                    <artifactId>tycho-packaging-plugin</artifactId>
+	                                    <versionRange>[${tycho.version},)</versionRange>
+	                                    <goals>
+	                                        <goal>build-qualifier</goal>
+	                                        <goal>validate-id</goal>
+	                                        <goal>validate-version</goal>
+	                                    </goals>
+	                                </pluginExecutionFilter>
+	                                <action>
+	                                    <ignore/>
+	                                </action>
+	                            </pluginExecution>
+	                        </pluginExecutions>
+	                    </lifecycleMappingMetadata>
+	                </configuration>
+	            </plugin>
+	        </plugins>
+	    </pluginManagement>
+	</build>
+</project> 

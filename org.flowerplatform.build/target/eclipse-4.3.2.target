@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="eclipse-4.3.2" sequenceNumber="26">
+<locations>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.equinox.p2.extras.feature.feature.group" version="1.2.0.v20140221-1852"/>
+<unit id="org.eclipse.pde.api.tools.ee.feature.feature.group" version="1.0.0.v20130327-1631"/>
+<unit id="org.eclipse.equinox.server.core.feature.group" version="1.2.0.v20140110-1610"/>
+<unit id="org.eclipse.core.runtime.feature.feature.group" version="1.1.0.v20140110-1610"/>
+<unit id="org.eclipse.cvs.feature.group" version="1.4.0.v20140221-1700"/>
+<unit id="org.eclipse.cvs.source.feature.group" version="1.4.0.v20140221-1700"/>
+<unit id="org.eclipse.e4.rcp.feature.group" version="1.2.2.v20140206-1358"/>
+<unit id="org.eclipse.e4.rcp.source.feature.group" version="1.2.2.v20140206-1358"/>
+<unit id="org.eclipse.help.source.feature.group" version="2.0.2.v20140221-1700"/>
+<unit id="org.eclipse.help.feature.group" version="2.0.2.v20140221-1700"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.9.2.v20140221-1700"/>
+<unit id="org.eclipse.jdt.source.feature.group" version="3.9.2.v20140221-1700"/>
+<unit id="org.eclipse.equinox.p2.user.ui.source.feature.group" version="2.2.0.v20140221-1852"/>
+<unit id="org.eclipse.pde.source.feature.group" version="3.9.1.v20140221-1700"/>
+<unit id="org.eclipse.platform.feature.group" version="4.3.2.v20140221-1852"/>
+<unit id="org.eclipse.platform.ide" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.equinox.executable" version="3.6.0.v20140117-1004"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.0.v20140117-1004"/>
+<unit id="org.eclipse.platform.source.feature.group" version="4.3.2.v20140221-1852"/>
+<unit id="org.eclipse.platform.sdk" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.pde.feature.group" version="3.9.1.v20140221-1700"/>
+<unit id="org.eclipse.rcp.configuration.feature.group" version="1.0.0.v20140117-0610"/>
+<unit id="org.eclipse.sdk.feature.group" version="4.3.2.v20140221-1852"/>
+<unit id="org.eclipse.rcp.feature.group" version="4.3.2.v20140221-1700"/>
+<unit id="org.eclipse.rcp.id" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.rcp.source.feature.group" version="4.3.2.v20140221-1700"/>
+<unit id="org.eclipse.rcp.sdk.id" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.releng.tools.feature.group" version="3.5.0.v20140203-1326"/>
+<unit id="org.eclipse.sdk.ide" version="4.3.2.M20140221-1700"/>
+<unit id="org.eclipse.sdk.examples.feature.group" version="3.5.300.v20140221-1700"/>
+<unit id="org.eclipse.sdk.examples.source.feature.group" version="3.5.300.v20140221-1700"/>
+<unit id="org.eclipse.sdk.tests.feature.group" version="4.3.0.v20140221-2329"/>
+<unit id="org.eclipse.test.feature.group" version="3.6.0.v20140203-1326"/>
+<unit id="org.eclipse.emf.ecore.feature.group" version="2.9.2.v20131212-0545"/>
+<unit id="org.eclipse.emf.common.feature.group" version="2.9.2.v20131212-0545"/>
+<unit id="org.eclipse.equinox.compendium.sdk.feature.group" version="3.8.0.v20130813-1853"/>
+<unit id="org.eclipse.equinox.core.feature.feature.group" version="1.1.0.v20140110-1610"/>
+<unit id="org.eclipse.equinox.core.sdk.feature.group" version="3.8.0.v20140114-1344"/>
+<unit id="org.eclipse.equinox.starterkit.product.feature.feature.group" version="1.2.0.v20140221-1852"/>
+<unit id="org.eclipse.equinox.p2.core.feature.feature.group" version="1.2.1.v20140221-1852"/>
+<unit id="org.eclipse.equinox.p2.core.feature.source.feature.group" version="1.2.1.v20140221-1852"/>
+<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.0.100.v20130502-0334"/>
+<unit id="org.eclipse.equinox.p2.user.ui.feature.group" version="2.2.0.v20140221-1852"/>
+<unit id="org.eclipse.equinox.p2.rcp.feature.feature.group" version="1.2.0.v20140221-1852"/>
+<unit id="org.eclipse.equinox.p2.extras.feature.source.feature.group" version="1.2.0.v20140221-1852"/>
+<unit id="org.eclipse.equinox.p2.rcp.feature.source.feature.group" version="1.2.0.v20140221-1852"/>
+<unit id="org.eclipse.equinox.p2.sdk.feature.group" version="3.8.1.v20140221-1852"/>
+<unit id="org.eclipse.equinox.serverside.sdk.feature.group" version="3.9.1.v20140221-1852"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.9.0.v20140221-1852"/>
+<unit id="org.eclipse.equinox.weaving.sdk.feature.group" version="1.0.200.v20130327-1442"/>
+<unit id="org.eclipse.equinox.server.jetty.feature.group" version="1.1.1.v20140113-1859"/>
+<unit id="org.eclipse.equinox.server.p2.feature.group" version="1.2.1.v20140221-1852"/>
+<unit id="org.eclipse.emf.ecore.source.feature.group" version="2.9.2.v20131212-0545"/>
+<unit id="org.eclipse.emf.common.source.feature.group" version="2.9.2.v20131212-0545"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700"/>
+</location>
+</locations>
+</target>
