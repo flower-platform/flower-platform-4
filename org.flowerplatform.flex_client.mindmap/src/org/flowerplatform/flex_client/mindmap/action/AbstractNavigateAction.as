@@ -57,8 +57,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 			this.appendNodesToCurrentSelection = appendNodesToCurrentSelection;
 			this.label = appendNodesToCurrentSelection ? Resources.getMessage("mindmap.navigate.action.append", [label]) : label;
 			
-			FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, id);
-			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts.push(shortcut.keyCode);
+			FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, id);			
 		}
 		
 		private function getSibling(node:Node, context:DiagramShellContext, side:int, previous:Boolean):Node {

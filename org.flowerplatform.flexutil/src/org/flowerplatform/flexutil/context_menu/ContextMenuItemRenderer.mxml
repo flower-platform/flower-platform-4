@@ -28,10 +28,14 @@
 				autoDrawBackground="true" height="{HEIGHT}" click="clickHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.ActionUtil;
 			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.shortcut.AssignShortcutForActionEvent;
 			import org.flowerplatform.flexutil.shortcut.Shortcut;
 			
 			public static const HEIGHT:int = 22;
@@ -77,15 +81,23 @@
 			
 			protected function clickHandler(event:MouseEvent):void {
 				if (!ActionUtil.isComposedAction(IAction(data))) {
-					var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
-					try {
-						IAction(data).selection = contextMenu.contextMenuManager.selection; 
-						IAction(data).context = contextMenu.contextMenuManager.context; 
-						IAction(data).run();
-					} finally {										
-						IAction(data).selection = null;
-						IAction(data).context = null; 
-						contextMenu.closeContextMenuStack(0);
+					if (FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation) { // learning state -> just send event to notify listeners
+						try {
+							UIComponent(FlexGlobals.topLevelApplication).stage.dispatchEvent(new AssignShortcutForActionEvent(IAction(data).id));
+						} catch (e:Error) { // something went wrong -> reset state, otherwise actions cannot be executed anymore
+							FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
+						}
+					} else {
+						var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
+						try {
+							IAction(data).selection = contextMenu.contextMenuManager.selection; 
+							IAction(data).context = contextMenu.contextMenuManager.context; 
+							IAction(data).run();
+						} finally {										
+							IAction(data).selection = null;
+							IAction(data).context = null; 
+							contextMenu.closeContextMenuStack(0);
+						}
 					}
 				}
 			}

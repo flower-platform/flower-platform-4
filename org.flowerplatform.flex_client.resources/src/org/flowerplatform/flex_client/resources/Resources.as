@@ -62,6 +62,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/arrow_right.png")]
 		public static const arrowRightIcon:Class;
 		
+		[Embed(source="/core/keyboard.png")]
+		public static const keyboardIcon:Class;
+		
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]

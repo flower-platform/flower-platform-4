@@ -23,7 +23,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 			super();
 			
 			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(false, false, false, Keyboard.F2), id);
-			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts.push(Keyboard.F2);
 		}
 			
 		override public function get showInMenu():Boolean {

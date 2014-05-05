@@ -21,6 +21,8 @@ package org.flowerplatform.flexutil {
 	import flash.text.FontType;
 	import flash.text.StyleSheet;
 	import flash.ui.Keyboard;
+	import flash.utils.Dictionary;
+	import flash.utils.describeType;
 	import flash.utils.getQualifiedClassName;
 	
 	import flashx.textLayout.utils.CharacterUtil;
@@ -237,53 +239,34 @@ package org.flowerplatform.flexutil {
 			
 			return text;
 		}
+			
 		
-		public static function getKeyNameFromKeyCode(keyCode:uint):String {
-			switch (keyCode) {
-				case Keyboard.PAGE_DOWN:
-					return Keyboard.KEYNAME_PAGEDOWN;
-				case Keyboard.PAGE_UP:
-					return Keyboard.KEYNAME_PAGEUP;
-				case Keyboard.UP:
-					return Keyboard.KEYNAME_UPARROW;
-				case Keyboard.DOWN:
-					return Keyboard.KEYNAME_DOWNARROW;
-				case Keyboard.LEFT:
-					return Keyboard.KEYNAME_LEFTARROW;
-				case Keyboard.RIGHT:
-					return Keyboard.KEYNAME_RIGHTARROW;
-				case Keyboard.F1:
-					return Keyboard.KEYNAME_F1;
-				case Keyboard.F2:
-					return Keyboard.KEYNAME_F2;
-				case Keyboard.F3:
-					return Keyboard.KEYNAME_F3;
-				case Keyboard.F4:
-					return Keyboard.KEYNAME_F4;
-				case Keyboard.F5:
-					return Keyboard.KEYNAME_F5;
-				case Keyboard.F6:
-					return Keyboard.KEYNAME_F6;
-				case Keyboard.F7:
-					return Keyboard.KEYNAME_F7;
-				case Keyboard.F8:
-					return Keyboard.KEYNAME_F8;
-				case Keyboard.F9:
-					return Keyboard.KEYNAME_F9;
-				case Keyboard.F10:
-					return Keyboard.KEYNAME_F10;
-				case Keyboard.F11:
-					return Keyboard.KEYNAME_F11;
-				case Keyboard.F12:
-					return Keyboard.KEYNAME_F12;
-				case Keyboard.INSERT:
-					return Keyboard.KEYNAME_INSERT;
-				case Keyboard.END:
-					return Keyboard.KEYNAME_END;
-				case Keyboard.HOME:
-					return Keyboard.KEYNAME_HOME;
+		private static var keyCodeNames:Dictionary;		
+		private static function getKeyCodeNames():Dictionary {
+			if (keyCodeNames == null) {		
+				var keyCodeNames:Dictionary = new Dictionary();
+				
+				var keyDescription:XML = describeType(Keyboard);
+				var keyNames:XMLList = keyDescription..constant.@name;
+				
+				var len:int = keyNames.length();
+				for(var i:int = 0; i < len; i++) {
+					keyCodeNames[Keyboard[keyNames[i]]] = keyNames[i];
+				}
 			}
-			return String.fromCharCode(keyCode);
+			return keyCodeNames;
+		}		
+		
+		public static function getKeyNameFromKeyCode(keyCode:uint):Object {
+			switch (keyCode) {
+				case 19:
+					return Keyboard.KEYNAME_PAUSE;
+				case 144:
+					return "Num Lock";
+				case 145:
+					return "Scroll Lock";
+			}
+			return getKeyCodeNames()[keyCode];			
 		}
 		
 	}

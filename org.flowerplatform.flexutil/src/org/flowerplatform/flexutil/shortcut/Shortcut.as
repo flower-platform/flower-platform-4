@@ -31,6 +31,7 @@ package org.flowerplatform.flexutil.shortcut {
 	/**
 	 * @author Florin
 	 * @author Cristi
+	 * @author Cristina Constantinescu
 	 */
 	public class Shortcut {
 	
@@ -58,21 +59,25 @@ package org.flowerplatform.flexutil.shortcut {
 		}
 		
 		public function toString():String {
-			var str:String = "";
+			var keyName:Object = Utils.getKeyNameFromKeyCode(keyCode);
+			if (keyName == null) {
+				return null;
+			}
+			
+			var shortcut:String = "";
 			var delimiter:String = FlexUtilAssets.INSTANCE.getMessage("shortcut.delimiter");
 			if (ctrlKey) {
-				str += FlexUtilAssets.INSTANCE.getMessage("keyboard.ctrl") + delimiter;
+				shortcut += FlexUtilAssets.INSTANCE.getMessage("keyboard.ctrl") + delimiter;
 			}
 			if (altKey) {
-				str += FlexUtilAssets.INSTANCE.getMessage("keyboard.alt") + delimiter;
+				shortcut += FlexUtilAssets.INSTANCE.getMessage("keyboard.alt") + delimiter;
 			}
 			if (shiftKey) {
-				str += FlexUtilAssets.INSTANCE.getMessage("keyboard.shift") + delimiter;
-			}
-			if (keyCode) {
-				str += Utils.getKeyNameFromKeyCode(keyCode);
-			}
-			return str;
+				shortcut += FlexUtilAssets.INSTANCE.getMessage("keyboard.shift") + delimiter;
+			}				
+			shortcut += keyName;
+			
+			return shortcut;
 		}
 		
 	}
