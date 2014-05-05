@@ -16,7 +16,23 @@
 		<module-name>tests</module-name>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+		</dependency>
+	</dependencies>
+
 	<build>
+		<directory>../${build-project}/tests</directory>
+	
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -27,6 +43,45 @@
 						<exclude>**/resources/</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+
+			<!-- Eclipse dependent tests -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<testSuite>org.flowerplatform.tests</testSuite>
+					<testClass>org.flowerplatform.tests.EclipseDependentTestSuite</testClass>
+					<dependencies>
+						<dependency>
+							<type>jar</type>
+							<groupId>javax.servlet</groupId>
+							<artifactId>javax.servlet-api</artifactId>
+							<version>3.0.1</version>
+						</dependency>
+					</dependencies>
+				</configuration>
+			</plugin>
+
+			<!-- Eclipse independent tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<configuration>
+							<testClassesDirectory>../${build-project}/classes/${module-name}</testClassesDirectory>
+							<test>EclipseIndependentTestSuite</test>
+						</configuration>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -9,8 +9,9 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
-	<!-- list of plugins to build -->
+	<!-- list of modules to build -->
 	<modules>
+		<!-- base plugins -->
 		<module>../org.flowerplatform.util</module>
 		<module>../org.flowerplatform.resources</module>
 		<module>../org.flowerplatform.core</module>
@@ -20,9 +21,15 @@
 		<module>../org.flowerplatform.codesync.code</module>
 		<module>../org.flowerplatform.codesync.code.java</module>
 		
+		<!-- not packaged as plugins, only available during compile time -->
+		<module>../org.flowerplatform.host.servletbridge.base</module>
+		<module>../org.flowerplatform.host.web_app</module>
+		
+		<!-- depend on the above jars -->
 		<module>../org.flowerplatform.host.servletbridge.registry</module>
 		<module>../org.flowerplatform.host.servletbridge.extensionbundle</module>
 		
+		<!-- flex client plugins -->
 		<module>../org.flowerplatform.flex_client.core</module>
 		<module>../org.flowerplatform.flex_client.properties</module>
 		<module>../org.flowerplatform.flex_client.mindmap</module>
@@ -33,8 +40,7 @@
 		<module>../org.flowerplatform.flex_client.server</module>
 		
 		<module>../org.flowerplatform.product</module>
-		
-<!-- 		<module>../org.flowerplatform.tests</module> -->
+		<module>../org.flowerplatform.tests</module>
 	</modules>
 
 	<properties>
@@ -94,23 +100,14 @@
 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<configuration>
-					<dependencies>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>javax.servlet</artifactId>
-						</dependency>
-					</dependencies>
-				</configuration>
-			</plugin>
-				
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
+					<!-- disable the generation of the META-INF/maven directory -->
+					 <archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+								
 					<!-- resources to be packaged -->
 					<additionalFileSets>
 						<fileSet>

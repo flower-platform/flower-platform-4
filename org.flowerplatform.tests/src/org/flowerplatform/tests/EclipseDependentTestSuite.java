@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
+	EclipseDependentTest.class
 //	SecurityPermissionsTests.class,
 //	ListenerTestSuite.class,
 //	ChangesProcessorTest.class

@@ -56,14 +56,14 @@
 			NOTE2: In dev. mode the webapp's context is something like
 			...WORKSPACE\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\org.flowerplatform.web.app\
 		 -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>developmentLaunchConfigurationWindows</param-name> -->
-<!-- 			<param-value>Flower Platform - Host WebApp (write plugin config to file)</param-value> -->
-<!-- 		</init-param> -->
-<!-- 		<init-param> -->
-<!-- 			<param-name>developmentLaunchConfigurationLinux</param-name> -->
-<!-- 			<param-value>Flower Platform - Web Linux</param-value> -->
-<!-- 		</init-param> -->
+		<init-param>
+			<param-name>developmentLaunchConfigurationWindows</param-name>
+			<param-value>Flower Platform - Host WebApp (write plugin config to file)</param-value>
+		</init-param>
+		<init-param>
+			<param-name>developmentLaunchConfigurationLinux</param-name>
+			<param-value>Flower Platform - Web Linux</param-value>
+		</init-param>
 	
 		<!-- 
 			If in production mode (i.e. no dev mode, i.e. developmentLaunchConfiguration not set), 
