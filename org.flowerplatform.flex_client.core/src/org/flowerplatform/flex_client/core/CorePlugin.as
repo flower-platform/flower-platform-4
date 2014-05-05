@@ -26,10 +26,6 @@ package org.flowerplatform.flex_client.core {
 	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
-	import mx.messaging.events.ChannelEvent;
-	import mx.messaging.events.ChannelFaultEvent;
-	import mx.messaging.messages.ErrorMessage;
-	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
@@ -60,6 +56,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
+	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
@@ -76,7 +73,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
-	import org.flowerplatform.flexutil.shortcut.KeyBindings;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 
 	/**
@@ -244,12 +240,12 @@ package org.flowerplatform.flex_client.core {
 			
 			// add actions to global menu
 			
-			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.file")).setId(CoreConstants.FILE_MENU_ID));
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.file")).setId(CoreConstants.FILE_MENU_ID).setOrderIndex(10));
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
 			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
 			globalMenuActionProvider.addAction(resourceNodesManager.reloadAction);
 			
-			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID));
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID).setOrderIndex(20));
 			globalMenuActionProvider.addAction(new ActionBase()
 				.setLabel(Resources.getMessage("link.title"))
 				.setIcon(Resources.externalLinkIcon)
@@ -265,7 +261,7 @@ package org.flowerplatform.flex_client.core {
 			
 			debug_forceUpdateAction = new ForceUpdateAction();
 			globalMenuActionProvider.addAction(debug_forceUpdateAction);
-			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.debug")).setId(CoreConstants.DEBUG));	
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.debug")).setId(CoreConstants.DEBUG).setOrderIndex(100));	
 			
 			globalMenuActionProvider.addAction(new ActionBase()
 				.setLabel(Resources.getMessage("open.node.action.label"))
@@ -288,7 +284,10 @@ package org.flowerplatform.flex_client.core {
 					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 				})
 			);
-						
+					
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
+			globalMenuActionProvider.addAction(new AssignHotKeyAction());
+			
 			// initial filterShortcuts
 			// other filterShortcut must be added by corresponding keyboard action
 			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts = [Keyboard.CONTROL, Keyboard.COMMAND, Keyboard.SHIFT, Keyboard.ALTERNATE];		

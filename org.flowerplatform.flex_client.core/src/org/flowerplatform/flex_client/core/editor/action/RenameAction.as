@@ -41,7 +41,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		private var view:RichTextWithRendererView;
 		
 		public function RenameAction() {			
-			label = Resources.getMessage("action.rename");
+			label = Resources.getMessage("mindmap.edit.node.core");
 			icon = Resources.editIcon;
 			orderIndex = 80;
 		}

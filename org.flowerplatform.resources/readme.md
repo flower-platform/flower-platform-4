@@ -13,6 +13,7 @@ Holds images and messages.
 | images/core/disk.png | https://www.iconfinder.com/icons/5276/disk_download_floppy_save_icon#size=16 | http://www.famfamfam.com/lab/icons/silk/ | core |
 | images/core/disk_multiple.png | https://www.iconfinder.com/icons/5277/disk_multiple_save_icon#size=16 | http://www.famfamfam.com/lab/icons/silk/ | core |
 | images/core/open.png | https://www.iconfinder.com/icons/27861/open_icon#size=16 |  http://creativecommons.org/licenses/by-nd/3.0/ | core |
+| images/core/keyboard.png | https://www.iconfinder.com/icons/36136/keyboard_icon#size=16 | http://www.fatcow.com/ | core |
 
 ### Icons allowed for commercial use (NO link required) ==
 

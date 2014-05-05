@@ -23,15 +23,15 @@ package org.flowerplatform.flexutil.shortcut {
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	
+	import mx.collections.IList;
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
-	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
+	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
 	/**
 	 * This class binds shortcuts to actions (or functions).
@@ -56,6 +56,8 @@ package org.flowerplatform.flexutil.shortcut {
 		
 		public var allowKeyBindingsToProcessEvents:Boolean = true;
 		
+		public var learnShortcutOnNextActionInvocation:Boolean = false;
+		
 		public function KeyBindings() {
 			if (UIComponent(FlexGlobals.topLevelApplication).stage != null) {
 				registerKeyListener();
@@ -66,7 +68,7 @@ package org.flowerplatform.flexutil.shortcut {
 		
 		protected function registerKeyListener(event:Event = null):void {
 			UIComponent(FlexGlobals.topLevelApplication).removeEventListener(Event.ADDED_TO_STAGE, registerKeyListener);
-			UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);			
 		}
 
 		public function registerBinding(shortcut:Shortcut, handler:Object):Boolean {
@@ -89,6 +91,11 @@ package org.flowerplatform.flexutil.shortcut {
 				}
 				actionIdsToShortcuts[handler] = shortcut;
 			}
+			
+			if (!shortcut.ctrlKey && !shortcut.altKey && !shortcut.shiftKey) { 
+				filterShortcuts.push(shortcut.keyCode);
+			}
+			
 			return true;
 		}
 
@@ -119,12 +126,21 @@ package org.flowerplatform.flexutil.shortcut {
 				var view:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
 				
 				if (view != null && view is IViewContent) {
-					var actions:Vector.<IAction> = IViewContent(view).getActions(null);
+					var selection:IList = null;
+					if (view is IViewHostAware) {
+						selection = IViewHostAware(view).viewHost.getCachedSelection();
+					}
+					var actions:Vector.<IAction> = IViewContent(view).getActions(selection);
 					for (var i:int = 0; i < actions.length; i++) {
 						action = actions[i];
-						if (action.id == handler) {						
-							if (action.visible && action.enabled) {								
-								action.run(); 
+						if (action.id == handler) {
+							try {
+								action.selection = selection;
+								if (action.visible && action.enabled) {								
+									action.run(); 
+								}
+							} finally {
+								action.selection = null;
 							}
 							break;
 						}
@@ -143,7 +159,7 @@ package org.flowerplatform.flexutil.shortcut {
 		}
 	
 		private function canProcessEvent(event:KeyboardEvent):Boolean {
-			if (allowKeyBindingsToProcessEvents &&
+			if (!learnShortcutOnNextActionInvocation && allowKeyBindingsToProcessEvents &&
 				(event.ctrlKey && (filterShortcuts.indexOf(Keyboard.CONTROL) != -1 || filterShortcuts.indexOf(Keyboard.COMMAND) != -1) ||
 				event.altKey && (filterShortcuts.indexOf(Keyboard.ALTERNATE) != -1) ||
 				event.shiftKey && (filterShortcuts.indexOf(Keyboard.SHIFT) != -1) ||
@@ -152,5 +168,6 @@ package org.flowerplatform.flexutil.shortcut {
 			}
 			return false;
 		}
+		
 	}
 }
