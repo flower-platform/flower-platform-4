@@ -6,8 +6,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import mx.events.PropertyChangeEvent;
 	import mx.utils.StringUtil;
 	
-	import flashx.textLayout.conversion.TextConverter;
-	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -15,7 +13,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.ui.NoteComponentExtension;
+	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -29,7 +27,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 */ 
 	public class MindMapNodeRenderer extends NodeRenderer {
 		
-		protected var noteComponentExtension:NoteComponentExtension = new NoteComponentExtension;
+		protected var noteComponentExtension:NoteAndDetailsComponentExtension = new NoteAndDetailsComponentExtension();
 		
 		override protected function unassignData():void {
 			super.unassignData();
@@ -235,23 +233,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		/**
 		 * @author Sebastian Solomon
 		 */
-		override protected function mouseOverHandler(event:MouseEvent):void {
-			super.mouseOverHandler(event);
-			if (node.properties.hasOwnProperty(MindMapConstants.NOTE) && String(node.properties.note).length > 0 && noteComponentExtension.parent == null) {
-				var text:String = String(node.properties.note);
-				text = Utils.getCompatibleHTMLText(text);
-				// if text contains html tag, display it as html, otherwise plain text
-				noteComponentExtension.noteText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
-				DiagramRenderer(mindMapDiagramShell.diagramRenderer).addElement(noteComponentExtension)
-					
-				if (noteComponentExtension.parent != null) {
-					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
-					noteComponentExtension.x = dynamicObject.x ;
-					noteComponentExtension.y = dynamicObject.y + dynamicObject.height;
-				}
-			}
-		}
-		
 		/**
 		 * @author Sebastian Solomon
 		 */

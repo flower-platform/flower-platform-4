@@ -1,7 +1,31 @@
 package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
-import static org.flowerplatform.mindmap.MindMapConstants.*;
+import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
+import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
+import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
+import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
+import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MAX_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_COLOR;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_HIDE;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_HORIZONTAL;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_LINEAR;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_SMOOTHLY_CURVED;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_STYLE;
+import static org.flowerplatform.mindmap.MindMapConstants.EDGE_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
+import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
+import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.NODE_DETAILS;
+import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
+import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +54,7 @@ import org.freeplane.features.note.NoteModel;
 import org.freeplane.features.styles.IStyle;
 import org.freeplane.features.styles.LogicalStyleModel;
 import org.freeplane.features.styles.MapStyleModel;
+import org.freeplane.features.text.DetailTextModel;
 
 /**
  * @author Cristina Constantinescu
@@ -93,10 +118,14 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			case NOTE:
 				String note = (String) wrapper.getPropertyValue();
 				NoteModel.createNote(rawNodeData).setHtml(note);
-				addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+				if (addAdditionalSetPropertyUpdatesFor == null) {
+					addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+				}
 				addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
-				node.getProperties().put(NOTE, note);
 				break;
+			case NODE_DETAILS:
+				String nodeDetails = (String) wrapper.getPropertyValue();
+				DetailTextModel.createDetailText(rawNodeData).setHtml(nodeDetails);
 			case FONT_FAMILY:	
 				String fontFamily = (String) wrapper.getPropertyValue();
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);
