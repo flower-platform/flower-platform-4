@@ -34,10 +34,8 @@ package org.flowerplatform.flex_client.mindmap.action {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public class EditNoteInDialogAction extends ActionBase implements IDialogResultHandler {
+	public class EditNoteInDialogAction extends ActionBase {
 		
-		private var selectedNode:Node;
-			
 		public function EditNoteInDialogAction(descriptor:AddChildDescriptor = null)	{
 			super();
 				
@@ -51,27 +49,26 @@ package org.flowerplatform.flex_client.mindmap.action {
 		}
 		
 		override public function run():void {
-			selectedNode = Node(selection.getItemAt(0));
-			var note:String = selectedNode.properties.note;
+			var selectedNode:Node = Node(selection.getItemAt(0));
 			
-			var richTextWithRendererView:RichTextWithRendererView = new RichTextWithRendererView();
-			richTextWithRendererView.setResultHandler(this);
-			richTextWithRendererView.icon = Resources.mindmap_knotesIcon;
-			if (note != null) {
-				note = Utils.getCompatibleHTMLText(note);
-				// if text contains html tag, display it as html, otherwise plain text
-				richTextWithRendererView.textEditor.textFlow = TextConverter.importToFlow(note , Utils.isHTMLText(note) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
-			}
+			var richTextWithRendererView:RichTextWithRendererView = new RichTextWithRendererView();			
+			richTextWithRendererView.icon = icon;
+			richTextWithRendererView.node = selectedNode;
+			richTextWithRendererView.showRendererArea = false;
+			richTextWithRendererView.text = selectedNode.properties[MindMapConstants.NOTE];
+			
+			richTextWithRendererView.resultHandler = function(newValue:String):void {				
+				// invoke service method and wait for result to close the rename popup
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selectedNode.fullNodeId, MindMapConstants.NOTE, newValue], 
+					function(result:Object):void {
+						FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(richTextWithRendererView);							
+					});
+			};
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setTitle(Resources.getMessage("note_title"))
 				.setViewContent(richTextWithRendererView)
 				.show();
-		}
-		
-		public function handleDialogResult(result:Object):void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selectedNode.fullNodeId, 
-				MindMapConstants.NOTE, result]);
 		}
 		
 	}
