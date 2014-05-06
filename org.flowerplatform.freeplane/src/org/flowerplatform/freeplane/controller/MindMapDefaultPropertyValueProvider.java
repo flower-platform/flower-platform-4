@@ -123,6 +123,15 @@ public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValuePro
 			NodeModel defaultStyleNodeModel = getStyleNodeModel(nodeModel, DEFAULT_STYLE);
 			defaultPropertyValue = getNodeSizeDefaultProperty(property, defaultStyleNodeModel, nodeModel);
 		}
+		
+		// no values set in style or default style, use our defaults
+		if (defaultPropertyValue == null) {
+			if (MIN_WIDTH.equals(property)) {
+				defaultPropertyValue = 1;
+			} else if (MAX_WIDTH.equals(property)) {
+				defaultPropertyValue = 600;
+			}
+		}
 		return defaultPropertyValue;
 	}
 	

@@ -31,5 +31,8 @@ public class HeadlessMapViewController extends org.freeplane.main.headlessmode.H
 	public IMapSelection getMapSelection() {
 		return null;
 	}
-
+	
+	public void setTitle() {
+	}
+	
 }
