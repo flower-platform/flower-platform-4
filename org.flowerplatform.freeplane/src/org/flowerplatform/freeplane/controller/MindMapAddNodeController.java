@@ -22,13 +22,16 @@ public class MindMapAddNodeController extends AddNodeController {
 			currentModelAtInsertionPoint = insertBeforeNode != null ? (NodeModel) insertBeforeNode.getOrRetrieveRawNodeData() : null;
 		}
 		NodeModel newNodeModel = new NodeModel("", parentRawNodeData.getMap());
-		newNodeModel.setLeft(false);
+		newNodeModel.setLeft(parentRawNodeData.isLeft());
 		
 		parentRawNodeData.insert(newNodeModel, currentModelAtInsertionPoint != null ? parentRawNodeData.getChildPosition(currentModelAtInsertionPoint) : parentRawNodeData.getChildCount());
 		parentRawNodeData.getMap().setSaved(false);
 		
 		// set the id on the node instance
-		child.setIdWithinResource(newNodeModel.createID());		
+		child.setIdWithinResource(newNodeModel.createID());	
+		
+		// populate also with initial properties
+		child.getOrPopulateProperties();
 	}
 
 }
