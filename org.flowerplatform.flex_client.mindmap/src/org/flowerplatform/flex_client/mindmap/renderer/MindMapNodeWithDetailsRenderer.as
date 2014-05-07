@@ -16,6 +16,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.Utils;
@@ -30,6 +31,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		protected var detailsGroup:Group;
 		protected var detailsIcon:Image;
 		protected var detailsText:RichText;
+		protected var noteComponentExtension:NoteAndDetailsComponentExtension = new NoteAndDetailsComponentExtension();
 		
 		override public function setLayout():void {
 			var vLayout:VerticalLayout = new VerticalLayout();
@@ -46,8 +48,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		override protected function createChildren():void {
 			createNodeGroup();
 			super.createChildren();
-			nodeGroup.addElement(labelDisplay);
-			
+
 			createDetailsGroup();
 			createHorizontalLine();
 			
@@ -80,6 +81,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		private function createHorizontalLine():void {
 			horizontalLine = new Line();
+			horizontalLine.percentWidth = 100;
 			var colorStroke:SolidColorStroke = new SolidColorStroke();
 			colorStroke.color = 808080;
 			colorStroke.weight = 1;
@@ -99,22 +101,27 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 
 			detailsGroup.addElement(detailsIcon);
 			detailsGroup.addElement(detailsText);
+			
+			detailsText.visible = false;
+			detailsText.includeInLayout = false;
 		}
 		
 		
-		protected function detailsIconClickHandler(event:MouseEvent):void {
+		protected function detailsIconClickHandler(event:MouseEvent=null):void {
 			if (detailsText.includeInLayout) {
 				detailsText.visible = false;
 				detailsText.includeInLayout = false;
 				detailsIcon.source = Resources.arrowDownIcon;
+				invalidateDisplayList();
 			} else {
 				detailsText.includeInLayout = true;
 				detailsText.visible = true;
 				detailsIcon.source = Resources.arrowUpIcon;
+				
 			}
 		}
 			
-		override public function getIconParentComponent():UIComponent {
+		override public function getMainComponent():UIComponent {
 			return nodeGroup;
 		}
 		
@@ -122,7 +129,11 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			super.nodeUpdatedHandler(event);
 			if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
 				setDetailsGroupVisibile(true);
-				detailsIcon.source = Resources.arrowUpIcon;
+				if (detailsText.includeInLayout) {
+					detailsIcon.source = Resources.arrowUpIcon;
+				} else {
+					detailsIcon.source = Resources.arrowDownIcon;
+				}
 				
 				var text:String = node.properties[MindMapConstants.NODE_DETAILS] as String;
 				text = Utils.getCompatibleHTMLText(text);
@@ -137,12 +148,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			horizontalLine.visible = value;
 			detailsGroup.includeInLayout = value;
 			detailsGroup.visible = value;
-		}
-		
-		override protected function drawGraphics(unscaledWidth:Number, unscaledHeight:Number):void {
-			var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
-			horizontalLine.xTo = dynamicObject.width - 5;
-			super.drawGraphics(unscaledWidth, unscaledHeight);
 		}
 		
 		override protected function mouseOverHandler(event:MouseEvent):void {
@@ -188,10 +193,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 		}
 		
-		override protected function getMouseEventParent():UIComponent {
-			return nodeGroup;
-		}
-		
 		override protected function drawLittleCircle(y:Number=NaN):void {
 			if (horizontalLine.visible) {
 				super.drawLittleCircle(horizontalLine.y/2);
@@ -210,6 +211,13 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		override public function newIconIndex():int {			
 			return nodeGroup.numElements - 1; // add icon before label
+		}
+		
+		override protected function mouseOutHandler(event:MouseEvent):void {	
+			super.mouseOutHandler(event);
+			if (noteComponentExtension.parent != null) {
+				DiagramRenderer(diagramShellContext.diagramShell.diagramRenderer).removeElement(noteComponentExtension);
+			}				
 		}
 		
 	}

@@ -53,7 +53,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);			
 		}
 		
-		public function getIconParentComponent():UIComponent {
+		public function getMainComponent():UIComponent {
 			return this;
 		}
 		

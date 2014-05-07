@@ -27,8 +27,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 */ 
 	public class MindMapNodeRenderer extends NodeRenderer {
 		
-		protected var noteComponentExtension:NoteAndDetailsComponentExtension = new NoteAndDetailsComponentExtension();
-		
 		override protected function unassignData():void {
 			super.unassignData();
 			
@@ -110,12 +108,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var minWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MIN_WIDTH, event);
 			if (minWidthChanged) {
-				minWidth = node.properties[MindMapConstants.MIN_WIDTH];
+				getMainComponent().minWidth = node.properties[MindMapConstants.MIN_WIDTH];
 			}	
 			
 			var maxWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MAX_WIDTH, event);
 			if (maxWidthChanged) {
-				maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
+				getMainComponent().maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
 			}
 			
 			var fontFamilyChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_FAMILY, event);
@@ -228,19 +226,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 						});
 				}
 			}
-		}
-		
-		/**
-		 * @author Sebastian Solomon
-		 */
-		/**
-		 * @author Sebastian Solomon
-		 */
-		override protected function mouseOutHandler(event:MouseEvent):void {	
-			super.mouseOutHandler(event);
-			if (noteComponentExtension.parent != null) {
-				DiagramRenderer(diagramShellContext.diagramShell.diagramRenderer).removeElement(noteComponentExtension);
-			}				
 		}
 		
 	}

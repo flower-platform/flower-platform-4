@@ -18,23 +18,14 @@
 */
 package org.flowerplatform.flex_client.mindmap.action {
 	
-	import flashx.textLayout.conversion.TextConverter;
-	
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.ui.RichTextWithRendererView;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.Utils;
-	import org.flowerplatform.flexutil.action.ActionBase;
-	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 	
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public class EditNoteInDialogAction extends ActionBase {
+	public class EditNoteInDialogAction extends AbstractEditNodePropertyInDialogAction {
 		
 		public function EditNoteInDialogAction(descriptor:AddChildDescriptor = null)	{
 			super();
@@ -44,31 +35,8 @@ package org.flowerplatform.flex_client.mindmap.action {
 			orderIndex = 90;
 		}
 		
-		override public function get visible():Boolean {	
-			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node && Node(selection.getItemAt(0)).type == "freeplaneNode";
-		}
-		
 		override public function run():void {
-			var selectedNode:Node = Node(selection.getItemAt(0));
-			
-			var richTextWithRendererView:RichTextWithRendererView = new RichTextWithRendererView();			
-			richTextWithRendererView.icon = icon;
-			richTextWithRendererView.node = selectedNode;
-			richTextWithRendererView.showRendererArea = false;
-			richTextWithRendererView.text = selectedNode.properties[MindMapConstants.NOTE];
-			
-			richTextWithRendererView.resultHandler = function(newValue:String):void {				
-				// invoke service method and wait for result to close the rename popup
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selectedNode.fullNodeId, MindMapConstants.NOTE, newValue], 
-					function(result:Object):void {
-						FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(richTextWithRendererView);							
-					});
-			};
-			
-			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-				.setTitle(Resources.getMessage("note_title"))
-				.setViewContent(richTextWithRendererView)
-				.show();
+			editProperty(MindMapConstants.NOTE, Resources.getMessage("note_title"));
 		}
 		
 	}
