@@ -41,7 +41,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			
 			numberValidator = new NumberValidator();
 			
-			propertyValue.restrict = "0-9\\-";
+//			propertyValue.restrict = "0-9\\-";
 			propertyValue.setStyle("textAlign", TextAlign.RIGHT);
 		}
 		
@@ -50,16 +50,18 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			if (value == null) {
 				return true;
 			}
-			var validationResultEvent:ValidationResultEvent = numberValidator.validate(value);			
-			if (validationResultEvent.type == ValidationResultEvent.INVALID) {	
-				// show validation error to client
-				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setTitle(Resources.getMessage("properties.view"))
-					.setText(ValidationResult(validationResultEvent.results[0]).errorMessage)
-					.setWidth(300)
-					.setHeight(200)					
-					.showMessageBox();					
-				return false;
+			if (value != 0) {// done to alow '0', see: https://forums.adobe.com/thread/1038745
+				var validationResultEvent:ValidationResultEvent = numberValidator.validate(value);			
+				if (validationResultEvent.type == ValidationResultEvent.INVALID) {	
+					// show validation error to client
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setTitle(Resources.getMessage("properties.view"))
+						.setText(ValidationResult(validationResultEvent.results[0]).errorMessage)
+						.setWidth(300)
+						.setHeight(200)					
+						.showMessageBox();					
+					return false;
+				}
 			}
 			return true;
 		}

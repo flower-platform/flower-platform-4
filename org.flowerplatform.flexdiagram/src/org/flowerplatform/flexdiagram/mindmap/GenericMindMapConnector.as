@@ -25,6 +25,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	
 	/**
@@ -77,7 +78,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * @author Sebastian Solomon
 		 */
 		protected function getEdgeStyle():String {
-			return "bezier";
+			return FlexDiagramConstants.EDGE_SMOOTHLY_CURVED;
 		}
 		
 		private function get diagramShell():MindMapDiagramShell {
@@ -92,19 +93,19 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var edgeStyle:String = getEdgeStyle();
 			
 			switch(edgeStyle) {
-				case "hide_edge": {
+				case FlexDiagramConstants.EDGE_HIDE: {
 					graphics.clear();
 					break;
 				}
-				case "bezier": {
+				case FlexDiagramConstants.EDGE_SMOOTHLY_CURVED: {
 					smoothlyCurvedEdge(unscaledWidth, unscaledHeight);
 					break;
 				}
-				case "horizontal": {
+				case FlexDiagramConstants.EDGE_HORIZONTAL: {
 					horizontalEdge(unscaledWidth, unscaledHeight);
 					break;
 				}
-				case "linear": {
+				case FlexDiagramConstants.EDGE_LINEAR: {
 					linearEdge(unscaledWidth, unscaledHeight);
 					break;
 				}
