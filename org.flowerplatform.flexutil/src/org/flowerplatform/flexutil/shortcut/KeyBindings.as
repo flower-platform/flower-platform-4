@@ -131,18 +131,20 @@ package org.flowerplatform.flexutil.shortcut {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
 					var actions:Vector.<IAction> = IViewContent(view).getActions(selection);
-					for (var i:int = 0; i < actions.length; i++) {
-						action = actions[i];
-						if (action.id == handler) {
-							try {
-								action.selection = selection;
-								if (action.visible && action.enabled) {								
-									action.run(); 
+					if (actions != null) {
+						for (var i:int = 0; i < actions.length; i++) {
+							action = actions[i];
+							if (action.id == handler) {
+								try {
+									action.selection = selection;
+									if (action.visible && action.enabled) {								
+										action.run(); 
+									}
+								} finally {
+									action.selection = null;
 								}
-							} finally {
-								action.selection = null;
+								break;
 							}
-							break;
 						}
 					}
 				}
