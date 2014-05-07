@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	
 	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
+	import mx.skins.spark.EditableComboBoxSkin;
 	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -171,41 +172,24 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}	
 			if (minWidthChanged || maxWidthChanged || backgroundColorChanged || cloudColorChanged) {			
 				invalidateDisplayList();
-			}		
+			}
 			
-			dynamicObject = mindMapDiagramShell.getDynamicObject(diagramShellContext, node)
 			var edgeWidthChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_WIDTH, event);
 			var edgeStyleChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_STYLE, event);
 			var edgeColorChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_COLOR, event);
 			
-			dynamicObject = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
-			
-			if (edgeWidthChange) {
+			if (edgeWidthChange || edgeStyleChange || edgeColorChange) {
 				if (dynamicObject.connector != null) {
 					dynamicObject.connector.invalidateDisplayList();
 				}
-				propagatePropertyChangeOnChildrens(diagramShellContext, node, MindMapConstants.EDGE_WIDTH);
-			}
-			
-			if (edgeStyleChange) {
-				if (dynamicObject.connector != null) {
-					dynamicObject.connector.invalidateDisplayList();
-				}
-				propagatePropertyChangeOnChildrens(diagramShellContext, node, MindMapConstants.EDGE_STYLE);
-			}
-			
-			if (edgeColorChange) {
-				if (dynamicObject.connector != null) {
-					dynamicObject.connector.invalidateDisplayList();
-				}
-				propagatePropertyChangeOnChildrens(diagramShellContext, node, MindMapConstants.EDGE_COLOR);
+				propagatePropertyChangeOnChildrens(diagramShellContext, node);
 			}
 		}
 		
 		/**
 		 * @author Sebastian Solomon
 		 */
-		private function propagatePropertyChangeOnChildrens(context:DiagramShellContext, model:Object, propertyName:String):void {
+		private function propagatePropertyChangeOnChildrens(context:DiagramShellContext, model:Object):void {
 			var childList:IList = model.children;
 			
 			if (childList != null) {
@@ -213,15 +197,18 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [childList[i].fullNodeId], 
 						function(returnedNode:Node):void {
 							var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
-	
-							if(childNode.properties[propertyName] != returnedNode.properties[propertyName]) {
-								var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
-								var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyName);
-								
-								childNode.properties[propertyName] = returnedNode.properties[propertyName];
-								childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
-								dynamicObject.connector.invalidateDisplayList();
-								propagatePropertyChangeOnChildrens(context, childNode, propertyName)
+							var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
+							
+							for (var i:int=0; i < edgeProperties.length; i++) {
+								if(childNode.properties[edgeProperties[i]] != returnedNode.properties[edgeProperties[i]]) {
+									var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
+									var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, edgeProperties[i]);
+									
+									childNode.properties[edgeProperties[i]] = returnedNode.properties[edgeProperties[i]];
+									childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
+									dynamicObject.connector.invalidateDisplayList();
+									propagatePropertyChangeOnChildrens(context, childNode)
+								}
 							}
 						});
 				}

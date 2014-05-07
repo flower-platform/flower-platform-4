@@ -23,5 +23,10 @@ package org.flowerplatform.flexdiagram {
 		
 		public static const MINDMAP_MODEL_CONTROLLER:String = "MindMapModelController";
 		
+		// EDGE STYLES
+		public static const EDGE_SMOOTHLY_CURVED:String = "bezier";
+		public static const EDGE_HIDE:String = "hide_edge";
+		public static const EDGE_HORIZONTAL:String = "horizontal";
+		public static const EDGE_LINEAR:String = "linear";
 	}
 }
