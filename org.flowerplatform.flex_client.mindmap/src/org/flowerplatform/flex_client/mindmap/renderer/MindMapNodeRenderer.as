@@ -184,13 +184,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				}
 				propagatePropertyChangeOnChildrens(diagramShellContext, node);
 			}
-			
 		}
 		
 		/**
 		 * @author Sebastian Solomon
 		 */
-		private function propagatePropertyChangeOnChildrens(context:DiagramShellContext, model:Object/*, propertyName:String*/):void {
+		private function propagatePropertyChangeOnChildrens(context:DiagramShellContext, model:Object):void {
 			var childList:IList = model.children;
 			
 			if (childList != null) {

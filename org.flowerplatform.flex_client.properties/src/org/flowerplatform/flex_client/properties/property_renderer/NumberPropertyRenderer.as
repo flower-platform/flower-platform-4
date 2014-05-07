@@ -41,7 +41,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			
 			numberValidator = new NumberValidator();
 			
-//			propertyValue.restrict = "0-9\\-";
+			propertyValue.restrict = "0-9\\-";
 			propertyValue.setStyle("textAlign", TextAlign.RIGHT);
 		}
 		
