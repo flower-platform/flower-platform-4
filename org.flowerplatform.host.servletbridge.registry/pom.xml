@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<relativePath>../org.flowerplatform.build/pom.xml</relativePath>
+		<relativePath>../org.flowerplatform.build/java/pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
-		<artifactId>parent</artifactId>
+		<artifactId>parent-java</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 

@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<relativePath>../org.flowerplatform.build/pom.xml</relativePath>
+		<relativePath>../org.flowerplatform.build/java/pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
-		<artifactId>parent</artifactId>
+		<artifactId>parent-java</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
@@ -27,7 +27,7 @@
 	</dependencies>
 
 	<build>
-		<directory>../${build-project}/tests</directory>
+		<directory>../${output-java}/tests</directory>
 	
 		<plugins>
 			<plugin>
@@ -70,7 +70,7 @@
 						<id>test</id>
 						<phase>test</phase>
 						<configuration>
-							<testClassesDirectory>../${build-project}/classes/${project.artifactId}</testClassesDirectory>
+							<testClassesDirectory>../${output-java}/classes/${project.artifactId}</testClassesDirectory>
 							<test>EclipseIndependentTestSuite</test>
 						</configuration>
 						<goals>

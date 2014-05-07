@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<relativePath>../org.flowerplatform.flexbuild/pom.xml</relativePath>
+		<relativePath>../org.flowerplatform.build/flex/pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<artifactId>parent-flex</artifactId>
+		<version>1.0.0-flex-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.flowerplatform.flex_client.resources</artifactId>

@@ -4,14 +4,21 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<relativePath>../org.flowerplatform.flexbuild/pom.xml</relativePath>
+		<relativePath>../../org.flowerplatform.build/flex/pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<artifactId>parent-flex</artifactId>
+		<version>1.0.0-flex-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.flowerplatform.flex_client.core</artifactId>
+	<artifactId>org.flowerplatform.flex_client.properties</artifactId>
 	<packaging>swc</packaging>
+
+	<properties>
+		<source-dir>../src</source-dir>
+		<messages-dir>../messages</messages-dir>
+		<icons-dir>../icons</icons-dir>
+		<output-flex>../org.flowerplatform.build/flex</output-flex>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -26,20 +33,12 @@
 			<artifactId>org.flowerplatform.flexutil</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
-			<scope>merged</scope>
+			<scope>external</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
-			<artifactId>org.flowerplatform.flexdiagram</artifactId>
-			<version>${project.version}</version>
-			<type>swc</type>
-			<scope>merged</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.flowerplatform</groupId>
-			<artifactId>org.flowerplatform.flexutil_legacy</artifactId>
+			<artifactId>org.flowerplatform.flex_client.core</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
 			<scope>external</scope>
