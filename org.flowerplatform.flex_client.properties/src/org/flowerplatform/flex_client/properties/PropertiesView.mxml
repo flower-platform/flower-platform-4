@@ -23,6 +23,7 @@
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -65,59 +66,54 @@
 				return null;
 			}
 						
-			private function selectionChangedHandler(event:SelectionChangedEvent):void {
-				var node:Node;
-				
+			private function selectionChangedHandler(event:SelectionChangedEvent):void {				
 				var previousSelectionList:IList = PropertiesPlugin.getInstance().currentSelection;
 				if (previousSelectionList != null) {
 					for ( var i:int = 0; i < previousSelectionList.length; i++) {
 						Node(previousSelectionList.getItemAt(i)).removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 					}
 				}
-													
-				propertyForm.removeAllElements();
+					
+				propertyForm.removeAllElements();				
 				label.text = "";
 
 				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view					
 					return;
 				}
 				// get new selected node
-				node = Node(event.selection.getItemAt(0));
+				var node:Node = Node(event.selection.getItemAt(0));
 				
 				if (node.parent == null && node.children == null) { // root node, don't populate with properties
 					return;					
 				}
 				
+				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
+				label.text = String(titleProvider.getValue(node));
+				label.maxWidth = UIComponent(this).width;
+				
 				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
 				
 				// get properties to display
-				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-						.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
+				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
 
 				var currentCategory:String = "";
-				for (i = 0; i < propertyDescriptors.length; i++ ) {
+				for (i = 0; i < propertyDescriptors.length; i++) {					
 					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
-					var formItem:PropertyItemRenderer = new PropertyItemRenderer();
-					var itemCategory:String = propertyDescriptor.category;
-					if (itemCategory != currentCategory) {
+					var formItem:PropertyItemRenderer = new PropertyItemRenderer();					
+					if (propertyDescriptor.category != currentCategory) {
 						var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
-						
-						currentCategory = itemCategory;
 						categoryItem.label = currentCategory;
 						propertyForm.addElement(categoryItem);
+						
+						currentCategory = propertyDescriptor.category;
 					}
 					propertyForm.addElement(formItem);
-					formItem.data = propertyDescriptor;
+					formItem.data = propertyDescriptor;					
 				}
 					
 				// get their values from node
 				nodeUpdatedHandler(new NodeUpdatedEvent(node));
-				
-				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(
-					CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
-				label.text = String(titleProvider.getValue(node));
-				label.maxWidth = UIComponent(this).width;
-				
+							
 				// store new selection and listen for node upates				
 				node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 			}
@@ -126,18 +122,19 @@
 				var node:Node = event.node;
 				
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
-					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
-						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
-						if (node.properties != null) {
-							if (NodeControllerUtils.hasPropertyChanged(node, propertyItemRenderer.propertyDescriptor.name, event)) {
-								var defaultPropertyName:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyItemRenderer.propertyDescriptor.name);
-								if (node.properties.hasOwnProperty(defaultPropertyName)) {
-									propertyItemRenderer.itemRenderedInstance.defaultValue = node.properties[defaultPropertyName];
-								}								
-								PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];
-							}
-						}
+					var obj:Object = propertyForm.getElementAt(i);
+					if (!(obj is PropertyItemRenderer)) {
+						continue;
 					}
+					var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(obj);
+					if (node.properties == null || !NodeControllerUtils.hasPropertyChanged(node, propertyItemRenderer.propertyDescriptor.name, event)) {
+						continue;
+					}
+					var defaultPropertyName:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyItemRenderer.propertyDescriptor.name);
+					if (node.properties.hasOwnProperty(defaultPropertyName)) {
+						BasicPropertyRenderer(propertyItemRenderer.getElementAt(0)).defaultValue = node.properties[defaultPropertyName];
+					}								
+					PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];															
 				}
 			}
 			

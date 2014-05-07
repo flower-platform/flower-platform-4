@@ -191,7 +191,7 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function DiagramShell() {
-			selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangeHandler);
+			selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangeHandler, false, int.MAX_VALUE);
 			
 			var wakeUpTool:WakeUpTool = new WakeUpTool(this);
 			_defaultTool = wakeUpTool;

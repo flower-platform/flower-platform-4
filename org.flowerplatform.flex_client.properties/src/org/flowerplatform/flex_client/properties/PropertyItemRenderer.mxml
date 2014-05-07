@@ -5,8 +5,8 @@
 <s:FormItem xmlns:fx="http://ns.adobe.com/mxml/2009"
 				   xmlns:s="library://ns.adobe.com/flex/spark"
 				   xmlns:mx="library://ns.adobe.com/flex/mx"
-				   fontWeight="normal"
-				   implements="mx.core.IDataRenderer, mx.managers.IFocusManagerComponent">
+				   implements="mx.core.IDataRenderer, mx.managers.IFocusManagerComponent"
+				   creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;
@@ -15,22 +15,16 @@
 			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
-			
-			public var itemRenderedInstance:BasicPropertyRenderer;
-			
+						
 			public var savePropertyEnabled:Boolean = true;
-			
-			public var defaultValue:Object;
 			
 			// Internal variable for the property value.
 			private var _data:Object;
-			
-			// Make the data property bindable.
-			[Bindable("dataChange")]					
+										
 			public function get data():Object {
 				return _data;
 			}
-			
+						
 			public function get propertyDescriptor():PropertyDescriptor {
 				return PropertyDescriptor(data);
 			}
@@ -45,25 +39,25 @@
 				
 				if (_data == null) {
 					return;
-				}
-				dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
-	
+				}			
+				
 				// use title as label if set
 				this.label = propertyDescriptor.title != null ? propertyDescriptor.title : propertyDescriptor.name;
-
-				UIComponent(labelDisplay).setStyle("fontWeight", "normal");
 				
-				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);			
-					
-				itemRenderedInstance = factory.newInstance(false);
+				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);
+				var itemRenderedInstance:BasicPropertyRenderer = factory.newInstance(false);
 				itemRenderedInstance.percentWidth = 100;
 				itemRenderedInstance.percentHeight = 100;
-				itemRenderedInstance.savePropertyEnabled = savePropertyEnabled;
+				itemRenderedInstance.savePropertyEnabled = savePropertyEnabled;	
 				this.addElement(itemRenderedInstance);
 				
 				itemRenderedInstance.data = propertyDescriptor;
 			}
 
+			protected function creationCompleteHandler(event:FlexEvent):void {				
+				UIComponent(labelDisplay).setStyle("fontWeight", "normal");				
+			}			
+			
 		]]>
 	</fx:Script>
 </s:FormItem>
