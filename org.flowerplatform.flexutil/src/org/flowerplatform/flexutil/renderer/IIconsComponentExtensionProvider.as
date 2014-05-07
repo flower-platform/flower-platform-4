@@ -17,7 +17,7 @@ package org.flowerplatform.flexutil.renderer {
 		 */ 
 		function newIconIndex():int;
 		
-		function getIconParentComponent():UIComponent;
+		function getMainComponent():UIComponent;
 		
 		/**
 		 * Validate methods must be overridden to validate also the icons from extension.
