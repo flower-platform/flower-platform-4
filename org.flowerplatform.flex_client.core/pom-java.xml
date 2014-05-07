@@ -13,8 +13,4 @@
 
 	<artifactId>org.flowerplatform.flex_client.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<properties>
-		<module-name>flex_client.core</module-name>
-	</properties>
 </project>

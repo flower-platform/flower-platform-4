@@ -13,8 +13,4 @@
 
 	<artifactId>org.flowerplatform.resources</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<properties>
-		<module-name>resources</module-name>
-	</properties>
 </project>

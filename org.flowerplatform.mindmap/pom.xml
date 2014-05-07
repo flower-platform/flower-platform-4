@@ -13,8 +13,4 @@
 
 	<artifactId>org.flowerplatform.mindmap</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<properties>
-		<module-name>mindmap</module-name>
-	</properties>
 </project>

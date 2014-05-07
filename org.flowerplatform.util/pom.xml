@@ -14,10 +14,6 @@
 	<artifactId>org.flowerplatform.util</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	
-	<properties>
-		<module-name>util</module-name>
-	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

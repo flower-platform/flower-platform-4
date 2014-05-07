@@ -13,8 +13,4 @@
 
 	<artifactId>org.flowerplatform.codesync.code.java</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<properties>
-		<module-name>codesync.code.java</module-name>
-	</properties>
 </project>

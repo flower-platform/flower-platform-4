@@ -14,10 +14,6 @@
 	<artifactId>org.flowerplatform.host.servletbridge.registry</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	
-	<properties>
-		<module-name>host.servletbridge.registry</module-name>
-	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

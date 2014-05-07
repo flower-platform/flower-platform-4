@@ -50,7 +50,7 @@ package org.flowerplatform.flexutil {
 		[Embed(source="/exit.png")]
 		public static const exitIcon:Class;
 		
-		[Embed(source="menu.png")]
+		[Embed(source="/menu.png")]
 		public static const menuIcon:Class;
 		
 		[Embed(source="/plus.gif")]			
@@ -59,21 +59,21 @@ package org.flowerplatform.flexutil {
 		[Embed(source="/minus.gif")]			
 		public static const iconExpanded:Class;
 		
-		[Embed(source="resultset_next.png")]
+		[Embed(source="/resultset_next.png")]
 		public static const rightArrowImage:Class;
 		
 		// Switch view(s)
 		
-		[Embed(source="switch_view.png")]
+		[Embed(source="/switch_view.png")]
 		public static const switch_view:Class;
 		
-		[Embed(source="switch_view1.png")]
+		[Embed(source="/switch_view1.png")]
 		public static const switch_one_view:Class;
 		
-		[Embed(source="switch_view2.png")]
+		[Embed(source="/switch_view2.png")]
 		public static const switch_two_views:Class;
 				
-		[Embed(source="logo_flower-platform_203x95.png")]
+		[Embed(source="/logo_flower-platform_203x95.png")]
 		public static const logoFlower:Class;
 	}
 }

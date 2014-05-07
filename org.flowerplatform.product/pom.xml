@@ -14,11 +14,9 @@
 	<artifactId>org.flowerplatform.product</artifactId>
 	<packaging>eclipse-repository</packaging>
 	
-	<properties>
-		<module-name>../product</module-name>
-	</properties>
-	
 	<build>
+		<directory>../${build-project}/product</directory>
+	
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>

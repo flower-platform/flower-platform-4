@@ -14,10 +14,6 @@
 	<artifactId>org.flowerplatform.flex_client.host_app</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	
-	<properties>
-		<module-name>flex_client.host_app</module-name>
-	</properties>
-	
 	<build>
 		<plugins>
 			<plugin>

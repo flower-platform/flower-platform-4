@@ -14,10 +14,6 @@
 	<artifactId>org.flowerplatform.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	
-	<properties>
-		<module-name>core</module-name>
-	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

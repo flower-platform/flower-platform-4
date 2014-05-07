@@ -11,10 +11,6 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.flowerplatform.flex_client.codesync</artifactId>
+	<artifactId>org.flowerplatform.flex_client.mindmap</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<properties>
-		<module-name>flex_client.codesync</module-name>
-	</properties>
 </project>

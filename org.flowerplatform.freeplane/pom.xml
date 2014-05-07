@@ -13,8 +13,4 @@
 
 	<artifactId>org.flowerplatform.freeplane</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<properties>
-		<module-name>freeplane</module-name>
-	</properties>
 </project>

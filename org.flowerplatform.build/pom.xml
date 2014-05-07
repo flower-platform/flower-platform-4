@@ -30,13 +30,14 @@
 		<module>../org.flowerplatform.host.servletbridge.extensionbundle</module>
 		
 		<!-- flex client plugins -->
-		<module>../org.flowerplatform.flex_client.core</module>
-		<module>../org.flowerplatform.flex_client.properties</module>
-		<module>../org.flowerplatform.flex_client.mindmap</module>
-		<module>../org.flowerplatform.flex_client.codesync</module>
-		<module>../org.flowerplatform.flex_client.host_app</module>
+		<!-- explicitly use pom-java.xml, most are also packaged as swc -->
+		<module>../org.flowerplatform.flex_client.core/pom-java.xml</module>
+		<module>../org.flowerplatform.flex_client.properties/pom-java.xml</module>
+		<module>../org.flowerplatform.flex_client.mindmap/pom-java.xml</module>
+		<module>../org.flowerplatform.flex_client.codesync/pom-java.xml</module>
+		<module>../org.flowerplatform.flex_client.host_app/pom-java.xml</module>
 		<module>../org.flowerplatform.flex_client.host_app.config.web</module>
-		<module>../org.flowerplatform.flex_client.web</module>
+		<module>../org.flowerplatform.flex_client.web/pom-java.xml</module>
 		<module>../org.flowerplatform.flex_client.server</module>
 		
 		<module>../org.flowerplatform.product</module>
@@ -62,8 +63,8 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>../${build-project}/classes/${module-name}</outputDirectory>
-		<directory>../${build-project}/distr/${module-name}</directory>
+		<outputDirectory>../${build-project}/classes/${project.artifactId}</outputDirectory>
+		<directory>../${build-project}/distr/${project.artifactId}</directory>
 	
 		<plugins>
 			<plugin>

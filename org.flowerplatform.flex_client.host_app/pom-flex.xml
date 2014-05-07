@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../org.flowerplatform.flexbuild/pom.xml</relativePath>
+		<groupId>org.flowerplatform</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>org.flowerplatform.flex_client.host_app</artifactId>
+	<packaging>swf</packaging>
+
+	<properties>
+		<final-name>FlexHostApp</final-name>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flex.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexutil</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>internal</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexutil_legacy</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>internal</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexdiagram</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>internal</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flex_client.resources</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>internal</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flex.framework.themes</groupId>
+			<artifactId>halo</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+			<scope>theme</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flex.framework.themes</groupId>
+			<artifactId>spark</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+			<scope>theme</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>net.flexmojos.oss</groupId>
+					<artifactId>flexmojos-maven-plugin</artifactId>
+					<version>${flexmojos.version}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<sourceFile>FlexHostApp.mxml</sourceFile>
+
+						<keepAs3Metadatas>
+							<keepAs3Metadata>Embed</keepAs3Metadata>
+							<keepAs3Metadata>ResourceBundle</keepAs3Metadata>
+							<keepAs3Metadata>SecureSWF</keepAs3Metadata>
+						</keepAs3Metadatas>
+						<keepAllTypeSelectors>true</keepAllTypeSelectors>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

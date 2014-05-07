@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../org.flowerplatform.flexbuild/pom.xml</relativePath>
+		<groupId>org.flowerplatform</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>org.flowerplatform.flex_client.resources</artifactId>
+	<packaging>swc</packaging>
+
+	<properties>
+		<!-- override default dirs; the Eclipse build uses linked resources -->
+		<messages-dir>../org.flowerplatform.resources/public-resources/messages</messages-dir>
+		<icons-dir>../org.flowerplatform.resources/public-resources/images</icons-dir>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flex.version}</version>
+			<type>pom</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>net.flexmojos.oss</groupId>
+					<artifactId>flexmojos-maven-plugin</artifactId>
+					<version>${flexmojos.version}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<!-- include .properties file -->
+						<localesSourcePath>../org.flowerplatform.resources/public-resources/messages</localesSourcePath>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

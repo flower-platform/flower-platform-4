@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.flowerplatform</groupId>
+	<artifactId>parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<!-- list of modules to build -->
+	<modules>
+		<!-- base libraries -->
+		<module>../org.flowerplatform.flexutil</module>
+		<module>../org.flowerplatform.flexutil_legacy</module>
+		<module>../org.flowerplatform.flexdiagram</module>
+		<module>../org.flowerplatform.flex_client.resources</module>
+
+		<!-- flex client libraries -->
+		<!-- explicitly use pom-flex.xml, as these are also packaged as eclipse-plugin -->
+		<module>../org.flowerplatform.flex_client.core/pom-flex.xml</module>
+		<module>../org.flowerplatform.flex_client.properties/pom-flex.xml</module>
+		<module>../org.flowerplatform.flex_client.mindmap/pom-flex.xml</module>
+		<module>../org.flowerplatform.flex_client.codesync/pom-flex.xml</module>
+		<module>../org.flowerplatform.flex_client.host_app/pom-flex.xml</module>
+		<module>../org.flowerplatform.flex_client.web/pom-flex.xml</module>
+	</modules>
+
+	<properties>
+		<build-project>org.flowerplatform.flexbuild</build-project>
+
+		<!-- modules may override -->
+		<messages-dir>messages</messages-dir>
+		<icons-dir>icons</icons-dir>
+
+		<final-name>${project.artifactId}</final-name>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<flexmojos.version>7.0.0</flexmojos.version>
+		<flex.version>4.11.0.20131017</flex.version>
+	</properties>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<outputDirectory>../${build-project}/classes/${project.artifactId}</outputDirectory>
+		<directory>../${build-project}/distr/${project.artifactId}</directory>
+
+		<plugins>
+			<plugin>
+				<groupId>net.flexmojos.oss</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flexmojos.version}</version>
+				<extensions>true</extensions>
+				<dependencies>
+					<!-- override the flex SDK -->
+					<dependency>
+						<groupId>org.apache.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<finalName>${final-name}</finalName>
+					<localesCompiled>
+						<locale>en_US</locale>
+					</localesCompiled>
+					<mergeResourceBundle>true</mergeResourceBundle>
+					<compilerWarnings>
+						<show-actionscript-warnings>false</show-actionscript-warnings>
+					</compilerWarnings>
+				</configuration>
+			</plugin>
+
+			<!-- additional source folders, since the pom only allows one -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${messages-dir}</source>
+								<source>${icons-dir}</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -12,10 +12,6 @@
 	<artifactId>org.flowerplatform.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
-	<properties>
-		<module-name>tests</module-name>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -74,7 +70,7 @@
 						<id>test</id>
 						<phase>test</phase>
 						<configuration>
-							<testClassesDirectory>../${build-project}/classes/${module-name}</testClassesDirectory>
+							<testClassesDirectory>../${build-project}/classes/${project.artifactId}</testClassesDirectory>
 							<test>EclipseIndependentTestSuite</test>
 						</configuration>
 						<goals>

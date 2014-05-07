@@ -13,8 +13,4 @@
 
 	<artifactId>org.flowerplatform.host.servletbridge.extensionbundle</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<properties>
-		<module-name>host.servletbridge.extensionbundle</module-name>
-	</properties>
 </project>
