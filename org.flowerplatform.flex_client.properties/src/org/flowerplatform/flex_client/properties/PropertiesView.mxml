@@ -34,6 +34,8 @@
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			protected var _viewHost:IViewHost;
+					
+			private var currentPropertyDescriptorsDisplayed:IList;
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
 //				// get selection from active provider to populate properties list with data
@@ -66,56 +68,103 @@
 				return null;
 			}
 						
-			private function selectionChangedHandler(event:SelectionChangedEvent):void {				
-				var previousSelectionList:IList = PropertiesPlugin.getInstance().currentSelection;
-				if (previousSelectionList != null) {
-					for ( var i:int = 0; i < previousSelectionList.length; i++) {
-						Node(previousSelectionList.getItemAt(i)).removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+			private function selectionChangedHandler(event:SelectionChangedEvent):void {
+				var i:int;
+				
+				// remove listeners from previous selection
+				var previousSelection:IList = PropertiesPlugin.getInstance().currentSelection;
+				if (previousSelection != null) {
+					for (i = 0; i < previousSelection.length; i++) {
+						Node(previousSelection.getItemAt(i)).removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 					}
 				}
-					
-				propertyForm.removeAllElements();				
+				
+				// create a map with renderers that can be recicled (key -> renderer's type)
+				var recycledRenderers:Dictionary = new Dictionary();
+				for (i = 0; i < propertyForm.numElements; i++) {
+					var obj:Object = propertyForm.getElementAt(i);
+					if (!(obj is PropertyItemRenderer)) {
+						continue;
+					}
+					var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(obj);
+					var type:String = propertyItemRenderer.propertyDescriptor.type;
+					if (!recycledRenderers[type]) {
+						recycledRenderers[type] = [];
+					}
+					(recycledRenderers[type] as Array).push(propertyItemRenderer);
+				}
+								
 				label.text = "";
 
-				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view					
+				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view	
+					currentPropertyDescriptorsDisplayed = null;
+					propertyForm.removeAllElements();
 					return;
 				}
+				
 				// get new selected node
 				var node:Node = Node(event.selection.getItemAt(0));
 				
 				if (node.parent == null && node.children == null) { // root node, don't populate with properties
+					currentPropertyDescriptorsDisplayed = null;
+					propertyForm.removeAllElements();
 					return;					
 				}
 				
+				// update label
 				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
 				label.text = String(titleProvider.getValue(node));
 				label.maxWidth = UIComponent(this).width;
-				
+								
+				// store new selection				
 				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
 				
 				// get properties to display
-				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
-
-				var currentCategory:String = "";
-				for (i = 0; i < propertyDescriptors.length; i++) {					
-					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
-					var formItem:PropertyItemRenderer = new PropertyItemRenderer();					
-					if (propertyDescriptor.category != currentCategory) {
-						var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
-						categoryItem.label = currentCategory;
-						propertyForm.addElement(categoryItem);
-						
-						currentCategory = propertyDescriptor.category;
+				var newPropertyDescriptorsToDisplay:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
+			
+				// if same descriptors -> no need to recalculate renderers, only set new node properties
+				if (currentPropertyDescriptorsDisplayed != newPropertyDescriptorsToDisplay) {
+					// recalculate renderers
+					var currentCategory:String = "";
+					for (i = 0; i < newPropertyDescriptorsToDisplay.length; i++) {	
+						var propertyRenderer:PropertyItemRenderer;
+						var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(newPropertyDescriptorsToDisplay.getItemAt(i)));
+											
+						if (propertyDescriptor.category != currentCategory) {
+							// display category renderer
+							var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
+							categoryItem.label = propertyDescriptor.category;
+							propertyForm.addElement(categoryItem);
+								
+							currentCategory = propertyDescriptor.category;
+						}
+								
+						var renderersToReuse:Array = recycledRenderers[propertyDescriptor.type] as Array;
+						if (renderersToReuse != null && renderersToReuse.length > 0) {
+							// there is already created a renderer for this type of property descriptor, reuse it
+							propertyRenderer = PropertyItemRenderer(renderersToReuse.pop());
+						} else { // new renderer 0> create it
+							propertyRenderer = new PropertyItemRenderer();
+							propertyRenderer.basicPropertyRendererType = propertyDescriptor.type;							
+						}				
+						propertyForm.addElement(propertyRenderer);
+						propertyRenderer.data = propertyDescriptor;
 					}
-					propertyForm.addElement(formItem);
-					formItem.data = propertyDescriptor;					
 				}
-					
-				// get their values from node
+				
+				// cached property descriptors displayed
+				currentPropertyDescriptorsDisplayed = newPropertyDescriptorsToDisplay;
+				
+				// get values from node properties
 				nodeUpdatedHandler(new NodeUpdatedEvent(node));
-							
-				// store new selection and listen for node upates				
-				node.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+										
+				// add listeners to current selection
+				var currentSelection:IList = PropertiesPlugin.getInstance().currentSelection;
+				if (currentSelection != null) {
+					for (i = 0; i < currentSelection.length; i++) {
+						Node(currentSelection.getItemAt(i)).addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+					}
+				}
 			}
 			
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {

@@ -17,10 +17,13 @@
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
 						
 			public var savePropertyEnabled:Boolean = true;
+			public var basicPropertyRendererType:String;
 			
 			// Internal variable for the property value.
 			private var _data:Object;
-										
+							
+			private var basicPropertyRenderer:BasicPropertyRenderer;
+			
 			public function get data():Object {
 				return _data;
 			}
@@ -43,19 +46,23 @@
 				
 				// use title as label if set
 				this.label = propertyDescriptor.title != null ? propertyDescriptor.title : propertyDescriptor.name;
-				
-				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[propertyDescriptor.type]);
-				var itemRenderedInstance:BasicPropertyRenderer = factory.newInstance(false);
-				itemRenderedInstance.percentWidth = 100;
-				itemRenderedInstance.percentHeight = 100;
-				itemRenderedInstance.savePropertyEnabled = savePropertyEnabled;	
-				this.addElement(itemRenderedInstance);
-				
-				itemRenderedInstance.data = propertyDescriptor;
+								
+				basicPropertyRenderer.data = propertyDescriptor;
 			}
 
 			protected function creationCompleteHandler(event:FlexEvent):void {				
 				UIComponent(labelDisplay).setStyle("fontWeight", "normal");				
+			}						
+			
+			override protected function createChildren():void {				
+				super.createChildren();
+				
+				var factory:FactoryWithInitialization = FactoryWithInitialization(PropertiesPlugin.getInstance().propertyRendererClasses[basicPropertyRendererType]);
+				basicPropertyRenderer = factory.newInstance(false);
+				basicPropertyRenderer.percentWidth = 100;
+				basicPropertyRenderer.percentHeight = 100;
+				basicPropertyRenderer.savePropertyEnabled = savePropertyEnabled;	
+				this.addElement(basicPropertyRenderer);				
 			}			
 			
 		]]>
