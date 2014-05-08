@@ -64,6 +64,7 @@ package org.flowerplatform.flexutil.action {
 			if (visibleChildActions.length >= 1) {
 				if (delegateIfSingleChild && visibleChildActions.length == 1) {
 					label = label + " " + visibleChildActions[0].label;
+					id = visibleChildActions[0].id;
 					actAsNormalAction = true;	
 				}
 				return true;

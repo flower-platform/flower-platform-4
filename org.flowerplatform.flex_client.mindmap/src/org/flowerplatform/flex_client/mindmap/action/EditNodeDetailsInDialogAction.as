@@ -25,19 +25,19 @@ package org.flowerplatform.flex_client.mindmap.action {
 	/**
 	 * @author Sebastian Solomon
 	 */
-	public class EditNoteInDialogAction extends AbstractEditNodePropertyInDialogAction {
+	public class EditNodeDetailsInDialogAction extends AbstractEditNodePropertyInDialogAction {
 		
-		public function EditNoteInDialogAction(descriptor:AddChildDescriptor = null)	{
+		
+		public function EditNodeDetailsInDialogAction(descriptor:AddChildDescriptor = null)	{
 			super();
-				
-			label = Resources.getMessage("edit_note_in_dialog_label");
-			icon = Resources.mindmap_knotesIcon;
-			orderIndex = 90;
+			label = Resources.getMessage("edit_node_details_in_dialog_label");
+			icon = Resources.editDetailsInDialogActionIcon;
+			orderIndex = 85;
 		}
 		
 		override public function run():void {
-			editProperty(MindMapConstants.NOTE, Resources.getMessage("note_title"));
+			editProperty(MindMapConstants.NODE_DETAILS, Resources.getMessage("node_details_title"));
 		}
-		
+					
 	}
 }

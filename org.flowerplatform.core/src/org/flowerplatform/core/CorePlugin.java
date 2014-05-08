@@ -72,7 +72,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	
 	protected ComposedSessionListener composedSessionListener = new ComposedSessionListener();
 	
-	private FlowerProperties flowerProperties = new FlowerProperties(this.getClass().getClassLoader().getResourceAsStream("META-INF/flower-platform.properties"));
+	private FlowerProperties flowerProperties = new FlowerProperties();
 	
 	/**
 	 * @author Sebastian Solomon
@@ -180,7 +180,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	
 	public CorePlugin() {
 		super();
-		
+			    
 		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP, PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP));
 		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));	
 	}

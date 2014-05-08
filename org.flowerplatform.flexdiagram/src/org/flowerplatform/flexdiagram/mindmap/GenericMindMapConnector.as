@@ -25,6 +25,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	
 	/**
@@ -77,7 +78,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * @author Sebastian Solomon
 		 */
 		protected function getEdgeStyle():String {
-			return "bezier";
+			return FlexDiagramConstants.EDGE_SMOOTHLY_CURVED;
 		}
 		
 		private function get diagramShell():MindMapDiagramShell {
@@ -92,19 +93,19 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var edgeStyle:String = getEdgeStyle();
 			
 			switch(edgeStyle) {
-				case "hide_edge": {
+				case FlexDiagramConstants.EDGE_HIDE: {
 					graphics.clear();
 					break;
 				}
-				case "bezier": {
+				case FlexDiagramConstants.EDGE_SMOOTHLY_CURVED: {
 					smoothlyCurvedEdge(unscaledWidth, unscaledHeight);
 					break;
 				}
-				case "horizontal": {
+				case FlexDiagramConstants.EDGE_HORIZONTAL: {
 					horizontalEdge(unscaledWidth, unscaledHeight);
 					break;
 				}
-				case "linear": {
+				case FlexDiagramConstants.EDGE_LINEAR: {
 					linearEdge(unscaledWidth, unscaledHeight);
 					break;
 				}
@@ -249,15 +250,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected function getEndBounds(model:Object):Array {
 			var endRenderer:IVisualElement = diagramShell.getRendererForModel(context, model);
-			if (endRenderer == null) {
-				// the renderer is not on the screen; => provide estimates
-				var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);				
-				var rect:Rectangle = controller.getBounds(context, model);
-				return [rect.x, rect.y, rect.width, rect.height];
-			} else {
-				// renderer on screen => provide real data from renderer							
-				return [diagramShell.getPropertyValue(context, model, "x"), diagramShell.getPropertyValue(context, model, "y"), diagramShell.getPropertyValue(context, model, "width"), diagramShell.getPropertyValue(context, model, "height")];
-			}
+			
+			// the renderer is not on the screen; => provide estimates
+			var controller:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, model);				
+			var rect:Rectangle = controller.getBounds(context, model);
+			return [rect.x, rect.y, rect.width, rect.height];
 		}
 	}
 }

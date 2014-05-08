@@ -20,7 +20,7 @@ public class MindMapChildrenProvider extends ChildrenProvider {
 		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
 		List<Node> children = new ArrayList<Node>();		
 		for (NodeModel childNodeModel : nodeModel.getChildren()) {
-			children.add(FreeplanePlugin.getInstance().getFreeplaneUtils().getStandardNode(childNodeModel, node.getResource()));
+			children.add(FreeplanePlugin.getInstance().getStandardNode(childNodeModel, node.getResource()));
 		}
 		return children;
 	}

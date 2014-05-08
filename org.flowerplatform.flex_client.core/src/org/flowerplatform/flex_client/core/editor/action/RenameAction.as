@@ -17,11 +17,11 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.action {
+	import avmplus.getQualifiedClassName;
+	
 	import flash.utils.getDefinitionByName;
 	
 	import mx.utils.ObjectUtil;
-	
-	import avmplus.getQualifiedClassName;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -36,12 +36,10 @@ package org.flowerplatform.flex_client.core.editor.action {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class RenameAction extends DiagramShellAwareActionBase implements IDialogResultHandler {
-		
-		private var view:RichTextWithRendererView;
+	public class RenameAction extends DiagramShellAwareActionBase {
 		
 		public function RenameAction() {			
-			label = Resources.getMessage("action.rename");
+			label = Resources.getMessage("mindmap.edit.node.core");
 			icon = Resources.editIcon;
 			orderIndex = 80;
 		}
@@ -60,30 +58,27 @@ package org.flowerplatform.flex_client.core.editor.action {
 			}
 			return false;
 		}
-		
-		public function handleDialogResult(result:Object):void {
-			var node:Node = new Node(result.fullNodeId);
-			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShell.registry, node);
-			// invoke service method and wait for result to close the rename popup
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result.fullNodeId, 
-				titleProvider.getPropertyNameFromGenericDescriptor(node), result.name], renameSuccessful);
-		}
-		
-		protected function renameSuccessful(data:Object):void {
-			if (view != null) {
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);
-				view = null;
-			}
-		}
-			
+						
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			
-			view = new RichTextWithRendererView();
-			view.rendererClass = getDefinitionByName(getQualifiedClassName(diagramShell.getRendererForModel(diagramShellContext, node))) as Class;
-			view.rendererModel = Node(ObjectUtil.copy(node));
+			var view:RichTextWithRendererView = new RichTextWithRendererView();			
+			view.node = node;
 			view.diagramShellContext = diagramShellContext;
-			view.setResultHandler(this);
+			
+			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node);
+			view.text = String(titleProvider.getValue(node));
+			
+			view.resultHandler = function(newValue:String):void {				
+				// invoke service method and wait for result to close the rename popup
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, titleProvider.getPropertyNameFromGenericDescriptor(node), newValue], 
+					function(data:Object):void {
+						if (view != null) {
+							FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);
+							view = null;
+						};
+					});
+			};
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)

@@ -62,6 +62,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/arrow_right.png")]
 		public static const arrowRightIcon:Class;
 		
+		[Embed(source="/core/keyboard.png")]
+		public static const keyboardIcon:Class;
+		
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]
@@ -388,6 +391,18 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/mindmap/knotes.png")]
 		public static const mindmap_knotesIcon:Class;
+		
+		[Embed(source="/mindmap/note_black_and_transp.png")]
+		public static const mindmap_knotesBlackIcon:Class;
+		
+		[Embed(source="/mindmap/EditDetailsInDialogAction.png")]
+		public static const editDetailsInDialogActionIcon:Class;
+		
+		[Embed(source="/mindmap/arrowDown.png")]
+		public static const arrowDownIcon:Class;
+		
+		[Embed(source="/mindmap/arrowUp.png")]
+		public static const arrowUpIcon:Class;
 		
 		public static const mindmapIcons:Object = {
 			"help" : mindmap_helpIcon,

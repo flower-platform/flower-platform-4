@@ -4,15 +4,17 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.action.EditNodeDetailsInDialogAction;
 	import org.flowerplatform.flex_client.mindmap.action.EditNoteInDialogAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeDragController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeInplaceEditorController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer;
+	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeSelectionRenderer;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
@@ -66,10 +68,10 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new NodeChildrenController())
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new NodeController())				
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MindMapAbsoluteLayoutRectangleController())
+				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new NodeAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NodeDragController())
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSelectionController(NodeSelectionRenderer))
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(MindMapNodeRenderer))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(MindMapNodeWithDetailsRenderer))
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
 			
 			// register PropertiesPlugin Renderer
@@ -101,6 +103,7 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);
 			
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNodeDetailsInDialogAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNoteInDialogAction);
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);

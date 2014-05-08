@@ -4,9 +4,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	
 	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
+	import mx.skins.spark.EditableComboBoxSkin;
 	import mx.utils.StringUtil;
-	
-	import flashx.textLayout.conversion.TextConverter;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -15,7 +14,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.ui.NoteComponentExtension;
+	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -28,8 +27,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 * @author Cristina Constantinescu
 	 */ 
 	public class MindMapNodeRenderer extends NodeRenderer {
-		
-		protected var noteComponentExtension:NoteComponentExtension = new NoteComponentExtension;
 		
 		override protected function unassignData():void {
 			super.unassignData();
@@ -112,12 +109,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var minWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MIN_WIDTH, event);
 			if (minWidthChanged) {
-				minWidth = node.properties[MindMapConstants.MIN_WIDTH];
+				getMainComponent().minWidth = node.properties[MindMapConstants.MIN_WIDTH];
 			}	
 			
 			var maxWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MAX_WIDTH, event);
 			if (maxWidthChanged) {
-				maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
+				getMainComponent().maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
 			}
 			
 			var fontFamilyChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_FAMILY, event);
@@ -175,41 +172,24 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}	
 			if (minWidthChanged || maxWidthChanged || backgroundColorChanged || cloudColorChanged) {			
 				invalidateDisplayList();
-			}		
+			}
 			
-			dynamicObject = mindMapDiagramShell.getDynamicObject(diagramShellContext, node)
 			var edgeWidthChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_WIDTH, event);
 			var edgeStyleChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_STYLE, event);
 			var edgeColorChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_COLOR, event);
 			
-			dynamicObject = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
-			
-			if (edgeWidthChange) {
+			if (edgeWidthChange || edgeStyleChange || edgeColorChange) {
 				if (dynamicObject.connector != null) {
 					dynamicObject.connector.invalidateDisplayList();
 				}
-				propagatePropertyChangeOnChildrens(diagramShellContext, node, MindMapConstants.EDGE_WIDTH);
-			}
-			
-			if (edgeStyleChange) {
-				if (dynamicObject.connector != null) {
-					dynamicObject.connector.invalidateDisplayList();
-				}
-				propagatePropertyChangeOnChildrens(diagramShellContext, node, MindMapConstants.EDGE_STYLE);
-			}
-			
-			if (edgeColorChange) {
-				if (dynamicObject.connector != null) {
-					dynamicObject.connector.invalidateDisplayList();
-				}
-				propagatePropertyChangeOnChildrens(diagramShellContext, node, MindMapConstants.EDGE_COLOR);
+				propagatePropertyChangeOnChildrens(diagramShellContext, node);
 			}
 		}
 		
 		/**
 		 * @author Sebastian Solomon
 		 */
-		private function propagatePropertyChangeOnChildrens(context:DiagramShellContext, model:Object, propertyName:String):void {
+		private function propagatePropertyChangeOnChildrens(context:DiagramShellContext, model:Object):void {
 			var childList:IList = model.children;
 			
 			if (childList != null) {
@@ -217,49 +197,22 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [childList[i].fullNodeId], 
 						function(returnedNode:Node):void {
 							var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
-	
-							if(childNode.properties[propertyName] != returnedNode.properties[propertyName]) {
-								var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
-								var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyName);
-								
-								childNode.properties[propertyName] = returnedNode.properties[propertyName];
-								childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
-								dynamicObject.connector.invalidateDisplayList();
-								propagatePropertyChangeOnChildrens(context, childNode, propertyName)
+							var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
+							
+							for (var i:int=0; i < edgeProperties.length; i++) {
+								if(childNode.properties[edgeProperties[i]] != returnedNode.properties[edgeProperties[i]]) {
+									var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
+									var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, edgeProperties[i]);
+									
+									childNode.properties[edgeProperties[i]] = returnedNode.properties[edgeProperties[i]];
+									childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
+									dynamicObject.connector.invalidateDisplayList();
+									propagatePropertyChangeOnChildrens(context, childNode)
+								}
 							}
 						});
 				}
 			}
-		}
-		
-		/**
-		 * @author Sebastian Solomon
-		 */
-		override protected function mouseOverHandler(event:MouseEvent):void {
-			super.mouseOverHandler(event);
-			if (node.properties.hasOwnProperty(MindMapConstants.NOTE) && String(node.properties.note).length > 0 && noteComponentExtension.parent == null) {
-				var text:String = String(node.properties.note);
-				text = Utils.getCompatibleHTMLText(text);
-				// if text contains html tag, display it as html, otherwise plain text
-				noteComponentExtension.noteText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
-				DiagramRenderer(mindMapDiagramShell.diagramRenderer).addElement(noteComponentExtension)
-					
-				if (noteComponentExtension.parent != null) {
-					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
-					noteComponentExtension.x = dynamicObject.x ;
-					noteComponentExtension.y = dynamicObject.y + dynamicObject.height;
-				}
-			}
-		}
-		
-		/**
-		 * @author Sebastian Solomon
-		 */
-		override protected function mouseOutHandler(event:MouseEvent):void {	
-			super.mouseOutHandler(event);
-			if (noteComponentExtension.parent != null) {
-				DiagramRenderer(diagramShellContext.diagramShell.diagramRenderer).removeElement(noteComponentExtension);
-			}				
 		}
 		
 	}
