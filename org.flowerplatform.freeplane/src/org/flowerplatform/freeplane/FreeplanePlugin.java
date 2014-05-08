@@ -15,6 +15,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.DefaultPropertiesProvider;
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.controller.FreeplaneIsSubscribablePropertyProvider;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceAccessController;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceChildrenProvider;
@@ -36,8 +37,13 @@ import org.flowerplatform.freeplane.remote.MindMapServiceRemote;
 import org.flowerplatform.freeplane.style.controller.MindMapStyleChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
+import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.freeplane.features.attribute.Attribute;
+import org.freeplane.features.attribute.NodeAttributeTableModel;
+import org.freeplane.features.map.NodeModel;
+import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -51,16 +57,16 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	
 	public static final String MIND_MAP_STYLE = "mindMapStyle";
 	
+	static {
+		// configure Freeplane starter
+		new FreeplaneHeadlessStarter().createController().setMapViewManager(new HeadlessMapViewController());		
+		HeadlessMModeControllerFactory.createModeController();	
+	}
+	
 	public static FreeplanePlugin getInstance() {
 		return INSTANCE;
 	}
-	
-	private FreeplaneUtils freeplaneUtils = new FreeplaneUtils();
-
-	public FreeplaneUtils getFreeplaneUtils() {
-		return freeplaneUtils;
-	}
-	
+		
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		INSTANCE = this;
@@ -116,5 +122,26 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	public void registerMessageBundle() throws Exception {
 		// not used
 	}	
+	
+	public Node getStandardNode(NodeModel nodeModel, String resource) {
+		String resourceCategory = CorePlugin.getInstance().getResourceService().getResourceCategory(resource);
+		
+		String type = null;
+		if (MindMapConstants.FREEPLANE_MINDMAP_CATEGORY.equals(resourceCategory)) {
+			type = MindMapConstants.MINDMAP_NODE_TYPE;	
+		} else if (MindMapConstants.FREEPLANE_PERSISTENCE_CATEGORY.equals(resourceCategory)) {
+			// get type from attributes table
+			NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) nodeModel.getExtension(NodeAttributeTableModel.class);
+			if (attributeTable != null) {
+				for (Attribute attribute : attributeTable.getAttributes()) {
+					if (attribute.getName().equals(MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY)) {
+						type = (String) attribute.getValue();
+						break;
+					}
+				}
+			}
+		}
+		return new Node(type, resource, nodeModel.createID(), nodeModel);
+	}
 	
 }

@@ -36,8 +36,7 @@ public class FreeplaneResourceChildrenProvider extends ChildrenProvider {
 		}
 		
 		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
-		List<Node> children = Collections.singletonList(FreeplanePlugin.getInstance().getFreeplaneUtils()
-				.getStandardNode(nodeModel, node.getFullNodeId()));
+		List<Node> children = Collections.singletonList(FreeplanePlugin.getInstance().getStandardNode(nodeModel, node.getFullNodeId()));
 		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		return children;
 	}
