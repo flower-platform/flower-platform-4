@@ -1,22 +1,6 @@
 <map version="freeplane 1.2.0">
 <!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
-<node STYLE_REF="In progress (Yellow)" FOLDED="false" ID="ID_85319927" CREATED="1325603285827" MODIFIED="1389389219415" STYLE="bubble"><richcontent nodeType="NODE">
-
-<html>
-  <head>
-    
-  </head>
-  <body>
-    <p style="text-align: center">
-      Flower Platform 4
-    </p>
-    <p style="text-align: center">
-      <i>- Flower Agile Process Sheet -</i>
-    </p>
-  </body>
-</html>
-</richcontent>
-<hook NAME="MapStyle">
+<node TEXT="" STYLE_REF="In progress (Yellow)" FOLDED="false" ID="ID_85319927" CREATED="1325603285827" MODIFIED="1389389219415" STYLE="bubble"><hook NAME="MapStyle">
     <properties show_icon_for_attributes="true" show_note_icons="true" show_notes_in_map="false"/>
 
 <map_styles>
@@ -87,7 +71,20 @@
 </map_styles>
 </hook>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
-<node TEXT="initial" FOLDED="true" POSITION="right" ID="ID_1494658957" CREATED="1392727571546" MODIFIED="1392727571546">
+<richcontent nodeType="NODE">
+    <html>
+        <head/>
+        <body>
+            <p style="text-align: center">
+      Flower Platform 4
+    </p>
+            <p style="text-align: center">
+                <i>- Flower Agile Process Sheet -</i>
+            </p>
+        </body>
+    </html>
+</richcontent>
+<node TEXT="initial" POSITION="right" ID="ID_1494658957" CREATED="1392727571546" MODIFIED="1392727571546">
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -121,8 +118,8 @@
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="ITest" ID="ID_1920412953" CREATED="1392727572421" MODIFIED="1392727572421">
-<attribute NAME="nodeType" VALUE="superInterface"/>
+<node TEXT="ITest" ID="ID_1920412953" CREATED="1392727572421" MODIFIED="1399565010287">
+<attribute NAME="nodeType" VALUE="javaSuperInterface"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572421" OBJECT="java.lang.Long|1392727572421"/>
 <attribute NAME="name" VALUE="ITest"/>
@@ -238,7 +235,7 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_no_conflicts" FOLDED="true" POSITION="right" ID="ID_1674185911" CREATED="1392727571546" MODIFIED="1392730370672">
+<node TEXT="modified_no_conflicts" POSITION="right" ID="ID_1674185911" CREATED="1392727571546" MODIFIED="1392730370672">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
@@ -274,8 +271,8 @@
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="ITest" ID="ID_653261282" CREATED="1392727572421" MODIFIED="1392727572421">
-<attribute NAME="nodeType" VALUE="superInterface"/>
+<node TEXT="ITest" ID="ID_653261282" CREATED="1392727572421" MODIFIED="1399565021349">
+<attribute NAME="nodeType" VALUE="javaSuperInterface"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572421" OBJECT="java.lang.Long|1392727572421"/>
 <attribute NAME="name" VALUE="ITest"/>
@@ -392,7 +389,7 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_no_conflicts_perform_sync" FOLDED="true" POSITION="right" ID="ID_605803515" CREATED="1392727571546" MODIFIED="1392737861202">
+<node TEXT="modified_no_conflicts_perform_sync" POSITION="right" ID="ID_605803515" CREATED="1392727571546" MODIFIED="1392737861202">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="202"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
@@ -428,8 +425,8 @@
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="ITest" ID="ID_1168253590" CREATED="1392727572421" MODIFIED="1392727572421">
-<attribute NAME="nodeType" VALUE="superInterface"/>
+<node TEXT="ITest" ID="ID_1168253590" CREATED="1392727572421" MODIFIED="1399565029132">
+<attribute NAME="nodeType" VALUE="javaSuperInterface"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572421" OBJECT="java.lang.Long|1392727572421"/>
 <attribute NAME="name" VALUE="ITest"/>
@@ -546,7 +543,7 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_conflicts" FOLDED="true" POSITION="right" ID="ID_79630243" CREATED="1392727571546" MODIFIED="1392736415327">
+<node TEXT="modified_conflicts" POSITION="right" ID="ID_79630243" CREATED="1392727571546" MODIFIED="1392736415327">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
@@ -582,8 +579,8 @@
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="ITest" ID="ID_672675277" CREATED="1392727572421" MODIFIED="1392727572421">
-<attribute NAME="nodeType" VALUE="superInterface"/>
+<node TEXT="ITest" ID="ID_672675277" CREATED="1392727572421" MODIFIED="1399565036443">
+<attribute NAME="nodeType" VALUE="javaSuperInterface"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572421" OBJECT="java.lang.Long|1392727572421"/>
 <attribute NAME="name" VALUE="ITest"/>

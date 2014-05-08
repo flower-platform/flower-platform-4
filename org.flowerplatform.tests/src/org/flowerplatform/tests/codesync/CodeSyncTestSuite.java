@@ -50,19 +50,6 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 		startPlugin(new MindMapPlugin());
 	}
 	
-	// TODO CS/need centralized project get/set/copy/etc
-	public static File getProject(String project) {
-//		String absolutePath = /*"/org/ws_trunk/" +*/ project;
-//		File resource = null;
-//		try {
-//			resource = (File) CorePlugin.getInstance().getFileAccessController().getFile(absolutePath);
-//		} catch (Exception e) {
-//			throw new RuntimeException(String.format("Error while getting resource %s", absolutePath), e);
-//		}
-//		return (File) CodeSyncPlugin.getInstance().getProjectAccessController().getContainingProjectForFile(resource);
-		return new File("workspace");
-	}
-	
 	public static File getFile(String path) {
 		String absolutePath = /*"/org/ws_trunk/" +*/ path;
 		try {

@@ -21,10 +21,13 @@ package org.flowerplatform.tests;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -52,11 +55,15 @@ import org.osgi.framework.BundleContext;
 })
 public class EclipseIndependentTestSuite {
 	
+	public static String WORKSPACE_LOCATION = "workspace";
+	
 	public static NodeService nodeService;
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		FrameworkProperties.getProperties().put("osgi.instance.area", ".");
+		// populate from web.xml in the servlet container
+		FrameworkProperties.getProperties().put("osgi.instance.area", WORKSPACE_LOCATION);
+		
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
 		nodeService = CorePlugin.getInstance().getNodeService();
@@ -91,6 +98,23 @@ public class EclipseIndependentTestSuite {
 			plugin.start(context);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static void copyFiles(String from, String dir) {
+		File to = new File(WORKSPACE_LOCATION, dir);
+		try {
+			FileUtils.copyDirectory(new File(from), to);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot copy files needed for test", e);
+		}
+	}
+
+	public static void deleteFiles(String dir) {
+		try {
+			FileUtils.deleteDirectory(new File(WORKSPACE_LOCATION, dir));
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot delete files ", e);
 		}
 	}
 	
