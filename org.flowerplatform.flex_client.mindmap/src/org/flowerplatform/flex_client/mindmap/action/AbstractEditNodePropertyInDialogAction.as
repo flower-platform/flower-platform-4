@@ -57,6 +57,8 @@ package org.flowerplatform.flex_client.mindmap.action {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setTitle(title)
 				.setViewContent(richTextWithRendererView)
+				.setWidth(500)
+				.setHeight(300)
 				.show();
 		}
 		

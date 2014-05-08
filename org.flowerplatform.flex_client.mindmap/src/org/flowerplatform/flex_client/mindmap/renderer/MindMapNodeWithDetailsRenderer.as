@@ -1,17 +1,10 @@
 package org.flowerplatform.flex_client.mindmap.renderer {
 	import flash.events.MouseEvent;
 	
+	import flashx.textLayout.conversion.TextConverter;
+	
 	import mx.core.UIComponent;
 	import mx.graphics.SolidColorStroke;
-	
-	import spark.components.Group;
-	import spark.components.Image;
-	import spark.components.RichText;
-	import spark.layouts.HorizontalLayout;
-	import spark.layouts.VerticalLayout;
-	import spark.primitives.Line;
-	
-	import flashx.textLayout.conversion.TextConverter;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
@@ -20,6 +13,13 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.Utils;
+	
+	import spark.components.Group;
+	import spark.components.Image;
+	import spark.components.RichText;
+	import spark.layouts.HorizontalLayout;
+	import spark.layouts.VerticalLayout;
+	import spark.primitives.Line;
 	
 	/**
 	 * @author Sebastian Solomon
@@ -116,12 +116,11 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			} else {
 				detailsText.includeInLayout = true;
 				detailsText.visible = true;
-				detailsIcon.source = Resources.arrowUpIcon;
-				
+				detailsIcon.source = Resources.arrowUpIcon;				
 			}
 		}
 			
-		override public function getMainComponent():UIComponent {
+		override public function getMainComponent():Group {
 			return nodeGroup;
 		}
 		

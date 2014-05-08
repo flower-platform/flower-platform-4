@@ -97,9 +97,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
 			var icon:String = iconsProvider.getValue(node) as String;
 			
-			if (node.properties.note != null && String(node.properties.note).length > 0) {
-				var noteIcon:String = Resources.getResourceUrl("/images/mindmap/knotes.png");   
-				icon = noteIcon + (icon == null ? "" : (Utils.ICONS_SEPARATOR + icon));
+			if (node.properties.note != null && String(node.properties.note).length > 0) {				 
+				icon = Resources.getResourceUrl("/images/mindmap/knotes.png") + (icon == null ? "" : (Utils.ICONS_SEPARATOR + icon));
 				icons = new FlowerArrayList(icon.split(Utils.ICONS_SEPARATOR));
 			} 
 			
@@ -190,30 +189,30 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		 * @author Sebastian Solomon
 		 */
 		private function propagatePropertyChangeOnChildrens(context:DiagramShellContext, model:Object):void {
-			var childList:IList = model.children;
-			
-			if (childList != null) {
-				for (var i:int=0; i < childList.length; i++) {
-					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [childList[i].fullNodeId], 
-						function(returnedNode:Node):void {
-							var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
-							var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
-							
-							for (var i:int=0; i < edgeProperties.length; i++) {
-								if(childNode.properties[edgeProperties[i]] != returnedNode.properties[edgeProperties[i]]) {
-									var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
-									var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, edgeProperties[i]);
-									
-									childNode.properties[edgeProperties[i]] = returnedNode.properties[edgeProperties[i]];
-									childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
-									dynamicObject.connector.invalidateDisplayList();
-									propagatePropertyChangeOnChildrens(context, childNode)
-								}
-							}
-						});
-				}
+			if (model.children == null) {
+				return;
 			}
-		}
+		
+			for (var i:int=0; i < model.children.length; i++) {
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [model.children[i].fullNodeId], 
+					function(returnedNode:Node):void {
+						var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
+						var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
+						
+						for (var i:int=0; i < edgeProperties.length; i++) {
+							if(childNode.properties[edgeProperties[i]] != returnedNode.properties[edgeProperties[i]]) {
+								var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
+								var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, edgeProperties[i]);
+								
+								childNode.properties[edgeProperties[i]] = returnedNode.properties[edgeProperties[i]];
+								childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
+								dynamicObject.connector.invalidateDisplayList();
+								propagatePropertyChangeOnChildrens(context, childNode)
+							}
+						}
+					});
+			}
+		}		
 		
 	}
 }

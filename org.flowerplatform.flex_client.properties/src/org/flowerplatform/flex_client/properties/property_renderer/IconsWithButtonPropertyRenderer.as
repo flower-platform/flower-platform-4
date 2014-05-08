@@ -7,15 +7,16 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
-	import spark.components.Button;
-	import spark.layouts.HorizontalLayout;
-	
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
+	
+	import spark.components.Button;
+	import spark.components.Group;
+	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -53,7 +54,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);			
 		}
 		
-		public function getMainComponent():UIComponent {
+		public function getMainComponent():Group {
 			return this;
 		}
 		

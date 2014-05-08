@@ -7,17 +7,17 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import spark.components.DataRenderer;
-	import spark.components.Group;
-	import spark.components.RichText;
-	import spark.layouts.HorizontalLayout;
-	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
+	
+	import spark.components.DataRenderer;
+	import spark.components.Group;
+	import spark.components.RichText;
+	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -84,7 +84,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			this.layout = hLayout;
 		}
 		
-		public function getMainComponent():UIComponent {
+		public function getMainComponent():Group {
 			return this;
 		}
 		
@@ -141,7 +141,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			labelDisplay.percentHeight = 100;
 			labelDisplay.percentWidth = 100;
 			labelDisplay.setStyle("verticalAlign" , "middle");	
-			Group(getMainComponent()).addElement(labelDisplay);
+			getMainComponent().addElement(labelDisplay);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
