@@ -82,7 +82,9 @@
 			}
 			
 			private function addFormItem(propertyDescriptor:PropertyDescriptor, currentCategory:String):void {
-				var formItem:PropertyItemRenderer = new PropertyItemRenderer();
+				var propertyRenderer:PropertyItemRenderer = new PropertyItemRenderer();
+				propertyRenderer.basicPropertyRendererType = propertyDescriptor.type;
+				propertyRenderer.savePropertyEnabled = false;
 				var itemCategory:String = propertyDescriptor.category;
 				if (itemCategory != currentCategory) {
 					var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
@@ -90,12 +92,11 @@
 					categoryItem.label = currentCategory;
 					propertyForm.addElement(categoryItem);
 				}
-				propertyForm.addElement(formItem);
+				propertyForm.addElement(propertyRenderer);
 				if (propertyDescriptor.contributesToCreation) {
 					propertyDescriptor.readOnly = false;
-				}
-				formItem.savePropertyEnabled = false;
-				formItem.data = propertyDescriptor;
+				}				
+				propertyRenderer.data = propertyDescriptor;
 			}
 			
 			public function get viewHost():IViewHost {
