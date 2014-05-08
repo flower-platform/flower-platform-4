@@ -18,10 +18,14 @@
 */
 package org.flowerplatform.flex_client.core.editor.action {
 	
+	import flash.ui.Keyboard;
+	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flexutil.shortcut.Shortcut;
 	
 	/**
 	 * @see ResourceNodeManager#saveAllAction
@@ -35,6 +39,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 			parentId = CoreConstants.FILE_MENU_ID;
 			enabled = false;
 			orderIndex = 120;
+			
+			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, true, false, Keyboard.S), id); // Ctrl + Shift + S
 		}
 				
 		override public function run():void {
