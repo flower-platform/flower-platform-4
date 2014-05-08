@@ -30,16 +30,14 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		
 		public function get saveAction():SaveAction {
 			if (_saveAction == null) {
-				_saveAction = new SaveAction();
-				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.S), saveAction); // Ctrl + S
+				_saveAction = new SaveAction();				
 			}
 			return _saveAction;
 		}
 		
 		public function get saveAllAction():SaveAllAction {
 			if (_saveAllAction == null) {
-				_saveAllAction = new SaveAllAction();
-				FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, true, false, Keyboard.S), saveAllAction); // Ctrl + Shift + S
+				_saveAllAction = new SaveAllAction();				
 			}
 			return _saveAllAction;
 		}
