@@ -1,11 +1,12 @@
 # Project Description
 
-Build project. For the Java build, we use Tycho to integrate Maven with the OSGi architecture. For the Flex build, we use flex-mojos.
+Build project. For the Java build, we use [Tycho](https://www.eclipse.org/tycho/) to integrate Maven with the OSGi architecture. For the Flex build, we use [flexmojos](https://flexmojos.atlassian.net/wiki/display/FLEXMOJOS/Home).
 
 It is a multi-module build:
-* ``flex/pom.xml`` multi-module build that aggregates the Flex libraries
-* ``java/pom.xml`` multi-module build that aggregates the Flower Platform plug-ins, the product project and test project
-* ``pom.xml`` aggregates the Flex and Java builds
+* ``flex/pom.xml`` multi-module build that aggregates the Flex libraries.
+* ``java/pom.xml`` multi-module build that aggregates the Flower Platform plug-ins, the product project and test project.
+* ``../org.flowerplatform.host.web_app/war-pck11 builds the WAR to be deployed on the server.
+* ``pom.xml`` aggregates all the modules above
 
 ### Limitations
 
@@ -15,7 +16,7 @@ For modules that participate in both builds, (i.e. packaged as both ``eclipse-pl
 
 ### Flex Build
 
-One-time operation for the Flex build: flex-mojos requires a maven repository for the Flex SDK, that can be easily created using the [mavenizer tool](http://flex.apache.org/download-utilities.html) provided by Apache.
+One-time operation for the Flex build: flexmojos requires a maven repository for the Flex SDK, that can be easily created using the [mavenizer tool](http://flex.apache.org/download-utilities.html) provided by Apache.
 
 How to mavenize your FDK, as described [here](https://cwiki.apache.org/confluence/display/FLEX/Apache+Flex+SDK+Mavenizer):
 1. Check-out the utilities project from: https://git-wip-us.apache.org/repos/asf/flex-utilities.git
@@ -46,9 +47,9 @@ Builds the FP plug-ins, runs tests and builds the Eclipse product with the packa
 
 Same, with full logging and errors stack traces enabled.
 
-### Flower Platform - Build.launch
+### Flower Platform - Build (win32 | linux x86).launch
 
-Performs both the Flex build and the Java build.
+Performs both the Flex build and the Java build. Builds the WAR with the Eclipse product built for the specified OS.
 
 ### Flower Platform - Build (verbose).launch
 

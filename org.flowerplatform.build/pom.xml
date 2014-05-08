@@ -11,6 +11,7 @@
 	<modules>
 		<module>flex</module>
 		<module>java</module>
+		<module>../org.flowerplatform.host.web_app/war-pck</module>
 	</modules>
 
 	<properties>

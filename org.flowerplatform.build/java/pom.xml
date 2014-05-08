@@ -44,7 +44,7 @@
 		<module>../../org.flowerplatform.flex_client.server</module>
 
 		<module>../../org.flowerplatform.product</module>
-		<module>../../org.flowerplatform.tests</module>
+<!-- 		<module>../../org.flowerplatform.tests</module> -->
 	</modules>
 
 	<properties>
@@ -157,16 +157,16 @@
 				<version>${tycho.version}</version>
 				<configuration>
 					<environments>
-						<!-- <environment> -->
-						<!-- <os>linux</os> -->
-						<!-- <ws>gtk</ws> -->
-						<!-- <arch>x86</arch> -->
-						<!-- </environment> -->
-						<!-- <environment> -->
-						<!-- <os>linux</os> -->
-						<!-- <ws>gtk</ws> -->
-						<!-- <arch>x86_64</arch> -->
-						<!-- </environment> -->
+						<environment>
+						<os>linux</os>
+						<ws>gtk</ws>
+						<arch>x86</arch>
+						</environment>
+						<environment>
+						<os>linux</os>
+						<ws>gtk</ws>
+						<arch>x86_64</arch>
+						</environment>
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
@@ -177,11 +177,6 @@
 							<ws>win32</ws>
 							<arch>x86_64</arch>
 						</environment>
-						<!-- <environment> -->
-						<!-- <os>macosx</os> -->
-						<!-- <ws>cocoa</ws> -->
-						<!-- <arch>x86_64</arch> -->
-						<!-- </environment> -->
 					</environments>
 				</configuration>
 			</plugin>
