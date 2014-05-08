@@ -68,13 +68,9 @@
 					}
 				}
 				
-				var mouseEventParent:UIComponent = getMouseEventParent();
+				var mouseEventParent:UIComponent = getMainComponent();
 				mouseEventParent.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
 				mouseEventParent.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
-			}
-			
-			protected function getMouseEventParent():UIComponent {
-				return this;
 			}
 			
 			protected function get node():Node {
