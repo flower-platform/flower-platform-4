@@ -171,9 +171,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	public String getWorkspaceLocation() {
 		String location = FrameworkProperties.getProperty("osgi.instance.area");
 		
-		// if property value starts with "file:/", remove it
-		if (location.startsWith("file:/")) {
-			location = location.substring("file:/".length());
+		// if property value starts with "file:", remove it
+		if (location.startsWith("file:")) {
+			location = location.substring("file:".length());
 		}
 		return location;
 	}
