@@ -31,8 +31,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		override protected function unassignData():void {
 			super.unassignData();
 			
-			minWidth = 0;
-			maxWidth = DEFAULT_MAX_WIDTH;
+			getMainComponent().minWidth = 0;
+			getMainComponent().maxWidth = DEFAULT_MAX_WIDTH;
 			backgroundColor = BACKGROUND_COLOR_DEFAULT;
 			
 			if (labelDisplay) {
