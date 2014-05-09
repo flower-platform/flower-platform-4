@@ -6,6 +6,8 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
+	import mx.managers.IFocusManagerComponent;
+	import mx.managers.IFocusManagerGroup;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
@@ -22,7 +24,7 @@ package org.flowerplatform.flexdiagram.mindmap
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider {
+	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider, IFocusManagerComponent {
 					
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
 		
@@ -72,6 +74,9 @@ package org.flowerplatform.flexdiagram.mindmap
 			setLayout();
 		}
 		
+		override public function drawFocus(isFocused:Boolean):void {			
+		}
+				
 		public function setLayout():void {
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;

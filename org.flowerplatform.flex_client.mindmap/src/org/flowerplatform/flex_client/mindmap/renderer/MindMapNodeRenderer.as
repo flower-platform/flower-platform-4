@@ -197,16 +197,18 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [model.children[i].fullNodeId], 
 					function(returnedNode:Node):void {
 						var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
+						var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
 						var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
 						
 						for (var i:int=0; i < edgeProperties.length; i++) {
-							if(childNode.properties[edgeProperties[i]] != returnedNode.properties[edgeProperties[i]]) {
-								var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
+							if(childNode.properties[edgeProperties[i]] != returnedNode.properties[edgeProperties[i]]) {								
 								var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, edgeProperties[i]);
 								
 								childNode.properties[edgeProperties[i]] = returnedNode.properties[edgeProperties[i]];
 								childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
+								
 								dynamicObject.connector.invalidateDisplayList();
+								
 								propagatePropertyChangeOnChildrens(context, childNode)
 							}
 						}
