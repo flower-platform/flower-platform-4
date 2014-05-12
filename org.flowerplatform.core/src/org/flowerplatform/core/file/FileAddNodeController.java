@@ -44,6 +44,10 @@ public class FileAddNodeController extends AddNodeController {
 			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
 			return;
 		}
+		
+		if (parentNode.getType().equals(FILE_SYSTEM_NODE_TYPE)) {
+			child.setResource(parentNode.getFullNodeId());
+		}
 
 		String name = (String) context.get(NAME);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
