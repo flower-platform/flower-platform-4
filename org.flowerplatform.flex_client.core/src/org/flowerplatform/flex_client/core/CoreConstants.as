@@ -119,6 +119,7 @@ package org.flowerplatform.flex_client.core {
 		public static const NAVIGATE_MENU_ID:String = "navigate";
 		public static const TOOLS_MENU_ID:String = "tools";
 		public static const DEBUG:String = "debug";
+		public static const HELP:String = "help";
 		
 		//////////////////////////////////
 		// General
