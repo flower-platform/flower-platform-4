@@ -20,16 +20,13 @@
 									  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.core.DPIClassification;
 			import mx.core.FlexGlobals;
-			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.events.ResizeEvent;
-			
-			import spark.core.SpriteVisualElement;
-			
-			import flashx.textLayout.conversion.TextConverter;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -43,6 +40,8 @@
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.FlowerArrayList;
 			import org.flowerplatform.flexutil.Utils;
+			
+			import spark.core.SpriteVisualElement;
 			
 			[Bindable]
 			public var circleRadius:int = 10;
@@ -84,9 +83,8 @@
 					}
 				}
 				
-				var mouseEventParent:UIComponent = getMainComponent();
-				mouseEventParent.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-				mouseEventParent.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+				getMainComponent().addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+				getMainComponent().addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 			}
 			
 			protected function get node():Node {

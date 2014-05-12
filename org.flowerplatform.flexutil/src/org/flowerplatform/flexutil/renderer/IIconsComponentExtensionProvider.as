@@ -18,6 +18,8 @@ package org.flowerplatform.flexutil.renderer {
 	
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	
+	import spark.components.Group;
+	
 	/**
 	 * @see IconsComponentExtension
 	 * @author Cristina Constantinescu
@@ -32,7 +34,7 @@ package org.flowerplatform.flexutil.renderer {
 		 */ 
 		function newIconIndex():int;
 		
-		function getMainComponent():UIComponent;
+		function getMainComponent():Group;
 		
 		/**
 		 * Validate methods must be overridden to validate also the icons from extension.

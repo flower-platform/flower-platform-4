@@ -35,6 +35,9 @@
 			import mx.managers.IFocusManagerComponent;
 			import mx.utils.ObjectUtil;
 			
+			import spark.components.FormItem;
+			import spark.components.Label;
+			
 			import org.apache.flex.collections.ArrayList;
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
@@ -44,13 +47,13 @@
 			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-			
-			import spark.components.FormItem;
-			import spark.components.Label;
 			
 			public static const SHOW_ALL:String = "showAll";
 			public static const SHOW_ONLY_CONTRIBUTES_TO_CREATION:String = "showOnlyContributingToCreation"; // mandatory & optional
@@ -61,6 +64,8 @@
 			public var parentNode:Node;
 			
 			public var option:String = SHOW_ONLY_CONTRIBUTES_TO_CREATION;
+			
+			public var diagramShellContext:DiagramShellContext;
 			
 			protected var _viewHost:IViewHost;
 			
@@ -155,14 +160,26 @@
 				}
 				
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context], 
-					function(result:Object):void {
-							// setProperty for properties that don't contribute to creation.
+					function(childFullNodeId:String):void {
+						// setProperty for properties that don't contribute to creation.
 						for (var i:int=0; i < propertiesToSetAfterAddingNode.length; i++) {
 							var propDescriptor:PropertyDescriptor = PropertyDescriptor(propertiesToSetAfterAddingNode.getItemAt(i));
-							CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [result, propDescriptor.name, propDescriptor.value], null);
+							CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [childFullNodeId, propDescriptor.name, propDescriptor.value], null);
 						}
 						cancelHandler();
-					});				
+						
+						// fileSystem don't have isDirectory property
+						if (parentNode.properties.hasOwnProperty(CoreConstants.FILE_IS_DIRECTORY) && !parentNode.properties[CoreConstants.FILE_IS_DIRECTORY]) {
+							parentNode = parentNode.parent;
+						}
+						// expand parentNode, select the added child.
+						if (!ControllerUtils.getMindMapModelController(diagramShellContext, parentNode).getExpanded(diagramShellContext, parentNode)) {
+							diagramShellContext[CoreConstants.HANDLER] = function():void {CorePlugin.getInstance().selectNode(diagramShellContext, childFullNodeId);};
+							MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, parentNode).setExpanded(diagramShellContext, parentNode, true);
+						}else {
+							CorePlugin.getInstance().selectNode(diagramShellContext, childFullNodeId);
+						}
+					});		
 			}
 			
 			protected function cancelHandler():void {

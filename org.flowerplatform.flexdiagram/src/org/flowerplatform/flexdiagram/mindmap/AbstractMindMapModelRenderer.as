@@ -21,11 +21,8 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
-	
-	import spark.components.DataRenderer;
-	import spark.components.Group;
-	import spark.components.RichText;
-	import spark.layouts.HorizontalLayout;
+	import mx.managers.IFocusManagerComponent;
+	import mx.managers.IFocusManagerGroup;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
@@ -34,10 +31,15 @@ package org.flowerplatform.flexdiagram.mindmap
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
 	
+	import spark.components.DataRenderer;
+	import spark.components.Group;
+	import spark.components.RichText;
+	import spark.layouts.HorizontalLayout;
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider {
+	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider, IFocusManagerComponent {
 					
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
 		
@@ -87,6 +89,9 @@ package org.flowerplatform.flexdiagram.mindmap
 			setLayout();
 		}
 		
+		override public function drawFocus(isFocused:Boolean):void {			
+		}
+				
 		public function setLayout():void {
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;
@@ -99,7 +104,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			this.layout = hLayout;
 		}
 		
-		public function getMainComponent():UIComponent {
+		public function getMainComponent():Group {
 			return this;
 		}
 		
@@ -156,7 +161,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			labelDisplay.percentHeight = 100;
 			labelDisplay.percentWidth = 100;
 			labelDisplay.setStyle("verticalAlign" , "middle");	
-			Group(getMainComponent()).addElement(labelDisplay);
+			getMainComponent().addElement(labelDisplay);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			

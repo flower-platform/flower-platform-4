@@ -140,6 +140,8 @@
 			
 				// if same descriptors -> no need to recalculate renderers, only set new node properties
 				if (currentPropertyDescriptorsDisplayed != newPropertyDescriptorsToDisplay) {
+					propertyForm.removeAllElements();
+					
 					// recalculate renderers
 					var currentCategory:String = "";
 					for (i = 0; i < newPropertyDescriptorsToDisplay.length; i++) {	

@@ -19,20 +19,22 @@ package org.flowerplatform.flex_client.properties.action {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.properties.CreateNodeView;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */
-	public class AddNodeAction extends ActionBase {
+	public class AddNodeAction extends DiagramShellAwareActionBase {
 			
 		public var childType:String;
 		
@@ -76,14 +78,24 @@ package org.flowerplatform.flex_client.properties.action {
 				var createNodeView:CreateNodeView = new CreateNodeView();
 				createNodeView.parentNode = parentNode;
 				createNodeView.nodeType = childType;
+				createNodeView.diagramShellContext = diagramShellContext;
+				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setTitle(Resources.getMessage("new.file.folder"))
 					.setViewContent(createNodeView)
 					.show();
 			} else {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context], 
+					function(childFullNodeId:String):void {
+						// expand parentNode, select the added child.
+						if (!ControllerUtils.getMindMapModelController(diagramShellContext, parentNode).getExpanded(diagramShellContext, parentNode)) {
+							diagramShellContext[CoreConstants.HANDLER] = function():void {CorePlugin.getInstance().selectNode(diagramShellContext, childFullNodeId);};
+							MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, parentNode).setExpanded(diagramShellContext, parentNode, true);
+						}else {
+							CorePlugin.getInstance().selectNode(diagramShellContext, childFullNodeId);
+						}
+					});
 			}
 		}
-		
 	}
 }

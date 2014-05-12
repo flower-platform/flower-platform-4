@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.tool.ScrollTool;
 	import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -37,8 +38,12 @@ package org.flowerplatform.flex_client.mindmap {
 				
 		public function MindMapEditorDiagramShell() {
 			super();
-						
-			registerTools([ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool, InplaceEditorTool]);
+									
+			var tools:Array = [ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool];
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				tools.push(InplaceEditorTool);
+			}
+			registerTools(tools);
 		}
 		
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {

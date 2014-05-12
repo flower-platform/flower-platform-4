@@ -82,5 +82,16 @@ package org.flowerplatform.flexdiagram.util {
 			event.location = location;
 			dispatchEvent(event);
 		}		
+		
+		public function resetSelection():void {
+			try {
+				// Because an addItem is called after, the eventsCanBeIgnored is set to true,
+				// this way listeners can limit the number of unwanted events.
+				eventsCanBeIgnored = true;
+				removeAll();							
+			} finally {
+				eventsCanBeIgnored = false;
+			}
+		}
 	}
 }

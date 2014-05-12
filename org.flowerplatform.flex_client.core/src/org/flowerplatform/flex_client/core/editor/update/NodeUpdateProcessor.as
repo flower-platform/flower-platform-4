@@ -394,6 +394,8 @@ package org.flowerplatform.flex_client.core.editor.update {
 				} else { // children update
 					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
 					var targetNodeInRegistry:Node = nodeRegistry.getNodeById(childrenUpdate.targetNode.fullNodeId);	
+					var refresh:Boolean = false;
+					
 					switch (childrenUpdate.type) {
 						case CoreConstants.UPDATE_CHILD_ADDED:	
 							if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
@@ -411,6 +413,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 								var newChild:Node = new Node(childrenUpdate.targetNode.fullNodeId);
 								newChild.properties = childrenUpdate.targetNode.properties;
 								addNode(newChild, nodeFromRegistry, index);
+								refresh =true;
 							} else {
 								// child already added, probably after refresh
 								// e.g. I add a children, I expand => I get the list with the new children; when the
@@ -424,6 +427,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 						case CoreConstants.UPDATE_CHILD_REMOVED:	
 							if (targetNodeInRegistry != null) {
 								removeNode(diagramShellContext, targetNodeInRegistry, nodeFromRegistry);
+								refresh = true;
 							} else {
 								// node not registered, probably it isn't visible for this client
 								// Nothing to do
@@ -431,8 +435,10 @@ package org.flowerplatform.flex_client.core.editor.update {
 							break;
 					}
 					
-					MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(diagramShellContext);
-					MindMapDiagramShell(context.diagramShell).refreshModelPositions(diagramShellContext, nodeFromRegistry);						
+					if (refresh) {
+						MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(diagramShellContext);
+						MindMapDiagramShell(context.diagramShell).refreshModelPositions(diagramShellContext, nodeFromRegistry);	
+					}
 				}				
 			}		
 			
