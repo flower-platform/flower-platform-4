@@ -44,7 +44,8 @@
 		<module>../../org.flowerplatform.flex_client.server</module>
 
 		<module>../../org.flowerplatform.product</module>
-<!-- 		<module>../../org.flowerplatform.tests</module> -->
+		
+		<module>../../org.flowerplatform.tests</module>
 	</modules>
 
 	<properties>
@@ -158,14 +159,14 @@
 				<configuration>
 					<environments>
 						<environment>
-						<os>linux</os>
-						<ws>gtk</ws>
-						<arch>x86</arch>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
 						</environment>
 						<environment>
-						<os>linux</os>
-						<ws>gtk</ws>
-						<arch>x86_64</arch>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
 						</environment>
 						<environment>
 							<os>win32</os>

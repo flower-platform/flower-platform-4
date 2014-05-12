@@ -30,6 +30,27 @@
 	<build>
 		<directory>../${output-java}/tests</directory>
 
+		<pluginManagement>
+			<plugins>
+				<!-- filter out org.flowerplatform.host.servletbridge.extensionbundle -->
+				<!-- classes will be provided by javax.servlet -->
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>target-platform-configuration</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<filters>
+							<filter>
+								<type>eclipse-plugin</type>
+								<id>org.flowerplatform.host.servletbridge.extensionbundle</id>
+								<removeAll />
+							</filter>
+						</filters>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -50,14 +71,6 @@
 				<configuration>
 					<testSuite>org.flowerplatform.tests</testSuite>
 					<testClass>org.flowerplatform.tests.EclipseDependentTestSuite</testClass>
-					<dependencies>
-						<dependency>
-							<type>jar</type>
-							<groupId>javax.servlet</groupId>
-							<artifactId>javax.servlet-api</artifactId>
-							<version>3.0.1</version>
-						</dependency>
-					</dependencies>
 				</configuration>
 			</plugin>
 
