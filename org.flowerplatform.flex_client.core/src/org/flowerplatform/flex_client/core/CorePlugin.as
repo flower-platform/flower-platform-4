@@ -58,7 +58,9 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
@@ -71,6 +73,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
+	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
@@ -413,6 +416,18 @@ package org.flowerplatform.flex_client.core {
 				}
 			}
 			return editors;
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		public function selectNode(diagramShellContext:DiagramShellContext, fullNodeId:String):void {
+			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
+			var editor:EditorFrontend = EditorFrontend(workbench.getEditorFromViewComponent(workbench.getActiveView()));
+			var childNode:Node = editor.nodeUpdateProcessor.getNodeById(fullNodeId);
+			
+			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.resetSelection();
+			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);
 		}
 			
 	}
