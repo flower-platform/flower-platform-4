@@ -43,6 +43,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodeIdsToNodeUpdateProcessors;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodesManager;
 	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
+	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
@@ -287,6 +288,21 @@ package org.flowerplatform.flex_client.core {
 					
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
 			globalMenuActionProvider.addAction(new AssignHotKeyAction());
+			
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.help")).setId(CoreConstants.HELP).setOrderIndex(500));
+			
+			globalMenuActionProvider.addAction(new ActionBase()
+				.setLabel(Resources.getMessage("about.flower.action.label"))
+				.setIcon(Resources.flowerIcon)
+				.setParentId(CoreConstants.HELP)
+				.setFunctionDelegate(function ():void {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+					.setViewContent(new AboutView())
+					.setWidth(300)
+					.setHeight(250)
+					.show();
+				})
+			);
 			
 			// initial filterShortcuts
 			// other filterShortcut must be added by corresponding keyboard action
