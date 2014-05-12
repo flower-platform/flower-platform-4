@@ -18,21 +18,14 @@
  */
 package org.flowerplatform.flexdiagram.tool {
 	
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
-	import flash.ui.Keyboard;
 	
-	import mx.charts.renderers.DiamondItemRenderer;
-	import mx.core.Application;
-	import mx.core.FlexGlobals;
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	
-	import spark.components.Application;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -119,14 +112,7 @@ package org.flowerplatform.flexdiagram.tool {
 				// don't add if the selection already has it and its the only one selected
 				return;
 			}
-			try {
-				// Because an addItem is called after, the eventsCanBeIgnored is set to true,
-				// this way listeners can limit the number of unwanted events.
-				diagramShell.selectedItems.eventsCanBeIgnored = true;
-				diagramShell.selectedItems.removeAll();							
-			} finally {
-				diagramShell.selectedItems.eventsCanBeIgnored = false;
-			}
+			diagramShell.selectedItems.resetSelection();
 			diagramShell.selectedItems.addItem(model);
 		}
 		
