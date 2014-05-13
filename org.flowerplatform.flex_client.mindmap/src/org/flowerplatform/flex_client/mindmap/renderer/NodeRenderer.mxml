@@ -107,8 +107,8 @@
 				icons = null;
 				
 				// Important: measuredHeight/measuredWidth are reset to their default values; otherwise the renderer will use recycled values for width/height 
-				measuredWidth = 0;
-				measuredHeight = 0;
+				getMainComponent().measuredWidth = 0;
+				getMainComponent().measuredHeight = 0;
 			}
 			
 			override protected function resizeHandler(event:ResizeEvent):void {
