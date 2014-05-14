@@ -15,6 +15,9 @@
 	
 	<include resource="logback_appenders.xml"/>
 
+	<!-- Disable logging the ping() method invocation -->
+	<property scope="context" name="logNodeServicePingInvocation" value="false" />
+
 	<!-- 
 	<define name="tomcatLocation" class="org.flowerplatform.util.log.TomcatLocationPropertyDefiner"/>
 	<define name="applicationServerContext" class="org.flowerplatform.util.log.ApplicationServerContextPropertyDefiner"/>

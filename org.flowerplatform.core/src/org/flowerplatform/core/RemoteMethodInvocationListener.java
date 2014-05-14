@@ -27,6 +27,8 @@ import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.core.Context;
+
 /**
  * Invoked by the remote method invocation backend (e.g. Flex/BlazeDS, Rest/JSON), when a call from the client arrives.
  * 
@@ -37,6 +39,8 @@ import org.slf4j.LoggerFactory;
 public class RemoteMethodInvocationListener {
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
+	
+	private final static Context loggerContext = (Context) LoggerFactory.getILoggerFactory();
 
 	/**
 	 * Compares the list of resources the client has with the list of resources that the client is subscribed to. For any
@@ -91,7 +95,14 @@ public class RemoteMethodInvocationListener {
 			long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
 			String serviceId = remoteMethodInvocationInfo.getServiceId();
 			String methodName = remoteMethodInvocationInfo.getMethodName();
-			logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
+			boolean log = true;
+			if (methodName.equals("ping")) {
+				String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
+				log = logPing == null ? false : Boolean.parseBoolean(logPing);
+			}
+			if (log) {
+				logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
+			}
 		}
 		
 		// prepare result
