@@ -244,7 +244,8 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		properties.put("osgi.instance.area", "file:" + osgiInstanceArea);
 		properties.put(OSGI_INSTALL_AREA, osgiConfigurationArea + "/..");
 		
-		properties.put("flower.server.app.context", context.getContextPath().substring(1));
+		// check if context path is empty, if the app is ROOT
+		properties.put("flower.server.app.context", context.getContextPath().length() == 0 ? "" : context.getContextPath().substring(1));
 		properties.put("flower.server.app.location", context.getRealPath(File.separator));
 		properties.put("flower.server.tmpdir", ((File) context.getAttribute(context.getTempDir())).getAbsolutePath());
 		return properties;

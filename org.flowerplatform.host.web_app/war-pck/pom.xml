@@ -28,7 +28,7 @@
 				<version>2.4</version>
 				<configuration>
 					<webXml>web.xml</webXml>
-					<warName>${project.artifactId}</warName>
+					<warName>flower-platform</warName>
 
 					<outputDirectory>war</outputDirectory>
 
