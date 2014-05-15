@@ -30,8 +30,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 
 	/**

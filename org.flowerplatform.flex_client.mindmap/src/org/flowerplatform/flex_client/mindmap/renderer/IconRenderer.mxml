@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Sebastian Solomon
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				creationComplete="creationCompleteHandler()">
+	
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle" horizontalAlign="center"/>
+	</s:layout> 
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.DPIClassification;
+			import mx.core.FlexGlobals;
+			
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			override public function set data(value:Object):void {
+				super.data = value;
+				line.visible = false;
+				line.includeInLayout = false;
+				image.source = Resources.mindmapIcons[data];
+				if (image.source == null) {
+					image.source = Resources[data];
+				}
+				
+				switch (data) {
+					case "removeAllIconsIcon" :
+						toolTip = Resources.getMessage('manageIcons.remove.all.label');
+						line.visible = true;
+						line.includeInLayout = true;
+						break;
+					case "removeFirstIconIcon":
+						toolTip = Resources.getMessage('manageIcons.remove.first.label');
+						break;
+					case "removeLastIconIcon" :
+						toolTip = Resources.getMessage('manageIcons.remove.last.label');
+						break;
+				}
+			}
+			
+			protected function creationCompleteHandler():void {
+				if (FlexUtilGlobals.getInstance().isMobile) {
+					switch (FlexGlobals.topLevelApplication.applicationDPI) {
+						case DPIClassification.DPI_640:	{
+							width = 128;
+							height = 172;
+							break;
+						}
+						case DPIClassification.DPI_480:	{
+							width = 96;
+							height = 130;
+							break;
+						}
+						case DPIClassification.DPI_320:	{
+							width = 64;
+							height = 86;
+							break;
+						}
+						case DPIClassification.DPI_240:	{
+							width = 48;
+							height = 65;
+							break;
+						}
+						case DPIClassification.DPI_120:	{
+							width = 24;
+							height = 33;
+							break;
+						}
+						default: {
+							// default PPI160
+							width = 32;
+							height = 43;
+							break;
+						}
+					} 
+				} else {
+					width = 22;
+					height = 22;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+		
+	<s:Image id="image" width="100%"/>	
+	
+	<s:Line id="line" width="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="gray" weight="1"/>
+		</s:stroke>
+	</s:Line>
+</s:ItemRenderer>

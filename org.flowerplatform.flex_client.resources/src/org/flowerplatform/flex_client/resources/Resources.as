@@ -1,6 +1,4 @@
 package org.flowerplatform.flex_client.resources {
-	import flash.utils.Dictionary;
-	
 	import mx.resources.ResourceManager;
 	
 	[ResourceBundle("org_flowerplatform_resources")]
