@@ -28,7 +28,7 @@
 			
 			protected var resultHandler:IDialogResultHandler;
 			
-			public static function  getSharedObjectServerAccountList():ArrayCollection {
+			public static function getSharedObjectServerAccountList():ArrayCollection {
 				var sharedObject:SharedObject = getSharedObject();
 				return sharedObject.data.serverAccounts;
 			}
