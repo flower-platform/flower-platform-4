@@ -17,6 +17,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.OpenInNewEditorDialog;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
@@ -50,18 +51,20 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			if (value) {
 				// open in new editor?
 				if (node.properties[CoreConstants.IS_OPENABLE_IN_NEW_EDITOR]) {
-					var dialog:OpenInNewEditorDialog = new OpenInNewEditorDialog();
-					dialog.node = node;
-					dialog.setResultHandler(new OpenInNewEditorDialogResultHandler(function(result:Object):void {
-						if (result) {
-							// opened in new editor => collapse
-							collapse(context, node);
-						} else {
-							// default behaviour => expand node
-							expand(context, node);
-						}
-					}));
-					dialog.show();
+//					var dialog:OpenInNewEditorDialog = new OpenInNewEditorDialog();
+//					dialog.node = node;
+//					dialog.setResultHandler(new OpenInNewEditorDialogResultHandler(function(result:Object):void {
+//						if (result) {
+//							// opened in new editor => collapse
+//							collapse(context, node);
+//						} else {
+//							// default behaviour => expand node
+//							expand(context, node);
+//						}
+//					}));
+//					dialog.show();
+					CorePlugin.getInstance().openEditor(node);
+					collapse(context, node);
 				} else {
 					expand(context, node);
 				}

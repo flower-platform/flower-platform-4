@@ -7,11 +7,15 @@
 		<relativePath>../pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.1.0</version>
 	</parent>
 
 	<artifactId>parent-java</artifactId>
 	<packaging>pom</packaging>
+	
+	<!-- .qualifier suffix to match the bundle version in MANIFEST.MF -->
+	<!-- NOTE: after you change the version, run Flower Platform - Build (Java update versions).launch -->
+	<version>0.1.0.qualifier</version>
 
 	<!-- list of modules to build -->
 	<modules>
@@ -86,7 +90,7 @@
 						<extraClasspathElement>
 							<groupId>org.flowerplatform.host</groupId>
 							<artifactId>org.flowerplatform.host.web_app</artifactId>
-							<version>1.0.0-SNAPSHOT</version>
+							<version>0.1.0</version>
 						</extraClasspathElement>
 					</extraClasspathElements>
 				</configuration>

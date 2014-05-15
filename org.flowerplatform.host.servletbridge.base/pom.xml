@@ -6,7 +6,7 @@
 	
 	<groupId>org.flowerplatform.host</groupId>
 	<artifactId>org.flowerplatform.host.servletbridge.base</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

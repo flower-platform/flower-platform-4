@@ -20,8 +20,8 @@ import org.flowerplatform.util.UtilConstants;
 
 public class CoreConstants {
 
-	public static final String APP_VERSION = "1.0.0.M1_2014-04-01";
-	public static final String API_VERSION = "1.0.0.M1_2014-04-01";
+	public static final String APP_VERSION = "0.1.0";
+	public static final String API_VERSION = "0.1.0";
 	
 	//////////////////////////////////
 	// Node types

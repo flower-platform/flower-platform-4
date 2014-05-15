@@ -7,11 +7,11 @@
 		<relativePath>../../org.flowerplatform.build/pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.1.0</version>
 	</parent>
 
 	<artifactId>org.flowerplatform.host.web_app</artifactId>
-	<version>1.0.0-war-SNAPSHOT</version>
+	<version>0.1.0_war</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>org.flowerplatform.host</groupId>
 			<artifactId>org.flowerplatform.host.servletbridge.base</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>0.1.0</version>
 		</dependency>
 	</dependencies>
 </project>

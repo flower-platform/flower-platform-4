@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Code
 Bundle-SymbolicName: org.flowerplatform.codesync.code;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: org.flowerplatform.codesync.code.CodeSyncCodePlugin
 Require-Bundle: org.flowerplatform.codesync;visibility:=reexport,
  org.eclipse.text;visibility:=reexport

@@ -3,7 +3,7 @@ Eclipse-BuddyPolicy: registered
 Bundle-ManifestVersion: 2
 Bundle-Name: Util
 Bundle-SymbolicName: org.flowerplatform.util
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: ch.qos.logback.core,
  org.apache.commons.io,

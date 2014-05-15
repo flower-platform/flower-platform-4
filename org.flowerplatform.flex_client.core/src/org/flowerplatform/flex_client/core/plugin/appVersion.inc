@@ -1,1 +1,1 @@
-_appVersion = "1.0.0.M1_2014-04-01"
+_appVersion = "0.1.0"

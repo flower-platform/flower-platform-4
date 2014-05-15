@@ -8,7 +8,7 @@
 		<relativePath>../org.flowerplatform.build/java/pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
 		<artifactId>parent-java</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.1.0.qualifier</version>
 	</parent>
 
 	<artifactId>org.flowerplatform.host.servletbridge.registry</artifactId>
