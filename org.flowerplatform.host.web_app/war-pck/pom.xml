@@ -41,6 +41,13 @@
 							<targetPath>WEB-INF</targetPath>
 						</resource>
 						<resource>
+							<directory>../WebContent/META-INF</directory>
+							<includes>
+								<include>context.xml</include>
+							</includes>
+							<targetPath>META-INF</targetPath>
+						</resource>
+						<resource>
 							<directory>../../${output-java}/product/products/org.flowerplatform.product/${product-environment}</directory>
 							<targetPath>WEB-INF/eclipse</targetPath>
 						</resource>
