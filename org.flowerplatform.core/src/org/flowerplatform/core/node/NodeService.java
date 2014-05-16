@@ -269,7 +269,7 @@ public class NodeService {
 			// dirty state changed -> change resourceNode isDirty property
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
@@ -297,7 +297,7 @@ public class NodeService {
 			// dirty state changed -> change resourceNode isDirty property
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	/**

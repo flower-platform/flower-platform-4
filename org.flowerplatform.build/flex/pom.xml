@@ -7,7 +7,7 @@
 		<relativePath>../pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<artifactId>parent-flex</artifactId>
@@ -15,7 +15,7 @@
 	
 	<!-- _flex suffix because some flex projects are also packaged as Eclipse plugins -->
 	<!-- and the Tycho build does not allow duplicate pom versions in the same reactor -->
-	<version>0.1.0_flex</version>
+	<version>0.1.1_flex</version>
 
 	<!-- list of modules to build -->
 	<modules>

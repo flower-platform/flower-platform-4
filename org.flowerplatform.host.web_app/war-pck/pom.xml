@@ -7,11 +7,11 @@
 		<relativePath>../../org.flowerplatform.build/pom.xml</relativePath>
 		<groupId>org.flowerplatform</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<artifactId>org.flowerplatform.host.web_app</artifactId>
-	<version>0.1.0_war</version>
+	<version>0.1.1_war</version>
 	<packaging>war</packaging>
 
 	<properties>
