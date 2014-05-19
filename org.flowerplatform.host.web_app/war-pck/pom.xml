@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.flowerplatform.host</groupId>
 			<artifactId>org.flowerplatform.host.servletbridge.base</artifactId>
-			<version>0.1.0</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
 </project>

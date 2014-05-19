@@ -3,10 +3,14 @@
 Build project. For the Java build, we use [Tycho](https://www.eclipse.org/tycho/) to integrate Maven with the OSGi architecture. For the Flex build, we use [flexmojos](https://flexmojos.atlassian.net/wiki/display/FLEXMOJOS/Home).
 
 It is a multi-module build:
-* ``flex/pom.xml`` multi-module build that aggregates the Flex libraries.
-* ``java/pom.xml`` multi-module build that aggregates the Flower Platform plug-ins, the product project and test project.
-* ``../org.flowerplatform.host.web_app/war-pck11 builds the WAR to be deployed on the server.
-* ``pom.xml`` aggregates all the modules above
+* **flex/pom.xml**: multi-module build that aggregates the Flex libraries. Output directories: ``flex/classes`` and ``flex/distr``.
+* **java/pom.xml**: multi-module build that aggregates the Flower Platform plug-ins, the product project and test project.  Output directories:
+	* ``java/classes`` - compiled classes
+	* ``java/distr`` - ``.jar`` files
+	* ``java/product`` - Eclipse products
+	* ``java/tests`` - test reports
+* **../org.flowerplatform.host.web_app/war-pck**: builds the WAR to be deployed on the server.
+* **pom.xml**: aggregates all the modules above
 
 ### Limitations
 
@@ -27,30 +31,11 @@ How to mavenize your FDK, as described [here](https://cwiki.apache.org/confluenc
 
 ## Launch Configs
 
-### Flower Platform - Build (Flex).launch
+### Flower Platform - Build.launch
 
-Builds the flex ``.swc`` and ``.swf`` files. Output directories: ``flex/classes`` and ``flex/distr``.
-
-### Flower Platform - Build (Flex verbose).launch
-
-Same, with full logging and errors stack traces enabled.
-
-### Flower Platform - Build (Java).launch
-
-Builds the FP plug-ins, runs tests and builds the Eclipse product with the packaged FP plug-ins and dependencies. Output directories:
-* ``java/classes`` - compiled classes
-* ``java/distr`` - ``.jar`` files
-* ``java/product`` - Eclipse products
-* ``java/tests`` - test reports
-
-### Flower Platform - Build (Java verbose).launch
-
-Same, with full logging and errors stack traces enabled.
-
-### Flower Platform - Build (win32 | linux x86).launch
-
-Performs both the Flex build and the Java build. Builds the WAR with the Eclipse product built for the specified OS.
-
-### Flower Platform - Build (verbose).launch
-
-Same, with full logging and errors stack traces enabled.
+Ant build. Targets:
+* **update-license-headers**: update the license headers on source files (``.java``, ``.as``, ``.mxml``)
+* **set-version**: set the new version in the ``pom.xml`` files, ``MANIFEST.MF`` files and source files
+* **install-flex-deps**: install Flex dependencies in the local repository
+* **clean**: clean output directories
+* **verify**: perform and validate the build for the Maven projects described above

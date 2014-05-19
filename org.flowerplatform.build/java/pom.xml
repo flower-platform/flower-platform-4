@@ -12,9 +12,8 @@
 
 	<artifactId>parent-java</artifactId>
 	<packaging>pom</packaging>
-	
+
 	<!-- .qualifier suffix to match the bundle version in MANIFEST.MF -->
-	<!-- NOTE: after you change the version, run Flower Platform - Build (Java update versions).launch -->
 	<version>0.1.1.qualifier</version>
 
 	<!-- list of modules to build -->
@@ -48,7 +47,7 @@
 		<module>../../org.flowerplatform.flex_client.server</module>
 
 		<module>../../org.flowerplatform.product</module>
-		
+
 		<module>../../org.flowerplatform.tests</module>
 	</modules>
 
@@ -90,7 +89,7 @@
 						<extraClasspathElement>
 							<groupId>org.flowerplatform.host</groupId>
 							<artifactId>org.flowerplatform.host.web_app</artifactId>
-							<version>0.1.0</version>
+							<version>${project.parent.parent.version}</version>
 						</extraClasspathElement>
 					</extraClasspathElements>
 				</configuration>
@@ -163,24 +162,9 @@
 				<configuration>
 					<environments>
 						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
+							<os>${os}</os>
+							<ws>${ws}</ws>
+							<arch>${arch}</arch>
 						</environment>
 					</environments>
 				</configuration>

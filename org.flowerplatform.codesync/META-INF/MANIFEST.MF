@@ -9,11 +9,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.flowerplatform.core;visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.flowerplatform.codesync,
- org.flowerplatform.codesync.action,
- org.flowerplatform.codesync.adapter,
- org.flowerplatform.codesync.controller,
- org.flowerplatform.codesync.feature_provider,
- org.flowerplatform.codesync.project,
- org.flowerplatform.codesync.remote,
- org.flowerplatform.codesync.type_provider
+Export-Package: org.flowerplatform.codesync,org.flowerplatform.codesyn
+ c.action,org.flowerplatform.codesync.adapter,org.flowerplatform.codes
+ ync.controller,org.flowerplatform.codesync.feature_provider,org.flowe
+ rplatform.codesync.project,org.flowerplatform.codesync.remote,org.flo
+ werplatform.codesync.type_provider

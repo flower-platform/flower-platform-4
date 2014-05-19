@@ -9,6 +9,6 @@ Require-Bundle: org.flowerplatform.codesync.code;visibility:=reexport,
  org.flowerplatform.resources
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.flowerplatform.codesync.code.java,
- org.flowerplatform.codesync.code.java.adapter,
- org.flowerplatform.codesync.code.java.feature_provider
+Export-Package: org.flowerplatform.codesync.code.java,org.flowerplatfo
+ rm.codesync.code.java.adapter,org.flowerplatform.codesync.code.java.f
+ eature_provider

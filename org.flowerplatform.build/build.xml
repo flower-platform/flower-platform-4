@@ -1,0 +1,120 @@
+<project default="verify" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<target name="update-license-header" description="Update license header">
+		<ant dir="ant" antfile="update-license-header.xml" />
+	</target>
+
+	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" />
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
+
+	<!-- Local Maven installation -->
+	<property name="mavenHome" value="D:\Java\apache-maven-3.2.1" />
+
+	<!-- Params for the set-version target -->
+	<property name="appVersion" value="0.1.1" />
+	<property name="apiVersion" value="0.1.0" />
+	<property name="generateBackupPoms" value="false" />
+
+	<!-- Product environment -->
+	<property name="os" value="linux" />
+	<property name="ws" value="gtk" />
+
+	<!-- <property name="os" value="win32" /> -->
+	<!-- <property name="ws" value="win32" /> -->
+
+	<property name="arch" value="x86" />
+	<!-- <property name="arch" value="x86_64" /> -->
+
+	<property name="productEnvironment" value="${os}/${ws}/${arch}" />
+
+	<target name="set-version" description="Set the new version in the pom.xml files">
+		<artifact:mvn mavenHome="${mavenHome}" fork="true">
+			<arg value="-Nversions:set" />
+			<arg value="-DnewVersion=${appVersion}" />
+			<arg value="-DgenerateBackupPoms=${generateBackupPoms}" />
+		</artifact:mvn>
+
+		<!-- Set the version for the flex build -->
+		<!-- Add _flex suffix because some flex projects are also packaged as Eclipse plugins -->
+		<!-- and the Tycho build does not allow duplicate pom versions in the same reactor -->
+		<artifact:mvn pom="flex" mavenHome="${mavenHome}" fork="true">
+			<arg value="-Nversions:set" />
+			<arg value="-DnewVersion=${appVersion}_flex" />
+			<arg value="-DgenerateBackupPoms=${generateBackupPoms}" />
+		</artifact:mvn>
+
+		<!-- Set the version in .inc files for the flex app -->
+		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/appVersion.inc" match="_appVersion = .*" replace="_appVersion = &quot;${appVersion}&quot;" />
+		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/apiVersion.inc" match="_apiVersion = .*" replace="_apiVersion = &quot;${apiVersion}&quot;" />
+
+		<!-- Set the version for the java build -->
+		<!-- Set the version in MANIFEST.MF -->
+		<artifact:mvn pom="java" mavenHome="${mavenHome}" fork="true">
+			<arg value="org.eclipse.tycho:tycho-versions-plugin:set-version" />
+			<arg value="-N" />
+			<arg value="-DnewVersion=${appVersion}.qualifier" />
+		</artifact:mvn>
+
+		<!-- Add .qualifier suffix to match the bundle version in MANIFEST.MF -->
+		<artifact:mvn pom="java" mavenHome="${mavenHome}" fork="true">
+			<arg value="versions:set" />
+			<arg value="-N" />
+			<arg value="-DnewVersion=${appVersion}.qualifier" />
+			<arg value="-DgenerateBackupPoms=${generateBackupPoms}" />
+		</artifact:mvn>
+
+		<artifact:mvn pom="../org.flowerplatform.host.servletbridge.base" mavenHome="${mavenHome}" fork="true">
+			<arg value="versions:set" />
+			<arg value="-N" />
+			<arg value="-DnewVersion=${appVersion}" />
+			<arg value="-DgenerateBackupPoms=${generateBackupPoms}" />
+		</artifact:mvn>
+
+		<artifact:mvn pom="../org.flowerplatform.host.web_app" mavenHome="${mavenHome}" fork="true">
+			<arg value="versions:set" />
+			<arg value="-N" />
+			<arg value="-DnewVersion=${appVersion}" />
+			<arg value="-DgenerateBackupPoms=${generateBackupPoms}" />
+		</artifact:mvn>
+
+		<replaceregexp file="../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java" match="APP_VERSION = .*;" replace="APP_VERSION = &quot;${appVersion}&quot;;" />
+		<replaceregexp file="../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java" match="API_VERSION = .*;" replace="API_VERSION = &quot;${apiVersion}&quot;;" />
+
+		<!-- Set the version for the war build -->
+		<artifact:mvn pom="../org.flowerplatform.host.web_app/war-pck" mavenHome="${mavenHome}" fork="true">
+			<arg value="versions:set" />
+			<arg value="-N" />
+			<arg value="-DnewVersion=${appVersion}_war" />
+			<arg value="-DgenerateBackupPoms=${generateBackupPoms}" />
+		</artifact:mvn>
+	</target>
+
+	<target name="install-flex-deps" description="Install Flex dependencies">
+		<artifact:mvn mavenHome="${mavenHome}" fork="true">
+			<arg value="install:install-file" />
+			<arg value="-N" />
+			<arg value="-DgroupId=com.google.code.flexlib" />
+			<arg value="-DartifactId=flexlib" />
+			<arg value="-Dversion=1.2" />
+			<arg value="-Dpackaging=swc" />
+			<arg value="-Dfile=../org.flowerplatform.flexutil_legacy/lib/flexlib.swc" />
+		</artifact:mvn>
+	</target>
+
+	<target name="clean" description="Clean output directories">
+		<artifact:mvn pom="pom.xml" mavenHome="${mavenHome}" fork="true">
+			<arg value="clean" />
+		</artifact:mvn>
+	</target>
+
+	<target name="verify" description="Perform and validate build" depends="update-license-header,set-version,install-flex-deps,clean">
+		<artifact:mvn pom="pom.xml" mavenHome="${mavenHome}" fork="true">
+			<arg value="verify" />
+			<arg value="-Dos=${os}" />
+			<arg value="-Dws=${ws}" />
+			<arg value="-Darch=${arch}" />
+			<arg value="-Dproduct-environment=${productEnvironment}" />
+		</artifact:mvn>
+	</target>
+
+</project>
