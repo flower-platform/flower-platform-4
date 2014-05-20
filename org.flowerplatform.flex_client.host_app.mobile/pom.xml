@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../org.flowerplatform.build/flex/pom.xml</relativePath>
+		<groupId>org.flowerplatform</groupId>
+		<artifactId>parent-flex</artifactId>
+		<version>0.1.1_flex</version>
+	</parent>
+
+	<artifactId>org.flowerplatform.flex_client.host_app.mobile</artifactId>
+	<packaging>swf</packaging>
+
+	<properties>
+		<finalName>MainMobile</finalName>
+		<sourceDirectory>src</sourceDirectory>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flex.version}</version>
+			<type>pom</type>
+			<exclusions>
+				<!-- exclude playerglobal for the classes from the AIR framework to be 
+					compiled -->
+				<exclusion>
+					<groupId>com.adobe.flash.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.air.framework</groupId>
+			<artifactId>airglobal</artifactId>
+			<version>3.2</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flex.framework.mobile</groupId>
+			<artifactId>mobilecomponents</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>flextras</groupId>
+			<artifactId>mobilecomponents</artifactId>
+			<version>1.0</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexutil</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexdiagram</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flex_client.resources</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flex_client.core</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flex_client.properties</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flex_client.mindmap</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flex_client.codesync</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flex.framework.themes</groupId>
+			<artifactId>mobile</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+			<scope>theme</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>net.flexmojos.oss</groupId>
+					<artifactId>flexmojos-maven-plugin</artifactId>
+					<version>${flexmojos.version}</version>
+					<extensions>true</extensions>
+
+					<dependencies>
+						<dependency>
+							<groupId>com.adobe.air</groupId>
+							<artifactId>compiler</artifactId>
+							<version>${air.version}</version>
+							<type>pom</type>
+						</dependency>
+						<dependency>
+							<groupId>com.adobe.air.compiler</groupId>
+							<artifactId>adt</artifactId>
+							<version>${air.version}</version>
+						</dependency>
+					</dependencies>
+
+					<configuration>
+						<sourceFile>MainMobile.mxml</sourceFile>
+
+						<keepAs3Metadatas>
+							<keepAs3Metadata>Embed</keepAs3Metadata>
+							<keepAs3Metadata>RemoteClass</keepAs3Metadata>
+							<keepAs3Metadata>ResourceBundle</keepAs3Metadata>
+							<keepAs3Metadata>SecureSWF</keepAs3Metadata>
+						</keepAs3Metadatas>
+						<keepAllTypeSelectors>true</keepAllTypeSelectors>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+
+			<!-- copy assets for mobile app -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>../${output.flex}/distr/${project.artifactId}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src</directory>
+									<includes>
+										<include>assets/**</include>
+										<include>${finalName}-app.xml</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- build .apk -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>java</executable>
+							<workingDirectory>../${output.flex}/distr/${project.artifactId}</workingDirectory>
+							<arguments>
+								<argument>-jar</argument>
+								<argument>${flexHome}/lib/adt.jar</argument>
+								<argument>-package</argument>
+								<argument>-target</argument>
+								<argument>apk</argument>
+								<argument>-storetype</argument>
+								<argument>pkcs12</argument>
+								<argument>-keystore</argument>
+								<argument>${keystore.file}</argument>
+								<argument>-storepass</argument>
+								<argument>${keystore.password}</argument>
+								<argument>flower-platform-mobile.apk</argument>
+								<argument>${finalName}-app.xml</argument>
+								<argument>${finalName}.swf</argument>
+								<argument>assets</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
+
+</project>

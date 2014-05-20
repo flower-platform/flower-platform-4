@@ -1,31 +1,19 @@
 <project default="verify" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
+	<property file="build.properties" />
+	
+	<!-- Required properties: -->
+	<!-- keystore.fileName - the name of the keystore file -->
+	<!-- keystore.password - the password for the keystore -->
+	<property file="DO_NOT_COMMIT/keystore.properties" />
+	<property name="keystore.file" location="DO_NOT_COMMIT/${keystore.fileName}" />
+
 	<target name="update-license-header" description="Update license header">
 		<ant dir="ant" antfile="update-license-header.xml" />
 	</target>
 
 	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" />
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
-
-	<!-- Local Maven installation -->
-	<property name="mavenHome" value="D:\Java\apache-maven-3.2.1" />
-
-	<!-- Params for the set-version target -->
-	<property name="appVersion" value="0.1.1" />
-	<property name="apiVersion" value="0.1.0" />
-	<property name="generateBackupPoms" value="false" />
-
-	<!-- Product environment -->
-	<property name="os" value="linux" />
-	<property name="ws" value="gtk" />
-
-	<!-- <property name="os" value="win32" /> -->
-	<!-- <property name="ws" value="win32" /> -->
-
-	<property name="arch" value="x86" />
-	<!-- <property name="arch" value="x86_64" /> -->
-
-	<property name="productEnvironment" value="${os}/${ws}/${arch}" />
 
 	<target name="set-version" description="Set the new version in the pom.xml files">
 		<artifact:mvn mavenHome="${mavenHome}" fork="true">
@@ -46,6 +34,8 @@
 		<!-- Set the version in .inc files for the flex app -->
 		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/appVersion.inc" match="_appVersion = .*" replace="_appVersion = &quot;${appVersion}&quot;" />
 		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/apiVersion.inc" match="_apiVersion = .*" replace="_apiVersion = &quot;${apiVersion}&quot;" />
+
+		<replaceregexp file="../org.flowerplatform.flex_client.host_app.mobile/src/MainMobile-app.xml" match="&lt;versionNumber&gt;.*&lt;/versionNumber&gt;" replace="&lt;versionNumber&gt;${appVersion}&lt;/versionNumber&gt;" />
 
 		<!-- Set the version for the java build -->
 		<!-- Set the version in MANIFEST.MF -->
@@ -95,9 +85,19 @@
 			<arg value="-N" />
 			<arg value="-DgroupId=com.google.code.flexlib" />
 			<arg value="-DartifactId=flexlib" />
-			<arg value="-Dversion=1.2" />
+			<arg value="-Dversion=2.5" />
 			<arg value="-Dpackaging=swc" />
 			<arg value="-Dfile=../org.flowerplatform.flexutil_legacy/lib/flexlib.swc" />
+		</artifact:mvn>
+
+		<artifact:mvn mavenHome="${mavenHome}" fork="true">
+			<arg value="install:install-file" />
+			<arg value="-N" />
+			<arg value="-DgroupId=flextras" />
+			<arg value="-DartifactId=mobilecomponents" />
+			<arg value="-Dversion=1.0" />
+			<arg value="-Dpackaging=swc" />
+			<arg value="-Dfile=../org.flowerplatform.flexutil/lib/MobileComponents45.swc" />
 		</artifact:mvn>
 	</target>
 
@@ -110,10 +110,19 @@
 	<target name="verify" description="Perform and validate build" depends="update-license-header,set-version,install-flex-deps,clean">
 		<artifact:mvn pom="pom.xml" mavenHome="${mavenHome}" fork="true">
 			<arg value="verify" />
+			<!-- <arg value="-e" /> -->
+			<!-- <arg value="-X" /> -->
+
+			<!-- Java build -->
 			<arg value="-Dos=${os}" />
 			<arg value="-Dws=${ws}" />
 			<arg value="-Darch=${arch}" />
 			<arg value="-Dproduct-environment=${productEnvironment}" />
+
+			<!-- Flex build -->
+			<arg value="-DflexHome = ${flexHome}" />
+			<arg value="-Dkeystore.file=${keystore.file}" />
+			<arg value="-Dkeystore.password=${keystore.password}" />
 		</artifact:mvn>
 	</target>
 

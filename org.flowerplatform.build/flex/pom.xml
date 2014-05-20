@@ -33,23 +33,26 @@
 		<module>../../org.flowerplatform.flex_client.codesync/flex</module>
 		<module>../../org.flowerplatform.flex_client.host_app/flex</module>
 		<module>../../org.flowerplatform.flex_client.web/flex</module>
+		
+		<module>../../org.flowerplatform.flex_client.host_app.mobile</module>
 	</modules>
 
 	<properties>
 		<!-- modules may override -->
-		<source-dir>src</source-dir>
-		<messages-dir>messages</messages-dir>
-		<icons-dir>icons</icons-dir>
-		<final-name>${project.artifactId}</final-name>
+		<sourceDirectory>src</sourceDirectory>
+		<messagesDirectory>messages</messagesDirectory>
+		<iconsDirectory>icons</iconsDirectory>
+		<finalName>${project.artifactId}</finalName>
 
 		<flexmojos.version>7.0.0</flexmojos.version>
 		<flex.version>4.11.0.20131017</flex.version>
+		<air.version>3.2</air.version>
 	</properties>
 
 	<build>
-		<sourceDirectory>${source-dir}</sourceDirectory>
-		<outputDirectory>../${output-flex}/classes/${project.artifactId}</outputDirectory>
-		<directory>../${output-flex}/distr/${project.artifactId}</directory>
+		<sourceDirectory>${sourceDirectory}</sourceDirectory>
+		<outputDirectory>../${output.flex}/classes/${project.artifactId}</outputDirectory>
+		<directory>../${output.flex}/distr/${project.artifactId}</directory>
 
 		<plugins>
 			<plugin>
@@ -67,7 +70,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<finalName>${final-name}</finalName>
+					<finalName>${finalName}</finalName>
 					<localesCompiled>
 						<locale>en_US</locale>
 					</localesCompiled>
@@ -92,8 +95,8 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${messages-dir}</source>
-								<source>${icons-dir}</source>
+								<source>${messagesDirectory}</source>
+								<source>${iconsDirectory}</source>
 							</sources>
 						</configuration>
 					</execution>

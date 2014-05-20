@@ -15,7 +15,7 @@
 	<packaging>eclipse-repository</packaging>
 	
 	<build>
-		<directory>../${output-java}/product</directory>
+		<directory>../${output.java}/product</directory>
 	
 		<plugins>
 			<plugin>

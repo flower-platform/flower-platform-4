@@ -23,7 +23,7 @@
 					<!-- override file set from parent to add bin -->
 					<additionalFileSets>
 						<fileSet>
-							<directory>../${output-flex}/distr/${project.artifactId}</directory>
+							<directory>../${output.flex}/distr/${project.artifactId}</directory>
 							<prefix>bin/</prefix>
 							<includes>
 								<include>FlexHostApp.swf</include>

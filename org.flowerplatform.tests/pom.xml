@@ -28,7 +28,7 @@
 	</dependencies>
 
 	<build>
-		<directory>../${output-java}/tests</directory>
+		<directory>../${output.java}/tests</directory>
 
 		<pluginManagement>
 			<plugins>
@@ -84,7 +84,7 @@
 						<id>test</id>
 						<phase>test</phase>
 						<configuration>
-							<testClassesDirectory>../${output-java}/classes/${project.artifactId}</testClassesDirectory>
+							<testClassesDirectory>../${output.java}/classes/${project.artifactId}</testClassesDirectory>
 							<test>EclipseIndependentTestSuite</test>
 						</configuration>
 						<goals>

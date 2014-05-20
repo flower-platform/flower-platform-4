@@ -15,8 +15,8 @@
 
 	<properties>
 		<!-- override default dirs; the Eclipse build uses linked resources -->
-		<messages-dir>../org.flowerplatform.resources/public-resources/messages</messages-dir>
-		<icons-dir>../org.flowerplatform.resources/public-resources/images</icons-dir>
+		<messagesDirectory>../org.flowerplatform.resources/public-resources/messages</messagesDirectory>
+		<iconsDirectory>../org.flowerplatform.resources/public-resources/images</iconsDirectory>
 	</properties>
 
 	<dependencies>

@@ -14,10 +14,10 @@
 	<packaging>swc</packaging>
 
 	<properties>
-		<source-dir>../src</source-dir>
-		<messages-dir>../messages</messages-dir>
-		<icons-dir>../icons</icons-dir>
-		<output-flex>../org.flowerplatform.build/flex</output-flex>
+		<sourceDirectory>../src</sourceDirectory>
+		<messagesDirectory>../messages</messagesDirectory>
+		<iconsDirectory>../icons</iconsDirectory>
+		<output.flex>../org.flowerplatform.build/flex</output.flex>
 	</properties>
 
 	<dependencies>

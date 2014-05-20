@@ -15,8 +15,8 @@
 	</modules>
 
 	<properties>
-		<output-flex>org.flowerplatform.build/flex</output-flex>
-		<output-java>org.flowerplatform.build/java</output-java>
+		<output.flex>org.flowerplatform.build/flex</output.flex>
+		<output.java>org.flowerplatform.build/java</output.java>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

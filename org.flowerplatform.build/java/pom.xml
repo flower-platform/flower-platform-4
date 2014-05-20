@@ -53,21 +53,21 @@
 
 	<properties>
 		<tycho.version>0.20.0</tycho.version>
-		<eclipse-repo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipse-repo.url>
+		<eclipseRepo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipseRepo.url>
 	</properties>
 
 	<repositories>
 		<repository>
 			<id>eclipse</id>
-			<url>${eclipse-repo.url}</url>
+			<url>${eclipseRepo.url}</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>../${output-java}/classes/${project.artifactId}</outputDirectory>
-		<directory>../${output-java}/distr/${project.artifactId}</directory>
+		<outputDirectory>../${output.java}/classes/${project.artifactId}</outputDirectory>
+		<directory>../${output.java}/distr/${project.artifactId}</directory>
 
 		<plugins>
 			<plugin>
@@ -131,7 +131,7 @@
 						</fileSet>
 
 						<fileSet>
-							<directory>../${output-flex}/distr/${project.artifactId}</directory>
+							<directory>../${output.flex}/distr/${project.artifactId}</directory>
 							<prefix>public-resources/swc/</prefix>
 							<includes>
 								<include>${project.artifactId}.swc</include>
