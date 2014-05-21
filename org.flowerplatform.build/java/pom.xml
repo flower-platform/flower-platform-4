@@ -17,39 +17,52 @@
 	<version>0.1.1.qualifier</version>
 
 	<!-- list of modules to build -->
-	<modules>
-		<!-- base plugins -->
-		<module>../../org.flowerplatform.util</module>
-		<module>../../org.flowerplatform.resources</module>
-		<module>../../org.flowerplatform.core</module>
-		<module>../../org.flowerplatform.mindmap</module>
-		<module>../../org.flowerplatform.freeplane</module>
-		<module>../../org.flowerplatform.codesync</module>
-		<module>../../org.flowerplatform.codesync.code</module>
-		<module>../../org.flowerplatform.codesync.code.java</module>
+	<profiles>
+		<profile>
+			<id>java-base</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<!-- base plugins -->
+				<module>../../org.flowerplatform.util</module>
+				<module>../../org.flowerplatform.resources</module>
+				<module>../../org.flowerplatform.core</module>
+				<module>../../org.flowerplatform.mindmap</module>
+				<module>../../org.flowerplatform.freeplane</module>
+				<module>../../org.flowerplatform.codesync</module>
+				<module>../../org.flowerplatform.codesync.code</module>
+				<module>../../org.flowerplatform.codesync.code.java</module>
 
-		<!-- not packaged as plugins, only available during compile time -->
-		<module>../../org.flowerplatform.host.servletbridge.base</module>
-		<module>../../org.flowerplatform.host.web_app</module>
+				<!-- not packaged as plugins, only available during compile time -->
+				<module>../../org.flowerplatform.host.servletbridge.base</module>
+				<module>../../org.flowerplatform.host.web_app</module>
 
-		<!-- depend on the above jars -->
-		<module>../../org.flowerplatform.host.servletbridge.registry</module>
-		<module>../../org.flowerplatform.host.servletbridge.extensionbundle</module>
+				<!-- depend on the above jars -->
+				<module>../../org.flowerplatform.host.servletbridge.registry</module>
+				<module>../../org.flowerplatform.host.servletbridge.extensionbundle</module>
 
-		<!-- flex client plugins -->
-		<module>../../org.flowerplatform.flex_client.core</module>
-		<module>../../org.flowerplatform.flex_client.properties</module>
-		<module>../../org.flowerplatform.flex_client.mindmap</module>
-		<module>../../org.flowerplatform.flex_client.codesync</module>
-		<module>../../org.flowerplatform.flex_client.host_app</module>
-		<module>../../org.flowerplatform.flex_client.host_app.config.web</module>
-		<module>../../org.flowerplatform.flex_client.web</module>
-		<module>../../org.flowerplatform.flex_client.server</module>
+				<!-- flex client plugins -->
+				<module>../../org.flowerplatform.flex_client.core</module>
+				<module>../../org.flowerplatform.flex_client.properties</module>
+				<module>../../org.flowerplatform.flex_client.mindmap</module>
+				<module>../../org.flowerplatform.flex_client.codesync</module>
+				<module>../../org.flowerplatform.flex_client.host_app</module>
+				<module>../../org.flowerplatform.flex_client.host_app.config.web</module>
+				<module>../../org.flowerplatform.flex_client.web</module>
+				<module>../../org.flowerplatform.flex_client.server</module>
 
-		<module>../../org.flowerplatform.product</module>
+				<module>../../org.flowerplatform.tests</module>
+			</modules>
+		</profile>
 
-		<module>../../org.flowerplatform.tests</module>
-	</modules>
+		<profile>
+			<id>java-product</id>
+			<modules>
+				<module>../../org.flowerplatform.product</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<properties>
 		<tycho.version>0.20.0</tycho.version>

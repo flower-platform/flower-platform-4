@@ -12,30 +12,43 @@
 
 	<artifactId>parent-flex</artifactId>
 	<packaging>pom</packaging>
-	
+
 	<!-- _flex suffix because some flex projects are also packaged as Eclipse plugins -->
 	<!-- and the Tycho build does not allow duplicate pom versions in the same reactor -->
 	<version>0.1.1_flex</version>
 
 	<!-- list of modules to build -->
-	<modules>
-		<!-- base libraries -->
-		<module>../../org.flowerplatform.flexutil</module>
-		<module>../../org.flowerplatform.flexutil_legacy</module>
-		<module>../../org.flowerplatform.flexdiagram</module>
-		<module>../../org.flowerplatform.flex_client.resources</module>
+	<profiles>
+		<profile>
+			<id>flex-base</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<!-- base libraries -->
+				<module>../../org.flowerplatform.flexutil</module>
+				<module>../../org.flowerplatform.flexutil_legacy</module>
+				<module>../../org.flowerplatform.flexdiagram</module>
+				<module>../../org.flowerplatform.flex_client.resources</module>
 
-		<!-- flex client libraries -->
-		<!-- explicitly use flex/pom.xml, as these are also packaged as eclipse-plugin -->
-		<module>../../org.flowerplatform.flex_client.core/flex</module>
-		<module>../../org.flowerplatform.flex_client.properties/flex</module>
-		<module>../../org.flowerplatform.flex_client.mindmap/flex</module>
-		<module>../../org.flowerplatform.flex_client.codesync/flex</module>
-		<module>../../org.flowerplatform.flex_client.host_app/flex</module>
-		<module>../../org.flowerplatform.flex_client.web/flex</module>
-		
-		<module>../../org.flowerplatform.flex_client.host_app.mobile</module>
-	</modules>
+				<!-- flex client libraries -->
+				<!-- explicitly use flex/pom.xml, as these are also packaged as eclipse-plugin -->
+				<module>../../org.flowerplatform.flex_client.core/flex</module>
+				<module>../../org.flowerplatform.flex_client.properties/flex</module>
+				<module>../../org.flowerplatform.flex_client.mindmap/flex</module>
+				<module>../../org.flowerplatform.flex_client.codesync/flex</module>
+				<module>../../org.flowerplatform.flex_client.host_app/flex</module>
+				<module>../../org.flowerplatform.flex_client.web/flex</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>flex-mobile</id>
+			<modules>
+				<module>../../org.flowerplatform.flex_client.host_app.mobile</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<properties>
 		<!-- modules may override -->
