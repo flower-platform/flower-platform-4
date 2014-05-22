@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.resource;
 
 import java.util.List;
 
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 
 /**
@@ -43,7 +44,17 @@ public interface IResourceDAO {
 	public List<String> getResources();
 	
 	public void addUpdate(String resourceNodeId, Update update);
-	
-	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest);
 
+	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest);
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void addCommand(String resourceNodeId, Command command);
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public List<Command> getCommands(String resourceNodeId);
+	
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.resource.IResourceDAO;
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 
 /**
@@ -135,6 +136,7 @@ public class InMemoryResourceDAO implements IResourceDAO {
 	}
 
 	@Override
+
 	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
 		List<Update> updates = null;
 		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
@@ -166,6 +168,39 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		return updatesAddedAfterLastRequest;
 	}
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void addCommand(String resourceNodeId, Command command) {
+		String commandStackFullNodeId="(commandStack|self|"+escapeFullNodeId(resourceNodeId)+")";
+		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(commandStackFullNodeId);
+		info.getCommandStack().add(command);
+	}
+
+	/**
+	 * @author Claudiu Matei 
+	 */
+	@Override
+	public List<Command> getCommands(String resourceNodeId) {
+		String commandStackFullNodeId="(commandStack|self|"+escapeFullNodeId(resourceNodeId)+")";
+		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(commandStackFullNodeId);
+		return info.getCommandStack();  // poate ca ar trebui sa intoarcem o clona
+	}
+
+	/**
+	 * @author Claudiu Matei 
+	 * 
+	 * Trebuie mutata de aici - poate intr-o clasa Util
+	 * 
+	 */
+	private static String escapeFullNodeId(String fullNodeId) {
+		return fullNodeId
+				.replaceAll("\\(", "[")
+				.replaceAll("\\)", "]")
+				.replaceAll("\\|", "*");
+	}
+	
 	/**
 	 * Lazy-init mechanism. Called from methods that need to add/update info.
 	 * Getters should instead check if the info exists, to avoid memory leaks.

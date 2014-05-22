@@ -22,9 +22,7 @@ import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,6 +49,7 @@ import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
@@ -270,46 +269,40 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 				
 				@Override
 				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-					return tempCommandStackList;
+					List<Command> commands=CorePlugin.getInstance().getResourceService().getCommands(node.getFullNodeId());
+					ArrayList<Node> children=new ArrayList<>();
+					for (Command c : commands) {
+						children.add(CorePlugin.createCommandNode(c));
+					}
+					return children;
 				}
 			})
 			.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new AddNodeController() {
 				
 				@Override
-				public void addNode(Node node, Node child,
-						ServiceContext<NodeService> context) {
-					tempCommandStackList.add(child);					
+				public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
+					CorePlugin.getInstance().getResourceService().getCommands("mumu");
+										
 				}
 			});
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("command");
 	}
 	
-	public static List<Node> tempCommandStackList = new ArrayList<>();
-	
 	public static int counter;
 	
-	public static Node createCommandNode(String label) {
-		Node node;
-		
-		node = new Node("command", null, Integer.toString(counter++), null);
-		if (label == null) {
-			label = node.getIdWithinResource();
-		}
+	public static Node createCommandNode(Command command) {
+		Node node = new Node("command", null, command.getId(), null);
+		String label=command.getTitle();
+		if (label==null) label = node.getIdWithinResource();
 		node.getProperties().put("name", label);
-		
 		return node;
 	}
 	
 	public static void addNewNode() {
-		Node commandStackNode = new Node("commandStack", "self", null, null);
-		Node childNode = CorePlugin.createCommandNode(null);
-		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, childNode, new ServiceContext<NodeService>());
-	}
-	
-	static {
-		tempCommandStackList.add(createCommandNode("command 1"));
-		tempCommandStackList.add(createCommandNode("command 2"));
+		Command command=new Command();
+//		command.setTitle(Integer.toString(counter++));
+		CorePlugin.getInstance().getResourceService().addCommand("mumu", command);
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

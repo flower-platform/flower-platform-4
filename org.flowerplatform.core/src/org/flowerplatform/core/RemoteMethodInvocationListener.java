@@ -34,7 +34,7 @@ public class RemoteMethodInvocationListener {
 	 * so the client can react (e.g. close the obsolete editors).
 	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-		CorePlugin.addNewNode();
+//		CorePlugin.addNewNode();
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
