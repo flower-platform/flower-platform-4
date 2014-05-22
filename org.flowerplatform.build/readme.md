@@ -31,13 +31,16 @@ How to mavenize your FDK, as described [here](https://cwiki.apache.org/confluenc
 4. From the ``mavenizer/target`` directory, run ``java -cp flex-sdk-converter-1.0.jar SDKGenerator "[home]/flex-sdk/" "[home]/flex-sdk-mavenized" true``
 5. Deploy the artifacts to your local repository: ``java -cp flex-sdk-converter-1.0.jar SDKInVMDeployer "[home]/flex-sdk-mavenized" "file:\\C:\Users\NormalUser\.m2\repository"``
 
-## Launch Configs
-
-### Flower Platform - Build.launch
+### Build
 
 Ant build. Targets:
 * **update-license-headers**: update the license headers on source files (``.java``, ``.as``, ``.mxml``)
 * **set-version**: set the new version in the ``pom.xml`` files, ``MANIFEST.MF`` files and source files
-* **install-flex-deps**: install Flex dependencies in the local repository
-* **clean**: clean output directories
-* **verify**: perform and validate the build for the Maven projects described above
+* **install-flex-deps**: install Flex dependencies in the local repository (must be run once per machine, or every time the libs version changes)
+* **build**: perform and validate the build for the Maven projects described above
+
+## Launch Configs
+
+### Flower Platform - Set Version and Build (release).launch
+
+Runs the ``set-version`` and ``build`` targets for a release. The versions should be updated in the ``build.properties`` file, and the qualifier suffix should be set to the empty string for a release.

@@ -13,9 +13,6 @@
 	<artifactId>parent-java</artifactId>
 	<packaging>pom</packaging>
 
-	<!-- .qualifier suffix to match the bundle version in MANIFEST.MF -->
-	<version>0.1.1.qualifier</version>
-
 	<!-- list of modules to build -->
 	<profiles>
 		<profile>
@@ -124,6 +121,10 @@
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
+					
+					<!-- version.qualifierSuffixForFormat property must already contain single quotes -->
+					<!-- or be the empty string for no suffix -->
+					<format>'v'yyyyMMdd-HHmm${version.qualifierSuffixForFormat}</format>
 
 					<!-- resources to be packaged -->
 					<additionalFileSets>
@@ -230,4 +231,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+<version>0.1.1.qualifier</version>
 </project> 
