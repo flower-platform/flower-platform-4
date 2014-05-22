@@ -269,6 +269,9 @@ public class ResourceService implements ISessionListener {
 	}
 	
 	public void addUpdate(String resourceNodeId, Update update) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("For resource = {} adding update = {}", resourceNodeId, update);
+		}
 		resourceDao.addUpdate(resourceNodeId, update);
 	}
 	

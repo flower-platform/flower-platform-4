@@ -20,6 +20,12 @@ package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
@@ -30,13 +36,17 @@ import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.AddNodeController;
+import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
@@ -232,6 +242,74 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStackDummyRoot")
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStackDummyRoot"))
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+			
+			@Override
+			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+				return true;
+			}
+			
+			@Override
+			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+				return Collections.singletonList(new Node("commandStack", "self", node.getIdWithinResource(), null));
+			}
+		});
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStack")
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStack"))
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true))
+			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+				
+				@Override
+				public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+					return true;
+				}
+				
+				@Override
+				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+					return tempCommandStackList;
+				}
+			})
+			.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new AddNodeController() {
+				
+				@Override
+				public void addNode(Node node, Node child,
+						ServiceContext<NodeService> context) {
+					tempCommandStackList.add(child);					
+				}
+			});
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("command");
+	}
+	
+	public static List<Node> tempCommandStackList = new ArrayList<>();
+	
+	public static int counter;
+	
+	public static Node createCommandNode(String label) {
+		Node node;
+		
+		node = new Node("command", null, Integer.toString(counter++), null);
+		if (label == null) {
+			label = node.getIdWithinResource();
+		}
+		node.getProperties().put("name", label);
+		
+		return node;
+	}
+	
+	public static void addNewNode() {
+		Node commandStackNode = new Node("commandStack", "self", null, null);
+		Node childNode = CorePlugin.createCommandNode(null);
+		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, childNode, new ServiceContext<NodeService>());
+	}
+	
+	static {
+		tempCommandStackList.add(createCommandNode("command 1"));
+		tempCommandStackList.add(createCommandNode("command 2"));
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

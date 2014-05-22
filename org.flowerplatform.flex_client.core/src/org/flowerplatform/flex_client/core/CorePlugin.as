@@ -35,6 +35,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
+	import org.flowerplatform.flex_client.core.editor.action.TestAction;
 	import org.flowerplatform.flex_client.core.editor.action.UploadAction;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
@@ -152,15 +153,19 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("downloadService");
 			serviceLocator.addService("uploadService");
 			
+			// use 0 to disable it
+//			updateTimer = new UpdateTimer(0);
  			updateTimer = new UpdateTimer(5000);
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(textEditorDescriptor);
-								
+			
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
+			
+			editorClassFactoryActionProvider.addActionClass(TestAction);
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				editorClassFactoryActionProvider.addActionClass(DownloadAction);
