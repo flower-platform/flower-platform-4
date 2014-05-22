@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.TempDeleteAfterGH279AndCo;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
@@ -118,8 +119,8 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService();
 	}
 	
-	public void test() {
-		CorePlugin.addNewNode();
+	public void tempDeleteAfterGH279AndCo() {
+		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
 	}
 	
 }
