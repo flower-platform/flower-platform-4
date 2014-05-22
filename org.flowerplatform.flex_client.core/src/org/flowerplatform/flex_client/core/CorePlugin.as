@@ -154,8 +154,8 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("uploadService");
 			
 			// use 0 to disable it
-//			updateTimer = new UpdateTimer(0);
- 			updateTimer = new UpdateTimer(5000);
+			updateTimer = new UpdateTimer(0);
+// 			updateTimer = new UpdateTimer(5000);
 			
 			var textEditorDescriptor:TextEditorDescriptor = new TextEditorDescriptor();
 			contentTypeRegistry[CoreConstants.TEXT_CONTENT_TYPE] = textEditorDescriptor;
