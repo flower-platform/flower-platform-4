@@ -11,13 +11,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.flowerplatform.core.ContextThreadLocal;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.FlowerProperties;
+import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -269,11 +272,46 @@ public class ResourceService implements ISessionListener {
 	}
 	
 	public void addUpdate(String resourceNodeId, Update update) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("For resource = {} adding update = {}", resourceNodeId, update);
+		}
 		resourceDao.addUpdate(resourceNodeId, update);
 	}
 	
 	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
 		return resourceDao.getUpdates(resourceNodeId, timestampOfLastRequest, timestampOfThisRequest);
+	}
+	
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public void startCommand(String resource, String commandTitle) {
+		ContextThreadLocal context=CorePlugin.getInstance().getContextThreadLocal().get();
+		context.setResource(resource);
+		context.setCommandTitle(commandTitle);
+		
+		// aici trebuie setat si id-ul ultimului update al resursei
+		
+	}
+	
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public void addCommand(String resourceNodeId, Command command) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("For resource = {} adding command = {}", resourceNodeId, command);
+		}
+		resourceDao.addCommand(resourceNodeId, command);
+		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, "self", RemoteMethodInvocationListener.escapeFullNodeId(resourceNodeId), null);
+		Node childNode = RemoteMethodInvocationListener.createCommandNode(command);
+		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, childNode, new ServiceContext<NodeService>());
+	}
+
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public List<Command> getCommands(String resourceNodeId) {
+		return resourceDao.getCommands(resourceNodeId);
 	}
 	
 	protected List<ResourceAccessController> getResourceAccessControllers(String resourceNodeId) {

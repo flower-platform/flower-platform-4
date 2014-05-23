@@ -416,7 +416,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 								var newChild:Node = new Node(childrenUpdate.targetNode.fullNodeId);
 								newChild.properties = childrenUpdate.targetNode.properties;
 								addNode(newChild, nodeFromRegistry, index);
-								refresh =true;
+								refresh = true;
 							} else {
 								// child already added, probably after refresh
 								// e.g. I add a children, I expand => I get the list with the new children; when the

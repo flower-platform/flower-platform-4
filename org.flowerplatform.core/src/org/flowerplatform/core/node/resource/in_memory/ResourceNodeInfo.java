@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 
 /**
@@ -21,6 +22,11 @@ public class ResourceNodeInfo {
 	private List<String> sessions = new ArrayList<String>();
 	
 	private List<Update> updates = new ArrayList<Update>();
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private List<Command> commandStack = new ArrayList<Command>();
 	
 	private long updateRequestedTimestamp;
 
@@ -53,7 +59,14 @@ public class ResourceNodeInfo {
 	public List<Update> getUpdates() {
 		return updates;
 	}
-	
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public List<Command> getCommandStack() {
+		return commandStack;
+	}
+
 	public long getUpdateRequestedTimestamp() {
 		return updateRequestedTimestamp;
 	}

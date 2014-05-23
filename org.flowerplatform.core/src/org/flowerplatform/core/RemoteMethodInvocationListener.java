@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +34,14 @@ public class RemoteMethodInvocationListener {
 	 * so the client can react (e.g. close the obsolete editors).
 	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
+//		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
+		
+		//temporar
+		CorePlugin.getInstance().getContextThreadLocal().set(new ContextThreadLocal());
 		
 		if (clientResourceNodeIds != null) {
 			List<String> serverResourceNodeIds = CorePlugin.getInstance().getResourceService().getResourcesSubscribedBySession(sessionId);
@@ -78,6 +84,16 @@ public class RemoteMethodInvocationListener {
 			String methodName = remoteMethodInvocationInfo.getMethodName();
 			logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 		}
+
+		// adaugare comanda in command stack
+		ContextThreadLocal context=CorePlugin.getInstance().getContextThreadLocal().get();
+		// poate ar fi mai bine sa cream comanda in ResourceService.addCommand
+		if (context.getResource()!=null) {
+			Command command=new Command();
+			command.setTitle(context.getCommandTitle());
+			CorePlugin.getInstance().getResourceService().addCommand(context.getResource(), command);
+		}
+
 		
 		// prepare result
 		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
@@ -93,9 +109,15 @@ public class RemoteMethodInvocationListener {
 			
 			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
 			for (String resourceNodeId : resourceNodeIds) {
-				List<Update> updates = CorePlugin.getInstance().getResourceService()
-						.getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
+				List<Update> updates = CorePlugin.getInstance().getResourceService().getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
 				resourceNodeIdToUpdates.put(resourceNodeId, updates);
+				if (logger.isDebugEnabled()) {
+					int size = -1;
+					if (updates != null) {
+						size = updates.size();
+					}
+					logger.debug("For resource = {} sending {} updates = {}", new Object[] { resourceNodeId, size, updates });
+				}
 			}
 			if (resourceNodeIdToUpdates.size() > 0) {
 				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);
@@ -103,6 +125,39 @@ public class RemoteMethodInvocationListener {
 		}
 			
 		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
+
+		//temporar
+		CorePlugin.getInstance().getContextThreadLocal().remove();
+
 	}
+
+	
+	/**
+	 * @author Claudiu Matei 
+	 * 
+	 * Trebuie mutata de aici - poate intr-o clasa Util
+	 * 
+	 */
+	public static String escapeFullNodeId(String fullNodeId) {
+		return fullNodeId
+				.replaceAll("\\(", "[")
+				.replaceAll("\\)", "]")
+				.replaceAll("\\|", "*");
+	}
+	
+	public static Node createCommandNode(Command command) {
+		Node node = new Node(CoreConstants.COMMAND_TYPE, null, command.getId(), null);
+		String label=command.getTitle();
+		if (label==null) label = node.getIdWithinResource();
+		node.getProperties().put("name", label);
+		return node;
+	}
+	
+	public static void addNewNode(String resourceId) {
+		Command command=new Command();
+		CorePlugin.getInstance().getResourceService().addCommand(resourceId, command);
+	}
+
+	
 	
 }

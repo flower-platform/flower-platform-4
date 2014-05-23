@@ -20,6 +20,10 @@ package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
@@ -30,17 +34,21 @@ import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
 import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
@@ -86,6 +94,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private ThreadLocal<ContextThreadLocal> contextThreadLocal = new ThreadLocal<ContextThreadLocal>();
 
 	public static CorePlugin getInstance() {
 		return INSTANCE;
@@ -151,6 +164,13 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return scheduledExecutorServiceFactory;
 	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ThreadLocal<ContextThreadLocal> getContextThreadLocal() {
+		return contextThreadLocal;
+	}
+
 	public ComposedSessionListener getComposedSessionListener() {
 		return composedSessionListener;
 	}
@@ -232,6 +252,47 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
+		
+		// Controllers for Command Stack
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStackDummyRoot")
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStackDummyRoot"))
+			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+				
+				@Override
+				public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+					return true;
+				}
+				
+				@Override
+				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+					return Collections.singletonList(new Node(CoreConstants.COMMAND_STACK_TYPE, "self", node.getIdWithinResource(), null));
+				}
+			});
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.COMMAND_STACK_TYPE))
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true))
+			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+				
+				@Override
+				public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+					return true;
+				}
+				
+				@Override
+				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+					List<Command> commands=CorePlugin.getInstance().getResourceService().getCommands(node.getFullNodeId());
+					ArrayList<Node> children=new ArrayList<>();
+					for (Command c : commands) {
+						children.add(RemoteMethodInvocationListener.createCommandNode(c));
+					}
+					return children;
+				}
+			});
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
+		
+		TempDeleteAfterGH279AndCo.INSTANCE.init();
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
