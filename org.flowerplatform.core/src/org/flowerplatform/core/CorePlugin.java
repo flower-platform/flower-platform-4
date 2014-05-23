@@ -34,7 +34,6 @@ import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.AddNodeController;
 import org.flowerplatform.core.node.controller.ChildrenProvider;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
@@ -242,23 +241,24 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
 		
+		// Controllers for Command Stack
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStackDummyRoot")
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStackDummyRoot"))
-		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
-			
-			@Override
-			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-				return true;
-			}
-			
-			@Override
-			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-				return Collections.singletonList(new Node("commandStack", "self", node.getIdWithinResource(), null));
-			}
-		});
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStackDummyRoot"))
+			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+				
+				@Override
+				public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+					return true;
+				}
+				
+				@Override
+				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+					return Collections.singletonList(new Node(CoreConstants.COMMAND_STACK_TYPE, "self", node.getIdWithinResource(), null));
+				}
+			});
 		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStack")
-			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStack"))
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.COMMAND_STACK_TYPE))
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true))
 			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
 				
@@ -272,37 +272,15 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 					List<Command> commands=CorePlugin.getInstance().getResourceService().getCommands(node.getFullNodeId());
 					ArrayList<Node> children=new ArrayList<>();
 					for (Command c : commands) {
-						children.add(CorePlugin.createCommandNode(c));
+						children.add(RemoteMethodInvocationListener.createCommandNode(c));
 					}
 					return children;
 				}
-			})
-			.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new AddNodeController() {
-				
-				@Override
-				public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
-					CorePlugin.getInstance().getResourceService().getCommands("mumu");
-										
-				}
 			});
 		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("command");
-	}
-	
-	public static int counter;
-	
-	public static Node createCommandNode(Command command) {
-		Node node = new Node("command", null, command.getId(), null);
-		String label=command.getTitle();
-		if (label==null) label = node.getIdWithinResource();
-		node.getProperties().put("name", label);
-		return node;
-	}
-	
-	public static void addNewNode() {
-		Command command=new Command();
-//		command.setTitle(Integer.toString(counter++));
-		CorePlugin.getInstance().getResourceService().addCommand("mumu", command);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
+		
+		TempDeleteAfterGH279AndCo.INSTANCE.init();
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

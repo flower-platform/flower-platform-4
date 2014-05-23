@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class RemoteMethodInvocationListener {
 	 * so the client can react (e.g. close the obsolete editors).
 	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-//		CorePlugin.addNewNode();
+//		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
@@ -113,5 +113,34 @@ public class RemoteMethodInvocationListener {
 			
 		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
 	}
+
+	
+	/**
+	 * @author Claudiu Matei 
+	 * 
+	 * Trebuie mutata de aici - poate intr-o clasa Util
+	 * 
+	 */
+	public static String escapeFullNodeId(String fullNodeId) {
+		return fullNodeId
+				.replaceAll("\\(", "[")
+				.replaceAll("\\)", "]")
+				.replaceAll("\\|", "*");
+	}
+	
+	public static Node createCommandNode(Command command) {
+		Node node = new Node(CoreConstants.COMMAND_TYPE, null, command.getId(), null);
+		String label=command.getTitle();
+		if (label==null) label = node.getIdWithinResource();
+		node.getProperties().put("name", label);
+		return node;
+	}
+	
+	public static void addNewNode(String resourceId) {
+		Command command=new Command();
+		CorePlugin.getInstance().getResourceService().addCommand(resourceId, command);
+	}
+
+	
 	
 }

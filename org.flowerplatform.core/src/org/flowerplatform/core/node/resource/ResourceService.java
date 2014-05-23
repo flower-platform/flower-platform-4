@@ -15,6 +15,7 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.FlowerProperties;
+import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -288,8 +289,8 @@ public class ResourceService implements ISessionListener {
 			logger.debug("For resource = {} adding command = {}", resourceNodeId, command);
 		}
 		resourceDao.addCommand(resourceNodeId, command);
-		Node commandStackNode = new Node("commandStack", "self", null, null);
-		Node childNode = CorePlugin.createCommandNode(command);
+		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, "self", RemoteMethodInvocationListener.escapeFullNodeId(resourceNodeId), null);
+		Node childNode = RemoteMethodInvocationListener.createCommandNode(command);
 		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, childNode, new ServiceContext<NodeService>());
 	}
 
@@ -299,7 +300,6 @@ public class ResourceService implements ISessionListener {
 	public List<Command> getCommands(String resourceNodeId) {
 		return resourceDao.getCommands(resourceNodeId);
 	}
-
 	
 	protected List<ResourceAccessController> getResourceAccessControllers(String resourceNodeId) {
 		Node resourceNode = new Node(resourceNodeId);
