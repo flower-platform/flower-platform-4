@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.flowerplatform.core.ContextThreadLocal;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -280,7 +281,19 @@ public class ResourceService implements ISessionListener {
 	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
 		return resourceDao.getUpdates(resourceNodeId, timestampOfLastRequest, timestampOfThisRequest);
 	}
-
+	
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public void startCommand(String resource, String commandTitle) {
+		ContextThreadLocal context=CorePlugin.getInstance().getContextThreadLocal().get();
+		context.setResource(resource);
+		context.setCommandTitle(commandTitle);
+		
+		// aici trebuie setat si id-ul ultimului update al resursei
+		
+	}
+	
 	/**
 	 * @author Claudiu Matei 
 	 */

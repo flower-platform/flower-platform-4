@@ -95,6 +95,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	private ThreadLocal<ContextThreadLocal> contextThreadLocal = new ThreadLocal<ContextThreadLocal>();
+
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -159,6 +164,13 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return scheduledExecutorServiceFactory;
 	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ThreadLocal<ContextThreadLocal> getContextThreadLocal() {
+		return contextThreadLocal;
+	}
+
 	public ComposedSessionListener getComposedSessionListener() {
 		return composedSessionListener;
 	}

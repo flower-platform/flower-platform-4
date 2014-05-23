@@ -40,6 +40,9 @@ public class RemoteMethodInvocationListener {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 		
+		//temporar
+		CorePlugin.getInstance().getContextThreadLocal().set(new ContextThreadLocal());
+		
 		if (clientResourceNodeIds != null) {
 			List<String> serverResourceNodeIds = CorePlugin.getInstance().getResourceService().getResourcesSubscribedBySession(sessionId);
 			List<String> notFoundResourceNodeIds = new ArrayList<String>();
@@ -81,6 +84,16 @@ public class RemoteMethodInvocationListener {
 			String methodName = remoteMethodInvocationInfo.getMethodName();
 			logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 		}
+
+		// adaugare comanda in command stack
+		ContextThreadLocal context=CorePlugin.getInstance().getContextThreadLocal().get();
+		// poate ar fi mai bine sa cream comanda in ResourceService.addCommand
+		if (context.getResource()!=null) {
+			Command command=new Command();
+			command.setTitle(context.getCommandTitle());
+			CorePlugin.getInstance().getResourceService().addCommand(context.getResource(), command);
+		}
+
 		
 		// prepare result
 		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
@@ -112,6 +125,10 @@ public class RemoteMethodInvocationListener {
 		}
 			
 		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
+
+		//temporar
+		CorePlugin.getInstance().getContextThreadLocal().remove();
+
 	}
 
 	

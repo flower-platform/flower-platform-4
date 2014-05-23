@@ -27,7 +27,9 @@ public class NodeServiceRemote {
 	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
-		getNodeService().setProperty(new Node(fullNodeId), property, value, new ServiceContext<NodeService>(getNodeService()));	
+		Node node=new Node(fullNodeId);
+		CorePlugin.getInstance().getResourceService().startCommand(node.getResource(), "Set "+property+" to "+value);
+		getNodeService().setProperty(node, property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
 		
 	public void unsetProperty(String fullNodeId, String property) {
@@ -51,13 +53,17 @@ public class NodeServiceRemote {
 			throw new RuntimeException("Type for new child node must be provided in context!");
 		}
 		Node child = new Node(childType, parent.getResource(), null, null);
+
+		CorePlugin.getInstance().getResourceService().startCommand(parent.getResource(), "Create "+childType+" node");
 		
 		getNodeService().addChild(parent, child, context);
 		return child.getFullNodeId();
 	}
 	
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
-		getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId), new ServiceContext<NodeService>(getNodeService()));
+		Node childNode=new Node(childFullNodeId);
+		CorePlugin.getInstance().getResourceService().startCommand(childNode.getResource(), "Remove node "+childNode.getIdWithinResource());
+		getNodeService().removeChild(new Node(parentFullNodeId), childNode, new ServiceContext<NodeService>(getNodeService()));
 	}
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
