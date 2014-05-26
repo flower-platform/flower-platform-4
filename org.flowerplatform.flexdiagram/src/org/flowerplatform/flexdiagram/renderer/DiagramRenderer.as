@@ -106,7 +106,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			return new Rectangle(horizontalScrollPosition - viewPortRectOffsetTowardOutside, verticalScrollPosition - viewPortRectOffsetTowardOutside, width + 2 * viewPortRectOffsetTowardOutside, height + 2 * viewPortRectOffsetTowardOutside);
 		}
 		
-		public function setContentRect(rect:Rectangle):void {
+		public function setContentRect(rect:Rectangle):void {		
 			contentRect = rect;
 		}
 		
@@ -125,11 +125,10 @@ package org.flowerplatform.flexdiagram.renderer {
 			
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 
-			// draw a black border around visible area
+			// draw a border around visible area
 			graphics.clear();
-			graphics.lineStyle(1);
 			graphics.beginFill(0xCCCCCC, 0);			
-			graphics.drawRect(horizontalScrollPosition, verticalScrollPosition, width - 1, height - 1);
+			graphics.drawRect(horizontalScrollPosition, verticalScrollPosition, width - 1, height - 1);			
 		}
 		
 		/**

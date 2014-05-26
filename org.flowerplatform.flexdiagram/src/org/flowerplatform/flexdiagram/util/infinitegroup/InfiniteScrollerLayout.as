@@ -716,6 +716,12 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 			}
 			
 			target.setContentSize(w, h);
+			
+			// draw scroller border
+			scroller.graphics.clear();
+			scroller.graphics.lineStyle(1);
+			scroller.graphics.beginFill(0xCCCCCC, 0);			
+			scroller.graphics.drawRect(0, 0, scroller.width, scroller.height);
 		}
 		
 	}
