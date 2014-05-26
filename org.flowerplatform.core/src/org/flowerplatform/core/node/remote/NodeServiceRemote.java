@@ -25,11 +25,16 @@ public class NodeServiceRemote {
 		}
 		return getNodeService().getChildren(new Node(fullNodeId), context);		
 	}
-	
+
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Claudiu Matei
+	 */
 	public void setProperty(String fullNodeId, String property, Object value) {
-		Node node=new Node(fullNodeId);
-		CorePlugin.getInstance().getResourceService().startCommand(node.getResource(), "Set "+property+" to "+value);
-		getNodeService().setProperty(node, property, value, new ServiceContext<NodeService>(getNodeService()));	
+		Node node = new Node(fullNodeId);
+		CorePlugin.getInstance().getResourceService().startCommand(node.getResource(), "Set " + property + " to " + value);
+		getNodeService().setProperty(node, property, value, new ServiceContext<NodeService>(getNodeService()));
 	}
 		
 	public void unsetProperty(String fullNodeId, String property) {
@@ -39,6 +44,7 @@ public class NodeServiceRemote {
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Sebastian Solomon
+	 * @author Claudiu Matei
 	 */
 	public String addChild(String parentFullNodeId, ServiceContext<NodeService> context) {
 		if (context == null) {
@@ -54,15 +60,20 @@ public class NodeServiceRemote {
 		}
 		Node child = new Node(childType, parent.getResource(), null, null);
 
-		CorePlugin.getInstance().getResourceService().startCommand(parent.getResource(), "Create "+childType+" node");
+		CorePlugin.getInstance().getResourceService().startCommand(parent.getResource(), "Create " + childType + " node");
 		
 		getNodeService().addChild(parent, child, context);
 		return child.getFullNodeId();
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Claudiu Matei
+	 */
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
-		Node childNode=new Node(childFullNodeId);
-		CorePlugin.getInstance().getResourceService().startCommand(childNode.getResource(), "Remove node "+childNode.getIdWithinResource());
+		Node childNode = new Node(childFullNodeId);
+		CorePlugin.getInstance().getResourceService().startCommand(childNode.getResource(), "Remove node " + childNode.getIdWithinResource());
 		getNodeService().removeChild(new Node(parentFullNodeId), childNode, new ServiceContext<NodeService>(getNodeService()));
 	}
 	

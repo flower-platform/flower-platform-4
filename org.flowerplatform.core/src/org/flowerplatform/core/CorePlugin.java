@@ -100,6 +100,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	 */
 	private ThreadLocal<ContextThreadLocal> contextThreadLocal = new ThreadLocal<ContextThreadLocal>();
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	private ILockManager lockManager = new InMemoryLockManager(); 
+	
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -169,6 +174,17 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	 */
 	public ThreadLocal<ContextThreadLocal> getContextThreadLocal() {
 		return contextThreadLocal;
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ILockManager getLockManager() {
+		return lockManager;
+	}
+
+	public void setLockManager(ILockManager lockManager) {
+		this.lockManager = lockManager;
 	}
 
 	public ComposedSessionListener getComposedSessionListener() {
@@ -255,40 +271,42 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		// Controllers for Command Stack
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStackDummyRoot")
-			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStackDummyRoot"))
-			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
-				
-				@Override
-				public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-					return true;
-				}
-				
-				@Override
-				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-					return Collections.singletonList(new Node(CoreConstants.COMMAND_STACK_TYPE, "self", node.getIdWithinResource(), null));
-				}
-			});
+				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStackDummyRoot"))
+				.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+
+					@Override
+					public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+						return true;
+					}
+
+					@Override
+					public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+						return Collections.singletonList(new Node(CoreConstants.COMMAND_STACK_TYPE, "self", node.getIdWithinResource(), null));
+					}
+				});
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
-			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.COMMAND_STACK_TYPE))
-			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true))
-			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
-				
-				@Override
-				public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-					return true;
-				}
-				
-				@Override
-				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-					List<Command> commands=CorePlugin.getInstance().getResourceService().getCommands(node.getFullNodeId());
-					ArrayList<Node> children=new ArrayList<>();
-					for (Command c : commands) {
-						children.add(RemoteMethodInvocationListener.createCommandNode(c));
+				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.COMMAND_STACK_TYPE))
+				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true))
+				.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
+
+					@Override
+					public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+						return true;
 					}
-					return children;
-				}
-			});
+
+					@Override
+					public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+						List<Command> commands = CorePlugin.getInstance().getResourceService().getCommands(node.getFullNodeId());
+						ArrayList<Node> children = new ArrayList<>();
+						for (Command command : commands) {
+							Node childNode = new Node(CoreConstants.COMMAND_TYPE, null, command.getId(), null);
+							childNode.getProperties().put("name", command.getTitle());
+							children.add(childNode);
+						}
+						return children;
+					}
+				});
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
 		

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.Command;
@@ -20,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author Sebastian Solomon
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
+ * @author Claudiu Matei 
  */
 public class RemoteMethodInvocationListener {
 
@@ -77,60 +77,62 @@ public class RemoteMethodInvocationListener {
 	 * 
 	 */
 	public void postInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-		if (logger.isDebugEnabled()) {
-			long endTime = new Date().getTime();
-			long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
-			String serviceId = remoteMethodInvocationInfo.getServiceId();
-			String methodName = remoteMethodInvocationInfo.getMethodName();
-			logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
-		}
-
-		// adaugare comanda in command stack
 		ContextThreadLocal context=CorePlugin.getInstance().getContextThreadLocal().get();
-		// poate ar fi mai bine sa cream comanda in ResourceService.addCommand
-		if (context.getResource()!=null) {
-			Command command=new Command();
-			command.setTitle(context.getCommandTitle());
-			CorePlugin.getInstance().getResourceService().addCommand(context.getResource(), command);
-		}
-
-		
-		// prepare result
-		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-		
-		// get info from header
-		List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
-				
-		if (resourceNodeIds != null) {
-			// only request updates if the client is subscribed to some resource
-			long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
-			long timestamp = new Date().getTime();
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
+		try {
+			if (logger.isDebugEnabled()) {
+				long endTime = new Date().getTime();
+				long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
+				String serviceId = remoteMethodInvocationInfo.getServiceId();
+				String methodName = remoteMethodInvocationInfo.getMethodName();
+				logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
+			}
+	
+			// adaugare comanda in command stack
+			// poate ar fi mai bine sa cream comanda in ResourceService.addCommand
+			Command command = context.getCommand();
+			if (command != null) {
+				CorePlugin.getInstance().getResourceService().addCommand(command);
+			}	
 			
-			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
-			for (String resourceNodeId : resourceNodeIds) {
-				List<Update> updates = CorePlugin.getInstance().getResourceService().getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
-				resourceNodeIdToUpdates.put(resourceNodeId, updates);
-				if (logger.isDebugEnabled()) {
-					int size = -1;
-					if (updates != null) {
-						size = updates.size();
+			// prepare result
+			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
+			
+			// get info from header
+			List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
+					
+			if (resourceNodeIds != null) {
+				// only request updates if the client is subscribed to some resource
+				long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
+				long timestamp = new Date().getTime();
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
+				
+				Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
+				for (String resourceNodeId : resourceNodeIds) {
+					List<Update> updates = CorePlugin.getInstance().getResourceService().getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
+					resourceNodeIdToUpdates.put(resourceNodeId, updates);
+					if (logger.isDebugEnabled()) {
+						int size = -1;
+						if (updates != null) {
+							size = updates.size();
+						}
+						logger.debug("For resource = {} sending {} updates = {}", new Object[] { resourceNodeId, size, updates });
 					}
-					logger.debug("For resource = {} sending {} updates = {}", new Object[] { resourceNodeId, size, updates });
+				}
+				if (resourceNodeIdToUpdates.size() > 0) {
+					remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);
 				}
 			}
-			if (resourceNodeIdToUpdates.size() > 0) {
-				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);
+				
+			remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
+		} finally {
+			Command command = context.getCommand();
+			if (command != null) {
+				CorePlugin.getInstance().getLockManager().unlock(command.getResource());
 			}
+			// temporar
+			CorePlugin.getInstance().getContextThreadLocal().remove();
 		}
-			
-		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
-
-		//temporar
-		CorePlugin.getInstance().getContextThreadLocal().remove();
-
 	}
-
 	
 	/**
 	 * @author Claudiu Matei 
@@ -145,19 +147,12 @@ public class RemoteMethodInvocationListener {
 				.replaceAll("\\|", "*");
 	}
 	
-	public static Node createCommandNode(Command command) {
-		Node node = new Node(CoreConstants.COMMAND_TYPE, null, command.getId(), null);
-		String label=command.getTitle();
-		if (label==null) label = node.getIdWithinResource();
-		node.getProperties().put("name", label);
-		return node;
-	}
-	
+	private static Integer k=0;
 	public static void addNewNode(String resourceId) {
 		Command command=new Command();
-		CorePlugin.getInstance().getResourceService().addCommand(resourceId, command);
+		command.setResource(resourceId);
+		command.setTitle("" + (k++));
+		CorePlugin.getInstance().getResourceService().addCommand(command);
 	}
-
-	
 	
 }

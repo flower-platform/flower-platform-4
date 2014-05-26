@@ -50,7 +50,12 @@ public interface IResourceDAO {
 	/**
 	 * @author Claudiu Matei
 	 */
-	public void addCommand(String resourceNodeId, Command command);
+	public Update getLastUpdate(String resourceNodeId);
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void addCommand(Command command);
 	
 	/**
 	 * @author Claudiu Matei

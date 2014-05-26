@@ -1,6 +1,5 @@
 package org.flowerplatform.core.node.update;
 
-import java.util.UUID;
 
 /**
  * @author Claudiu Matei
@@ -8,14 +7,30 @@ import java.util.UUID;
  */
 public class Command {
 
-	private String id=UUID.randomUUID().toString();
+	private String id;
+	
+	private String resource;
 	
 	private String title;
 	
-	private long firstUpdateTimestamp, lastUpdateTimestamp;
+	private String lastUpdateIdBeforeCommandExecution;
+	
+	private String lastUpdateId;
 
 	public String getId() {
 		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getResource() {
+		return resource;
+	}
+
+	public void setResource(String resource) {
+		this.resource = resource;
 	}
 
 	public String getTitle() {
@@ -25,22 +40,21 @@ public class Command {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
-	public long getFirstUpdateTimestamp() {
-		return firstUpdateTimestamp;
+	
+	public String getLastUpdateIdBeforeCommandExecution() {
+		return lastUpdateIdBeforeCommandExecution;
 	}
 
-	public void setFirstUpdateTimestamp(long firstUpdateTimestamp) {
-		this.firstUpdateTimestamp = firstUpdateTimestamp;
+	public void setLastUpdateIdBeforeCommandExecution(String lastUpdateIdBeforeCommandExecution) {
+		this.lastUpdateIdBeforeCommandExecution = lastUpdateIdBeforeCommandExecution;
 	}
 
-	public long getLastUpdateTimestamp() {
-		return lastUpdateTimestamp;
+	public String getLastUpdateId() {
+		return lastUpdateId;
 	}
-
-	public void setLastUpdateTimestamp(long lastUpdateTimestamp) {
-		this.lastUpdateTimestamp = lastUpdateTimestamp;
+	
+	public void setLastUpdateId(String lastUpdateId) {
+		this.lastUpdateId = lastUpdateId;
 	}
-
 	
 }

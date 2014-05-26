@@ -7,10 +7,23 @@ import java.util.Date;
  */
 public class Update implements Comparable<Update> {
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	private String id;
+	
 	private String fullNodeId;
 	
 	private long timestamp = new Date().getTime();
 	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getFullNodeId() {
 		return fullNodeId;
 	}

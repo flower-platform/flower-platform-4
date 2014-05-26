@@ -2,15 +2,15 @@ package org.flowerplatform.core;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.flowerplatform.core.node.update.Command;
+
 /**
  * @author Claudiu Matei
  *
  */
 public class ContextThreadLocal {
 	private HttpServletRequest request;
-	private String commandTitle;
-	private String resource;
-	private String lastUpdateIdBeforeCommandExecution;
+	private Command command;
 	
 	public HttpServletRequest getRequest() {
 		return request;
@@ -20,30 +20,14 @@ public class ContextThreadLocal {
 		this.request = request;
 	}
 
-	public String getCommandTitle() {
-		return commandTitle;
+	public Command getCommand() {
+		return command;
 	}
 
-	public void setCommandTitle(String commandTitle) {
-		this.commandTitle = commandTitle;
+	public void setCommand(Command command) {
+		this.command = command;
 	}
 
-	public String getResource() {
-		return resource;
-	}
-
-	public void setResource(String resource) {
-		this.resource = resource;
-	}
-
-	public String getLastUpdateIdBeforeCommandExecution() {
-		return lastUpdateIdBeforeCommandExecution;
-	}
-
-	public void setLastUpdateIdBeforeCommandExecution(
-			String lastUpdateIdBeforeCommandExecution) {
-		this.lastUpdateIdBeforeCommandExecution = lastUpdateIdBeforeCommandExecution;
-	}
 	
 	
 }

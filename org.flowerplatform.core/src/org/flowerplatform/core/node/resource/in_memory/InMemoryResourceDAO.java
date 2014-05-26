@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.resource.IResourceDAO;
 import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
@@ -132,6 +132,7 @@ public class InMemoryResourceDAO implements IResourceDAO {
 	
 	@Override
 	public void addUpdate(String resourceNodeId, Update update) {
+		update.setId(UUID.randomUUID().toString());
 		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(resourceNodeId);
 		info.getUpdates().add(update);
 	}
@@ -173,20 +174,36 @@ public class InMemoryResourceDAO implements IResourceDAO {
 	 * @author Claudiu Matei
 	 */
 	@Override
-	public void addCommand(String resourceNodeId, Command command) {
-		String commandStackFullNodeId="(commandStack|self|"+RemoteMethodInvocationListener.escapeFullNodeId(resourceNodeId)+")";
-		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(commandStackFullNodeId);
+	public Update getLastUpdate(String resourceNodeId) {
+		List<Update> updates = null;
+		Update lastUpdate = null;
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		if (info != null) {
+			updates = info.getUpdates();
+			if (updates.size() > 0) {
+				lastUpdate = updates.get(updates.size() - 1);
+			}
+		}
+		return lastUpdate;
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void addCommand(Command command) {
+		command.setId(UUID.randomUUID().toString());
+		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(command.getResource());
 		info.getCommandStack().add(command);
 	}
 
 	/**
-	 * @author Claudiu Matei 
+	 * @author Claudiu Matei
 	 */
 	@Override
 	public List<Command> getCommands(String resourceNodeId) {
-		String commandStackFullNodeId="(commandStack|self|"+RemoteMethodInvocationListener.escapeFullNodeId(resourceNodeId)+")";
-		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(commandStackFullNodeId);
-		return info.getCommandStack();  // poate ca ar trebui sa intoarcem o clona
+		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(resourceNodeId);
+		return info.getCommandStack(); 
 	}
 	
 	/**

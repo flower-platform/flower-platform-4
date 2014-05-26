@@ -286,24 +286,30 @@ public class ResourceService implements ISessionListener {
 	 * @author Claudiu Matei 
 	 */
 	public void startCommand(String resource, String commandTitle) {
-		ContextThreadLocal context=CorePlugin.getInstance().getContextThreadLocal().get();
-		context.setResource(resource);
-		context.setCommandTitle(commandTitle);
+		CorePlugin.getInstance().getLockManager().lock(resource);
+		Command command=new Command();
+		command.setResource(resource);
+		command.setTitle(commandTitle);
+		Update lastUpdate = resourceDao.getLastUpdate(resource);
+		if (lastUpdate != null) command.setLastUpdateIdBeforeCommandExecution(lastUpdate.getId());
 		
-		// aici trebuie setat si id-ul ultimului update al resursei
-		
+		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
+		context.setCommand(command);
 	}
 	
 	/**
 	 * @author Claudiu Matei 
 	 */
-	public void addCommand(String resourceNodeId, Command command) {
+	public void addCommand(Command command) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("For resource = {} adding command = {}", resourceNodeId, command);
+			logger.debug("For resource = {} adding command = {}", command.getResource(), command);
 		}
-		resourceDao.addCommand(resourceNodeId, command);
-		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, "self", RemoteMethodInvocationListener.escapeFullNodeId(resourceNodeId), null);
-		Node childNode = RemoteMethodInvocationListener.createCommandNode(command);
+		command.setLastUpdateId(resourceDao.getLastUpdate(command.getResource()).getId());
+		resourceDao.addCommand(command);
+		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, "self", RemoteMethodInvocationListener.escapeFullNodeId(command.getResource()), null);
+		Node childNode = new Node(CoreConstants.COMMAND_TYPE, null, command.getId(), null);
+		childNode.getProperties().put("name", command.getTitle());
+
 		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, childNode, new ServiceContext<NodeService>());
 	}
 

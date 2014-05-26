@@ -12,6 +12,7 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
  * 
  * @author Sebastian Solomon
  * @author Cristina Constantinescu
+ * @author Claudiu Matei
  */
 public class FlowerJavaAdapter extends JavaAdapter {
 
@@ -25,10 +26,12 @@ public class FlowerJavaAdapter extends JavaAdapter {
 		
 		CorePlugin.getInstance().getRemoteMethodInvocationListener().preInvoke(remoteMethodInvocationInfo);
 
-		Object originalReturnValue = super.invoke(message);
-		
-		remoteMethodInvocationInfo.setReturnValue(originalReturnValue);
-		CorePlugin.getInstance().getRemoteMethodInvocationListener().postInvoke(remoteMethodInvocationInfo);
+		try {
+			Object originalReturnValue = super.invoke(message);
+			remoteMethodInvocationInfo.setReturnValue(originalReturnValue);
+		} finally {
+			CorePlugin.getInstance().getRemoteMethodInvocationListener().postInvoke(remoteMethodInvocationInfo);
+		}
 		
 		return remoteMethodInvocationInfo.getReturnValue();
 	}
