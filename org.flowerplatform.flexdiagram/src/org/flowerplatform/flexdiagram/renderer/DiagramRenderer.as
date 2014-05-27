@@ -21,12 +21,16 @@ package org.flowerplatform.flexdiagram.renderer {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import mx.collections.IList;
 	import mx.core.IVisualElement;
+	import mx.core.IVisualElementContainer;
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;
@@ -128,9 +132,9 @@ package org.flowerplatform.flexdiagram.renderer {
 			// draw a border around visible area
 			graphics.clear();
 			graphics.beginFill(0xCCCCCC, 0);			
-			graphics.drawRect(horizontalScrollPosition, verticalScrollPosition, width - 1, height - 1);			
+			graphics.drawRect(horizontalScrollPosition, verticalScrollPosition, width - 1, height - 1);				
 		}
-		
+	
 		/**
 		 * @author Cristina Constantinescu
 		 */ 
