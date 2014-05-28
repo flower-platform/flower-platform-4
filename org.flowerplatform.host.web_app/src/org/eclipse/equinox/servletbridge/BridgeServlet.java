@@ -40,6 +40,16 @@ import org.eclipse.equinox.servletbridge.flower.ServletConfigWrapperImpl;
  */
 public class BridgeServlet extends HttpServlet {
 
+	/**
+	 * Set headless property here, programmatically.
+	 * Fewer steps for users that want to deploy our app on their PCs.
+	 * 
+	 * @author Cristina Constantinescu
+	 */
+	static {
+		System.setProperty("java.awt.headless", "true");
+	}
+		
 	static final String INCLUDE_REQUEST_URI_ATTRIBUTE = "javax.servlet.include.request_uri"; //$NON-NLS-1$
 	static final String INCLUDE_SERVLET_PATH_ATTRIBUTE = "javax.servlet.include.servlet_path"; //$NON-NLS-1$
 	static final String INCLUDE_PATH_INFO_ATTRIBUTE = "javax.servlet.include.path_info"; //$NON-NLS-1$
