@@ -31,8 +31,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		override protected function unassignData():void {
 			super.unassignData();
 			
-			getMainComponent().minWidth = 0;
-			getMainComponent().maxWidth = DEFAULT_MAX_WIDTH;
+			minWidth = 0;
+			maxWidth = DEFAULT_MAX_WIDTH;
 			backgroundColor = BACKGROUND_COLOR_DEFAULT;
 			
 			if (labelDisplay) {
@@ -108,12 +108,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			var minWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MIN_WIDTH, event);
 			if (minWidthChanged) {
-				getMainComponent().minWidth = node.properties[MindMapConstants.MIN_WIDTH];
+				minWidth = node.properties[MindMapConstants.MIN_WIDTH];
 			}	
 			
 			var maxWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MAX_WIDTH, event);
 			if (maxWidthChanged) {
-				getMainComponent().maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
+				maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
 			}
 			
 			var fontFamilyChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_FAMILY, event);

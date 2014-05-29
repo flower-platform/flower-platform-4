@@ -130,6 +130,11 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 //							figuresToAdd++;
 						} else {
 //							AbsolutePositionEditPartUtils.setChildFigureIndex(IVisualElementContainer(getFigure()), IVisualElement(ep.getFigure()), visualIndex - figuresToAdd);
+							if (!(childRenderer is Class(childRendererController.geUniqueKeyForRendererToRecycle(context, childModel)))) {
+								// the model is visible, but its current renderer should be replaced with another type of renderer
+								context.diagramShell.unassociateModelFromRenderer(context, childModel, childRenderer, true);
+								modelsToAdd.push(childModel);
+							}
 						}
 //						visualIndex ++;
 					} else {

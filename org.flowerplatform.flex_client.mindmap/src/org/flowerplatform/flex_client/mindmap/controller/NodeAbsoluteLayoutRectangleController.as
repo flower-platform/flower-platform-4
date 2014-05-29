@@ -39,12 +39,12 @@ package org.flowerplatform.flex_client.mindmap.controller  {
 			var dynamicObject:Object = diagramShell.getDynamicObject(context, model);
 			var nodeRenderer:Object = dynamicObject.renderer;
 			
-			if (nodeRenderer != null && nodeRenderer is MindMapNodeWithDetailsRenderer && MindMapNodeWithDetailsRenderer(nodeRenderer).horizontalLine.visible) {
+			if (nodeRenderer != null && nodeRenderer is MindMapNodeWithDetailsRenderer) {
 				return new Rectangle(
 					diagramShell.getPropertyValue(context, model, "x"), 
 					diagramShell.getPropertyValue(context, model, "y"), 
 					diagramShell.getPropertyValue(context, model, "width"), 
-					nodeRenderer.horizontalLine.y);
+					MindMapNodeWithDetailsRenderer(nodeRenderer).getEmbeddedRenderer().height);
 			} else {
 				return super.getBounds(context, model);
 			}

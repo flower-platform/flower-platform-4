@@ -24,7 +24,7 @@ package org.flowerplatform.flexdiagram.mindmap
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider, IFocusManagerComponent {
+	public class AbstractMindMapModelRenderer extends DataRenderer implements IAbstractMindMapModelRenderer, IDiagramShellContextAware, IIconsComponentExtensionProvider, IFocusManagerComponent {
 					
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
 		
@@ -89,10 +89,6 @@ package org.flowerplatform.flexdiagram.mindmap
 			this.layout = hLayout;
 		}
 		
-		public function getMainComponent():Group {
-			return this;
-		}
-		
 		public function get diagramShellContext():DiagramShellContext {			
 			return _context;
 		}
@@ -146,7 +142,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			labelDisplay.percentHeight = 100;
 			labelDisplay.percentWidth = 100;
 			labelDisplay.setStyle("verticalAlign" , "middle");	
-			getMainComponent().addElement(labelDisplay);
+			addElement(labelDisplay);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			

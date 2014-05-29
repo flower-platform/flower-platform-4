@@ -17,6 +17,7 @@
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -26,6 +27,7 @@
 			import org.flowerplatform.flexutil.Utils;
 			
 			import spark.core.SpriteVisualElement;
+			import spark.layouts.HorizontalLayout;
 			
 			[Bindable]
 			public var circleRadius:int = 10;
@@ -67,8 +69,8 @@
 					}
 				}
 				
-				getMainComponent().addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-				getMainComponent().addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+				addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+				addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 			}
 			
 			protected function get node():Node {
@@ -91,8 +93,8 @@
 				icons = null;
 				
 				// Important: measuredHeight/measuredWidth are reset to their default values; otherwise the renderer will use recycled values for width/height 
-				getMainComponent().measuredWidth = 0;
-				getMainComponent().measuredHeight = 0;
+				measuredWidth = 0;
+				measuredHeight = 0;
 			}
 			
 			override protected function resizeHandler(event:ResizeEvent):void {
@@ -158,6 +160,16 @@
 			}
 			
 			protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+				if (event != null) {
+					// trigger renderer change
+					var nodeDetailsChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.NODE_DETAILS, event);
+					var noteChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.NOTE, event);
+					if (nodeDetailsChanged || noteChanged) {
+						diagramShellContext.diagramShell.shouldRefreshVisualChildren(diagramShellContext, diagramShellContext.diagramShell.rootModel);
+						return;
+					}
+				}
+				
 				var invalidateDisplayListFlag:Boolean = false;
 				
 				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(mindMapDiagramShell.registry, node);
@@ -202,12 +214,15 @@
 			 * @author Solomon Sebastian
 			 */
 			protected function setHitArea(unscaledWidth:Number, unscaledHeight:Number):void {
-				var paddingLeft:Number = 2;
-				var paddingTop:Number = 2;
+				// add left padding, otherwise there is an extra 2px gap where the hit area starts
+				var paddingLeft:Number = 0;
+				if (layout is HorizontalLayout) {
+					paddingLeft = HorizontalLayout(layout).paddingLeft;
+				}
 				
 				rendererHitArea.graphics.clear();				
 				rendererHitArea.graphics.beginFill(0xFF0000, 0);
-				rendererHitArea.graphics.drawRect(-paddingLeft, -paddingTop, unscaledWidth, unscaledHeight);	
+				rendererHitArea.graphics.drawRect(-paddingLeft, -unscaledHeight/2, unscaledWidth, unscaledHeight);	
 				if (circle.parent != null) {	
 					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
 					var side:int = mindMapDiagramShell.getModelController(diagramShellContext, node).getSide(diagramShellContext, node);
@@ -216,11 +231,11 @@
 					if (side == MindMapDiagramShell.POSITION_LEFT) {
 						circle.x = dynamicObject.x - circleRadius * 2;						
 						circle.y = dynamicObject.y + unscaledHeight / 2 - circleRadius;
-						rendererHitArea.graphics.drawRect(-circleRadius * 2 - paddingLeft, -paddingTop, circleRadius * 2, unscaledHeight);
+						rendererHitArea.graphics.drawRect(-circleRadius * 2 - paddingLeft, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
 					} else if (side == MindMapDiagramShell.POSITION_RIGHT) {
 						circle.x = dynamicObject.x + dynamicObject.width;
 						circle.y = dynamicObject.y + unscaledHeight / 2 - circleRadius;
-						rendererHitArea.graphics.drawRect(dynamicObject.width - paddingLeft , -paddingTop, circleRadius * 2, unscaledHeight);
+						rendererHitArea.graphics.drawRect(unscaledWidth - paddingLeft , -unscaledHeight/2, circleRadius * 2, unscaledHeight);
 					}
 				}
 				

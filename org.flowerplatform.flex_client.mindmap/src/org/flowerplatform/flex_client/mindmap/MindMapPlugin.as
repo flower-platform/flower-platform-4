@@ -15,7 +15,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.controller.NodeInplaceEditorController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer;
-	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeSelectionRenderer;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
@@ -26,7 +25,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
