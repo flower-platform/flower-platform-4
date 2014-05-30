@@ -41,9 +41,7 @@ import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
-import org.flowerplatform.core.node.update.controller.UpdateAddNodeController;
-import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
-import org.flowerplatform.core.node.update.controller.UpdateRemoveNodeController;
+import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
 import org.flowerplatform.core.repository.RootChildrenProvider;
@@ -215,12 +213,13 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true));
 		
 		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
-				
+		
+		UpdateController updateController = new UpdateController();
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL)
-		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new UpdateAddNodeController())
+		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, updateController)
+		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, updateController)
+		.addAdditiveController(CoreConstants.PROPERTY_SETTER, updateController)
 		.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider())
-		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, new UpdateRemoveNodeController())
-		.addAdditiveController(CoreConstants.PROPERTY_SETTER, new UpdatePropertySetterController())
 		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
 		.addSingleController(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.SIDE))
 		.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));

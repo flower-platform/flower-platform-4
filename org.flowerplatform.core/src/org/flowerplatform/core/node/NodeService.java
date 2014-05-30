@@ -22,15 +22,15 @@ import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.node.controller.AddNodeController;
-import org.flowerplatform.core.node.controller.ChildrenProvider;
-import org.flowerplatform.core.node.controller.DefaultPropertyValueProvider;
-import org.flowerplatform.core.node.controller.ParentProvider;
-import org.flowerplatform.core.node.controller.PropertiesProvider;
-import org.flowerplatform.core.node.controller.PropertySetter;
+import org.flowerplatform.core.node.controller.IAddNodeController;
+import org.flowerplatform.core.node.controller.IChildrenProvider;
+import org.flowerplatform.core.node.controller.IDefaultPropertyValueProvider;
+import org.flowerplatform.core.node.controller.IParentProvider;
+import org.flowerplatform.core.node.controller.IPropertiesProvider;
+import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
-import org.flowerplatform.core.node.controller.RawNodeDataProvider;
-import org.flowerplatform.core.node.controller.RemoveNodeController;
+import org.flowerplatform.core.node.controller.IRawNodeDataProvider;
+import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -73,11 +73,11 @@ public class NodeService {
 			return null;
 		}
 		
-		List<ChildrenProvider> providers = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
+		List<IChildrenProvider> providers = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
 		// many times there will be no children; that's why we lazy init the list (if needed)
 		List<Node> children = null;
 		// we ask each registered provider for children
-		for (ChildrenProvider provider : providers) {
+		for (IChildrenProvider provider : providers) {
 			// we take the children ...
 			List<Node> childrenFromCurrentProvider = provider.getChildren(node, context);
 			if (childrenFromCurrentProvider != null) {
@@ -111,8 +111,8 @@ public class NodeService {
 		if (descriptor == null) {
 			return false;
 		}
-		List<ChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
-		for (ChildrenProvider provider : childrenProviders) {
+		List<IChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
+		for (IChildrenProvider provider : childrenProviders) {
  			if (provider.hasChildren(node, context)) {
 				return true;
 			}
@@ -131,9 +131,9 @@ public class NodeService {
 		if (descriptor == null) {
 			return null;
 		}
-		List<DefaultPropertyValueProvider> defaultPropertyProviders = descriptor.getAdditiveControllers(DEFAULT_PROPERTY_PROVIDER, node);
+		List<IDefaultPropertyValueProvider> defaultPropertyProviders = descriptor.getAdditiveControllers(DEFAULT_PROPERTY_PROVIDER, node);
 		Object propertyValue = null;
-		for (DefaultPropertyValueProvider provider : defaultPropertyProviders) {
+		for (IDefaultPropertyValueProvider provider : defaultPropertyProviders) {
 			propertyValue = provider.getDefaultValue(node, property, context);
  			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
  				break;
@@ -162,7 +162,7 @@ public class NodeService {
 			return null;
 		}
 		
-		ParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
+		IParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
 		Node parent = provider.getParent(node, context);
 		if (parent == null) {
 			return null;
@@ -182,9 +182,9 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
 				
-		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
+		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
-		for (PropertySetter controller : controllers) {
+		for (IPropertySetter controller : controllers) {
 			controller.setProperty(node, property, wrapper, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -213,8 +213,8 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
 					
-		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
-		for (PropertySetter controller : controllers) {
+		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
+		for (IPropertySetter controller : controllers) {
 			controller.unsetProperty(node, property, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -240,8 +240,8 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
 				
-		List<AddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
-		for (AddNodeController controller : controllers) {
+		List<IAddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
+		for (IAddNodeController controller : controllers) {
 			controller.addNode(node, child, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -268,8 +268,8 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
 						
-		List<RemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
-		for (RemoveNodeController controller : controllers) {
+		List<IRemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
+		for (IRemoveNodeController controller : controllers) {
 			controller.removeNode(node, child, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -294,8 +294,8 @@ public class NodeService {
 			return;
 		}
 					
-		List<PropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);		
-		for (PropertiesProvider provider : providers) {
+		List<IPropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);		
+		for (IPropertiesProvider provider : providers) {
 			provider.populateWithProperties(node, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -319,7 +319,7 @@ public class NodeService {
 			return null;
 		}
 					
-		RawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, node);	
+		IRawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, node);	
 		if (rawNodeDataProvider == null) {
 			return null;
 		}

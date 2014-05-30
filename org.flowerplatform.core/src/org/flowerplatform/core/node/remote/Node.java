@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.PropertiesProvider;
+import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -94,7 +94,7 @@ public class Node {
 	}
 
 	/**
-	 * Should be used for writing values in the map. Probably by {@link PropertiesProvider}.
+	 * Should be used for writing values in the map. Probably by {@link IPropertiesProvider}.
 	 * 
 	 * @return The properties map (lazy initialized in here), without any other processing.
 	 */
@@ -113,7 +113,7 @@ public class Node {
 	 * Populates the node (if not populated). Should be used for reading values from the map.
 	 * 
 	 * <p>
-	 * <strong>WARNING:</strong> shouldn't be used for writing values. E.g. if {@link PropertiesProvider}'s try
+	 * <strong>WARNING:</strong> shouldn't be used for writing values. E.g. if {@link IPropertiesProvider}'s try
 	 * to use this method, an infinite call loop will be created ({@link StackOverflowError}).
 	 * 
 	 * @return The properties map (populated if not already populated).

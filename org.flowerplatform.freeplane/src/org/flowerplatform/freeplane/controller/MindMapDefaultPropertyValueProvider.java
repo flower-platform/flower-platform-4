@@ -23,9 +23,10 @@ import java.awt.Color;
 import java.util.Enumeration;
 
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.DefaultPropertyValueProvider;
+import org.flowerplatform.core.node.controller.IDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudController;
 import org.freeplane.features.cloud.CloudModel;
@@ -42,7 +43,7 @@ import org.freeplane.features.styles.MapStyleModel;
 /**
  * @author Sebastian Solomon
  */
-public class MindMapDefaultPropertyValueProvider extends DefaultPropertyValueProvider {
+public class MindMapDefaultPropertyValueProvider extends AbstractController implements IDefaultPropertyValueProvider {
 	
 	public final static String DEFAULT_STYLE = "Default";
 	
