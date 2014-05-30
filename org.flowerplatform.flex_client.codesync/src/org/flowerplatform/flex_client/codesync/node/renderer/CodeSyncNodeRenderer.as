@@ -2,9 +2,9 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	

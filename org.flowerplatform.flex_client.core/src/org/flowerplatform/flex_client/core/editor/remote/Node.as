@@ -19,7 +19,7 @@
 package org.flowerplatform.flex_client.core.editor.remote {
 	import mx.collections.ArrayCollection;
 	
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**

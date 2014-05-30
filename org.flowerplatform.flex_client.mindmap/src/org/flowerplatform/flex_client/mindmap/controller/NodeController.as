@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.OpenInNewEditorDialog;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
@@ -74,16 +75,16 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		private function expand(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, node);
+			MindMapEditorDiagramShell(context.diagramShell).nodeRegistry.requestChildren(node, context[CoreConstants.HANDLER]);
 		}
 		
 		private function collapse(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).updateProcessor.removeChildren(context, node);
+			MindMapEditorDiagramShell(context.diagramShell).nodeRegistry.removeChildren(node);
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {
 			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
-			var rootModel:Node = mindmapDiagramShell.updateProcessor.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).fullNodeId);
+			var rootModel:Node = mindmapDiagramShell.nodeRegistry.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).fullNodeId);
 			
 			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) {
 				//root node is mm file -> get side from provider

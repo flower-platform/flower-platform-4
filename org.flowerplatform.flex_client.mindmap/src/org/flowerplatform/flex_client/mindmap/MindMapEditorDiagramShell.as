@@ -18,11 +18,9 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import mx.core.FlexGlobals;
-	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
@@ -39,7 +37,7 @@ package org.flowerplatform.flex_client.mindmap {
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell {
 
-		public var updateProcessor:NodeUpdateProcessor;
+		public var nodeRegistry:NodeRegistry;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
@@ -48,12 +46,11 @@ package org.flowerplatform.flex_client.mindmap {
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				tools.push(InplaceEditorTool);
 			}
-			registerTools(tools);
-				
+			registerTools(tools);				
 		}
 		
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
-			var rootModel:Node = updateProcessor.getNodeById(Node(MindMapRootModelWrapper(rootModel).model).fullNodeId);			
+			var rootModel:Node = nodeRegistry.getNodeById(Node(MindMapRootModelWrapper(rootModel).model).fullNodeId);			
 			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) { 
 				return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/2; // horizontal align = center
 			}

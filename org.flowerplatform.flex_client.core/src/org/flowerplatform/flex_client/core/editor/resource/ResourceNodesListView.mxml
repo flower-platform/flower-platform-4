@@ -21,7 +21,7 @@
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
-			public var editors:Array;		
+			public var nodeRegistries:Array;		
 			
 			[Bindable]
 			public var resourceNodes:IList;
@@ -84,7 +84,7 @@
 			
 			protected function noButton_clickHandler(event:MouseEvent = null):void {
 				if (handler == null) { // don't execute the default behavior, let the handler to take the lead
-					CorePlugin.getInstance().resourceNodesManager.closeEditors(editors);
+					CorePlugin.getInstance().resourceNodesManager.removeNodeRegistries(nodeRegistries);
 				}
 				closeView();	
 			}

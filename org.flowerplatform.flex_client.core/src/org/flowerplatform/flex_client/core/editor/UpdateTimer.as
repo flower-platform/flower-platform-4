@@ -16,7 +16,7 @@
 *
 * license-end
 */
-package org.flowerplatform.flex_client.core.editor.update {
+package org.flowerplatform.flex_client.core.editor {
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	

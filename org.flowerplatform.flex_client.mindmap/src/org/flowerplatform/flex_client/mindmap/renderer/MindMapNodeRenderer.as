@@ -1,25 +1,19 @@
 package org.flowerplatform.flex_client.mindmap.renderer {
 	
-	import flash.events.MouseEvent;
-	
-	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
-	import mx.skins.spark.EditableComboBoxSkin;
 	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	
@@ -196,7 +190,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			for (var i:int=0; i < model.children.length; i++) {
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [model.children[i].fullNodeId], 
 					function(returnedNode:Node):void {
-						var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
+						var childNode:Node = mindMapDiagramShell.nodeRegistry.getNodeById(returnedNode.fullNodeId);
 						var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
 						var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
 						

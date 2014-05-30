@@ -10,15 +10,13 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
-			import mx.controls.Alert;
 			import mx.core.UIComponent;
-			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+			import org.flowerplatform.flex_client.core.node.NodeRegistry;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -115,10 +113,10 @@
 				var activeComponent:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
 				
 				if (activeComponent is EditorFrontend) {
-					var nodeUpdateProcessor:NodeUpdateProcessor = EditorFrontend(activeComponent).nodeUpdateProcessor;
-					var node:Node = nodeUpdateProcessor.getNodeById(uploadLocationAsFullNodeId);
+					var nodeRegistry:NodeRegistry = EditorFrontend(activeComponent).nodeRegistry;
+					var node:Node = nodeRegistry.getNodeById(uploadLocationAsFullNodeId);
 					if (node != null) {
-						nodeUpdateProcessor.refresh(EditorFrontend(activeComponent).nodeUpdateProcessor.context, node);
+						nodeRegistry.refresh(node);
 					}
 				}
 				

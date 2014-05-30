@@ -177,7 +177,7 @@ import mx.collections.IList;
 import mx.core.mx_internal;
 
 import org.flowerplatform.flex_client.core.editor.remote.Node;
-import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+import org.flowerplatform.flex_client.core.node.NodeRegistry;
 import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.flexdiagram.DiagramShellContext;
 import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -205,7 +205,7 @@ class FlexTypesNodeController extends MindMapModelController {
 	}
 	
 	override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
-		var nodeUpdateProcessor:NodeUpdateProcessor = Object(context.diagramShell).updateProcessor;
+		var nodeRegistry:NodeRegistry = Object(context.diagramShell).updateProcessor;
 		var node:Node = Node(model);
 		if (value) {
 			var children:ArrayCollection;
@@ -218,9 +218,9 @@ class FlexTypesNodeController extends MindMapModelController {
 			} else if (node.type == debug.CONTROLLER_KEY_ADDITIVE) {
 				children = debug.getAdditiveControllers(node, node.resource,node.idWithinResource);
 			}
-			nodeUpdateProcessor.requestChildrenHandler(context, node, children);
+			nodeRegistry.requestChildrenCallbackHandler(node, children);
 		} else {
-			nodeUpdateProcessor.removeChildren(context, node);
+			nodeRegistry.removeChildren(node);
 		}
 	}
 	
