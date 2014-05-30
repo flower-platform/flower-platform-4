@@ -161,7 +161,7 @@ public class InMemoryResourceDAO implements IResourceDAO {
 				// an update was registered before timestampOfLastRequest
 				break;
 			}
-			updatesAddedAfterLastRequest.add(0, update);
+			updatesAddedAfterLastRequest.add(update);
 		}
 		return updatesAddedAfterLastRequest;
 	}

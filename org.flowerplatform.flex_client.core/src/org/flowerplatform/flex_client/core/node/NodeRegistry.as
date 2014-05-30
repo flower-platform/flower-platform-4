@@ -266,7 +266,8 @@ package org.flowerplatform.flex_client.core.node {
 			
 			var nodeToNodeUpdatedEvent:Dictionary = new Dictionary();			
 			
-			for each (var update:Update in updates) {				
+			for (var i:int = updates.length - 1; i >= 0; i--) {
+				var update:Update = Update(updates.getItemAt(i));
 				var nodeFromRegistry:Node = getNodeById(update.fullNodeId);	
 				if (nodeFromRegistry == null) { // node not registered, probably it isn't visible for this client
 					continue;
