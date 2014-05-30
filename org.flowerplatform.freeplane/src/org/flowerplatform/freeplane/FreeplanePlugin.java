@@ -110,7 +110,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());		
 		
-		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());
+		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());		
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
