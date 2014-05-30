@@ -20,15 +20,16 @@ package org.flowerplatform.codesync.controller;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.AddNodeController;
+import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Mariana Gheorghe
  * @author Cristina Constantinescu
  */
-public class CodeSyncAddNodeController extends AddNodeController {
+public class CodeSyncAddNodeController extends AbstractController implements IAddNodeController {
 
 	public CodeSyncAddNodeController() {
 		// must be invoked after the persistence controller

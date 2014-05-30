@@ -3,7 +3,7 @@ package org.flowerplatform.core.node.controller;
 import org.flowerplatform.core.node.NodeService;
 
 /**
- * The property value is wrapped to allow other {@link PropertySetter} to modify it.
+ * The property value is wrapped to allow other {@link IPropertySetter} to modify it.
  *  
  * @see NodeService#setProperty(org.flowerplatform.core.node.remote.Node, String, Object)
  * @author Cristina Constantinescu

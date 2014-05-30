@@ -19,13 +19,9 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
-import org.flowerplatform.core.node.controller.PropertiesProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
-import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 
 /**
@@ -34,24 +30,22 @@ import org.flowerplatform.resources.ResourcesPlugin;
 public class FileSystemControllers {
 	
 	public void registerControllers() {
+		FileChildrenController fileChildrenController = new FileChildrenController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.fileContainer")
-		.addAdditiveController(CHILDREN_PROVIDER, new FileChildrenProvider())
-		.addAdditiveController(REMOVE_NODE_CONTROLLER, new FileRemoveNodeController())
-		.addAdditiveController(ADD_NODE_CONTROLLER, new FileAddNodeController())
+		.addAdditiveController(CHILDREN_PROVIDER, fileChildrenController)
+		.addAdditiveController(REMOVE_NODE_CONTROLLER, fileChildrenController)
+		.addAdditiveController(ADD_NODE_CONTROLLER, fileChildrenController)
 		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE_NODE_TYPE).setLabelAs(ResourcesPlugin.getInstance().getMessage("file.folder")).setOrderIndexAs(10));
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new PropertiesProvider() {
-			public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-				node.getProperties().put(NAME, FILE_SYSTEM_NODE_TYPE);
-			}
-		})
+		.addAdditiveController(PROPERTIES_PROVIDER, new FileSystemNodeController())
 		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(IS_SUBSCRIBABLE, true))
 		.addCategory("category.fileContainer");
 		
+		FilePropertiesController filePropertiesController = new FilePropertiesController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new FilePropertiesProvider())
-		.addAdditiveController(PROPERTY_SETTER, new FilePropertySetter())
+		.addAdditiveController(PROPERTIES_PROVIDER, filePropertiesController)
+		.addAdditiveController(PROPERTY_SETTER, filePropertiesController)
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.name")).setContributesToCreationAs(true).setMandatoryAs(true).setOrderIndexAs(-10))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.size")).setTypeAs("FileSize"))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.is.directory")).setReadOnlyAs(true).setContributesToCreationAs(true).setMandatoryAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setOrderIndexAs(-5))

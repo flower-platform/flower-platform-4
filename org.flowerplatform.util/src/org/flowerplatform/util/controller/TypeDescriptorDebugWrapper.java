@@ -29,11 +29,11 @@ public class TypeDescriptorDebugWrapper {
 		return descriptor.singleControllers.get(type).wasCached();
 	}
 	
-	public AbstractController getSelfSingleController(String type) {
+	public Object getSelfSingleController(String type) {
 		return descriptor.singleControllers.get(type).getSelfValue();
 	}
 	
-	public AbstractController getCachedSingleController(String type) {
+	public Object getCachedSingleController(String type) {
 		return descriptor.getCachedSingleController(type, null, false, false);
 	}
 	
@@ -45,11 +45,11 @@ public class TypeDescriptorDebugWrapper {
 		return descriptor.additiveControllers.get(type).wasCached();
 	}
 	
-	public List<? extends AbstractController> getSelfAdditiveControllers(String type) {
+	public List<? extends IController> getSelfAdditiveControllers(String type) {
 		return descriptor.additiveControllers.get(type).getSelfValue();
 	}
 	
-	public List<? extends AbstractController> getCachedAdditiveControllers(String type) {
+	public List<? extends IController> getCachedAdditiveControllers(String type) {
 		return descriptor.getCachedAdditiveControllers(type, null, false, false);
 	}
 	

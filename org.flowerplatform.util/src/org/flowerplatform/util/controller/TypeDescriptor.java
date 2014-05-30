@@ -104,13 +104,13 @@ public class TypeDescriptor {
 	 * 
 	 * @see #additiveControllers
 	 */
-	protected Map<String, ControllerEntry<AbstractController>> singleControllers = new HashMap<String, ControllerEntry<AbstractController>>();
+	protected Map<String, ControllerEntry<IController>> singleControllers = new HashMap<String, ControllerEntry<IController>>();
 
 	/**
 	 * @return For a given controller type, the single controller 
 	 * (collected from this node type, as well as its categories OR from object's dynamic category providers). 
 	 */
-	public <T extends AbstractController> T getSingleController(String controllerType, Object object) {		
+	public <T extends IController> T getSingleController(String controllerType, Object object) {		
 		return getCachedSingleController(controllerType, object, true, true);
 	}
 	
@@ -118,10 +118,10 @@ public class TypeDescriptor {
 	 * @return For a given controller type, the single controller (collected from this node type, as well as its categories). 
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends AbstractController> T getCachedSingleController(String controllerType, Object object, boolean includeDynamicCategoryProviders, boolean keepCached) {
+	protected <T extends IController> T getCachedSingleController(String controllerType, Object object, boolean includeDynamicCategoryProviders, boolean keepCached) {
 		getRegistry().configurable = false;
 		
-		ControllerEntry<AbstractController> entry = getSingleControllerEntry(controllerType);
+		ControllerEntry<IController> entry = getSingleControllerEntry(controllerType);
 		if (entry.wasCached()) {
 			// categories were processed before; return the controller
 			return (T) entry.getCachedValue();
@@ -178,19 +178,19 @@ public class TypeDescriptor {
 	 * 
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
-	public TypeDescriptor addSingleController(String type, AbstractController controller) {
+	public TypeDescriptor addSingleController(String type, IController controller) {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new single controller to a non-configurable registry");
 		}
-		ControllerEntry<AbstractController> entry = getSingleControllerEntry(type);
+		ControllerEntry<IController> entry = getSingleControllerEntry(type);
 		entry.setSelfValue(controller);
 		return this;
 	}
 	
-	private ControllerEntry<AbstractController> getSingleControllerEntry(String type) {
-		ControllerEntry<AbstractController> entry = singleControllers.get(type);
+	private ControllerEntry<IController> getSingleControllerEntry(String type) {
+		ControllerEntry<IController> entry = singleControllers.get(type);
 		if (entry == null) {
-			entry = new ControllerEntry<AbstractController>();
+			entry = new ControllerEntry<IController>();
 			singleControllers.put(type, entry);
 		}
 		return entry;
@@ -214,10 +214,10 @@ public class TypeDescriptor {
 	 * 
 	 * @see #singleControllers
 	 */
-	protected Map<String, ControllerEntry<List<? extends AbstractController>>> additiveControllers = new HashMap<String, ControllerEntry<List<? extends AbstractController>>>();
+	protected Map<String, ControllerEntry<List<? extends IController>>> additiveControllers = new HashMap<String, ControllerEntry<List<? extends IController>>>();
 
-	public <T extends AbstractController> List<T> getAdditiveControllers(String controllerType, Object object) {
-		return  getCachedAdditiveControllers(controllerType, object, true, true);
+	public <T extends IController> List<T> getAdditiveControllers(String controllerType, Object object) {
+		return getCachedAdditiveControllers(controllerType, object, true, true);
 	}
 		
 	/**
@@ -225,10 +225,10 @@ public class TypeDescriptor {
 	 * (collected from this node type, as well as its categories AND from object's dynamic category providers). 
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends AbstractController> List<T> getCachedAdditiveControllers(String controllerType, Object object, boolean includeDynamicCategoryProviders, boolean keepCached) {
+	protected <T extends IController> List<T> getCachedAdditiveControllers(String controllerType, Object object, boolean includeDynamicCategoryProviders, boolean keepCached) {
 		getRegistry().configurable = false;
 		
-		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(controllerType);
+		ControllerEntry<List<? extends IController>> entry = getAdditiveControllersEntry(controllerType);
 		if (entry.wasCached()) {
 			// categories were processed before; return the controllers
 			return (List<T>) entry.getCachedValue();
@@ -276,20 +276,20 @@ public class TypeDescriptor {
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
 	@SuppressWarnings("unchecked")
-	public TypeDescriptor addAdditiveController(String type, AbstractController controller) {
+	public TypeDescriptor addAdditiveController(String type, IController controller) {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new additive controller to a non-configurable registry");
 		}
-		ControllerEntry<List<? extends AbstractController>> entry = getAdditiveControllersEntry(type);
-		((List<AbstractController>) entry.getSelfValue()).add(controller);
+		ControllerEntry<List<? extends IController>> entry = getAdditiveControllersEntry(type);
+		((List<IController>) entry.getSelfValue()).add(controller);
 		return this;
 	}
 	
-	private ControllerEntry<List<? extends AbstractController>> getAdditiveControllersEntry(String type) {
-		ControllerEntry<List<? extends AbstractController>> entry = additiveControllers.get(type);
+	private ControllerEntry<List<? extends IController>> getAdditiveControllersEntry(String type) {
+		ControllerEntry<List<? extends IController>> entry = additiveControllers.get(type);
 		if (entry == null) {
-			entry = new ControllerEntry<List<? extends AbstractController>>();
-			entry.setSelfValue(new ArrayList<AbstractController>());
+			entry = new ControllerEntry<List<? extends IController>>();
+			entry.setSelfValue(new ArrayList<IController>());
 			additiveControllers.put(type, entry);
 		}
 		return entry;
