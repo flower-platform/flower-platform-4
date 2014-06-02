@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.core.editor.action {
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -40,10 +41,10 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 				
 		override public function run():void {
-			var resourceNodeIds:ArrayCollection = editorFrontend.nodeUpdateProcessor.resourceNodeIds;
+			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.getResourceNodeIdsForNodeRegistry(editorFrontend.nodeRegistry);
 			if (resourceNodeIds.length == 1) {
 				// single resourceNode to reload -> reload without asking
-				CorePlugin.getInstance().serviceLocator.invoke("resourceService.reload", [resourceNodeIds.getItemAt(0)]);
+				CorePlugin.getInstance().serviceLocator.invoke("resourceService.reload", [resourceNodeIds[0]]);
 			} else {
 				// multiple resourceNodes -> show dialog
 				CorePlugin.getInstance().resourceNodesManager.showReloadDialog([editorFrontend]);

@@ -113,7 +113,7 @@ public class MindMapDefaultPropertyValueProvider extends AbstractController impl
 		if (styleNodeModel == null) {
 			styleNodeModel = getStyleNodeModel(nodeModel, DEFAULT_STYLE);
 		}
-		NodeSizeModel nodeSizeModel = ((NodeSizeModel)styleNodeModel.getExtensions().get(NodeSizeModel.class));
+		NodeSizeModel nodeSizeModel = ((NodeSizeModel)styleNodeModel.getExtension(NodeSizeModel.class));
 		if (MIN_WIDTH.equals(property)) {
 			defaultPropertyValue = nodeSizeModel == null ? null : nodeSizeModel.getMinNodeWidth();
 		} else if (MAX_WIDTH.equals(property)) {

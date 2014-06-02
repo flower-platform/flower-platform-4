@@ -3,6 +3,7 @@ package org.flowerplatform.flex_client.core.service {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.events.FaultEvent;
@@ -11,10 +12,6 @@ package org.flowerplatform.flex_client.core.service {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
-	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
@@ -58,10 +55,10 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			var resourceNodeIds:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getResourceNodeIds();
+			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.getResourceNodeIds();
 			if (resourceNodeIds.length > 0) {
-				headers[CoreConstants.RESOURCE_NODE_IDS] = resourceNodeIds;
-				headers[CoreConstants.LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
+				headers[CoreConstants.RESOURCE_NODE_IDS] = new ArrayCollection(resourceNodeIds);
+				headers[CoreConstants.LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer;
 			}
 			operation.messageHeaders = headers;
 			
@@ -72,18 +69,18 @@ package org.flowerplatform.flex_client.core.service {
 			var result:Object = event.result;
 			
 			if (result.hasOwnProperty(CoreConstants.LAST_UPDATE_TIMESTAMP)) {
-				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
-				CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient = new Date().time;
+				CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
+				CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient = new Date().time;
 				
 				CorePlugin.getInstance().debug_forceUpdateAction.updateLabel();
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.UPDATES)) { // updates exists, process them
-				sendUpdatesToOpenEditors(result[CoreConstants.UPDATES]);
+				CorePlugin.getInstance().resourceNodesManager.handleResourceNodesUpdates(result[CoreConstants.UPDATES]);
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND)) {
-				clearObsoleteResourceNodes(result[CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND]);
+				CorePlugin.getInstance().resourceNodesManager.unlinkResourceNodesForcefully(result[CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND]);
 			}
 			
 			CorePlugin.getInstance().updateTimer.restart();
@@ -121,45 +118,6 @@ package org.flowerplatform.flex_client.core.service {
 			}else {
 				super.faultHandler(event, responder);
 			}
-		}
-		
-		private function sendUpdatesToOpenEditors(resourceNodeIdToUpdates:Object):void {
-			for (var resourceNodeId:String in resourceNodeIdToUpdates) {
-				var updates:ArrayCollection = resourceNodeIdToUpdates[resourceNodeId];
-				var nodeUpdateProcessors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(resourceNodeId);
-				for each (var nodeUpdateProcessor:NodeUpdateProcessor in nodeUpdateProcessors) {
-					nodeUpdateProcessor.resourceNodeUpdatesHandler(nodeUpdateProcessor.context, updates);
-				}
-			}
-		}
-		
-		/**
-		 * Collapse the resource nodes in various editors. If a resource node is the root of an editor,
-		 * close the editor.
-		 */
-		private function clearObsoleteResourceNodes(resourceNodeIds:ArrayCollection):void {
-			var idsList:String = "";
-			for each (var resourceNodeId:String in resourceNodeIds) {
-				var nodeUpdateProcessors:ArrayCollection = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.getNodeUpdateProcessors(resourceNodeId);
-				for each (var nodeUpdateProcessor:NodeUpdateProcessor in nodeUpdateProcessors) {
-					var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(nodeUpdateProcessor.context.diagramShell.rootModel);
-					if (Node(rootModel.model).fullNodeId == resourceNodeId) {
-						// remove the editor
-						FlexUtilGlobals.getInstance().workbench.closeView(nodeUpdateProcessor.editorFrontend);
-					} else {
-						// collapse the node
-						nodeUpdateProcessor.removeChildrenForNodeId(nodeUpdateProcessor.context, resourceNodeId);
-					}
-					CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.removeNodeUpdateProcessor(resourceNodeId, nodeUpdateProcessor);
-				}
-				idsList += "\n* " + resourceNodeId;
-			}
-			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-			.setText(Resources.getMessage("editor.error.subscribe.message", [idsList]))
-			.setTitle(Resources.getMessage("editor.error.subscribe.title"))
-			.setWidth(300)
-			.setHeight(200)
-			.showMessageBox();
 		}
 		
 	}

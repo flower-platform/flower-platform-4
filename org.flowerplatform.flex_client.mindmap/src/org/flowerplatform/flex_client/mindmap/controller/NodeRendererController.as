@@ -2,7 +2,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeRemovedEvent;
+	import org.flowerplatform.flex_client.core.node.event.NodeRemovedEvent;
 	import org.flowerplatform.flex_client.mindmap.MindMapConnector;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;

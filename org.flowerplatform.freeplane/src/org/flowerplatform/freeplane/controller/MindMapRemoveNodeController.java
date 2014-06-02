@@ -15,7 +15,7 @@ public class MindMapRemoveNodeController extends AbstractController implements I
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
 		NodeModel rawNodeData = ((NodeModel) child.getOrRetrieveRawNodeData());
-		rawNodeData.removeFromParent();
+		rawNodeData.getParentNode().remove(rawNodeData.getParentNode().getChildPosition(rawNodeData));
 		rawNodeData.getMap().unregistryNodes(rawNodeData);
 		rawNodeData.getMap().setSaved(false);
 	}

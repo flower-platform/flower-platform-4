@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.core.editor.update.event {
+package org.flowerplatform.flex_client.core.node.event {
 	import flash.events.Event;
 	
 	import mx.collections.ArrayList;

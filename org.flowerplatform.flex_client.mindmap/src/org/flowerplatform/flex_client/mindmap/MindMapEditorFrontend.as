@@ -18,9 +18,15 @@
 */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import mx.utils.ObjectUtil;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.InplaceEditorAction;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
+	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
+	import org.flowerplatform.flex_client.core.node.event.RootNodeAddedEvent;
 	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
@@ -29,7 +35,11 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 
 	/**
@@ -59,7 +69,11 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			shortcutsActionProvider.addAction(new InplaceEditorAction());
 			
-			actionProvider.actionProviders.push(shortcutsActionProvider);			
+			actionProvider.actionProviders.push(shortcutsActionProvider);		
+						
+			nodeRegistry.addEventListener(RefreshEvent.REFRESH, refreshCHandler);
+			nodeRegistry.addEventListener(ResourceNodeRemovedEvent.REMOVED, resourceNodeRemovedHandler);
+			nodeRegistry.addEventListener(RootNodeAddedEvent.TYPE, rootNodeAddedHandler);
 		}
 		
 		/**
@@ -69,18 +83,59 @@ package org.flowerplatform.flex_client.mindmap {
 		override protected function createDiagramShell():DiagramShell {
 			var diagramShell:MindMapEditorDiagramShell = new MindMapEditorDiagramShell();
 			diagramShell.showRootModelAsRootNode = !hideRootNode;
-			diagramShell.updateProcessor = nodeUpdateProcessor;
-			nodeUpdateProcessor.context = diagramShell.getNewDiagramShellContext();
+			diagramShell.nodeRegistry = nodeRegistry;
+			
 			return diagramShell;
 		}
 		
 		override protected function createChildren():void {			
 			super.createChildren();
-						
+									
+			nodeRegistry.startingNode = Node(MindMapRootModelWrapper(MindMapEditorDiagramShell(diagramShell).rootModel).model);			
+			nodeRegistry.useStartingNodeAsRootNode = MindMapEditorDiagramShell(diagramShell).showRootModelAsRootNode;
+			
 			var iconSideBar:MindMapIconsBar = new MindMapIconsBar();
 			iconSideBar.diagramShell = diagramShell;
 			editorArea.addElementAt(iconSideBar, 0);
 		}	
+				
+		override protected function subscribeResultCallback(resourceNode:Node):void {
+			super.subscribeResultCallback(resourceNode);
+			
+			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
+			var rootNode:Node = Node(mindmapDiagramShell.getRoot(diagramShell.getNewDiagramShellContext()));
+			// refresh rootNode only if it has no properties
+			// properties needed to set renderer's data if showRootModelAsRootNode is true
+			if (rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
+				nodeRegistry.refresh(rootNode);	
+			}
+			
+			nodeRegistry.requestChildren(null);
+		}
+		
+		protected function rootNodeAddedHandler(event:RootNodeAddedEvent):void {
+			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
+			
+			mindmapDiagramShell.addModelInRootModelChildrenList(diagramShell.getNewDiagramShellContext(), event.rootNode, true);	
+			
+			ControllerUtils.getMindMapModelController(diagramShell.getNewDiagramShellContext(), event.rootNode).setExpanded(diagramShell.getNewDiagramShellContext(), event.rootNode, true);
+		}
+		
+		protected function refreshCHandler(event:RefreshEvent):void {
+			MindMapDiagramShell(diagramShell).refreshRootModelChildren(diagramShell.getNewDiagramShellContext());
+			MindMapDiagramShell(diagramShell).refreshModelPositions(diagramShell.getNewDiagramShellContext(), event.node);
+		}
+				
+		protected function resourceNodeRemovedHandler(event:ResourceNodeRemovedEvent):void {
+			var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
+			if (Node(rootModel.model).fullNodeId == event.resourceNodeId) {
+				// remove the editor
+				FlexUtilGlobals.getInstance().workbench.closeView(this);
+			} else {
+				// collapse the node
+				nodeRegistry.removeChildren(nodeRegistry.getNodeById(event.resourceNodeId), true);
+			}
+		}
 		
 	}
 }
