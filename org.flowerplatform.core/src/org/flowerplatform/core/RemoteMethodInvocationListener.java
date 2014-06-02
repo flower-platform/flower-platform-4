@@ -1,6 +1,7 @@
 package org.flowerplatform.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,13 +36,14 @@ public class RemoteMethodInvocationListener {
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
-		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
+		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds(); // list is sorted on client
 		
 		if (clientResourceNodeIds != null) {
 			List<String> serverResourceNodeIds = CorePlugin.getInstance().getResourceService().getResourcesSubscribedBySession(sessionId);
 			List<String> notFoundResourceNodeIds = new ArrayList<String>();
-			for (String clientResourceNodeId : clientResourceNodeIds) {
-				if (serverResourceNodeIds.contains(clientResourceNodeId)) {
+						
+			for (String clientResourceNodeId : clientResourceNodeIds) {			
+				if (Collections.binarySearch(serverResourceNodeIds, clientResourceNodeId) < 0) { // search in a sorted list
 					continue;
 				}
 				

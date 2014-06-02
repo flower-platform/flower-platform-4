@@ -85,7 +85,7 @@ public class NodeServiceRemote {
 				// not found, so this node is probably newly added;
 				// create a dummy query and populate it only with the fullNodeId
 				// this way, the recursive algorithm will go only one level deep,
-				// the node's properties will be populated, and the recurssion will stop
+				// the node's properties will be populated, and the recursion will stop
 				childQuery = new FullNodeIdWithChildren();
 				childQuery.setFullNodeId(child.getFullNodeId());
 			}

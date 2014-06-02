@@ -26,8 +26,9 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		if (!getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().contains(sessionId)) {
 			getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().add(sessionId);
 		}
-		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().contains(resourceNodeId)) {
+		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().contains(resourceNodeId)) {			
 			getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().add(resourceNodeId);
+			Collections.sort(getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds());
 		}
 	}
 

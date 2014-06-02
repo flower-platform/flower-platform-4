@@ -57,7 +57,8 @@ package org.flowerplatform.flex_client.core.service {
 			var headers:Dictionary = new Dictionary();
 			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.getResourceNodeIds();
 			if (resourceNodeIds.length > 0) {
-				headers[CoreConstants.RESOURCE_NODE_IDS] = new ArrayCollection(resourceNodeIds);
+				// a sorted list is sent to improve search performance on server
+				headers[CoreConstants.RESOURCE_NODE_IDS] = new ArrayCollection(resourceNodeIds.sort());
 				headers[CoreConstants.LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer;
 			}
 			operation.messageHeaders = headers;

@@ -256,6 +256,10 @@ public class ResourceService implements ISessionListener {
 		resourceDao.updateSessionProperty(sessionId, property, value);
 	}
 	
+	/**
+	 * @return a sorted list of resource ids.
+	 * @author Cristina Constantinescu 
+	 */
 	public List<String> getResourcesSubscribedBySession(String sessionId) {
 		return resourceDao.getResourcesSubscribedBySession(sessionId);
 	}
