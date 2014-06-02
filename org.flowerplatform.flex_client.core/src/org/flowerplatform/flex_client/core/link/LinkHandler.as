@@ -1,6 +1,7 @@
 package org.flowerplatform.flex_client.core.link {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	
 	public class LinkHandler implements ILinkHandler {
@@ -28,10 +29,12 @@ package org.flowerplatform.flex_client.core.link {
 				
 				for each (var file:String in files.split(CoreConstants.OPEN_RESOURCES_SEPARATOR)) {
 					file = decodeURI(file);
-					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [file], 
-						function(node:Node):void {
-							CorePlugin.getInstance().openEditor(node);
-						});
+					var editorDescriptor:BasicEditorDescriptor = CorePlugin.getInstance().contentTypeRegistry["mindmap"];
+					editorDescriptor.openEditor(file);
+//					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [file], 
+//						function(node:Node):void {
+//							CorePlugin.getInstance().openEditor(node);
+//						});
 				}
 			}
 		}

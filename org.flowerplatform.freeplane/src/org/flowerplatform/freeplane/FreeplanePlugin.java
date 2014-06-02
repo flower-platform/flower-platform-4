@@ -34,6 +34,7 @@ import org.flowerplatform.freeplane.controller.PersistenceAddNodeProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertiesProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertySetter;
 import org.flowerplatform.freeplane.remote.MindMapServiceRemote;
+import org.flowerplatform.freeplane.resource.FreeplanePersistenceResourceHandler;
 import org.flowerplatform.freeplane.style.controller.MindMapStyleChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
@@ -71,6 +72,8 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 	
+		CorePlugin.getInstance().getResourceService2().addResourceHandler("fpp", new FreeplanePersistenceResourceHandler());
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY)		
 		.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider())
 		.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new MindMapDefaultPropertyValueProvider())

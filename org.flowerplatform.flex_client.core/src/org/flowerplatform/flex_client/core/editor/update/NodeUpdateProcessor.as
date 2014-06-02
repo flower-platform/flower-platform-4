@@ -82,7 +82,7 @@ package org.flowerplatform.flex_client.core.editor.update {
 		 * </ul>
 		 */ 
 		public function subscribeToSelfOrParentResource(nodeId:String, subscribeResultCallback:Function = null, subscribeFaultCallback:Function = null):void {
-			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToSelfOrParentResource", [nodeId], 
+			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
 				function(resourceNode:Node):void {
 					registerResourceNodeForProcessor(resourceNode);
 					if (subscribeResultCallback != null) {

@@ -37,10 +37,15 @@ import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugContro
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.resource.FileResourceService;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
+import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceService;
+import org.flowerplatform.core.node.resource.in_memory.InMemorySessionService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
@@ -48,6 +53,7 @@ import org.flowerplatform.core.repository.RootChildrenProvider;
 import org.flowerplatform.core.repository.RootPropertiesProvider;
 import org.flowerplatform.core.session.ComposedSessionListener;
 import org.flowerplatform.core.session.ISessionListener;
+import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -81,6 +87,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
 	protected ResourceService resourceService;
+	
+	protected ResourceService2 resourceService2;
+	protected ResourceSetService resourceSetService;
+	protected SessionService sessionService;
 		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
@@ -122,6 +132,18 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	public ResourceService getResourceService() {
 		return resourceService;
+	}
+	
+	public ResourceService2 getResourceService2() {
+		return resourceService2;
+	}
+	
+	public ResourceSetService getResourceSetService() {
+		return resourceSetService;
+	}
+	
+	public SessionService getSessionService() {
+		return sessionService;
 	}
 	
 	/**
@@ -191,6 +213,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
 		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
+		
+		resourceService2 = new FileResourceService();
+		resourceSetService = new ResourceSetService();
+		sessionService = new InMemorySessionService();
 		
 		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("resourceService", new ResourceServiceRemote());

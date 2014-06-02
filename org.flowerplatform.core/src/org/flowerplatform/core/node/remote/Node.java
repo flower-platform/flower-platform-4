@@ -2,13 +2,10 @@ package org.flowerplatform.core.node.remote;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
-import org.flowerplatform.util.Utils;
 
 /**
  * <p>
@@ -20,17 +17,13 @@ import org.flowerplatform.util.Utils;
  */
 public class Node {
 	
-	private static final String FULL_NODE_ID_SEPARATOR = "|";
-	
-	private static final Pattern FULL_NODE_ID_PATTERN = Pattern.compile("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
-	
 	private String type;
 	
 	private String resource;
 	
 	private String idWithinResource;
 	
-	private String cachedFullNodeId;
+	private String nodeUri;
 	
 	private Map<String, Object> properties;
 	
@@ -48,15 +41,9 @@ public class Node {
 			setRawNodeData(rawNodeData);
 		}
 	}
-
-	public Node(String fullNodeId) {
-		Matcher matcher = FULL_NODE_ID_PATTERN.matcher(fullNodeId);
-		if (matcher.find()) {
-			type = matcher.group(1);
-			resource = matcher.group(2).isEmpty() ? null : matcher.group(2);
-			idWithinResource = matcher.group(3).isEmpty() ? null : matcher.group(3);
-			cachedFullNodeId = fullNodeId;
-		}
+	
+	public Node(String nodeUri) {
+		this.nodeUri = nodeUri;
 	}
 	
 	public String getType() {
@@ -65,7 +52,6 @@ public class Node {
 
 	public void setType(String type) {
 		this.type = type;
-		cachedFullNodeId = null;
 	}
 
 	public String getResource() {
@@ -74,7 +60,6 @@ public class Node {
 
 	public void setResource(String resource) {
 		this.resource = resource;
-		cachedFullNodeId = null;
 	}
 	
 	public String getIdWithinResource() {
@@ -83,15 +68,16 @@ public class Node {
 
 	public void setIdWithinResource(String idWithinResource) {
 		this.idWithinResource = idWithinResource;
-		cachedFullNodeId = null;
 	}
 
-	public String getFullNodeId() {
-		if (cachedFullNodeId == null) {
-			cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";
-		}
-		return cachedFullNodeId;
+	public String getNodeUri() {
+		return nodeUri;
 	}
+	
+	public String getFullNodeId() {
+		return null;
+	}
+
 
 	/**
 	 * Should be used for writing values in the map. Probably by {@link IPropertiesProvider}.
@@ -135,7 +121,7 @@ public class Node {
 		return rawNodeData;
 	}
 
-	private void setRawNodeData(Object rawNodeData) {
+	public void setRawNodeData(Object rawNodeData) {
 		this.rawNodeData = rawNodeData;
 		rawNodeDataRetrieved = true;
 	}
@@ -153,20 +139,20 @@ public class Node {
 	
 	@Override
 	public int hashCode() {
-		return getFullNodeId().hashCode();
+		return getNodeUri().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Node) {
-			return getFullNodeId().equals(((Node) obj).getFullNodeId());
+			return getNodeUri().equals(((Node) obj).getNodeUri());
 		}
 		return false;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("Node [fullNodeId = %s]", getFullNodeId());
+		return String.format("Node [fullNodeId = %s]", getNodeUri());
 	}
 
 }
