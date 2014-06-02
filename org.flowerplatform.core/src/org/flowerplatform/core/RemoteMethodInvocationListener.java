@@ -95,9 +95,21 @@ public class RemoteMethodInvocationListener {
 			
 			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
 			for (String resourceNodeId : resourceNodeIds) {
-				List<Update> updates = CorePlugin.getInstance().getResourceService()
-						.getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
-				resourceNodeIdToUpdates.put(resourceNodeId, updates);
+				List<Update> updates = CorePlugin.getInstance().getResourceService().getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
+				if (updates == null || updates.size() > 0) {
+					// updates == null -> client must perform a refresh to get all necessary data
+					// updates.size == 0 -> ignore, no need to add it in map
+					
+					resourceNodeIdToUpdates.put(resourceNodeId, updates);
+					
+					if (logger.isDebugEnabled()) {
+						int size = -1;
+						if (updates != null) {
+							size = updates.size();
+						}
+						logger.debug("For resource = {} sending {} updates = {}", new Object[] { resourceNodeId, size, updates });
+					}
+				}				
 			}
 			if (resourceNodeIdToUpdates.size() > 0) {
 				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);

@@ -158,7 +158,7 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
 		for (int i = updates.size() - 1; i >= 0; i--) {
 			Update update = updates.get(i);			
-			if (update.getTimestamp() < timestampOfLastRequest) { 
+			if (update.getTimestamp() <= timestampOfLastRequest) { 
 				// an update was registered before timestampOfLastRequest
 				break;
 			}
