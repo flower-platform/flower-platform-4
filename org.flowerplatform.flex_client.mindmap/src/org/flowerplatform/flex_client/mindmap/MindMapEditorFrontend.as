@@ -104,10 +104,13 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
 			var rootNode:Node = Node(mindmapDiagramShell.getRoot(diagramShell.getNewDiagramShellContext()));
-			// refresh rootNode only if it has no properties
+			// get rootNode only if it has no properties
 			// properties needed to set renderer's data if showRootModelAsRootNode is true
 			if (rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
-				nodeRegistry.refresh(rootNode);	
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [rootNode.fullNodeId], 
+					function(returnedNode:Node):void {
+						rootNode.properties = returnedNode.properties;
+					});
 			}
 			
 			nodeRegistry.requestChildren(null);

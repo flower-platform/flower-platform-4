@@ -83,16 +83,17 @@ public class RemoteMethodInvocationListener {
 		
 		// prepare result
 		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-		
-		// get info from header
-		List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 				
-		if (resourceNodeIds != null) {
+		Long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
+		long timestamp = new Date().getTime();		
+		
+		// update timestamp
+		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
+					
+		// get info from header
+		List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();				
+		if (resourceNodeIds != null) {		
 			// only request updates if the client is subscribed to some resource
-			long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
-			long timestamp = new Date().getTime();
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
-			
 			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
 			for (String resourceNodeId : resourceNodeIds) {
 				List<Update> updates = CorePlugin.getInstance().getResourceService().getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
