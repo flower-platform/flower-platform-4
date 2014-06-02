@@ -2,17 +2,16 @@ package org.flowerplatform.flexdiagram.mindmap
 {
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
-	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	import mx.managers.IFocusManagerComponent;
-	import mx.managers.IFocusManagerGroup;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flexutil.focusable_component.FocusableRichText;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
 	
@@ -142,9 +141,9 @@ package org.flowerplatform.flexdiagram.mindmap
 		override protected function createChildren():void {			
 			super.createChildren();
 			
-			labelDisplay = new RichText();		
+			labelDisplay = new FocusableRichText();		
 			labelDisplay.percentHeight = 100;
-			labelDisplay.percentWidth = 100;
+			labelDisplay.percentWidth = 100;			
 			labelDisplay.setStyle("verticalAlign" , "middle");	
 			getMainComponent().addElement(labelDisplay);
 		}
