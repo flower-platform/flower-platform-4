@@ -21,7 +21,7 @@ license-end
 <!---
 @author Cristian Spiescu
 -->
-<s:Application applicationComplete="applicationCompleteHandler(event)"
+<s:Application applicationComplete="applicationCompleteHandler(event), dispatchEvent(new FlexEvent(FlexEvent.INITIALIZE))"
 			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*">
@@ -48,6 +48,7 @@ license-end
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
+			import com.crispico.flower.util.layout.Workbench;
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
 			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
 			
@@ -56,6 +57,8 @@ license-end
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
+			import mx.managers.BrowserManager;
+			import mx.managers.IBrowserManager;
 			import mx.messaging.channels.AMFChannel;
 			import mx.messaging.config.ConfigMap;
 			import mx.messaging.management.Attribute;
@@ -153,6 +156,8 @@ license-end
 			ObjectProxy;
 			ImageSnapshot;
 			
+			public var workbench:Workbench;
+			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
 				// The channels are puzzled by a query string that has slashes,
@@ -177,9 +182,6 @@ license-end
 				imageContentCache.maxCacheEntries = 300;
 				FlexUtilGlobals.getInstance().imageContentCache = imageContentCache;
 				
-				FlexUtilGlobals.getInstance().workbench = workbench;
-				workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
-	
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorDialogHandlerFactory();
@@ -191,17 +193,33 @@ license-end
 				}
 				
 				// INITIALIZATION SPINNER START
-				ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
+				var spinnerIconSource:String = FlexGlobals.topLevelApplication.parameters.spinnerIcon;
+				if (spinnerIconSource != null)
+					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(spinnerIconSource));
+				else
+					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
 				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				for (var i:int = 0; i < pluginUrls.length; i++) {
 					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
 				}
-				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
+				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls), pluginsLoaded);
+			}
+			
+			protected function pluginsLoaded(callbackObject:Object):void {
+				if (FlexUtilGlobals.getInstance().workbench == null) {
+					workbench = new Workbench();
+					workbench.percentWidth = 100;
+					workbench.percentHeight = 100;
+					addElement(workbench);
+					FlexUtilGlobals.getInstance().workbench = workbench;
+				}
+				if (FlexUtilGlobals.getInstance().workbench is Workbench) {
+					workbench = Workbench(FlexUtilGlobals.getInstance().workbench);
+					workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
+				}
 			}
 		]]>
 	</fx:Script>
-	
-	<layout:Workbench id="workbench" width="100%" height="100%" />
 	
 </s:Application>

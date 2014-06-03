@@ -34,6 +34,10 @@
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			protected var _viewHost:IViewHost;
+			
+			protected var _nodes:IList;
+			
+			protected var _commitEachPropertyAutomatically:Boolean = true;
 					
 			private var currentPropertyDescriptorsDisplayed:IList;
 			
@@ -67,8 +71,17 @@
 			public function getActions(selection:IList):Vector.<IAction> {
 				return null;
 			}
-						
-			private function selectionChangedHandler(event:SelectionChangedEvent):void {
+			
+			public function set commitEachPropertyAutomatically(value:Boolean):void {
+				_commitEachPropertyAutomatically = value;
+			}
+			
+			public function get nodes():IList {
+				return _nodes;
+			}
+			
+			public function set nodes(nodeList:IList):void {
+				_nodes = nodeList;
 				var i:int;
 				
 				// remove listeners from previous selection
@@ -93,17 +106,17 @@
 					}
 					(recycledRenderers[type] as Array).push(propertyItemRenderer);
 				}
-								
+				
 				label.text = "";
-
-				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view	
+				
+				if (nodeList == null || nodeList.length == 0 || !(nodeList.getItemAt(0) is Node)) { // happens when changing active view	
 					currentPropertyDescriptorsDisplayed = null;
 					propertyForm.removeAllElements();
 					return;
 				}
 				
 				// get new selected node
-				var node:Node = Node(event.selection.getItemAt(0));
+				var node:Node = Node(nodeList.getItemAt(0));
 				
 				if (node.parent == null && node.children == null) { // root node, don't populate with properties
 					currentPropertyDescriptorsDisplayed = null;
@@ -112,16 +125,16 @@
 				}
 				
 				// update label
-				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
+				/* var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(PropertiesPlugin.getInstance().nodeTypeDescriptorRegistry, node);
 				label.text = String(titleProvider.getValue(node));
-				label.maxWidth = UIComponent(this).width;
-								
+				label.maxWidth = UIComponent(this).width; */
+				
 				// store new selection				
-				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+				PropertiesPlugin.getInstance().currentSelection = new ArrayList(nodeList.toArray());
 				
 				// get properties to display
-				var newPropertyDescriptorsToDisplay:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
-			
+				var newPropertyDescriptorsToDisplay:IList = PropertiesPlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
+				
 				// if same descriptors -> no need to recalculate renderers, only set new node properties
 				if (currentPropertyDescriptorsDisplayed != newPropertyDescriptorsToDisplay) {
 					propertyForm.removeAllElements();
@@ -131,16 +144,16 @@
 					for (i = 0; i < newPropertyDescriptorsToDisplay.length; i++) {	
 						var propertyRenderer:PropertyItemRenderer;
 						var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(newPropertyDescriptorsToDisplay.getItemAt(i)));
-											
+						
 						if (propertyDescriptor.category != currentCategory) {
 							// display category renderer
 							var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
 							categoryItem.label = propertyDescriptor.category;
 							propertyForm.addElement(categoryItem);
-								
+							
 							currentCategory = propertyDescriptor.category;
 						}
-								
+						
 						var renderersToReuse:Array = recycledRenderers[propertyDescriptor.type] as Array;
 						if (renderersToReuse != null && renderersToReuse.length > 0) {
 							// there is already created a renderer for this type of property descriptor, reuse it
@@ -151,6 +164,8 @@
 						}				
 						propertyForm.addElement(propertyRenderer);
 						propertyRenderer.data = propertyDescriptor;
+						if (!_commitEachPropertyAutomatically)
+							propertyRenderer.node = nodes.getItemAt(0) as Node;
 					}
 				}
 				
@@ -159,7 +174,7 @@
 				
 				// get values from node properties
 				nodeUpdatedHandler(new NodeUpdatedEvent(node));
-										
+				
 				// add listeners to current selection
 				var currentSelection:IList = PropertiesPlugin.getInstance().currentSelection;
 				if (currentSelection != null) {
@@ -167,6 +182,10 @@
 						Node(currentSelection.getItemAt(i)).addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
 					}
 				}
+			}
+						
+			private function selectionChangedHandler(event:SelectionChangedEvent):void {
+				nodes = event.selection;
 			}
 			
 			private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {

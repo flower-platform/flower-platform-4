@@ -21,6 +21,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 
 	/**
 	 * @author Razvan Tache
@@ -32,6 +33,8 @@ package org.flowerplatform.flex_client.properties {
 		public var propertyRendererClasses:Dictionary = new Dictionary();
 		
 		public var currentSelection:IList;
+
+		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry;
 		
 		public static function getInstance():PropertiesPlugin {
 			return INSTANCE;
@@ -44,10 +47,16 @@ package org.flowerplatform.flex_client.properties {
 			}
 			INSTANCE = this;
 			
+			if (CorePlugin.getInstance() != null) {
+				nodeTypeDescriptorRegistry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
+			}
+			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
-			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
+			if (CorePlugin.getInstance() != null) {
+				CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
+				CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
+			}
 		}
 		
 		override public function start():void {

@@ -12,6 +12,7 @@
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
@@ -23,6 +24,10 @@
 			private var _data:Object;
 							
 			private var basicPropertyRenderer:BasicPropertyRenderer;
+			
+			public function set node(_node:Node) {
+				basicPropertyRenderer._node = _node;
+			}
 			
 			public function get data():Object {
 				return _data;

@@ -44,7 +44,7 @@ package org.flowerplatform.flexutil.plugin {
 			currentLoadingSession = createLoadingSession();
 			currentLoadingSession.loadPlugins(pluginSwcUrls, callbackFunction, callbackObject);
 		}
-	
+		
 		/**
 		 * Append "version=..." to list of url's parameters.
 		 * @author Cristina Constantinescu

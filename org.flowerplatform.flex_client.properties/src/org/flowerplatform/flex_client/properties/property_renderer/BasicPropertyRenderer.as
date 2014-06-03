@@ -5,15 +5,15 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	
 	import mx.binding.utils.BindingUtils;
 	
-	import spark.components.CheckBox;
-	import spark.components.DataRenderer;
-	import spark.layouts.HorizontalLayout;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.resources.Resources;
+	
+	import spark.components.CheckBox;
+	import spark.components.DataRenderer;
+	import spark.layouts.HorizontalLayout;
 
 	/**
 	 * @author Razvan Tache
@@ -28,7 +28,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		public var savePropertyEnabled:Boolean = true;
 		
 		public var changeCheckBox:CheckBox = new CheckBox();
-					
+		
+		public var _node:Node;
+		
 		public function BasicPropertyRenderer() {
 			super();
 			layout = new HorizontalLayout;
@@ -69,7 +71,11 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			return true;
 		}
 		
-		protected function saveProperty():void {			
+		protected function saveProperty():void {	
+			if (_node != null) {
+				_node.properties[propertyDescriptor.name] = getValue();
+				return;
+			}
 			if (savePropertyEnabled && !propertyDescriptor.readOnly) {				
 				if (!validPropertyValue()) {					
 					return;
