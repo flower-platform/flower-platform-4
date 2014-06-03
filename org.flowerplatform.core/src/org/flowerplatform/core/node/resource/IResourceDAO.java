@@ -50,6 +50,11 @@ public interface IResourceDAO {
 	/**
 	 * @author Claudiu Matei
 	 */
+	public List<Update> getUpdates(String resourceNodeId, String firstUpdateId, String lastUpdateId);
+	
+	/**
+	 * @author Claudiu Matei
+	 */
 	public Update getLastUpdate(String resourceNodeId);
 
 	/**
@@ -61,5 +66,50 @@ public interface IResourceDAO {
 	 * @author Claudiu Matei
 	 */
 	public List<Command> getCommands(String resourceNodeId);
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public List<Command> getCommands(String resourceNodeId, String firstCommandId, String lastCommandId);
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public List<Command> getCommandsAfter(String resourceNodeId, String commandId);
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public List<Command> deleteCommandsAfter(String resourceNodeId, String commandId);
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public Command getCommand(String resourceNodeId, String commandId);
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public Command getCommandAfter(String resourceNodeId, String commandId);
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public Command getCommandBefore(String resourceNodeId, String commandId);
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public Integer compareCommands(String resourceNodeId, String leftCommandId, String rightCommandId);
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public String getCommandToUndoId(String resourceNodeId);
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void setCommandToUndoId(String resourceNodeId, String commandId);
+
 }

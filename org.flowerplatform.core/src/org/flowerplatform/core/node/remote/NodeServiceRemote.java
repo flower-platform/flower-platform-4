@@ -136,9 +136,12 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService();
 	}
 	
-	public void tempDeleteAfterGH279AndCo(String resourceId) {
+	public void tempDeleteAfterGH279AndCo(String commandStackNodeId, String commandId) {
 //		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
-		RemoteMethodInvocationListener.addNewNode(resourceId);
+		Node commandStackNode=new Node(commandStackNodeId);
+		String resourceNodeId=RemoteMethodInvocationListener.unescapeFullNodeId(commandStackNode.getIdWithinResource());
+		CorePlugin.getInstance().getResourceService().undo(resourceNodeId, commandId);
+//		RemoteMethodInvocationListener.addNewNode(commandStackNodeId);
 	}
 	
 }

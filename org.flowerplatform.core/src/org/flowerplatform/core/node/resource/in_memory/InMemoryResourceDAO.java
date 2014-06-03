@@ -174,6 +174,37 @@ public class InMemoryResourceDAO implements IResourceDAO {
 	 * @author Claudiu Matei
 	 */
 	@Override
+	public List<Update> getUpdates(String resourceNodeId, String firstUpdateId, String lastUpdateId) {
+		List<Update> allUpdates = null;
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		if (info != null) {
+			allUpdates = info.getUpdates();
+		}
+		List<Update> updates = new ArrayList<Update>();
+		if (allUpdates == null) {
+			return updates;
+		}
+		
+		boolean foundLastUpdate = false;
+		// iterate updates reversed. Because last element in list is the most recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
+		for (int i = allUpdates.size() - 1; i >= 0; i--) {
+			Update update = allUpdates.get(i);			
+			if (update.getId().equals(lastUpdateId)) { 
+				foundLastUpdate = true;
+			}
+			if (foundLastUpdate) {
+				updates.add(0, update);
+			}
+			if (update.getId().equals(firstUpdateId)) break;
+		}
+		return updates;
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
 	public Update getLastUpdate(String resourceNodeId) {
 		List<Update> updates = null;
 		Update lastUpdate = null;
@@ -205,7 +236,211 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		ResourceNodeInfo info = getResourceNodeInfoForResourceNodeId(resourceNodeId);
 		return info.getCommandStack(); 
 	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public List<Command> getCommands(String resourceNodeId, String firstCommandId, String lastCommandId) {
+		List<Command> allCommands = null;
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		if (info != null) {
+			allCommands = info.getCommandStack();
+		}
+		List<Command> commands = new ArrayList<Command>();
+		if (allCommands == null) {
+			return commands;
+		}
+		
+		boolean foundLastCommand = (lastCommandId == null);
+		// iterate commands reversed. Because last element in list is the most recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
+		for (int i = allCommands.size() - 1; i >= 0; i--) {
+			Command command = allCommands.get(i);			
+			if (!foundLastCommand && command.getId().equals(lastCommandId)) { 
+				foundLastCommand = true;
+			}
+			if (foundLastCommand) {
+				commands.add(0, command);
+			}
+			if (command.getId().equals(firstCommandId)) break;
+		}
+		return commands;
+	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public List<Command> getCommandsAfter(String resourceNodeId, String commandId) {
+		return getCommands(resourceNodeId, commandId, null);
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public List<Command> deleteCommandsAfter(String resourceNodeId, String commandId) {
+		List<Command> allCommands = null;
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		if (info != null) {
+			allCommands = info.getCommandStack();
+		}
+		List<Command> commands = new ArrayList<Command>();
+		if (allCommands == null) {
+			return commands;
+		}
+		
+		// iterate commands reversed. Because last element in list is the most recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
+		for (int i = allCommands.size() - 1; i >= 0; i--) {
+			Command command = allCommands.get(i);			
+			if (command.getId().equals(commandId)) break;
+			commands.add(0, command);
+			allCommands.remove(i);
+		}
+		return commands;
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public Command getCommand(String resourceNodeId, String commandId) {
+		List<Command> commands = null;
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		Command command = null;
+		if (info != null) {
+			commands = info.getCommandStack();
+		}
+		if (commands == null) {
+			return command;
+		}
+
+		// iterate commands reversed. Because last element in list is the most
+		// recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the
+		// end of the list
+		for (int i = commands.size() - 1; i >= 0; i--) {
+			Command cmd = commands.get(i);
+			if (cmd.getId().equals(commandId)) {
+				command = cmd;
+				break;
+			}
+		}
+		return command;
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public Command getCommandAfter(String resourceNodeId, String commandId) {
+		List<Command> commands = null;
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		Command nextCommand = null;
+		if (info != null) {
+			commands = info.getCommandStack();
+		}
+		if (commands == null) {
+			return nextCommand;
+		}
+
+		// iterate commands reversed. Because last element in list is the most
+		// recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the
+		// end of the list
+		for (int i = commands.size() - 1; i >= 0; i--) {
+			Command command = commands.get(i);
+			if (command.getId().equals(commandId)) {
+				if (i < commands.size() - 1) {
+					nextCommand = commands.get(i + 1);
+				}
+				break;
+			}
+		}
+		return nextCommand;
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public Command getCommandBefore(String resourceNodeId, String commandId) {
+		List<Command> commands = null;
+		Command nextCommand = null;
+
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		if (info != null) {
+			commands = info.getCommandStack();
+		}
+		if (commands == null) {
+			return nextCommand;
+		}
+
+		// iterate commands reversed. Because last element in list is the most
+		// recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the
+		// end of the list
+		for (int i = commands.size() - 1; i >= 0; i--) {
+			Command command = commands.get(i);
+			if (command.getId().equals(commandId)) {
+				if (i > 0) {
+					nextCommand = commands.get(i - 1);
+				}
+				break;
+			}
+		}
+		return nextCommand;
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public Integer compareCommands(String resourceNodeId, String leftCommandId, String rightCommandId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+
+		List<Command> commands = info.getCommandStack();
+		// iterate commands reversed. Because last element in list is the most recent.
+		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
+		Integer leftCommandIndex = null, rightCommandIndex = null;
+		for (int i = commands.size() - 1; i >= 0; i--) {
+			Command command = commands.get(i);
+			if (leftCommandIndex == null && command.getId().equals(leftCommandId)) {
+				leftCommandIndex = i;
+			}
+			if (rightCommandIndex == null && command.getId().equals(rightCommandId)) {
+				rightCommandIndex = i;
+			}
+			if (leftCommandIndex != null && rightCommandIndex != null)
+				break;
+		}
+
+		if (leftCommandIndex == null || rightCommandIndex == null) {
+			return null;
+		}
+		return leftCommandIndex.compareTo(rightCommandIndex);
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public String getCommandToUndoId(String resourceNodeId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		return info.getCommandToUndoId();
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setCommandToUndoId(String resourceNodeId, String commandId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		info.setCommandToUndoId(commandId);
+	}
+
 	/**
 	 * Lazy-init mechanism. Called from methods that need to add/update info.
 	 * Getters should instead check if the info exists, to avoid memory leaks.

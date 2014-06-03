@@ -28,6 +28,11 @@ public class ResourceNodeInfo {
 	 */
 	private List<Command> commandStack = new ArrayList<Command>();
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	private String commandToUndoId; 
+	
 	private long updateRequestedTimestamp;
 
 	public Object getRawResourceData() {
@@ -60,13 +65,18 @@ public class ResourceNodeInfo {
 		return updates;
 	}
 
-	/**
-	 * @author Claudiu Matei
-	 */
 	public List<Command> getCommandStack() {
 		return commandStack;
 	}
 
+	public String getCommandToUndoId() {
+		return commandToUndoId;
+	}
+
+	public void setCommandToUndoId(String commandToUndoId) {
+		this.commandToUndoId = commandToUndoId;
+	}
+	
 	public long getUpdateRequestedTimestamp() {
 		return updateRequestedTimestamp;
 	}

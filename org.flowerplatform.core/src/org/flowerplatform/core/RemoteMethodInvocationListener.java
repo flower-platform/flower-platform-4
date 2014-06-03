@@ -77,7 +77,7 @@ public class RemoteMethodInvocationListener {
 	 * 
 	 */
 	public void postInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-		ContextThreadLocal context=CorePlugin.getInstance().getContextThreadLocal().get();
+		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
 		try {
 			if (logger.isDebugEnabled()) {
 				long endTime = new Date().getTime();
@@ -87,8 +87,6 @@ public class RemoteMethodInvocationListener {
 				logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 			}
 	
-			// adaugare comanda in command stack
-			// poate ar fi mai bine sa cream comanda in ResourceService.addCommand
 			Command command = context.getCommand();
 			if (command != null) {
 				CorePlugin.getInstance().getResourceService().addCommand(command);
@@ -147,6 +145,19 @@ public class RemoteMethodInvocationListener {
 				.replaceAll("\\|", "*");
 	}
 	
+	/**
+	 * @author Claudiu Matei 
+	 * 
+	 * Trebuie mutata de aici - poate intr-o clasa Util
+	 * 
+	 */
+	public static String unescapeFullNodeId(String escapedFullNodeId) {
+		return escapedFullNodeId
+				.replaceAll("\\[", "(")
+				.replaceAll("\\]", ")")
+				.replaceAll("\\*", "|");
+	}
+
 	private static Integer k=0;
 	public static void addNewNode(String resourceId) {
 		Command command=new Command();

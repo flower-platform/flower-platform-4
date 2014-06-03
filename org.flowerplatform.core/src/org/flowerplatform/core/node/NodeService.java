@@ -170,7 +170,12 @@ public class NodeService {
 		return parent;
 	}
 	
-
+	/**
+	 *
+	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -181,7 +186,11 @@ public class NodeService {
 		Node resourceNode = CoreUtils.getResourceNode(node);
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
-				
+		
+		// Save value before the change
+		Object oldValue = node.getOrPopulateProperties().get(property);
+		context.add("oldValue", oldValue);
+		
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
 		for (PropertySetter controller : controllers) {

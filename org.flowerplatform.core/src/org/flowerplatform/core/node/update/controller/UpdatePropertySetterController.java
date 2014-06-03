@@ -43,7 +43,12 @@ public class UpdatePropertySetterController extends PropertySetter {
 		}
 
 		CorePlugin.getInstance().getResourceService()
-			.addUpdate(resourceNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
+			.addUpdate(resourceNode.getFullNodeId(), new PropertyUpdate()
+				.setKeyAs(key)
+				.setValueAs(value)
+				.setOldValueAs(context.get("oldValue"))
+				.setUnsetAs(isUnset)
+				.setFullNodeIdAs(node.getFullNodeId()));		
 	}
 
 }

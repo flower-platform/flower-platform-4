@@ -8,6 +8,11 @@ public class PropertyUpdate extends Update {
 	private String key;
 	
 	private Object value;
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private Object oldValue;
 	
 	private boolean isUnset;
 
@@ -34,6 +39,20 @@ public class PropertyUpdate extends Update {
 
 	public PropertyUpdate setValueAs(Object value) {
 		this.value = value;
+		return this;
+	}
+
+	public Object getOldValue() {
+		return oldValue;
+	}
+
+	/**
+	 * No standard setter was created, in order to avoid serialization of this field 
+	 * 
+	 * @author Claudiu Matei
+	 */
+	public PropertyUpdate setOldValueAs(Object oldValue) {
+		this.oldValue = oldValue;
 		return this;
 	}
 	

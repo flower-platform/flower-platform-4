@@ -56,5 +56,14 @@ public class Command {
 	public void setLastUpdateId(String lastUpdateId) {
 		this.lastUpdateId = lastUpdateId;
 	}
+
+	@Override
+	public boolean equals(Object command) {
+		if (command == null) {
+			return false;
+		}
+		return id.equals(((Command) command).getId());
+	}
+	
 	
 }

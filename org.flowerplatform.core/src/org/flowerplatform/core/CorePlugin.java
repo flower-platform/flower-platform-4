@@ -183,6 +183,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return lockManager;
 	}
 
+	/**
+	 * @author Claudiu Matei
+	 */
 	public void setLockManager(ILockManager lockManager) {
 		this.lockManager = lockManager;
 	}
@@ -292,16 +295,18 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 					@Override
 					public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+//						List<Command> commands = CorePlugin.getInstance().getResourceService().getCommands(RemoteMethodInvocationListener.unescapeFullNodeId(node.getIdWithinResource()));
+//						return !commands.isEmpty();
 						return true;
 					}
 
 					@Override
 					public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-						List<Command> commands = CorePlugin.getInstance().getResourceService().getCommands(node.getFullNodeId());
+						List<Command> commands = CorePlugin.getInstance().getResourceService().getCommands(RemoteMethodInvocationListener.unescapeFullNodeId(node.getIdWithinResource()));
 						ArrayList<Node> children = new ArrayList<>();
 						for (Command command : commands) {
-							Node childNode = new Node(CoreConstants.COMMAND_TYPE, null, command.getId(), null);
-							childNode.getProperties().put("name", command.getTitle());
+							Node childNode = new Node(CoreConstants.COMMAND_TYPE, node.getFullNodeId(), command.getId(), null);
+							childNode.getProperties().put(CoreConstants.NAME, command.getTitle());
 							children.add(childNode);
 						}
 						return children;

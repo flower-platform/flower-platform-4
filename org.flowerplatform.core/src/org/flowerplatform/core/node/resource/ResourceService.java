@@ -21,6 +21,8 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.Command;
+import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
+import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -285,12 +287,12 @@ public class ResourceService implements ISessionListener {
 	/**
 	 * @author Claudiu Matei 
 	 */
-	public void startCommand(String resource, String commandTitle) {
-		CorePlugin.getInstance().getLockManager().lock(resource);
+	public void startCommand(String resourceNodeId, String commandTitle) {
+		CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
 		Command command=new Command();
-		command.setResource(resource);
+		command.setResource(resourceNodeId);
 		command.setTitle(commandTitle);
-		Update lastUpdate = resourceDao.getLastUpdate(resource);
+		Update lastUpdate = resourceDao.getLastUpdate(resourceNodeId);
 		if (lastUpdate != null) command.setLastUpdateIdBeforeCommandExecution(lastUpdate.getId());
 		
 		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
@@ -304,13 +306,24 @@ public class ResourceService implements ISessionListener {
 		if (logger.isDebugEnabled()) {
 			logger.debug("For resource = {} adding command = {}", command.getResource(), command);
 		}
+
+		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, "self", RemoteMethodInvocationListener.escapeFullNodeId(command.getResource()), null);
+		String commandToUndoId = resourceDao.getCommandToUndoId(command.getResource());
+
+		List<Command> removedCommands = resourceDao.deleteCommandsAfter(command.getResource(), commandToUndoId);
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		for (Command cmd : removedCommands) {
+			Node node = new Node(CoreConstants.COMMAND_TYPE, commandStackNode.getFullNodeId(), cmd.getId(), null);
+			CorePlugin.getInstance().getNodeService().removeChild(commandStackNode, node, context);
+		}
+		
 		command.setLastUpdateId(resourceDao.getLastUpdate(command.getResource()).getId());
 		resourceDao.addCommand(command);
-		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, "self", RemoteMethodInvocationListener.escapeFullNodeId(command.getResource()), null);
-		Node childNode = new Node(CoreConstants.COMMAND_TYPE, null, command.getId(), null);
-		childNode.getProperties().put("name", command.getTitle());
+		Node newCommandNode = new Node(CoreConstants.COMMAND_TYPE, commandStackNode.getFullNodeId(), command.getId(), null);
+		newCommandNode.getProperties().put(CoreConstants.NAME, command.getTitle());
+		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, newCommandNode, new ServiceContext<NodeService>());
 
-		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, childNode, new ServiceContext<NodeService>());
+		resourceDao.setCommandToUndoId(command.getResource(), command.getId());
 	}
 
 	/**
@@ -319,7 +332,69 @@ public class ResourceService implements ISessionListener {
 	public List<Command> getCommands(String resourceNodeId) {
 		return resourceDao.getCommands(resourceNodeId);
 	}
+
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public void undo(String resourceNodeId, String commandId) {
+		try {
+			CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
+			String commandToUndoId = resourceDao.getCommandToUndoId(resourceNodeId);
+			Command command=resourceDao.getCommand(resourceNodeId, commandId);
+			Integer comp = resourceDao.compareCommands(resourceNodeId, commandId, commandToUndoId);
+			if (command == null) {
+				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to undo is: %s", resourceNodeId, commandId,
+						resourceDao.getCommandToUndoId(resourceNodeId)));
+			} else if (comp == null || comp > 0) {
+				throw new IllegalArgumentException(String.format("For resource %s command %s has already been undone. Current command to undo is: %s", resourceNodeId, commandId,
+						resourceDao.getCommandToUndoId(resourceNodeId)));
+			} else {
+				List<Command> commands = resourceDao.getCommands(resourceNodeId, commandId, commandToUndoId);
+				for (int i = commands.size() - 1; i >= 0; i--) {
+					Command cmd = commands.get(i);
+					List<Update> updates = resourceDao.getUpdates(resourceNodeId, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
+					for (int k = updates.size() - 1; k >= (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k--) {
+						Update update = updates.get(k);
+						undoUpdate(update);
+					}
+				}
+				Command previousCommand = resourceDao.getCommandBefore(resourceNodeId, commandId);
+				if (previousCommand != null) {
+					resourceDao.setCommandToUndoId(resourceNodeId, previousCommand.getId());
+				} else {
+					resourceDao.setCommandToUndoId(resourceNodeId, null);
+				}
+			}
+		} finally {
+			CorePlugin.getInstance().getLockManager().unlock(resourceNodeId);
+		}
+	}
 	
+	private void undoUpdate(Update update) {
+		if (update instanceof PropertyUpdate) {
+			undoPropertyUpdate((PropertyUpdate)update);
+		}
+		if (update instanceof ChildrenUpdate) {
+			undoChildrenUpdate((ChildrenUpdate)update);
+		}
+	}
+	
+	private void undoPropertyUpdate(PropertyUpdate update) {
+		Node node=new Node(update.getFullNodeId());
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getOldValue(), context);
+	}
+
+	private void undoChildrenUpdate(ChildrenUpdate update) {
+		Node node = new Node(update.getFullNodeId());
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		switch (update.getType()) {
+		case CoreConstants.UPDATE_CHILD_ADDED:
+			CorePlugin.getInstance().getNodeService().removeChild(node, update.getTargetNode(), context);
+			break;
+		}
+	}
+
 	protected List<ResourceAccessController> getResourceAccessControllers(String resourceNodeId) {
 		Node resourceNode = new Node(resourceNodeId);
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(resourceNode.getType());

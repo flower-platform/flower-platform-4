@@ -9,7 +9,9 @@ import org.flowerplatform.core.node.update.Command;
  *
  */
 public class ContextThreadLocal {
+	
 	private HttpServletRequest request;
+	
 	private Command command;
 	
 	public HttpServletRequest getRequest() {
