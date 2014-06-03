@@ -17,6 +17,7 @@ package org.flowerplatform.util.servlet;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +53,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	private static final long serialVersionUID = 1L;
 	
     private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
-
+    
     private static void close(Closeable resource) {
         if (resource != null) {
             try {
@@ -193,7 +194,12 @@ public class PublicResourcesServlet extends ResourcesServlet {
 				}
 			}
 				
-			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
+//			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
+			requestedFile = plugin + "/" + prefix + file;
+			if (useRealPath) {
+				requestedFile = getServletContext().getRealPath(requestedFile);
+			}
+			requestedFile = protocol + requestedFile;
 			
 			// Get content type by filename from the file or file inside zip
 			String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);

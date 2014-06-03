@@ -44,6 +44,18 @@ public abstract class ResourcesServlet extends HttpServlet {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesServlet.class);
 		
 	protected boolean useFilesFromTemporaryDirectory = false; 
+	
+	protected static final String PROTOCOL = "protocol";
+	
+	protected static final String PREFIX = "prefix";
+	
+	protected static final String USE_REAL_PATH = "useRealPath";
+	
+	protected String protocol;
+	
+	protected String prefix;
+	
+	protected boolean useRealPath;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -54,6 +66,10 @@ public abstract class ResourcesServlet extends HttpServlet {
 		ServletUtils.addAllAdditionalAttributesToServletContext(getServletContext());	
 		
 		useFilesFromTemporaryDirectory = Boolean.valueOf((String) getServletContext().getAttribute(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY));
+	
+		protocol = config.getInitParameter(PROTOCOL);
+		prefix = config.getInitParameter(PREFIX);
+		useRealPath = Boolean.parseBoolean(config.getInitParameter(USE_REAL_PATH));
 	}
 	/**
 	 *@author Mariana Gheorghe

@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-	license-start
- 
-	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 3.
-	 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-	
-	license-end
+license-start
+
+Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+Contributors:
+Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+
+license-end
 -->
 <!---
 @author Cristian Spiescu
 -->
-<s:Application applicationComplete="applicationCompleteHandler(event)"
+<s:Application applicationComplete="applicationCompleteHandler(event), dispatchEvent(new FlexEvent(FlexEvent.INITIALIZE))"
 			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*">
@@ -55,6 +58,7 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
+			import com.crispico.flower.util.layout.Workbench;
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
 			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
 			
@@ -64,6 +68,8 @@
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
+			import mx.managers.BrowserManager;
+			import mx.managers.IBrowserManager;
 			import mx.messaging.channels.AMFChannel;
 			import mx.messaging.config.ConfigMap;
 			import mx.messaging.management.Attribute;
@@ -166,6 +172,8 @@
 			ObjectProxy;
 			ImageSnapshot;
 			
+			public var workbench:Workbench;
+			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
 				// The channels are puzzled by a query string that has slashes,
@@ -190,9 +198,6 @@
 				imageContentCache.maxCacheEntries = 300;
 				FlexUtilGlobals.getInstance().imageContentCache = imageContentCache;
 				
-				FlexUtilGlobals.getInstance().workbench = workbench;
-				workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
-	
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorDialogHandlerFactory();
@@ -204,17 +209,33 @@
 				}
 				
 				// INITIALIZATION SPINNER START
-				ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
+				var spinnerIconSource:String = FlexGlobals.topLevelApplication.parameters.spinnerIcon;
+				if (spinnerIconSource != null)
+					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(spinnerIconSource));
+				else
+					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
 				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				for (var i:int = 0; i < pluginUrls.length; i++) {
 					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
 				}
-				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
+				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls), pluginsLoaded);
+			}
+			
+			protected function pluginsLoaded(callbackObject:Object):void {
+				if (FlexUtilGlobals.getInstance().workbench == null) {
+					workbench = new Workbench();
+					workbench.percentWidth = 100;
+					workbench.percentHeight = 100;
+					addElement(workbench);
+					FlexUtilGlobals.getInstance().workbench = workbench;
+				}
+				if (FlexUtilGlobals.getInstance().workbench is Workbench) {
+					workbench = Workbench(FlexUtilGlobals.getInstance().workbench);
+					workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
+				}
 			}
 		]]>
 	</fx:Script>
-	
-	<layout:Workbench id="workbench" width="100%" height="100%" />
 	
 </s:Application>
