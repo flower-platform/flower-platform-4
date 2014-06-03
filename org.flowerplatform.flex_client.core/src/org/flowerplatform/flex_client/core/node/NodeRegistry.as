@@ -211,6 +211,8 @@ package org.flowerplatform.flex_client.core.node {
 			if (node == null) {	// root node				
 				if (useStartingNodeAsRootNode) {
 					node = startingNode;
+					// this node will be used as root so add it in registry
+					registerNode(node);
 				} else {
 					node = Node(children.getItemAt(0));
 					addNode(node);
