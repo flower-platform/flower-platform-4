@@ -26,8 +26,9 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		if (!getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().contains(sessionId)) {
 			getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().add(sessionId);
 		}
-		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().contains(resourceNodeId)) {
+		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().contains(resourceNodeId)) {			
 			getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().add(resourceNodeId);
+			Collections.sort(getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds());
 		}
 	}
 
@@ -157,11 +158,11 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
 		for (int i = updates.size() - 1; i >= 0; i--) {
 			Update update = updates.get(i);			
-			if (update.getTimestamp() < timestampOfLastRequest) { 
+			if (update.getTimestamp() <= timestampOfLastRequest) { 
 				// an update was registered before timestampOfLastRequest
 				break;
 			}
-			updatesAddedAfterLastRequest.add(0, update);
+			updatesAddedAfterLastRequest.add(update);
 		}
 		return updatesAddedAfterLastRequest;
 	}

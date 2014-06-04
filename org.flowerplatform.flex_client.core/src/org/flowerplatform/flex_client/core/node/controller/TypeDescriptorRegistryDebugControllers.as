@@ -218,9 +218,9 @@ class FlexTypesNodeController extends MindMapModelController {
 			} else if (node.type == debug.CONTROLLER_KEY_ADDITIVE) {
 //				children = debug.getAdditiveControllers(node, node.resource,node.idWithinResource);
 			}
-			nodeRegistry.requestChildrenCallbackHandler(node, children);
+			nodeRegistry.expandCallbackHandler(node, children);
 		} else {
-			nodeRegistry.removeChildren(node);
+			nodeRegistry.collapse(node);
 		}
 	}
 	

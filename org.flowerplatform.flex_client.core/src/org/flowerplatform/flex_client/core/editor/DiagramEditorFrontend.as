@@ -87,8 +87,7 @@ package org.flowerplatform.flex_client.core.editor {
 		override protected function subscribeResultCallback(rootNode:Node):void {
 			super.subscribeResultCallback(rootNode);
 			diagramShell.rootModel = rootNode;
-			nodeRegistry.startingNode = rootNode;
-			nodeRegistry.requestChildren(null);
+			
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

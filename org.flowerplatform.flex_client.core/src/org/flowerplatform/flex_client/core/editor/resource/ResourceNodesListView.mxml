@@ -84,7 +84,7 @@
 			
 			protected function noButton_clickHandler(event:MouseEvent = null):void {
 				if (handler == null) { // don't execute the default behavior, let the handler to take the lead
-					CorePlugin.getInstance().resourceNodesManager.removeNodeRegistries(nodeRegistries);
+					CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.removeNodeRegistries(nodeRegistries);
 				}
 				closeView();	
 			}

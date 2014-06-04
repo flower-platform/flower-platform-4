@@ -1,6 +1,7 @@
 package org.flowerplatform.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +37,14 @@ public class RemoteMethodInvocationListener {
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
-		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
+		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds(); // list is sorted on client
 		
 		if (clientResourceNodeIds != null) {
 			List<String> serverResourceNodeIds = CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId);
 			List<String> notFoundResourceNodeIds = new ArrayList<String>();
-			for (String clientResourceNodeId : clientResourceNodeIds) {
-				if (serverResourceNodeIds.contains(clientResourceNodeId)) {
+						
+			for (String clientResourceNodeId : clientResourceNodeIds) {			
+				if (Collections.binarySearch(serverResourceNodeIds, clientResourceNodeId) < 0) { // search in a sorted list
 					continue;
 				}
 				
@@ -82,21 +84,34 @@ public class RemoteMethodInvocationListener {
 		
 		// prepare result
 		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-		
-		// get info from header
-		List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 				
-		if (resourceNodeIds != null) {
+		Long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
+		long timestamp = new Date().getTime();		
+		
+		// update timestamp
+		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
+					
+		// get info from header
+		List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();				
+		if (resourceNodeIds != null) {		
 			// only request updates if the client is subscribed to some resource
-			long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
-			long timestamp = new Date().getTime();
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
-			
 			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
 			for (String resourceNodeId : resourceNodeIds) {
-				List<Update> updates = CorePlugin.getInstance().getResourceSetService()
-						.getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
-				resourceNodeIdToUpdates.put(resourceNodeId, updates);
+				List<Update> updates = CorePlugin.getInstance().getResourceSetService().getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
+				if (updates == null || updates.size() > 0) {
+					// updates == null -> client must perform a refresh to get all necessary data
+					// updates.size == 0 -> ignore, no need to add it in map
+					
+					resourceNodeIdToUpdates.put(resourceNodeId, updates);
+					
+					if (logger.isDebugEnabled()) {
+						int size = -1;
+						if (updates != null) {
+							size = updates.size();
+						}
+						logger.debug("For resource = {} sending {} updates = {}", new Object[] { resourceNodeId, size, updates });
+					}
+				}				
 			}
 			if (resourceNodeIdToUpdates.size() > 0) {
 				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);

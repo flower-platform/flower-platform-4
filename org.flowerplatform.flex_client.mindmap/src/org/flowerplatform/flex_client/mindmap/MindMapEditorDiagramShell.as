@@ -50,7 +50,7 @@ package org.flowerplatform.flex_client.mindmap {
 		}
 		
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
-			var rootModel:Node = nodeRegistry.getNodeById(Node(MindMapRootModelWrapper(rootModel).model).nodeUri);			
+			var rootModel:Node = Node(MindMapRootModelWrapper(rootModel).model);			
 			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) { 
 				return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/2; // horizontal align = center
 			}

@@ -75,16 +75,16 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		private function expand(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).nodeRegistry.requestChildren(node, context[CoreConstants.HANDLER]);
+			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context[CoreConstants.HANDLER]);
 		}
 		
 		private function collapse(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).nodeRegistry.removeChildren(node);
+			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node);
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {
 			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
-			var rootModel:Node = mindmapDiagramShell.nodeRegistry.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).nodeUri);
+			var rootModel:Node = Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model);
 			
 			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) {
 				//root node is mm file -> get side from provider

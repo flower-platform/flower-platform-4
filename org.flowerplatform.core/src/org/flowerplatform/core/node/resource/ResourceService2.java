@@ -54,12 +54,16 @@ public abstract class ResourceService2 {
 		String scheme = nodeUri.getScheme();
 		
 		ResourceHandler resourceHandler = getResourceHandler(scheme);
+		Node node;
 		if (resourceHandler == null) {
-			Node node = new Node(nodeUriAsString);
+			node = new Node(nodeUriAsString);
 			node.setType(scheme);
-			return node;
+		} else {
+			node = getResourceHandler(scheme).getNode(nodeUri);
 		}
-		return getResourceHandler(scheme).getNode(nodeUri);
+		node.getOrPopulateProperties();
+		
+		return node;
 	}
 	
 	public abstract Object getResourceInfo(URI resourceUri);

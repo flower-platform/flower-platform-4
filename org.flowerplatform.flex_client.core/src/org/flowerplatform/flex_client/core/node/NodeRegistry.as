@@ -31,216 +31,65 @@ package org.flowerplatform.flex_client.core.node {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.event.BeforeRemoveNodeChildrenEvent;
 	import org.flowerplatform.flex_client.core.node.event.NodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
-	import org.flowerplatform.flex_client.core.node.event.RootNodeAddedEvent;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
-	import org.flowerplatform.flexutil.Pair;
 	
 	use namespace mx_internal;
 	
 	/**
-	 * Holds a node registry (fullNodeId -> Node) and handles the communication with the server. 
-	 * This class is responsible for maintaing a consistent node tree. E.g. when new nodes arrive
-	 * from server, they are added in the registry and "linked" with their parent. When nodes are
-	 * removed (e.g. node collapsed), they are removed from the registry and unlinked from their 
-	 * parents.
+	 * Holds a node registry (id -> Node) and handles the communication with the server. 
+	 * 
+	 * <p>
+	 * This class is responsible for maintaing a consistent node tree. <br>
+	 * E.g. when new nodes arrive from server, they are added in the registry and "linked" with their parent. When nodes are
+	 * removed (e.g. node collapsed), they are removed from the registry and unlinked from their parents.
 	 * 
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */
 	public class NodeRegistry extends EventDispatcher {
-				
-		/**
-		 * Reference to registry's "start" node.
-		 * If <code>useStartingNodeAsRootNode</code>, first level of nodes will be "linked" with this node as parent,
-		 * otherwise the first node will be used as root node.
-		 */ 
-		public var startingNode:Node = null;
-		public var useStartingNodeAsRootNode:Boolean = true;
-		
-		private var registry:Dictionary = new Dictionary();
+						
+		protected var registry:Dictionary = new Dictionary();
 		
 		public function getNodeById(id:String):Node {
 			return Node(registry[id]);
 		}
-		
-		public function registerNode(node:Node):void {			
-			registry[node.nodeUri] = node;
-		}
-		
-		private function unregisterNode(nodeId:String):void {
-			var nodeFromRegistry:Node = registry[nodeId];
-			if (nodeFromRegistry != null) {
-				nodeFromRegistry.dispatchEvent(new NodeRemovedEvent(nodeFromRegistry));
-				delete registry[nodeId];
-			}
-		}
-						
-		/**
-		 * Adds <code>node</code> to <code>parent</code> at given index and registers it in registry. <br>
-		 * 
-		 * If <code>parent</code> is null, the node will be added as root node.
-		 * If <code>index</code> is -1, the node will be added last.
-		 */ 
-		protected function addNode(node:Node, parent:Node = null, index:int = -1):void {		
-			if (parent == null) {
-				// we have a root node
-				
-				var nodeFromRegistry:Node = getNodeById(node.nodeUri);
-				if (nodeFromRegistry) { 
-					// node already in registry -> we want to update only its properties
-					nodeFromRegistry.properties = node.properties;
-				} else {
-					registerNode(node);
-					nodeFromRegistry = getNodeById(node.nodeUri);
-				}		
-				
-				startingNode = nodeFromRegistry;
-				
-				// notify listeners that a rootNode has been added/updated (additional behavior can be added like expand it immediately)
-				dispatchEvent(new RootNodeAddedEvent(nodeFromRegistry));
+			
+		public function collapse(node:Node, refreshChildren:Boolean = true):void {
+			if (!registry.hasOwnProperty(node.nodeUri)) {
 				return;
 			}
-			
-			// normal node -> register it and link it with its parent
-			
-			registerNode(node);
-			
-			node.parent = parent;
-			if (parent.children == null) {
-				parent.children = new ArrayCollection();
+			if (node.children == null) {
+				return;
+			}
+			while (node.children != null) {					
+				unregisterNode(Node(node.children.getItemAt(0)), node);
+			}
+								
+			if (refreshChildren) {	
+				dispatchEvent(new RefreshEvent(node));
 			}						
-			if (index != -1) {
-				parent.children.addItemAt(node, index);
-			} else {		
-				parent.children.addItem(node);
-			}
 		}
-		
-		/**
-		 * Removes node from parent and un-registers it from registry. <br>
-		 * Note: parent == null -> remove root node
-		 */ 
-		protected function removeNode(node:Node, parent:Node = null):void {
-			if (parent != null && (parent.children == null || !parent.children.contains(node))) {
-				// not expanded or child already removed
+			
+		public function expand(node:Node, additionalHandler:Function = null):void {		
+			if (!registry.hasOwnProperty(node.nodeUri)) {
 				return;
 			}
-			// remove children recursive
-			removeChildren(node, false);
-			
-			unregisterNode(node.nodeUri);
-			
-			if (parent != null) {
-				// remove from parent list of children
-				parent.children.removeItemAt(parent.children.getItemIndex(node));				
-				if (parent.children.length == 0) { // parent has no children left -> parent is leaf
-					parent.children = null;
-				}
-			}
-		}
-		
-		/**
-		 * Called from <code>removeNode()</code> or from UI: when a node is collapsed.
-		 * 
-		 * <p>
-		 * If the node is subscribable, remove it from the resource nodes list.
-		 */
-		public function removeChildren(node:Node, refreshChildren:Boolean = true, shouldDispatchPreRemoveEvent:Boolean = true):void {
-			var event:BeforeRemoveNodeChildrenEvent = new BeforeRemoveNodeChildrenEvent(node, refreshChildren);
-			if (shouldDispatchPreRemoveEvent) {
-				dispatchEvent(event);	
-			}
-			
-			if (!event.dontRemoveChildren) {
-				removeChildrenRecursive(node, refreshChildren);
-			}		
-		}
-		
-		private function removeChildrenRecursive(node:Node, refreshChildren:Boolean = true):void {
-			if (node.children != null) {
-				for each (var child:Node in node.children) {
-					removeChildrenRecursive(child, false);
-					unregisterNode(child.nodeUri);
-				}
-				node.children = null;
-				
-				if (refreshChildren) {	
-					dispatchEvent(new RefreshEvent(node));
-				}
-			}
-		}
-				
-		/* REQUEST CHILDREN */		
-		
-		/**
-		 * Called from UI when a node is expanded.
-		 * 
-		 * <p>
-		 * If the node is subscribable, first subscribe, then request the children if the subscribe was successful.
-		 */
-		public function requestChildren(node:Node, additionalHandler:Function = null):void {		
-			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
-			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
-			if (subscribableResources == null || subscribableResources.length == 0) {
-				requestChildrenInternal(node, additionalHandler);
-			} else {
-				var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
-				CorePlugin.getInstance().resourceNodesManager.subscribeToSelfOrParentResource(String(subscribableResource.a), this, function(rootNode:Node):void {
-					requestChildrenInternal(getNodeById(rootNode.nodeUri), additionalHandler);
-				});
-			}
-		}
-		
-		private function requestChildrenInternal(node:Node, additionalHandler:Function = null):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? startingNode.nodeUri : node.nodeUri, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
+				[node.nodeUri, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
 				function (result:Object):void {
-					requestChildrenCallbackHandler(node, ArrayCollection(result)); 
+					expandCallbackHandler(node, ArrayCollection(result)); 
 					
 					// additional handler to be executed
 					if (additionalHandler != null) {
 						additionalHandler();
 					}
-				});
+				});	
 		}
-		
-		public function requestChildrenCallbackHandler(node:Node, children:ArrayCollection):void {			
-			if (node == null) {	// root node				
-				if (useStartingNodeAsRootNode) {
-					node = startingNode;
-				} else {
-					node = Node(children.getItemAt(0));
-					addNode(node);
-					
-					// set to null -> don't enter in next if
-					children = null;
-				}				
-			}
-			
-			if (node != null && children != null) {
-				// register each child
-				for each (var child:Node in children) {
-					registerNode(child);
-					child.parent = node;		
-					// TODO CS: de refolosit add?
-				}
-				// set node list of children
-				node.children = children;
-			}
 						
-			if (children != null) {
-				// refresh diagram's children and their positions
-				dispatchEvent(new RefreshEvent(node));
-			}			
-		}
-		
-		/* UPDATES */	
-		
 		/**
 		 * Handles updates received from server.
 		 * 
@@ -256,19 +105,25 @@ package org.flowerplatform.flex_client.core.node {
 		 * 		</ul>
 		 * </ul>
 		 * 
-		 * Note: If a given <code>fullNodeId</code> doesn't exist in <code>nodeRegistry</code>, it means it isn't visible for current client, so ignore it.
-		 * 
-		 * At the end, stores in <code>timestampOfLastRequest</code>, the last update's timestamp.
+		 * Note: If a given <code>fullNodeId</code> doesn't exist in <code>nodeRegistry</code>, it means it isn't visible for current client, so ignore it.		
 		 */ 
-		public function nodeUpdatesHandler(updates:ArrayCollection):void {			
-			if (updates == null) {	
-				refresh(startingNode);
+		public function processUpdates(updates:ArrayCollection):void {			
+			if (updates == null) {
+				// refresh all from root node (node.parent == null)
+				for (var fullNodeId:Object in registry) {
+					var node:Node = Node(registry[fullNodeId]);
+					if (node.parent == null) {
+						refresh(node);
+						break;
+					}
+				}
 				return;
 			}
 			
 			var nodeToNodeUpdatedEvent:Dictionary = new Dictionary();			
 			
-			for each (var update:Update in updates) {				
+			for (var i:int = updates.length - 1; i >= 0; i--) {
+				var update:Update = Update(updates.getItemAt(i));
 				var nodeFromRegistry:Node = getNodeById(update.fullNodeId);	
 				if (nodeFromRegistry == null) { // node not registered, probably it isn't visible for this client
 					continue;
@@ -307,7 +162,7 @@ package org.flowerplatform.flex_client.core.node {
 								var newChild:Node = new Node(childrenUpdate.targetNode.nodeUri);
 								newChild.type = childrenUpdate.targetNode.type;
 								newChild.properties = childrenUpdate.targetNode.properties;
-								addNode(newChild, nodeFromRegistry, index);
+								registerNode(newChild, nodeFromRegistry, index);
 								refresh = true;
 							} else {
 								// child already added, probably after refresh
@@ -321,7 +176,7 @@ package org.flowerplatform.flex_client.core.node {
 							break;
 						case CoreConstants.UPDATE_CHILD_REMOVED:	
 							if (targetNodeInRegistry != null) {
-								removeNode(targetNodeInRegistry, nodeFromRegistry);
+								unregisterNode(targetNodeInRegistry, nodeFromRegistry);
 								refresh = true;
 							} else {
 								// node not registered, probably it isn't visible for this client
@@ -342,12 +197,10 @@ package org.flowerplatform.flex_client.core.node {
 			}
 		}	
 		
-		/* REFRESH */	
-		
-		/**
-		 * Called from Refresh action.
-		 */	
-		public function refresh(node:Node):void {			
+		public function refresh(node:Node):void {		
+			if (!registry.hasOwnProperty(node.nodeUri)) {
+				return;
+			}
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.refresh", 
 				[getFullNodeIdWithChildren(node)], 
@@ -361,7 +214,7 @@ package org.flowerplatform.flex_client.core.node {
 		/**
 		 * @return an hierarchical structure of <code>fullNodeId</code>s starting from <code>node</code>.
 		 */ 
-		private function getFullNodeIdWithChildren(node:Node):FullNodeIdWithChildren {
+		protected function getFullNodeIdWithChildren(node:Node):FullNodeIdWithChildren {
 			var fullNodeIdWithChildren:FullNodeIdWithChildren = new FullNodeIdWithChildren();
 			fullNodeIdWithChildren.fullNodeId = node.nodeUri;
 			
@@ -411,7 +264,7 @@ package org.flowerplatform.flex_client.core.node {
 			
 			// no children -> remove the old ones
 			if (nodeWithVisibleChildren.children == null) {
-				removeChildren(node, false);
+				collapse(node, false);
 				return;
 			}
 			
@@ -435,7 +288,7 @@ package org.flowerplatform.flex_client.core.node {
 						newNodeToCurrentNodeIndex[newChildWithVisibleChildren.node.nodeUri] = i;
 					} else {
 						// child doesn't exist in new list -> remove it from parent
-						removeNode(currentChildNode, node);
+						unregisterNode(currentChildNode, node);
 					}
 				}
 			}
@@ -443,13 +296,75 @@ package org.flowerplatform.flex_client.core.node {
 			for (i = 0; i < nodeWithVisibleChildren.children.length; i++) {	
 				var newChildNode:Node = NodeWithChildren(nodeWithVisibleChildren.children.getItemAt(i)).node;
 				if (!newNodeToCurrentNodeIndex.hasOwnProperty(newChildNode.nodeUri)) { // new child doesn't exist in current list -> add it
-					addNode(newChildNode, node, i);
+					registerNode(newChildNode, node, i);
 				} else if (newNodeToCurrentNodeIndex[newChildNode.nodeUri] != i) { // new child exists in current list, but different indexes -> get current child and move it to new index
 					currentChildNode = getNodeById(newChildNode.nodeUri);
-					removeNode(currentChildNode, node);
-					addNode(currentChildNode, node, i);
+					unregisterNode(currentChildNode, node);
+					registerNode(currentChildNode, node, i);
 				}
 			}
+		}
+		
+		/**
+		 * Adds <code>node</code> to <code>parent</code> at given index and registers it in registry. <br>
+		 * 
+		 * If <code>parent</code> is null, the node will only be registered
+		 * If <code>index</code> is -1, the node will be added last.
+		 */ 
+		mx_internal function registerNode(node:Node, parent:Node, index:int = -1):void {		
+			registry[node.nodeUri] = node;
+			
+			if (parent != null) {
+				node.parent = parent;
+				if (parent.children == null) {
+					parent.children = new ArrayCollection();
+				}						
+				if (index != -1) {
+					parent.children.addItemAt(node, index);
+				} else {		
+					parent.children.addItem(node);
+				}
+			}
+		}
+		
+		/**
+		 * Removes node from parent and un-registers it from registry.
+		 */ 
+		mx_internal function unregisterNode(node:Node, parent:Node = null):void {
+			if (parent != null && (parent.children == null || !parent.children.contains(node))) {
+				// not expanded or child already removed
+				return;
+			}
+			// remove children recursive
+			collapse(node, false);
+			
+			var nodeFromRegistry:Node = registry[node.nodeUri];
+			if (nodeFromRegistry != null) {
+				nodeFromRegistry.dispatchEvent(new NodeRemovedEvent(nodeFromRegistry));
+				delete registry[node.nodeUri];
+			}
+			
+			if (parent != null) {
+				// remove from parent list of children
+				parent.children.removeItemAt(parent.children.getItemIndex(node));				
+				if (parent.children.length == 0) { // parent has no children left -> parent is leaf
+					parent.children = null;
+				}
+			}
+		}
+		
+		mx_internal function expandCallbackHandler(node:Node, children:ArrayCollection):void {		
+			if (children == null) {
+				return;
+			}
+			
+			// register each child
+			for each (var child:Node in children) {
+				registerNode(child, node);
+			}
+			
+			// refresh diagram's children and their positions
+			dispatchEvent(new RefreshEvent(node));
 		}
 				
 	}

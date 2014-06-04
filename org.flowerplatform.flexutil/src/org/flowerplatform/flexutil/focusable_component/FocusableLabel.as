@@ -16,7 +16,7 @@
 *
 * license-end
 */
-package org.flowerplatform.flexutil.text {
+package org.flowerplatform.flexutil.focusable_component {
 	
 	import mx.managers.IFocusManagerComponent;
 	
