@@ -115,7 +115,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			// add cached controller
 			if (cachedController != null) {
 				var id:String = cachedController.toString();
-				var child:Node = createNode(CONTROLLER_SINGLE, node.fullNodeId, id, id, 
+				var child:Node = createNode(CONTROLLER_SINGLE, node.nodeUri, id, id, 
 					Resources.getResourceUrl("/images/mindmap/icons/executable.png"), false);
 				if (cachedController != selfController) {
 					// override
@@ -128,7 +128,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			// add self controller - only if different from cached
 			if (selfController != null && selfController != cachedController) {
 				var id:String = selfController.toString();
-				children.addItem(createNode(CONTROLLER_SINGLE, node.fullNodeId, id, id,
+				children.addItem(createNode(CONTROLLER_SINGLE, node.nodeUri, id, id,
 					Resources.getResourceUrl("/images/mindmap/icons/button_cancel.png"), false));
 			}
 			
@@ -146,7 +146,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			// add controllers
 			for each (var cachedController:AbstractController in cachedControllers) {
 				var id:String = cachedController.toString();
-				var child:Node = createNode(CONTROLLER_ADDITIVE, node.fullNodeId, id, id,
+				var child:Node = createNode(CONTROLLER_ADDITIVE, node.nodeUri, id, id,
 					Resources.getResourceUrl("/images/mindmap/icons/executable.png"), false);
 				if (selfControllers.getItemIndex(cachedController) < 0) {
 					// contributed
@@ -162,8 +162,8 @@ package org.flowerplatform.flex_client.core.node.controller {
 		private function createNode(type:String, resource:String, id:String, name:String, icons:String, hasChildren:Boolean = true):Node {
 			var node:Node = new Node();
 			node.type = type;
-			node.resource = resource;
-			node.idWithinResource = id;
+//			node.resource = resource;
+//			node.idWithinResource = id;
 			node.properties = new Object();
 			node.properties[CoreConstants.NAME] = name;
 			node.properties[CoreConstants.ICONS] = icons;
@@ -212,11 +212,11 @@ class FlexTypesNodeController extends MindMapModelController {
 			if (node.type == debug.TYPES) {
 				children = debug.getFlexTypes();
 			} else if (node.type == debug.TYPE) {
-				children = debug.getCategoriesAndControllerKeys(node.idWithinResource);
+//				children = debug.getCategoriesAndControllerKeys(node.idWithinResource);
 			} else if (node.type == debug.CONTROLLER_KEY_SINGLE) {
-				children = debug.getSingleControllers(node, node.resource, node.idWithinResource);
+//				children = debug.getSingleControllers(node, node.resource, node.idWithinResource);
 			} else if (node.type == debug.CONTROLLER_KEY_ADDITIVE) {
-				children = debug.getAdditiveControllers(node, node.resource,node.idWithinResource);
+//				children = debug.getAdditiveControllers(node, node.resource,node.idWithinResource);
 			}
 			nodeRegistry.expandCallbackHandler(node, children);
 		} else {

@@ -23,7 +23,7 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 			return;
 		}
 		
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 
 		if (MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
 			throw new RuntimeException(String.format("Property with name %s shouldn't be set because it's reserved. Please use another key!", property));
@@ -60,7 +60,7 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		if (MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
 			throw new RuntimeException(String.format("Property with name %s shouldn't be un-set!", property));

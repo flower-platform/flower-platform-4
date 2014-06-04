@@ -60,10 +60,10 @@ public class ResourceService implements ISessionListener {
 		if (subscribableNode == null) {
 			return null;
 		}			
-		sessionSubscribedToResource(subscribableNode.getFullNodeId(), sessionId, context);
+		sessionSubscribedToResource(subscribableNode.getNodeUri(), sessionId, context);
 		
 		// populate resourceNode with isDirty			
-		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getFullNodeId(), new ServiceContext<ResourceService>(context.getService())));
+		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getNodeUri(), new ServiceContext<ResourceService>(context.getService())));
 				
 		return subscribableNode;
 	}

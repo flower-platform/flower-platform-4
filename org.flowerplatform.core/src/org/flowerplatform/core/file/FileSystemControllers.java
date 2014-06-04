@@ -53,6 +53,8 @@ public class FileSystemControllers {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.modified.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(11))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.accessed.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(12))
 		.addCategory("category.fileContainer");
+		
+		CorePlugin.getInstance().getResourceService().addResourceHandler("file", new FileSystemResourceHandler());
 	}
 
 }

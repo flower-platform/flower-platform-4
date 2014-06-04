@@ -37,6 +37,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
@@ -128,7 +129,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
 						
-				Node child = new Node(type, parent.getResource(), null, null);
+				String childUri = Utils.getUriWithFragment(parent.getNodeUri(), null);
+				Node child = new Node(childUri);
+				child.setType(type);
 				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 				return child;
 //		}

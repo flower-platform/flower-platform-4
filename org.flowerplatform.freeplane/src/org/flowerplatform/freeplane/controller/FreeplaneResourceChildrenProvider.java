@@ -35,8 +35,8 @@ public class FreeplaneResourceChildrenProvider extends AbstractController implem
 			return Collections.emptyList();
 		}
 		
-		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
-		List<Node> children = Collections.singletonList(FreeplanePlugin.getInstance().getStandardNode(nodeModel, node.getFullNodeId()));
+		NodeModel nodeModel = (NodeModel) node.getRawNodeData();
+		List<Node> children = Collections.singletonList(FreeplanePlugin.getInstance().getStandardNode(nodeModel, node.getNodeUri()));
 		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		return children;
 	}

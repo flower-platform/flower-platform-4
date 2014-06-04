@@ -158,7 +158,7 @@ public class DownloadService implements ISessionListener {
 		boolean isSingle = fullNodeIds.size() == 1; // true if single file, not directory
 		for (String fullNodeId : fullNodeIds) {
 			try {
-				Object file = CorePlugin.getInstance().getFileAccessController().getFile(new Node(fullNodeId).getIdWithinResource());
+				Object file = CorePlugin.getInstance().getFileAccessController().getFile(new Node(fullNodeId).getFragment());
 				files.add(file);
 				if (CorePlugin.getInstance().getFileAccessController().isDirectory(file)) {
 					isSingle = false;

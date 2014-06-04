@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.remote.Node;
 import org.freeplane.features.map.MapModel;
+import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.styles.IStyle;
 import org.freeplane.features.styles.MapStyleModel;
 
@@ -16,7 +16,7 @@ import org.freeplane.features.styles.MapStyleModel;
 public class MindMapServiceRemote {
 
 	public List<String> getStyles(String fullNodeId) {		
-		MapModel mapModel = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(new Node(fullNodeId).getResource());
+		MapModel mapModel = ((NodeModel) CorePlugin.getInstance().getResourceService().getNode(fullNodeId).getRawNodeData()).getMap();
 			
 		Set<IStyle> styles = MapStyleModel.getExtension(mapModel).getStyles();
 		if (styles == null) {	

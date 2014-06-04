@@ -28,13 +28,13 @@ import org.flowerplatform.core.node.controller.IDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.IParentProvider;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
-import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.IRawNodeDataProvider;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceService2;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -179,8 +179,8 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 				
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
@@ -192,7 +192,7 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
@@ -210,8 +210,8 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 					
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (IPropertySetter controller : controllers) {
@@ -222,7 +222,7 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
@@ -237,8 +237,8 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 				
 		List<IAddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (IAddNodeController controller : controllers) {
@@ -249,7 +249,7 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
@@ -265,8 +265,8 @@ public class NodeService {
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 						
 		List<IRemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (IRemoveNodeController controller : controllers) {
@@ -277,7 +277,7 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
+		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
@@ -304,9 +304,9 @@ public class NodeService {
 		
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())));
 		
-		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
+		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
 		if (CoreUtils.isSubscribable(node.getProperties())) {
-			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getFullNodeId(), new ServiceContext<ResourceService>(resourceService)));
+			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService2>(resourceService)));
 		}
 	}
 	

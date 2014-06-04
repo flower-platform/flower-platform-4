@@ -9,6 +9,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.editor.remote.SubscriptionInfo;
 	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
 	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
@@ -103,7 +104,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			if (!isSubscribable) {
 				nodeRegistry.expand(node, additionalHandler);
 			} else {
-				subscribe(node.fullNodeId, nodeRegistry, function(resourceNode:Node):void {
+				subscribe(node.nodeUri, nodeRegistry, function(resourceNode:Node):void {
 					nodeRegistry.expand(node, additionalHandler);
 				});
 			}
@@ -159,13 +160,13 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * </ul>
 		 */ 
 		public function subscribe(nodeId:String, nodeRegistry:NodeRegistry, subscribeResultCallback:Function = null, subscribeFaultCallback:Function = null):void {
-			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToSelfOrParentResource", [nodeId], 
-				function(resourceNode:Node):void {
-					if (resourceNode != null) {
-						registerResourceNode(resourceNode, nodeRegistry);
+			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
+				function(subscriptionInfo:SubscriptionInfo):void {
+					if (subscriptionInfo.resourceNode != null) {
+						registerResourceNode(subscriptionInfo.resourceNode, subscriptionInfo.resourceSet, nodeRegistry);
 					}
 					if (subscribeResultCallback != null) {
-						subscribeResultCallback(resourceNode);
+						subscribeResultCallback(subscriptionInfo.rootNode);
 					}
 				},
 				function(event:FaultEvent):void {
@@ -180,6 +181,27 @@ package org.flowerplatform.flex_client.core.editor.resource {
 						subscribeFaultCallback(event);
 					}
 				});
+		}
+		
+		protected function registerResourceNode(resourceNode:Node, resourceSet:String, nodeRegistry:NodeRegistry):void {
+			// we have a resource node
+			// link it with this registry and update its properties
+			
+			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.nodeUri);
+			if (resourceNodeFromRegistry) { 
+				// do nothing
+				// node already in registry -> probably we want to update only its properties					
+			} else {
+				nodeRegistry.registerNode(resourceNode);
+				resourceNodeFromRegistry = nodeRegistry.getNodeById(resourceNode.nodeUri);
+			}				
+			linkResourceNodeWithNodeRegistry(resourceSet, nodeRegistry);
+			
+			// listen for resourceNode properties modifications like isDirty
+			resourceNodeFromRegistry.addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
+			
+			// copy needed -> otherwise, if same instances, the setter isn't called
+			resourceNodeFromRegistry.properties = ObjectUtil.copy(resourceNode.properties);				
 		}
 		
 		/**
@@ -279,36 +301,15 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			var node:Node = nodeRegistry.getNodeById(resourceNodeId);	
 			return node == null ? false : node.properties[CoreConstants.IS_DIRTY];
 		}
-		
-		protected function registerResourceNode(resourceNode:Node, nodeRegistry:NodeRegistry):void {
-			// we have a resource node
-			// link it with this registry and update its properties
-			
-			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.fullNodeId);
-			if (resourceNodeFromRegistry) { 
-				// do nothing
-				// node already in registry -> probably we want to update only its properties					
-			} else {
-				nodeRegistry.registerNode(resourceNode);
-				resourceNodeFromRegistry = nodeRegistry.getNodeById(resourceNode.fullNodeId);
-			}				
-			linkResourceNodeWithNodeRegistry(resourceNode.fullNodeId, nodeRegistry);
-			
-			// listen for resourceNode properties modifications like isDirty
-			resourceNodeFromRegistry.addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
-			
-			// copy needed -> otherwise, if same instances, the setter isn't called
-			resourceNodeFromRegistry.properties = ObjectUtil.copy(resourceNode.properties);				
-		}
-		
+				
 		public function unregisterResourceNode(resourceNode:Node, nodeRegistry:NodeRegistry):void {	
 			// change isDirty to false and dispatch event
-			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.fullNodeId);
+			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNode.nodeUri);
 			resourceNodeFromRegistry.properties[CoreConstants.IS_DIRTY] = false;
 			resourceNodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(resourceNodeFromRegistry, new ArrayList([CoreConstants.IS_DIRTY])));
 			
 			// refresh maps
-			unlinkResourceNodeFromNodeRegistry(resourceNode.fullNodeId, nodeRegistry);
+			unlinkResourceNodeFromNodeRegistry(resourceNode.nodeUri, nodeRegistry);
 		}
 		
 		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {

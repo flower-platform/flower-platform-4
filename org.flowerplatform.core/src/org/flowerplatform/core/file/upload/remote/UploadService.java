@@ -86,7 +86,7 @@ public class UploadService implements ISessionListener {
 	 * @throws Exception 
 	 */	
 	public String prepareUpload(String fullNodeId, String fileName, boolean unzipfile) throws Exception {
-		Object file = CorePlugin.getInstance().getFileAccessController().getFile(new Node(fullNodeId).getIdWithinResource());
+		Object file = CorePlugin.getInstance().getFileAccessController().getFile(new Node(fullNodeId).getFragment());
 		
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();		
 		long timestamp = System.currentTimeMillis();

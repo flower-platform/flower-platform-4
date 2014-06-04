@@ -34,13 +34,13 @@ public class UpdateController extends AbstractController
 		Node resourceNode = CoreUtils.getResourceNode(node);
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (resourceNode != null) {
-			CorePlugin.getInstance().getResourceService()
-				.addUpdate(resourceNode.getFullNodeId(), 
+			CorePlugin.getInstance().getResourceSetService()
+				.addUpdate(resourceNode.getNodeUri(), 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setTargetNodeAs(child)
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
-							.setFullNodeIdAs(node.getFullNodeId()));
+							.setFullNodeIdAs(node.getNodeUri()));
 			
 		}
 	}
@@ -49,12 +49,12 @@ public class UpdateController extends AbstractController
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
 		Node resourceNode = CoreUtils.getResourceNode(node);
 		if (resourceNode != null) {
-			CorePlugin.getInstance().getResourceService()
-				.addUpdate(resourceNode.getFullNodeId(), 
+			CorePlugin.getInstance().getResourceSetService()
+				.addUpdate(resourceNode.getNodeUri(), 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_REMOVED)
 							.setTargetNodeAs(child)
-							.setFullNodeIdAs(node.getFullNodeId()));		
+							.setFullNodeIdAs(node.getNodeUri()));		
 		}
 	}
 	
@@ -79,8 +79,8 @@ public class UpdateController extends AbstractController
 			}
 		}
 
-		CorePlugin.getInstance().getResourceService()
-			.addUpdate(resourceNode.getFullNodeId(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId()));		
+		CorePlugin.getInstance().getResourceSetService()
+			.addUpdate(resourceNode.getNodeUri(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri()));		
 	}
 
 }

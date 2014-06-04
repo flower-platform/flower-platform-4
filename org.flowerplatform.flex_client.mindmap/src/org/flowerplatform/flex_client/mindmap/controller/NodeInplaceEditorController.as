@@ -84,7 +84,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
 			
 			if (titleProvider.getValue(Node(model)) != textArea.text) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).nodeUri, 
 					titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text], function(data:Object):void {
 						context.diagramShell.mainToolFinishedItsJob();
 					});

@@ -89,8 +89,8 @@ public class FileSystemControllersTest {
 		context.add("type", FILE_NODE_TYPE);
 		context.add(CoreConstants.NAME, "newFile");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, false);
-		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, fileSystemNodeId, null)).getFullNodeId();
-		String fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder1", null).getFullNodeId();
+		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, fileSystemNodeId, null)).getNodeUri();
+		String fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder1", null).getNodeUri();
 	        
 		nodeServiceRemote.addChild(fullNodeId, context);
 							 
@@ -110,7 +110,7 @@ public class FileSystemControllersTest {
 		context.add(CoreConstants.NAME, "newFolder");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, true);
 				
-		fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder1", null).getFullNodeId();
+		fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder1", null).getNodeUri();
 		nodeServiceRemote.addChild(fullNodeId, context);
 		Object newFolder;
 		try {
@@ -125,7 +125,7 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void removeNode() {
-		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, fileSystemNodeId, null)).getFullNodeId();
+		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, fileSystemNodeId, null)).getNodeUri();
 		//delete oneFolder
 		nodeService.removeChild(new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder2", null), 
 								new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder2\\oneFolder", null), new ServiceContext<NodeService>(nodeService));

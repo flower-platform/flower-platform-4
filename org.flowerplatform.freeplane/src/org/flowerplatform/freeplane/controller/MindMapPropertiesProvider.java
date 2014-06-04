@@ -55,7 +55,7 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		super.populateWithProperties(node, context);
 		
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		node.getProperties().put(TEXT, rawNodeData.getText());
 		node.getProperties().put(CoreConstants.SIDE, rawNodeData.isLeft() ? CoreConstants.POSITION_LEFT : CoreConstants.POSITION_RIGHT);

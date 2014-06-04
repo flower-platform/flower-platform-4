@@ -34,7 +34,7 @@ package org.flowerplatform.flex_client.codesync.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			CorePlugin.getInstance().serviceLocator.invoke("codeSyncOperationsService.synchronize", [node.resource]);
+//			CorePlugin.getInstance().serviceLocator.invoke("codeSyncOperationsService.synchronize", [node.resource]);
 		}
 		
 	}

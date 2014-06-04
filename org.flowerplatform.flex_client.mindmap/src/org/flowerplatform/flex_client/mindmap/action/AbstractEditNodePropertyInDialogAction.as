@@ -48,7 +48,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 			
 			richTextWithRendererView.resultHandler = function(newValue:String):void {				
 				// invoke service method and wait for result to close the rename popup
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selectedNode.fullNodeId, property, newValue], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [selectedNode.nodeUri, property, newValue], 
 					function(result:Object):void {
 						FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(richTextWithRendererView);							
 					});

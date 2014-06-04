@@ -96,15 +96,15 @@ package org.flowerplatform.flex_client.mindmap {
 			editorArea.addElementAt(iconSideBar, 0);
 		}	
 				
-		override protected function subscribeResultCallback(resourceNode:Node):void {
-			super.subscribeResultCallback(resourceNode);
+		override protected function subscribeResultCallback(rootNode:Node):void {
+			super.subscribeResultCallback(rootNode);
 			
 			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
 			var rootNode:Node = Node(mindmapDiagramShell.getRoot(diagramShell.getNewDiagramShellContext()));
 			// get rootNode only if it has no properties
 			// properties needed to set renderer's data if showRootModelAsRootNode is true
 			if (rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [rootNode.fullNodeId], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [rootNode.nodeUri], 
 					function(returnedNode:Node):void {
 						rootNode.properties = returnedNode.properties;
 					});
@@ -128,7 +128,7 @@ package org.flowerplatform.flex_client.mindmap {
 				
 		protected function resourceNodeRemovedHandler(event:ResourceNodeRemovedEvent):void {
 			var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
-			if (Node(rootModel.model).fullNodeId == event.resourceNodeId) {
+			if (Node(rootModel.model).nodeUri == event.resourceNodeId) {
 				// remove the editor
 				FlexUtilGlobals.getInstance().workbench.closeView(this);
 			} else {

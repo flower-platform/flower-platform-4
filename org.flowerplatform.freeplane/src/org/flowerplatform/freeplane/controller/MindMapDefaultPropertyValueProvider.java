@@ -54,7 +54,7 @@ public class MindMapDefaultPropertyValueProvider extends AbstractController impl
 	@Override
 	public Object getDefaultValue(Node node, String property, ServiceContext<NodeService> serviceContext) {
 		serviceContext.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
-		NodeModel nodeModel =  (NodeModel) node.getOrRetrieveRawNodeData();
+		NodeModel nodeModel =  (NodeModel) node.getRawNodeData();
 		String styleName = (String) node.getProperties().get(STYLE_NAME);
 		
 		NodeModel styleNodeModel = getStyleNodeModel(nodeModel, styleName);

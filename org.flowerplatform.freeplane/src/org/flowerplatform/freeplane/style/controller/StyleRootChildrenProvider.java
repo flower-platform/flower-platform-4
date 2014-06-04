@@ -20,16 +20,16 @@ public class StyleRootChildrenProvider extends AbstractController implements ICh
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		List<Node> list = new ArrayList<>(); 
-		if (((NodeModel)node.getOrRetrieveRawNodeData()).getMap().getRootNode().equals(node.getOrRetrieveRawNodeData())) {
-			Node styleNode = new Node(STYLE_ROOT_NODE , null, new Node(node.getResource()).getIdWithinResource(), null);
-			list.add(styleNode);
+		if (((NodeModel) node.getRawNodeData()).getMap().getRootNode().equals(node.getRawNodeData())) {
+//			Node styleNode = new Node(STYLE_ROOT_NODE , null, new Node(node.getResource()).getIdWithinResource(), null);
+//			list.add(styleNode);
 		}
 		return list;
 	}
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		return ((NodeModel)node.getOrRetrieveRawNodeData()).getMap().getRootNode().equals(node.getOrRetrieveRawNodeData());
+		return ((NodeModel)node.getRawNodeData()).getMap().getRootNode().equals(node.getRawNodeData());
 	}
 
 }
