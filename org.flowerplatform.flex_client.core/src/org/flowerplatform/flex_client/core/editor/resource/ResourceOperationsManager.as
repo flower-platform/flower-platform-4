@@ -1,25 +1,13 @@
 package org.flowerplatform.flex_client.core.editor.resource {
-	import flash.utils.Dictionary;
-	
-	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.core.UIComponent;
-	import mx.rpc.events.FaultEvent;
-	import mx.utils.ObjectUtil;
 	
-	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.EditorFrontendAwareAction;
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
-	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;

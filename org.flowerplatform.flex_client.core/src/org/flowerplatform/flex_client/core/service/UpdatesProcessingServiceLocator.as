@@ -77,7 +77,7 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.UPDATES)) { // updates exists, process them
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.handleResourceNodesUpdates(result[CoreConstants.UPDATES]);
+				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.processUpdates(result[CoreConstants.UPDATES]);
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND)) {

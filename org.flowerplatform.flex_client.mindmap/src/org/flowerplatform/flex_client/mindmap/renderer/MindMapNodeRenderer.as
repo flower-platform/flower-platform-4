@@ -188,9 +188,9 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 		
 			for (var i:int=0; i < model.children.length; i++) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [model.children[i].nodeUri], 
-					function(returnedNode:Node):void {
-						var childNode:Node = mindMapDiagramShell.nodeRegistry.getNodeById(returnedNode.nodeUri);
+				var childNode:Node = Node(model.children[i]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [childNode.nodeUri], 
+					function(returnedNode:Node):void {						
 						var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
 						var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
 						

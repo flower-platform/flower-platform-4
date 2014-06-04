@@ -84,7 +84,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {
 			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
-			var rootModel:Node = mindmapDiagramShell.nodeRegistry.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).nodeUri);
+			var rootModel:Node = Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model);
 			
 			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) {
 				//root node is mm file -> get side from provider
