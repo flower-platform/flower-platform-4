@@ -324,6 +324,7 @@ public class ResourceService implements ISessionListener {
 		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, newCommandNode, new ServiceContext<NodeService>());
 
 		resourceDao.setCommandToUndoId(command.getResource(), command.getId());
+		resourceDao.setCommandToRedoId(command.getResource(), command.getId());
 	}
 
 	/**
@@ -343,11 +344,9 @@ public class ResourceService implements ISessionListener {
 			Command command=resourceDao.getCommand(resourceNodeId, commandId);
 			Integer comp = resourceDao.compareCommands(resourceNodeId, commandId, commandToUndoId);
 			if (command == null) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to undo is: %s", resourceNodeId, commandId,
-						resourceDao.getCommandToUndoId(resourceNodeId)));
+				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to undo is: %s", resourceNodeId, commandId,	commandToUndoId));
 			} else if (comp == null || comp > 0) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s has already been undone. Current command to undo is: %s", resourceNodeId, commandId,
-						resourceDao.getCommandToUndoId(resourceNodeId)));
+				throw new IllegalArgumentException(String.format("For resource %s command %s has already been undone. Current command to undo is: %s", resourceNodeId, commandId, commandToUndoId));
 			} else {
 				List<Command> commands = resourceDao.getCommands(resourceNodeId, commandId, commandToUndoId);
 				for (int i = commands.size() - 1; i >= 0; i--) {
@@ -359,11 +358,9 @@ public class ResourceService implements ISessionListener {
 					}
 				}
 				Command previousCommand = resourceDao.getCommandBefore(resourceNodeId, commandId);
-				if (previousCommand != null) {
-					resourceDao.setCommandToUndoId(resourceNodeId, previousCommand.getId());
-				} else {
-					resourceDao.setCommandToUndoId(resourceNodeId, null);
-				}
+				resourceDao.setCommandToUndoId(resourceNodeId, (previousCommand != null ? previousCommand.getId() : null));
+				resourceDao.setCommandToRedoId(command.getResource(), commandId);
+
 			}
 		} finally {
 			CorePlugin.getInstance().getLockManager().unlock(resourceNodeId);
@@ -395,6 +392,61 @@ public class ResourceService implements ISessionListener {
 		}
 	}
 
+	public void redo(String resourceNodeId, String commandId) {
+		try {
+			CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
+			String commandToRedoId = resourceDao.getCommandToRedoId(resourceNodeId);
+			Command command=resourceDao.getCommand(resourceNodeId, commandId);
+			Integer comp = resourceDao.compareCommands(resourceNodeId, commandId, commandToRedoId);
+			if (command == null) {
+				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to redo is: %s", resourceNodeId, commandId,	commandToRedoId));
+			} else if (comp == null || comp < 0) {
+				throw new IllegalArgumentException(String.format("For resource %s command %s has already been redone. Current command to redo is: %s", resourceNodeId, commandId, commandToRedoId));
+			} else {
+				List<Command> commands = resourceDao.getCommands(resourceNodeId, commandToRedoId, commandId);
+				for (int i = 0; i < commands.size(); i++) {
+					Command cmd = commands.get(i);
+					List<Update> updates = resourceDao.getUpdates(resourceNodeId, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
+					for (int k = (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k < updates.size(); k++) {
+						Update update = updates.get(k);
+						redoUpdate(update);
+					}
+				}
+				Command nextCommand = resourceDao.getCommandAfter(resourceNodeId, commandId);
+				resourceDao.setCommandToRedoId(resourceNodeId, (nextCommand != null ? nextCommand.getId() : null));
+				resourceDao.setCommandToUndoId(resourceNodeId, commandId);
+			}
+		} finally {
+			CorePlugin.getInstance().getLockManager().unlock(resourceNodeId);
+		}
+	}
+
+	private void redoUpdate(Update update) {
+		if (update instanceof PropertyUpdate) {
+			redoPropertyUpdate((PropertyUpdate)update);
+		}
+		if (update instanceof ChildrenUpdate) {
+			redoChildrenUpdate((ChildrenUpdate)update);
+		}
+	}
+	
+	private void redoPropertyUpdate(PropertyUpdate update) {
+		Node node=new Node(update.getFullNodeId());
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getValue(), context);
+	}
+
+	private void redoChildrenUpdate(ChildrenUpdate update) {
+		Node node = new Node(update.getFullNodeId());
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		switch (update.getType()) {
+		case CoreConstants.UPDATE_CHILD_ADDED:
+			CorePlugin.getInstance().getNodeService().addChild(node, update.getTargetNode(), context);
+			break;
+		}
+	}
+
+	
 	protected List<ResourceAccessController> getResourceAccessControllers(String resourceNodeId) {
 		Node resourceNode = new Node(resourceNodeId);
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(resourceNode.getType());

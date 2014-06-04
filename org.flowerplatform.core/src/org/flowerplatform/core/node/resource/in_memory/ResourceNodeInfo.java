@@ -32,6 +32,11 @@ public class ResourceNodeInfo {
 	 * @author Claudiu Matei
 	 */
 	private String commandToUndoId; 
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private String commandToRedoId; 
 	
 	private long updateRequestedTimestamp;
 
@@ -77,6 +82,14 @@ public class ResourceNodeInfo {
 		this.commandToUndoId = commandToUndoId;
 	}
 	
+	public String getCommandToRedoId() {
+		return commandToRedoId;
+	}
+
+	public void setCommandToRedoId(String commandToRedoId) {
+		this.commandToRedoId = commandToRedoId;
+	}
+
 	public long getUpdateRequestedTimestamp() {
 		return updateRequestedTimestamp;
 	}

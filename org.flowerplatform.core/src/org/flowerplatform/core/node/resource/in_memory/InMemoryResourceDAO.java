@@ -442,6 +442,24 @@ public class InMemoryResourceDAO implements IResourceDAO {
 	}
 
 	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public String getCommandToRedoId(String resourceNodeId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		return info.getCommandToRedoId();
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setCommandToRedoId(String resourceNodeId, String commandId) {
+		ResourceNodeInfo info = resourceNodeIdToInfo.get(resourceNodeId);
+		info.setCommandToRedoId(commandId);
+	}
+
+	/**
 	 * Lazy-init mechanism. Called from methods that need to add/update info.
 	 * Getters should instead check if the info exists, to avoid memory leaks.
 	 */

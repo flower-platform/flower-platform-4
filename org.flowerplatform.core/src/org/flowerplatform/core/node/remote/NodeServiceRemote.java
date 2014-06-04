@@ -143,5 +143,11 @@ public class NodeServiceRemote {
 		CorePlugin.getInstance().getResourceService().undo(resourceNodeId, commandId);
 //		RemoteMethodInvocationListener.addNewNode(commandStackNodeId);
 	}
+
+	public void redo(String commandStackNodeId, String commandId) {
+		Node commandStackNode=new Node(commandStackNodeId);
+		String resourceNodeId=RemoteMethodInvocationListener.unescapeFullNodeId(commandStackNode.getIdWithinResource());
+		CorePlugin.getInstance().getResourceService().redo(resourceNodeId, commandId);
+	}
 	
 }

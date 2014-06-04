@@ -112,4 +112,14 @@ public interface IResourceDAO {
 	 */
 	public void setCommandToUndoId(String resourceNodeId, String commandId);
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	public String getCommandToRedoId(String resourceNodeId);
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void setCommandToRedoId(String resourceNodeId, String commandId);
+
 }

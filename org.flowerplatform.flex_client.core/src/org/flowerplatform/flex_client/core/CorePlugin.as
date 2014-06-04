@@ -33,6 +33,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
+	import org.flowerplatform.flex_client.core.editor.action.RedoAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
 	import org.flowerplatform.flex_client.core.editor.action.TempDeleteAfterGH279AndCoAction;
@@ -166,6 +167,7 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
 			
 			editorClassFactoryActionProvider.addActionClass(TempDeleteAfterGH279AndCoAction);
+			editorClassFactoryActionProvider.addActionClass(RedoAction);
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				editorClassFactoryActionProvider.addActionClass(DownloadAction);
