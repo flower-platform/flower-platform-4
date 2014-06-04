@@ -31,20 +31,36 @@ public class InMemorySessionService extends SessionService {
 	}
 
 	@Override
+	public Object getSessionProperty(String sessionId, String property) {
+		SessionInfo sessionInfo = sessionInfos.get(sessionId);
+		if (sessionInfo != null) {
+			return sessionInfo.getProperties().get(property);
+		}
+		return null;
+	}
+	
+	@Override
 	public void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<SessionService> context) {
 		SessionInfo sessionInfo = sessionInfos.get(sessionId);
 		if (sessionInfo == null) {
 			sessionInfo = new SessionInfo();
 			sessionInfos.put(sessionId, sessionInfo);
 		}
-		sessionInfo.getSubscribedResourceNodeIds().add(resourceUri);
+		if (!sessionInfo.getSubscribedResourceNodeIds().contains(resourceUri)) {
+			sessionInfo.getSubscribedResourceNodeIds().add(resourceUri);
+		}
 	}
 
 	@Override
-	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri) {
+	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<SessionService> context) {
 		sessionInfos.get(sessionId).getSubscribedResourceNodeIds().remove(resourceUri);
 	}
 
+	@Override
+	public List<String> getSubscribedSessions() {
+		return new ArrayList<>(sessionInfos.keySet());
+	}
+	
 	@Override
 	public List<String> getResourcesSubscribedBySession(String sessionId) {
 		SessionInfo sessionInfo = sessionInfos.get(sessionId);
@@ -53,5 +69,4 @@ public class InMemorySessionService extends SessionService {
 		}
 		return sessionInfo.getSubscribedResourceNodeIds();
 	}
-
 }

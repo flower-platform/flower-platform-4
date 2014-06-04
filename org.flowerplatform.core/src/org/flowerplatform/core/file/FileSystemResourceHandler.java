@@ -20,8 +20,7 @@ public class FileSystemResourceHandler extends ResourceHandler {
 
 	@Override
 	public String getType(Object resourceData, URI nodeUri) {
-		// TODO Auto-generated method stub
-		return null;
+		return nodeUri.getScheme();
 	}
 
 	@Override

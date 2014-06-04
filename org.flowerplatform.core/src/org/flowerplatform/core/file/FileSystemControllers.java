@@ -10,7 +10,6 @@ import static org.flowerplatform.core.CoreConstants.FILE_LAST_MODIFIED_TIME;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SIZE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
-import static org.flowerplatform.core.CoreConstants.IS_SUBSCRIBABLE;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
@@ -19,7 +18,6 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.resources.ResourcesPlugin;
@@ -39,7 +37,6 @@ public class FileSystemControllers {
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new FileSystemNodeController())
-		.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(IS_SUBSCRIBABLE, true))
 		.addCategory("category.fileContainer");
 		
 		FilePropertiesController filePropertiesController = new FilePropertiesController();
@@ -54,7 +51,7 @@ public class FileSystemControllers {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.accessed.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(12))
 		.addCategory("category.fileContainer");
 		
-		CorePlugin.getInstance().getResourceService().addResourceHandler("file", new FileSystemResourceHandler());
+		CorePlugin.getInstance().getResourceService().addResourceHandler(FILE_SYSTEM_NODE_TYPE, new FileSystemResourceHandler());
 	}
 
 }

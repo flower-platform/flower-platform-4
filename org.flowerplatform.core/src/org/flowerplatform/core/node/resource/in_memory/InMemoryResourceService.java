@@ -26,8 +26,10 @@ public class InMemoryResourceService extends ResourceService2 {
 		InMemoryResourceInfo resourceInfo = (InMemoryResourceInfo) getResourceInfo(resourceUri);
 		if (resourceInfo == null) {
 			resourceInfo = new InMemoryResourceInfo();
-			resourceInfo.getSessionIds().add(sessionId);
 			resourceInfos.put(Utils.getString(resourceUri), resourceInfo);
+		}
+		if (!resourceInfo.getSessionIds().contains(sessionId)) {
+			resourceInfo.getSessionIds().add(sessionId);
 		}
 	}
 

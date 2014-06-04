@@ -20,10 +20,16 @@ package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
+import org.flowerplatform.core.file.FileExtensionSetting;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -36,6 +42,7 @@ import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.resource.FileResourceService;
+import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService2;
 import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
@@ -67,6 +74,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected static final String PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP = "true"; 
 		
 	protected IFileAccessController fileAccessController = new PlainFileAccessController();
+	
+	protected Map<String, List<FileExtensionSetting>> fileExtensionSettings = new HashMap<String, List<FileExtensionSetting>>();
 	
 	protected ComposedSessionListener composedSessionListener = new ComposedSessionListener();
 	
@@ -109,6 +118,19 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	 */
 	public IFileAccessController getFileAccessController() {
 		return fileAccessController;
+	}
+	
+	public List<FileExtensionSetting> getFileExtensionSettings(String extension) {
+		return fileExtensionSettings.get(extension);
+	}
+	
+	public void addFileExtensionSetting(String extension, FileExtensionSetting setting) {
+		List<FileExtensionSetting> settings = getFileExtensionSettings(extension);
+		if (settings == null) {
+			settings = new ArrayList<FileExtensionSetting>();
+			fileExtensionSettings.put(extension, settings);
+		}
+		settings.add(setting);
 	}
 	
 	public ServiceRegistry getServiceRegistry() {
@@ -238,7 +260,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
 		
 		new FileSystemControllers().registerControllers();
-//		new ResourceDebugControllers().registerControllers();
+		new ResourceDebugControllers().registerControllers();
 //		new TypeDescriptorRegistryDebugControllers().registerControllers();
 		
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {

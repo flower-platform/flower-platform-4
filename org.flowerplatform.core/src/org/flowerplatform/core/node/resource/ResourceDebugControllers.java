@@ -61,7 +61,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Collections.singletonList(new Node(DEBUG, null, null, null));
+			return Collections.singletonList(new Node(DEBUG, DEBUG, null));
 		}
 	}
 	
@@ -74,7 +74,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Collections.singletonList(new Node(RESOURCES, DEBUG, null, null));
+			return Collections.singletonList(new Node(RESOURCES, DEBUG, null));
 		}
 		
 		@Override
@@ -95,14 +95,14 @@ public class ResourceDebugControllers {
 			List<Node> children = new ArrayList<Node>();
 			
 			// sessions
-			for (String sessionId : CorePlugin.getInstance().getResourceService().getSubscribedSessions()) {
-				Node session = new Node(SESSION, node.getResource(), sessionId, null);
+			for (String sessionId : CorePlugin.getInstance().getSessionService().getSubscribedSessions()) {
+				Node session = new Node(SESSION, node.getSchemeSpecificPart(), sessionId);
 				children.add(session);
 			}
 			
 			// resources
 			for (String resourceId : CorePlugin.getInstance().getResourceService().getResources()) {
-				Node resource = new Node(RESOURCE_NODE_INFO, node.getResource(), resourceId.replace("|", "+"), null);
+				Node resource = new Node(RESOURCE_NODE_INFO, node.getSchemeSpecificPart(), resourceId.replace("|", "+"));
 				children.add(resource);
 			}
 			
@@ -119,9 +119,9 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			String sessionId = node.getIdWithinResource().split(" ")[0];
+			String sessionId = node.getFragment().split(" ")[0];
 			node.getProperties().put(CoreConstants.NAME, "Session " + sessionId);
-			node.getProperties().put("ip", CorePlugin.getInstance().getResourceService().getSessionProperty(sessionId, "ip"));
+			node.getProperties().put("ip", CorePlugin.getInstance().getSessionService().getSessionProperty(sessionId, "ip"));
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 		}
 	}
@@ -138,9 +138,9 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			List<Node> children = new ArrayList<Node>();
-			String sessionId = node.getIdWithinResource().split(" ")[0];
-			for (String resourceId : CorePlugin.getInstance().getResourceService().getResourcesSubscribedBySession(sessionId)) {
-				Node resource = new Node(RESOURCE_NODE_INFO2, node.getResource(), resourceId.replace("|", "+"), null);
+			String sessionId = node.getFragment().split(" ")[0];
+			for (String resourceId : CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId)) {
+				Node resource = new Node(RESOURCE_NODE_INFO2, node.getSchemeSpecificPart(), resourceId.replace("|", "+"));
 				children.add(resource);
 			}
 			return children;
@@ -151,7 +151,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			String resourceId = node.getIdWithinResource().replace("+", "|").split(" ")[0];
+			String resourceId = node.getFragment().replace("+", "|").split(" ")[0];
 			node.getProperties().put(CoreConstants.NAME, "Resource " + resourceId);
 			long timestamp = CorePlugin.getInstance().getResourceService().getUpdateRequestedTimestamp(resourceId);
 			node.getProperties().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
@@ -172,9 +172,9 @@ public class ResourceDebugControllers {
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			
 			List<Node> children = new ArrayList<Node>();
-			String resourceId = node.getIdWithinResource().replace("+", "|");
+			String resourceId = node.getFragment().replace("+", "|");
 			for (String sessionId : CorePlugin.getInstance().getResourceService().getSessionsSubscribedToResource(resourceId)) {
-				Node session = new Node(SESSION3, node.getResource(), sessionId, null);
+				Node session = new Node(SESSION3, node.getSchemeSpecificPart(), sessionId);
 				children.add(session);
 			}
 			return children;
@@ -194,9 +194,9 @@ public class ResourceDebugControllers {
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			
 			List<Node> children = new ArrayList<Node>();
-			String resourceId = node.getIdWithinResource().replace("+", "|");
+			String resourceId = node.getFragment().replace("+", "|");
 			for (String sessionId : CorePlugin.getInstance().getResourceService().getSessionsSubscribedToResource(resourceId)) {
-				Node session = new Node(SESSION2, node.getResource(), sessionId, null);
+				Node session = new Node(SESSION2, node.getSchemeSpecificPart(), sessionId);
 				children.add(session);
 			}
 			return children;
@@ -205,7 +205,7 @@ public class ResourceDebugControllers {
 	
 	public void registerControllers() {
 		
-		// add _debug node to root
+		// add debug node to root
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.ROOT_TYPE)
 		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootDebugController().setOrderIndexAs(10000));
@@ -215,7 +215,7 @@ public class ResourceDebugControllers {
 		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, debugController)
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, debugController);
 		
-		// _debug node
+		// debug node
 		
 		ResourcesDebugController resourcesDebugController = new ResourcesDebugController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(RESOURCES)
@@ -228,7 +228,7 @@ public class ResourceDebugControllers {
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new SessionCategoryDebugController().setOrderIndexAs(-500000))
 		.addAdditiveController(CoreConstants.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("ip"));
 		
-		// session as child of _debug; children are resources
+		// session as child of debug; children are resources
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(SESSION)
 		.addCategory(SESSION_CATEGORY)
@@ -251,7 +251,7 @@ public class ResourceDebugControllers {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(SESSION2)
 		.addCategory(SESSION_CATEGORY);
 		
-		// resource as child of _debug; children are sessions
+		// resource as child of debug; children are sessions
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(RESOURCE_NODE_INFO)
 		.addCategory(RESOURCE_NODE_INFO_CATEGORY)
 		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ResourceNodeInfoDebugController());

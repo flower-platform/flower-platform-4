@@ -31,6 +31,11 @@ public class Node {
 	public Node(String nodeUri) {
 		setNodeUri(nodeUri);
 	}
+	
+	public Node(String scheme, String ssp, String fragment) {
+		setNodeUri(Utils.getString(Utils.getUri(scheme, ssp, fragment)));
+		setType(scheme);
+	}
 
 	public String getType() {
 		return type;
@@ -46,6 +51,14 @@ public class Node {
 	
 	public void setNodeUri(String nodeUri) {
 		this.nodeUri = nodeUri;
+	}
+	
+	public String getFragment() {
+		return Utils.getUri(nodeUri).getFragment();
+	}
+
+	public String getSchemeSpecificPart() {
+		return Utils.getUri(nodeUri).getSchemeSpecificPart();
 	}
 	
 	/**
@@ -118,14 +131,4 @@ public class Node {
 	public String toString() {
 		return String.format("Node [fullNodeId = %s]", getNodeUri());
 	}
-
-	public String getFragment() {
-		return Utils.getUri(nodeUri).getFragment();
-	}
-
-	public String getResource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -37,6 +37,7 @@ package org.flowerplatform.flex_client.core.node {
 	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
 	import org.flowerplatform.flex_client.core.node.event.RootNodeAddedEvent;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
+	import org.flowerplatform.flexutil.Pair;
 	
 	use namespace mx_internal;
 	
@@ -183,12 +184,13 @@ package org.flowerplatform.flex_client.core.node {
 		 */
 		public function requestChildren(node:Node, additionalHandler:Function = null):void {		
 			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
-			var isSubscribable:Boolean = node == null ? false : node.properties[CoreConstants.IS_SUBSCRIBABLE];
-			if (!isSubscribable) {
+			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+			if (subscribableResources == null || subscribableResources.length == 0) {
 				requestChildrenInternal(node, additionalHandler);
 			} else {
-				CorePlugin.getInstance().resourceNodesManager.subscribeToSelfOrParentResource(node.nodeUri, this, function(rootNode:Node):void {
-					requestChildrenInternal(rootNode, additionalHandler);
+				var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
+				CorePlugin.getInstance().resourceNodesManager.subscribeToSelfOrParentResource(String(subscribableResource.a), this, function(rootNode:Node):void {
+					requestChildrenInternal(getNodeById(rootNode.nodeUri), additionalHandler);
 				});
 			}
 		}

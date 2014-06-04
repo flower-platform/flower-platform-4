@@ -26,10 +26,12 @@ import org.junit.Test;
 public class NodeServiceTest {
 	private static NodeService nodeService;
 
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		
 		class MockChildProvider extends AbstractController implements IChildrenProvider {
+			@SuppressWarnings("rawtypes")
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
 				return null;
@@ -66,19 +68,19 @@ public class NodeServiceTest {
 						   .addAdditiveController(CHILDREN_PROVIDER, spyProviderForTypeB);
 						   
 		
-		when(spyProviderForTypeA.getChildren(eq(new Node("root", null, "0", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeA.getChildren(eq(new Node("root", null, "0")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("a", null, "1", null),
-						new Node("a", null, "2", null)));
-		when(spyProviderForTypeA.getChildren(eq(new Node("a", null, "1", null)), any(ServiceContext.class)))
+						new Node("a", null, "1"),
+						new Node("a", null, "2")));
+		when(spyProviderForTypeA.getChildren(eq(new Node("a", null, "1")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("a", null, "12", null),
-						new Node("a", null, "3", null)));
+						new Node("a", null, "12"),
+						new Node("a", null, "3")));
 
-		when(spyProviderForTypeA.getChildren(eq(new Node("a", null, "2", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeA.getChildren(eq(new Node("a", null, "2")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("a", null, "4", null),
-						new Node("a", null, "5", null)));
+						new Node("a", null, "4"),
+						new Node("a", null, "5")));
 
 		// B
 		TypeDescriptor nodeTypeDescriptorB = descriptorRegistry
@@ -88,25 +90,25 @@ public class NodeServiceTest {
 						   .addAdditiveController(CHILDREN_PROVIDER, spyProviderAll);
 		nodeTypeDescriptorB.addCategory("category.fileSystem");
 		
-		when(spyProviderForTypeB.getChildren(eq(new Node("a", null, "2", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node("a", null, "2")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "6", null),
-						new Node("b", null, "7", null)));
+						new Node("b", null, "6"),
+						new Node("b", null, "7")));
 
-		when(spyProviderForTypeB.getChildren(eq(new Node("b", null, "10", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node("b", null, "10")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "11", null),
-						new Node("b", null, "13", null)));
+						new Node("b", null, "11"),
+						new Node("b", null, "13")));
 		
-		when(spyProviderForTypeB.getChildren(eq(new Node("b", null, "14", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node("b", null, "14")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "15", null),
-						new Node("b", null, "16", null)));
+						new Node("b", null, "15"),
+						new Node("b", null, "16")));
 		
-		when(spyProviderForTypeB.getChildren(eq(new Node("root", null, "0", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node("root", null, "0")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "10", null),
-						new Node("b", null, "14", null)));
+						new Node("b", null, "10"),
+						new Node("b", null, "14")));
 		
 		// C
 		TypeDescriptor nodeTypeDescriptorC = descriptorRegistry
@@ -117,25 +119,25 @@ public class NodeServiceTest {
 		   				   .addAdditiveController(CHILDREN_PROVIDER, spyProviderAll)
 		   				   .addCategory("category.fileSystem");
 		
-		when(spyProviderForTypeC.getChildren(eq(new Node("a", null, "2", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node("a", null, "2")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "8", null),
-						new Node("c", null, "9", null)));
+						new Node("c", null, "8"),
+						new Node("c", null, "9")));
 
-		when(spyProviderForTypeC.getChildren(eq(new Node("c", null, "17", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node("c", null, "17")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "19", null),
-						new Node("c", null, "20", null)));
+						new Node("c", null, "19"),
+						new Node("c", null, "20")));
 		
-		when(spyProviderForTypeC.getChildren(eq(new Node("c", null, "18", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node("c", null, "18")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "21", null),
-						new Node("c", null, "22", null)));
+						new Node("c", null, "21"),
+						new Node("c", null, "22")));
 		
-		when(spyProviderForTypeC.getChildren(eq(new Node("root", null, "0", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node("root", null, "0")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "17", null),
-						new Node("c", null, "18", null)));
+						new Node("c", null, "17"),
+						new Node("c", null, "18")));
 		
 		// root
 		TypeDescriptor nodeTypeDescriptorRoot = descriptorRegistry
@@ -151,25 +153,25 @@ public class NodeServiceTest {
 				.getOrCreateCategoryTypeDescriptor("category.fileSystem");
 		fileSystemTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, spyProviderForTypeFileSystem);
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("b", null, "10", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("b", null, "10")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "23", null)));
+						new Node("fileSystem", null, "23")));
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("b", null, "14", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("b", null, "14")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "24", null)));
+						new Node("fileSystem", null, "24")));
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("c", null, "17", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("c", null, "17")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "25", null)));
+						new Node("fileSystem", null, "25")));
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("c", null, "18", null)), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("c", null, "18")), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "26", null)));
+						new Node("fileSystem", null, "26")));
 		// all
 		when(spyProviderAll.getChildren(any(Node.class), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("all", null, "0", null)));
+						new Node("all", null, "0")));
 	}
 	
 	/**
@@ -179,52 +181,52 @@ public class NodeServiceTest {
 	 */
 	@Test
 	public void testPriority() {
-		assertEquals(nodeService.getChildren(new Node("root", null, "0", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("a", null, "1", null),
-				new Node("a", null, "2", null),
-				new Node("b", null, "10", null),
-				new Node("b", null, "14", null),
-				new Node("c", null, "17", null),
-				new Node("c", null, "18", null),
-				new Node("all", null, "0", null)));
+		assertEquals(nodeService.getChildren(new Node("root", null, "0"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node("a", null, "1"),
+				new Node("a", null, "2"),
+				new Node("b", null, "10"),
+				new Node("b", null, "14"),
+				new Node("c", null, "17"),
+				new Node("c", null, "18"),
+				new Node("all", null, "0")));
 		
-		assertEquals(nodeService.getChildren(new Node("a", null, "1", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("a", null, "12", null),
-				new Node("a", null, "3", null),
-				new Node("all", null, "0", null)));
+		assertEquals(nodeService.getChildren(new Node("a", null, "1"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node("a", null, "12"),
+				new Node("a", null, "3"),
+				new Node("all", null, "0")));
 		
-		assertEquals(nodeService.getChildren(new Node("a", null, "2", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("a", null, "4", null),
-				new Node("a", null, "5", null),
-				new Node("b", null, "6", null),
-				new Node("b", null, "7", null),
-				new Node("c", null, "8", null),
-				new Node("c", null, "9", null),
-				new Node("all", null, "0", null)));
+		assertEquals(nodeService.getChildren(new Node("a", null, "2"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node("a", null, "4"),
+				new Node("a", null, "5"),
+				new Node("b", null, "6"),
+				new Node("b", null, "7"),
+				new Node("c", null, "8"),
+				new Node("c", null, "9"),
+				new Node("all", null, "0")));
 		
-		assertEquals(nodeService.getChildren(new Node("b", null, "10", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("b", null, "11", null),
-				new Node("b", null, "13", null),
-				new Node("fileSystem", null, "23", null),
-				new Node("all", null, "0", null)));
+		assertEquals(nodeService.getChildren(new Node("b", null, "10"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node("b", null, "11"),
+				new Node("b", null, "13"),
+				new Node("fileSystem", null, "23"),
+				new Node("all", null, "0")));
 		
-		assertEquals(nodeService.getChildren(new Node("b", null, "14", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("b", null, "15", null),
-				new Node("b", null, "16", null),
-				new Node("fileSystem", null, "24", null),
-				new Node("all", null, "0", null)));
+		assertEquals(nodeService.getChildren(new Node("b", null, "14"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node("b", null, "15"),
+				new Node("b", null, "16"),
+				new Node("fileSystem", null, "24"),
+				new Node("all", null, "0")));
 		
-		assertEquals(nodeService.getChildren(new Node("c", null, "17", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("c", null, "19", null),
-				new Node("c", null, "20", null),
-				new Node("fileSystem", null, "25", null),
-				new Node("all", null, "0", null)));
+		assertEquals(nodeService.getChildren(new Node("c", null, "17"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node("c", null, "19"),
+				new Node("c", null, "20"),
+				new Node("fileSystem", null, "25"),
+				new Node("all", null, "0")));
 		
-		assertEquals(nodeService.getChildren(new Node("c", null, "18", null), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("c", null, "21", null),
-				new Node("c", null, "22", null),
-				new Node("fileSystem", null, "26", null),
-				new Node("all", null, "0", null)));
+		assertEquals(nodeService.getChildren(new Node("c", null, "18"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node("c", null, "21"),
+				new Node("c", null, "22"),
+				new Node("fileSystem", null, "26"),
+				new Node("all", null, "0")));
 	}
 	
 }

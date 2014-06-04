@@ -38,7 +38,7 @@ public class ResourceUnsubscriber extends TimerTask {
 			if (now - lastPing > Long.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY))) {
 				List<String> sessionIds = service.getSessionsSubscribedToResource(resourceNodeId);
 				for (int i = sessionIds.size() - 1; i >= 0; i--) {
-					CorePlugin.getInstance().getSessionService().sessionUnsubscribedFromResource(resourceNodeId, sessionIds.get(i), 
+					CorePlugin.getInstance().getSessionService().sessionUnsubscribedFromResource(sessionIds.get(i), resourceNodeId,
 							new ServiceContext<SessionService>(CorePlugin.getInstance().getSessionService()));
 				}
 			}

@@ -40,10 +40,10 @@ public abstract class SessionService implements ISessionListener {
 	public void sessionRemoved(String sessionId) {
 		logger.debug("Session removed {}", sessionId);
 		
-//		List<String> resources = resourceDao.getResourcesSubscribedBySession(sessionId);
-//		for (int i = resources.size() - 1; i >= 0; i--) {
-//			sessionUnsubscribedFromResource(resources.get(i), sessionId, new ServiceContext<ResourceService>(this));
-//		}
+		List<String> resources = getResourcesSubscribedBySession(sessionId);
+		for (int i = resources.size() - 1; i >= 0; i--) {
+			sessionUnsubscribedFromResource(resources.get(i), sessionId, new ServiceContext<SessionService>(this));
+		}
 		
 		doSessionRemoved(sessionId);
 	}
@@ -52,15 +52,13 @@ public abstract class SessionService implements ISessionListener {
 	
 	public abstract void updateSessionProperty(String sessionId, String property, Object value);
 	
+	public abstract Object getSessionProperty(String sessionId, String property);
+	
 	public abstract void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<SessionService> context);
 	
-	public abstract void sessionUnsubscribedFromResource(String sessionId, String resourceUri);
+	public abstract void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<SessionService> context);
 	
-	public void sessionUnsubscribedFromResource(String resourceNodeId, String string, ServiceContext<SessionService> serviceContext) {
-		// TODO Auto-generated method stub
-		
-	}
+	public abstract List<String> getSubscribedSessions();
 	
 	public abstract List<String> getResourcesSubscribedBySession(String sessionId);
-	
 }

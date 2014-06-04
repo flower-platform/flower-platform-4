@@ -8,7 +8,6 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -25,10 +24,7 @@ public class RootChildrenProvider extends AbstractController implements IChildre
 		List<Node> children = new ArrayList<Node>();
 		
 		// idWithinResource == null -> path to workspace location
-		String scheme = CoreConstants.REPOSITORY_TYPE;
-		String ssp = Utils.getUri(node.getNodeUri()).getSchemeSpecificPart();
-		Node repository = new Node(Utils.getString(Utils.getUri(scheme, ssp, null)));
-		repository.setType(scheme);
+		Node repository = new Node(CoreConstants.REPOSITORY_TYPE, node.getSchemeSpecificPart(), null);
 		children.add(repository);
 		return children;
 	}

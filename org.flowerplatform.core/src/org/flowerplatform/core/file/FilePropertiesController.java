@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
@@ -73,7 +74,12 @@ public class FilePropertiesController extends AbstractController implements IPro
 			node.getProperties().put(IS_OPENABLE_IN_NEW_EDITOR, true);
 			node.getProperties().put(FILE_SIZE, fileAccessController.length(file));
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"));
-			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
+//			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
+			
+			String extension = fileAccessController.getFileExtension(file);
+			for (FileExtensionSetting settings : CorePlugin.getInstance().getFileExtensionSettings(extension)) {
+				
+			}
 		}
 	}
 

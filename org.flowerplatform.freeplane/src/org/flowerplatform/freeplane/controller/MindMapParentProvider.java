@@ -20,7 +20,7 @@ public class MindMapParentProvider extends AbstractController implements IParent
 		if (parentNodeModel == null) {
 			return null;
 		}
-		return FreeplanePlugin.getInstance().getStandardNode(parentNodeModel, node.getResource());
+		return FreeplanePlugin.getInstance().getStandardNode(parentNodeModel, node.getSchemeSpecificPart());
 	}
 
 }

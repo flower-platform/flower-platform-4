@@ -18,7 +18,7 @@ public class CoreConstants {
 	public static final String REPOSITORY_TYPE = "repository";
 	public static final String CODE_TYPE = "code";
 	
-	public final static String DEBUG = "_debug";
+	public final static String DEBUG = "debug";
 	
 	//////////////////////////////////
 	// Node properties

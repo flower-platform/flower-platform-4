@@ -46,10 +46,7 @@ public class FileChildrenController extends AbstractController
 				// don't show metadata directory from workspace
 				continue;
 			}
-			String scheme = CoreConstants.FILE_NODE_TYPE;
-			String ssp = Utils.getUri(node.getNodeUri()).getSchemeSpecificPart();
-			String fragment = fileAccessController.getPath(object);
-			Node child = new Node(Utils.getString(Utils.getUri(scheme, ssp, fragment)));
+			Node child = new Node(CoreConstants.FILE_NODE_TYPE, node.getSchemeSpecificPart(), fileAccessController.getPath(object));
 			child.setType(CoreConstants.FILE_NODE_TYPE);
 			children.add(child);
 //			children.add(new Node(CoreConstants.FILE_NODE_TYPE, 
@@ -81,8 +78,7 @@ public class FileChildrenController extends AbstractController
 	
 	@Override
 	public void addNode(Node parentNode, Node child, ServiceContext<NodeService> context) {
-		IFileAccessController fileAccessController = CorePlugin.getInstance()
-				.getFileAccessController();
+		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object parentFile;
 
 		try {
@@ -106,13 +102,9 @@ public class FileChildrenController extends AbstractController
 			return;
 		}
 		
-		if (parentNode.getType().equals(FILE_SYSTEM_NODE_TYPE)) {
-//			child.setResource(parentNode.getFullNodeId());
-		}
-
 		String name = (String) context.get(NAME);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
-//		child.setIdWithinResource(fileAccessController.getPath(fileToCreate));
+		child.setNodeUri(Utils.getUriWithFragment(parentNode.getNodeUri(), fileAccessController.getPath(fileToCreate)));
 		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
 		
 		if (fileAccessController.exists(fileToCreate)) {

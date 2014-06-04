@@ -31,7 +31,11 @@ package org.flowerplatform.flex_client.core {
 		public static const CONTENT_TYPE:String = "contentType";
 		public static const HIDE_ROOT_NODE:String = "hideRootNode";
 		
+		public static const SUBSCRIBABLE_RESOURCES:String = "subscribableResources";
+		
+		// TODO delete
 		public static const IS_SUBSCRIBABLE:String = "isSubscribable";
+		
 		public static const IS_DIRTY:String = "isDirty";
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
