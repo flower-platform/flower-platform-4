@@ -34,6 +34,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
+	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
@@ -71,7 +72,6 @@ package org.flowerplatform.flex_client.mindmap {
 						
 			nodeRegistry.addEventListener(RefreshEvent.REFRESH, refreshCHandler);
 			nodeRegistry.addEventListener(ResourceNodeRemovedEvent.REMOVED, resourceNodeRemovedHandler);
-//			nodeRegistry.addEventListener(RootNodeAddedEvent.TYPE, rootNodeAddedHandler);
 		}
 		
 		/**
@@ -87,39 +87,17 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		override protected function createChildren():void {			
 			super.createChildren();
-									
-//			nodeRegistry.startingNode = Node(MindMapRootModelWrapper(MindMapEditorDiagramShell(diagramShell).rootModel).model);			
-//			nodeRegistry.useStartingNodeAsRootNode = MindMapEditorDiagramShell(diagramShell).showRootModelAsRootNode;
-			
+
 			var iconSideBar:MindMapIconsBar = new MindMapIconsBar();
 			iconSideBar.diagramShell = diagramShell;
 			editorArea.addElementAt(iconSideBar, 0);
 		}	
-				
+		
 		override protected function subscribeResultCallback(rootNode:Node):void {
 			super.subscribeResultCallback(rootNode);
 			
-			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
-			var rootNode:Node = Node(mindmapDiagramShell.getRoot(diagramShell.getNewDiagramShellContext()));
-			// get rootNode only if it has no properties
-			// properties needed to set renderer's data if showRootModelAsRootNode is true
-			if (rootNode != null && ObjectUtil.getClassInfo(rootNode.properties).properties.length == 0) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [rootNode.nodeUri], 
-					function(returnedNode:Node):void {
-						rootNode.properties = returnedNode.properties;
-					});
-			}
-			
-			nodeRegistry.expand(null);
+			nodeRegistry.expand(rootNode);
 		}
-		
-//		protected function rootNodeAddedHandler(event:RootNodeAddedEvent):void {
-//			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
-//			
-//			mindmapDiagramShell.addModelInRootModelChildrenList(diagramShell.getNewDiagramShellContext(), event.rootNode, true);	
-//			
-//			ControllerUtils.getMindMapModelController(diagramShell.getNewDiagramShellContext(), event.rootNode).setExpanded(diagramShell.getNewDiagramShellContext(), event.rootNode, true);
-//		}
 		
 		protected function refreshCHandler(event:RefreshEvent):void {
 			MindMapDiagramShell(diagramShell).refreshRootModelChildren(diagramShell.getNewDiagramShellContext());
