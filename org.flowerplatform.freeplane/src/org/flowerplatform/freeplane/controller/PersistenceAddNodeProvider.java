@@ -18,7 +18,7 @@ public class PersistenceAddNodeProvider extends MindMapAddNodeController {
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {		
 		super.addNode(node, child, context);
 		
-		NodeModel rawNodeData = ((NodeModel) child.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) child.getRawNodeData());
 		// create attributes table and persist the type
 		NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) rawNodeData.getExtension(NodeAttributeTableModel.class);
 		if (attributeTable == null) {

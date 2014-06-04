@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.event.BeforeRemoveNodeChildrenEvent;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.layout.ITitleDecorator;
@@ -73,7 +74,7 @@ package org.flowerplatform.flex_client.core.editor {
 			CorePlugin.getInstance().resourceNodesManager.subscribeToSelfOrParentResource(editorInput, nodeRegistry, subscribeResultCallback, subscribeFaultCallback);
 		}
 		
-		protected function subscribeResultCallback(resourceNode:Node):void {
+		protected function subscribeResultCallback(rootNode:Node):void {
 			// nothing to do
 		}
 		

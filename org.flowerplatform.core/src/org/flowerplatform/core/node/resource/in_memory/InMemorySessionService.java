@@ -1,9 +1,11 @@
 package org.flowerplatform.core.node.resource.in_memory;
 
-import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.session.SessionService;
 
 /**
@@ -25,18 +27,31 @@ public class InMemorySessionService extends SessionService {
 	
 	@Override
 	public void updateSessionProperty(String sessionId, String property, Object value) {
-		// TODO Auto-generated method stub
-
+		sessionInfos.get(sessionId).getProperties().put(property, value);
 	}
 
 	@Override
-	public void sessionSubscribedToResource(String sessionId, URI resourceUri) {
-		sessionInfos.get(sessionId).getSubscribedResourceNodeIds().add(resourceUri.toString());
+	public void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<SessionService> context) {
+		SessionInfo sessionInfo = sessionInfos.get(sessionId);
+		if (sessionInfo == null) {
+			sessionInfo = new SessionInfo();
+			sessionInfos.put(sessionId, sessionInfo);
+		}
+		sessionInfo.getSubscribedResourceNodeIds().add(resourceUri);
 	}
 
 	@Override
-	public void sessionUnsubscribedFromResource(String sessionId, URI resourceUri) {
-		sessionInfos.get(sessionId).getSubscribedResourceNodeIds().remove(resourceUri.toString());
+	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri) {
+		sessionInfos.get(sessionId).getSubscribedResourceNodeIds().remove(resourceUri);
+	}
+
+	@Override
+	public List<String> getResourcesSubscribedBySession(String sessionId) {
+		SessionInfo sessionInfo = sessionInfos.get(sessionId);
+		if (sessionInfo == null) {
+			return new ArrayList<String>();
+		}
+		return sessionInfo.getSubscribedResourceNodeIds();
 	}
 
 }

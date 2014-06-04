@@ -6,9 +6,7 @@ import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
-import static org.flowerplatform.core.CoreConstants.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
-import static org.flowerplatform.core.CoreConstants.RESOURCE_ACCESS_CONTROLLER;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_CATEGORY;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_CATEGORY;
 
@@ -17,9 +15,7 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.DefaultPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.controller.FreeplaneIsSubscribablePropertyProvider;
-import org.flowerplatform.freeplane.controller.FreeplaneResourceAccessController;
 import org.flowerplatform.freeplane.controller.FreeplaneResourceChildrenProvider;
-import org.flowerplatform.freeplane.controller.FreeplaneResourceRawNodeDataProvider;
 import org.flowerplatform.freeplane.controller.MindMapAddNodeController;
 import org.flowerplatform.freeplane.controller.MindMapChildrenProvider;
 import org.flowerplatform.freeplane.controller.MindMapDefaultPropertyValueProvider;
@@ -28,7 +24,6 @@ import org.flowerplatform.freeplane.controller.MindMapFileContentTypeProvider;
 import org.flowerplatform.freeplane.controller.MindMapParentProvider;
 import org.flowerplatform.freeplane.controller.MindMapPropertiesProvider;
 import org.flowerplatform.freeplane.controller.MindMapPropertySetter;
-import org.flowerplatform.freeplane.controller.MindMapRawNodeDataProvider;
 import org.flowerplatform.freeplane.controller.MindMapRemoveNodeController;
 import org.flowerplatform.freeplane.controller.PersistenceAddNodeProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertiesProvider;
@@ -72,7 +67,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 	
-		CorePlugin.getInstance().getResourceService2().addResourceHandler("fpp", new FreeplanePersistenceResourceHandler());
+		CorePlugin.getInstance().getResourceService().addResourceHandler("fpp", new FreeplanePersistenceResourceHandler());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY)		
 		.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider())
@@ -80,18 +75,21 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_SETTER, new MindMapPropertySetter())
 		.addSingleController(PARENT_PROVIDER, new MindMapParentProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider())
-		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
+//		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapAddNodeController())
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController())
 		.addAdditiveController(CHILDREN_PROVIDER, new StyleRootChildrenProvider())
 		.addAdditiveController(PROPERTIES_PROVIDER, new DefaultPropertiesProvider());
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
+		.addCategory(FREEPLANE_MINDMAP_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_PERSISTENCE_CATEGORY)
 		.addAdditiveController(PROPERTIES_PROVIDER, new PersistencePropertiesProvider())		
 		.addAdditiveController(PROPERTY_SETTER, new PersistencePropertySetter())
 		.addSingleController(PARENT_PROVIDER, new MindMapParentProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider())
-		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
+//		.addSingleController(RAW_NODE_DATA_PROVIDER, new MindMapRawNodeDataProvider())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new PersistenceAddNodeProvider())
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController());
 		
@@ -102,16 +100,16 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new FreeplaneIsSubscribablePropertyProvider())
-		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_MINDMAP_CATEGORY))
+//		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_MINDMAP_CATEGORY))
 		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
-		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider())
+//		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider())
 		.addAdditiveController(PROPERTIES_PROVIDER, new MindMapFileContentTypeProvider())
 		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
-		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_PERSISTENCE_CATEGORY))
-		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
-		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());		
+//		.addAdditiveController(RESOURCE_ACCESS_CONTROLLER, new FreeplaneResourceAccessController(FREEPLANE_PERSISTENCE_CATEGORY))
+		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider());
+//		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider());		
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());		
 	}
@@ -127,7 +125,8 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	}	
 	
 	public Node getStandardNode(NodeModel nodeModel, String resource) {
-		String resourceCategory = CorePlugin.getInstance().getResourceService().getResourceCategory(resource);
+		String resourceCategory = MindMapConstants.FREEPLANE_MINDMAP_CATEGORY; 
+				//CorePlugin.getInstance().getResourceService().getResourceCategory(resource);
 		
 		String type = null;
 		if (MindMapConstants.FREEPLANE_MINDMAP_CATEGORY.equals(resourceCategory)) {
@@ -144,7 +143,8 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 				}
 			}
 		}
-		return new Node(type, resource, nodeModel.createID(), nodeModel);
+//		return new Node(type, resource, nodeModel.createID(), nodeModel);
+		return null;
 	}
 	
 }

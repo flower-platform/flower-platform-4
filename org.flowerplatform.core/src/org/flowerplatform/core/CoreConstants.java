@@ -34,6 +34,9 @@ public class CoreConstants {
 	public static final String HIDE_ROOT_NODE = "hideRootNode";
 	
 	public static final String IS_DIRTY = "isDirty";
+	public static final String SUBSCRIBABLE_RESOURCES = "subscribableResources";
+	
+	// TODO delete
 	public static final String IS_SUBSCRIBABLE = "isSubscribable";
 	
 	public static final String IS_OPENABLE_IN_NEW_EDITOR = "isOpenableInNewEditor";

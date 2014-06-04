@@ -5,6 +5,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.NodeModel;
 
@@ -15,12 +16,12 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 
 	@Override
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
-		NodeModel parentRawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel parentRawNodeData = ((NodeModel) node.getRawNodeData());
 		NodeModel currentModelAtInsertionPoint = null;
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (insertBeforeFullNodeId != null) {
 			Node insertBeforeNode = new Node(insertBeforeFullNodeId);
-			currentModelAtInsertionPoint = insertBeforeNode != null ? (NodeModel) insertBeforeNode.getOrRetrieveRawNodeData() : null;
+			currentModelAtInsertionPoint = insertBeforeNode != null ? (NodeModel) insertBeforeNode.getRawNodeData() : null;
 		}
 		NodeModel newNodeModel = new NodeModel("", parentRawNodeData.getMap());
 		newNodeModel.setLeft(parentRawNodeData.isLeft());
@@ -29,7 +30,8 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 		parentRawNodeData.getMap().setSaved(false);
 		
 		// set the id on the node instance
-		child.setIdWithinResource(newNodeModel.createID());	
+		child.setNodeUri(Utils.getUriWithFragment(node.getNodeUri(), newNodeModel.createID()));
+		child.setRawNodeData(newNodeModel);
 		
 		// populate also with initial properties
 		child.getOrPopulateProperties();

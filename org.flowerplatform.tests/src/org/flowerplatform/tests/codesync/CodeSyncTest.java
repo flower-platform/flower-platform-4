@@ -70,7 +70,7 @@ public class CodeSyncTest {
 	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
-	private static final String resourceNodeId = new Node(CoreConstants.CODE_TYPE, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm", null).getFullNodeId();
+	private static final String resourceNodeId = new Node(CoreConstants.CODE_TYPE, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm", null).getNodeUri();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

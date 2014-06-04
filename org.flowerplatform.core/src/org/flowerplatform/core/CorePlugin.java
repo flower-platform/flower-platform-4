@@ -32,19 +32,13 @@ import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
-import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
-import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.resource.FileResourceService;
-import org.flowerplatform.core.node.resource.ResourceDebugControllers;
-import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceService2;
 import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
-import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
-import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceService;
 import org.flowerplatform.core.node.resource.in_memory.InMemorySessionService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
@@ -86,9 +80,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
-	protected ResourceService resourceService;
 	
-	protected ResourceService2 resourceService2;
+	protected ResourceService2 resourceService;
 	protected ResourceSetService resourceSetService;
 	protected SessionService sessionService;
 		
@@ -130,12 +123,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return nodeService;
 	}
 
-	public ResourceService getResourceService() {
+	public ResourceService2 getResourceService() {
 		return resourceService;
-	}
-	
-	public ResourceService2 getResourceService2() {
-		return resourceService2;
 	}
 	
 	public ResourceSetService getResourceSetService() {
@@ -212,9 +201,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			
 		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
-		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
-		
-		resourceService2 = new FileResourceService();
+		resourceService = new FileResourceService();
 		resourceSetService = new ResourceSetService();
 		sessionService = new InMemorySessionService();
 		
@@ -238,7 +225,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.CODE_TYPE))
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true));
 		
-		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
+//		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 		
 		UpdateController updateController = new UpdateController();
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL)
@@ -251,8 +238,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
 		
 		new FileSystemControllers().registerControllers();
-		new ResourceDebugControllers().registerControllers();
-		new TypeDescriptorRegistryDebugControllers().registerControllers();
+//		new ResourceDebugControllers().registerControllers();
+//		new TypeDescriptorRegistryDebugControllers().registerControllers();
 		
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);

@@ -105,7 +105,7 @@ license-end
 					var node:Node = Node(nodeList.getItemAt(i));
 					if (node.type == MindMapConstants.MINDMAP_NODE_TYPE) {
 						currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
-						CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, CoreConstants.ICONS, currentValue]);
+						CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, CoreConstants.ICONS, currentValue]);
 					}
 				}
 			}

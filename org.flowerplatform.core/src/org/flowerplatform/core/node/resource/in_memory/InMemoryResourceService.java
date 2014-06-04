@@ -1,10 +1,13 @@
 package org.flowerplatform.core.node.resource.in_memory;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Mariana Gheorghe
@@ -15,17 +18,37 @@ public class InMemoryResourceService extends ResourceService2 {
 	
 	@Override
 	public Object getResourceInfo(URI resourceUri) {
-		return resourceInfos.get(resourceUri.toString());
+		return resourceInfos.get(Utils.getString(resourceUri));
 	}
 
 	@Override
-	protected void doSessionSubscribedToResource(String sessionId, URI resourceUri) {
+	protected void sessionSubscribedToResource(String sessionId, URI resourceUri) {
 		InMemoryResourceInfo resourceInfo = (InMemoryResourceInfo) getResourceInfo(resourceUri);
 		if (resourceInfo == null) {
 			resourceInfo = new InMemoryResourceInfo();
 			resourceInfo.getSessionIds().add(sessionId);
-			resourceInfos.put(resourceUri.toString(), resourceInfo);
+			resourceInfos.put(Utils.getString(resourceUri), resourceInfo);
 		}
+	}
+
+	@Override
+	public List<String> getResources() {
+		return new ArrayList<>(resourceInfos.keySet());
+	}
+
+	@Override
+	public List<String> getSessionsSubscribedToResource(String resourceNodeId) {
+		return resourceInfos.get(resourceNodeId).getSessionIds();
+	}
+
+	@Override
+	public long getUpdateRequestedTimestamp(String resourceNodeId) {
+		return resourceInfos.get(resourceNodeId).getLastPing();
+	}
+
+	@Override
+	public void setUpdateRequestedTimestamp(String resourceUri, long timestamp) {
+		resourceInfos.get(resourceUri).setLastPing(timestamp);
 	}
 
 }

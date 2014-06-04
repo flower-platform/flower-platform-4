@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Enumeration;
@@ -17,6 +18,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Mariana Gheorghe
@@ -32,12 +34,8 @@ public class CoreUtils {
 	}
 	
 	public static Node getResourceNode(Node node) {
-		if (node.getResource() == null) {
-			return null;
-		} else if (CoreConstants.SELF_RESOURCE.equals(node.getResource())) {
-			return node;
-		}
-		return new Node(node.getResource());
+		URI nodeUri = Utils.getUriWithoutFragment(node.getNodeUri());
+		return CorePlugin.getInstance().getResourceService().getNode(Utils.getString(nodeUri));
 	}
 	
 	public static void delete(File f) {	

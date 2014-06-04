@@ -41,6 +41,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.NodeWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.SubscriptionInfo;
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
@@ -282,7 +283,7 @@ package org.flowerplatform.flex_client.core {
 				.setIcon(Resources.openIcon)
 				.setParentId(CoreConstants.DEBUG)
 				.setFunctionDelegate(function ():void {
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "root:user/repo");
 				})
 			);
 					
@@ -317,6 +318,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(ChildrenUpdate);
 			registerClassAliasFromAnnotation(NodeWithChildren);
 			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
+			registerClassAliasFromAnnotation(SubscriptionInfo);
 		
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
 			registerClassAliasFromAnnotation(GenericValueDescriptor);
@@ -349,7 +351,7 @@ package org.flowerplatform.flex_client.core {
 			var hideRootNode:Boolean = node.properties[CoreConstants.HIDE_ROOT_NODE];
 			
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
-			editorDescriptor.openEditor(node.fullNodeId, true, hideRootNode);
+			editorDescriptor.openEditor(node.nodeUri, true, hideRootNode);
 		}
 		
 		/**

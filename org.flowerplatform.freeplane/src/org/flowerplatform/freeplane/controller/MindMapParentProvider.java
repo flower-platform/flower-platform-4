@@ -15,7 +15,7 @@ public class MindMapParentProvider extends AbstractController implements IParent
 
 	@Override
 	public Node getParent(Node node, ServiceContext<NodeService> context) {
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());		
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());		
 		NodeModel parentNodeModel = rawNodeData.getParentNode();
 		if (parentNodeModel == null) {
 			return null;

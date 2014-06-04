@@ -32,7 +32,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		override public function run():void {
 			var fullNodeIds:ArrayCollection = new ArrayCollection();
 			for (var i:int = 0; i < selection.length; i++) {
-				fullNodeIds.addItem(Node(selection.getItemAt(i)).fullNodeId);				
+				fullNodeIds.addItem(Node(selection.getItemAt(i)).nodeUri);				
 			}
 			
 			if (selection.length > 1 || (selection.length == 1 && Node(selection.getItemAt(0)).properties[CoreConstants.FILE_IS_DIRECTORY])) {

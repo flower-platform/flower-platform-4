@@ -58,7 +58,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		private function changeCheckboxClickHandler(event:Event):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.unsetProperty", 
-				[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, propertyDescriptor.name]);
+				[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).nodeUri, propertyDescriptor.name]);
 		}
 		
 		public function updateCheckBox(val:String):void {
@@ -78,7 +78,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 					oldValue = getValue();
 					CorePlugin.getInstance().serviceLocator.invoke(
 						"nodeService.setProperty", 
-						[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).fullNodeId, propertyDescriptor.name, getValue()]);
+						[Node(PropertiesPlugin.getInstance().currentSelection.getItemAt(0)).nodeUri, propertyDescriptor.name, getValue()]);
 				}
 			}			
 		}

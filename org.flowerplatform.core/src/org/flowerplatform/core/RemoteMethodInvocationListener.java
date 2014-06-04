@@ -9,6 +9,7 @@ import java.util.Map;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.remote.Update;
+import org.flowerplatform.core.session.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class RemoteMethodInvocationListener {
 		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 		
 		if (clientResourceNodeIds != null) {
-			List<String> serverResourceNodeIds = CorePlugin.getInstance().getResourceService().getResourcesSubscribedBySession(sessionId);
+			List<String> serverResourceNodeIds = CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId);
 			List<String> notFoundResourceNodeIds = new ArrayList<String>();
 			for (String clientResourceNodeId : clientResourceNodeIds) {
 				if (serverResourceNodeIds.contains(clientResourceNodeId)) {
@@ -48,7 +49,7 @@ public class RemoteMethodInvocationListener {
 				// the client is not subscribed to this resource anymore, maybe he went offline?
 				// subscribe the client to this resource
 				try {
-					CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(clientResourceNodeId, sessionId, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+					CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, clientResourceNodeId, new ServiceContext<SessionService>(CorePlugin.getInstance().getSessionService()));
 				} catch (Exception e) {
 					// the resource could not be loaded; inform the client
 					notFoundResourceNodeIds.add(clientResourceNodeId);
@@ -93,7 +94,7 @@ public class RemoteMethodInvocationListener {
 			
 			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
 			for (String resourceNodeId : resourceNodeIds) {
-				List<Update> updates = CorePlugin.getInstance().getResourceService()
+				List<Update> updates = CorePlugin.getInstance().getResourceSetService()
 						.getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
 				resourceNodeIdToUpdates.put(resourceNodeId, updates);
 			}

@@ -97,7 +97,7 @@ package org.flowerplatform.flex_client.mindmap {
 			PropertiesPlugin.getInstance().propertyRendererClasses[MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE] = new FactoryWithInitialization
 				(DropDownListPropertyRenderer, {	
 					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
-						CorePlugin.getInstance().serviceLocator.invoke("mindmapService.getStyles", [node.fullNodeId], callbackFunction);
+						CorePlugin.getInstance().serviceLocator.invoke("mindmapService.getStyles", [node.nodeUri], callbackFunction);
 					}
 			});	
 			

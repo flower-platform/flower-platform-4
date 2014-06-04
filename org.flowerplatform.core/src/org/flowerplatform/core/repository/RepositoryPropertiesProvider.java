@@ -19,7 +19,7 @@ public class RepositoryPropertiesProvider extends AbstractController implements 
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object file;
 		try {
-			file = fileAccessController.getFile(node.getIdWithinResource());
+			file = fileAccessController.getFile(node.getFragment());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

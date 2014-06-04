@@ -67,7 +67,7 @@ package org.flowerplatform.flex_client.core.node {
 		}
 		
 		public function registerNode(node:Node):void {			
-			registry[node.fullNodeId] = node;
+			registry[node.nodeUri] = node;
 		}
 		
 		private function unregisterNode(nodeId:String):void {
@@ -88,13 +88,13 @@ package org.flowerplatform.flex_client.core.node {
 			if (parent == null) {
 				// we have a root node
 				
-				var nodeFromRegistry:Node = getNodeById(node.fullNodeId);
+				var nodeFromRegistry:Node = getNodeById(node.nodeUri);
 				if (nodeFromRegistry) { 
 					// node already in registry -> we want to update only its properties
 					nodeFromRegistry.properties = node.properties;
 				} else {
 					registerNode(node);
-					nodeFromRegistry = getNodeById(node.fullNodeId);
+					nodeFromRegistry = getNodeById(node.nodeUri);
 				}		
 				
 				startingNode = nodeFromRegistry;
@@ -131,7 +131,7 @@ package org.flowerplatform.flex_client.core.node {
 			// remove children recursive
 			removeChildren(node, false);
 			
-			unregisterNode(node.fullNodeId);
+			unregisterNode(node.nodeUri);
 			
 			if (parent != null) {
 				// remove from parent list of children
@@ -163,7 +163,7 @@ package org.flowerplatform.flex_client.core.node {
 			if (node.children != null) {
 				for each (var child:Node in node.children) {
 					removeChildrenRecursive(child, false);
-					unregisterNode(child.fullNodeId);
+					unregisterNode(child.nodeUri);
 				}
 				node.children = null;
 				
@@ -187,8 +187,8 @@ package org.flowerplatform.flex_client.core.node {
 			if (!isSubscribable) {
 				requestChildrenInternal(node, additionalHandler);
 			} else {
-				CorePlugin.getInstance().resourceNodesManager.subscribeToSelfOrParentResource(node.fullNodeId, this, function(resourceNode:Node):void {
-					requestChildrenInternal(node, additionalHandler);
+				CorePlugin.getInstance().resourceNodesManager.subscribeToSelfOrParentResource(node.nodeUri, this, function(rootNode:Node):void {
+					requestChildrenInternal(rootNode, additionalHandler);
 				});
 			}
 		}
@@ -196,7 +196,7 @@ package org.flowerplatform.flex_client.core.node {
 		private function requestChildrenInternal(node:Node, additionalHandler:Function = null):void {
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? startingNode.fullNodeId : node.fullNodeId, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
+				[node == null ? startingNode.nodeUri : node.nodeUri, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
 				function (result:Object):void {
 					requestChildrenCallbackHandler(node, ArrayCollection(result)); 
 					
@@ -273,19 +273,19 @@ package org.flowerplatform.flex_client.core.node {
 				}
 				if (update is PropertyUpdate) { // property update
 					var propertyUpdate:PropertyUpdate = PropertyUpdate(update);
-					if (!nodeToNodeUpdatedEvent.hasOwnProperty(nodeFromRegistry.fullNodeId)) {
-						nodeToNodeUpdatedEvent[nodeFromRegistry.fullNodeId] = new NodeUpdatedEvent(nodeFromRegistry);
+					if (!nodeToNodeUpdatedEvent.hasOwnProperty(nodeFromRegistry.nodeUri)) {
+						nodeToNodeUpdatedEvent[nodeFromRegistry.nodeUri] = new NodeUpdatedEvent(nodeFromRegistry);
 					}					
 					if (propertyUpdate.isUnset) {
 						delete nodeFromRegistry.properties[propertyUpdate.key];						
-						NodeUpdatedEvent(nodeToNodeUpdatedEvent[nodeFromRegistry.fullNodeId]).addRemovedProperty(propertyUpdate.key);
+						NodeUpdatedEvent(nodeToNodeUpdatedEvent[nodeFromRegistry.nodeUri]).addRemovedProperty(propertyUpdate.key);
 					} else {
 						nodeFromRegistry.properties[propertyUpdate.key] = propertyUpdate.value;						
-						NodeUpdatedEvent(nodeToNodeUpdatedEvent[nodeFromRegistry.fullNodeId]).addUpdatedProperty(propertyUpdate.key);
+						NodeUpdatedEvent(nodeToNodeUpdatedEvent[nodeFromRegistry.nodeUri]).addUpdatedProperty(propertyUpdate.key);
 					}					
 				} else { // children update
 					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
-					var targetNodeInRegistry:Node = getNodeById(childrenUpdate.targetNode.fullNodeId);	
+					var targetNodeInRegistry:Node = getNodeById(childrenUpdate.targetNode.nodeUri);	
 					var refresh:Boolean = false;
 					
 					switch (childrenUpdate.type) {
@@ -302,7 +302,8 @@ package org.flowerplatform.flex_client.core.node {
 								// Children that come with the <code>ChildrenUpdate</code>s must be cloned, so that a different instance
 								// is applied to each editor. Otherwise, the same node will be added to all the node registries, and then 
 								// any <code>NodeUpdatedEvent</code> on this node will be caught by all the renderers from all open editors
-								var newChild:Node = new Node(childrenUpdate.targetNode.fullNodeId);
+								var newChild:Node = new Node(childrenUpdate.targetNode.nodeUri);
+								newChild.type = childrenUpdate.targetNode.type;
 								newChild.properties = childrenUpdate.targetNode.properties;
 								addNode(newChild, nodeFromRegistry, index);
 								refresh = true;
@@ -360,7 +361,7 @@ package org.flowerplatform.flex_client.core.node {
 		 */ 
 		private function getFullNodeIdWithChildren(node:Node):FullNodeIdWithChildren {
 			var fullNodeIdWithChildren:FullNodeIdWithChildren = new FullNodeIdWithChildren();
-			fullNodeIdWithChildren.fullNodeId = node.fullNodeId;
+			fullNodeIdWithChildren.fullNodeId = node.nodeUri;
 			
 			if (node.children != null) {
 				for each (var child:Node in node.children) {
@@ -396,7 +397,7 @@ package org.flowerplatform.flex_client.core.node {
 		protected function refreshHandler(node:Node, nodeWithVisibleChildren:NodeWithChildren):void {
 			// set new node properties and dispatch event
 			node.properties = nodeWithVisibleChildren.node.properties;
-			var nodeFromRegistry:Node = getNodeById(node.fullNodeId);
+			var nodeFromRegistry:Node = getNodeById(node.nodeUri);
 			if (nodeFromRegistry != null && nodeFromRegistry != node) {
 				nodeFromRegistry.properties = nodeWithVisibleChildren.node.properties;
 			}
@@ -420,7 +421,7 @@ package org.flowerplatform.flex_client.core.node {
 					var exists:Boolean = false;
 					currentChildNode = Node(currentChildren.getItemAt(i));
 					for each (var newChildWithVisibleChildren:NodeWithChildren in nodeWithVisibleChildren.children) {
-						if (currentChildNode.fullNodeId == newChildWithVisibleChildren.node.fullNodeId) {
+						if (currentChildNode.nodeUri == newChildWithVisibleChildren.node.nodeUri) {
 							exists = true;
 							break;
 						}
@@ -429,7 +430,7 @@ package org.flowerplatform.flex_client.core.node {
 						// child exists -> refresh its structure
 						refreshHandler(currentChildNode, newChildWithVisibleChildren);
 						// store, for the new child, its index in current list
-						newNodeToCurrentNodeIndex[newChildWithVisibleChildren.node.fullNodeId] = i;
+						newNodeToCurrentNodeIndex[newChildWithVisibleChildren.node.nodeUri] = i;
 					} else {
 						// child doesn't exist in new list -> remove it from parent
 						removeNode(currentChildNode, node);
@@ -439,10 +440,10 @@ package org.flowerplatform.flex_client.core.node {
 			
 			for (i = 0; i < nodeWithVisibleChildren.children.length; i++) {	
 				var newChildNode:Node = NodeWithChildren(nodeWithVisibleChildren.children.getItemAt(i)).node;
-				if (!newNodeToCurrentNodeIndex.hasOwnProperty(newChildNode.fullNodeId)) { // new child doesn't exist in current list -> add it
+				if (!newNodeToCurrentNodeIndex.hasOwnProperty(newChildNode.nodeUri)) { // new child doesn't exist in current list -> add it
 					addNode(newChildNode, node, i);
-				} else if (newNodeToCurrentNodeIndex[newChildNode.fullNodeId] != i) { // new child exists in current list, but different indexes -> get current child and move it to new index
-					currentChildNode = getNodeById(newChildNode.fullNodeId);
+				} else if (newNodeToCurrentNodeIndex[newChildNode.nodeUri] != i) { // new child exists in current list, but different indexes -> get current child and move it to new index
+					currentChildNode = getNodeById(newChildNode.nodeUri);
 					removeNode(currentChildNode, node);
 					addNode(currentChildNode, node, i);
 				}

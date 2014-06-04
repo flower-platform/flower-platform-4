@@ -6,6 +6,7 @@ import java.util.Map;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
+import org.flowerplatform.util.Utils;
 
 /**
  * <p>
@@ -19,10 +20,6 @@ public class Node {
 	
 	private String type;
 	
-	private String resource;
-	
-	private String idWithinResource;
-	
 	private String nodeUri;
 	
 	private Map<String, Object> properties;
@@ -30,22 +27,11 @@ public class Node {
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
-	private boolean rawNodeDataRetrieved;
 		
-	public Node(String type, String resource, String idWithinResource, Object rawNodeData) {		
-		this.type = type;
-		this.resource = resource;
-		this.idWithinResource = idWithinResource;
-		
-		if (rawNodeData != null) {
-			setRawNodeData(rawNodeData);
-		}
-	}
-	
 	public Node(String nodeUri) {
-		this.nodeUri = nodeUri;
+		setNodeUri(nodeUri);
 	}
-	
+
 	public String getType() {
 		return type;
 	}
@@ -54,31 +40,14 @@ public class Node {
 		this.type = type;
 	}
 
-	public String getResource() {
-		return resource;
-	}
-
-	public void setResource(String resource) {
-		this.resource = resource;
-	}
-	
-	public String getIdWithinResource() {
-		return idWithinResource;
-	}
-
-	public void setIdWithinResource(String idWithinResource) {
-		this.idWithinResource = idWithinResource;
-	}
-
 	public String getNodeUri() {
 		return nodeUri;
 	}
 	
-	public String getFullNodeId() {
-		return null;
+	public void setNodeUri(String nodeUri) {
+		this.nodeUri = nodeUri;
 	}
-
-
+	
 	/**
 	 * Should be used for writing values in the map. Probably by {@link IPropertiesProvider}.
 	 * 
@@ -112,18 +81,13 @@ public class Node {
 		}
 		return getProperties();
 	}
-			
-	public Object getOrRetrieveRawNodeData() {
-		if (!rawNodeDataRetrieved) {
-			// lazy initialization
-			setRawNodeData(CorePlugin.getInstance().getNodeService().getRawNodeData(this, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService())));		
-		}
+	
+	public Object getRawNodeData() {
 		return rawNodeData;
 	}
-
+	
 	public void setRawNodeData(Object rawNodeData) {
 		this.rawNodeData = rawNodeData;
-		rawNodeDataRetrieved = true;
 	}
 	
 	/**
@@ -153,6 +117,15 @@ public class Node {
 	@Override
 	public String toString() {
 		return String.format("Node [fullNodeId = %s]", getNodeUri());
+	}
+
+	public String getFragment() {
+		return Utils.getUri(nodeUri).getFragment();
+	}
+
+	public String getResource() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

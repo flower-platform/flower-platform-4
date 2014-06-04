@@ -91,16 +91,16 @@ package org.flowerplatform.flex_client.mindmap {
 		override protected function createChildren():void {			
 			super.createChildren();
 									
-			nodeRegistry.startingNode = Node(MindMapRootModelWrapper(MindMapEditorDiagramShell(diagramShell).rootModel).model);			
-			nodeRegistry.useStartingNodeAsRootNode = MindMapEditorDiagramShell(diagramShell).showRootModelAsRootNode;
+//			nodeRegistry.startingNode = Node(MindMapRootModelWrapper(MindMapEditorDiagramShell(diagramShell).rootModel).model);			
+//			nodeRegistry.useStartingNodeAsRootNode = MindMapEditorDiagramShell(diagramShell).showRootModelAsRootNode;
 			
 			var iconSideBar:MindMapIconsBar = new MindMapIconsBar();
 			iconSideBar.diagramShell = diagramShell;
 			editorArea.addElementAt(iconSideBar, 0);
 		}	
 				
-		override protected function subscribeResultCallback(resourceNode:Node):void {
-			super.subscribeResultCallback(resourceNode);
+		override protected function subscribeResultCallback(rootNode:Node):void {
+			super.subscribeResultCallback(rootNode);
 			
 			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
 			var rootNode:Node = Node(mindmapDiagramShell.getRoot(diagramShell.getNewDiagramShellContext()));
@@ -128,7 +128,7 @@ package org.flowerplatform.flex_client.mindmap {
 				
 		protected function resourceNodeRemovedHandler(event:ResourceNodeRemovedEvent):void {
 			var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
-			if (Node(rootModel.model).fullNodeId == event.resourceNodeId) {
+			if (Node(rootModel.model).nodeUri == event.resourceNodeId) {
 				// remove the editor
 				FlexUtilGlobals.getInstance().workbench.closeView(this);
 			} else {

@@ -33,15 +33,9 @@ package org.flowerplatform.flex_client.core.editor.remote {
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.Node")]
 	public class Node {
 		
-		private static const FULL_NODE_ID_SEPARATOR:String = "|";				
-		
-		private static const FULL_NODE_ID_PATTERN:RegExp = new RegExp("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
-		
-		private var cachedFullNodeId:String;
-		
 		private var _type:String;		
-		private var _resource:String;		
-		private var _idWithinResource:String;		
+		
+		private var _nodeUri:String;
 				
 		private var _properties:Object;
 		
@@ -51,19 +45,9 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		[Transient]
 		public var children:ArrayCollection;
 		
-		public function Node(fullNodeId:String = null) {
-			if (fullNodeId != null) {
-				// this case happens when a Node is created from client
-				// so instantiate & populate required attributes
-				
-				var result:Object = FULL_NODE_ID_PATTERN.exec(fullNodeId);
-				type = result[1];
-				resource = result[2].length == 0 ? null : result[2];
-				idWithinResource = result[3].length == 0 ? null : result[3];
-				cachedFullNodeId = fullNodeId;
-				
-				properties = new Object();
-			}
+		public function Node(nodeUri:String = null) {
+			_nodeUri = nodeUri;
+			properties = new Object();
 		}
 		
 		public function get type():String {
@@ -72,27 +56,8 @@ package org.flowerplatform.flex_client.core.editor.remote {
 
 		public function set type(value:String):void {
 			_type = value;
-			cachedFullNodeId = null;
 		}
 
-		public function get resource():String {
-			return _resource;
-		}
-		
-		public function set resource(value:String):void {
-			_resource = value;
-			cachedFullNodeId = null;
-		}
-		
-		public function get idWithinResource():String {
-			return _idWithinResource;
-		}
-		
-		public function set idWithinResource(value:String):void {
-			_idWithinResource = value;
-			cachedFullNodeId = null;
-		}
-				
 		public function get properties():Object	{
 			return _properties;
 		}
@@ -103,15 +68,16 @@ package org.flowerplatform.flex_client.core.editor.remote {
 			this.dispatchEvent(new NodeUpdatedEvent(this, null, null, true));			
 		}
 		
-		public function get fullNodeId():String {
-			if (cachedFullNodeId == null) {
-				cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";
-			}
-			return cachedFullNodeId;
+		public function get nodeUri():String {
+			return _nodeUri;
+		}
+		
+		public function set nodeUri(value:String):void {
+			_nodeUri = value;
 		}
 		
 		public function toString():String {
-			return fullNodeId;
+			return nodeUri;
 		}
 		
 	}

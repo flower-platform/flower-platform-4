@@ -1,10 +1,11 @@
 package org.flowerplatform.core.session;
 
-import java.net.URI;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +52,15 @@ public abstract class SessionService implements ISessionListener {
 	
 	public abstract void updateSessionProperty(String sessionId, String property, Object value);
 	
-	public abstract void sessionSubscribedToResource(String sessionId, URI resourceUri);
+	public abstract void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<SessionService> context);
 	
-	public abstract void sessionUnsubscribedFromResource(String sessionId, URI resourceUri);
+	public abstract void sessionUnsubscribedFromResource(String sessionId, String resourceUri);
+	
+	public void sessionUnsubscribedFromResource(String resourceNodeId, String string, ServiceContext<SessionService> serviceContext) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public abstract List<String> getResourcesSubscribedBySession(String sessionId);
 	
 }

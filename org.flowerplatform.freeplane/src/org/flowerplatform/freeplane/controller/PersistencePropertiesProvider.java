@@ -17,7 +17,7 @@ public class PersistencePropertiesProvider extends AbstractController implements
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		// properties are populated from the attributes table
-		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(((NodeModel) node.getOrRetrieveRawNodeData()));
+		NodeAttributeTableModel attributeTable = NodeAttributeTableModel.getModel(((NodeModel) node.getRawNodeData()));
 		if (attributeTable != null) {
 			for (Attribute attribute : attributeTable.getAttributes()) {
 				node.getProperties().put(attribute.getName(), attribute.getValue());

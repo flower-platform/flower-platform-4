@@ -1,13 +1,20 @@
 package org.flowerplatform.core.node.resource;
 
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
+import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
+
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.Pair;
+import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.remote.SubscriptionInfo;
+import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,18 +40,26 @@ public abstract class ResourceService2 {
 		resourceHandlers.put(scheme, resourceHandler);
 	}
 	
+	public ResourceHandler getResourceHandler(String scheme) {
+		return resourceHandlers.get(scheme);
+	}
+	
 	/**
 	 * Delegate to a {@link ResourceHandler} based on the scheme.
 	 */
-	public Node getNode(URI nodeUri) {
-		logger.debug("Get node for URI: ", nodeUri);
+	public Node getNode(String nodeUriAsString) {
+		logger.debug("Get node for URI: ", nodeUriAsString);
 	
+		URI nodeUri = Utils.getUri(nodeUriAsString);
 		String scheme = nodeUri.getScheme();
-		ResourceHandler resourceHandler = resourceHandlers.get(scheme);
+		
+		ResourceHandler resourceHandler = getResourceHandler(scheme);
 		if (resourceHandler == null) {
-			throw new RuntimeException("No resource handler registered for the scheme: " + scheme);
+			Node node = new Node(nodeUriAsString);
+			node.setType(scheme);
+			return node;
 		}
-		return resourceHandler.getNode(nodeUri);
+		return getResourceHandler(scheme).getNode(nodeUri);
 	}
 	
 	public abstract Object getResourceInfo(URI resourceUri);
@@ -55,47 +70,74 @@ public abstract class ResourceService2 {
 	 * @return a pair containing the resource URI and the resource set
 	 * where the resource belongs
 	 */
-	public Pair<String, String> subscribeToParentResource(String sessionId, String nodeUri) {
+	public SubscriptionInfo subscribeToParentResource(String sessionId, String nodeUri, ServiceContext<ResourceService2> context) {
 		// get resource uri from node uri by stripping the fragment
-		URI resourceUri = getUriWithoutFragment(nodeUri);
+		URI resourceUri = Utils.getUriWithoutFragment(nodeUri);
+		
+		// not a resource => return node
+		if (!resourceHandlers.containsKey(resourceUri.getScheme())) {
+			return new SubscriptionInfo(getNode(nodeUri));
+		}
 		
 		// subscribe
-		doSessionSubscribedToResource(sessionId, resourceUri);
-		CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, resourceUri);
+		sessionSubscribedToResource(sessionId, resourceUri);
+		CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, Utils.getString(resourceUri), null);
 		
 		// get resource node
-		Node resourceNode = getNode(resourceUri);
+		Node resourceNode = getNode(Utils.getString(resourceUri));
 		
 		// get resource set
 		IResourceSetProvider resourceSetProvider = resourceSetProviders.get(resourceNode.getType());
 		String resourceSet = resourceSetProvider != null ? resourceSetProvider.getResourceSet(resourceUri) :
-			resourceUri.toString();
+			Utils.getString(resourceUri);
 		CorePlugin.getInstance().getResourceSetService().addToResourceSet(resourceSet, resourceUri);
 		
-		return new Pair<String, String>(resourceUri.toString(), resourceSet);
+		return new SubscriptionInfo(getNode(nodeUri), resourceNode, resourceSet);
 	}
 	
-	protected abstract void doSessionSubscribedToResource(String sessionId, URI resourceUri);
+	protected abstract void sessionSubscribedToResource(String sessionId, URI resourceUri);
 	
-	public void save(String resourceUri) {
+	public void save(String resourceUriAsString, ServiceContext<ResourceService2> context) {
+		URI resourceUri = Utils.getUriWithoutFragment(resourceUriAsString);
+		String scheme = resourceUri.getScheme();
+		ResourceHandler resourceHandler = getResourceHandler(scheme);
+		resourceHandler.save(resourceUri);
 		
+		// update isDirty property
+		Node resourceNode = getNode(resourceUriAsString);
+		CorePlugin.getInstance().getNodeService().setProperty(
+				resourceNode, 
+				IS_DIRTY, 
+				resourceHandler.isDirty(resourceUri),
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+	}
+
+	public void reload(String resourceUriAsString, ServiceContext<ResourceService2> context) {
+		URI resourceUri = Utils.getUriWithoutFragment(resourceUriAsString);
+		String scheme = resourceUri.getScheme();
+		ResourceHandler resourceHandler = getResourceHandler(scheme);
+		resourceHandler.reload(resourceUri);
+		
+		// update isDirty property
+		Node resourceNode = getNode(resourceUriAsString);
+		CorePlugin.getInstance().getNodeService().setProperty(
+				resourceNode, 
+				IS_DIRTY, 
+				resourceHandler.isDirty(resourceUri),
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
-	private URI getUri(String uriAsString) {
-		try {
-			return new URI(uriAsString);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
+	public boolean isDirty(String fullNodeId, ServiceContext<ResourceService2> serviceContext) {
+		ResourceHandler resourceHandler = getResourceHandler(Utils.getUri(fullNodeId).getScheme());
+		return resourceHandler == null ? false : resourceHandler.isDirty(Utils.getUri(fullNodeId));
 	}
+
+	public abstract List<String> getResources();
+
+	public abstract long getUpdateRequestedTimestamp(String resourceNodeId);
 	
-	private URI getUriWithoutFragment(String uriAsString) {
-		URI uri = getUri(uriAsString);
-		try {
-			return new URI(uri.getScheme(), uri.getSchemeSpecificPart(), null);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	public abstract void setUpdateRequestedTimestamp(String resourceUri, long timestamp);
+
+	public abstract List<String> getSessionsSubscribedToResource(String resourceNodeId);
 	
 }

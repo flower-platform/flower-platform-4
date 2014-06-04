@@ -1,13 +1,16 @@
 package org.flowerplatform.freeplane.controller;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.core.node.resource.ResourceHandler;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.NodeModel;
 
@@ -18,17 +21,24 @@ public class MindMapChildrenProvider extends AbstractController implements IChil
 			
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
+		NodeModel nodeModel = (NodeModel) node.getRawNodeData();
 		List<Node> children = new ArrayList<Node>();		
 		for (NodeModel childNodeModel : nodeModel.getChildren()) {
-			children.add(FreeplanePlugin.getInstance().getStandardNode(childNodeModel, node.getResource()));
+			URI resourceUri = Utils.getUriWithoutFragment(node.getNodeUri());
+			String childUri = Utils.getUriWithFragment(node.getNodeUri(), childNodeModel.createID());
+			Node child = new Node(childUri);
+			ResourceHandler resourceHandler = CorePlugin.getInstance().getResourceService()
+					.getResourceHandler(resourceUri.getScheme());
+			child.setType(resourceHandler.getType(childNodeModel, Utils.getUri(childUri)));
+			child.setRawNodeData(childNodeModel);
+			children.add(child);
 		}
 		return children;
 	}
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		NodeModel nodeModel = (NodeModel) node.getOrRetrieveRawNodeData();
+		NodeModel nodeModel = (NodeModel) node.getRawNodeData();
 		return nodeModel.hasChildren();
 	}
 
