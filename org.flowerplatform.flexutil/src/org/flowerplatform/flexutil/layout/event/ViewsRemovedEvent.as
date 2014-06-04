@@ -35,11 +35,14 @@ package org.flowerplatform.flexutil.layout.event
 		
 		public var dontRemoveViews:ArrayCollection; /* of UIComponent */
 		
+		public var canPreventDefault:Boolean;
+		
 		public function ViewsRemovedEvent(removedViews:ArrayCollection) {
 			super(VIEWS_REMOVED);
 			
 			_removedViews = removedViews;
 			dontRemoveViews = new ArrayCollection();
+			canPreventDefault = true;
 		}
 		
 		/**

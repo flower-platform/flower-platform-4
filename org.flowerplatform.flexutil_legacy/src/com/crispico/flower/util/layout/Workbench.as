@@ -2063,16 +2063,16 @@ package  com.crispico.flower.util.layout {
 		 */
 		public function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void {			
 			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			if (shouldDispatchEvent) {
-				dispatchEvent(viewsRemovedEvent);
-			}
+			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
+			dispatchEvent(viewsRemovedEvent);
+
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					if (shouldDispatchEvent) {
-						view.dispatchEvent(viewRemovedEvent);
-					}
-					if (!viewRemovedEvent.dontRemoveView) {
+					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
+					view.dispatchEvent(viewRemovedEvent);
+
+					if (viewRemovedEvent.canRemoveView) {
 						removeViewInternal(view);
 					}
 				}				
