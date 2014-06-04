@@ -117,15 +117,19 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				break;
 			case NOTE:
 				String note = (String) wrapper.getPropertyValue();
-				NoteModel.createNote(rawNodeData).setHtml(note);
+				NoteModel.createNote(rawNodeData).setXml(note);
+								
+				isPropertySet = true;
 				if (addAdditionalSetPropertyUpdatesFor == null) {
 					addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
-				}
+				}				
 				addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
 				break;
 			case NODE_DETAILS:
 				String nodeDetails = (String) wrapper.getPropertyValue();
-				DetailTextModel.createDetailText(rawNodeData).setHtml(nodeDetails);
+				DetailTextModel.createDetailText(rawNodeData).setXml(nodeDetails);
+				isPropertySet = true;
+				break;
 			case FONT_FAMILY:	
 				String fontFamily = (String) wrapper.getPropertyValue();
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);
