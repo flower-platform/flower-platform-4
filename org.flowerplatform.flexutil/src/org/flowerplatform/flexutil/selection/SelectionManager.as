@@ -88,6 +88,9 @@ package org.flowerplatform.flexutil.selection {
 		 * in handler, and the second via the selection changed handler. In this case, we want to optimize, and have only
 		 * one processing for the selection/actions. However, there are cases, when clicking on a VH doesn't trigger the 
 		 * selection changed listener; so we need the focus in mechanism as well.
+		 * 
+		 * @author Cristian Spiescu
+		 * @author Cristina Constantinescu
 		 */
 		public function selectionChanged(viewHost:IViewHost, selectionProvider:IViewContent):void {
 			if (timerAfterFocusIn.running) {
@@ -102,19 +105,22 @@ package org.flowerplatform.flexutil.selection {
 				var selection:IList = viewHost.selectionChanged();
 			}
 			
+			var event:SelectionChangedEvent = new SelectionChangedEvent();
 			if (selectionProvider != null && activeSelectionProvider == selectionProvider) {
 				// this "if" is intended for a case like the following: there are 2 ViewContent/SelectionProviders;
 				// the user clicks on VC1 and selects/deselects. So VC1 is the activeSelectionProvider.
 				// Meanwhile, the selection is changed programmatically in VC2. In this case, we don't need to dispatch,
-				// because the "global" selection still comes from VC1
-				var event:SelectionChangedEvent = new SelectionChangedEvent();
+				// because the "global" selection still comes from VC1				
 				event.selectionProvider = activeSelectionProvider;
 				event.selection = selection;
 				if (selectionProvider is ISelectionForServerProvider) {
 					event.selectionForServer = ISelectionForServerProvider(selectionProvider).convertSelectionToSelectionForServer(selection);
-				}
-				dispatchEvent(event);
+				}			
 			}
+			
+			// dispatch event even if selectionProvider == null -> it means that the last view was closed
+			
+			dispatchEvent(event);
 		}
 		
 	}
