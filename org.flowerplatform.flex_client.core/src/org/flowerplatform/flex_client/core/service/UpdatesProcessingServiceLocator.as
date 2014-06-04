@@ -55,7 +55,7 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.getResourceNodeIds();
+			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceNodeIds();
 			if (resourceNodeIds.length > 0) {
 				// a sorted list is sent to improve search performance on server
 				headers[CoreConstants.RESOURCE_NODE_IDS] = new ArrayCollection(resourceNodeIds.sort());				
@@ -77,11 +77,11 @@ package org.flowerplatform.flex_client.core.service {
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.UPDATES)) { // updates exists, process them
-				CorePlugin.getInstance().resourceNodesManager.handleResourceNodesUpdates(result[CoreConstants.UPDATES]);
+				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.handleResourceNodesUpdates(result[CoreConstants.UPDATES]);
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND)) {
-				CorePlugin.getInstance().resourceNodesManager.unlinkResourceNodesForcefully(result[CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND]);
+				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.unlinkResourceNodesForcefully(result[CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND]);
 			}
 			
 			CorePlugin.getInstance().updateTimer.restart();

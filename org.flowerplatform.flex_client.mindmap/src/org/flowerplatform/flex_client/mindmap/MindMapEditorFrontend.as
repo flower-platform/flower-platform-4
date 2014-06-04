@@ -26,7 +26,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
-	import org.flowerplatform.flex_client.core.node.event.RootNodeAddedEvent;
 	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
@@ -35,7 +34,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
@@ -73,7 +71,7 @@ package org.flowerplatform.flex_client.mindmap {
 						
 			nodeRegistry.addEventListener(RefreshEvent.REFRESH, refreshCHandler);
 			nodeRegistry.addEventListener(ResourceNodeRemovedEvent.REMOVED, resourceNodeRemovedHandler);
-			nodeRegistry.addEventListener(RootNodeAddedEvent.TYPE, rootNodeAddedHandler);
+//			nodeRegistry.addEventListener(RootNodeAddedEvent.TYPE, rootNodeAddedHandler);
 		}
 		
 		/**
@@ -81,8 +79,7 @@ package org.flowerplatform.flex_client.mindmap {
 		 * @author Sebastian Solomon
 		 */
 		override protected function createDiagramShell():DiagramShell {
-			var diagramShell:MindMapEditorDiagramShell = new MindMapEditorDiagramShell();
-			diagramShell.showRootModelAsRootNode = !hideRootNode;
+			var diagramShell:MindMapEditorDiagramShell = new MindMapEditorDiagramShell();			
 			diagramShell.nodeRegistry = nodeRegistry;
 			
 			return diagramShell;
@@ -91,8 +88,8 @@ package org.flowerplatform.flex_client.mindmap {
 		override protected function createChildren():void {			
 			super.createChildren();
 									
-			nodeRegistry.startingNode = Node(MindMapRootModelWrapper(MindMapEditorDiagramShell(diagramShell).rootModel).model);			
-			nodeRegistry.useStartingNodeAsRootNode = MindMapEditorDiagramShell(diagramShell).showRootModelAsRootNode;
+//			nodeRegistry.startingNode = Node(MindMapRootModelWrapper(MindMapEditorDiagramShell(diagramShell).rootModel).model);			
+//			nodeRegistry.useStartingNodeAsRootNode = MindMapEditorDiagramShell(diagramShell).showRootModelAsRootNode;
 			
 			var iconSideBar:MindMapIconsBar = new MindMapIconsBar();
 			iconSideBar.diagramShell = diagramShell;
@@ -113,16 +110,16 @@ package org.flowerplatform.flex_client.mindmap {
 					});
 			}
 			
-			nodeRegistry.requestChildren(null);
+			nodeRegistry.expand(null);
 		}
 		
-		protected function rootNodeAddedHandler(event:RootNodeAddedEvent):void {
-			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
-			
-			mindmapDiagramShell.addModelInRootModelChildrenList(diagramShell.getNewDiagramShellContext(), event.rootNode, true);	
-			
-			ControllerUtils.getMindMapModelController(diagramShell.getNewDiagramShellContext(), event.rootNode).setExpanded(diagramShell.getNewDiagramShellContext(), event.rootNode, true);
-		}
+//		protected function rootNodeAddedHandler(event:RootNodeAddedEvent):void {
+//			var mindmapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShell);
+//			
+//			mindmapDiagramShell.addModelInRootModelChildrenList(diagramShell.getNewDiagramShellContext(), event.rootNode, true);	
+//			
+//			ControllerUtils.getMindMapModelController(diagramShell.getNewDiagramShellContext(), event.rootNode).setExpanded(diagramShell.getNewDiagramShellContext(), event.rootNode, true);
+//		}
 		
 		protected function refreshCHandler(event:RefreshEvent):void {
 			MindMapDiagramShell(diagramShell).refreshRootModelChildren(diagramShell.getNewDiagramShellContext());
@@ -136,7 +133,7 @@ package org.flowerplatform.flex_client.mindmap {
 				FlexUtilGlobals.getInstance().workbench.closeView(this);
 			} else {
 				// collapse the node
-				nodeRegistry.removeChildren(nodeRegistry.getNodeById(event.resourceNodeId), true);
+				nodeRegistry.collapse(nodeRegistry.getNodeById(event.resourceNodeId), true);
 			}
 		}
 		

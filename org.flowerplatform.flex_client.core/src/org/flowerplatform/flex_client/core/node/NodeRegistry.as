@@ -31,11 +31,9 @@ package org.flowerplatform.flex_client.core.node {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.event.BeforeRemoveNodeChildrenEvent;
 	import org.flowerplatform.flex_client.core.node.event.NodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
-	import org.flowerplatform.flex_client.core.node.event.RootNodeAddedEvent;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	
 	use namespace mx_internal;
@@ -51,16 +49,8 @@ package org.flowerplatform.flex_client.core.node {
 	 * @author Mariana Gheorghe
 	 */
 	public class NodeRegistry extends EventDispatcher {
-				
-		/**
-		 * Reference to registry's "start" node.
-		 * If <code>useStartingNodeAsRootNode</code>, first level of nodes will be "linked" with this node as parent,
-		 * otherwise the first node will be used as root node.
-		 */ 
-		public var startingNode:Node = null;
-		public var useStartingNodeAsRootNode:Boolean = true;
-		
-		private var registry:Dictionary = new Dictionary();
+						
+		protected var registry:Dictionary = new Dictionary();
 		
 		public function getNodeById(id:String):Node {
 			return Node(registry[id]);
@@ -70,7 +60,7 @@ package org.flowerplatform.flex_client.core.node {
 			registry[node.fullNodeId] = node;
 		}
 		
-		private function unregisterNode(nodeId:String):void {
+		protected function unregisterNode(nodeId:String):void {
 			var nodeFromRegistry:Node = registry[nodeId];
 			if (nodeFromRegistry != null) {
 				nodeFromRegistry.dispatchEvent(new NodeRemovedEvent(nodeFromRegistry));
@@ -84,29 +74,8 @@ package org.flowerplatform.flex_client.core.node {
 		 * If <code>parent</code> is null, the node will be added as root node.
 		 * If <code>index</code> is -1, the node will be added last.
 		 */ 
-		protected function addNode(node:Node, parent:Node = null, index:int = -1):void {		
-			if (parent == null) {
-				// we have a root node
-				
-				var nodeFromRegistry:Node = getNodeById(node.fullNodeId);
-				if (nodeFromRegistry) { 
-					// node already in registry -> we want to update only its properties
-					nodeFromRegistry.properties = node.properties;
-				} else {
-					registerNode(node);
-					nodeFromRegistry = getNodeById(node.fullNodeId);
-				}		
-				
-				startingNode = nodeFromRegistry;
-				
-				// notify listeners that a rootNode has been added/updated (additional behavior can be added like expand it immediately)
-				dispatchEvent(new RootNodeAddedEvent(nodeFromRegistry));
-				return;
-			}
-			
-			// normal node -> register it and link it with its parent
-			
-			registerNode(node);
+		protected function addNode(node:Node, parent:Node, index:int = -1):void {		
+			registry[node.fullNodeId] = node;
 			
 			node.parent = parent;
 			if (parent.children == null) {
@@ -129,7 +98,7 @@ package org.flowerplatform.flex_client.core.node {
 				return;
 			}
 			// remove children recursive
-			removeChildren(node, false);
+			collapse(node, false);
 			
 			unregisterNode(node.fullNodeId);
 			
@@ -148,21 +117,10 @@ package org.flowerplatform.flex_client.core.node {
 		 * <p>
 		 * If the node is subscribable, remove it from the resource nodes list.
 		 */
-		public function removeChildren(node:Node, refreshChildren:Boolean = true, shouldDispatchPreRemoveEvent:Boolean = true):void {
-			var event:BeforeRemoveNodeChildrenEvent = new BeforeRemoveNodeChildrenEvent(node, refreshChildren);
-			if (shouldDispatchPreRemoveEvent) {
-				dispatchEvent(event);	
-			}
-			
-			if (!event.dontRemoveChildren) {
-				removeChildrenRecursive(node, refreshChildren);
-			}		
-		}
-		
-		private function removeChildrenRecursive(node:Node, refreshChildren:Boolean = true):void {
+		public function collapse(node:Node, refreshChildren:Boolean = true):void {
 			if (node.children != null) {
 				for each (var child:Node in node.children) {
-					removeChildrenRecursive(child, false);
+					collapse(child, false);
 					unregisterNode(child.fullNodeId);
 				}
 				node.children = null;
@@ -170,9 +128,9 @@ package org.flowerplatform.flex_client.core.node {
 				if (refreshChildren) {	
 					dispatchEvent(new RefreshEvent(node));
 				}
-			}
+			}			
 		}
-				
+						
 		/* REQUEST CHILDREN */		
 		
 		/**
@@ -181,62 +139,33 @@ package org.flowerplatform.flex_client.core.node {
 		 * <p>
 		 * If the node is subscribable, first subscribe, then request the children if the subscribe was successful.
 		 */
-		public function requestChildren(node:Node, additionalHandler:Function = null):void {		
-			// TODO CS: actiunea de reload, nu tr sa apeleze asta; ar trebui sa apeleze refresh
-			var isSubscribable:Boolean = node == null ? false : node.properties[CoreConstants.IS_SUBSCRIBABLE];
-			if (!isSubscribable) {
-				requestChildrenInternal(node, additionalHandler);
-			} else {
-				CorePlugin.getInstance().resourceNodesManager.subscribeToSelfOrParentResource(node.fullNodeId, this, function(resourceNode:Node):void {
-					requestChildrenInternal(node, additionalHandler);
-				});
-			}
-		}
-		
-		private function requestChildrenInternal(node:Node, additionalHandler:Function = null):void {
+		public function expand(node:Node, additionalHandler:Function = null):void {		
+			// TODO: test if node in registry
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node == null ? startingNode.fullNodeId : node.fullNodeId, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
+				[node.fullNodeId, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
 				function (result:Object):void {
-					requestChildrenCallbackHandler(node, ArrayCollection(result)); 
+					expandCallbackHandler(node, ArrayCollection(result)); 
 					
 					// additional handler to be executed
 					if (additionalHandler != null) {
 						additionalHandler();
 					}
-				});
+				});	
 		}
-		
-		public function requestChildrenCallbackHandler(node:Node, children:ArrayCollection):void {			
-			if (node == null) {	// root node				
-				if (useStartingNodeAsRootNode) {
-					node = startingNode;
-					// this node will be used as root so add it in registry
-					registerNode(node);
-				} else {
-					node = Node(children.getItemAt(0));
-					addNode(node);
-					
-					// set to null -> don't enter in next if
-					children = null;
-				}				
+			
+		mx_internal function expandCallbackHandler(node:Node, children:ArrayCollection):void {		
+			if (children == null) {
+				return;
 			}
 			
-			if (node != null && children != null) {
-				// register each child
-				for each (var child:Node in children) {
-					registerNode(child);
-					child.parent = node;		
-					// TODO CS: de refolosit add?
-				}
-				// set node list of children
-				node.children = children;
+			// register each child
+			for each (var child:Node in children) {
+				addNode(child, node);
 			}
-						
-			if (children != null) {
-				// refresh diagram's children and their positions
-				dispatchEvent(new RefreshEvent(node));
-			}			
+			
+			// refresh diagram's children and their positions
+			dispatchEvent(new RefreshEvent(node));
 		}
 		
 		/* UPDATES */	
@@ -260,9 +189,15 @@ package org.flowerplatform.flex_client.core.node {
 		 * 
 		 * At the end, stores in <code>timestampOfLastRequest</code>, the last update's timestamp.
 		 */ 
-		public function nodeUpdatesHandler(updates:ArrayCollection):void {			
-			if (updates == null) {	
-				refresh(startingNode);
+		public function processUpdates(updates:ArrayCollection):void {			
+			if (updates == null) {
+				for (var fullNodeId:Object in registry) {
+					var node:Node = Node(registry[fullNodeId]);
+					if (node.parent == null) {
+						refresh(node);
+						break;
+					}
+				}
 				return;
 			}
 			
@@ -361,7 +296,7 @@ package org.flowerplatform.flex_client.core.node {
 		/**
 		 * @return an hierarchical structure of <code>fullNodeId</code>s starting from <code>node</code>.
 		 */ 
-		private function getFullNodeIdWithChildren(node:Node):FullNodeIdWithChildren {
+		protected function getFullNodeIdWithChildren(node:Node):FullNodeIdWithChildren {
 			var fullNodeIdWithChildren:FullNodeIdWithChildren = new FullNodeIdWithChildren();
 			fullNodeIdWithChildren.fullNodeId = node.fullNodeId;
 			
@@ -411,7 +346,7 @@ package org.flowerplatform.flex_client.core.node {
 			
 			// no children -> remove the old ones
 			if (nodeWithVisibleChildren.children == null) {
-				removeChildren(node, false);
+				collapse(node, false);
 				return;
 			}
 			

@@ -75,11 +75,11 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		private function expand(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).nodeRegistry.requestChildren(node, context[CoreConstants.HANDLER]);
+			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context[CoreConstants.HANDLER]);
 		}
 		
 		private function collapse(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).nodeRegistry.removeChildren(node);
+			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node);
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {

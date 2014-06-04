@@ -87,7 +87,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		override protected function subscribeResultCallback(resourceNode:Node):void {
 			super.subscribeResultCallback(resourceNode);
-			nodeRegistry.requestChildren(null);
+			nodeRegistry.expand(null);
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

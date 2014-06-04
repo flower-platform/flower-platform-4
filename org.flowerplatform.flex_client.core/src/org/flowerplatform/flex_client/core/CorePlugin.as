@@ -44,7 +44,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodesManager;
+	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
@@ -98,7 +98,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var editorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 
-		public var resourceNodesManager:ResourceNodesManager;
+		public var resourceNodesManager:ResourceOperationsManager;
 
 		public var updateTimer:UpdateTimer;
 		
@@ -137,7 +137,7 @@ package org.flowerplatform.flex_client.core {
 			INSTANCE = this;
 				
 			correspondingJavaPlugin = "org.flowerplatform.core";
-			resourceNodesManager = new ResourceNodesManager();
+			resourceNodesManager = new ResourceOperationsManager();
 			
 			var channelSet:ChannelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
