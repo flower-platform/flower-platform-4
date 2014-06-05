@@ -40,8 +40,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 		protected function editProperty(property:String, title:String):void {
 			var selectedNode:Node = Node(selection.getItemAt(0));
 			
-			var richTextWithRendererView:RichTextWithRendererView = new RichTextWithRendererView();			
-			richTextWithRendererView.icon = icon;
+			var richTextWithRendererView:RichTextWithRendererView = new RichTextWithRendererView();				
 			richTextWithRendererView.node = selectedNode;
 			richTextWithRendererView.showRendererArea = false;
 			richTextWithRendererView.text = selectedNode.properties[property];
@@ -59,6 +58,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 				.setViewContent(richTextWithRendererView)
 				.setWidth(500)
 				.setHeight(300)
+				.setIcon(icon)
 				.show();
 		}
 		
