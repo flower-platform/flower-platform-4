@@ -42,6 +42,10 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			return this;
 		}
 		
+		public function setIcon(value:Object):IPopupHandler {
+			return this;
+		}
+		
 		public function setWidth(value:Number):IPopupHandler {
 			return this;
 		}

@@ -20,12 +20,9 @@ package org.flowerplatform.flexutil.context_menu {
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
 	
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.FlexGlobals;
-	import mx.managers.PopUpManager;
 	
-	import org.flowerplatform.flexutil.action.ActionUtil;
 	import org.flowerplatform.flexutil.action.IAction;
 
 	/**

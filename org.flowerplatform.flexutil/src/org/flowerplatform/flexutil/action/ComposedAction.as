@@ -17,6 +17,7 @@
  * license-end
  */
 package org.flowerplatform.flexutil.action {
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @see IComposedAction
@@ -75,16 +76,8 @@ package org.flowerplatform.flexutil.action {
 		override public function run():void {			
 			if (delegateIfSingleChild) {
 				var visibleChildActions:Array = getVisibleChildActions();
-				if (visibleChildActions.length == 1) {
-					var singleVisibleChildAction:IAction = visibleChildActions[0];
-					try {
-						singleVisibleChildAction.selection = selection;
-						singleVisibleChildAction.context = context;
-						singleVisibleChildAction.run();
-					} finally {										
-						singleVisibleChildAction.selection = null;
-						singleVisibleChildAction.context = null;
-					}
+				if (visibleChildActions.length == 1) {					
+					FlexUtilGlobals.getInstance().actionHelper.runAction(visibleChildActions[0], selection, context);					
 					return;
 				}				
 			}

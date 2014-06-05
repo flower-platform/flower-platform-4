@@ -26,7 +26,6 @@ package com.crispico.flower.util.layout {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionUtil;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.context_menu.FillContextMenuEvent;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
@@ -153,7 +152,7 @@ package com.crispico.flower.util.layout {
 			
 			buttonBar.removeAllElements();
 			rootActionsAlreadyCalculated = new ArrayList();
-			ActionUtil.processAndIterateActions(null, allActions, selection, contextForActions, this, function (action:IAction):void {
+			FlexUtilGlobals.getInstance().actionHelper.processAndIterateActions(null, allActions, selection, contextForActions, this, function (action:IAction):void {
 				if (action.preferShowOnActionBar) {
 					var actionButton:ActionButton = new ActionButton();
 					if (action.label == null) {

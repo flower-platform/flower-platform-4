@@ -22,7 +22,7 @@ package org.flowerplatform.flexutil.global_menu {
 	import mx.collections.IList;
 	import mx.controls.menuClasses.IMenuDataDescriptor;
 	
-	import org.flowerplatform.flexutil.action.ActionUtil;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 	
@@ -87,7 +87,7 @@ package org.flowerplatform.flexutil.global_menu {
 			
 			var children:ArrayCollection = new ArrayCollection();
 			
-			ActionUtil.processAndIterateActions(id, 
+			FlexUtilGlobals.getInstance().actionHelper.processAndIterateActions(id, 
 				actionProvider.getActions(selection), 
 				selection, 
 				null, 
@@ -113,7 +113,7 @@ package org.flowerplatform.flexutil.global_menu {
 		 */
 		public function hasChildren(node:Object, model:Object=null):Boolean {
 			if (node is IAction) {
-				return (ActionUtil.isComposedAction(IAction(node)));
+				return (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(node)));
 			}
 			return false;
 		}
@@ -127,7 +127,7 @@ package org.flowerplatform.flexutil.global_menu {
 		 */
 		public function isBranch(node:Object, model:Object=null):Boolean {
 			if (node is IAction) {
-				return (ActionUtil.isComposedAction(IAction(node)));
+				return (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(node)));
 			}
 			return false;
 		}

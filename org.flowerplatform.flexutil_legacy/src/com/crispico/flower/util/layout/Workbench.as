@@ -235,8 +235,7 @@ package  com.crispico.flower.util.layout {
 
 			addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU, fillContextMenuHandler);
 			
-			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.
-			//(new KeyBindings()).registerBinding(new Shortcut(true, false, "m"), maximizeRestoreActiveStackLayoutData);
+			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.			
 			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.M), maximizeRestoreActiveStackLayoutData); // CTRL + M
 			
 			// prepare default actions for the right click menu on a tab name

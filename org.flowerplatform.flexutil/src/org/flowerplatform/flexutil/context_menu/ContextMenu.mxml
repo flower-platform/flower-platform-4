@@ -36,7 +36,7 @@ The graphical component that displays a list of actions, for one level.
 			import mx.core.FlexGlobals;
 			import mx.managers.PopUpManager;
 			
-			import org.flowerplatform.flexutil.action.ActionUtil;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.action.IComposedAction;
 			import org.flowerplatform.flexutil.action.MenuClosedEvent;
@@ -61,7 +61,7 @@ The graphical component that displays a list of actions, for one level.
 					actions = actionsForCurrentLevelAreadyCalculated;
 				} else {
 					actions = new ArrayList();
-					ActionUtil.processAndIterateActions(parentActionId, contextMenuManager.allActions, contextMenuManager.selection, contextMenuManager.context, this, function (action:IAction):void {
+					FlexUtilGlobals.getInstance().actionHelper.processAndIterateActions(parentActionId, contextMenuManager.allActions, contextMenuManager.selection, contextMenuManager.context, this, function (action:IAction):void {
 						actions.addItem(action);
 					});
 				}
@@ -140,7 +140,7 @@ The graphical component that displays a list of actions, for one level.
 			 */
 			protected function listSelectionChangeHandler(event:IndexChangeEvent):void {
 				closeContextMenuStack(indexInStack + 1);
-				if (ActionUtil.isComposedAction(IAction(list.selectedItem))) {
+				if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(list.selectedItem))) {
 					new org.flowerplatform.flexutil.context_menu.ContextMenu().openContextMenu(
 						contextMenuManager,
 						x + width + GAP_BETWEEN_MENUS,
