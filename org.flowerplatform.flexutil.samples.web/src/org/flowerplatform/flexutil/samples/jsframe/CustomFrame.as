@@ -11,7 +11,7 @@ package org.flowerplatform.flexutil.samples.jsframe
 	{
 		public function CustomFrame() {
 			// to allow for urls from local disk like file:///D:/java 
-			//Security.allowDomain("*"); 
+			Security.allowDomain("*"); 
 			ExternalInterface.addCallback("callItFromJS", callItFromJS);
 		}
 		
