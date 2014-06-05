@@ -1,6 +1,5 @@
 package org.flowerplatform.core;
 
-import org.flowerplatform.core.node.update.controller.UpdatePropertySetterController;
 import org.flowerplatform.util.UtilConstants;
 
 public class CoreConstants {

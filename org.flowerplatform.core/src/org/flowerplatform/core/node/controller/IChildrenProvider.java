@@ -5,18 +5,18 @@ import java.util.List;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IController;
 
 /**
  * @author Cristian Spiescu
  */
-public abstract class ChildrenProvider extends AbstractController {
+public interface IChildrenProvider extends IController {
 
-	public abstract List<Node> getChildren(Node node, ServiceContext<NodeService> context);
+	List<Node> getChildren(Node node, ServiceContext<NodeService> context);
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public abstract boolean hasChildren(Node node, ServiceContext<NodeService> context);
+	boolean hasChildren(Node node, ServiceContext<NodeService> context);
 	
 }

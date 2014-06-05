@@ -15,7 +15,7 @@ import org.flowerplatform.util.controller.IDynamicCategoryProvider;
  * 
  * <p>
  * This way we can easily implement plugins that are "persistence providers" for a certain type of resource. E.g. the
- * FreePlane plugin would register various controllers ({@link ChildrenProvider}, {@link PropertiesProvider}, etc.) directly
+ * FreePlane plugin would register various controllers ({@link IChildrenProvider}, {@link IPropertiesProvider}, etc.) directly
  * on the category "category.resource.mm". Each node for a "mm" resource will belong to this category, no matter its node type
  * or the static categories assigned to the node type.
  * 

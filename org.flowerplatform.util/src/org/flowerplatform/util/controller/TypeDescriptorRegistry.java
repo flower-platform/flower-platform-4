@@ -124,16 +124,16 @@ public class TypeDescriptorRegistry {
 			TypeDescriptorRemote remote = new TypeDescriptorRemote(descriptor.getType(), descriptor.getCategories());
 			
 			// filter the single controllers map
-			for (Entry<String, ControllerEntry<AbstractController>> entry : descriptor.singleControllers.entrySet()) {
+			for (Entry<String, ControllerEntry<IController>> entry : descriptor.singleControllers.entrySet()) {
 				if (entry.getValue().getSelfValue() instanceof IDescriptor) {
 					remote.getSingleControllers().put(entry.getKey(), (IDescriptor) entry.getValue().getSelfValue());
 				}
 			}
 			
 			// filter the additive controlers map
-			for (Entry<String, ControllerEntry<List<? extends AbstractController>>> entry : descriptor.additiveControllers.entrySet()) {
+			for (Entry<String, ControllerEntry<List<? extends IController>>> entry : descriptor.additiveControllers.entrySet()) {
 				List<IDescriptor> additiveControllers = new ArrayList<IDescriptor>();
-				for (AbstractController abstractController : entry.getValue().getSelfValue()) {
+				for (IController abstractController : entry.getValue().getSelfValue()) {
 					if (abstractController instanceof IDescriptor) {
 						additiveControllers.add((IDescriptor) abstractController);
 					}

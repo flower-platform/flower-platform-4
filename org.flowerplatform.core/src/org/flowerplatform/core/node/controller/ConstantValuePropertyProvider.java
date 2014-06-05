@@ -3,13 +3,14 @@ package org.flowerplatform.core.node.controller;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * Adds a constant value for {@link #property} to the properties map of a node (e.g. icon).
  * 
  * @author Mariana Gheorghe
  */
-public class ConstantValuePropertyProvider extends PropertiesProvider {
+public class ConstantValuePropertyProvider extends AbstractController implements IPropertiesProvider {
 
 	private String property;
 

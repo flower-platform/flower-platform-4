@@ -11,9 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.ChildrenProvider;
+import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.junit.BeforeClass;
@@ -28,7 +29,7 @@ public class NodeServiceTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		
-		class MockChildProvider extends ChildrenProvider {
+		class MockChildProvider extends AbstractController implements IChildrenProvider {
 			@Override
 			public List<Node> getChildren(Node node, ServiceContext context) {
 				return null;
@@ -40,11 +41,11 @@ public class NodeServiceTest {
 			}
 		}
 		
-		ChildrenProvider spyProviderForTypeA = spy(new MockChildProvider());
-		ChildrenProvider spyProviderForTypeB = spy(new MockChildProvider());
-		ChildrenProvider spyProviderForTypeC = spy(new MockChildProvider());
-		ChildrenProvider spyProviderForTypeFileSystem = spy(new MockChildProvider());
-		ChildrenProvider spyProviderAll = spy(new MockChildProvider());
+		IChildrenProvider spyProviderForTypeA = spy(new MockChildProvider());
+		IChildrenProvider spyProviderForTypeB = spy(new MockChildProvider());
+		IChildrenProvider spyProviderForTypeC = spy(new MockChildProvider());
+		IChildrenProvider spyProviderForTypeFileSystem = spy(new MockChildProvider());
+		IChildrenProvider spyProviderAll = spy(new MockChildProvider());
 		
 		// setPrioritys
 		spyProviderForTypeA.setOrderIndex(-100);

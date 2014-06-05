@@ -105,6 +105,9 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		}
 				
 		public function viewsRemovedHandler(e:ViewsRemovedEvent):void {
+			if (!e.canPreventDefault) {
+				return;
+			}
 			var editors:Array = [];
 			for each (var view:Object in e.removedViews) {
 				var viewComponent:UIComponent = FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(UIComponent(view));			

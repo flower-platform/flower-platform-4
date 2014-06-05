@@ -9,10 +9,11 @@ import java.util.List;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.ChildrenProvider;
+import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.mindmap.MindMapConstants;
+import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.styles.MapStyleModel;
@@ -21,7 +22,7 @@ import org.freeplane.features.styles.MapStyleModel;
 /**
  * @author Sebastian Solomon
  */
-public class MindMapStyleChildrenProvider extends ChildrenProvider {
+public class MindMapStyleChildrenProvider extends AbstractController implements IChildrenProvider {
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> serviceContext) {

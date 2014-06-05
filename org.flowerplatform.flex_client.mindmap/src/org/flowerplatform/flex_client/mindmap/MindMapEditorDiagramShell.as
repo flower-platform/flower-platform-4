@@ -49,6 +49,7 @@ package org.flowerplatform.flex_client.mindmap {
 				tools.push(InplaceEditorTool);
 			}
 			registerTools(tools);
+				
 		}
 		
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {

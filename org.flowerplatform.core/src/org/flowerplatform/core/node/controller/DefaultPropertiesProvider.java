@@ -8,11 +8,12 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IController;
 
 /**
  * @author Sebastian Solomon
  */
-public class DefaultPropertiesProvider extends PropertiesProvider {
+public class DefaultPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
 	public DefaultPropertiesProvider() {
 		super();
@@ -22,7 +23,7 @@ public class DefaultPropertiesProvider extends PropertiesProvider {
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		List<AbstractController> propDescriptors =  context.getService().getPropertyDescriptors(node); 
-		for (AbstractController element : propDescriptors) {
+		for (IController element : propDescriptors) {
 			PropertyDescriptor propertyDescriptor = (PropertyDescriptor) element;			
 			if (propertyDescriptor.getHasChangeCheckbox()) {
 				Object nodeDefaultPropertyValue = context.getService().getDefaultPropertyValue(node, propertyDescriptor.getName(), new ServiceContext<NodeService>(context.getService()));
