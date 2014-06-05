@@ -82,23 +82,18 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node);
 		}
 		
-		override public function getSide(context:DiagramShellContext, model:Object):int {
-			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
-			var rootModel:Node = Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model);
-			
-			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) {
-				//root node is mm file -> get side from provider
-				var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getSideProvider(mindmapDiagramShell.registry, model);
-				if (sideProvider != null) {
-					var side:int = int(sideProvider.getValue(Node(model)));
-					if (side == 0 && Node(model).parent != null) { // no side -> get side from parent
-						side = getSide(context, Node(model).parent);
-					}
-					if (side != 0) { // side found (left/right)
-						return side;
-					}
+		override public function getSide(context:DiagramShellContext, model:Object):int {			
+			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getSideProvider(MindMapEditorDiagramShell(context.diagramShell).registry, model);
+			if (sideProvider != null) {
+				var side:int = int(sideProvider.getValue(Node(model)));
+				if (side == 0 && Node(model).parent != null) { // no side -> get side from parent
+					side = getSide(context, Node(model).parent);
+				}
+				if (side != 0) { // side found (left/right)
+					return side;
 				}
 			}
+
 			// default side
 			return MindMapDiagramShell.POSITION_RIGHT;
 		}

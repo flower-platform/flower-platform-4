@@ -72,8 +72,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		
 		public function getNodeRegistries():Array {
 			var nodeRegistries:Array = [];
-			for (var nodeRegistry:String in nodeRegistryToResourceUris) {
-				nodeRegistries.push(nodeRegistry);
+			for (var nodeRegistry:Object in nodeRegistryToResourceUris) {
+				nodeRegistries.push(NodeRegistry(nodeRegistry));
 			}
 			return nodeRegistries;
 		}
