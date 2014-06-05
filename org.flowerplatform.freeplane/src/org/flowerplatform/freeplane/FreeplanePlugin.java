@@ -3,6 +3,7 @@ package org.flowerplatform.freeplane;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
@@ -103,6 +104,9 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(CHILDREN_PROVIDER, new FreeplaneResourceChildrenProvider())
 		.addSingleController(RAW_NODE_DATA_PROVIDER, new FreeplaneResourceRawNodeDataProvider())
 		.addAdditiveController(PROPERTIES_PROVIDER, new MindMapFileContentTypeProvider())
+		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController());
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
 		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)

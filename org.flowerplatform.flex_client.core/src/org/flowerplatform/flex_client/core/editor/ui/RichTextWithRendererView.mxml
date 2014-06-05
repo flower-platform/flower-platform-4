@@ -37,8 +37,7 @@
 										
 			public var node:Node;
 			public var text:String;
-			public var icon:Object;
-			
+					
 			/**
 			 * If <code>true</code>, the node's renderer will be displayed at the bottom.
 			 * <p>
@@ -59,7 +58,6 @@
 			
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewhost = viewHost;
-				_viewhost.setIcon(icon);
 			}
 						
 			protected function initializeHandler(event:FlexEvent):void {

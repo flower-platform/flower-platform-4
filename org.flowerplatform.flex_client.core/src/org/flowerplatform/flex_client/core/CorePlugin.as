@@ -259,6 +259,8 @@ package org.flowerplatform.flex_client.core {
 					.setViewContent(new LinkView())
 					.setWidth(500)
 					.setHeight(250)
+					.setTitle(Resources.getMessage("link.title"))
+					.setIcon(Resources.externalLinkIcon)
 					.show();
 				})
 			);

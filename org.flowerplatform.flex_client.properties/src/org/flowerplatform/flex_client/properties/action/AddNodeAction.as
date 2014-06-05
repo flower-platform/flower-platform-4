@@ -19,6 +19,7 @@
 package org.flowerplatform.flex_client.properties.action {
 	
 	import mx.collections.IList;
+	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -84,8 +85,11 @@ package org.flowerplatform.flex_client.properties.action {
 				createNodeView.diagramShellContext = diagramShellContext;
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-					.setTitle(Resources.getMessage("new.file.folder"))
+					.setTitle(Resources.getMessage("action.new.label", [label]))
+					.setIcon(Resources.addIcon)
 					.setViewContent(createNodeView)
+					.setHeight(200)
+					.setWidth(400)
 					.show();
 			} else {
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context], 
