@@ -53,6 +53,8 @@ package org.flowerplatform.flex_client.core.shortcut {
 					.setViewContent(view)
 					.setWidth(450)
 					.setHeight(130)
+					.setTitle(Resources.getMessage("shortcut.enter"))
+					.setIcon(icon)
 					.show();
 			};
 			UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(AssignShortcutForActionEvent.ASSIGN_SHORTCUT_FOR_ACTION, afterSelectingAnActionHandler);

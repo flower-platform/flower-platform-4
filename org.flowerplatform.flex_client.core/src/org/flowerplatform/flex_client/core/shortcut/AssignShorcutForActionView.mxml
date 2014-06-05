@@ -37,9 +37,7 @@
 			}
 			
 			public function set viewHost(viewHost:IViewHost):void {
-				_viewhost = viewHost;
-				_viewhost.setLabel(Resources.getMessage("shortcut.enter"));
-				_viewhost.setIcon(Resources.keyboardIcon);
+				_viewhost = viewHost;				
 			}
 						
 			protected function creationCompleteHandler(event:FlexEvent):void {

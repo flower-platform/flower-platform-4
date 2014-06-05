@@ -41,8 +41,6 @@
 			
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewhost = viewHost;
-				_viewhost.setLabel(Resources.getMessage("action.upload"));
-				_viewhost.setIcon(Resources.uploadIcon);
 			}	
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {				

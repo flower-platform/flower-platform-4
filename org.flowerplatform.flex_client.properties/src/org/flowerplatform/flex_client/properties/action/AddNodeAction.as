@@ -86,6 +86,7 @@ package org.flowerplatform.flex_client.properties.action {
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setTitle(Resources.getMessage("action.new.label", [label]))
+					.setIcon(Resources.addIcon)
 					.setViewContent(createNodeView)
 					.setHeight(200)
 					.setWidth(400)

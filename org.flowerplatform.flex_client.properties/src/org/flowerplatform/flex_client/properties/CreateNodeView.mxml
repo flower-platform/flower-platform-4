@@ -109,7 +109,6 @@
 			
 			public function set viewHost(value:IViewHost):void {
 				_viewHost = value;
-				_viewHost.setIcon(Resources.addIcon);
 			}
 			
 			public function getActions(selection:IList):Vector.<IAction> {
