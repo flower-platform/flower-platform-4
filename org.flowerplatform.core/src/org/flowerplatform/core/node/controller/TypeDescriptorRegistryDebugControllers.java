@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
@@ -50,7 +51,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Collections.singletonList(new Node(TYPES, DEBUG, null, null));
+			return Collections.singletonList(new Node(TYPES, DEBUG, null));
 		}
 	}
 	
@@ -63,7 +64,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Arrays.asList(new Node(TYPES_FLEX, TYPES, null, null), new Node(TYPES_JAVA, TYPES, null, null));
+			return Arrays.asList(new Node(TYPES_FLEX, TYPES, null), new Node(TYPES_JAVA, TYPES, null));
 		}
 	}
 	
@@ -94,7 +95,7 @@ public class TypeDescriptorRegistryDebugControllers {
 			List<String> types = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getRegisteredTypes();
 			Collections.sort(types); // show them in alphabetical order for better readability
 			for (String type : types) {
-				children.add(new Node(TYPE, TYPES_JAVA, type, null));
+				children.add(new Node(TYPE, TYPES_JAVA, type));
 			}
 			return children;
 		}
@@ -109,25 +110,25 @@ public class TypeDescriptorRegistryDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			String type = node.getIdWithinResource();
+			String type = node.getFragment();
 			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
 			List<Node> children = new ArrayList<Node>();
 			
 			// get categories
 			for (String category : descriptor.getCategories()) {
-				children.add(new Node(CATEGORY, type, category, null));
+				children.add(new Node(CATEGORY, type, category));
 			}
 			
 			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(descriptor);
 			
 			// get single controllers keys
 			for (String singleControllersKey : wrapper.getSingleControllersKeys()) {
-				children.add(new Node(CONTROLLER_KEY_SINGLE, type, singleControllersKey, null));
+				children.add(new Node(CONTROLLER_KEY_SINGLE, type, singleControllersKey));
 			}
 			
 			// get additive controllers keys
 			for (String additiveControllersKey : wrapper.getAdditiveControllersKeys()) {
-				children.add(new Node(CONTROLLER_KEY_ADDITIVE, type, additiveControllersKey, null));
+				children.add(new Node(CONTROLLER_KEY_ADDITIVE, type, additiveControllersKey));
 			}
 			
 			return children;
@@ -135,7 +136,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			node.getProperties().put(NAME, node.getIdWithinResource());
+			node.getProperties().put(NAME, node.getFragment());
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/idea.png"));
 		}
 	}
@@ -151,15 +152,15 @@ public class TypeDescriptorRegistryDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			// parent: CONTROLLER_KEY_SINGLE|type|controllerKey
 			List<Node> children = new ArrayList<Node>();
-			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getResource());
+			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getSchemeSpecificPart());
 			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(descriptor);
 			
-			Object cachedController = wrapper.getCachedSingleController(node.getIdWithinResource());
-			Object selfController = wrapper.getSelfSingleController(node.getIdWithinResource());
+			Object cachedController = wrapper.getCachedSingleController(node.getFragment());
+			Object selfController = wrapper.getSelfSingleController(node.getFragment());
 			
 			// add cached controller
 			if (cachedController != null) {
-				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(cachedController, CONTROLLER_SINGLE, node.getFullNodeId()); 
+				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(cachedController, CONTROLLER_SINGLE, node.getNodeUri()); 
 				String icons = (String) child.getOrPopulateProperties().get(ICONS);
 				if (cachedController != selfController) {
 					// override
@@ -171,7 +172,7 @@ public class TypeDescriptorRegistryDebugControllers {
 			
 			// add self controller - only if different from cached
 			if (selfController != null && selfController != cachedController) {
-				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(selfController, CONTROLLER_SINGLE, node.getFullNodeId()); 
+				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(selfController, CONTROLLER_SINGLE, node.getNodeUri()); 
 				// deleted
 				child.getOrPopulateProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/button-cancel.png"));
 				children.add(child);
@@ -183,10 +184,10 @@ public class TypeDescriptorRegistryDebugControllers {
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 			// node: CONTROLLER_KEY_SINGLE|descriptorType|controllerKey
-			node.getProperties().put(NAME, node.getIdWithinResource());
+			node.getProperties().put(NAME, node.getFragment());
 			String icons = ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/full-1.png");
-			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getResource()));
-			if (wrapper.isCachedSingleController(node.getIdWithinResource())) {
+			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getSchemeSpecificPart()));
+			if (wrapper.isCachedSingleController(node.getFragment())) {
 				icons += ICONS_SEPARATOR + ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/flag.png");
 			}
 			node.getProperties().put(ICONS, icons);
@@ -204,15 +205,15 @@ public class TypeDescriptorRegistryDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			// parent: CONTROLLER_KEY_ADDITIVE|type|controllerKey
 			List<Node> children = new ArrayList<Node>();
-			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getResource());
+			TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getSchemeSpecificPart());
 			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(descriptor);
 			
-			List<? extends IController> cachedControllers = wrapper.getCachedAdditiveControllers(node.getIdWithinResource());
-			List<? extends IController> selfControllers = wrapper.getSelfAdditiveControllers(node.getIdWithinResource());
+			List<? extends IController> cachedControllers = wrapper.getCachedAdditiveControllers(node.getFragment());
+			List<? extends IController> selfControllers = wrapper.getSelfAdditiveControllers(node.getFragment());
 			
 			// add controllers
 			for (IController cachedController : cachedControllers) {
-				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(cachedController, CONTROLLER_ADDITIVE, node.getFullNodeId()); 
+				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(cachedController, CONTROLLER_ADDITIVE, node.getNodeUri()); 
 				String icons = (String) child.getOrPopulateProperties().get(ICONS);
 				if (!selfControllers.contains(cachedController)) {
 					// contributed
@@ -228,10 +229,10 @@ public class TypeDescriptorRegistryDebugControllers {
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 			// node: CONTROLLER_KEY_ADDITIVE|descriptorType|controllerKey
-			node.getProperties().put(NAME, node.getIdWithinResource());
+			node.getProperties().put(NAME, node.getFragment());
 			String icons = ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/positive.png");
-			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getResource()));
-			if (wrapper.isCachedAdditiveController(node.getIdWithinResource())) {
+			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getSchemeSpecificPart()));
+			if (wrapper.isCachedAdditiveController(node.getFragment())) {
 				icons += ICONS_SEPARATOR + ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/flag.png");
 			}
 			node.getProperties().put(ICONS, icons);
@@ -242,7 +243,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			node.getProperties().put(NAME, node.getIdWithinResource());
+			node.getProperties().put(NAME, node.getFragment());
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/folder.png"));
 		}
 	}
@@ -313,7 +314,7 @@ public class TypeDescriptorRegistryDebugControllers {
 	
 	private Node createControllerNode(Object controller, String type, String resource) {
 		String id = controller.toString();
-		Node node = new Node(type, resource, id, null);
+		Node node = new Node(type, resource, id);
 		node.getOrPopulateProperties().put(NAME, id);
 		node.getOrPopulateProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/executable.png"));
 		return node;

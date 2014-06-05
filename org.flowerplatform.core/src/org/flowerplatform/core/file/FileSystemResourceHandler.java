@@ -7,13 +7,13 @@ import org.flowerplatform.core.node.resource.ResourceHandler;
 public class FileSystemResourceHandler extends ResourceHandler {
 
 	@Override
-	protected Object load(URI resourceUri) throws Exception {
+	protected Object doLoad(URI resourceUri) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected Object getResourceData(Object resource, URI nodeUri) {
+	public Object getResourceData(Object resource, URI nodeUri) {
 		// TODO Auto-generated method stub
 		return null;
 	}

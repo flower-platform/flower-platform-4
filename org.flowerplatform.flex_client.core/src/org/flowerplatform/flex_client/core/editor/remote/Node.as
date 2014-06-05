@@ -76,6 +76,23 @@ package org.flowerplatform.flex_client.core.editor.remote {
 			_nodeUri = value;
 		}
 		
+		public function get fragment():String {
+			var index:int = _nodeUri.indexOf("#");
+			if (index < 0) {
+				return null;
+			}
+			return _nodeUri.substring(index + 1);
+		}
+		
+		public function get schemeSpecificPart():String {
+			var i:int = _nodeUri.indexOf(":");
+			var j:int = _nodeUri.indexOf("#");
+			if (j < 0) {
+				return _nodeUri.substring(i + 1);
+			}
+			return _nodeUri.substring(i + 1,  j);
+		}
+		
 		public function toString():String {
 			return nodeUri;
 		}

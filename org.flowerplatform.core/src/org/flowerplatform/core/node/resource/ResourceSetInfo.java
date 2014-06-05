@@ -12,6 +12,8 @@ public class ResourceSetInfo {
 
 	private List<String> resourceUris = new ArrayList<String>();
 	
+	private long loadedTimestamp;
+	
 	private List<Update> updates = new ArrayList<Update>();
 	
 	private List<Object> commands;
@@ -26,6 +28,10 @@ public class ResourceSetInfo {
 
 	public List<Object> getCommands() {
 		return commands;
+	}
+
+	public long getLoadedTimestamp() {
+		return loadedTimestamp;
 	}
 	
 }

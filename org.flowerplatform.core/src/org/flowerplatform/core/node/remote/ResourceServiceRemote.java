@@ -2,7 +2,6 @@ package org.flowerplatform.core.node.remote;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
-import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceService2;
 
 /**

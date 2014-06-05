@@ -55,10 +55,11 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceNodeIds();
-			if (resourceNodeIds.length > 0) {
+			var resourceSets:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceSets();
+			if (resourceSets.length > 0) {
 				// a sorted list is sent to improve search performance on server
-				headers[CoreConstants.RESOURCE_NODE_IDS] = new ArrayCollection(resourceNodeIds.sort());				
+				headers[CoreConstants.RESOURCE_SETS] = new ArrayCollection(resourceSets.sort());
+				headers[CoreConstants.RESOURCE_URIS] = new ArrayCollection(CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUris().sort());
 			}
 			headers[CoreConstants.LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer;
 			operation.messageHeaders = headers;

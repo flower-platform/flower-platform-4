@@ -3,7 +3,6 @@ package org.flowerplatform.core.file;
 import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
 import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
-import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
 import java.util.ArrayList;
@@ -31,8 +30,15 @@ public class FileChildrenController extends AbstractController
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		String path = node.getFragment();
-
+		String ssp = node.getSchemeSpecificPart();
+		String repo = ssp;
+		String path = null;
+		int index = ssp.indexOf(":");
+		if (index > 0) {
+			repo = ssp.substring(0, index);
+			path = ssp.substring(index + 1);
+		}
+		
 		Object file = null;
 		try {
 			file = fileAccessController.getFile(path);
@@ -46,12 +52,8 @@ public class FileChildrenController extends AbstractController
 				// don't show metadata directory from workspace
 				continue;
 			}
-			Node child = new Node(CoreConstants.FILE_NODE_TYPE, node.getSchemeSpecificPart(), fileAccessController.getPath(object));
-			child.setType(CoreConstants.FILE_NODE_TYPE);
+			Node child = new Node(CoreConstants.FILE_NODE_TYPE, repo + ":" + fileAccessController.getPath(object), null);
 			children.add(child);
-//			children.add(new Node(CoreConstants.FILE_NODE_TYPE, 
-//					node.getType().equals(CoreConstants.FILE_SYSTEM_NODE_TYPE) ? node.getFullNodeId() : node.getResource(),
-//					fileAccessController.getPath(object), null));
 		}
 		return children;
 	}
@@ -59,8 +61,14 @@ public class FileChildrenController extends AbstractController
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		Object file = null;
+		String ssp = node.getSchemeSpecificPart();
+		String path = null;
+		int index = ssp.indexOf(":");
+		if (index > 0) {
+			path = ssp.substring(index + 1);
+		}
 		try {
-			file = fileAccessController.getFile(node.getFragment());
+			file = fileAccessController.getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -81,15 +89,23 @@ public class FileChildrenController extends AbstractController
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object parentFile;
 
+		String ssp = parentNode.getSchemeSpecificPart();
+		String repo = ssp;
+		String path = null;
+		int index = ssp.indexOf(":");
+		if (index > 0) {
+			repo = ssp.substring(0, index);
+			path = ssp.substring(index + 1);
+		}
 		try {
-			parentFile = fileAccessController.getFile(parentNode.getFragment());
+			parentFile = fileAccessController.getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		if (!fileAccessController.isDirectory(parentFile)) {
 			parentFile = fileAccessController.getParentFile(parentFile);
-			String path = fileAccessController.getPath(parentFile);
+			path = fileAccessController.getPath(parentFile);
 			Node fileParentNode;
 			
 			if (path.length() != 0) { // parent File is not the FileSystem node
@@ -104,7 +120,7 @@ public class FileChildrenController extends AbstractController
 		
 		String name = (String) context.get(NAME);
 		Object fileToCreate = fileAccessController.getFile(parentFile, name);
-		child.setNodeUri(Utils.getUriWithFragment(parentNode.getNodeUri(), fileAccessController.getPath(fileToCreate)));
+		child.setNodeUri(Utils.getString(Utils.getUri(FILE_NODE_TYPE, repo + ":" + fileAccessController.getPath(fileToCreate), null)));
 		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
 		
 		if (fileAccessController.exists(fileToCreate)) {

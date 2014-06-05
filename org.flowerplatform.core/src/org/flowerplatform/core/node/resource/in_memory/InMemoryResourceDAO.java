@@ -26,16 +26,16 @@ public class InMemoryResourceDAO implements IResourceDAO {
 		if (!getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().contains(sessionId)) {
 			getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().add(sessionId);
 		}
-		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().contains(resourceNodeId)) {			
-			getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().add(resourceNodeId);
-			Collections.sort(getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds());
+		if (!getSessionInfoForSessionId(sessionId).getSubscribedResourceUris().contains(resourceNodeId)) {			
+			getSessionInfoForSessionId(sessionId).getSubscribedResourceUris().add(resourceNodeId);
+			Collections.sort(getSessionInfoForSessionId(sessionId).getSubscribedResourceUris());
 		}
 	}
 
 	@Override
 	public void sessionUnsubscribedFromResource(String resourceNodeId, String sessionId) {
 		getResourceNodeInfoForResourceNodeId(resourceNodeId).getSessions().remove(sessionId);
-		getSessionInfoForSessionId(sessionId).getSubscribedResourceNodeIds().remove(resourceNodeId);
+		getSessionInfoForSessionId(sessionId).getSubscribedResourceUris().remove(resourceNodeId);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class InMemoryResourceDAO implements IResourceDAO {
 	public List<String> getResourcesSubscribedBySession(String sessionId) {
 		SessionInfo sessionInfo = sessionIdToSessionInfo.get(sessionId);
 		if (sessionInfo != null) {
-			return sessionInfo.getSubscribedResourceNodeIds();
+			return sessionInfo.getSubscribedResourceUris();
 		}
 		return Collections.emptyList();
 	}

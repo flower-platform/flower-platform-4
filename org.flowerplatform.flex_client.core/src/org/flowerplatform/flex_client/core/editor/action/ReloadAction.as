@@ -41,7 +41,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 				
 		override public function run():void {
-			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceNodeIdsForNodeRegistry(editorFrontend.nodeRegistry);
+			var resourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForNodeRegistry(editorFrontend.nodeRegistry);
 			if (resourceNodeIds.length == 1) {
 				// single resourceNode to reload -> reload without asking
 				CorePlugin.getInstance().serviceLocator.invoke("resourceService.reload", [resourceNodeIds[0]]);

@@ -30,5 +30,10 @@ public class FileExtensionSetting {
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("FileExtensionSetting[scheme=%s, contentType=%s]", scheme, contentType);
+	}
 	
 }

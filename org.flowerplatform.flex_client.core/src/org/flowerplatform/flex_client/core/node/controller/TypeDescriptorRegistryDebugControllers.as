@@ -19,15 +19,15 @@ package org.flowerplatform.flex_client.core.node.controller {
 	 */
 	public class TypeDescriptorRegistryDebugControllers {
 		
-		public const TYPES:String = "_debugFlexTypes";
-		public const TYPE:String = "_debugFlexType";
+		public const TYPES:String = "debugFlexTypes";
+		public const TYPE:String = "debugFlexType";
 		
-		public const CATEGORY:String = "_debugFlexCategory";
-		public const CONTROLLER_KEY_SINGLE:String = "_debugFlexControllerKeySingle";
-		public const CONTROLLER_KEY_ADDITIVE:String = "_debugFlexControllerKeyAdditive";
+		public const CATEGORY:String = "debugFlexCategory";
+		public const CONTROLLER_KEY_SINGLE:String = "debugFlexControllerKeySingle";
+		public const CONTROLLER_KEY_ADDITIVE:String = "debugFlexControllerKeyAdditive";
 		
-		public const CONTROLLER_SINGLE:String = "_debugFlexControllerSingle";
-		public const CONTROLLER_ADDITIVE:String = "_debugFlexControllerAdditive";
+		public const CONTROLLER_SINGLE:String = "debugFlexControllerSingle";
+		public const CONTROLLER_ADDITIVE:String = "debugFlexControllerAdditive";
 		
 		public function registerControllers():void {
 			
@@ -159,11 +159,9 @@ package org.flowerplatform.flex_client.core.node.controller {
 			return children;
 		}
 		
-		private function createNode(type:String, resource:String, id:String, name:String, icons:String, hasChildren:Boolean = true):Node {
-			var node:Node = new Node();
+		private function createNode(type:String, ssp:String, fragment:String, name:String, icons:String, hasChildren:Boolean = true):Node {
+			var node:Node = new Node(type + ":" + ssp + "#" + fragment);
 			node.type = type;
-//			node.resource = resource;
-//			node.idWithinResource = id;
 			node.properties = new Object();
 			node.properties[CoreConstants.NAME] = name;
 			node.properties[CoreConstants.ICONS] = icons;
@@ -205,18 +203,18 @@ class FlexTypesNodeController extends MindMapModelController {
 	}
 	
 	override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
-		var nodeRegistry:NodeRegistry = Object(context.diagramShell).updateProcessor;
+		var nodeRegistry:NodeRegistry = Object(context.diagramShell).nodeRegistry;
 		var node:Node = Node(model);
 		if (value) {
 			var children:ArrayCollection;
 			if (node.type == debug.TYPES) {
 				children = debug.getFlexTypes();
 			} else if (node.type == debug.TYPE) {
-//				children = debug.getCategoriesAndControllerKeys(node.idWithinResource);
+				children = debug.getCategoriesAndControllerKeys(node.fragment);
 			} else if (node.type == debug.CONTROLLER_KEY_SINGLE) {
-//				children = debug.getSingleControllers(node, node.resource, node.idWithinResource);
+				children = debug.getSingleControllers(node, node.schemeSpecificPart, node.fragment);
 			} else if (node.type == debug.CONTROLLER_KEY_ADDITIVE) {
-//				children = debug.getAdditiveControllers(node, node.resource,node.idWithinResource);
+				children = debug.getAdditiveControllers(node, node.schemeSpecificPart, node.fragment);
 			}
 			nodeRegistry.expandCallbackHandler(node, children);
 		} else {

@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -25,17 +24,25 @@ import org.flowerplatform.util.Utils;
  */
 public class CoreUtils {
 
-	public static boolean isSubscribable(Map<String, Object> properties) {
-		Boolean isSubscribable = (Boolean) properties.get(CoreConstants.IS_SUBSCRIBABLE);
-		if (isSubscribable == null) {
-			return false;
+	public static URI getResourceUri(String nodeUriAsString) {
+		URI nodeUri = Utils.getUri(nodeUriAsString);
+		if (nodeUri.getScheme().equals(CoreConstants.FILE_SYSTEM_NODE_TYPE)) {
+			return nodeUri;
 		}
-		return isSubscribable;
+		if (nodeUri.getScheme().equals(CoreConstants.FILE_NODE_TYPE)) {
+			String ssp = nodeUri.getSchemeSpecificPart();
+			String repo = ssp;
+			int index = ssp.indexOf(":");
+			if (index > 0) {
+				repo = ssp.substring(0, index);
+			}
+			return Utils.getUri(CoreConstants.FILE_SYSTEM_NODE_TYPE, repo, null);
+		}
+		return Utils.getUriWithoutFragment(nodeUri);
 	}
 	
 	public static Node getResourceNode(Node node) {
-		URI nodeUri = Utils.getUriWithoutFragment(node.getNodeUri());
-		return CorePlugin.getInstance().getResourceService().getNode(Utils.getString(nodeUri));
+		return CorePlugin.getInstance().getResourceService().getNode(Utils.getString(getResourceUri(node.getNodeUri())));
 	}
 	
 	public static void delete(File f) {	

@@ -1,17 +1,17 @@
 package org.flowerplatform.core.file;
 
-import static org.flowerplatform.core.CoreConstants.CONTENT_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_SIZE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.IS_OPENABLE_IN_NEW_EDITOR;
-import static org.flowerplatform.core.CoreConstants.TEXT_CONTENT_TYPE;
+import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +25,8 @@ import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.Pair;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -37,7 +39,14 @@ public class FilePropertiesController extends AbstractController implements IPro
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object file;
 		try {
-			file = fileAccessController.getFile(node.getFragment());
+			String ssp = node.getSchemeSpecificPart();
+			int index = ssp.indexOf(":");
+			if (index > 0) {
+				ssp = ssp.substring(index + 1);
+			} else {
+				ssp = null;
+			}
+			file = fileAccessController.getFile(ssp);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -74,12 +83,17 @@ public class FilePropertiesController extends AbstractController implements IPro
 			node.getProperties().put(IS_OPENABLE_IN_NEW_EDITOR, true);
 			node.getProperties().put(FILE_SIZE, fileAccessController.length(file));
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"));
-//			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 			
+			List<Pair<String, String>> subscribableResources = new ArrayList<Pair<String, String>>();
 			String extension = fileAccessController.getFileExtension(file);
-			for (FileExtensionSetting settings : CorePlugin.getInstance().getFileExtensionSettings(extension)) {
-				
+			List<FileExtensionSetting> settings = CorePlugin.getInstance().getFileExtensionSettings(extension);
+			for (FileExtensionSetting setting : settings) {
+				Pair<String, String> subscribableResource = new Pair<String, String>();
+				subscribableResource.a = Utils.getString(Utils.getUri(setting.getScheme(), node.getSchemeSpecificPart(), node.getFragment()));
+				subscribableResource.b = setting.getContentType();
+				subscribableResources.add(subscribableResource);
 			}
+			node.getProperties().put(SUBSCRIBABLE_RESOURCES, subscribableResources);
 		}
 	}
 

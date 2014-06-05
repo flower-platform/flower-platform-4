@@ -46,14 +46,17 @@ public class InMemorySessionService extends SessionService {
 			sessionInfo = new SessionInfo();
 			sessionInfos.put(sessionId, sessionInfo);
 		}
-		if (!sessionInfo.getSubscribedResourceNodeIds().contains(resourceUri)) {
-			sessionInfo.getSubscribedResourceNodeIds().add(resourceUri);
+		if (!sessionInfo.getSubscribedResourceUris().contains(resourceUri)) {
+			sessionInfo.getSubscribedResourceUris().add(resourceUri);
 		}
 	}
 
 	@Override
 	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<SessionService> context) {
-		sessionInfos.get(sessionId).getSubscribedResourceNodeIds().remove(resourceUri);
+		SessionInfo sessionInfo = sessionInfos.get(sessionId);
+		if (sessionInfo != null) {
+			sessionInfo.getSubscribedResourceUris().remove(resourceUri);
+		}
 	}
 
 	@Override
@@ -67,6 +70,6 @@ public class InMemorySessionService extends SessionService {
 		if (sessionInfo == null) {
 			return new ArrayList<String>();
 		}
-		return sessionInfo.getSubscribedResourceNodeIds();
+		return sessionInfo.getSubscribedResourceUris();
 	}
 }

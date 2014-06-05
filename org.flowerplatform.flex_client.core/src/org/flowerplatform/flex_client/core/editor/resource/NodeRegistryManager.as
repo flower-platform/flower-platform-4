@@ -25,8 +25,11 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		/**
 		 * Keep maps between node registries and their resource node ids and vice versa.
 		 */ 
-		private var resourceNodeIdToNodeRegistries:Dictionary = new Dictionary();		
-		private var nodeRegistryToResourceNodeIds:Dictionary = new Dictionary();
+		private var resourceSetToNodeRegistries:Dictionary = new Dictionary();		
+		private var nodeRegistryToResourceUris:Dictionary = new Dictionary();
+		
+		private var resourceSetToResourceUris:Dictionary = new Dictionary();
+		private var resourceUriToResourceSet:Dictionary = new Dictionary();
 		
 		private var resourceOperationsManager:ResourceOperationsManager;
 		
@@ -35,77 +38,118 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			this.resourceOperationsManager = resourceOperationsManager;			
 		}
 		
-		public function getResourceNodeIds():Array {
-			var resourceNodeIds:Array = [];
-			for (var resourceNodeId:String in resourceNodeIdToNodeRegistries) {
-				resourceNodeIds.push(resourceNodeId);
+		public function getResourceSets():Array {
+			var resourceSets:Array = [];
+			for (var resourceSet:String in resourceSetToNodeRegistries) {
+				resourceSets.push(resourceSet);
 			}
-			return resourceNodeIds;
+			return resourceSets;
 		}
 		
-		public function getNodeRegistriesForResourceNodeId(resourceNodeId:String):Array {
-			var nodeRegistries:Array = resourceNodeIdToNodeRegistries[resourceNodeId];
+		public function getNodeRegistriesForResourceSet(resourceSet:String):Array {
+			var nodeRegistries:Array = resourceSetToNodeRegistries[resourceSet];
 			if (nodeRegistries == null) {
 				nodeRegistries = [];
 			}
 			return nodeRegistries;
 		}
 		
-		public function getResourceNodeIdsForNodeRegistry(nodeRegistry:NodeRegistry):Array {
-			var resourceNodeIds:Array = nodeRegistryToResourceNodeIds[nodeRegistry];
-			if (resourceNodeIds == null) {
-				resourceNodeIds = [];
+		public function getResourceUrisForNodeRegistry(nodeRegistry:NodeRegistry):Array {
+			var resourceUris:Array = nodeRegistryToResourceUris[nodeRegistry];
+			if (resourceUris == null) {
+				resourceUris = [];
 			}
-			return resourceNodeIds;
+			return resourceUris;
+		}
+		
+		public function getResourceUrisForResourceSet(resourceSet:String):Array {
+			var resourceUris:Array = resourceSetToResourceUris[resourceSet];
+			if (resourceSet == null) {
+				resourceUris = [];
+			}
+			return resourceUris;
 		}
 		
 		public function getNodeRegistries():Array {
 			var nodeRegistries:Array = [];
-			for (var nodeRegistry:String in nodeRegistryToResourceNodeIds) {
+			for (var nodeRegistry:String in nodeRegistryToResourceUris) {
 				nodeRegistries.push(nodeRegistry);
 			}
 			return nodeRegistries;
 		}
 		
-		public function linkResourceNodeWithNodeRegistry(resourceNodeId:String, nodeRegistry:NodeRegistry):void {
-			// listen for resourceNode properties modifications like isDirty
-			nodeRegistry.getNodeById(resourceNodeId).addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
-			
-			var nodeRegistries:Array = resourceNodeIdToNodeRegistries[resourceNodeId];
-			if (nodeRegistries == null) {
-				nodeRegistries = [];
-				resourceNodeIdToNodeRegistries[resourceNodeId] = nodeRegistries;
+		public function getResourceUris():Array {
+			var resourceUris:Array = [];
+			for (var resourceUri:String in resourceUriToResourceSet) {
+				resourceUris.push(resourceUri);
 			}
-			nodeRegistries.push(nodeRegistry);
-			
-			var resourceNodeIds:Array = nodeRegistryToResourceNodeIds[nodeRegistry];
-			if (resourceNodeIds == null) {
-				resourceNodeIds = [];
-				nodeRegistryToResourceNodeIds[nodeRegistry] = resourceNodeIds;
-			}
-			resourceNodeIds.push(resourceNodeId);
+			return resourceUris;
 		}
 		
-		public function unlinkResourceNodeFromNodeRegistry(resourceNodeId:String, nodeRegistry:NodeRegistry):void {
+		public function linkResourceNodeWithNodeRegistry(resourceUri:String, resourceSet:String, nodeRegistry:NodeRegistry):void {
+			// listen for resourceNode properties modifications like isDirty
+			nodeRegistry.getNodeById(resourceUri).addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
+			
+			// add resourceUri to resourceSet
+			var resourceUris:Array = resourceSetToResourceUris[resourceSet];
+			if (resourceUris == null) {
+				resourceUris = [];
+				resourceSetToResourceUris[resourceSet] = resourceUris;
+			}
+			resourceUris.push(resourceUri);
+			resourceUriToResourceSet[resourceUri] = resourceSet;
+			
+			// add resourceUri to registry
+			resourceUris = nodeRegistryToResourceUris[nodeRegistry];
+			if (resourceUris == null) {
+				resourceUris = [];
+				nodeRegistryToResourceUris[nodeRegistry] = resourceUris;
+			}
+			resourceUris.push(resourceUri);
+			
+			// add resourceSet to registry
+			var nodeRegistries:Array = resourceSetToNodeRegistries[resourceSet];
+			if (nodeRegistries == null) {
+				nodeRegistries = [];
+				resourceSetToNodeRegistries[resourceSet] = nodeRegistries;
+			}
+			nodeRegistries.push(nodeRegistry);
+		}
+		
+		public function unlinkResourceNodeFromNodeRegistry(resourceUri:String, nodeRegistry:NodeRegistry):void {
 			// change isDirty to false and dispatch event
-			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceNodeId);
+			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceUri);
 			resourceNodeFromRegistry.properties[CoreConstants.IS_DIRTY] = false;
 			resourceNodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(resourceNodeFromRegistry, new ArrayList([CoreConstants.IS_DIRTY])));
 			resourceNodeFromRegistry.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
-						
-			var nodeRegistries:Array = resourceNodeIdToNodeRegistries[resourceNodeId];
-			if (nodeRegistries != null) {
-				nodeRegistries.splice(nodeRegistries.indexOf(nodeRegistry), 1);
-				if (nodeRegistries.length == 0) {
-					delete resourceNodeIdToNodeRegistries[resourceNodeId];
+			
+			var resourceSet:String = resourceUriToResourceSet[resourceUri];
+			
+			// remove resourceUri from resourceSet
+			var resourceUris:Array = resourceSetToResourceUris[resourceSet];
+			if (resourceUris != null) {
+				resourceUris.splice(resourceUris.indexOf(resourceUri), 1);
+				if (resourceUris.length == 0) {
+					delete resourceSetToResourceUris[resourceSet];
 				}
 			}
 			
-			var resourceNodeIds:Array = nodeRegistryToResourceNodeIds[nodeRegistry];
-			if (resourceNodeIds != null) {
-				resourceNodeIds.splice(resourceNodeIds.indexOf(resourceNodeId), 1);
-				if (resourceNodeIds.length == 0) {
-					delete nodeRegistryToResourceNodeIds[nodeRegistry];
+			// remove resourceUri from registry
+			resourceUris = nodeRegistryToResourceUris[nodeRegistry];
+			if (resourceUris != null) {
+				resourceUris.splice(resourceUris.indexOf(resourceUri), 1);
+				if (resourceUris.length == 0) {
+					delete nodeRegistryToResourceUris[nodeRegistry];
+				}
+			}
+			
+			// remove resourceSet from registry
+			var nodeRegistries:Array = resourceSetToNodeRegistries[resourceSet];
+			if (nodeRegistries != null) {
+				nodeRegistries.splice(nodeRegistries.indexOf(nodeRegistry), 1);
+				if (nodeRegistries.length == 0 && resourceSetToResourceUris[resourceSet] == null) {
+					delete resourceSetToNodeRegistries[resourceSet];
+					delete resourceUriToResourceSet[resourceUri];
 				}
 			}
 		}
@@ -115,6 +159,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			if (subscribableResources == null || subscribableResources.length == 0) {
 				nodeRegistry.expand(node, additionalHandler);
 			} else {
+				// a subscribable node => subscribe to the first resource
 				var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
 				subscribe(String(subscribableResource.a), nodeRegistry, function(rootNode:Node):void {
 					nodeRegistry.expand(node, additionalHandler);
@@ -124,10 +169,10 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		
 		public function collapse(nodeRegistry:NodeRegistry, node:Node, refreshChildren:Boolean = true):void {
 			// get all dirty resourceNodes starting from node
-			var dirtyResourceNodeIds:Array = [];
-			var savedResourceNodeIds:Array = [];
+			var dirtyResourceUris:Array = [];
+			var savedResourceUris:Array = [];
 			
-			for each (var obj:Object in getResourceNodeIdsForNodeRegistry(nodeRegistry)) {
+			for each (var obj:Object in getResourceUrisForNodeRegistry(nodeRegistry)) {
 				var resourceNodeId:String = String(obj);
 				var resourceNode:Node = nodeRegistry.getNodeById(resourceNodeId);
 				var parent:Node = resourceNode;
@@ -137,25 +182,25 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				if (parent == node) {
 					var isSubscribable:Boolean = resourceNode.properties[CoreConstants.IS_SUBSCRIBABLE];
 					if (isSubscribable) {
-						if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
-							dirtyResourceNodeIds.push(resourceNodeId);
+						if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
+							dirtyResourceUris.push(resourceNodeId);
 						} else {
-							savedResourceNodeIds.push(resourceNodeId);
+							savedResourceUris.push(resourceNodeId);
 						}
 					}
 				}
 			}
 			
 			// remove nodes that are already saved
-			for each (var savedResourceNodeId:String in savedResourceNodeIds) {
+			for each (var savedResourceNodeId:String in savedResourceUris) {
 				unlinkResourceNodeFromNodeRegistry(savedResourceNodeId, nodeRegistry);	
 			}
 			
-			if (dirtyResourceNodeIds.length > 0) { // at least one dirty resourceNode found -> show dialog
-				resourceOperationsManager.showSaveDialogIfDirtyStateOrCloseEditors([this], dirtyResourceNodeIds, 
+			if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog
+				resourceOperationsManager.showSaveDialogIfDirtyStateOrCloseEditors([this], dirtyResourceUris, 
 					function():void {
-						for (var i:int = 0; i < dirtyResourceNodeIds.length; i++) {
-							unlinkResourceNodeFromNodeRegistry(dirtyResourceNodeIds[i], nodeRegistry);
+						for (var i:int = 0; i < dirtyResourceUris.length; i++) {
+							unlinkResourceNodeFromNodeRegistry(dirtyResourceUris[i], nodeRegistry);
 						}
 						// wait for server response before collapse			
 						nodeRegistry.collapse(node, refreshChildren);
@@ -177,8 +222,12 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
 				function(subscriptionInfo:SubscriptionInfo):void {
 					nodeRegistry.mx_internal::registerNode(subscriptionInfo.rootNode, null);
+					if (subscriptionInfo.resourceNode != null && subscriptionInfo.rootNode.nodeUri != subscriptionInfo.resourceNode.nodeUri) {
+						// register resource node if different from root node
+						nodeRegistry.mx_internal::registerNode(subscriptionInfo.resourceNode, null);
+					}
 					if (subscriptionInfo.resourceNode != null) {
-						linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, nodeRegistry);
+						linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, subscriptionInfo.resourceSet, nodeRegistry);
 					}
 					if (subscribeResultCallback != null) {
 						subscribeResultCallback(subscriptionInfo.rootNode);
@@ -204,7 +253,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function removeNodeRegistries(nodeRegistries:Array):void {			
 			for (var i:int = 0; i < nodeRegistries.length; i++) {
 				var nodeRegistry:NodeRegistry = NodeRegistry(nodeRegistries[i]);
-				for each (var resourceNodeId:Object in getResourceNodeIdsForNodeRegistry(nodeRegistry)) {
+				for each (var resourceNodeId:Object in getResourceUrisForNodeRegistry(nodeRegistry)) {
 					unlinkResourceNodeFromNodeRegistry(String(resourceNodeId), nodeRegistry);
 				}	
 				nodeRegistry.dispatchEvent(new NodeRegistryRemovedEvent());							
@@ -215,68 +264,68 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		
 		/**
 		 * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
-		 * @return all dirty resourceNodeIds found in <code>nodeRegistries</code>, without duplicates.
+		 * @return all dirty resourceUris found in <code>nodeRegistries</code>, without duplicates.
 		 */ 
-		public function getDirtyResourceNodeIdsFromNodeRegistries(nodeRegistries:Array, dirtyResourceNodeHandler:Function = null):Array {			
-			var dirtyResourceNodeIds:Array = [];
+		public function getDirtyResourceUrisFromNodeRegistries(nodeRegistries:Array, dirtyResourceNodeHandler:Function = null):Array {			
+			var dirtyResourceUris:Array = [];
 			for (var i:int = 0; i < nodeRegistries.length; i++) {	
 				var nodeRegistry:NodeRegistry = NodeRegistry(nodeRegistries[i]);
-				for each (var obj:Object in getResourceNodeIdsForNodeRegistry(nodeRegistry)) {
+				for each (var obj:Object in getResourceUrisForNodeRegistry(nodeRegistry)) {
 					var resourceNodeId:String = String(obj);
-					if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
+					if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
 						if (dirtyResourceNodeHandler != null) {
 							dirtyResourceNodeHandler(resourceNodeId);
 						}
-						dirtyResourceNodeIds.push(resourceNodeId);						
+						dirtyResourceUris.push(resourceNodeId);						
 					}
 				}
 			}
-			return dirtyResourceNodeIds;
+			return dirtyResourceUris;
 		}
 		
 		/**
 		 * @param returnIfAtLeastOneDirtyResourceNodeFound if <code>true</code>, returns the first dirty resourceNodeId found.
 		 * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
-		 * @return all dirty resourceNodeIds, without duplicates.
+		 * @return all dirty resourceUris, without duplicates.
 		 */ 
-		public function getAllDirtyResourceNodeIds(returnIfAtLeastOneDirtyResourceNodeFound:Boolean = false, dirtyResourceNodeHandler:Function = null):Array {
-			var dirtyResourceNodeIds:Array = [];
-			for each (var resourceNodeId:String in getResourceNodeIds()) {				
-				for each (var nodeRegistry:NodeRegistry in getNodeRegistriesForResourceNodeId(resourceNodeId)) {										
-					if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceNodeIds.indexOf(resourceNodeId) == -1) {
+		public function getAllDirtyResourceUris(returnIfAtLeastOneDirtyResourceNodeFound:Boolean = false, dirtyResourceNodeHandler:Function = null):Array {
+			var dirtyResourceUris:Array = [];
+			for each (var resourceNodeId:String in getResourceSets()) {				
+				for each (var nodeRegistry:NodeRegistry in getNodeRegistriesForResourceSet(resourceNodeId)) {										
+					if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
 						if (returnIfAtLeastOneDirtyResourceNodeFound) {
-							return [dirtyResourceNodeIds];
+							return [dirtyResourceUris];
 						}											
 						if (dirtyResourceNodeHandler != null) {
 							dirtyResourceNodeHandler(resourceNodeId);
 						}
-						dirtyResourceNodeIds.push(resourceNodeId);						
+						dirtyResourceUris.push(resourceNodeId);						
 					}
 				}		
 			}
-			return dirtyResourceNodeIds;
+			return dirtyResourceUris;
 		}
 				
 		public function processUpdates(resourceNodeIdToUpdates:Object):void {
 			for (var resourceNodeId:String in resourceNodeIdToUpdates) {
 				var updates:ArrayCollection = resourceNodeIdToUpdates[resourceNodeId];			
-				for each (var nodeRegistry:NodeRegistry in getNodeRegistriesForResourceNodeId(resourceNodeId)) {
+				for each (var nodeRegistry:NodeRegistry in getNodeRegistriesForResourceSet(resourceNodeId)) {
 					nodeRegistry.processUpdates(updates);
 				}
 			}
 		}	
 				
 		/**
-		 * Unlink <code>resourceNodeIds</code> from node registries.
+		 * Unlink <code>resourceUris</code> from node registries.
 		 * 
 		 * <p>
 		 * Dispatches <code>NodeRegistry_ResourceNodeRemovedEvent</code> for each <code>NodeRegistry</code> found.
 		 * Note: Additional behavior can be added by listening to this event (e.g. in case of an editor, close it).
 		 */
-		public function unlinkResourceNodesForcefully(resourceNodeIds:ArrayCollection):void {
+		public function unlinkResourceNodesForcefully(resourceUris:ArrayCollection):void {
 			var idsList:String = "";
-			for each (var resourceNodeId:String in resourceNodeIds) {
-				var nodeRegistries:Array = getNodeRegistriesForResourceNodeId(resourceNodeId);
+			for each (var resourceNodeId:String in resourceUris) {
+				var nodeRegistries:Array = getNodeRegistriesForResourceSet(resourceNodeId);
 				for each (var nodeRegistry:NodeRegistry in nodeRegistries) {					
 					unlinkResourceNodeFromNodeRegistry(resourceNodeId, nodeRegistry);
 					nodeRegistry.dispatchEvent(new ResourceNodeRemovedEvent(resourceNodeId));

@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
+import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +77,10 @@ public abstract class ResourceService2 {
 	 * where the resource belongs
 	 */
 	public SubscriptionInfo subscribeToParentResource(String sessionId, String nodeUri, ServiceContext<ResourceService2> context) {
+		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeUri);
+		
 		// get resource uri from node uri by stripping the fragment
-		URI resourceUri = Utils.getUriWithoutFragment(nodeUri);
+		URI resourceUri = CoreUtils.getResourceUri(nodeUri);
 		
 		// not a resource => return node
 		if (!resourceHandlers.containsKey(resourceUri.getScheme())) {
@@ -99,10 +103,58 @@ public abstract class ResourceService2 {
 		return new SubscriptionInfo(getNode(nodeUri), resourceNode, resourceSet);
 	}
 	
-	protected abstract void sessionSubscribedToResource(String sessionId, URI resourceUri);
+	/**
+	 * Subscribes the client with this <code>sessionId</code> to the <code>resourceUri</code>.
+	 * Load the resource on first subscription.
+	 * 
+	 * <p>
+	 * Paired with {@link SessionService#sessionSubscribedToResource(String, String, ServiceContext)}.
+	 */
+	public void sessionSubscribedToResource(String sessionId, URI resourceUri) {
+		boolean firstSubscription = false;
+		if (getSessionsSubscribedToResource(Utils.getString(resourceUri)).isEmpty()) {
+			// first subscription
+			String scheme = resourceUri.getScheme();
+			ResourceHandler resourceHandler = getResourceHandler(scheme);
+			resourceHandler.load(resourceUri);
+		}
+		doSessionSubscribedToResource(sessionId, resourceUri);
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("Subscribed session {} to resource {}, first subscription {}", new Object[] { sessionId, resourceUri, firstSubscription });
+		}
+	}
+	
+	protected abstract void doSessionSubscribedToResource(String sessionId, URI resourceUri);
+	
+	/**
+	 * Unsubscribes the client with this <code>sessionId</code> from the <code>resourceUri</code>.
+	 * Unload the resource on last unsubscription.
+	 * 
+	 * <p>
+	 * Paired with {@link SessionService#sessionUnsubscribedFromResource(String, String, ServiceContext)}.
+	 */
+	public void sessionUnsubscribedFromResource(String sessionId, URI resourceUri) {
+		doSessionUnsubscribedFromResource(sessionId, resourceUri);
+		boolean lastUnsubscription = false;
+		if (getSessionsSubscribedToResource(Utils.getString(resourceUri)).isEmpty()) {
+			// last unsubscription
+			lastUnsubscription = true;
+			String scheme = resourceUri.getScheme();
+			ResourceHandler resourceHandler = getResourceHandler(scheme);
+			resourceHandler.unload(resourceUri);
+		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("Unsubscribed session {} from  resource {}, last unsubscription {}", new Object[] { sessionId, resourceUri, lastUnsubscription });
+		}
+	}
+	
+	protected abstract void doSessionUnsubscribedFromResource(String sessionId, URI resourceUri);
 	
 	public void save(String resourceUriAsString, ServiceContext<ResourceService2> context) {
-		URI resourceUri = Utils.getUriWithoutFragment(resourceUriAsString);
+		logger.debug("Save resource {}", resourceUriAsString);
+		
+		URI resourceUri = CoreUtils.getResourceUri(resourceUriAsString);
 		String scheme = resourceUri.getScheme();
 		ResourceHandler resourceHandler = getResourceHandler(scheme);
 		resourceHandler.save(resourceUri);
@@ -117,7 +169,9 @@ public abstract class ResourceService2 {
 	}
 
 	public void reload(String resourceUriAsString, ServiceContext<ResourceService2> context) {
-		URI resourceUri = Utils.getUriWithoutFragment(resourceUriAsString);
+		logger.debug("Reload resource {}", resourceUriAsString);
+		
+		URI resourceUri = CoreUtils.getResourceUri(resourceUriAsString);
 		String scheme = resourceUri.getScheme();
 		ResourceHandler resourceHandler = getResourceHandler(scheme);
 		resourceHandler.reload(resourceUri);
@@ -137,11 +191,11 @@ public abstract class ResourceService2 {
 	}
 
 	public abstract List<String> getResources();
+	
+	public abstract List<String> getSessionsSubscribedToResource(String resourceNodeId);
 
 	public abstract long getUpdateRequestedTimestamp(String resourceNodeId);
 	
 	public abstract void setUpdateRequestedTimestamp(String resourceUri, long timestamp);
-
-	public abstract List<String> getSessionsSubscribedToResource(String resourceNodeId);
 	
 }

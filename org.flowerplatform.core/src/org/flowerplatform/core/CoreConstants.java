@@ -36,9 +36,6 @@ public class CoreConstants {
 	public static final String IS_DIRTY = "isDirty";
 	public static final String SUBSCRIBABLE_RESOURCES = "subscribableResources";
 	
-	// TODO delete
-	public static final String IS_SUBSCRIBABLE = "isSubscribable";
-	
 	public static final String IS_OPENABLE_IN_NEW_EDITOR = "isOpenableInNewEditor";
 	
 	public static final String INSERT_BEFORE_FULL_NODE_ID = "insertBeforeFullNodeId"; 
@@ -152,7 +149,8 @@ public class CoreConstants {
 	//////////////////////////////////
 	
 	public static final String MESSAGE_RESULT = "messageResult";
-	public static final String RESOURCE_NODE_IDS = "resourceNodeIds";
+	public static final String RESOURCE_SETS = "resourceSets";
+	public static final String RESOURCE_URIS = "resourceUris";
 	public static final String RESOURCE_NODE_IDS_NOT_FOUND = "resourceNodeIdsNotFound";
 	public static final String LAST_UPDATE_TIMESTAMP = "timestampOfLastUpdate";
 	public static final String UPDATES = "updates";

@@ -37,7 +37,9 @@ import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
+import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
+import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -76,6 +78,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected IFileAccessController fileAccessController = new PlainFileAccessController();
 	
 	protected Map<String, List<FileExtensionSetting>> fileExtensionSettings = new HashMap<String, List<FileExtensionSetting>>();
+	
+	protected List<FileExtensionSetting> defaultUriSchemas = new ArrayList<FileExtensionSetting>();
 	
 	protected ComposedSessionListener composedSessionListener = new ComposedSessionListener();
 	
@@ -121,16 +125,26 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	}
 	
 	public List<FileExtensionSetting> getFileExtensionSettings(String extension) {
-		return fileExtensionSettings.get(extension);
+		List<FileExtensionSetting> result = new ArrayList<FileExtensionSetting>();
+		List<FileExtensionSetting> settings = fileExtensionSettings.get(extension);
+		if (settings != null) {
+			result.addAll(settings); 
+		}
+		result.addAll(defaultUriSchemas);
+		return result;
 	}
 	
-	public void addFileExtensionSetting(String extension, FileExtensionSetting setting) {
-		List<FileExtensionSetting> settings = getFileExtensionSettings(extension);
+	public void addFileExtensionSetting(String extension, FileExtensionSetting setting, boolean setDefault) {
+		List<FileExtensionSetting> settings = fileExtensionSettings.get(extension);
 		if (settings == null) {
 			settings = new ArrayList<FileExtensionSetting>();
 			fileExtensionSettings.put(extension, settings);
 		}
-		settings.add(setting);
+		if (setDefault) {
+			settings.add(0, setting);
+		} else {
+			 settings.add(setting);
+		}
 	}
 	
 	public ServiceRegistry getServiceRegistry() {
@@ -244,16 +258,28 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RepositoryChildrenProvider());
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.CODE_TYPE))
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true));
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.CODE_TYPE));
+		
+		FileExtensionSetting defaultSetting = new FileExtensionSetting("txt", "text");
+		defaultUriSchemas.add(defaultSetting);
 		
 //		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 		
 		UpdateController updateController = new UpdateController();
+		DelegateToResourceController delegateToResourceController = new DelegateToResourceController();
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL)
+		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, delegateToResourceController)
+		.addAdditiveController(CoreConstants.PROPERTY_SETTER, delegateToResourceController)
+		.addAdditiveController(CoreConstants.DEFAULT_PROPERTY_PROVIDER, delegateToResourceController)
+		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, delegateToResourceController)
+		.addSingleController(CoreConstants.PARENT_PROVIDER, delegateToResourceController)
+		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, delegateToResourceController)
+		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, delegateToResourceController)
+		
+		.addAdditiveController(CoreConstants.PROPERTY_SETTER, updateController)
 		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, updateController)
 		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, updateController)
-		.addAdditiveController(CoreConstants.PROPERTY_SETTER, updateController)
+		
 		.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider())
 		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
 		.addSingleController(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.SIDE))
@@ -261,7 +287,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
-//		new TypeDescriptorRegistryDebugControllers().registerControllers();
+		new TypeDescriptorRegistryDebugControllers().registerControllers();
 		
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);

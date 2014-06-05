@@ -91,8 +91,13 @@ public class RemoteMethodInvocationInfo {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<String> getResourceNodeIds() {
-		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_NODE_IDS);
+	public List<String> getResourceSets() {
+		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_SETS);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getResourceUris() {
+		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_URIS);
 	}
 
 	public long getTimestampOfLastRequest() {

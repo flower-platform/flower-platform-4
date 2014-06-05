@@ -61,6 +61,10 @@ public class Node {
 		return Utils.getUri(nodeUri).getSchemeSpecificPart();
 	}
 	
+	public String getScheme() {
+		return Utils.getUri(nodeUri).getScheme();
+	}
+	
 	/**
 	 * Should be used for writing values in the map. Probably by {@link IPropertiesProvider}.
 	 * 

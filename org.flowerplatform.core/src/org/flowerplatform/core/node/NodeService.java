@@ -13,7 +13,6 @@ import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
-import static org.flowerplatform.core.CoreConstants.RAW_NODE_DATA_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import org.flowerplatform.core.node.controller.IDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.IParentProvider;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
-import org.flowerplatform.core.node.controller.IRawNodeDataProvider;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -304,26 +302,10 @@ public class NodeService {
 		
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())));
 		
-		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
-		if (CoreUtils.isSubscribable(node.getProperties())) {
-			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService2>(resourceService)));
-		}
-	}
-	
-	/**
-	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
-	 */
-	public Object getRawNodeData(Node node, ServiceContext<NodeService> context) {	
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return null;
-		}
-					
-		IRawNodeDataProvider<Object> rawNodeDataProvider = descriptor.getSingleController(RAW_NODE_DATA_PROVIDER, node);	
-		if (rawNodeDataProvider == null) {
-			return null;
-		}
-		return rawNodeDataProvider.getRawNodeData(node, context);	
+//		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
+//		if (CoreUtils.isSubscribable(node.getProperties())) {
+//			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService2>(resourceService)));
+//		}
 	}
 	
 }

@@ -98,7 +98,7 @@ package org.flowerplatform.flex_client.core.editor {
 		 * @author Cristina Constantinescu
 		 */
 		public function isDirty():Boolean {	
-			for each (var resourceNodeId:Object in CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceNodeIdsForNodeRegistry(nodeRegistry)) {
+			for each (var resourceNodeId:Object in CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForNodeRegistry(nodeRegistry)) {
 				if (CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.isResourceNodeDirty(String(resourceNodeId), nodeRegistry)) {
 					return true;
 				}

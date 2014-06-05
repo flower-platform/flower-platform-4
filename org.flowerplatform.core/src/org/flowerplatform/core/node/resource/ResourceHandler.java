@@ -3,10 +3,13 @@ package org.flowerplatform.core.node.resource;
 import java.net.URI;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.Utils;
 
 /**
+ * Responsible with working with raw resource data: load, dirty state, save, reload.
+ * 
  * @author Mariana Gheorghe
  */
 public abstract class ResourceHandler {
@@ -16,19 +19,9 @@ public abstract class ResourceHandler {
 	public Node getNode(URI nodeUri) {
 		URI resourceUri = nodeUri;
 		if (nodeUri.getFragment() != null) {
-			resourceUri = Utils.getUriWithoutFragment(nodeUri);
+			resourceUri = CoreUtils.getResourceUri(Utils.getString(nodeUri));
 		}
 		Object resource = resourceService.getResource(resourceUri);
-		if (resource == null) {
-			// load and register
-			try {
-				resource = load(nodeUri);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			resourceService.registerResource(nodeUri, resource);
-		}
-		
 		Node node = new Node(Utils.getString(nodeUri));
 		Object resourceData = getResourceData(resource, nodeUri);
 		node.setRawNodeData(resourceData);
@@ -36,35 +29,46 @@ public abstract class ResourceHandler {
 		return node;
 	}
 
-	protected abstract Object load(URI resourceUri) throws Exception;
+	/**
+	 * Retrieve the resource data for this <code>nodeUri</code>.
+	 */
+	public abstract Object getResourceData(Object resource, URI nodeUri);
 	
-	protected abstract Object getResourceData(Object resource, URI nodeUri);
-	
+	/**
+	 * Retrieve the node type from the resource data.
+	 */
 	public abstract String getType(Object resourceData, URI nodeUri);
-
+	
+	/**
+	 * Load and register the resource data.
+	 */
+	public void load(URI resourceUri) {
+		try {
+			resourceService.registerResource(resourceUri, doLoad(resourceUri));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected abstract Object doLoad(URI resourceUri) throws Exception;
+	
+	public void unload(URI resourceUri) {
+		resourceService.unregisterResource(resourceUri);
+	}
+	
 	public boolean isDirty(URI nodeUri) {
 		URI resourceUri = nodeUri;
 		if (nodeUri.getFragment() != null) {
-			resourceUri = Utils.getUriWithoutFragment(nodeUri);
+			resourceUri = CoreUtils.getResourceUri(Utils.getString(nodeUri));
 		}
-		Object resource = resourceService.getResource(resourceUri);
-		if (resource == null) {
-			throw new RuntimeException("Resource is not loaded: " + resourceUri);
-		}
-		
-		return isDirty(resource);
+		return isDirty(resourceService.getResource(resourceUri));
 	}
 
 	protected abstract boolean isDirty(Object resource);
 	
 	public void save(URI resourceUri) {
-		Object resource = resourceService.getResource(resourceUri);
-		if (resource == null) {
-			throw new RuntimeException("Resource is not loaded: " + resourceUri);
-		}
-		
 		try {
-			doSave(resource);
+			doSave(resourceService.getResource(resourceUri));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -73,16 +77,8 @@ public abstract class ResourceHandler {
 	protected abstract void doSave(Object resource) throws Exception;
 
 	public void reload(URI resourceUri) {
-		Object resource = resourceService.getResource(resourceUri);
-		if (resource == null) {
-			throw new RuntimeException("Resource is not loaded: " + resourceUri);
-		}
-		
-		try {
-			resourceService.registerResource(resourceUri, load(resourceUri));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		resourceService.getResource(resourceUri);
+		load(resourceUri);
 	}
 	
 }

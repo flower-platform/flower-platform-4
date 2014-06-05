@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.resource.in_memory;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,22 +15,26 @@ import org.flowerplatform.util.Utils;
  */
 public class InMemoryResourceService extends ResourceService2 {
 
-	private Map<String, InMemoryResourceInfo> resourceInfos = new HashMap<String, InMemoryResourceInfo>();
+	protected Map<String, InMemoryResourceInfo> resourceInfos = new HashMap<String, InMemoryResourceInfo>();
 	
 	@Override
-	public Object getResourceInfo(URI resourceUri) {
+	public InMemoryResourceInfo getResourceInfo(URI resourceUri) {
 		return resourceInfos.get(Utils.getString(resourceUri));
 	}
 
 	@Override
-	protected void sessionSubscribedToResource(String sessionId, URI resourceUri) {
-		InMemoryResourceInfo resourceInfo = (InMemoryResourceInfo) getResourceInfo(resourceUri);
-		if (resourceInfo == null) {
-			resourceInfo = new InMemoryResourceInfo();
-			resourceInfos.put(Utils.getString(resourceUri), resourceInfo);
-		}
-		if (!resourceInfo.getSessionIds().contains(sessionId)) {
+	public void doSessionSubscribedToResource(String sessionId, URI resourceUri) {
+		InMemoryResourceInfo resourceInfo = getResourceInfo(resourceUri);
+		if (resourceInfo != null && !resourceInfo.getSessionIds().contains(sessionId)) {
 			resourceInfo.getSessionIds().add(sessionId);
+		}
+	}
+	
+	@Override
+	public void doSessionUnsubscribedFromResource(String sessionId, URI resourceUri) {
+		InMemoryResourceInfo resourceInfo = getResourceInfo(resourceUri);
+		if (resourceInfo != null) {
+			resourceInfo.getSessionIds().remove(sessionId);
 		}
 	}
 
@@ -39,8 +44,12 @@ public class InMemoryResourceService extends ResourceService2 {
 	}
 
 	@Override
-	public List<String> getSessionsSubscribedToResource(String resourceNodeId) {
-		return resourceInfos.get(resourceNodeId).getSessionIds();
+	public List<String> getSessionsSubscribedToResource(String resourceUri) {
+		InMemoryResourceInfo resourceInfo = getResourceInfo(Utils.getUri(resourceUri));
+		if (resourceInfo == null) {
+			return Collections.emptyList();
+		}
+		return resourceInfo.getSessionIds();
 	}
 
 	@Override

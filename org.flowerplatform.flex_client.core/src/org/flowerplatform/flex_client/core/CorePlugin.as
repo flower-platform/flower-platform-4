@@ -52,6 +52,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
+	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
@@ -232,6 +233,7 @@ package org.flowerplatform.flex_client.core {
 				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			new TypeDescriptorRegistryDebugControllers().registerControllers();
+			new ResourceDebugControllers().registerControllers();
 			
 			linkHandlers = new Dictionary();
 			
@@ -344,14 +346,16 @@ package org.flowerplatform.flex_client.core {
 		 * @author Mariana Gheorghe
 		 */
 		public function openEditor(node:Node):void {
-			var contentType:String = node.properties[CoreConstants.CONTENT_TYPE];
-			if (contentType == null) {
-				contentType = contentTypeRegistry.defaultContentType;
+			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+			var resourceUri:String = node.nodeUri;
+			var contentType:String = contentTypeRegistry.defaultContentType;
+			if (subscribableResources != null && subscribableResources.length > 0) {
+				var pair:Pair = Pair(subscribableResources.getItemAt(0));
+				resourceUri = String(pair.a);
+				contentType = String(pair.b);
 			}
-			var hideRootNode:Boolean = node.properties[CoreConstants.HIDE_ROOT_NODE];
-			
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
-			editorDescriptor.openEditor(node.nodeUri, true, hideRootNode);
+			editorDescriptor.openEditor(resourceUri, true);
 		}
 		
 		/**

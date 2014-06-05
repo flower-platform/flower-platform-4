@@ -43,7 +43,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 				
 		override public function run():void {			
-			var dirtyResourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getDirtyResourceNodeIdsFromNodeRegistries([editorFrontend.nodeRegistry]);
+			var dirtyResourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getDirtyResourceUrisFromNodeRegistries([editorFrontend.nodeRegistry]);
 			if (dirtyResourceNodeIds.length == 1) { 
 				// single resourceNode to save -> save without asking
 				CorePlugin.getInstance().serviceLocator.invoke("resourceService.save", [dirtyResourceNodeIds[0]]);

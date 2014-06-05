@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.core.session.SessionService;
 import org.slf4j.Logger;
@@ -37,29 +36,29 @@ public class RemoteMethodInvocationListener {
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
-		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds(); // list is sorted on client
+		List<String> clientResources = remoteMethodInvocationInfo.getResourceUris(); // list is sorted on client
 		
-		if (clientResourceNodeIds != null) {
-			List<String> serverResourceNodeIds = CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId);
-			List<String> notFoundResourceNodeIds = new ArrayList<String>();
+		if (clientResources != null) {
+			List<String> serverResources = CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId);
+			List<String> notFoundResources = new ArrayList<String>();
 						
-			for (String clientResourceNodeId : clientResourceNodeIds) {			
-				if (Collections.binarySearch(serverResourceNodeIds, clientResourceNodeId) < 0) { // search in a sorted list
+			for (String clientResource : clientResources) {			
+				if (Collections.binarySearch(serverResources, clientResource) < 0) { // search in a sorted list
 					continue;
 				}
 				
 				// the client is not subscribed to this resource anymore, maybe he went offline?
 				// subscribe the client to this resource
 				try {
-					CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, clientResourceNodeId, new ServiceContext<SessionService>(CorePlugin.getInstance().getSessionService()));
+					CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, clientResource, new ServiceContext<SessionService>(CorePlugin.getInstance().getSessionService()));
 				} catch (Exception e) {
 					// the resource could not be loaded; inform the client
-					notFoundResourceNodeIds.add(clientResourceNodeId);
+					notFoundResources.add(clientResource);
 				}
 			}
 			
-			if (notFoundResourceNodeIds.size() > 0) {
-				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND, notFoundResourceNodeIds);
+			if (notFoundResources.size() > 0) {
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND, notFoundResources);
 			}
 		}
 	}
@@ -92,29 +91,37 @@ public class RemoteMethodInvocationListener {
 		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
 					
 		// get info from header
-		List<String> resourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();				
-		if (resourceNodeIds != null) {		
+		List<String> resourceSets = remoteMethodInvocationInfo.getResourceSets();				
+		if (resourceSets != null) {		
 			// only request updates if the client is subscribed to some resource
 			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
-			for (String resourceNodeId : resourceNodeIds) {
-				List<Update> updates = CorePlugin.getInstance().getResourceSetService().getUpdates(resourceNodeId, timestampOfLastRequest, timestamp);
+			for (String resourceSet : resourceSets) {
+				List<Update> updates = CorePlugin.getInstance().getResourceSetService().getUpdates(resourceSet, timestampOfLastRequest);
 				if (updates == null || updates.size() > 0) {
 					// updates == null -> client must perform a refresh to get all necessary data
 					// updates.size == 0 -> ignore, no need to add it in map
 					
-					resourceNodeIdToUpdates.put(resourceNodeId, updates);
+					resourceNodeIdToUpdates.put(resourceSet, updates);
 					
 					if (logger.isDebugEnabled()) {
 						int size = -1;
 						if (updates != null) {
 							size = updates.size();
 						}
-						logger.debug("For resource = {} sending {} updates = {}", new Object[] { resourceNodeId, size, updates });
+						logger.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
 					}
 				}				
 			}
 			if (resourceNodeIdToUpdates.size() > 0) {
 				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);
+			}
+		}
+		
+		// update timestamps for server resources
+		List<String> resources = remoteMethodInvocationInfo.getResourceUris();
+		if (resources != null) {
+			for (String resource : resources) {
+				CorePlugin.getInstance().getResourceService().setUpdateRequestedTimestamp(resource, timestamp);
 			}
 		}
 			

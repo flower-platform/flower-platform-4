@@ -29,7 +29,6 @@ package org.flowerplatform.flex_client.core {
 		public static const ICONS_SEPARATOR:String = ",";
 		
 		public static const CONTENT_TYPE:String = "contentType";
-		public static const HIDE_ROOT_NODE:String = "hideRootNode";
 		
 		public static const SUBSCRIBABLE_RESOURCES:String = "subscribableResources";
 		
@@ -100,7 +99,8 @@ package org.flowerplatform.flex_client.core {
 		//////////////////////////////////
 		
 		public static const MESSAGE_RESULT:String = "messageResult";
-		public static const RESOURCE_NODE_IDS:String = "resourceNodeIds";
+		public static const RESOURCE_SETS:String = "resourceSets";
+		public static const RESOURCE_URIS:String = "resourceUris";
 		public static const RESOURCE_NODE_IDS_NOT_FOUND:String = "resourceNodeIdsNotFound";
 		public static const LAST_UPDATE_TIMESTAMP:String = "timestampOfLastUpdate";
 		public static const UPDATES:String = "updates";
