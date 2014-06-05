@@ -26,7 +26,6 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	import mx.events.FlexEvent;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionUtil;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.MenuClosedEvent;
 	import org.flowerplatform.flexutil.mobile.spinner.MobileSpinner;
@@ -38,7 +37,6 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	import spark.components.Label;
 	import spark.components.View;
 	import spark.components.ViewMenuItem;
-	import spark.components.ViewNavigator;
 	import spark.components.supportClasses.ButtonBase;
 	import spark.events.ViewNavigatorEvent;
 	import spark.primitives.BitmapImage;
@@ -237,7 +235,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 		protected function populateViewWithActions(parentActionId:String = null):void {
 			var newActionContent:Array = new Array();
 			var newViewMenuItems:Vector.<ViewMenuItem> = new Vector.<ViewMenuItem>();
-			ActionUtil.processAndIterateActions(parentActionId, allActionsForActiveViewContent, selectionForActiveViewContent, contextForActions, this, function (action:IAction):void {
+			FlexUtilGlobals.getInstance().actionHelper.processAndIterateActions(parentActionId, allActionsForActiveViewContent, selectionForActiveViewContent, contextForActions, this, function (action:IAction):void {
 				if (action.preferShowOnActionBar) {
 					var button:ActionButton = new ActionButton();
 					populateButtonWithAction(button, action);				
@@ -262,7 +260,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 		 * The click handler for ActionButton and ActionViewMenuItem.
 		 */
 		public function actionClickHandler(action:IAction):void {
-			if (ActionUtil.isComposedAction(action)) {
+			if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(action)) {
 				
 				var runnable:Function = function (event:Event):void {
 					removeEventListener("viewMenuClose", runnable);
@@ -288,14 +286,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 					runnable.call(null, null);
 				}
 			} else {
-				try {
-					action.selection = selectionForActiveViewContent;
-					action.context = contextForActions;
-					action.run();				
-				} finally {
-					action.selection = null;
-					action.context = contextForActions;
-				}
+				FlexUtilGlobals.getInstance().actionHelper.runAction(action, selectionForActiveViewContent, contextForActions);				
 			}
 		}
 		

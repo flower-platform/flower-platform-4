@@ -44,7 +44,7 @@
 						
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				// add listener with the biggest priority -> NO OTHER listeners must intercept key_down events
-				UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, false, int.MAX_VALUE);	
+				UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true, int.MAX_VALUE);	
 				
 				Utils.makePseudoDisabled(txtShortcut);
 			}
@@ -59,6 +59,15 @@
 					return;
 				}		
 				
+				// shortcut must start with a key found in filterShortcuts
+				var filterShortcuts:Dictionary = FlexUtilGlobals.getInstance().keyBindings.filterShortcuts;
+				if (!(event.ctrlKey && (filterShortcuts.hasOwnProperty("CONTROL") || filterShortcuts.hasOwnProperty("COMMAND")) ||
+						event.altKey && filterShortcuts.hasOwnProperty("ALTERNATE") ||
+						event.shiftKey && filterShortcuts.hasOwnProperty("SHIFT") ||
+						filterShortcuts.hasOwnProperty(Utils.getKeyNameFromKeyCode(event.keyCode)))) {				
+					return;
+				}
+				
 				shortcut = new Shortcut(event.ctrlKey, event.shiftKey, event.altKey, event.keyCode);
 				var shortcutLabel:String = shortcut.toString();
 				if (shortcutLabel == null) {
@@ -69,22 +78,33 @@
 			}
 				
 			protected function okButton_clickHandler(event:MouseEvent):void {
-				if (shortcut != null && shortcut.toString() != null) {
-					if (!FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, actionId)) {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()		
-							.setText(Resources.getMessage("shortcut.already.used"))
-							.setWidth(400)
-							.setHeight(200)
-							.showMessageBox();
-						return;
-					}
+				if (shortcut == null || shortcut.toString() == null) {
+					return;
 				}
-				cancelButton_clickHandler();
+				
+				var handler:Object = FlexUtilGlobals.getInstance().keyBindings.getRegisteredHandler(shortcut);
+				if (handler != null) { // shortcut already assign, ask user
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("shortcut.already.used", [handler.toString()]))
+						.setTitle(Resources.getMessage("info"))
+						.setWidth(400)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {registerBinding(); cancelButton_clickHandler();})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
+						.showMessageBox();				
+				} else {
+					registerBinding();
+					cancelButton_clickHandler();
+				}		
+			}
+			
+			protected function registerBinding():void {
+				FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, actionId);				
 			}
 			
 			protected function cancelButton_clickHandler(event:MouseEvent = null):void {
 				// important to remove listener after using it -> otherwise BIG problems (no other key_down events will be dispatched)
-				UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1);
+				UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true);
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 				

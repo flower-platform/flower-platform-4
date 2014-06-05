@@ -15,11 +15,17 @@ package org.flowerplatform.flex_client.core.shortcut {
 	 */ 
 	public class AssignHotKeyAction extends ActionBase {
 		
-		public function AssignHotKeyAction() {
+		private var assignShortcutForActionViewClass:Class = AssignShorcutForActionView;
+		
+		public function AssignHotKeyAction(assignShortcutForActionViewClass:Class = null) {
 			super();
 			label = Resources.getMessage("asign.hotkey.action.label");
 			icon = Resources.keyboardIcon;
 			parentId = CoreConstants.TOOLS_MENU_ID;
+			
+			if (assignShortcutForActionViewClass != null) {
+				this.assignShortcutForActionViewClass = assignShortcutForActionViewClass;
+			}
 		}
 		
 		override public function run():void	{
@@ -28,6 +34,7 @@ package org.flowerplatform.flex_client.core.shortcut {
 			var messageBox:IMessageBox = FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()		
 				.setTitle(label)
 				.setText(Resources.getMessage("shortcut.action.click"))
+				.setIcon(icon)
 				.setWidth(300)
 				.setHeight(100)
 				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.cancel'), function():void {FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;});
@@ -40,7 +47,7 @@ package org.flowerplatform.flex_client.core.shortcut {
 				UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(AssignShortcutForActionEvent.ASSIGN_SHORTCUT_FOR_ACTION, afterSelectingAnActionHandler);
 				
 				// show view to enter shortcut for selected actionId
-				var view:AssignShorcutForActionView = new AssignShorcutForActionView();
+				var view:AssignShorcutForActionView = new assignShortcutForActionViewClass();
 				view.actionId = event.actionId;
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(view)

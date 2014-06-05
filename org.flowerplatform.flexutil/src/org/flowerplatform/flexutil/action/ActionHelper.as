@@ -24,7 +24,7 @@ package org.flowerplatform.flexutil.action {
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class ActionUtil {
+	public class ActionHelper {
 
 		/**
 		 * Selects all the visible actions from the <code>actions</code> list, for a give
@@ -34,7 +34,7 @@ package org.flowerplatform.flexutil.action {
 		 * @author Cristian Spiescu
 		 * @author Cristina Constantinescu
 		 */
-		public static function processAndIterateActions(parentActionId:String, actions:Vector.<IAction>, selection:IList, context:Object, forEachCallbackObject:Object, forEachCallbackFunction:Function):void {
+		public function processAndIterateActions(parentActionId:String, actions:Vector.<IAction>, selection:IList, context:Object, forEachCallbackObject:Object, forEachCallbackFunction:Function):void {
 			if (actions == null) {
 				return;
 			}
@@ -91,7 +91,7 @@ package org.flowerplatform.flexutil.action {
 		 * Note: this way, multi level actions visibility is calculated correctly.
 		 * @author Cristina Constantinescu
 		 */
-		private static function setChildActionsForActionIfNecessary(parentActionIdToActions:Dictionary, action:IAction):void {
+		private function setChildActionsForActionIfNecessary(parentActionIdToActions:Dictionary, action:IAction):void {
 			if (!isComposedAction(action)) {
 				return;
 			}
@@ -103,8 +103,19 @@ package org.flowerplatform.flexutil.action {
 			}
 		}
 		
-		public static function isComposedAction(action:IAction):Boolean {
+		public function isComposedAction(action:IAction):Boolean {
 			return action is IComposedAction && !IComposedAction(action).actAsNormalAction;
+		}
+		
+		public function runAction(action:IAction, selection:IList, context:Object):void {
+			try {
+				action.selection = selection;
+				action.context = context;
+				action.run();
+			} finally {										
+				action.selection = null;
+				action.context = null;
+			}
 		}
 	}
 }

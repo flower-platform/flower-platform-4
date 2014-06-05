@@ -306,10 +306,8 @@ package org.flowerplatform.flex_client.core {
 					.show();
 				})
 			);
-			
-			// initial filterShortcuts
-			// other filterShortcut must be added by corresponding keyboard action
-			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts = [Keyboard.CONTROL, Keyboard.COMMAND, Keyboard.SHIFT, Keyboard.ALTERNATE];		
+						
+			FlexUtilGlobals.getInstance().keyBindings.additionalActionProviders.actionProviders.push(globalMenuActionProvider);
 		}
 				
 		override protected function registerClassAliases():void {		

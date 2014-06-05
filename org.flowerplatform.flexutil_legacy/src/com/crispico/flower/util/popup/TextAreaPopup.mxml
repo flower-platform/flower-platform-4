@@ -95,6 +95,11 @@
 				return this;
 			}
 			
+			public function setIcon(value:Object):IMessageBox {
+				titleIconURL = value;
+				return this;	
+			}
+			
 			public function setWidth(value:int):IMessageBox {
 				width = value;
 				return this;

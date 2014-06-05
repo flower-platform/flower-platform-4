@@ -19,7 +19,6 @@
 package org.flowerplatform.flexutil.global_menu {
 	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
@@ -39,11 +38,9 @@ package org.flowerplatform.flexutil.global_menu {
 	import mx.core.LayoutDirection;
 	import mx.events.MenuEvent;
 	import mx.events.PropertyChangeEvent;
-	import mx.events.PropertyChangeEventKind;
 	import mx.managers.ISystemManager;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionUtil;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
@@ -187,7 +184,7 @@ package org.flowerplatform.flexutil.global_menu {
 			if (actionProvider != null) {
 				var listActions:ArrayCollection = new ArrayCollection();
 				
-				ActionUtil.processAndIterateActions(parentId, 
+				FlexUtilGlobals.getInstance().actionHelper.processAndIterateActions(parentId, 
 					actionProvider.getActions(selection),
 					selection,
 					null,
@@ -239,7 +236,7 @@ package org.flowerplatform.flexutil.global_menu {
 				var menuBarAction:IAction = item.data as IAction;
 				
 				// Only a composed action can have children
-				if (ActionUtil.isComposedAction(menuBarAction)) {
+				if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(menuBarAction)) {
 					// get the current selection
 					var selection:IList = null;
 					if (FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider != null) {
@@ -393,7 +390,7 @@ package org.flowerplatform.flexutil.global_menu {
 				// dont notify parent if RIGHT and we are on an expandable menu
 				// so that the menu has a chance to expand itself
 				if (!(keyCode == Keyboard.RIGHT 
-					&& ActionUtil.isComposedAction(IAction(Menu(event.target).selectedItem)))) {
+					&& FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(Menu(event.target).selectedItem)))) {
 					dispatchEvent(event);
 				}
 			}
