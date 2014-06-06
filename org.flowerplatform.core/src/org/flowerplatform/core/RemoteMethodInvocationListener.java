@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceService2;
 import org.flowerplatform.core.node.update.remote.Update;
-import org.flowerplatform.core.session.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +43,14 @@ public class RemoteMethodInvocationListener {
 			List<String> notFoundResources = new ArrayList<String>();
 						
 			for (String clientResource : clientResources) {			
-				if (Collections.binarySearch(serverResources, clientResource) < 0) { // search in a sorted list
+				if (Collections.binarySearch(serverResources, clientResource) >= 0) { // search in a sorted list
 					continue;
 				}
 				
 				// the client is not subscribed to this resource anymore, maybe he went offline?
 				// subscribe the client to this resource
 				try {
-					CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, clientResource, new ServiceContext<SessionService>(CorePlugin.getInstance().getSessionService()));
+					CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, clientResource, new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
 				} catch (Exception e) {
 					// the resource could not be loaded; inform the client
 					notFoundResources.add(clientResource);

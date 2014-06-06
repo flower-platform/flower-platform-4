@@ -25,10 +25,10 @@ import org.flowerplatform.freeplane.controller.PersistencePropertySetter;
 import org.flowerplatform.freeplane.remote.MindMapServiceRemote;
 import org.flowerplatform.freeplane.resource.FreeplanePersistenceResourceHandler;
 import org.flowerplatform.freeplane.style.controller.MindMapStyleChildrenProvider;
+import org.flowerplatform.freeplane.style.controller.MindMapStyleResourceHandler;
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
 import org.flowerplatform.mindmap.MindMapConstants;
-import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
 import org.osgi.framework.BundleContext;
@@ -60,6 +60,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	
 		CorePlugin.getInstance().addFileExtensionSetting("mm", new FileExtensionSetting("fpp", MindMapConstants.MINDMAP_CONTENT_TYPE), true);
 		CorePlugin.getInstance().getResourceService().addResourceHandler("fpp", new FreeplanePersistenceResourceHandler());
+		CorePlugin.getInstance().getResourceService().addResourceHandler(MIND_MAP_STYLE, new MindMapStyleResourceHandler());
 		
 //		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY)
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.resource.fpp")
@@ -83,10 +84,13 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(ADD_NODE_CONTROLLER, new PersistenceAddNodeProvider())
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController());
 		
-		TypeDescriptor stylesRootTypeDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STYLE_ROOT_NODE);
-		stylesRootTypeDescriptor
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STYLE_ROOT_NODE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new StyleRootPropertiesProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new MindMapStyleChildrenProvider());
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.resource.mindMapStyle")
+		.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider())
+		.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new MindMapDefaultPropertyValueProvider());
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());		
 	}

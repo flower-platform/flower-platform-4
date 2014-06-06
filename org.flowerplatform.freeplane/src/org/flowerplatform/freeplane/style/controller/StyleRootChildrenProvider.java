@@ -1,5 +1,6 @@
 package org.flowerplatform.freeplane.style.controller;
 
+import static org.flowerplatform.freeplane.FreeplanePlugin.MIND_MAP_STYLE;
 import static org.flowerplatform.freeplane.FreeplanePlugin.STYLE_ROOT_NODE;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.NodeModel;
+import org.freeplane.features.styles.MapStyleModel;
 
 /**
  * @author Sebastian Solomon
@@ -20,9 +22,12 @@ public class StyleRootChildrenProvider extends AbstractController implements ICh
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		List<Node> list = new ArrayList<>(); 
-		if (((NodeModel) node.getRawNodeData()).getMap().getRootNode().equals(node.getRawNodeData())) {
-//			Node styleNode = new Node(STYLE_ROOT_NODE , null, new Node(node.getResource()).getIdWithinResource(), null);
-//			list.add(styleNode);
+		NodeModel model = (NodeModel) node.getRawNodeData();
+		if ((model.getMap().getRootNode().equals(node.getRawNodeData()))) {
+			Node styleNode = new Node(MIND_MAP_STYLE, node.getSchemeSpecificPart(), null);
+			styleNode.setType(STYLE_ROOT_NODE);
+			styleNode.setRawNodeData(MapStyleModel.getExtension(model.getMap()).getStyleMap().getRootNode());
+			list.add(styleNode);
 		}
 		return list;
 	}

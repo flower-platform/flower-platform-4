@@ -1,7 +1,5 @@
 package org.flowerplatform.freeplane.controller;
 
-import java.net.URI;
-
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IParentProvider;
@@ -24,11 +22,12 @@ public class MindMapParentProvider extends AbstractController implements IParent
 		if (parentNodeModel == null) {
 			return null;
 		}
-		URI resourceUri = Utils.getUriWithoutFragment(node.getNodeUri());
-		String parentUri = Utils.getUriWithFragment(node.getNodeUri(), parentNodeModel.createID());
+		String scheme = Utils.getScheme(node.getNodeUri());
+		String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
+		String parentUri = Utils.getUri(scheme, ssp, parentNodeModel.createID());
 		ResourceHandler resourceHandler = CorePlugin.getInstance().getResourceService()
-				.getResourceHandler(resourceUri.getScheme());
-		return resourceHandler.getNode(Utils.getUri(parentUri));
+				.getResourceHandler(scheme);
+		return resourceHandler.getNode(parentUri);
 	}
 
 }

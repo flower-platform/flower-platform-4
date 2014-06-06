@@ -2,7 +2,6 @@ package org.flowerplatform.freeplane.style.controller;
 
 import static org.flowerplatform.freeplane.FreeplanePlugin.MIND_MAP_STYLE;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,8 +14,6 @@ import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.NodeModel;
-import org.freeplane.features.styles.MapStyleModel;
-
 
 /**
  * @author Sebastian Solomon
@@ -26,17 +23,19 @@ public class MindMapStyleChildrenProvider extends AbstractController implements 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> serviceContext) {
 		// idWithinResource == null -> path to workspace location
-		NodeModel nodeModel = (NodeModel) node.getRawNodeData();
+		NodeModel model = (NodeModel) node.getRawNodeData();
 		
-		Enumeration<NodeModel> styles = MapStyleModel.getExtension(nodeModel.getMap()).getStyleMap().getRootNode().children();
+		Enumeration<NodeModel> styles = model.children();
 		if (styles == null) {	
 			return null;
 		}
 		List<Node> children = new ArrayList<Node>();
 		while (styles.hasMoreElements()) {
 			for (NodeModel styleNodeModel : styles.nextElement().getChildren()) {
-				URI styleNodeUri = Utils.getUriWithFragment(Utils.getUri(node.getNodeUri()), styleNodeModel.createID());
-				Node child = new Node(Utils.getString(styleNodeUri));
+				String scheme = Utils.getScheme(node.getNodeUri());
+				String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
+				String styleNodeUri = Utils.getUri(scheme, ssp, styleNodeModel.createID());
+				Node child = new Node(styleNodeUri);
 				child.setType(MindMapConstants.MINDMAP_NODE_TYPE);
 				child.setRawNodeData(styleNodeModel);
 				children.add(child);

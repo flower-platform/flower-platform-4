@@ -67,7 +67,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				return;
 			}
 			// saveAll is enabled, resourceNode isn't dirty -> verify if there is at least one resourceNode dirty left
-			if (nodeRegistryManager.getAllDirtyResourceUris(true).length == 0) {
+			if (nodeRegistryManager.getAllDirtyResourceSets(true).length == 0) {
 				// no resourceNode dirty -> disable action
 				saveAllAction.enabled = false;
 			}						
@@ -119,7 +119,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			
 			var dirtyResourceNodes:ArrayList = new ArrayList();
 			if (dirtyResourceNodeIds == null) {
-				nodeRegistryManager.getDirtyResourceUrisFromNodeRegistries(nodeRegistries, function(dirtyResourceNodeId:String):void {
+				nodeRegistryManager.getDirtyResourceSetsFromNodeRegistries(nodeRegistries, function(dirtyResourceNodeId:String):void {
 					dirtyResourceNodes.addItem(new ResourceNode(dirtyResourceNodeId, true));
 				});				
 			} else {

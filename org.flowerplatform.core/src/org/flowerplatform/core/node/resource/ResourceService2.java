@@ -4,7 +4,6 @@ import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
 import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,16 +48,15 @@ public abstract class ResourceService2 {
 	/**
 	 * Delegate to a {@link ResourceHandler} based on the scheme.
 	 */
-	public Node getNode(String nodeUriAsString) {
-		logger.debug("Get node for URI: ", nodeUriAsString);
+	public Node getNode(String nodeUri) {
+		logger.debug("Get node for URI: {}", nodeUri);
 	
-		URI nodeUri = Utils.getUri(nodeUriAsString);
-		String scheme = nodeUri.getScheme();
+		String scheme = Utils.getScheme(nodeUri);
 		
 		ResourceHandler resourceHandler = getResourceHandler(scheme);
 		Node node;
 		if (resourceHandler == null) {
-			node = new Node(nodeUriAsString);
+			node = new Node(nodeUri);
 			node.setType(scheme);
 		} else {
 			node = getResourceHandler(scheme).getNode(nodeUri);
@@ -68,7 +66,7 @@ public abstract class ResourceService2 {
 		return node;
 	}
 	
-	public abstract Object getResourceInfo(URI resourceUri);
+	public abstract Object getResourceInfo(String resourceUri);
 	
 	/**
 	 * Subscribes to the parent resource of the <code>node</code>.
@@ -80,24 +78,23 @@ public abstract class ResourceService2 {
 		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeUri);
 		
 		// get resource uri from node uri by stripping the fragment
-		URI resourceUri = CoreUtils.getResourceUri(nodeUri);
+		String resourceUri = CoreUtils.getResourceUri(nodeUri);
 		
 		// not a resource => return node
-		if (!resourceHandlers.containsKey(resourceUri.getScheme())) {
+		if (!resourceHandlers.containsKey(Utils.getScheme(resourceUri))) {
 			return new SubscriptionInfo(getNode(nodeUri));
 		}
 		
 		// subscribe
-		sessionSubscribedToResource(sessionId, resourceUri);
-		CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, Utils.getString(resourceUri), null);
+		sessionSubscribedToResource(sessionId, resourceUri, context);
+		CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, resourceUri, null);
 		
 		// get resource node
-		Node resourceNode = getNode(Utils.getString(resourceUri));
+		Node resourceNode = getNode(resourceUri);
 		
 		// get resource set
 		IResourceSetProvider resourceSetProvider = resourceSetProviders.get(resourceNode.getType());
-		String resourceSet = resourceSetProvider != null ? resourceSetProvider.getResourceSet(resourceUri) :
-			Utils.getString(resourceUri);
+		String resourceSet = resourceSetProvider != null ? resourceSetProvider.getResourceSet(resourceUri) : resourceUri;
 		CorePlugin.getInstance().getResourceSetService().addToResourceSet(resourceSet, resourceUri);
 		
 		return new SubscriptionInfo(getNode(nodeUri), resourceNode, resourceSet);
@@ -110,11 +107,11 @@ public abstract class ResourceService2 {
 	 * <p>
 	 * Paired with {@link SessionService#sessionSubscribedToResource(String, String, ServiceContext)}.
 	 */
-	public void sessionSubscribedToResource(String sessionId, URI resourceUri) {
+	public void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<ResourceService2> context) {
 		boolean firstSubscription = false;
-		if (getSessionsSubscribedToResource(Utils.getString(resourceUri)).isEmpty()) {
+		if (getSessionsSubscribedToResource(resourceUri).isEmpty()) {
 			// first subscription
-			String scheme = resourceUri.getScheme();
+			String scheme = Utils.getScheme(resourceUri);
 			ResourceHandler resourceHandler = getResourceHandler(scheme);
 			resourceHandler.load(resourceUri);
 		}
@@ -125,7 +122,7 @@ public abstract class ResourceService2 {
 		}
 	}
 	
-	protected abstract void doSessionSubscribedToResource(String sessionId, URI resourceUri);
+	protected abstract void doSessionSubscribedToResource(String sessionId, String resourceUri);
 	
 	/**
 	 * Unsubscribes the client with this <code>sessionId</code> from the <code>resourceUri</code>.
@@ -134,28 +131,36 @@ public abstract class ResourceService2 {
 	 * <p>
 	 * Paired with {@link SessionService#sessionUnsubscribedFromResource(String, String, ServiceContext)}.
 	 */
-	public void sessionUnsubscribedFromResource(String sessionId, URI resourceUri) {
+	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<ResourceService2> context) {
+		Node resourceNode = getNode(resourceUri);
+		String resourceType = resourceNode.getType();
 		doSessionUnsubscribedFromResource(sessionId, resourceUri);
 		boolean lastUnsubscription = false;
-		if (getSessionsSubscribedToResource(Utils.getString(resourceUri)).isEmpty()) {
+		if (getSessionsSubscribedToResource(resourceUri).isEmpty()) {
 			// last unsubscription
 			lastUnsubscription = true;
-			String scheme = resourceUri.getScheme();
+			String scheme = Utils.getScheme(resourceUri);
 			ResourceHandler resourceHandler = getResourceHandler(scheme);
 			resourceHandler.unload(resourceUri);
+			
+			// remove from resource set as well
+			// get resource set
+			IResourceSetProvider resourceSetProvider = resourceSetProviders.get(resourceType);
+			String resourceSet = resourceSetProvider != null ? resourceSetProvider.getResourceSet(resourceUri) : resourceUri;
+			CorePlugin.getInstance().getResourceSetService().removeFromResourceSet(resourceSet, resourceUri);
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Unsubscribed session {} from  resource {}, last unsubscription {}", new Object[] { sessionId, resourceUri, lastUnsubscription });
 		}
 	}
 	
-	protected abstract void doSessionUnsubscribedFromResource(String sessionId, URI resourceUri);
+	protected abstract void doSessionUnsubscribedFromResource(String sessionId, String resourceUri);
 	
 	public void save(String resourceUriAsString, ServiceContext<ResourceService2> context) {
 		logger.debug("Save resource {}", resourceUriAsString);
 		
-		URI resourceUri = CoreUtils.getResourceUri(resourceUriAsString);
-		String scheme = resourceUri.getScheme();
+		String resourceUri = CoreUtils.getResourceUri(resourceUriAsString);
+		String scheme = Utils.getScheme(resourceUri);
 		ResourceHandler resourceHandler = getResourceHandler(scheme);
 		resourceHandler.save(resourceUri);
 		
@@ -171,8 +176,8 @@ public abstract class ResourceService2 {
 	public void reload(String resourceUriAsString, ServiceContext<ResourceService2> context) {
 		logger.debug("Reload resource {}", resourceUriAsString);
 		
-		URI resourceUri = CoreUtils.getResourceUri(resourceUriAsString);
-		String scheme = resourceUri.getScheme();
+		String resourceUri = CoreUtils.getResourceUri(resourceUriAsString);
+		String scheme = Utils.getScheme(resourceUri);
 		ResourceHandler resourceHandler = getResourceHandler(scheme);
 		resourceHandler.reload(resourceUri);
 		
@@ -186,8 +191,8 @@ public abstract class ResourceService2 {
 	}
 	
 	public boolean isDirty(String fullNodeId, ServiceContext<ResourceService2> serviceContext) {
-		ResourceHandler resourceHandler = getResourceHandler(Utils.getUri(fullNodeId).getScheme());
-		return resourceHandler == null ? false : resourceHandler.isDirty(Utils.getUri(fullNodeId));
+		ResourceHandler resourceHandler = getResourceHandler(Utils.getScheme(fullNodeId));
+		return resourceHandler == null ? false : resourceHandler.isDirty(fullNodeId);
 	}
 
 	public abstract List<String> getResources();

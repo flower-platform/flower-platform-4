@@ -33,7 +33,7 @@ public class Node {
 	}
 	
 	public Node(String scheme, String ssp, String fragment) {
-		setNodeUri(Utils.getString(Utils.getUri(scheme, ssp, fragment)));
+		setNodeUri(Utils.getUri(scheme, ssp, fragment));
 		setType(scheme);
 	}
 
@@ -54,15 +54,15 @@ public class Node {
 	}
 	
 	public String getFragment() {
-		return Utils.getUri(nodeUri).getFragment();
+		return Utils.getFragment(nodeUri);
 	}
 
 	public String getSchemeSpecificPart() {
-		return Utils.getUri(nodeUri).getSchemeSpecificPart();
+		return Utils.getSchemeSpecificPart(nodeUri);
 	}
 	
 	public String getScheme() {
-		return Utils.getUri(nodeUri).getScheme();
+		return Utils.getScheme(nodeUri);
 	}
 	
 	/**

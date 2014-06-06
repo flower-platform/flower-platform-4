@@ -42,6 +42,7 @@ public class InMemorySessionService extends SessionService {
 	@Override
 	public void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<SessionService> context) {
 		SessionInfo sessionInfo = sessionInfos.get(sessionId);
+		// TODO should not be null; should've been registered on create
 		if (sessionInfo == null) {
 			sessionInfo = new SessionInfo();
 			sessionInfos.put(sessionId, sessionInfo);

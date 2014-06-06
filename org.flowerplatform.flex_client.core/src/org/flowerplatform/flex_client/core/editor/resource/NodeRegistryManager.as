@@ -87,9 +87,6 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		}
 		
 		public function linkResourceNodeWithNodeRegistry(resourceUri:String, resourceSet:String, nodeRegistry:NodeRegistry):void {
-			// listen for resourceNode properties modifications like isDirty
-			nodeRegistry.getNodeById(resourceUri).addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
-			
 			// add resourceUri to resourceSet
 			var resourceUris:Array = resourceSetToResourceUris[resourceSet];
 			if (resourceUris == null) {
@@ -114,6 +111,10 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				resourceSetToNodeRegistries[resourceSet] = nodeRegistries;
 			}
 			nodeRegistries.push(nodeRegistry);
+			
+			// listen for resourceNode properties modifications like isDirty
+			nodeRegistry.getNodeById(resourceUri).addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
+			resourceNodeUpdated(new NodeUpdatedEvent(nodeRegistry.getNodeById(resourceUri)));
 		}
 		
 		public function unlinkResourceNodeFromNodeRegistry(resourceUri:String, nodeRegistry:NodeRegistry):void {
@@ -266,21 +267,22 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
 		 * @return all dirty resourceUris found in <code>nodeRegistries</code>, without duplicates.
 		 */ 
-		public function getDirtyResourceUrisFromNodeRegistries(nodeRegistries:Array, dirtyResourceNodeHandler:Function = null):Array {			
-			var dirtyResourceUris:Array = [];
+		public function getDirtyResourceSetsFromNodeRegistries(nodeRegistries:Array, dirtyResourceNodeHandler:Function = null):Array {			
+			var dirtyResourceSets:Array = [];
 			for (var i:int = 0; i < nodeRegistries.length; i++) {	
 				var nodeRegistry:NodeRegistry = NodeRegistry(nodeRegistries[i]);
 				for each (var obj:Object in getResourceUrisForNodeRegistry(nodeRegistry)) {
-					var resourceNodeId:String = String(obj);
-					if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
+					var resourceUri:String = String(obj);
+					var resourceSet:String = resourceUriToResourceSet[resourceUri];
+					if (isResourceNodeDirty(resourceUri, nodeRegistry) && dirtyResourceSets.indexOf(resourceSet) == -1) {
 						if (dirtyResourceNodeHandler != null) {
-							dirtyResourceNodeHandler(resourceNodeId);
+							dirtyResourceNodeHandler(resourceSet);
 						}
-						dirtyResourceUris.push(resourceNodeId);						
+						dirtyResourceSets.push(resourceSet);						
 					}
 				}
 			}
-			return dirtyResourceUris;
+			return dirtyResourceSets;
 		}
 		
 		/**
@@ -288,22 +290,23 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
 		 * @return all dirty resourceUris, without duplicates.
 		 */ 
-		public function getAllDirtyResourceUris(returnIfAtLeastOneDirtyResourceNodeFound:Boolean = false, dirtyResourceNodeHandler:Function = null):Array {
-			var dirtyResourceUris:Array = [];
-			for each (var resourceNodeId:String in getResourceSets()) {				
-				for each (var nodeRegistry:NodeRegistry in getNodeRegistriesForResourceSet(resourceNodeId)) {										
-					if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
+		public function getAllDirtyResourceSets(returnIfAtLeastOneDirtyResourceNodeFound:Boolean = false, dirtyResourceNodeHandler:Function = null):Array {
+			var dirtyResourceSets:Array = [];
+			for each (var nodeRegistry:NodeRegistry in getNodeRegistries()) {			
+				for each (var resourceUri:String in getResourceUrisForNodeRegistry(nodeRegistry)) {	
+					var resourceSet:String = resourceUriToResourceSet[resourceUri];
+					if (isResourceNodeDirty(resourceUri, nodeRegistry) && dirtyResourceSets.indexOf(resourceSet) == -1) {
 						if (returnIfAtLeastOneDirtyResourceNodeFound) {
-							return [dirtyResourceUris];
+							return [resourceSet];
 						}											
 						if (dirtyResourceNodeHandler != null) {
-							dirtyResourceNodeHandler(resourceNodeId);
+							dirtyResourceNodeHandler(resourceSet);
 						}
-						dirtyResourceUris.push(resourceNodeId);						
+						dirtyResourceSets.push(resourceSet);						
 					}
 				}		
 			}
-			return dirtyResourceUris;
+			return dirtyResourceSets;
 		}
 				
 		public function processUpdates(resourceNodeIdToUpdates:Object):void {

@@ -1,26 +1,25 @@
 package org.flowerplatform.core.file;
 
-import java.net.URI;
-
 import org.flowerplatform.core.node.resource.ResourceHandler;
+import org.flowerplatform.util.Utils;
 
 public class FileSystemResourceHandler extends ResourceHandler {
 
 	@Override
-	protected Object doLoad(URI resourceUri) throws Exception {
+	protected Object doLoad(String resourceUri) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getResourceData(Object resource, URI nodeUri) {
+	public Object getResourceData(Object resource, String nodeUri) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getType(Object resourceData, URI nodeUri) {
-		return nodeUri.getScheme();
+	public String getType(Object resourceData, String nodeUri) {
+		return Utils.getScheme(nodeUri);
 	}
 
 	@Override

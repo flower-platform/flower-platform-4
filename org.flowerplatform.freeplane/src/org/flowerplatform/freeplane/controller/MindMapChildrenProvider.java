@@ -1,6 +1,5 @@
 package org.flowerplatform.freeplane.controller;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +23,13 @@ public class MindMapChildrenProvider extends AbstractController implements IChil
 		NodeModel nodeModel = (NodeModel) node.getRawNodeData();
 		List<Node> children = new ArrayList<Node>();		
 		for (NodeModel childNodeModel : nodeModel.getChildren()) {
-			URI resourceUri = Utils.getUriWithoutFragment(node.getNodeUri());
-			String childUri = Utils.getUriWithFragment(node.getNodeUri(), childNodeModel.createID());
+			String scheme = Utils.getScheme(node.getNodeUri());
+			String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
+			String childUri = Utils.getUri(scheme, ssp, childNodeModel.createID());
 			Node child = new Node(childUri);
 			ResourceHandler resourceHandler = CorePlugin.getInstance().getResourceService()
-					.getResourceHandler(resourceUri.getScheme());
-			child.setType(resourceHandler.getType(childNodeModel, Utils.getUri(childUri)));
+					.getResourceHandler(scheme);
+			child.setType(resourceHandler.getType(childNodeModel, childUri));
 			child.setRawNodeData(childNodeModel);
 			children.add(child);
 		}

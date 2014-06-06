@@ -89,7 +89,7 @@ public class FilePropertiesController extends AbstractController implements IPro
 			List<FileExtensionSetting> settings = CorePlugin.getInstance().getFileExtensionSettings(extension);
 			for (FileExtensionSetting setting : settings) {
 				Pair<String, String> subscribableResource = new Pair<String, String>();
-				subscribableResource.a = Utils.getString(Utils.getUri(setting.getScheme(), node.getSchemeSpecificPart(), node.getFragment()));
+				subscribableResource.a = Utils.getUri(setting.getScheme(), node.getSchemeSpecificPart(), node.getFragment());
 				subscribableResource.b = setting.getContentType();
 				subscribableResources.add(subscribableResource);
 			}

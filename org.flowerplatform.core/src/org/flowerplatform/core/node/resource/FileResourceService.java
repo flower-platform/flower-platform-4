@@ -1,34 +1,31 @@
 package org.flowerplatform.core.node.resource;
 
-import java.net.URI;
-
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceInfo;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceService;
-import org.flowerplatform.util.Utils;
 
 /**
  * @author Mariana Gheorghe
  */
 public class FileResourceService extends InMemoryResourceService {
 
-	public Object getResource(URI resourceUri) {
+	public Object getResource(String resourceUri) {
 		InMemoryResourceInfo resourceInfo = getResourceInfo(resourceUri);
 		if (resourceInfo == null) {
-			throw new RuntimeException("Resource is not loaded: " + resourceUri);
+			return null;
 		}
 		return resourceInfo.getResourceData();
 	}
 	
-	public void registerResource(URI resourceUri, Object resource) {
+	public void registerResource(String resourceUri, Object resource) {
 		InMemoryResourceInfo resourceInfo = getResourceInfo(resourceUri);
 		if (resourceInfo == null) {
 			resourceInfo = new InMemoryResourceInfo();
-			resourceInfos.put(Utils.getString(resourceUri), resourceInfo);
+			resourceInfos.put(resourceUri, resourceInfo);
 		}
 		resourceInfo.setResourceData(resource);
 	}
 
-	public void unregisterResource(URI resourceUri) {
+	public void unregisterResource(String resourceUri) {
 		
 	}
 	

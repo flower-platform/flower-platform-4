@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.IAddNodeController;
@@ -33,6 +34,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -301,11 +303,11 @@ public class NodeService {
 		}
 		
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())));
-		
-//		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
-//		if (CoreUtils.isSubscribable(node.getProperties())) {
-//			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService2>(resourceService)));
-//		}
+
+		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
+		if (resourceService.getResourceInfo(node.getNodeUri()) != null) {
+			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService2>(resourceService)));
+		}
 	}
 	
 }

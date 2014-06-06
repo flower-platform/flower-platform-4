@@ -30,7 +30,9 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 		parentRawNodeData.getMap().setSaved(false);
 		
 		// set the id on the node instance
-		child.setNodeUri(Utils.getUriWithFragment(node.getNodeUri(), newNodeModel.createID()));
+		String scheme = Utils.getScheme(node.getNodeUri());
+		String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
+		child.setNodeUri(Utils.getUri(scheme, ssp, newNodeModel.createID()));
 		child.setRawNodeData(newNodeModel);
 		
 		// populate also with initial properties

@@ -3,6 +3,7 @@ package org.flowerplatform.core.node.remote;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 
 /**
  * @see ResourceService
@@ -31,7 +32,7 @@ public class ResourceServiceRemote {
 	 * @author Cristina Constantinescu
 	 */
 	public void save(String resourceNodeId) {
-		CorePlugin.getInstance().getResourceService().save(resourceNodeId, new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
+		CorePlugin.getInstance().getResourceSetService().save(resourceNodeId, new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
 	
 	public void reload(String resourceNodeId) {
