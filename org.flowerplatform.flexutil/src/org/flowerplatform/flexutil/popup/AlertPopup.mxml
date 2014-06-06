@@ -59,6 +59,8 @@
 			
 			private var _viewHost:IViewHost;
 						
+			private var additionalHandlerToBeExecutedAtClosing:Function;
+			
 			public function getActions(selection:IList):Vector.<IAction>{
 				return new Vector.<IAction>();
 			}
@@ -133,7 +135,7 @@
 			/**
 			 * @author Cristina Constantinescu
 			 */ 
-			public function addButton(title:String, handler:Function = null):IMessageBox {
+			public function addButton(title:String, handler:Function = null, useHandlerAtClosing:Boolean = false):IMessageBox {
 				var newBtn:Button = new Button();
 				newBtn.label = title;
 				
@@ -146,6 +148,10 @@
 					}
 				);
 				buttons.addItem(newBtn);
+				
+				if (useHandlerAtClosing) {
+					additionalHandlerToBeExecutedAtClosing = handler;
+				}
 				return this;
 			}
 			
@@ -204,6 +210,11 @@
 				}
 			}
 			
+			public function additionalCloseHandler():void {
+				if (additionalHandlerToBeExecutedAtClosing != null) {
+					additionalHandlerToBeExecutedAtClosing();
+				}
+			}	
 		]]>
 	</fx:Script>
 	 

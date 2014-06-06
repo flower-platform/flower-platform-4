@@ -22,6 +22,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	
 	import org.flowerplatform.flexutil.popup.IPopupHandler;
 	import org.flowerplatform.flexutil.popup.IPopupHandlerFactory;
+	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	
 	import spark.components.Scroller;
 	import spark.components.View;
@@ -38,6 +39,9 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			var view:View = View(viewNavigator.activeView);	
 			// for MindMapIconsBar, because of the skin, (viewport != viewContent)
 			if (view is MobileViewHost && view.numElements > 0 && (Scroller(view.getElementAt(0)).viewport == viewContent || Scroller(view.getElementAt(0)).viewport == viewContent.parent)) {
+				if (viewContent is IViewContent) {
+					IViewContent(viewContent).additionalCloseHandler();					
+				}
 				viewNavigator.popView();
 			}
 		}

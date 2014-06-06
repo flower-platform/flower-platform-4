@@ -111,6 +111,8 @@
 				return null;
 			}
 			
+			public function additionalCloseHandler():void {				
+			}	
 			
 		]]>
 	</fx:Script>

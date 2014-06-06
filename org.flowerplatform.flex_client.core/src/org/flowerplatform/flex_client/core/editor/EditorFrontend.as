@@ -111,5 +111,10 @@ package org.flowerplatform.flex_client.core.editor {
 			}
 			return title;
 		}
+		
+		public function additionalCloseHandler():void {	
+			// nothing to do
+		}
+		
 	}
 }

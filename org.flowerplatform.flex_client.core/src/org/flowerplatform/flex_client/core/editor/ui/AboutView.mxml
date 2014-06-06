@@ -67,6 +67,9 @@ license-end
 				UIComponent(apiVersionLabel.labelDisplay).setStyle('fontWeight','normal');	
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	

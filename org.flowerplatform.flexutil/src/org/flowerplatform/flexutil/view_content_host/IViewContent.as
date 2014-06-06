@@ -26,6 +26,17 @@ package org.flowerplatform.flexutil.view_content_host {
 	 * @author Cristian Spiescu
 	 */
 	public interface IViewContent extends IVisualElement, IActionProvider {
+		
 		function set viewHost(viewHost:IViewHost):void;
+		
+		/**
+		 * This method provides additional code that will be executed before removing popup.
+		 * 
+		 * @see IPopupHandlerFactory.removePopup() (PopupHandlerFactory & MobileViewHostPopupHandlerFactory)
+		 * 
+		 * @author Cristina Constantinescu
+		 */ 
+		function additionalCloseHandler():void;
+		
 	}
 }

@@ -12,22 +12,15 @@ previously), and a new editor is opened directly.
 
 @author Mariana Gheorghe
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent,org.flowerplatform.flexutil.dialog.IDialog">
-	<s:layout>
-		<s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingBottom="10" paddingRight="10"/>
-	</s:layout>
-	
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*"
+		 implements="org.flowerplatform.flexutil.dialog.IDialog">
+		
 	<s:Label text="{Resources.getMessage('editor.openInNewEditor.message')}"/>
 	<s:CheckBox id="rememberSetting" label="{Resources.getMessage('editor.openInNewEditor.remember')}" selected="true"/>
-	
-	<s:HGroup width="100%" horizontalAlign="right">
-		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okClickHandler()"/>
-		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancelClickHandler()"/>
-	</s:HGroup>
-	
+		
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
@@ -75,44 +68,31 @@ previously), and a new editor is opened directly.
 				so.flush();
 			}
 			
-			protected function okClickHandler():void {
+			override protected function okHandler(event:Event = null):void {
 				if (rememberSetting.selected) {
 					alwaysOpenInNewEditor = true;					
 				}
 				openInNewEditor();
 			}
 			
-			protected function cancelClickHandler():void {
+			override protected function cancelHandler(event:Event = null):void {
 				_resultHandler.handleDialogResult(false);
-				close();
+				super.cancelHandler();
 			}
 			
 			private function openInNewEditor():void {
 				CorePlugin.getInstance().openEditor(node);
 				_resultHandler.handleDialogResult(true);
-				close();
+				super.cancelHandler();
 			}
-			
-			private function close():void {
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
-			}
-			
-			private var _viewHost:IViewHost;
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewHost = viewHost;
-			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
+				
 			private var _resultHandler:IDialogResultHandler;
 			
 			public function setResultHandler(resultHandler:IDialogResultHandler):void {
 				_resultHandler = resultHandler;
 			}
+			
 		]]>
 	</fx:Script>
 	
-</s:Group>
+</host:BasicViewContent>

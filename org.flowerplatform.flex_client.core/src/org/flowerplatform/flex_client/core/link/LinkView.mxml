@@ -86,6 +86,9 @@ license-end
 				return CorePlugin.getInstance().getAppUrl() + "?" + CoreConstants.OPEN_RESOURCES + "=";
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	

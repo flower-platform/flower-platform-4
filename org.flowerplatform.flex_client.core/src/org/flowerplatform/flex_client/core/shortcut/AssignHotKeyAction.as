@@ -37,7 +37,10 @@ package org.flowerplatform.flex_client.core.shortcut {
 				.setIcon(icon)
 				.setWidth(300)
 				.setHeight(100)
-				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.cancel'), function():void {FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;});
+				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.cancel'), function():void {
+					FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
+					UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(AssignShortcutForActionEvent.ASSIGN_SHORTCUT_FOR_ACTION, afterSelectingAnActionHandler);
+				}, true);
 			
 			messageBox.showMessageBox(false);
 			

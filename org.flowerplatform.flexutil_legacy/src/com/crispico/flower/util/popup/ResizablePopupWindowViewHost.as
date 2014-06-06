@@ -22,7 +22,9 @@ package com.crispico.flower.util.popup {
 	
 	import mx.collections.IList;
 	import mx.containers.ControlBar;
+	import mx.events.EffectEvent;
 	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
@@ -125,6 +127,10 @@ package com.crispico.flower.util.popup {
 			
 			activeViewContent.viewHost = this;
 			addElement(activeViewContent);
+		}
+		
+		override protected function fadeOutEffectEndHandler(event:EffectEvent):void {
+			FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(activeViewContent);		
 		}
 		
 	}
