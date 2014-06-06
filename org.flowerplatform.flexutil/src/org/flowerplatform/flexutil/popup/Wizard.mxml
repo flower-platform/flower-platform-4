@@ -271,6 +271,9 @@
 				_viewHost = value;				
 			}
 			
+			public function additionalCloseHandler():void {				
+			}	
+			
 		]]>
 	</fx:Script>
 

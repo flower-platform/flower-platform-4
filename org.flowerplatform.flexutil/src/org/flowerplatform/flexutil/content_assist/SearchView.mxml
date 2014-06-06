@@ -167,6 +167,9 @@ license-end
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			
+			public function additionalCloseHandler():void {				
+			}	
+			
 		]]>
 	</fx:Script>
 	

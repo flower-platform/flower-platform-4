@@ -31,6 +31,7 @@
     <classEntry path="org.flowerplatform.flexutil.action.ComposedActionProvider"/>
     <classEntry path="org.flowerplatform.flexutil.action.IComposedActionProviderProcessor"/>
     <classEntry path="org.flowerplatform.flexutil.controller.NullController"/>
+    <classEntry path="org.flowerplatform.flexutil.view_content_host.BasicViewContent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

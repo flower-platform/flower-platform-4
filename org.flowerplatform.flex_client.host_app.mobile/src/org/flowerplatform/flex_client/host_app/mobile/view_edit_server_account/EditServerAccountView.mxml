@@ -228,6 +228,10 @@
 					saveAccount(false, EDIT_ACCOUNT);
 				}			
 			}
+			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 		

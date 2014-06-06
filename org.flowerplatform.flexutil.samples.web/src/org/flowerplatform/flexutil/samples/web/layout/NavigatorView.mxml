@@ -32,6 +32,9 @@
 				return new ArrayList(tree1.selectedItems);
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</mx:Script>
 	

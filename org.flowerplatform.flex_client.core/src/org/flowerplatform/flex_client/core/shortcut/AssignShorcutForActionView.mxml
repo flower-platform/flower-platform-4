@@ -2,14 +2,11 @@
 <!--
  @author Cristina Constantinescu
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="org.flowerplatform.flexutil.view_content_host.IViewContent"
-		 creationComplete="creationCompleteHandler(event)" >
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*" >
 	
-	<s:layout>
-		<s:VerticalLayout />
-	</s:layout>
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
@@ -28,23 +25,16 @@
 			
 			public var actionId:String;
 			
-			protected var _viewhost:IViewHost;
-			
 			protected var shortcut:Shortcut;
-			
-			public function getActions(selection:IList):Vector.<IAction> {				
-				return null;
-			}
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewhost = viewHost;				
-			}
-						
-			protected function creationCompleteHandler(event:FlexEvent):void {
+									
+			override protected function creationCompleteHandler(event:FlexEvent):void {
 				// add listener with the biggest priority -> NO OTHER listeners must intercept key_down events
 				UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true, int.MAX_VALUE);	
 				
 				Utils.makePseudoDisabled(txtShortcut);
+				
+				okButton.tabFocusEnabled = false;
+				cancelButton.tabFocusEnabled = false;
 			}
 					
 			private function keyDownHandler1(event:KeyboardEvent):void {
@@ -75,7 +65,7 @@
 				txtShortcut.text = shortcutLabel;
 			}
 				
-			protected function okButton_clickHandler(event:MouseEvent):void {
+			override protected function okHandler(event:Event = null):void {
 				if (shortcut == null || shortcut.toString() == null) {
 					return;
 				}
@@ -87,12 +77,12 @@
 						.setTitle(Resources.getMessage("info"))
 						.setWidth(400)
 						.setHeight(200)
-						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {registerBinding(); cancelButton_clickHandler();})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {registerBinding(); cancelHandler();})
 						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
 						.showMessageBox();				
 				} else {
 					registerBinding();
-					cancelButton_clickHandler();
+					cancelHandler();
 				}		
 			}
 			
@@ -100,15 +90,12 @@
 				FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, actionId);				
 			}
 			
-			protected function cancelButton_clickHandler(event:MouseEvent = null):void {
+			override public function additionalCloseHandler():void {
 				// important to remove listener after using it -> otherwise BIG problems (no other key_down events will be dispatched)
 				UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true);
-				
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
-				
 				FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
 			}
-			
+		
 		]]>
 	</fx:Script>
 	
@@ -116,10 +103,5 @@
 		<s:TextInput id="txtShortcut" width="100%" tabFocusEnabled="false" />
 		<s:Button label="Clear" click="{txtShortcut.text = ''}" tabFocusEnabled="false" />
 	</s:HGroup>
-	
-	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle" paddingTop="10">
-		<s:Button id="okButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okButton_clickHandler(event)" tabFocusEnabled="false" />
-		<s:Button id="cancelButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancelButton_clickHandler(event)" tabFocusEnabled="false"/>
-	</s:HGroup>
-	
-</s:Group>
+		
+</host:BasicViewContent>

@@ -276,8 +276,10 @@ package org.flowerplatform.flex_client.core {
 				.setFunctionDelegate(function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new OpenNodeView())
+					.setTitle(Resources.getMessage("open.node.action.label"))
+					.setIcon(Resources.openResourceIcon)
 					.setWidth(400)
-					.setHeight(110)
+					.setHeight(150)
 					.show();
 				})
 			);

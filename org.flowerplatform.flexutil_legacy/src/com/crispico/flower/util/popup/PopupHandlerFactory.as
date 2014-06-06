@@ -29,6 +29,7 @@ package com.crispico.flower.util.popup {
 	import org.flowerplatform.flexutil.popup.IPopupHandler;
 	import org.flowerplatform.flexutil.popup.IPopupHandlerFactory;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	
 	/**
 	 * @author Cristian Spiescu	
@@ -50,6 +51,9 @@ package com.crispico.flower.util.popup {
 				popup = iteratePopups(FlexGlobals.topLevelApplication.systemManager.popUpChildren, viewContent);
 			}
 			if (popup != null) {
+				if (viewContent is IViewContent) {
+					IViewContent(viewContent).additionalCloseHandler();					
+				}
 				PopUpManager.removePopUp(popup);
 			}
 		}
