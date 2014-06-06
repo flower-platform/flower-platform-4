@@ -21,19 +21,17 @@ package org.flowerplatform.flexdiagram.renderer {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
-	import mx.collections.IList;
 	import mx.core.IVisualElement;
-	import mx.core.IVisualElementContainer;
 	import mx.managers.IFocusManagerComponent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
-	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;
+	
+	import spark.core.NavigationUnit;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -60,6 +58,11 @@ package org.flowerplatform.flexdiagram.renderer {
 		 * @author Mircea Negreanu
 		 */
 		public var useGrid:Boolean = true;
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public var verticalScrollBarStepSize:Number = 10;
 		
 		public function get diagramShellContext():DiagramShellContext {			
 			return _context;
@@ -206,6 +209,18 @@ package org.flowerplatform.flexdiagram.renderer {
 				}
 			}
 		}
-
+		
+		/**
+		 * @author Cristina Constantinescu
+		 */ 
+		override public function getVerticalScrollPositionDelta(navigationUnit:uint):Number {
+			var n:Number = super.getVerticalScrollPositionDelta(navigationUnit);
+			if (navigationUnit == NavigationUnit.DOWN || navigationUnit == NavigationUnit.UP) {
+				return verticalScrollBarStepSize * n;
+			}
+			return n;
+		}
+		
+		
 	}
 }
