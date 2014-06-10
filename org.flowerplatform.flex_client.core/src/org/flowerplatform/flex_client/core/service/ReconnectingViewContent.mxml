@@ -56,11 +56,13 @@
 			}
 			
 			protected function getReconnectingMessage():String {
-				var server:Date = new Date();
-				server.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer;
-				var client:Date = new Date();
-				client.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient;
-				return Resources.getMessage('reconnect.message', [formatter.format(client), formatter.format(server)]);
+				formatter.useUTC = true;
+				var server:String = formatter.format(new Date(CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer));	
+				
+				formatter.useUTC = false;
+				var client:String = formatter.format(new Date(CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient));	
+				
+				return Resources.getMessage('reconnect.message', [client, server]);
 			}
 			
 			private var _viewHost:IViewHost;
@@ -77,7 +79,7 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:DateTimeFormatter id="formatter" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+		<s:DateTimeFormatter id="formatter" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>		
 	</fx:Declarations>
 	
 	<s:Label text="{getReconnectingMessage()}" textAlign="center" width="100%"/>

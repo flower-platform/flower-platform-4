@@ -23,10 +23,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 				label = "No resource updates requested yet";
 			} else {
 				var formatter:DateTimeFormatter = new DateTimeFormatter();
-				formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
-				var date:Date = new Date();
-				date.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient;
-				label = "Last update: " + formatter.format(date);
+				formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";							
+				label = "Last update: " + formatter.format(new Date(CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient));
 			}
 		}
 		
