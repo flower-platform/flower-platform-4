@@ -1,9 +1,11 @@
 package org.flowerplatform.core.repository;
 
+import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
+import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -27,7 +29,7 @@ public class RepositoryChildrenProvider extends AbstractController implements IC
 	}
 	
 	public Node getFileSystem(Node parentNode) {
-		Node node = new Node(CoreConstants.FILE_SYSTEM_NODE_TYPE, parentNode.getSchemeSpecificPart(), null);
+		Node node = new Node(FILE_SCHEME, parentNode.getSchemeSpecificPart(), null, FILE_SYSTEM_NODE_TYPE);
 		return node;
 	}
 

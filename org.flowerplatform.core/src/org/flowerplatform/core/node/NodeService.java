@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.controller.IDefaultPropertyValueProvider;
@@ -33,8 +31,7 @@ import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.resource.ResourceService2;
-import org.flowerplatform.util.Utils;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -178,9 +175,8 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 				
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
@@ -192,9 +188,10 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
+			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
@@ -209,9 +206,8 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 					
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (IPropertySetter controller : controllers) {
@@ -222,9 +218,10 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
+			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
@@ -236,9 +233,8 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 				
 		List<IAddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (IAddNodeController controller : controllers) {
@@ -249,9 +245,10 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
+			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()));
@@ -264,9 +261,8 @@ public class NodeService {
 		}
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
-		Node resourceNode = CoreUtils.getResourceNode(node);
-		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
-		boolean oldDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
+		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 						
 		List<IRemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (IRemoveNodeController controller : controllers) {
@@ -277,9 +273,10 @@ public class NodeService {
 		}
 		
 		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(resourceNode.getNodeUri(), new ServiceContext<ResourceService2>(resourceService));
+		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
+			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()));
@@ -304,9 +301,9 @@ public class NodeService {
 		
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())));
 
-		ResourceService2 resourceService = CorePlugin.getInstance().getResourceService();
+		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		if (resourceService.getResourceInfo(node.getNodeUri()) != null) {
-			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService2>(resourceService)));
+			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService)));
 		}
 	}
 	

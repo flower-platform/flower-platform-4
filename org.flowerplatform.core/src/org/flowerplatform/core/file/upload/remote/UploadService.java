@@ -7,9 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.upload.UploadInfo;
 import org.flowerplatform.core.file.upload.UploadServlet;
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.UtilConstants;
 
@@ -86,7 +86,8 @@ public class UploadService implements ISessionListener {
 	 * @throws Exception 
 	 */	
 	public String prepareUpload(String fullNodeId, String fileName, boolean unzipfile) throws Exception {
-		Object file = CorePlugin.getInstance().getFileAccessController().getFile(new Node(fullNodeId).getFragment());
+		String path = FileControllerUtils.getFilePath(fullNodeId);
+		Object file = CorePlugin.getInstance().getFileAccessController().getFile(path);
 		
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();		
 		long timestamp = System.currentTimeMillis();

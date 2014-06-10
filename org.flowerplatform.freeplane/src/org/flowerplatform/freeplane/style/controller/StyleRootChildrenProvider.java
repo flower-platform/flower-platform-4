@@ -24,8 +24,7 @@ public class StyleRootChildrenProvider extends AbstractController implements ICh
 		List<Node> list = new ArrayList<>(); 
 		NodeModel model = (NodeModel) node.getRawNodeData();
 		if ((model.getMap().getRootNode().equals(node.getRawNodeData()))) {
-			Node styleNode = new Node(MIND_MAP_STYLE, node.getSchemeSpecificPart(), null);
-			styleNode.setType(STYLE_ROOT_NODE);
+			Node styleNode = new Node(MIND_MAP_STYLE, node.getSchemeSpecificPart(), null, STYLE_ROOT_NODE);
 			styleNode.setRawNodeData(MapStyleModel.getExtension(model.getMap()).getStyleMap().getRootNode());
 			list.add(styleNode);
 		}

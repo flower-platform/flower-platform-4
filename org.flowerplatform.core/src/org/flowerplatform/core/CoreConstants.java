@@ -12,7 +12,8 @@ public class CoreConstants {
 	//////////////////////////////////
 	
 	public static final String TYPE_KEY = "type";
-	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystem";
+	public static final String FILE_SCHEME = "file";
+	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
 	public static final String ROOT_TYPE = "root";
 	public static final String REPOSITORY_TYPE = "repository";

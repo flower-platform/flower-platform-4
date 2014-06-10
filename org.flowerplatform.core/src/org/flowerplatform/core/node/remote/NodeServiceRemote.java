@@ -49,8 +49,7 @@ public class NodeServiceRemote {
 		if (childType == null) {
 			throw new RuntimeException("Type for new child node must be provided in context!");
 		}
-		Node child = new Node(null);
-		child.setType(childType);
+		Node child = new Node(null, childType);
 		
 		getNodeService().addChild(parent, child, context);
 		return child.getNodeUri();

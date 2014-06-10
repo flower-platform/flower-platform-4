@@ -20,16 +20,10 @@ package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
-import org.flowerplatform.core.file.FileExtensionSetting;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -45,9 +39,10 @@ import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.resource.FileResourceService;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
-import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
+import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceSetService;
 import org.flowerplatform.core.node.resource.in_memory.InMemorySessionService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
@@ -77,10 +72,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 	protected IFileAccessController fileAccessController = new PlainFileAccessController();
 	
-	protected Map<String, List<FileExtensionSetting>> fileExtensionSettings = new HashMap<String, List<FileExtensionSetting>>();
-	
-	protected List<FileExtensionSetting> defaultUriSchemas = new ArrayList<FileExtensionSetting>();
-	
 	protected ComposedSessionListener composedSessionListener = new ComposedSessionListener();
 	
 	private FlowerProperties flowerProperties = new FlowerProperties();
@@ -94,7 +85,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
 	
-	protected ResourceService2 resourceService;
+	protected ResourceService resourceService;
 	protected ResourceSetService resourceSetService;
 	protected SessionService sessionService;
 		
@@ -124,29 +115,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return fileAccessController;
 	}
 	
-	public List<FileExtensionSetting> getFileExtensionSettings(String extension) {
-		List<FileExtensionSetting> result = new ArrayList<FileExtensionSetting>();
-		List<FileExtensionSetting> settings = fileExtensionSettings.get(extension);
-		if (settings != null) {
-			result.addAll(settings); 
-		}
-		result.addAll(defaultUriSchemas);
-		return result;
-	}
-	
-	public void addFileExtensionSetting(String extension, FileExtensionSetting setting, boolean setDefault) {
-		List<FileExtensionSetting> settings = fileExtensionSettings.get(extension);
-		if (settings == null) {
-			settings = new ArrayList<FileExtensionSetting>();
-			fileExtensionSettings.put(extension, settings);
-		}
-		if (setDefault) {
-			settings.add(0, setting);
-		} else {
-			 settings.add(setting);
-		}
-	}
-	
 	public ServiceRegistry getServiceRegistry() {
 		return serviceRegistry;
 	}
@@ -159,7 +127,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return nodeService;
 	}
 
-	public ResourceService2 getResourceService() {
+	public ResourceService getResourceService() {
 		return resourceService;
 	}
 	
@@ -238,7 +206,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
 		resourceService = new FileResourceService();
-		resourceSetService = new ResourceSetService();
+		resourceSetService = new InMemoryResourceSetService();
 		sessionService = new InMemorySessionService();
 		
 		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
@@ -259,11 +227,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.CODE_TYPE));
-		
-		FileExtensionSetting defaultSetting = new FileExtensionSetting("txt", "text");
-		defaultUriSchemas.add(defaultSetting);
-		
-//		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
 		
 		UpdateController updateController = new UpdateController();
 		DelegateToResourceController delegateToResourceController = new DelegateToResourceController();

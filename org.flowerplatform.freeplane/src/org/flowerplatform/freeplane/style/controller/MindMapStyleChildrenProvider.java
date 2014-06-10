@@ -35,8 +35,7 @@ public class MindMapStyleChildrenProvider extends AbstractController implements 
 				String scheme = Utils.getScheme(node.getNodeUri());
 				String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
 				String styleNodeUri = Utils.getUri(scheme, ssp, styleNodeModel.createID());
-				Node child = new Node(styleNodeUri);
-				child.setType(MindMapConstants.MINDMAP_NODE_TYPE);
+				Node child = new Node(styleNodeUri, MindMapConstants.MINDMAP_NODE_TYPE);
 				child.setRawNodeData(styleNodeModel);
 				children.add(child);
 			}

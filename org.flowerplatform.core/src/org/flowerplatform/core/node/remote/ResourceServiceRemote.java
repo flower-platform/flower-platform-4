@@ -2,7 +2,7 @@ package org.flowerplatform.core.node.remote;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
-import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
 
 /**
@@ -15,7 +15,7 @@ public class ResourceServiceRemote {
 	public SubscriptionInfo subscribeToParentResource(String nodeUri) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		return CorePlugin.getInstance().getResourceService()
-				.subscribeToParentResource(sessionId, nodeUri, new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
+				.subscribeToParentResource(sessionId, nodeUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 	}
 	
 	/**
@@ -32,11 +32,13 @@ public class ResourceServiceRemote {
 	 * @author Cristina Constantinescu
 	 */
 	public void save(String resourceNodeId) {
-		CorePlugin.getInstance().getResourceSetService().save(resourceNodeId, new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
+		CorePlugin.getInstance().getResourceSetService().save(resourceNodeId, 
+				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
 	
 	public void reload(String resourceNodeId) {
-		CorePlugin.getInstance().getResourceService().reload(resourceNodeId, new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
+		CorePlugin.getInstance().getResourceSetService().reload(resourceNodeId, 
+				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
 	
 }

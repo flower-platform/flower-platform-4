@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.core.node.resource.ResourceService;
 
 /**
  * @author Mariana Gheorghe
  */
-public class InMemoryResourceService extends ResourceService2 {
+public class InMemoryResourceService extends ResourceService {
 
 	protected Map<String, InMemoryResourceInfo> resourceInfos = new HashMap<String, InMemoryResourceInfo>();
 	

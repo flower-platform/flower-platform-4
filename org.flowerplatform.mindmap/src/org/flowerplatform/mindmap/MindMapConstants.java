@@ -76,8 +76,8 @@ public class MindMapConstants {
 	// Resource
 	//////////////////////////////////
 	
-	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "freePlaneMindMap";
-	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "freePlanePersistence";
+	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "fpm";
+	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "fpp";
 	public static final String FREEPLANE_MINDMAP_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 	public static final String FREEPLANE_PERSISTENCE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 	

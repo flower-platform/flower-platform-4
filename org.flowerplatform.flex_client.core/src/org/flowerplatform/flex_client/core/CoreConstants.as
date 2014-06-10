@@ -11,7 +11,7 @@ package org.flowerplatform.flex_client.core {
 		//////////////////////////////////
 		
 		public static const TYPE_KEY:String = "type";
-		public static const FILE_SYSTEM_NODE_TYPE:String = "fileSystem";
+		public static const FILE_SYSTEM_NODE_TYPE:String = "fileSystemNode";
 		public static const FILE_NODE_TYPE:String = "fileNode";
 		public static const ROOT_TYPE:String = "root";
 		public static const REPOSITORY_TYPE:String = "repository";
@@ -30,12 +30,8 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const CONTENT_TYPE:String = "contentType";
 		
-		public static const SUBSCRIBABLE_RESOURCES:String = "subscribableResources";
-		
-		// TODO delete
-		public static const IS_SUBSCRIBABLE:String = "isSubscribable";
-		
 		public static const IS_DIRTY:String = "isDirty";
+		public static const SUBSCRIBABLE_RESOURCES:String = "subscribableResources";
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
 		

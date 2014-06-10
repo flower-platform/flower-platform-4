@@ -8,6 +8,7 @@ import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_LAST_ACCESS_TIME;
 import static org.flowerplatform.core.CoreConstants.FILE_LAST_MODIFIED_TIME;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.FILE_SIZE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
@@ -51,7 +52,7 @@ public class FileSystemControllers {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.accessed.time")).setReadOnlyAs(true).setTypeAs("Date").setOrderIndexAs(12))
 		.addCategory("category.fileContainer");
 		
-		CorePlugin.getInstance().getResourceService().addResourceHandler(FILE_SYSTEM_NODE_TYPE, new FileSystemResourceHandler());
+		CorePlugin.getInstance().getResourceService().addResourceHandler(FILE_SCHEME, new FileSystemResourceHandler());
 	}
 
 }

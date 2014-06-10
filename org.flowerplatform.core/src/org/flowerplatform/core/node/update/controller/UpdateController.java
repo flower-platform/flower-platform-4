@@ -6,7 +6,6 @@ import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_REMOVED;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.controller.IPropertySetter;
@@ -14,6 +13,7 @@ import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 import org.flowerplatform.util.controller.AbstractController;
@@ -31,11 +31,11 @@ public class UpdateController extends AbstractController
 	
 	@Override
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {		
-		Node resourceNode = CoreUtils.getResourceNode(node);
+		String resourceUri = CorePlugin.getInstance().getResourceService().getResourceUri(node.getNodeUri());
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
-		if (resourceNode != null) {
-			CorePlugin.getInstance().getResourceSetService()
-				.addUpdate(resourceNode.getNodeUri(), 
+		if (resourceUri!= null) {
+			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+			service.addUpdate(service.getResourceSet(resourceUri), 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setTargetNodeAs(child)
@@ -47,10 +47,10 @@ public class UpdateController extends AbstractController
 	
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
-		Node resourceNode = CoreUtils.getResourceNode(node);
-		if (resourceNode != null) {
-			CorePlugin.getInstance().getResourceSetService()
-				.addUpdate(resourceNode.getNodeUri(), 
+		String resourceUri = CorePlugin.getInstance().getResourceService().getResourceUri(node.getNodeUri());
+		if (resourceUri != null) {
+			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+			service.addUpdate(service.getResourceSet(resourceUri), 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_REMOVED)
 							.setTargetNodeAs(child)
@@ -69,18 +69,18 @@ public class UpdateController extends AbstractController
 	}
 	
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext<NodeService> context) {		
-		Node resourceNode;
+		String resourceUri = null;
 		if (context.getBooleanValue(NODE_IS_RESOURCE_NODE)) {
-			resourceNode = node;
+			resourceUri = node.getNodeUri();
 		} else {
-			resourceNode = CoreUtils.getResourceNode(node);
-			if (resourceNode == null) {
+			resourceUri = CorePlugin.getInstance().getResourceService().getResourceUri(node.getNodeUri());
+			if (resourceUri == null) {
 				return;
 			}
 		}
-
-		CorePlugin.getInstance().getResourceSetService()
-			.addUpdate(resourceNode.getNodeUri(), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri()));		
+		
+		ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+		service.addUpdate(service.getResourceSet(resourceUri), new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri()));		
 	}
 
 }

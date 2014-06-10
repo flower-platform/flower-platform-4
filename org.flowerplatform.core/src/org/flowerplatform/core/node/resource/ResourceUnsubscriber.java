@@ -25,13 +25,13 @@ public class ResourceUnsubscriber extends TimerTask {
 		
 	public ResourceUnsubscriber() {
 		super();
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY, PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY));
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY, PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY));
 	}
 
 	@Override
 	public void run() {
 		long now = new Date().getTime();
-		ResourceService2 service = CorePlugin.getInstance().getResourceService();
+		ResourceService service = CorePlugin.getInstance().getResourceService();
 		List<String> resourceUris = service.getResources();
 		for (String resourceUri : resourceUris) {
 			long lastPing = service.getUpdateRequestedTimestamp(resourceUri);
@@ -40,7 +40,7 @@ public class ResourceUnsubscriber extends TimerTask {
 				for (int i = sessionIds.size() - 1; i >= 0; i--) {
 					String sessionId = sessionIds.get(i);
 					CorePlugin.getInstance().getResourceService().sessionUnsubscribedFromResource(sessionId, resourceUri,
-							new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
+							new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 					CorePlugin.getInstance().getSessionService().sessionUnsubscribedFromResource(sessionId, resourceUri,
 							new ServiceContext<SessionService>(CorePlugin.getInstance().getSessionService()));
 				}

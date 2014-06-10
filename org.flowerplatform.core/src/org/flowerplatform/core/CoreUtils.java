@@ -23,26 +23,6 @@ import org.flowerplatform.util.Utils;
  */
 public class CoreUtils {
 
-	public static String getResourceUri(String nodeUri) {
-		if (Utils.getScheme(nodeUri).equals(CoreConstants.FILE_SYSTEM_NODE_TYPE)) {
-			return nodeUri;
-		}
-		if (Utils.getScheme(nodeUri).equals(CoreConstants.FILE_NODE_TYPE)) {
-			String ssp = Utils.getSchemeSpecificPart(nodeUri);
-			String repo = ssp;
-			int index = ssp.indexOf(":");
-			if (index > 0) {
-				repo = ssp.substring(0, index);
-			}
-			return Utils.getUri(CoreConstants.FILE_SYSTEM_NODE_TYPE, repo, null);
-		}
-		return Utils.getUri(Utils.getScheme(nodeUri), Utils.getSchemeSpecificPart(nodeUri), null);
-	}
-	
-	public static Node getResourceNode(Node node) {
-		return CorePlugin.getInstance().getResourceService().getNode(getResourceUri(node.getNodeUri()));
-	}
-	
 	public static void delete(File f) {	
 		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
 			for (File c : f.listFiles()) {

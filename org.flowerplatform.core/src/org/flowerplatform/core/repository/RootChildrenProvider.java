@@ -1,9 +1,10 @@
 package org.flowerplatform.core.repository;
 
+import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -24,7 +25,7 @@ public class RootChildrenProvider extends AbstractController implements IChildre
 		List<Node> children = new ArrayList<Node>();
 		
 		// idWithinResource == null -> path to workspace location
-		Node repository = new Node(CoreConstants.REPOSITORY_TYPE, node.getSchemeSpecificPart(), null);
+		Node repository = new Node(REPOSITORY_TYPE, node.getSchemeSpecificPart(), null, REPOSITORY_TYPE);
 		children.add(repository);
 		return children;
 	}

@@ -1,24 +1,24 @@
 package org.flowerplatform.core.node.resource;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.Utils;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * Responsible with working with raw resource data: load, dirty state, save, reload.
  * 
+ * <p>
+ * Subclasses may also implement controller interfaces, and be registered as controllers: 
+ * e.g. property provider and setter, get/add/remove children controller, etc.
+ * 
  * @author Mariana Gheorghe
  */
-public abstract class ResourceHandler {
+public abstract class ResourceHandler extends AbstractController {
 
 	protected FileResourceService resourceService = (FileResourceService) CorePlugin.getInstance().getResourceService();
 	
 	public Node getNode(String nodeUri) {
-		String resourceUri = nodeUri;
-		if (Utils.getFragment(nodeUri) != null) {
-			resourceUri = CoreUtils.getResourceUri(nodeUri);
-		}
+		String resourceUri = getResourceUri(nodeUri);
 		Object resource = getResource(resourceUri);
 		Node node = new Node(nodeUri);
 		Object resourceData = getResourceData(resource, nodeUri);
@@ -27,6 +27,8 @@ public abstract class ResourceHandler {
 		return node;
 	}
 
+	public abstract String getResourceUri(String nodeUri);
+	
 	public Object getResource(String resourceUri) {
 		return resourceService.getResource(resourceUri);
 	}
@@ -59,10 +61,7 @@ public abstract class ResourceHandler {
 	}
 	
 	public boolean isDirty(String nodeUri) {
-		String resourceUri = nodeUri;
-		if (Utils.getFragment(nodeUri) != null) {
-			resourceUri = CoreUtils.getResourceUri(nodeUri);
-		}
+		String resourceUri = getResourceUri(nodeUri);
 		return isDirty(resourceService.getResource(resourceUri));
 	}
 
@@ -79,7 +78,6 @@ public abstract class ResourceHandler {
 	protected abstract void doSave(Object resource) throws Exception;
 
 	public void reload(String resourceUri) {
-		resourceService.getResource(resourceUri);
 		load(resourceUri);
 	}
 	

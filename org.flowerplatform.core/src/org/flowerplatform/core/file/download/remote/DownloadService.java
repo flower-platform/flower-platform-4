@@ -11,10 +11,10 @@ import java.util.concurrent.TimeUnit;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.FlowerProperties.AddBooleanProperty;
-import org.flowerplatform.core.FlowerProperties.AddProperty;
+import org.flowerplatform.core.FlowerProperties.AddIntegerProperty;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.download.DownloadInfo;
 import org.flowerplatform.core.file.download.DownloadServlet;
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.UtilConstants;
 
@@ -75,12 +75,7 @@ public class DownloadService implements ISessionListener {
 	}
 	
 	public DownloadService() {
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER) {			
-			@Override
-			protected String validateProperty(String input) {				
-				return null;
-			}
-		});
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddIntegerProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER));
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
 				
 		CorePlugin.getInstance().addSessionListener(this);
@@ -158,13 +153,7 @@ public class DownloadService implements ISessionListener {
 		boolean isSingle = fullNodeIds.size() == 1; // true if single file, not directory
 		for (String fullNodeId : fullNodeIds) {
 			try {
-				Node fileNode = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
-				String ssp = fileNode.getSchemeSpecificPart();
-				String path = null;
-				int index = ssp.indexOf(":");
-				if (index > 0) {
-					path = ssp.substring(index + 1);
-				}
+				String path = FileControllerUtils.getFilePath(fullNodeId);
 				Object file = CorePlugin.getInstance().getFileAccessController().getFile(path);
 				files.add(file);
 				if (CorePlugin.getInstance().getFileAccessController().isDirectory(file)) {

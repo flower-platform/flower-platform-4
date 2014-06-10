@@ -20,8 +20,8 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 		NodeModel currentModelAtInsertionPoint = null;
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (insertBeforeFullNodeId != null) {
-			Node insertBeforeNode = new Node(insertBeforeFullNodeId);
-			currentModelAtInsertionPoint = insertBeforeNode != null ? (NodeModel) insertBeforeNode.getRawNodeData() : null;
+			String insertBeforeId = Utils.getFragment(insertBeforeFullNodeId);
+			currentModelAtInsertionPoint = parentRawNodeData.getMap().getNodeForID(insertBeforeId);
 		}
 		NodeModel newNodeModel = new NodeModel("", parentRawNodeData.getMap());
 		newNodeModel.setLeft(parentRawNodeData.isLeft());

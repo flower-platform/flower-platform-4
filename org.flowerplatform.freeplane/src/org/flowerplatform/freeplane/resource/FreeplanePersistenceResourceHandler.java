@@ -6,8 +6,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.resource.ResourceHandler;
-import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.util.Utils;
 import org.freeplane.features.attribute.Attribute;
@@ -16,7 +16,6 @@ import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.mode.Controller;
-import org.freeplane.features.styles.MapStyleModel;
 import org.freeplane.features.url.UrlManager;
 import org.freeplane.features.url.mindmapmode.MFileManager;
 
@@ -27,10 +26,16 @@ import org.freeplane.features.url.mindmapmode.MFileManager;
 public class FreeplanePersistenceResourceHandler extends ResourceHandler {
 
 	@Override
+	public String getResourceUri(String nodeUri) {
+		String scheme = Utils.getScheme(nodeUri);
+		String ssp = Utils.getSchemeSpecificPart(nodeUri);
+		return Utils.getUri(scheme, ssp, null);
+	}
+	
+	@Override
 	protected Object doLoad(String resourceUri) throws Exception {
 		MapModel model = null;
-		String path = Utils.getSchemeSpecificPart(resourceUri);
-		path = path.substring(path.indexOf(":") + 1);
+		String path = FileControllerUtils.getFilePath(resourceUri);
 		
 		InputStreamReader urlStreamReader = null;
 		try {
@@ -72,7 +77,7 @@ public class FreeplanePersistenceResourceHandler extends ResourceHandler {
 				}
 			}
 		}
-		return MindMapConstants.MINDMAP_NODE_TYPE;
+		throw new RuntimeException("Node " + nodeUri + " does not have a type!");
 	}
 
 	@Override
@@ -81,6 +86,7 @@ public class FreeplanePersistenceResourceHandler extends ResourceHandler {
 		return !model.isSaved();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void doSave(Object resource) throws Exception {
 		MapModel model = (MapModel) resource;

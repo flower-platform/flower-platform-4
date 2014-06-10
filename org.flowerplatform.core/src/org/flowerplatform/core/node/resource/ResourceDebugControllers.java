@@ -66,7 +66,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Collections.singletonList(new Node(DEBUG, DEBUG, null));
+			return Collections.singletonList(new Node(DEBUG, DEBUG, null, DEBUG));
 		}
 	}
 	
@@ -79,7 +79,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Arrays.asList(new Node(RESOURCES, DEBUG, null), new Node(SESSIONS, DEBUG, null), new Node(RESOURCES_CLIENT, DEBUG, null));
+			return Arrays.asList(new Node(RESOURCES, DEBUG, null, RESOURCES), new Node(SESSIONS, DEBUG, null, SESSIONS), new Node(RESOURCES_CLIENT, DEBUG, null, RESOURCES_CLIENT));
 		}
 		
 		@Override
@@ -94,7 +94,7 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
 			for (String sessionId : CorePlugin.getInstance().getSessionService().getSubscribedSessions()) {
-				Node session = new Node(SESSION, node.getSchemeSpecificPart(), sessionId);
+				Node session = new Node(SESSION, node.getSchemeSpecificPart(), sessionId, SESSION);
 				children.add(session);
 			}
 			return children;
@@ -141,7 +141,7 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
 			for (String resourceId : CorePlugin.getInstance().getResourceSetService().getResourceSets()) {
-				Node resource = new Node(RESOURCE_SET, node.getSchemeSpecificPart(), resourceId);
+				Node resource = new Node(RESOURCE_SET, node.getSchemeSpecificPart(), resourceId, RESOURCE_SET);
 				children.add(resource);
 			}
 			return children;
@@ -178,7 +178,7 @@ public class ResourceDebugControllers {
 			List<Node> children = new ArrayList<Node>();
 			String sessionId = node.getFragment();
 			for (String resourceId : CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId)) {
-				Node resource = new Node(RESOURCE2, node.getFragment(), resourceId);
+				Node resource = new Node(RESOURCE2, node.getFragment(), resourceId, RESOURCE2);
 				children.add(resource);
 			}
 			return children;
@@ -192,7 +192,7 @@ public class ResourceDebugControllers {
 			List<Node> children = new ArrayList<Node>();
 			String resourceUri = node.getFragment();
 			for (String sessionId : CorePlugin.getInstance().getResourceService().getSessionsSubscribedToResource(resourceUri)) {
-				Node session = new Node(SESSION2, node.getFragment(), sessionId);
+				Node session = new Node(SESSION2, node.getFragment(), sessionId, SESSION2);
 				children.add(session);
 			}
 			return children;
@@ -232,7 +232,7 @@ public class ResourceDebugControllers {
 			List<Node> children = new ArrayList<Node>();
 			String resourceSet = node.getFragment();
 			for (String resourceUri : CorePlugin.getInstance().getResourceSetService().getResourceUris(resourceSet)) {
-				Node resource = new Node(RESOURCE, node.getSchemeSpecificPart(), resourceUri);
+				Node resource = new Node(RESOURCE, node.getSchemeSpecificPart(), resourceUri, RESOURCE);
 				children.add(resource);
 			}
 			return children;

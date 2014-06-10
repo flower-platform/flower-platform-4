@@ -43,6 +43,7 @@ public class InMemorySessionService extends SessionService {
 	public void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<SessionService> context) {
 		SessionInfo sessionInfo = sessionInfos.get(sessionId);
 		// TODO should not be null; should've been registered on create
+		// update after GH321
 		if (sessionInfo == null) {
 			sessionInfo = new SessionInfo();
 			sessionInfos.put(sessionId, sessionInfo);

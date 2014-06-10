@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.resource.ResourceService2;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public abstract class SessionService implements ISessionListener {
 		for (int i = resources.size() - 1; i >= 0; i--) {
 			String resource = resources.get(i);
 			CorePlugin.getInstance().getResourceService().sessionUnsubscribedFromResource(sessionId, resource,
-					new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
+					new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 			sessionUnsubscribedFromResource(resource, sessionId, new ServiceContext<SessionService>(this));
 		}
 		
@@ -64,12 +64,12 @@ public abstract class SessionService implements ISessionListener {
 	public abstract Object getSessionProperty(String sessionId, String property);
 	
 	/**
-	 * Paired with {@link ResourceService2#sessionSubscribedToResource(String, java.net.URI)}.
+	 * Paired with {@link ResourceService#sessionSubscribedToResource(String, java.net.URI)}.
 	 */
 	public abstract void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<SessionService> context);
 	
 	/**
-	 * Paired with {@link ResourceService2#sessionUnsubscribedFromResource(String, java.net.URI)}.
+	 * Paired with {@link ResourceService#sessionUnsubscribedFromResource(String, java.net.URI)}.
 	 */
 	public abstract void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<SessionService> context);
 	

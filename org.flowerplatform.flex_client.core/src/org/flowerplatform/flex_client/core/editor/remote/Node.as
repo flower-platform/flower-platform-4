@@ -77,7 +77,7 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		}
 		
 		public function get fragment():String {
-			var index:int = _nodeUri.indexOf("#");
+			var index:int = _nodeUri.lastIndexOf("#");
 			if (index < 0) {
 				return null;
 			}
@@ -85,12 +85,16 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		}
 		
 		public function get schemeSpecificPart():String {
-			var i:int = _nodeUri.indexOf(":");
-			var j:int = _nodeUri.indexOf("#");
-			if (j < 0) {
-				return _nodeUri.substring(i + 1);
+			var index:int = _nodeUri.indexOf(":");
+			if (index < 0) {
+				throw new Error("Invalid URI: " + _nodeUri);
 			}
-			return _nodeUri.substring(i + 1,  j);
+			var ssp:String = _nodeUri.substring(index + 1);
+			index = ssp.lastIndexOf("#");
+			if (index < 0) {
+				return ssp;
+			}
+			return ssp.substring(0, index);
 		}
 		
 		public function toString():String {

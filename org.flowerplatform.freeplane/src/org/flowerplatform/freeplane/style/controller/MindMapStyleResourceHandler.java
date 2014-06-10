@@ -1,5 +1,7 @@
 package org.flowerplatform.freeplane.style.controller;
 
+import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_RESOURCE_KEY;
+
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.freeplane.resource.FreeplanePersistenceResourceHandler;
 import org.flowerplatform.util.Utils;
@@ -13,9 +15,8 @@ public class MindMapStyleResourceHandler extends FreeplanePersistenceResourceHan
 
 	@Override
 	public Object getResource(String resourceUri) {
-		String scheme = "fpp";
 		String ssp = Utils.getSchemeSpecificPart(resourceUri);
-		resourceUri = Utils.getUri(scheme, ssp, null);
+		resourceUri = Utils.getUri(FREEPLANE_MINDMAP_RESOURCE_KEY, ssp, null);
 		MapModel model = (MapModel) resourceService.getResource(resourceUri);
 		return MapStyleModel.getExtension(model).getStyleMap();
 	}

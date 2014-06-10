@@ -1,61 +1,87 @@
 package org.flowerplatform.core.node.resource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.FlowerProperties;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.Update;
+import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mariana Gheorghe
  */
-public class ResourceSetService {
+public abstract class ResourceSetService {
 
-	private final static Logger logger = LoggerFactory.getLogger(ResourceSetService.class);
+	protected final static Logger logger = LoggerFactory.getLogger(ResourceSetService.class);
 	
-	private Map<String, ResourceSetInfo> resourceSetInfos = new HashMap<String, ResourceSetInfo>();
+	private Map<String, IResourceSetProvider> resourceSetProviders = new HashMap<String, IResourceSetProvider>();
 	
-	public void addToResourceSet(String resourceSet, String resourceUri) {
-		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
-		if (info == null) {
-			info = new ResourceSetInfo();
-			resourceSetInfos.put(resourceSet, info);
+	static final String PROP_RESOURCE_UPDATES_MARGIN = "resourceUpdatesMargin"; 
+	static final String PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN = "0"; 
+	
+	public ResourceSetService() {
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(PROP_RESOURCE_UPDATES_MARGIN, PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
+	}
+	
+	public void addResourceSetProvider(String scheme, IResourceSetProvider resourceSetProvider) {
+		if (logger.isTraceEnabled()) {
+			logger.trace("Added resource set provider for scheme {}: {}", scheme, resourceSetProvider);
 		}
-		if (!info.getResourceUris().contains(resourceUri)) {
-			info.getResourceUris().add(resourceUri);
+		resourceSetProviders.put(scheme, resourceSetProvider);
+	}
+	
+	public String getResourceSet(String resourceUri) {
+		IResourceSetProvider resourceSetProvider = resourceSetProviders.get(Utils.getScheme(resourceUri));
+		String resourceSet = resourceSetProvider == null ? resourceUri :
+			resourceSetProvider.getResourceSet(resourceUri);
+		return resourceSet;
+	}
+	
+	public abstract String addToResourceSet(String resourceUri);
+	
+	public abstract void removeFromResourceSet(String resourceUri);
+	
+	public void save(String resourceSet, ServiceContext<ResourceSetService> context) {
+		logger.debug("Save resource set {}", resourceSet);
+		ServiceContext<ResourceService> resourceServiceContext = new ServiceContext<ResourceService>();
+		resourceServiceContext.setContext(context.getContext());
+		for (String resourceUri : getResourceUris(resourceSet)) {
+			CorePlugin.getInstance().getResourceService().save(resourceUri, resourceServiceContext);
 		}
 	}
 	
-	public void removeFromResourceSet(String resourceSet, String resourceUri) {
-		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
-		info.getResourceUris().remove(resourceUri);
-		if (info.getResourceUris().isEmpty()) {
-			resourceSetInfos.remove(resourceSet);
+	public void reload(String resourceSet, ServiceContext<ResourceSetService> context) {
+		logger.debug("Reload resource set {}", resourceSet);
+		doReload(resourceSet);
+		ServiceContext<ResourceService> resourceServiceContext = new ServiceContext<ResourceService>();
+		resourceServiceContext.setContext(context.getContext());
+		for (String resourceUri : getResourceUris(resourceSet)) {
+			CorePlugin.getInstance().getResourceService().reload(resourceUri, resourceServiceContext);
 		}
 	}
+
+	protected abstract void doReload(String resourceSet);
 	
-	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest) {
-		List<Update> updates = null;
-		ResourceSetInfo info = resourceSetInfos.get(resourceNodeId);
-		if (info != null) {
-			updates = info.getUpdates();
-		}
+	public abstract void addUpdate(String resourceSet, Update update);
+	
+	public List<Update> getUpdates(String resourceSet, long timestampOfLastRequest) {
+		List<Update> updates = getUpdates(resourceSet);
 		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
 		if (updates == null) {
 			return updatesAddedAfterLastRequest;
 		}
 		
-//		if (timestampOfLastRequest > 0 && 
-//			info.getLoadedTimestamp() > timestampOfLastRequest + Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(IResourceDAO.PROP_RESOURCE_UPDATES_MARGIN))) {
-//			// if resource was reloaded after -> tell client to perform full refresh
-//			return null;
-//		}
+		if (timestampOfLastRequest > 0 && 
+			getLoadedTimestamp(resourceSet) > timestampOfLastRequest + Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UPDATES_MARGIN))) {
+			// if resource was reloaded after -> tell client to perform full refresh
+			return null;
+		}
 		
 		// iterate updates reversed. Because last element in list is the most recent.
 		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
@@ -70,29 +96,12 @@ public class ResourceSetService {
 		return updatesAddedAfterLastRequest;
 	}
 	
-	public void save(String resourceSet, ServiceContext<ResourceSetService> context) {
-		ServiceContext<ResourceService2> resourceServiceContext = new ServiceContext<ResourceService2>();
-		resourceServiceContext.setContext(context.getContext());
-		for (String resourceUri : getResourceUris(resourceSet)) {
-			CorePlugin.getInstance().getResourceService().save(resourceUri, resourceServiceContext);
-		}
-	}
-
-	public void addUpdate(String resourceSet, Update update) {
-		logger.debug("Adding update {} for resource set {}", update, resourceSet);
-		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
-		info.getUpdates().add(update);
-	}
+	protected abstract List<Update> getUpdates(String resourceSet);
 	
-	public List<String> getResourceSets() {
-		return new ArrayList<>(resourceSetInfos.keySet());
-	}
+	protected abstract long getLoadedTimestamp(String resourceSet);
 	
-	public List<String> getResourceUris(String resourceSet) { 
-		ResourceSetInfo resourceSetInfo = resourceSetInfos.get(resourceSet);
-		if (resourceSetInfo == null) {
-			return Collections.emptyList();
-		}
-		return resourceSetInfo.getResourceUris();
-	}
+	public abstract List<String> getResourceSets();
+	
+	public abstract List<String> getResourceUris(String resourceSet);
+	
 }

@@ -32,11 +32,20 @@ public class Node {
 		setNodeUri(nodeUri);
 	}
 	
+	public Node(String nodeUri, String type) {
+		this(nodeUri);
+		setType(type);
+	}
+	
 	public Node(String scheme, String ssp, String fragment) {
 		setNodeUri(Utils.getUri(scheme, ssp, fragment));
-		setType(scheme);
 	}
 
+	public Node(String scheme, String ssp, String fragment, String type) {
+		this(scheme, ssp, fragment);
+		setType(type);
+	}
+	
 	public String getType() {
 		return type;
 	}

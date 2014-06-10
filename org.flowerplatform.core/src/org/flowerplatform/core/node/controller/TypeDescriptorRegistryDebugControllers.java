@@ -51,7 +51,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Collections.singletonList(new Node(TYPES, DEBUG, null));
+			return Collections.singletonList(new Node(TYPES, DEBUG, null, TYPES));
 		}
 	}
 	
@@ -64,7 +64,7 @@ public class TypeDescriptorRegistryDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Arrays.asList(new Node(TYPES_FLEX, TYPES, null), new Node(TYPES_JAVA, TYPES, null));
+			return Arrays.asList(new Node(TYPES_FLEX, TYPES, null, TYPES_FLEX), new Node(TYPES_JAVA, TYPES, null, TYPES_JAVA));
 		}
 	}
 	
@@ -95,7 +95,7 @@ public class TypeDescriptorRegistryDebugControllers {
 			List<String> types = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getRegisteredTypes();
 			Collections.sort(types); // show them in alphabetical order for better readability
 			for (String type : types) {
-				children.add(new Node(TYPE, TYPES_JAVA, type));
+				children.add(new Node(TYPE, TYPES_JAVA, type, TYPE));
 			}
 			return children;
 		}
@@ -116,19 +116,19 @@ public class TypeDescriptorRegistryDebugControllers {
 			
 			// get categories
 			for (String category : descriptor.getCategories()) {
-				children.add(new Node(CATEGORY, type, category));
+				children.add(new Node(CATEGORY, type, category, CATEGORY));
 			}
 			
 			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(descriptor);
 			
 			// get single controllers keys
 			for (String singleControllersKey : wrapper.getSingleControllersKeys()) {
-				children.add(new Node(CONTROLLER_KEY_SINGLE, type, singleControllersKey));
+				children.add(new Node(CONTROLLER_KEY_SINGLE, type, singleControllersKey, CONTROLLER_KEY_SINGLE));
 			}
 			
 			// get additive controllers keys
 			for (String additiveControllersKey : wrapper.getAdditiveControllersKeys()) {
-				children.add(new Node(CONTROLLER_KEY_ADDITIVE, type, additiveControllersKey));
+				children.add(new Node(CONTROLLER_KEY_ADDITIVE, type, additiveControllersKey, CONTROLLER_KEY_ADDITIVE));
 			}
 			
 			return children;
@@ -314,7 +314,7 @@ public class TypeDescriptorRegistryDebugControllers {
 	
 	private Node createControllerNode(Object controller, String type, String resource) {
 		String id = controller.toString();
-		Node node = new Node(type, resource, id);
+		Node node = new Node(type, resource, id, type);
 		node.getOrPopulateProperties().put(NAME, id);
 		node.getOrPopulateProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/executable.png"));
 		return node;
