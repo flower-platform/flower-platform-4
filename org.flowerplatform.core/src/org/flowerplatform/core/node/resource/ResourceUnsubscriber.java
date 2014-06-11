@@ -21,7 +21,7 @@ import org.flowerplatform.core.session.SessionService;
 public class ResourceUnsubscriber extends TimerTask {
 
 	protected static final String PROP_RESOURCE_UNSUBSCRIBER_DELAY = "resourceUnsubscriberDelay"; 
-	protected static final String PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY = "21000"; 
+	protected static final String PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY = "600000"; 
 		
 	public ResourceUnsubscriber() {
 		super();

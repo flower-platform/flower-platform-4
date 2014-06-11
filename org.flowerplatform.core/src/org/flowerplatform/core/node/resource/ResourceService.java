@@ -67,8 +67,8 @@ public abstract class ResourceService {
 	/**
 	 * Subscribes to the parent resource of the <code>node</code>.
 	 * 
-	 * @return a pair containing the resource URI and the resource set
-	 * where the resource belongs
+	 * @return a pair containing the root node, resource node and 
+	 * resource set
 	 */
 	public SubscriptionInfo subscribeToParentResource(String sessionId, String nodeUri, ServiceContext<ResourceService> context) {
 		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeUri);
