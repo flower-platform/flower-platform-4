@@ -259,6 +259,8 @@ package org.flowerplatform.flex_client.core {
 					.setViewContent(new LinkView())
 					.setWidth(500)
 					.setHeight(250)
+					.setTitle(Resources.getMessage("link.title"))
+					.setIcon(Resources.externalLinkIcon)
 					.show();
 				})
 			);
@@ -274,8 +276,10 @@ package org.flowerplatform.flex_client.core {
 				.setFunctionDelegate(function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new OpenNodeView())
+					.setTitle(Resources.getMessage("open.node.action.label"))
+					.setIcon(Resources.openResourceIcon)
 					.setWidth(400)
-					.setHeight(110)
+					.setHeight(150)
 					.show();
 				})
 			);
@@ -306,10 +310,8 @@ package org.flowerplatform.flex_client.core {
 					.show();
 				})
 			);
-			
-			// initial filterShortcuts
-			// other filterShortcut must be added by corresponding keyboard action
-			FlexUtilGlobals.getInstance().keyBindings.filterShortcuts = [Keyboard.CONTROL, Keyboard.COMMAND, Keyboard.SHIFT, Keyboard.ALTERNATE];		
+						
+			FlexUtilGlobals.getInstance().keyBindings.additionalActionProviders.actionProviders.push(globalMenuActionProvider);
 		}
 				
 		override protected function registerClassAliases():void {		

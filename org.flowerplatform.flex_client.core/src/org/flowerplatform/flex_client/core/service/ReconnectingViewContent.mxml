@@ -73,6 +73,9 @@
 				return null;
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	

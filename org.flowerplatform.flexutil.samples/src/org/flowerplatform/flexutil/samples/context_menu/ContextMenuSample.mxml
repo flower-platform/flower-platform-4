@@ -69,6 +69,10 @@
 				FlexUtilGlobals.getInstance().selectionManager.selectionChanged(viewHost, this);
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>

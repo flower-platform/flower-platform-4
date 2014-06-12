@@ -6,8 +6,11 @@
 		<![CDATA[
 			import flashx.textLayout.conversion.TextConverter;
 			
+			import mx.collections.IList;
 			import mx.core.DPIClassification;
 			import mx.core.FlexGlobals;
+			import mx.core.IVisualElement;
+			import mx.core.IVisualElementContainer;
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.events.ResizeEvent;
@@ -18,9 +21,15 @@
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
+			import org.flowerplatform.flex_client.mindmap.controller.NodeController;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
+			import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
+			import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+			import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
+			import org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.FlowerArrayList;
 			import org.flowerplatform.flexutil.Utils;
@@ -113,16 +122,19 @@
 				if (refresh) {				
 					var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, data).getParent(diagramShellContext, data);
 					mindMapDiagramShell.refreshModelPositions(diagramShellContext, parent != null ? parent : data);
+					
+					// this call will update the diagram's contentRect 
+					mindMapDiagramShell.shouldRefreshVisualChildren(diagramShellContext, mindMapDiagramShell.rootModel);					
 				}
 			}						
 			
 			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 				switch (event.property) {
 					case "x":
-						x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");					
+						x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");	
 						break;
 					case "y":
-						y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");				
+						y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");	
 						break;
 					case "depth":
 						depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");				
@@ -132,7 +144,8 @@
 					case "children":
 						invalidateDisplayList();
 				}
-			}
+			}	
+			
 			
 			override public function set data(value:Object):void {
 				if (data != null) {		

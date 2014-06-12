@@ -2,10 +2,10 @@
 <!-- 
  @author Cristina Constantinescu
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="org.flowerplatform.flexutil.view_content_host.IViewContent"
-		 creationComplete="creationCompleteHandler(event)">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"  
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -32,20 +32,11 @@
 			public var uploadLocationAsFullNodeId:String;
 			
 			protected var fileReference:FileReference;
-						
-			protected var _viewhost:IViewHost;
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewhost = viewHost;
-				_viewhost.setLabel(Resources.getMessage("action.upload"));
-				_viewhost.setIcon(Resources.uploadIcon);
-			}	
-			
-			protected function creationCompleteHandler(event:FlexEvent):void {				
+							
+			override protected function creationCompleteHandler(event:FlexEvent):void {	
+				okButton.label = Resources.getMessage('upload.label');
+				okButton.enabled = false;
+				
 				fileReference = new FileReference();
 				fileReference.addEventListener(Event.SELECT, onSelectHandler);
 				fileReference.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
@@ -57,7 +48,7 @@
 				fileReference.browse();
 			}
 			
-			protected function upload_clickHandler(event:MouseEvent):void {
+			override protected function okHandler(event:Event = null):void {
 				if (Utils.endsWith(fileReference.name, ZIP_EXTENSION)) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setText(Resources.getMessage("upload.make.archive"))
@@ -84,7 +75,7 @@
 							fileReference.upload(request);
 							
 							progressArea.visible = true;
-							uploadBtn.enabled = false;
+							okButton.enabled = false;
 							browseBtn.enabled = false;		
 						}
 					}
@@ -93,7 +84,7 @@
 			
 			protected function onSelectHandler(event:Event):void {
 				locationTxt.text = fileReference.name;	
-				uploadBtn.enabled = true;
+				okButton.enabled = true;
 			}
 					
 			protected function onIoErrorHandler(event:IOErrorEvent):void {				
@@ -101,7 +92,7 @@
 					.setTitle(Resources.getMessage("error"))
 					.setText(event.text)
 					.showMessageBox();
-				closeView();
+				cancelHandler();
 			}
 			
 			protected function onProgressHandler(event:ProgressEvent):void {
@@ -122,34 +113,27 @@
 					}
 				}
 				
-				closeView();
+				cancelHandler();
 			}
-			
-			protected function closeView():void {
+						
+			override public function additionalCloseHandler():void {
 				fileReference.cancel();
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			
 		]]>
 	</fx:Script>
-	<s:layout>
-		<s:VerticalLayout />
-	</s:layout>
 	
-	<s:Label text="{Resources.getMessage('upload.file')}" paddingTop="5" />
+	<s:Label text="{Resources.getMessage('upload.file')}"  />
 	<s:HGroup width="100%">			
 		<s:TextInput id="locationTxt" width="100%" editable="false" />
 		<s:Button id="browseBtn" label="{Resources.getMessage('upload.browse')}" click="browse_clickHandler(event)" />					
 	</s:HGroup>		
-	<s:Label text="{Resources.getMessage('upload.limit.max')}" paddingBottom="15" />
+	
+	<s:Label text="{Resources.getMessage('upload.limit.max')}" height="100%"  />
+	
 	<s:HGroup width="100%" id="progressArea" visible="false" verticalAlign="middle">
 		<s:BusyIndicator id="progressSpinner" />
 		<s:Label id="progressLabel" width="100%" />
 	</s:HGroup>
-	
-	<s:HGroup width="100%" horizontalAlign="right" paddingBottom="5">			
-		<s:Button id="uploadBtn" label="{Resources.getMessage('upload.label')}" click="upload_clickHandler(event)" enabled="false"/>
-		<s:Button id="cancelBtn" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="closeView()"/>
-	</s:HGroup> 	
-	
-</s:Group>
+		
+</host:BasicViewContent>

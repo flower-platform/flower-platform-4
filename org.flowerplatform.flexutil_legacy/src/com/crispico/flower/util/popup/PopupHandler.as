@@ -21,6 +21,7 @@ package com.crispico.flower.util.popup {
 		private var _height:Number;
 		private var _width:Number;
 		private var _title:String;
+		private var _icon:Object;
 		private var _viewContent:IViewContent;
 		private var _viewIdInWorkbench:String;
 		
@@ -36,6 +37,11 @@ package com.crispico.flower.util.popup {
 		
 		public function setTitle(value:String):IPopupHandler {
 			_title = value;
+			return this;
+		}
+		
+		public function setIcon(value:Object):IPopupHandler {
+			_icon = value;
 			return this;
 		}
 		
@@ -69,6 +75,7 @@ package com.crispico.flower.util.popup {
 				var resizablePopup:ResizablePopupWindowViewHost = new ResizablePopupWindowViewHost(_viewContent);
 				
 				resizablePopup.title = _title;
+				resizablePopup.setIcon(_icon);
 				if (!isNaN(_height)) {
 					resizablePopup.height = _height;
 				}

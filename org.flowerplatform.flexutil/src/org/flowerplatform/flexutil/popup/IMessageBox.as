@@ -19,6 +19,7 @@
 package org.flowerplatform.flexutil.popup {
 	public interface IMessageBox {
 		function setTitle(value:String):IMessageBox;
+		function setIcon(value:Object):IMessageBox;
 		function setText(value:String):IMessageBox;
 		function setWidth(value:int):IMessageBox;
 		function setHeight(value:int):IMessageBox;
@@ -27,9 +28,9 @@ package org.flowerplatform.flexutil.popup {
 		/**
 		 * @author Cristina Constantinescu
 		 */ 
-		function addButton(title:String, handler:Function = null):IMessageBox;
+		function addButton(title:String, handler:Function = null, useHandlerAtClosing:Boolean = false):IMessageBox;
 		function setSelectText(value:Boolean):IMessageBox;
 		
-		function showMessageBox(modal:Boolean = true):void;		
+		function showMessageBox(modal:Boolean = true):void;
 	}
 }

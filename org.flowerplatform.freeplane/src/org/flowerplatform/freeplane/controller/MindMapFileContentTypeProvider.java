@@ -5,22 +5,23 @@ import static org.flowerplatform.core.CoreConstants.HIDE_ROOT_NODE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.file.FilePropertiesProvider;
+import org.flowerplatform.core.file.FilePropertiesController;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.PropertiesProvider;
+import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.url.UrlManager;
 
 /**
  * Sets the <code>CONTENT_TYPE</code> property to {@link #MINDMAP_CONTENT_TYPE}
  * if the node is a file with the .mm extension. Needs to be invoked <b>after</b>
- * the {@link FilePropertiesProvider} responsible with setting the <code>NAME</code>
+ * the {@link FilePropertiesController} responsible with setting the <code>NAME</code>
  * and <code>IS_DIRECTORY</code> properties for the node.
  * 
  * @author Mariana Gheorghe
  */
-public class MindMapFileContentTypeProvider extends PropertiesProvider {
+public class MindMapFileContentTypeProvider extends AbstractController implements IPropertiesProvider {
 
 	
 	public MindMapFileContentTypeProvider() {

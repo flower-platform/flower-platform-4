@@ -32,12 +32,15 @@ package org.flowerplatform.flexutil.layout.event {
 		
 		public static const VIEW_REMOVED:String = "view_removed";
 		
-		public var dontRemoveView:Boolean;
+		public var canRemoveView:Boolean;
+		
+		public var canPreventDefault:Boolean;
 				
 		public function ViewRemovedEvent() {
 			super(VIEW_REMOVED);	
 			
-			dontRemoveView = false;
+			canRemoveView = true;
+			canPreventDefault = true;
 		}		
 	}
 	

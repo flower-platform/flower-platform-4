@@ -208,6 +208,10 @@
 				}
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
+			
 		]]>
 	</fx:Script>
 	<s:HGroup id = "iconAndLabel" paddingLeft="5">

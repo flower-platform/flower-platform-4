@@ -58,8 +58,6 @@ license-end
 			
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewHost = viewHost;
-				_viewHost.setLabel(Resources.getMessage('link.title'));
-				_viewHost.setIcon(Resources.externalLinkIcon);
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
@@ -88,6 +86,9 @@ license-end
 				return CorePlugin.getInstance().getAppUrl() + "?" + CoreConstants.OPEN_RESOURCES + "=";
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	

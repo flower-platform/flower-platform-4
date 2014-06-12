@@ -235,8 +235,7 @@ package  com.crispico.flower.util.layout {
 
 			addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU, fillContextMenuHandler);
 			
-			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.
-			//(new KeyBindings()).registerBinding(new Shortcut(true, false, "m"), maximizeRestoreActiveStackLayoutData);
+			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.			
 			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.M), maximizeRestoreActiveStackLayoutData); // CTRL + M
 			
 			// prepare default actions for the right click menu on a tab name
@@ -2063,16 +2062,16 @@ package  com.crispico.flower.util.layout {
 		 */
 		public function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void {			
 			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			if (shouldDispatchEvent) {
-				dispatchEvent(viewsRemovedEvent);
-			}
+			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
+			dispatchEvent(viewsRemovedEvent);
+
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					if (shouldDispatchEvent) {
-						view.dispatchEvent(viewRemovedEvent);
-					}
-					if (!viewRemovedEvent.dontRemoveView) {
+					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
+					view.dispatchEvent(viewRemovedEvent);
+
+					if (viewRemovedEvent.canRemoveView) {
 						removeViewInternal(view);
 					}
 				}				

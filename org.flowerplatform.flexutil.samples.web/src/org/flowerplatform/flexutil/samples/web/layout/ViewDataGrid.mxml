@@ -32,6 +32,10 @@
 				return new ArrayList(myDG.selectedItems);
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:DataGrid id="myDG" width="350" change="FlexUtilGlobals.getInstance().selectionManager.selectionChanged(viewHost, this)"> 

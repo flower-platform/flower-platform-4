@@ -111,6 +111,10 @@
 			public function closeView():void {
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
+			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	

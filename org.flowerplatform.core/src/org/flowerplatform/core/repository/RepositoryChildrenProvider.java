@@ -5,14 +5,15 @@ import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.ChildrenProvider;
+import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Sebastian Solomon
  */
-public class RepositoryChildrenProvider extends ChildrenProvider {
+public class RepositoryChildrenProvider extends AbstractController implements IChildrenProvider {
 	
 	public RepositoryChildrenProvider() {
 		setOrderIndex(200);

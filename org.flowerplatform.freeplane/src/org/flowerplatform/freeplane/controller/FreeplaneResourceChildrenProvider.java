@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.file.FileChildrenProvider;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.ChildrenProvider;
+import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.NodeModel;
 
 /**
@@ -21,7 +21,7 @@ import org.freeplane.features.map.NodeModel;
  * 
  * @author Mariana Gheorghe
  */
-public class FreeplaneResourceChildrenProvider extends ChildrenProvider {
+public class FreeplaneResourceChildrenProvider extends AbstractController implements IChildrenProvider {
 
 	public FreeplaneResourceChildrenProvider() {
 		super();

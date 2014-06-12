@@ -40,6 +40,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 				.setViewContent(view)
 				.setWidth(500)
 				.setHeight(180)
+				.setTitle(label)
+				.setIcon(icon)
 				.show();	
 		}		
 	}

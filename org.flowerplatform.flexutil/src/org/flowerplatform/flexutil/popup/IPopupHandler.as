@@ -27,6 +27,7 @@ package org.flowerplatform.flexutil.popup {
 	public interface IPopupHandler {
 		
 		function setTitle(value:String):IPopupHandler;
+		function setIcon(value:Object):IPopupHandler;
 		
 		/**
 		 * value is Number because we want to use the NaN in case width/height isn't set.

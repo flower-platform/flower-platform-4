@@ -33,20 +33,22 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.formats.LineBreak;
+			
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
-			
-			import flashx.textLayout.conversion.TextConverter;
-			import flashx.textLayout.formats.LineBreak;
 			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.popup.IMessageBox;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			private var _title:String;
+			private var _icon:Object;
 			
 			private var _text:String;
 			
@@ -57,6 +59,8 @@
 			
 			private var _viewHost:IViewHost;
 						
+			private var additionalHandlerToBeExecutedAtClosing:Function;
+			
 			public function getActions(selection:IList):Vector.<IAction>{
 				return new Vector.<IAction>();
 			}
@@ -118,6 +122,11 @@
 				return this;
 			}
 			
+			public function setIcon(value:Object):IMessageBox {
+				_icon = value;
+				return this;
+			}
+							
 			public function setWidth(value:int):IMessageBox {
 				width = value;
 				return this;
@@ -126,7 +135,7 @@
 			/**
 			 * @author Cristina Constantinescu
 			 */ 
-			public function addButton(title:String, handler:Function = null):IMessageBox {
+			public function addButton(title:String, handler:Function = null, useHandlerAtClosing:Boolean = false):IMessageBox {
 				var newBtn:Button = new Button();
 				newBtn.label = title;
 				
@@ -139,6 +148,10 @@
 					}
 				);
 				buttons.addItem(newBtn);
+				
+				if (useHandlerAtClosing) {
+					additionalHandlerToBeExecutedAtClosing = handler;
+				}
 				return this;
 			}
 			
@@ -177,6 +190,7 @@
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setViewContent(this)
 					.setTitle(_title)
+					.setIcon(_icon)
 					.setWidth(width)
 					.setHeight(height)
 					.show(modal);
@@ -196,6 +210,11 @@
 				}
 			}
 			
+			public function additionalCloseHandler():void {
+				if (additionalHandlerToBeExecutedAtClosing != null) {
+					additionalHandlerToBeExecutedAtClosing();
+				}
+			}	
 		]]>
 	</fx:Script>
 	 

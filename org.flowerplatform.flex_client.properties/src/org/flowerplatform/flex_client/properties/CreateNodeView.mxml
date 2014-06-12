@@ -2,25 +2,19 @@
 <!---
 @author Sebastian Solomon
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="creationCompleteHandler(event)"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
-	<s:layout>
-		<s:VerticalLayout gap="0"/>
-	</s:layout>
-	
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*">
+		
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.collections.IList;
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.managers.IFocusManagerComponent;
 			import mx.utils.ObjectUtil;
-			
-			import spark.components.FormItem;
-			import spark.components.Label;
 			
 			import org.apache.flex.collections.ArrayList;
 			import org.flowerplatform.flex_client.core.CoreConstants;
@@ -34,10 +28,9 @@
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			import spark.components.FormItem;
 			
 			public static const SHOW_ALL:String = "showAll";
 			public static const SHOW_ONLY_CONTRIBUTES_TO_CREATION:String = "showOnlyContributingToCreation"; // mandatory & optional
@@ -50,10 +43,10 @@
 			public var option:String = SHOW_ONLY_CONTRIBUTES_TO_CREATION;
 			
 			public var diagramShellContext:DiagramShellContext;
-			
-			protected var _viewHost:IViewHost;
-			
-			protected function creationCompleteHandler(flexvent:FlexEvent):void {				
+						
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				super.creationCompleteHandler(event);
+				
 				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 					.getExpectedTypeDescriptor(nodeType).getAdditiveControllers("propertyDescriptor", null);
 				var currentCategory:String = "";
@@ -76,14 +69,11 @@
 							break;
 					}
 				}
+								
+				focusManager.setFocus(BasicPropertyRenderer(FormItem(propertyForm.getElementAt(0)).getElementAt(0)).getElementAt(0) as IFocusManagerComponent);		
 				
-				// TODO MG: remove after the custom UI logic is implemented
-				if (nodeType == CoreConstants.FILE_NODE_TYPE) {
-					var label:Label = new Label();
-					label.text = "Please append the .mm extension to add a MindMap file.";
-					propertyForm.addElement(label);
-				}
-				focusManager.setFocus(BasicPropertyRenderer(FormItem(propertyForm.getElementAt(0)).getElementAt(0)).getElementAt(0) as IFocusManagerComponent);			
+				tmpLabel.visible = tmpLabel.includeInLayout = nodeType == CoreConstants.FILE_NODE_TYPE;
+				tmpLabel.textFlow = TextConverter.importToFlow(Resources.getMessage('mindmap.create.note'), TextConverter.TEXT_FIELD_HTML_FORMAT);
 			}
 			
 			private function addFormItem(propertyDescriptor:PropertyDescriptor, currentCategory:String):void {
@@ -103,21 +93,8 @@
 				}				
 				propertyRenderer.data = propertyDescriptor;
 			}
-			
-			public function get viewHost():IViewHost {
-				return _viewHost;
-			}
-			
-			public function set viewHost(value:IViewHost):void {
-				_viewHost = value;
-				_viewHost.setIcon(Resources.addIcon);
-			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
-			protected function okHandler(evt:MouseEvent = null):void {
+						
+			override protected function okHandler(evt:Event = null):void {
 				var propertiesToSetAfterAddingNode:ArrayList = new ArrayList();
 				var context:ServiceContext = new ServiceContext();
 				context.add("type", nodeType);
@@ -166,21 +143,17 @@
 					});		
 			}
 			
-			protected function cancelHandler():void {
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
-			}
-			
 		]]>
 	</fx:Script>
-
+	
 	<s:Scroller width="100%" height="100%">
 		<s:Group width="100%" height="100%">			
 			<s:Form id="propertyForm" width="100%" height="100%">
 			</s:Form>
 		</s:Group>
 	</s:Scroller>
-	<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
-		<s:Button id="okButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okHandler(event)"/>
-		<s:Button id="cancelButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancelHandler()"/>
-	</s:HGroup>
-</s:Group>
+	
+	<!-- TODO MG: remove after the custom UI logic is implemented -->
+	<s:RichText id="tmpLabel" paddingTop="10" />
+	
+</host:BasicViewContent>
