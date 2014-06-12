@@ -28,21 +28,8 @@ public class Node {
 
 	private Object rawNodeData;
 		
-	public Node(String nodeUri) {
-		setNodeUri(nodeUri);
-	}
-	
 	public Node(String nodeUri, String type) {
-		this(nodeUri);
-		setType(type);
-	}
-	
-	public Node(String scheme, String ssp, String fragment) {
-		setNodeUri(Utils.getUri(scheme, ssp, fragment));
-	}
-
-	public Node(String scheme, String ssp, String fragment, String type) {
-		this(scheme, ssp, fragment);
+		setNodeUri(nodeUri);
 		setType(type);
 	}
 	
@@ -60,14 +47,6 @@ public class Node {
 	
 	public void setNodeUri(String nodeUri) {
 		this.nodeUri = nodeUri;
-	}
-	
-	public String getFragment() {
-		return Utils.getFragment(nodeUri);
-	}
-
-	public String getSchemeSpecificPart() {
-		return Utils.getSchemeSpecificPart(nodeUri);
 	}
 	
 	public String getScheme() {

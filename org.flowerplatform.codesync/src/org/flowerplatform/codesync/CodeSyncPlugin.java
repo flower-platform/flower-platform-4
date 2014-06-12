@@ -418,7 +418,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
 //		return getResource(resourceSet, uri, fileExists);
 		NodeService service = CorePlugin.getInstance().getNodeService();
-		Node node = new Node((String) file);
+		Node node = new Node((String) file, null);
 		return service.getChildren(node, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true)).get(0);
 	}
 	

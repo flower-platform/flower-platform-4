@@ -27,7 +27,7 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 		
 		protected function composeIconWithSyncMarkers():void {
 			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
-			var icon:String = String(iconsProvider.getValue(node));
+			var icon:String = iconsProvider.getValue(node) as String;
 			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
 			if (node.properties.conflict == true) {
 				composedUrl = append(composedUrl, "syncMarker_conflict.gif");

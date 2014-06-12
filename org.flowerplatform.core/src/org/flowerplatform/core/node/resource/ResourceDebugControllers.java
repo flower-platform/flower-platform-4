@@ -34,6 +34,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.UtilConstants;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -41,7 +42,7 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class ResourceDebugControllers {
 
-	private final String RESOURCES = DEBUG + "ServerResources";
+	private final String RESOURCES_SERVER = DEBUG + "ServerResources";
 	
 	private final String RESOURCES_CLIENT = DEBUG + "ClientResources";
 	
@@ -66,7 +67,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Collections.singletonList(new Node(DEBUG, DEBUG, null, DEBUG));
+			return Collections.singletonList(new Node(Utils.getUri(DEBUG, DEBUG), DEBUG));
 		}
 	}
 	
@@ -79,7 +80,10 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Arrays.asList(new Node(RESOURCES, DEBUG, null, RESOURCES), new Node(SESSIONS, DEBUG, null, SESSIONS), new Node(RESOURCES_CLIENT, DEBUG, null, RESOURCES_CLIENT));
+			return Arrays.asList(
+					new Node(Utils.getUri(RESOURCES_SERVER, DEBUG), RESOURCES_SERVER), 
+					new Node(Utils.getUri(SESSIONS, DEBUG), SESSIONS), 
+					new Node(Utils.getUri(RESOURCES_CLIENT, DEBUG), RESOURCES_CLIENT));
 		}
 		
 		@Override
@@ -94,7 +98,7 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
 			for (String sessionId : CorePlugin.getInstance().getSessionService().getSubscribedSessions()) {
-				Node session = new Node(SESSION, node.getSchemeSpecificPart(), sessionId, SESSION);
+				Node session = new Node(Utils.getUri(SESSION, Utils.getSchemeSpecificPart(node.getNodeUri()), sessionId), SESSION);
 				children.add(session);
 			}
 			return children;
@@ -141,7 +145,7 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
 			for (String resourceId : CorePlugin.getInstance().getResourceSetService().getResourceSets()) {
-				Node resource = new Node(RESOURCE_SET, node.getSchemeSpecificPart(), resourceId, RESOURCE_SET);
+				Node resource = new Node(Utils.getUri(RESOURCE_SET, Utils.getSchemeSpecificPart(node.getNodeUri()), resourceId), RESOURCE_SET);
 				children.add(resource);
 			}
 			return children;
@@ -157,7 +161,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			String sessionId = node.getFragment();
+			String sessionId = Utils.getFragment(node.getNodeUri());
 			node.getProperties().put(CoreConstants.NAME, "Session: " + sessionId);
 			node.getProperties().put("ip", CorePlugin.getInstance().getSessionService().getSessionProperty(sessionId, "ip"));
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
@@ -176,9 +180,9 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			List<Node> children = new ArrayList<Node>();
-			String sessionId = node.getFragment();
+			String sessionId = Utils.getFragment(node.getNodeUri());
 			for (String resourceId : CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId)) {
-				Node resource = new Node(RESOURCE2, node.getFragment(), resourceId, RESOURCE2);
+				Node resource = new Node(Utils.getUri(RESOURCE2, Utils.getFragment(node.getNodeUri()), resourceId), RESOURCE2);
 				children.add(resource);
 			}
 			return children;
@@ -190,9 +194,9 @@ public class ResourceDebugControllers {
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
-			String resourceUri = node.getFragment();
+			String resourceUri = Utils.getFragment(node.getNodeUri());
 			for (String sessionId : CorePlugin.getInstance().getResourceService().getSessionsSubscribedToResource(resourceUri)) {
-				Node session = new Node(SESSION2, node.getFragment(), sessionId, SESSION2);
+				Node session = new Node(Utils.getUri(SESSION2, Utils.getFragment(node.getNodeUri()), sessionId), SESSION2);
 				children.add(session);
 			}
 			return children;
@@ -209,7 +213,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			String resourceId = node.getFragment();
+			String resourceId = Utils.getFragment(node.getNodeUri());
 			node.getProperties().put(CoreConstants.NAME, "Resource: " + resourceId);
 			long timestamp = CorePlugin.getInstance().getResourceService().getUpdateRequestedTimestamp(resourceId);
 			node.getProperties().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
@@ -230,21 +234,35 @@ public class ResourceDebugControllers {
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			
 			List<Node> children = new ArrayList<Node>();
-			String resourceSet = node.getFragment();
+			String resourceSet = Utils.getFragment(node.getNodeUri());
 			for (String resourceUri : CorePlugin.getInstance().getResourceSetService().getResourceUris(resourceSet)) {
-				Node resource = new Node(RESOURCE, node.getSchemeSpecificPart(), resourceUri, RESOURCE);
-				children.add(resource);
+				Node resource = new Node(Utils.getUri(RESOURCE, Utils.getSchemeSpecificPart(node.getNodeUri()), resourceUri), RESOURCE);
+				children.add(resource); 
 			}
 			return children;
 		}
 
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			node.getProperties().put(CoreConstants.NAME, "ResourceSet: " + node.getFragment());
+			node.getProperties().put(CoreConstants.NAME, "ResourceSet: " + Utils.getFragment(node.getNodeUri()));
 		}
 	}
 	
+	private void addResourceHandler(String type) {
+		CorePlugin.getInstance().getResourceService().addResourceHandler(type, new BaseResourceHandler(type));
+	}
+	
 	public void registerControllers() {
+		
+		addResourceHandler(DEBUG);
+		addResourceHandler(RESOURCES_SERVER);
+		addResourceHandler(RESOURCES_CLIENT);
+		addResourceHandler(SESSIONS);
+		addResourceHandler(SESSION);
+		addResourceHandler(RESOURCE2);
+		addResourceHandler(RESOURCE_SET);
+		addResourceHandler(RESOURCE);
+		addResourceHandler(SESSION2);
 		
 		// add debug node to root
 		
@@ -259,7 +277,7 @@ public class ResourceDebugControllers {
 		// debug node
 		
 		ResourcesDebugController resourcesDebugController = new ResourcesDebugController();
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(RESOURCES)
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(RESOURCES_SERVER)
 		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, resourcesDebugController)
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, resourcesDebugController);
 		

@@ -132,8 +132,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				String scheme = Utils.getScheme(parent.getNodeUri());
 				String ssp = Utils.getSchemeSpecificPart(parent.getNodeUri());
 				String childUri = Utils.getUri(scheme, ssp, null);
-				Node child = new Node(childUri);
-				child.setType(type);
+				Node child = new Node(childUri, type);
 				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 				return child;
 //		}

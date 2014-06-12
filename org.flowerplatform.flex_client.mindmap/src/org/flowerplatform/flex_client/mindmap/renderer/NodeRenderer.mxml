@@ -180,7 +180,7 @@
 				var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
 				var iconsChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, iconsProperty, event);
 				if (iconsChanged) {
-					var iconsValue:String = String(iconsProvider.getValue(node));
+					var iconsValue:String = iconsProvider.getValue(node) as String;
 					if (iconsValue != null) {
 						icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
 					} else {

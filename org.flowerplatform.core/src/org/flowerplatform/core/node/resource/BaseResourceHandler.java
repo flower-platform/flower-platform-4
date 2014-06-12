@@ -1,23 +1,21 @@
-package org.flowerplatform.core.file;
-
-import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
-import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
-import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
-import static org.flowerplatform.core.file.FileControllerUtils.getFilePath;
-import static org.flowerplatform.core.file.FileControllerUtils.getRepo;
+package org.flowerplatform.core.node.resource;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.resource.IResourceHandler;
-import org.flowerplatform.util.Utils;
 
 /**
  * @author Mariana Gheorghe
  */
-public class FileSystemResourceHandler implements IResourceHandler {
+public class BaseResourceHandler implements IResourceHandler {
 
+	private String type;
+	
+	public BaseResourceHandler(String type) {
+		this.type = type;
+	}
+	
 	@Override
 	public String getResourceUri(String nodeUri) {
-		return Utils.getUri(FILE_SCHEME, getRepo(nodeUri), null);
+		return null;
 	}
 
 	@Override
@@ -27,7 +25,6 @@ public class FileSystemResourceHandler implements IResourceHandler {
 
 	@Override
 	public Node createNodeFromRawNodeData(String nodeUri, Object rawNodeData) {
-		String type = getFilePath(nodeUri) == null ? FILE_SYSTEM_NODE_TYPE : FILE_NODE_TYPE; 
 		return new Node(nodeUri, type);
 	}
 

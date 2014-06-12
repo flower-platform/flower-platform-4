@@ -60,6 +60,10 @@ public class Utils {
 		return uri.substring(index + 1);
 	}
 	
+	public static String getUri(String scheme, String ssp) {
+		return getUri(scheme, ssp, null);
+	}
+	
 	public static String getUri(String scheme, String ssp, String fragment) {
 		String uri = scheme + ":" + ssp;
 		if (fragment != null) {

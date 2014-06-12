@@ -1,15 +1,12 @@
 package org.flowerplatform.core.node.resource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.FlowerProperties;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.Update;
-import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +17,6 @@ public abstract class ResourceSetService {
 
 	protected final static Logger logger = LoggerFactory.getLogger(ResourceSetService.class);
 	
-	private Map<String, IResourceSetProvider> resourceSetProviders = new HashMap<String, IResourceSetProvider>();
-	
 	static final String PROP_RESOURCE_UPDATES_MARGIN = "resourceUpdatesMargin"; 
 	static final String PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN = "0"; 
 	
@@ -29,23 +24,9 @@ public abstract class ResourceSetService {
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(PROP_RESOURCE_UPDATES_MARGIN, PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
 	}
 	
-	public void addResourceSetProvider(String scheme, IResourceSetProvider resourceSetProvider) {
-		if (logger.isTraceEnabled()) {
-			logger.trace("Added resource set provider for scheme {}: {}", scheme, resourceSetProvider);
-		}
-		resourceSetProviders.put(scheme, resourceSetProvider);
-	}
+	public abstract String addToResourceSet(String resourceSet, String resourceUri);
 	
-	public String getResourceSet(String resourceUri) {
-		IResourceSetProvider resourceSetProvider = resourceSetProviders.get(Utils.getScheme(resourceUri));
-		String resourceSet = resourceSetProvider == null ? resourceUri :
-			resourceSetProvider.getResourceSet(resourceUri);
-		return resourceSet;
-	}
-	
-	public abstract String addToResourceSet(String resourceUri);
-	
-	public abstract void removeFromResourceSet(String resourceUri);
+	public abstract void removeFromResourceSet(String resourceSet, String resourceUri);
 	
 	public void save(String resourceSet, ServiceContext<ResourceSetService> context) {
 		logger.debug("Save resource set {}", resourceSet);

@@ -10,6 +10,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.styles.MapStyleModel;
@@ -24,7 +25,8 @@ public class StyleRootChildrenProvider extends AbstractController implements ICh
 		List<Node> list = new ArrayList<>(); 
 		NodeModel model = (NodeModel) node.getRawNodeData();
 		if ((model.getMap().getRootNode().equals(node.getRawNodeData()))) {
-			Node styleNode = new Node(MIND_MAP_STYLE, node.getSchemeSpecificPart(), null, STYLE_ROOT_NODE);
+			String styleNodeUri = Utils.getUri(MIND_MAP_STYLE, Utils.getSchemeSpecificPart(node.getNodeUri()));
+			Node styleNode = new Node(styleNodeUri, STYLE_ROOT_NODE);
 			styleNode.setRawNodeData(MapStyleModel.getExtension(model.getMap()).getStyleMap().getRootNode());
 			list.add(styleNode);
 		}

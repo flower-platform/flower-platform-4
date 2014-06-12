@@ -302,9 +302,7 @@ public class NodeService {
 		node.getProperties().put(HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())));
 
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
-		if (resourceService.getResourceInfo(node.getNodeUri()) != null) {
-			node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService)));
-		}
+		node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService)));
 	}
 	
 }

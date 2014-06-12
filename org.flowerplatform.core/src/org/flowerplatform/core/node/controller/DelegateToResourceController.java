@@ -23,7 +23,7 @@ public class DelegateToResourceController extends AbstractController implements
 	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider {
 
 	protected String getResource(String scheme) {
-		return "category.resource." + scheme;
+		return CoreConstants.CATEGORY_RESOURCE_PREFIX + scheme;
 	}
 	
 	protected TypeDescriptor getDescriptor(Node node) {

@@ -18,8 +18,7 @@ public class InMemoryResourceSetService extends ResourceSetService {
 	private Map<String, ResourceSetInfo> resourceSetInfos = new HashMap<String, ResourceSetInfo>();
 
 	@Override
-	public String addToResourceSet(String resourceUri) {
-		String resourceSet = getResourceSet(resourceUri);
+	public String addToResourceSet(String resourceSet, String resourceUri) {
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
 		if (info == null) {
 			info = new ResourceSetInfo();
@@ -32,8 +31,7 @@ public class InMemoryResourceSetService extends ResourceSetService {
 	}
 	
 	@Override
-	public void removeFromResourceSet(String resourceUri) {
-		String resourceSet = getResourceSet(resourceUri);
+	public void removeFromResourceSet(String resourceSet, String resourceUri) {
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
 		info.getResourceUris().remove(resourceUri);
 		if (info.getResourceUris().isEmpty()) {

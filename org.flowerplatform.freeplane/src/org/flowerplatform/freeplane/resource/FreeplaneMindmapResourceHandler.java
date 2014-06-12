@@ -1,51 +1,106 @@
 package org.flowerplatform.freeplane.resource;
 
-import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
-import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_RESOURCE_KEY;
-import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLDecoder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.IPropertiesProvider;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.IResourceHandler;
 import org.flowerplatform.mindmap.MindMapConstants;
-import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
+import org.freeplane.features.map.MapModel;
+import org.freeplane.features.map.MapWriter.Mode;
+import org.freeplane.features.map.NodeModel;
+import org.freeplane.features.mode.Controller;
 import org.freeplane.features.url.UrlManager;
+import org.freeplane.features.url.mindmapmode.MFileManager;
 
 /**
  * @author Mariana Gheorghe
  * @author Cristina Constantinescu
  */
-public class FreeplaneMindmapResourceHandler extends FreeplanePersistenceResourceHandler implements IPropertiesProvider {
-
+public class FreeplaneMindmapResourceHandler implements IResourceHandler {
+	
+	/**
+	 * Strip the fragment.
+	 */
 	@Override
-	public String getType(Object resourceData, String nodeUri) {
+	public String getResourceUri(String nodeUri) {
+		int index = nodeUri.indexOf("#");
+		if (index < 0) {
+			return nodeUri;
+		}
+		return nodeUri.substring(0, index);
+	}
+	
+	@Override
+	public Object getRawNodeDataFromResource(String nodeUri, Object resourceData) {
+		MapModel mapModel = (MapModel) resourceData;
+		String id = Utils.getFragment(nodeUri);
+		if (id == null) {
+			return mapModel.getRootNode();
+		}
+		return mapModel.getNodeForID(id);
+	}
+	
+	@Override
+	public Node createNodeFromRawNodeData(String nodeUri, Object rawNodeData) {
+		NodeModel nodeModel = (NodeModel) rawNodeData;
+		String type = getType(nodeUri, nodeModel);
+		Node node = new Node(nodeUri, type);
+		node.setRawNodeData(nodeModel);
+		return node;
+	}
+	
+	protected String getType(String nodeUri, NodeModel nodeModel) {
 		return MindMapConstants.MINDMAP_NODE_TYPE;
+	}
+	
+	@Override
+	public Object load(String resourceUri) throws Exception {
+		MapModel model = null;
+		String path = FileControllerUtils.getFilePath(resourceUri);
+		
+		InputStreamReader urlStreamReader = null;
+		try {
+			URL url = ((File) CorePlugin.getInstance().getFileAccessController().getFile(path)).toURI().toURL();
+			urlStreamReader = new InputStreamReader(url.openStream());
+			
+			model = new MapModel();			
+			model.setURL(url);
+				
+			Controller.getCurrentModeController().getMapController().getMapReader().createNodeTreeFromXml(model, urlStreamReader, Mode.FILE);
+			return model;
+		} finally {
+			if (urlStreamReader != null) {
+				urlStreamReader.close();
+			}
+		}
 	}
 
 	@Override
-	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		if (CoreConstants.FILE_NODE_TYPE.equals(node.getType())) {
-			if (node.getNodeUri().endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
-				// set subscribable resources
-				@SuppressWarnings("unchecked")
-				List<Pair<String, String>> subscribableResources = (List<Pair<String, String>>) 
-						node.getProperties().get(SUBSCRIBABLE_RESOURCES);
-				if (subscribableResources == null) {
-					subscribableResources = new ArrayList<Pair<String, String>>();
-					node.getProperties().put(SUBSCRIBABLE_RESOURCES, subscribableResources);
-				}
-				
-				String resourceUri = Utils.getUri(FREEPLANE_MINDMAP_RESOURCE_KEY, node.getSchemeSpecificPart(), null);
-				Pair<String, String> subscribableResource = new Pair<String, String>(resourceUri, MINDMAP_CONTENT_TYPE);
-				subscribableResources.add(0, subscribableResource);
-			}
-		}
+	public boolean isDirty(Object resource) {
+		MapModel model = (MapModel) resource;
+		return !model.isSaved();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void save(Object resourceData) throws Exception {
+		MapModel model = (MapModel) resourceData;
+		String path = model.getFile().getAbsolutePath();
+		File file = new File(URLDecoder.decode(path, "UTF-8"));
+		
+		((MFileManager) UrlManager.getController()).writeToFile(model, file);
+		model.setSaved(true);
+	}
+
+	@Override
+	public void unload(Object resourceData) throws Exception {
+		// nothing to do
 	}
 
 }

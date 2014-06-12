@@ -1,6 +1,7 @@
 package org.flowerplatform.tests.core;
 
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -14,6 +15,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -68,19 +70,19 @@ public class NodeServiceTest {
 						   .addAdditiveController(CHILDREN_PROVIDER, spyProviderForTypeB);
 						   
 		
-		when(spyProviderForTypeA.getChildren(eq(new Node("root", null, "0")), any(ServiceContext.class)))
+		when(spyProviderForTypeA.getChildren(eq(new Node(Utils.getUri("root", null, "0"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("a", null, "1"),
-						new Node("a", null, "2")));
-		when(spyProviderForTypeA.getChildren(eq(new Node("a", null, "1")), any(ServiceContext.class)))
+						new Node(Utils.getUri("a", null, "1"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("a", null, "2"), FILE_NODE_TYPE)));
+		when(spyProviderForTypeA.getChildren(eq(new Node(Utils.getUri("a", null, "1"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("a", null, "12"),
-						new Node("a", null, "3")));
+						new Node(Utils.getUri("a", null, "12"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("a", null, "3"), FILE_NODE_TYPE)));
 
-		when(spyProviderForTypeA.getChildren(eq(new Node("a", null, "2")), any(ServiceContext.class)))
+		when(spyProviderForTypeA.getChildren(eq(new Node(Utils.getUri("a", null, "2"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("a", null, "4"),
-						new Node("a", null, "5")));
+						new Node(Utils.getUri("a", null, "4"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("a", null, "5"), FILE_NODE_TYPE)));
 
 		// B
 		TypeDescriptor nodeTypeDescriptorB = descriptorRegistry
@@ -90,25 +92,25 @@ public class NodeServiceTest {
 						   .addAdditiveController(CHILDREN_PROVIDER, spyProviderAll);
 		nodeTypeDescriptorB.addCategory("category.fileSystem");
 		
-		when(spyProviderForTypeB.getChildren(eq(new Node("a", null, "2")), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node(Utils.getUri("a", null, "2"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "6"),
-						new Node("b", null, "7")));
+						new Node(Utils.getUri("b", null, "6"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("b", null, "7"), FILE_NODE_TYPE)));
 
-		when(spyProviderForTypeB.getChildren(eq(new Node("b", null, "10")), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node(Utils.getUri("b", null, "10"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "11"),
-						new Node("b", null, "13")));
+						new Node(Utils.getUri("b", null, "11"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("b", null, "13"), FILE_NODE_TYPE)));
 		
-		when(spyProviderForTypeB.getChildren(eq(new Node("b", null, "14")), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node(Utils.getUri("b", null, "14"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "15"),
-						new Node("b", null, "16")));
+						new Node(Utils.getUri("b", null, "15"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("b", null, "16"), FILE_NODE_TYPE)));
 		
-		when(spyProviderForTypeB.getChildren(eq(new Node("root", null, "0")), any(ServiceContext.class)))
+		when(spyProviderForTypeB.getChildren(eq(new Node(Utils.getUri("root", null, "0"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("b", null, "10"),
-						new Node("b", null, "14")));
+						new Node(Utils.getUri("b", null, "10"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("b", null, "14"), FILE_NODE_TYPE)));
 		
 		// C
 		TypeDescriptor nodeTypeDescriptorC = descriptorRegistry
@@ -119,25 +121,25 @@ public class NodeServiceTest {
 		   				   .addAdditiveController(CHILDREN_PROVIDER, spyProviderAll)
 		   				   .addCategory("category.fileSystem");
 		
-		when(spyProviderForTypeC.getChildren(eq(new Node("a", null, "2")), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node(Utils.getUri("a", null, "2"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "8"),
-						new Node("c", null, "9")));
+						new Node(Utils.getUri("c", null, "8"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("c", null, "9"), FILE_NODE_TYPE)));
 
-		when(spyProviderForTypeC.getChildren(eq(new Node("c", null, "17")), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node(Utils.getUri("c", null, "17"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "19"),
-						new Node("c", null, "20")));
+						new Node(Utils.getUri("c", null, "19"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("c", null, "20"), FILE_NODE_TYPE)));
 		
-		when(spyProviderForTypeC.getChildren(eq(new Node("c", null, "18")), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node(Utils.getUri("c", null, "18"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "21"),
-						new Node("c", null, "22")));
+						new Node(Utils.getUri("c", null, "21"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("c", null, "22"), FILE_NODE_TYPE)));
 		
-		when(spyProviderForTypeC.getChildren(eq(new Node("root", null, "0")), any(ServiceContext.class)))
+		when(spyProviderForTypeC.getChildren(eq(new Node(Utils.getUri("root", null, "0"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("c", null, "17"),
-						new Node("c", null, "18")));
+						new Node(Utils.getUri("c", null, "17"), FILE_NODE_TYPE),
+						new Node(Utils.getUri("c", null, "18"), FILE_NODE_TYPE)));
 		
 		// root
 		TypeDescriptor nodeTypeDescriptorRoot = descriptorRegistry
@@ -153,25 +155,25 @@ public class NodeServiceTest {
 				.getOrCreateCategoryTypeDescriptor("category.fileSystem");
 		fileSystemTypeDescriptor.addAdditiveController(CHILDREN_PROVIDER, spyProviderForTypeFileSystem);
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("b", null, "10")), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node(Utils.getUri("b", null, "10"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "23")));
+						new Node(Utils.getUri("fileSystem", null, "23"), FILE_NODE_TYPE)));
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("b", null, "14")), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node(Utils.getUri("b", null, "14"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "24")));
+						new Node(Utils.getUri("fileSystem", null, "24"), FILE_NODE_TYPE)));
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("c", null, "17")), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node(Utils.getUri("c", null, "17"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "25")));
+						new Node(Utils.getUri("fileSystem", null, "25"), FILE_NODE_TYPE)));
 		
-		when(spyProviderForTypeFileSystem.getChildren(eq(new Node("c", null, "18")), any(ServiceContext.class)))
+		when(spyProviderForTypeFileSystem.getChildren(eq(new Node(Utils.getUri("c", null, "18"), FILE_NODE_TYPE)), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("fileSystem", null, "26")));
+						new Node(Utils.getUri("fileSystem", null, "26"), FILE_NODE_TYPE)));
 		// all
 		when(spyProviderAll.getChildren(any(Node.class), any(ServiceContext.class)))
 				.thenReturn(Arrays.asList(
-						new Node("all", null, "0")));
+						new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 	}
 	
 	/**
@@ -181,52 +183,52 @@ public class NodeServiceTest {
 	 */
 	@Test
 	public void testPriority() {
-		assertEquals(nodeService.getChildren(new Node("root", null, "0"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("a", null, "1"),
-				new Node("a", null, "2"),
-				new Node("b", null, "10"),
-				new Node("b", null, "14"),
-				new Node("c", null, "17"),
-				new Node("c", null, "18"),
-				new Node("all", null, "0")));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri("root", null, "0"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node(Utils.getUri("a", null, "1"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("a", null, "2"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("b", null, "10"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("b", null, "14"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("c", null, "17"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("c", null, "18"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 		
-		assertEquals(nodeService.getChildren(new Node("a", null, "1"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("a", null, "12"),
-				new Node("a", null, "3"),
-				new Node("all", null, "0")));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri("a", null, "1"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node(Utils.getUri("a", null, "12"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("a", null, "3"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 		
-		assertEquals(nodeService.getChildren(new Node("a", null, "2"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("a", null, "4"),
-				new Node("a", null, "5"),
-				new Node("b", null, "6"),
-				new Node("b", null, "7"),
-				new Node("c", null, "8"),
-				new Node("c", null, "9"),
-				new Node("all", null, "0")));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri("a", null, "2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node(Utils.getUri("a", null, "4"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("a", null, "5"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("b", null, "6"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("b", null, "7"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("c", null, "8"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("c", null, "9"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 		
-		assertEquals(nodeService.getChildren(new Node("b", null, "10"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("b", null, "11"),
-				new Node("b", null, "13"),
-				new Node("fileSystem", null, "23"),
-				new Node("all", null, "0")));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri("b", null, "10"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node(Utils.getUri("b", null, "11"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("b", null, "13"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("fileSystem", null, "23"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 		
-		assertEquals(nodeService.getChildren(new Node("b", null, "14"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("b", null, "15"),
-				new Node("b", null, "16"),
-				new Node("fileSystem", null, "24"),
-				new Node("all", null, "0")));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri("b", null, "14"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node(Utils.getUri("b", null, "15"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("b", null, "16"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("fileSystem", null, "24"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 		
-		assertEquals(nodeService.getChildren(new Node("c", null, "17"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("c", null, "19"),
-				new Node("c", null, "20"),
-				new Node("fileSystem", null, "25"),
-				new Node("all", null, "0")));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri("c", null, "17"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node(Utils.getUri("c", null, "19"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("c", null, "20"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("fileSystem", null, "25"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 		
-		assertEquals(nodeService.getChildren(new Node("c", null, "18"), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
-				new Node("c", null, "21"),
-				new Node("c", null, "22"),
-				new Node("fileSystem", null, "26"),
-				new Node("all", null, "0")));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri("c", null, "18"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)), Arrays.asList(
+				new Node(Utils.getUri("c", null, "21"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("c", null, "22"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("fileSystem", null, "26"), FILE_NODE_TYPE),
+				new Node(Utils.getUri("all", null, "0"), FILE_NODE_TYPE)));
 	}
 	
 }

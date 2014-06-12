@@ -7,6 +7,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -19,7 +20,7 @@ public class RepositoryPropertiesProvider extends AbstractController implements 
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object file;
 		try {
-			file = fileAccessController.getFile(node.getFragment());
+			file = fileAccessController.getFile(Utils.getFragment(node.getNodeUri()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

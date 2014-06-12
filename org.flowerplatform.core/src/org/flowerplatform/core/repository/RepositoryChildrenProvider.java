@@ -10,6 +10,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -29,7 +30,7 @@ public class RepositoryChildrenProvider extends AbstractController implements IC
 	}
 	
 	public Node getFileSystem(Node parentNode) {
-		Node node = new Node(FILE_SCHEME, parentNode.getSchemeSpecificPart(), null, FILE_SYSTEM_NODE_TYPE);
+		Node node = new Node(Utils.getUri(FILE_SCHEME, Utils.getSchemeSpecificPart(parentNode.getNodeUri())), FILE_SYSTEM_NODE_TYPE);
 		return node;
 	}
 

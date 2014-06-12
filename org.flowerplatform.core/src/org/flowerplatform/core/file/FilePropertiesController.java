@@ -87,7 +87,7 @@ public class FilePropertiesController extends AbstractController implements IPro
 				node.getProperties().put(SUBSCRIBABLE_RESOURCES, subscribableResources);
 			}
 			
-			String resourceUri = Utils.getUri("txt", node.getSchemeSpecificPart(), null);
+			String resourceUri = Utils.getUri("txt", Utils.getSchemeSpecificPart(node.getNodeUri()), null);
 			Pair<String, String> subscribableResource = new Pair<String, String>(resourceUri, TEXT_CONTENT_TYPE);
 			subscribableResources.add(subscribableResource);
 		}
