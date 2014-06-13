@@ -93,8 +93,8 @@ package org.flowerplatform.flex_client.mindmap {
 			editorArea.addElementAt(iconSideBar, 0);
 		}	
 		
-		override protected function subscribeResultCallback(rootNode:Node):void {
-			super.subscribeResultCallback(rootNode);
+		override protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
+			super.subscribeResultCallback(rootNode, resourceNode);
 			
 			nodeRegistry.expand(rootNode);
 		}

@@ -151,6 +151,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				if (nodeRegistries.length == 0 && resourceSetToResourceUris[resourceSet] == null) {
 					delete resourceSetToNodeRegistries[resourceSet];
 					delete resourceUriToResourceSet[resourceUri];
+					nodeRegistry.mx_internal::unregisterNode(resourceNodeFromRegistry);
 				}
 			}
 		}
@@ -162,7 +163,10 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			} else {
 				// a subscribable node => subscribe to the first resource
 				var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
-				subscribe(String(subscribableResource.a), nodeRegistry, function(rootNode:Node):void {
+				subscribe(String(subscribableResource.a), nodeRegistry, function(rootNode:Node, resourceNode:Node):void {
+					if (resourceNode != null) {
+						resourceNode.parent = node;
+					}
 					nodeRegistry.expand(node, additionalHandler);
 				});
 			}
@@ -177,17 +181,16 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				var resourceNodeId:String = String(obj);
 				var resourceNode:Node = nodeRegistry.getNodeById(resourceNodeId);
 				var parent:Node = resourceNode;
-				while (parent != null && parent != node) {					
+				var resourceCollapsed:Boolean = false;
+				while (parent != null && parent != node) {
+					resourceCollapsed ||= hasSubscribableResource(parent, resourceNodeId);
 					parent = parent.parent;					
 				}
-				if (parent == node) {
-					var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
-					if (subscribableResources != null && subscribableResources.length > 0) {
-						if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
-							dirtyResourceUris.push(resourceNodeId);
-						} else {
-							savedResourceUris.push(resourceNodeId);
-						}
+				if (parent == node && (resourceCollapsed || hasSubscribableResource(node, resourceNodeId))) {
+					if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
+						dirtyResourceUris.push(resourceNodeId);
+					} else {
+						savedResourceUris.push(resourceNodeId);
 					}
 				}
 			}
@@ -212,6 +215,19 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 		}
 		
+		private function hasSubscribableResource(node:Node, resourceUri:String):Boolean {
+			var subscribableResources:ArrayCollection = ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+			if (subscribableResources == null || subscribableResources.length == 0) {
+				return false;
+			}
+			for each (var pair:Pair in subscribableResources) {
+				if (pair.a == resourceUri) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		/**
 		 * Calls subscribe for <code>nodeId</code> on server. Callback functions:
 		 * <ul>
@@ -229,15 +245,20 @@ package org.flowerplatform.flex_client.core.editor.resource {
 					} else {
 						subscriptionInfo.rootNode = existingRootNode;
 					}
-					if (subscriptionInfo.resourceNode != null && subscriptionInfo.rootNode.nodeUri != subscriptionInfo.resourceNode.nodeUri) {
-						// register resource node if different from root node
-						nodeRegistry.mx_internal::registerNode(subscriptionInfo.resourceNode, null);
+					if (subscriptionInfo.resourceNode != null) {
+						if (subscriptionInfo.rootNode.nodeUri != subscriptionInfo.resourceNode.nodeUri) {
+							// register resource node if different from root node
+							nodeRegistry.mx_internal::registerNode(subscriptionInfo.resourceNode, null);
+						} else {
+							// set to the same instance, since the original resource node was not registered
+							subscriptionInfo.resourceNode = subscriptionInfo.rootNode;
+						}
 					}
 					if (subscriptionInfo.resourceNode != null) {
 						linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, subscriptionInfo.resourceSet, nodeRegistry);
 					}
 					if (subscribeResultCallback != null) {
-						subscribeResultCallback(subscriptionInfo.rootNode);
+						subscribeResultCallback(subscriptionInfo.rootNode, subscriptionInfo.resourceNode);
 					}
 				},
 				function(event:FaultEvent):void {
@@ -356,7 +377,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 					
 		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
 			var resourceNode:Node = event.node;
-			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY)) {
+			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY, event)) {
 				resourceOperationsManager.updateGlobalDirtyState(resourceNode.properties[CoreConstants.IS_DIRTY]);
 			}
 		}

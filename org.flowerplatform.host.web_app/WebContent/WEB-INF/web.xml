@@ -90,7 +90,7 @@
 		 -->
 		<init-param>
 			<param-name>workspaceLocation</param-name>
-			<param-value>workspace/repository</param-value>
+			<param-value>workspace</param-value>
 		</init-param>	
 	
 		<load-on-startup>1</load-on-startup>

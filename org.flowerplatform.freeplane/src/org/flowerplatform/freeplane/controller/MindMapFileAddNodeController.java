@@ -36,7 +36,7 @@ public class MindMapFileAddNodeController extends AbstractController implements 
 		try {
 			MapModel model = Controller.getCurrentModeController().getMapController().newModel();
 			((MFileManager) UrlManager.getController()).writeToFile(model, (File) CorePlugin.getInstance().getFileAccessController().getFile(
-					FileControllerUtils.getFilePath(child)));
+					FileControllerUtils.getFilePathWithRepo(child)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -86,7 +86,7 @@ public class UploadService implements ISessionListener {
 	 * @throws Exception 
 	 */	
 	public String prepareUpload(String fullNodeId, String fileName, boolean unzipfile) throws Exception {
-		String path = FileControllerUtils.getFilePath(fullNodeId);
+		String path = FileControllerUtils.getFilePathWithRepo(fullNodeId);
 		Object file = CorePlugin.getInstance().getFileAccessController().getFile(path);
 		
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();		

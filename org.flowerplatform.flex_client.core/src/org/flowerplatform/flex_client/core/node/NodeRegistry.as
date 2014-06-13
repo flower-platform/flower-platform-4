@@ -114,6 +114,7 @@ package org.flowerplatform.flex_client.core.node {
 					var node:Node = Node(registry[fullNodeId]);
 					if (node.parent == null) {
 						refresh(node);
+						break;
 					}
 				}
 				return;

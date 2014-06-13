@@ -17,7 +17,6 @@ public class CoreConstants {
 	public static final String FILE_NODE_TYPE = "fileNode";
 	public static final String ROOT_TYPE = "root";
 	public static final String REPOSITORY_TYPE = "repository";
-	public static final String CODE_TYPE = "code";
 	
 	public final static String DEBUG = "debug";
 	
@@ -70,7 +69,6 @@ public class CoreConstants {
 	public static final String PROPERTY_SETTER = "propertySetter";
 	public static final String RAW_NODE_DATA_PROVIDER = "rawNodeDataProvider";
 	public static final String REMOVE_NODE_CONTROLLER = "removeNodeController";
-	public static final String RESOURCE_ACCESS_CONTROLLER = "resourceAccessController";
 	
 	//////////////////////////////////
 	// Descriptors

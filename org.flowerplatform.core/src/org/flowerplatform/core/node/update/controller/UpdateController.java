@@ -84,11 +84,12 @@ public class UpdateController extends AbstractController
 			resourceNode = node;
 		} else {
 			resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
-			if (resourceNode == null) {
-				return;
-			}
-			resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+			
 		}
+		if (resourceNode == null) {
+			return;
+		}
+		resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceNode.getNodeUri();
 		}

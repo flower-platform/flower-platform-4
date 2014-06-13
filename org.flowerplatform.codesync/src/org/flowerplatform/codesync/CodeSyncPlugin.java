@@ -18,14 +18,24 @@
  */
 package org.flowerplatform.codesync;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MDA_ROOT_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MDA_TYPE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
 import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +47,9 @@ import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterLeft;
 import org.flowerplatform.codesync.controller.CodeSyncAddNodeController;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
+import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
+import org.flowerplatform.codesync.controller.CodeSyncSubscribableResourceProvider;
+import org.flowerplatform.codesync.controller.ModelResourceSetProvider;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
@@ -45,9 +58,11 @@ import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -210,19 +225,51 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		addTypeProvider("node", new NodeTypeProvider());
 		
+		CorePlugin.getInstance().getResourceService().addResourceHandler(CODESYNC_TYPE, new BaseResourceHandler(CODESYNC_TYPE));
+		CorePlugin.getInstance().getResourceService().addResourceHandler(MDA_TYPE, new BaseResourceHandler(MDA_TYPE));
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
+			.addAdditiveController(CHILDREN_PROVIDER, new CodeSyncRepositoryChildrenProvider());
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_MODEL)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ModelResourceSetProvider());
+		
+		CodeSyncSubscribableResourceProvider modelSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(".model");
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_TYPE)
+			.addAdditiveController(PROPERTIES_PROVIDER, modelSubscribableResourceProvider)
+			.addAdditiveController(CHILDREN_PROVIDER, modelSubscribableResourceProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "Code Sync"))
+			.addCategory(CATEGORY_MODEL);
+	
+		CodeSyncSubscribableResourceProvider mdaSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(".mda");
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA_TYPE)
+			.addAdditiveController(PROPERTIES_PROVIDER, mdaSubscribableResourceProvider)
+			.addAdditiveController(CHILDREN_PROVIDER, mdaSubscribableResourceProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "MDA"))
+			.addCategory(CATEGORY_MODEL);
+	
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_ROOT_TYPE)
+			.addCategory(CATEGORY_MODEL);
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA_ROOT_TYPE)
+			.addCategory(CATEGORY_MODEL);
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(DIAGRAM_TYPE)
+			.addCategory(CATEGORY_MODEL);
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
-		.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
-		.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController())
-		.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.ADDED).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.REMOVED).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor())
-		.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
+			.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
+			.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController())
+			.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.ADDED).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.REMOVED).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.SYNC).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_SYNC).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CONFLICT).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_CONFLICT).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true))
+			.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor())
+			.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());

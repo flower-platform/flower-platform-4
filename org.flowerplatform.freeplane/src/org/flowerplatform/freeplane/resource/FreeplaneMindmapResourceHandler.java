@@ -62,7 +62,7 @@ public class FreeplaneMindmapResourceHandler implements IResourceHandler {
 	@Override
 	public Object load(String resourceUri) throws Exception {
 		MapModel model = null;
-		String path = FileControllerUtils.getFilePath(resourceUri);
+		String path = FileControllerUtils.getFilePathWithRepo(resourceUri);
 		
 		InputStreamReader urlStreamReader = null;
 		try {

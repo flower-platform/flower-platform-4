@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.Match.MatchType;
@@ -69,7 +70,7 @@ public class CodeSyncTest {
 	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
-	private static final String resourceNodeId = new Node(Utils.getUri(CoreConstants.CODE_TYPE, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm"), CoreConstants.CODE_TYPE).getNodeUri();
+	private static final String resourceNodeId = new Node(Utils.getUri(CodeSyncConstants.CODESYNC_TYPE, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm"), CodeSyncConstants.CODESYNC_TYPE).getNodeUri();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
