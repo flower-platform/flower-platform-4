@@ -25,6 +25,10 @@ public class RemoteMethodInvocationListener {
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
 
+	public String getSessionId() {
+		return CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
+	}
+
 	/**
 	 * Compares the list of resources the client has with the list of resources that the client is subscribed to. For any
 	 * resource that the client is not subscribed to anymore => re-subscribe.
@@ -37,7 +41,7 @@ public class RemoteMethodInvocationListener {
 //		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
-		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
+		String sessionId = getSessionId();
 		List<String> clientResourceNodeIds = remoteMethodInvocationInfo.getResourceNodeIds();
 		
 		//temporar
@@ -147,9 +151,6 @@ public class RemoteMethodInvocationListener {
 	
 	/**
 	 * @author Claudiu Matei 
-	 * 
-	 * Trebuie mutata de aici - poate intr-o clasa Util
-	 * 
 	 */
 	public static String unescapeFullNodeId(String escapedFullNodeId) {
 		return escapedFullNodeId

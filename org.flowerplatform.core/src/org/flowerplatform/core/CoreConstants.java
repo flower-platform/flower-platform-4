@@ -127,6 +127,13 @@ public class CoreConstants {
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
 	
+	/**
+	 * Used to save the last value of a node's property in context, before the property is updated 
+	 * @author Claudiu Matei
+	 */
+	public static final String OLD_VALUE = "oldValue";
+
+	
 	//////////////////////////////////
 	// Resource
 	//////////////////////////////////
@@ -162,5 +169,5 @@ public class CoreConstants {
 	//////////////////////////////////
 	
 	public static final String METADATA = ".metadata";
-		
+	
 }

@@ -59,7 +59,7 @@ public class Command {
 
 	@Override
 	public boolean equals(Object command) {
-		if (command == null) {
+		if (command == null || !(command instanceof Command)) {
 			return false;
 		}
 		return id.equals(((Command) command).getId());

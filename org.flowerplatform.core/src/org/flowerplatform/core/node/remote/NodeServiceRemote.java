@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
+import org.flowerplatform.core.TempDeleteAfterGH279AndCo;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
@@ -137,16 +138,19 @@ public class NodeServiceRemote {
 	}
 	
 	public void tempDeleteAfterGH279AndCo(String commandStackNodeId, String commandId) {
-//		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
-		Node commandStackNode=new Node(commandStackNodeId);
-		String resourceNodeId=RemoteMethodInvocationListener.unescapeFullNodeId(commandStackNode.getIdWithinResource());
+		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
+		RemoteMethodInvocationListener.addNewNode(commandStackNodeId);
+	}
+
+	public void undo(String commandStackNodeId, String commandId) {
+		Node commandStackNode = new Node(commandStackNodeId);
+		String resourceNodeId = RemoteMethodInvocationListener.unescapeFullNodeId(commandStackNode.getIdWithinResource());
 		CorePlugin.getInstance().getResourceService().undo(resourceNodeId, commandId);
-//		RemoteMethodInvocationListener.addNewNode(commandStackNodeId);
 	}
 
 	public void redo(String commandStackNodeId, String commandId) {
-		Node commandStackNode=new Node(commandStackNodeId);
-		String resourceNodeId=RemoteMethodInvocationListener.unescapeFullNodeId(commandStackNode.getIdWithinResource());
+		Node commandStackNode = new Node(commandStackNodeId);
+		String resourceNodeId = RemoteMethodInvocationListener.unescapeFullNodeId(commandStackNode.getIdWithinResource());
 		CorePlugin.getInstance().getResourceService().redo(resourceNodeId, commandId);
 	}
 	

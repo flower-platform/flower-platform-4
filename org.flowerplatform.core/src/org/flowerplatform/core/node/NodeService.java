@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.AddNodeController;
@@ -188,8 +189,10 @@ public class NodeService {
 		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
 		
 		// Save value before the change
-		Object oldValue = node.getOrPopulateProperties().get(property);
-		context.add("oldValue", oldValue);
+		if (node.getOrPopulateProperties().containsKey(property)) {
+			Object oldValue = node.getOrPopulateProperties().get(property);
+			context.add(CoreConstants.OLD_VALUE, oldValue);
+		}
 		
 		List<PropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
@@ -207,7 +210,7 @@ public class NodeService {
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
-	
+
 	/**
 	 * @author Mariana Gheorghe
 	 */

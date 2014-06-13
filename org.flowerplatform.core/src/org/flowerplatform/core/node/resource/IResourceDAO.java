@@ -122,4 +122,9 @@ public interface IResourceDAO {
 	 */
 	public void setCommandToRedoId(String resourceNodeId, String commandId);
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void clearCommandStack(String resourceNodeId);
+
 }

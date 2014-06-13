@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.update.controller;
 
 import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
@@ -41,14 +42,14 @@ public class UpdatePropertySetterController extends PropertySetter {
 				return;
 			}
 		}
-
-		CorePlugin.getInstance().getResourceService()
-			.addUpdate(resourceNode.getFullNodeId(), new PropertyUpdate()
-				.setKeyAs(key)
-				.setValueAs(value)
-				.setOldValueAs(context.get("oldValue"))
-				.setUnsetAs(isUnset)
-				.setFullNodeIdAs(node.getFullNodeId()));		
+		
+		PropertyUpdate update = new PropertyUpdate();
+		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getFullNodeId());
+		if (context.getContext().containsKey(CoreConstants.OLD_VALUE)) {
+			update.setHasOldValueAs(true);
+			update.setOldValueAs(context.get(CoreConstants.OLD_VALUE));
+		}
+		CorePlugin.getInstance().getResourceService().addUpdate(resourceNode.getFullNodeId(), update);		
 	}
 
 }
