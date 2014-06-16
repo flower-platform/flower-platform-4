@@ -1,5 +1,6 @@
 package org.flowerplatform.core.file;
 
+import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class FileSubscribableProvider extends AbstractController implements IPro
 		} else {
 			subscribableResources.add(subscribableResource);
 		}
+		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}
 	
 }

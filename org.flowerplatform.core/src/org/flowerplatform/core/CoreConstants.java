@@ -34,6 +34,9 @@ public class CoreConstants {
 	public static final String RESOURCE_SET = "resourceSet";
 	public static final String SUBSCRIBABLE_RESOURCES = "subscribableResources";
 	
+	public static final String USE_NODE_URI_ON_NEW_EDITOR = "useNodeUriOnNewEditor";
+	public static final String AUTO_SUBSCRIBE_ON_EXPAND = "autoSubscribeOnExpand";
+	
 	public static final String IS_OPENABLE_IN_NEW_EDITOR = "isOpenableInNewEditor";
 	
 	public static final String INSERT_BEFORE_FULL_NODE_ID = "insertBeforeFullNodeId"; 

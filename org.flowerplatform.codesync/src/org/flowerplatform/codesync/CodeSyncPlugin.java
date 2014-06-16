@@ -19,9 +19,12 @@
 package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT_TYPE;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_EXTENSION;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MDA_FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MDA_ROOT_TYPE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MDA_TYPE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
@@ -236,14 +239,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_MODEL)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ModelResourceSetProvider());
 		
-		CodeSyncSubscribableResourceProvider modelSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(".model");
+		CodeSyncSubscribableResourceProvider modelSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(CODESYNC_FILE);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, modelSubscribableResourceProvider)
 			.addAdditiveController(CHILDREN_PROVIDER, modelSubscribableResourceProvider)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "Code Sync"))
 			.addCategory(CATEGORY_MODEL);
 	
-		CodeSyncSubscribableResourceProvider mdaSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(".mda");
+		CodeSyncSubscribableResourceProvider mdaSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(MDA_FILE);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, mdaSubscribableResourceProvider)
 			.addAdditiveController(CHILDREN_PROVIDER, mdaSubscribableResourceProvider)
@@ -251,12 +254,11 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_MODEL);
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
-			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(".diagram", 
-				"fpp", "mindmap", true));
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(DIAGRAM_EXTENSION, "fpp", "mindmap", true));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_ROOT_TYPE)
-			.addCategory(CATEGORY_MODEL);
-		
+		.addCategory(CATEGORY_MODEL);
+	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA_ROOT_TYPE)
 			.addCategory(CATEGORY_MODEL);
 		

@@ -18,6 +18,7 @@
 */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import mx.collections.ArrayCollection;
 	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -96,7 +97,11 @@ package org.flowerplatform.flex_client.mindmap {
 		override protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
 			super.subscribeResultCallback(rootNode, resourceNode);
 			
-			nodeRegistry.expand(rootNode);
+			if (resourceNode == null) {
+				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(nodeRegistry, rootNode);
+			} else {
+				nodeRegistry.expand(rootNode);
+			}
 		}
 		
 		protected function refreshCHandler(event:RefreshEvent):void {

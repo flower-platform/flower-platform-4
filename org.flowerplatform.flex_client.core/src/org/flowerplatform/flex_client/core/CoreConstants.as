@@ -28,10 +28,11 @@ package org.flowerplatform.flex_client.core {
 		public static const ICONS:String = "icons";
 		public static const ICONS_SEPARATOR:String = ",";
 		
-		public static const CONTENT_TYPE:String = "contentType";
-		
 		public static const IS_DIRTY:String = "isDirty";
 		public static const SUBSCRIBABLE_RESOURCES:String = "subscribableResources";
+		
+		public static const USE_NODE_URI_ON_NEW_EDITOR:String = "useNodeUriOnNewEditor";
+		public static const AUTO_SUBSCRIBE_ON_EXPAND:String = "autoSubscribeOnExpand";
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
 		

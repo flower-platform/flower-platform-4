@@ -345,13 +345,18 @@ package org.flowerplatform.flex_client.core {
 		 * @author Mariana Gheorghe
 		 */
 		public function openEditor(node:Node):void {
-			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
 			var resourceUri:String = node.nodeUri;
-			var contentType:String = contentTypeRegistry.defaultContentType;
-			if (subscribableResources != null && subscribableResources.length > 0) {
-				var pair:Pair = Pair(subscribableResources.getItemAt(0));
-				resourceUri = String(pair.a);
-				contentType = String(pair.b);
+			var contentType:String = null;
+			if (!node.properties[CoreConstants.USE_NODE_URI_ON_NEW_EDITOR]) {
+				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+				if (subscribableResources != null && subscribableResources.length > 0) {
+					var pair:Pair = Pair(subscribableResources.getItemAt(0));
+					resourceUri = pair.a as String;
+					contentType = pair.b as String;
+				}
+			}
+			if (contentType == null) {
+				contentType = contentTypeRegistry.defaultContentType;
 			}
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
 			editorDescriptor.openEditor(resourceUri, true);

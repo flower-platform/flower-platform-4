@@ -1,10 +1,12 @@
 package org.flowerplatform.codesync.controller;
 
+import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
@@ -42,6 +44,9 @@ public class CodeSyncSubscribableResourceProvider extends AbstractController imp
 		}
 		Pair<String, String> subscribableResource = new Pair<String, String>(resourceUri, contentType);
 		subscribableResources.add(0, subscribableResource);
+		
+		node.getProperties().put(CoreConstants.USE_NODE_URI_ON_NEW_EDITOR, true);
+		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}
 
 	@Override
