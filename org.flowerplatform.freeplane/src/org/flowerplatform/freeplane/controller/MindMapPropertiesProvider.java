@@ -28,6 +28,7 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudController;
@@ -58,7 +59,7 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		node.getProperties().put(TEXT, rawNodeData.getText());
-		node.getProperties().put(CoreConstants.SIDE, rawNodeData.isLeft() ? CoreConstants.POSITION_LEFT : CoreConstants.POSITION_RIGHT);
+		node.getProperties().put(MindMapConstants.SIDE, rawNodeData.isLeft() ? MindMapConstants.POSITION_LEFT : MindMapConstants.POSITION_RIGHT);
 		
 		NodeSizeModel nodeSizeModel = NodeSizeModel.getModel(rawNodeData);
 		

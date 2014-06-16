@@ -32,6 +32,12 @@ public class MindMapConstants {
 		}
 	}
 	
+
+	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
+	public static final String SIDE = "side";
+	public static final int POSITION_LEFT = -1;
+	public static final int POSITION_RIGHT = 1;
+	
 	// CLOUD SHAPES
 	public static final String SHAPE_NONE = "none";		
 	public static final String SHAPE_RECTANGLE = "rectangle";

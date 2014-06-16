@@ -37,13 +37,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 			return getValueProvider(registry, node, CoreConstants.NODE_ICONS_PROVIDER);
 		}
 		
-		/**
-		 * @author Cristina Constantinescu
-		 */
-		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
-			return getValueProvider(registry, node, CoreConstants.NODE_SIDE_PROVIDER);
-		}
-		
 		public static function getValueProvider(registry:TypeDescriptorRegistry, 
 												   node:Object, controllerType:String):GenericValueProviderFromDescriptor {
 			var typeDescriptor:TypeDescriptor = registry.getExpectedTypeDescriptor(node.type);

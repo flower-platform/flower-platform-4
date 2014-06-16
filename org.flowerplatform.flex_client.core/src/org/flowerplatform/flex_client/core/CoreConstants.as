@@ -61,7 +61,6 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const NODE_TITLE_PROVIDER:String = "nodeTitleProvider";
 		public static const NODE_ICONS_PROVIDER:String = "nodeIconProvider";
-		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
 		
 		//////////////////////////////////
 		// Descriptors
@@ -75,7 +74,6 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
 		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
-		public static const PROPERTY_FOR_SIDE_DESCRIPTOR:String = "propertyForSideDescriptor";
 		
 		//////////////////////////////////
 		// Resource
