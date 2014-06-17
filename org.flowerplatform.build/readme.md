@@ -33,7 +33,7 @@ How to mavenize your FDK, as described [here](https://cwiki.apache.org/confluenc
 ```
 java -cp flex-sdk-converter-1.0.0-SNAPSHOT.jar SDKGenerator flex-sdk flex-sdk-mavenized true
 ```
-1. Deploy the artifacts to your local repository: 
+And then deploy the artifacts to your local repository: 
 ```
 java -cp flex-sdk-converter-1.0.0-SNAPSHOT.jar SDKInVMDeployer flex-sdk-mavenized file:\\%USERPROFILE%\.m2\repository
 ```
