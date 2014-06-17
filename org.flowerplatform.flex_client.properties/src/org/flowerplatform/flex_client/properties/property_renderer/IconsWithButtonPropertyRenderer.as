@@ -1,28 +1,13 @@
-/* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
 package org.flowerplatform.flex_client.properties.property_renderer {
 	
 	import flash.events.MouseEvent;
 	
+	import mx.binding.utils.BindingUtils;
 	import mx.controls.Spacer;
+	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
 	
-	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
+	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
@@ -36,10 +21,8 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
-	public class IconsWithButtonPropertyRenderer extends Group implements IIconsComponentExtensionProvider, IDialogResultHandler, IPropertyRenderer {
+	public class IconsWithButtonPropertyRenderer extends BasicPropertyRenderer implements IIconsComponentExtensionProvider, IDialogResultHandler {
 
-		protected var _propertyLineRenderer:PropertyLineRenderer;
-		
 		protected var iconsComponentExtension:IconsComponentExtension;
 		
 		/**
@@ -66,7 +49,9 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			hLayout.paddingRight = 2;
 			hLayout.verticalAlign = "middle";
 			
-			this.layout = hLayout;	
+			this.layout = hLayout;
+			
+			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);			
 		}
 		
 		public function getMainComponent():Group {
@@ -81,13 +66,29 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			iconsComponentExtension.icons = value;
 		}
 		
+		protected function creationCompleteHandler(event:FlexEvent):void {
+			BindingUtils.bindSetter(iconsChanged, data, "value");
+		}
+
 		public function iconsChanged(value:Object):void {
 			if (value != null) {
 				icons = new FlowerArrayList(String(value).split(Utils.ICONS_SEPARATOR));
 			} else {
 				icons = null;
 			}
-			currentValue = value as String;
+			currentValue = propertyDescriptor.value as String;
+		}
+		
+		override public function set data(value:Object):void {
+			super.data = value;	
+			
+			if (data != null) {			
+				if (propertyDescriptor.value != null) {					
+					icons = new FlowerArrayList(String(propertyDescriptor.value).split(Utils.ICONS_SEPARATOR));
+				} else {
+					icons = null;
+				}
+			}			
 		}
 		
 		override protected function createChildren():void {
@@ -107,10 +108,12 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		private function clickHandlerInternal(event:MouseEvent):void {
-			clickHandler(this, _propertyLineRenderer.propertyDescriptor.name, currentValue);
+			clickHandler(this, data.name, data.value);
 		}
 		
-		public function handleDialogResult(result:Object):void {			
+		public function handleDialogResult(result:Object):void {
+			currentValue = propertyDescriptor.value as String;
+			oldValue = currentValue;
 			if (result == null) {
 				return;
 			}
@@ -118,12 +121,19 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 
 			if (currentValue != newValue) {
 				currentValue = newValue;
-				_propertyLineRenderer.commit();
+				saveProperty();
 			}
 		}
 				
 		public function newIconIndex():int {
+			if (PropertyDescriptor(data).hasChangeCheckbox) {
+				return numElements - 3;
+			}
 			return numElements - 2;
+		}
+		
+		override protected function getValue():Object {
+			return currentValue;	
 		}
 		
 		override public function validateDisplayList():void {
@@ -139,26 +149,6 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		override public function validateSize(recursive:Boolean=false):void	{
 			iconsComponentExtension.validateSize();
 			super.validateSize(recursive);
-		}
-		
-		public function isValidValue():Boolean {	
-			return true;
-		}
-		
-		public function set propertyLineRenderer(value:PropertyLineRenderer):void {
-			_propertyLineRenderer = value;				
-		}			
-		
-		public function get valueToCommit():Object {			
-			return currentValue;
-		}
-		
-		public function valueChangedHandler():void {
-			iconsChanged(_propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name));			
-		}
-		
-		public function propertyDescriptorChangedHandler():void {
-			enabled = !_propertyLineRenderer.propertyDescriptor.readOnly;			
 		}
 		
 	}

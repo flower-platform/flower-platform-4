@@ -33,9 +33,9 @@ public class MindMapConstants {
 	}
 	
 	// CLOUD SHAPES
-	public static final String SHAPE_NONE = "ARC";		
-	public static final String SHAPE_RECTANGLE = "RECT";
-	public static final String SHAPE_ROUND_RECTANGLE = "ROUND_RECT";
+	public static final String SHAPE_NONE = "none";		
+	public static final String SHAPE_RECTANGLE = "rectangle";
+	public static final String SHAPE_ROUND_RECTANGLE = "roundRectangle";
 			
 	public static final int DEFAULT_MIN_WIDTH = 1;
 	public static final int DEFAULT_MAX_WIDTH = 600;

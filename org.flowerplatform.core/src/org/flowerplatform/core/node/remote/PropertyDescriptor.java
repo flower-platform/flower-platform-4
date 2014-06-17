@@ -20,7 +20,6 @@ package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
 
 import java.util.List;
 
@@ -28,6 +27,7 @@ import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
 
 /**
+ * @author Razvan Tache
  * @author Cristina Constantinescu
  * @author Sebastian Solomon
  */
@@ -35,20 +35,17 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	
 	private String name;
 	private String title;
-	
 	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
 	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
-	
-	private String propertyLineRenderer = PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
-	
-	private boolean contributesToCreation;
-	private boolean mandatory;
+	private boolean contributesToCreation = false;
+	private boolean mandatory = false;
 	
 	private boolean readOnly;
-	
 	private List<?> possibleValues;
 	
-	private Object defaultValue;
+	private Boolean hasChangeCheckbox = false;
+	
+	private Object defaultValue = null;
 
 	public String getName() {
 		return name;
@@ -89,16 +86,47 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
 	public String getCategory() {
 		return category;
 	}
 	
+	/**
+	 * @author Sebastian Solomon
+	 */
 	public void setCategory(String category) {
 		this.category = category;
 	}
 	
-	public PropertyDescriptor setCategoryAs(String category) {
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public PropertyDescriptor setCategoryAs (String category) {
 		this.category = category;
+		return this;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public Boolean getHasChangeCheckbox() {
+		return hasChangeCheckbox;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public void setHasChangeCheckbox(Boolean hasChangeCheckbox) {
+		this.hasChangeCheckbox = hasChangeCheckbox;
+	}
+	
+	/**
+	 * @author Sebastian Solomon
+	 */
+	public PropertyDescriptor setHasChangeCheckboxAs(Boolean hasChangeCheckbox) {
+		this.hasChangeCheckbox = hasChangeCheckbox;
 		return this;
 	}
 	
@@ -167,28 +195,14 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
-	public String getPropertyLineRenderer() {
-		return propertyLineRenderer;
-	}
-
-	public void setPropertyLineRenderer(String propertyLineRenderer) {
-		this.propertyLineRenderer = propertyLineRenderer;
-	}
-	
-	public PropertyDescriptor setPropertyLineRendererAs(String propertyLineRenderer) {
-		this.propertyLineRenderer = propertyLineRenderer;
-		return this;
-	}
-
 	@Override
 	public String toString() {
-		return "PropertyDescriptor [name=" + name + ", title=" + title
-				+ ", type=" + type + ", category=" + category
-				+ ", propertyLineRenderer=" + propertyLineRenderer
-				+ ", contributesToCreation=" + contributesToCreation
-				+ ", mandatory=" + mandatory + ", readOnly=" + readOnly
-				+ ", possibleValues=" + possibleValues + ", defaultValue="
-				+ defaultValue + "]";
-	}	
+		return String.format("PropertiesDescriptor [name = %s, title = %s, category = %s, " +
+				"\ntype = %s, readOnly = %b, possibleValues = %s, " +
+				"\ncontributesToCreation = %b, mandatory = %b, orderIndex = %d]", 
+				getName(), getTitle(), getCategory(),
+				getType(), getReadOnly(), getPossibleValues(),
+				getContributesToCreation(), getMandatory(), getOrderIndex());
+	}
 	
 }

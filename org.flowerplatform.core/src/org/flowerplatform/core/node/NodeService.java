@@ -28,6 +28,7 @@ import org.flowerplatform.core.node.controller.IDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.IParentProvider;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
+import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.controller.IRawNodeDataProvider;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
@@ -181,9 +182,10 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(resourceNode.getFullNodeId(), new ServiceContext<ResourceService>(resourceService));
 				
-		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);		
+		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
+		PropertyValueWrapper wrapper = new PropertyValueWrapper(value);
 		for (IPropertySetter controller : controllers) {
-			controller.setProperty(node, property, value, context);
+			controller.setProperty(node, property, wrapper, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}

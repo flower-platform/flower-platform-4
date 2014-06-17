@@ -63,9 +63,6 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/keyboard.png")]
 		public static const keyboardIcon:Class;
 		
-		[Embed(source="/core/table_gear.png")]
-		public static const tableGear:Class;
-		
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]

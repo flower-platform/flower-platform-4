@@ -20,16 +20,17 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	
 	import flash.utils.getDefinitionByName;
 	
+	import mx.binding.utils.BindingUtils;
 	import mx.collections.IList;
 	import mx.events.FlexEvent;
 	
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
-	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
+	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
 	
 	import spark.components.DropDownList;
-	import spark.components.Group;
+	import spark.events.DropDownEvent;
 	import spark.events.IndexChangeEvent;
 	
 	/**
@@ -42,9 +43,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class DropDownListPropertyRenderer extends Group implements IPropertyRenderer {
-		
-		protected var _propertyLineRenderer:PropertyLineRenderer;
+	public class DropDownListPropertyRenderer extends BasicPropertyRenderer {
 		
 		[Bindable]
 		public var dropDownList:spark.components.DropDownList;
@@ -56,15 +55,21 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		public function DropDownListPropertyRenderer() {
 			super();
-			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
 		}
 		
 		private function creationCompleteHandler(event:FlexEvent):void {
-			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownEventHandler);		
+			BindingUtils.bindSetter(valueChanged, data, "value");
+			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownEventHandler);
+		}
+		
+		protected function valueChanged(value:Object = null):void {
+			if (data != null && dropDownList.dataProvider != null) {
+				dropDownList.selectedIndex = getItemIndexFromList(propertyDescriptor.value, dropDownList.dataProvider);
+			}
 		}
 		
 		protected function dropDownEventHandler(e:IndexChangeEvent):void {
-			_propertyLineRenderer.commit();
+			saveProperty();
 		}
 		
 		override protected function createChildren():void {			
@@ -83,24 +88,33 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			addElement(dropDownList);		
 			super.createChildren();
 		}
-				
+		
+		override public function set data(value:Object):void {
+			super.data = value;			
+			dropDownList.enabled = !propertyDescriptor.readOnly;
+			
+			requestDataProvider();
+			
+			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
+		}
+		
 		protected function requestDataProvider():void {
-			if (_propertyLineRenderer.propertyDescriptor.possibleValues == null) {
-				requestDataProviderHandler(_propertyLineRenderer.node, requestDataProviderCallbackHandler);
+			if (propertyDescriptor.possibleValues == null) {
+				requestDataProviderHandler(PropertiesPlugin.getInstance().currentSelection.getItemAt(0), requestDataProviderCallbackHandler);
 				return;
 			}
-			dropDownList.dataProvider = _propertyLineRenderer.propertyDescriptor.possibleValues;
+			dropDownList.dataProvider = propertyDescriptor.possibleValues;
 			// if list of Pairs, use item.b as label
 			var listItem:Object = dropDownList.dataProvider.getItemAt(0);
 			if (listItem is Pair) {
 				dropDownList.labelField = "b";
 			}			
-			valueChangedHandler();
+			valueChanged();
 		}
 		
 		protected function requestDataProviderCallbackHandler(dataProvider:IList):void {
 			dropDownList.dataProvider = dataProvider;
-			valueChangedHandler();
+			valueChanged();
 		}
 		
 		protected function getItemIndexFromList(itemKey:Object, list:IList):int {
@@ -118,32 +132,13 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			}
 			return -1;
 		}
-				
-		public function isValidValue():Boolean {	
-			return true;
-		}
 		
-		public function set propertyLineRenderer(value:PropertyLineRenderer):void {
-			_propertyLineRenderer = value;			
-		}			
-		
-		public function valueChangedHandler():void {
-			if (dropDownList.dataProvider != null) {
-				dropDownList.selectedIndex = getItemIndexFromList(_propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name), dropDownList.dataProvider);
-			}					
-		}
-		
-		public function propertyDescriptorChangedHandler():void {
-			enabled = !_propertyLineRenderer.propertyDescriptor.readOnly;
-			requestDataProvider();
-		}
-		
-		public function get valueToCommit():Object {
+		override protected function getValue():Object {
 			if (dropDownList.selectedItem is Pair) {
 				return Pair(dropDownList.selectedItem).a;
 			}
 			return dropDownList.selectedItem;	
-		}	
+		}
 		
 	}
 }

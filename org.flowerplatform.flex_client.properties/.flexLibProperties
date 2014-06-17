@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.NumberPropertyRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.ColorPickerPropertyRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.PropertiesConstants"/>
     <classEntry path="org.flowerplatform.flex_client.properties.action.NewComposedAction"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.preferences.PreferencesViewProvider"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.IPropertyRenderer"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.NumericStepperPropertyRenderer"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.StylablePropertyLineRenderer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -1,64 +1,53 @@
-/* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
 package org.flowerplatform.flex_client.properties.property_renderer {
+	import mx.binding.utils.BindingUtils;
 	import mx.controls.ColorPicker;
 	import mx.events.ColorPickerEvent;
+	import mx.events.FlexEvent;
 	
-	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
-	public class ColorPickerPropertyRenderer extends ColorPicker implements IPropertyRenderer {
+	public class ColorPickerPropertyRenderer extends BasicPropertyRenderer {
 		
-		private var _propertyLineRenderer:PropertyLineRenderer;
+		[Bindable]
+		protected var colorPicker:ColorPicker;
 		
-		public function ColorPickerPropertyRenderer() {
-			super();
+		override protected function createChildren():void {
 			
-			addEventListener(ColorPickerEvent.CHANGE, colorChangeEventHandler);
-			addEventListener(ColorPickerEvent.ENTER, colorChangeEventHandler);
+			colorPicker = new ColorPicker();
+			colorPicker.percentWidth = 100;
+			colorPicker.addEventListener(ColorPickerEvent.CHANGE, colorChangeEventHandler);
+			colorPicker.addEventListener(ColorPickerEvent.ENTER, colorChangeEventHandler);
+			
+			colorPicker.addEventListener(FlexEvent.CREATION_COMPLETE, colorPicker_creationCompleteHandler);
+			
+			addElement(colorPicker);
+			super.createChildren();
 		}
 		
-		public function isValidValue():Boolean {	
-			return true;
+		private function colorPicker_creationCompleteHandler(event:FlexEvent):void {		
+			BindingUtils.bindSetter(valueChanged, data, "value");
 		}
-		
-		public function set propertyLineRenderer(value:PropertyLineRenderer):void {
-			_propertyLineRenderer = value;				
-		}			
-		
-		public function get valueToCommit():Object {
-			return Utils.convertColorToString(selectedColor);
-		}
-		
-		public function valueChangedHandler():void {
-			selectedColor = Utils.convertValueToColor(_propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name));
-		}
-		
-		public function propertyDescriptorChangedHandler():void {
-			enabled = !_propertyLineRenderer.propertyDescriptor.readOnly;			
+				
+		protected function valueChanged(value:Object = null):void {
+			if (data != null) {
+				colorPicker.selectedColor = Utils.convertValueToColor(propertyDescriptor.value);
+			}
 		}
 		
 		private function colorChangeEventHandler(event:ColorPickerEvent):void {
-			_propertyLineRenderer.commit();
+			saveProperty();
+		}
+		
+		override public function set data(value:Object):void {
+			super.data = value;			
+			colorPicker.enabled = !propertyDescriptor.readOnly;
+		}
+		
+		override protected function getValue():Object {
+			return Utils.convertColorToString(colorPicker.selectedColor);
 		}
 				
 	}

@@ -144,18 +144,11 @@ public class Node {
 	 * @author Sebastian Solomon
 	 */
 	public Object getPropertyValue(String property) {
-		Object propertyObj = getPropertyValueOrWrapper(property);
-		if (propertyObj instanceof PropertyWrapper) {
-			return ((PropertyWrapper) propertyObj).getValue();
-		}
-		return propertyObj;
-	}
-	
-	public Object getPropertyValueOrWrapper(String property) {		
-		if (!getOrPopulateProperties().containsKey(property)) {
+		if (properties.containsKey(property)) {
+			return properties.get(property);
+		} else {
 			return CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(this, property, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
-		return getOrPopulateProperties().get(property);
 	}
 	
 	@Override

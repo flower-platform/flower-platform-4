@@ -88,12 +88,8 @@ public class CoreConstants {
 		public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER = "NumberStepper";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST = "DropDownList";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER = "ColorPicker";
-		public static final String PROPERTY_DESCRIPTOR_TYPE_DATE = "Date";
 		public static final String PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY = "";
 	
-		public static final String PROPERTY_LINE_RENDERER_TYPE_DEFAULT = "Default";
-		public static final String PROPERTY_LINE_RENDERER_TYPE_STYLABLE = "Stylable";
-		
 	// Generic value descriptors
 	
 	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";

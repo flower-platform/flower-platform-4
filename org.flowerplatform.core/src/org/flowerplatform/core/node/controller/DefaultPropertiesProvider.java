@@ -25,10 +25,10 @@ public class DefaultPropertiesProvider extends AbstractController implements IPr
 		List<AbstractController> propDescriptors =  context.getService().getPropertyDescriptors(node); 
 		for (IController element : propDescriptors) {
 			PropertyDescriptor propertyDescriptor = (PropertyDescriptor) element;			
-			Object nodeDefaultPropertyValue = context.getService().getDefaultPropertyValue(node, propertyDescriptor.getName(), new ServiceContext<NodeService>(context.getService()));
-			if (nodeDefaultPropertyValue != null) {
-				node.getProperties().put(String.format(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyDescriptor.getName()), nodeDefaultPropertyValue);		
-			}
+			if (propertyDescriptor.getHasChangeCheckbox()) {
+				Object nodeDefaultPropertyValue = context.getService().getDefaultPropertyValue(node, propertyDescriptor.getName(), new ServiceContext<NodeService>(context.getService()));
+				node.getProperties().put(String.format(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyDescriptor.getName()), nodeDefaultPropertyValue);
+			}			
 		}
 	}
 }
