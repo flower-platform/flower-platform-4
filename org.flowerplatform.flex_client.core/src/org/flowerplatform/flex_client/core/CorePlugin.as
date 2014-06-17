@@ -33,6 +33,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.UpdateTimer;
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
+	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
@@ -56,6 +57,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
+	import org.flowerplatform.flex_client.core.node_tree.GenericNodeTreeViewProvider;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
@@ -160,6 +162,9 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
+
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
+			editorClassFactoryActionProvider.addActionClass(NodeTreeAction);
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				editorClassFactoryActionProvider.addActionClass(DownloadAction);
@@ -341,23 +346,37 @@ package org.flowerplatform.flex_client.core {
 			}
 			return null;
 		}
+
+		
+		/**
+		 * @author Claudiu Matei
+		 */
+		public function getSubscribableResource(node:Node):Pair {
+			var pair:Pair = null;
+			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+			if (subscribableResources != null && subscribableResources.length > 0) {
+				pair = Pair(subscribableResources.getItemAt(0));
+			}
+			if (pair == null) {
+				pair = new Pair();
+				pair.a = node.nodeUri;
+				pair.b = contentTypeRegistry.defaultContentType;
+			}
+			return pair;
+		}
 		
 		/**
 		 * @author Mariana Gheorghe
+		 * @author Claudiu Matei
 		 */
 		public function openEditor(node:Node):void {
-			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
-			var resourceUri:String = node.nodeUri;
-			var contentType:String = contentTypeRegistry.defaultContentType;
-			if (subscribableResources != null && subscribableResources.length > 0) {
-				var pair:Pair = Pair(subscribableResources.getItemAt(0));
-				resourceUri = String(pair.a);
-				contentType = String(pair.b);
-			}
+			var pair:Pair = getSubscribableResource(node);
+			var resourceUri:String = String(pair.a);
+			var contentType:String = String(pair.b);
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
 			editorDescriptor.openEditor(resourceUri, true);
 		}
-		
+
 		/**
 		 * @author Cristina Constantinescu
 		 */
