@@ -23,13 +23,14 @@ For modules that participate in both builds, (i.e. packaged as both ``eclipse-pl
 One-time operation for the Flex build: flexmojos requires a maven repository for the Flex SDK, that can be easily created using the [mavenizer tool](http://flex.apache.org/download-utilities.html) provided by Apache.
 
 How to mavenize your FDK, as described [here](https://cwiki.apache.org/confluence/display/FLEX/Apache+Flex+SDK+Mavenizer):
+
 1. Check-out the utilities project from: https://git-wip-us.apache.org/repos/asf/flex-utilities.git
-2. Run ``mvn package`` from the ``mavenizer`` directory (or build using the m2 plugin in Eclipse). The ``flex-sdk-converter-1.0.jar`` should now be in the ``target`` directory.
-3. Create a [home] directory. 
+1. Run ``mvn package`` from the ``mavenizer`` directory (or build using the m2 plugin in Eclipse). The ``flex-sdk-converter-1.0.jar`` should now be in the ``target`` directory.
+1. Create a [home] directory. 
 	* Create a ``[home]/flex-sdk/flex`` directory, and copy your Flex SDK(s) there.
 	* Create a ``[home]/flex-sdk/air`` directory, and copy your AIR SDK(s) there (optional, only if you want to build AIR apps).
-4. From the ``mavenizer/target`` directory, run ``java -cp flex-sdk-converter-1.0.jar SDKGenerator "[home]/flex-sdk/" "[home]/flex-sdk-mavenized" true``
-5. Deploy the artifacts to your local repository: ``java -cp flex-sdk-converter-1.0.jar SDKInVMDeployer "[home]/flex-sdk-mavenized" "file:\\C:\Users\NormalUser\.m2\repository"``
+1. From the ``mavenizer/target`` directory, run ``java -cp flex-sdk-converter-1.0.jar SDKGenerator "[home]/flex-sdk/" "[home]/flex-sdk-mavenized" true``
+1. Deploy the artifacts to your local repository: ``java -cp flex-sdk-converter-1.0.jar SDKInVMDeployer "[home]/flex-sdk-mavenized" "file:\\C:\Users\NormalUser\.m2\repository"``
 
 ### Build
 
