@@ -2,9 +2,6 @@
 
 	<property file="build.properties" />
 
-	<!-- Required properties: -->
-	<!-- keystore.fileName - the name of the keystore file -->
-	<!-- keystore.password - the password for the keystore -->
 	<property file="DO_NOT_COMMIT/keystore.properties" />
 	<property name="keystore.file" location="DO_NOT_COMMIT/${keystore.fileName}" />
 
@@ -111,9 +108,14 @@
 
 		<artifact:mvn pom="pom.xml" mavenHome="${mavenHome}" fork="true">
 			<arg value="clean" />
+			
+			<!-- performs build, without installing into repo (i.e. "install") -->
 			<arg value="verify" />
 
+			<!-- shows errors -->
 			<!-- <arg value="-e" /> -->
+			
+			<!-- verbose mode -->
 			<!-- <arg value="-X" /> -->
 
 			<arg value="-P${buildProfiles}" />
