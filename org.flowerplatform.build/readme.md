@@ -24,13 +24,19 @@ One-time operation for the Flex build: flexmojos requires a maven repository for
 
 How to mavenize your FDK, as described [here](https://cwiki.apache.org/confluence/display/FLEX/Apache+Flex+SDK+Mavenizer):
 
-1. Check-out the utilities project from: https://git-wip-us.apache.org/repos/asf/flex-utilities.git
-1. Run ``mvn package`` from the ``mavenizer`` directory (or build using the m2 plugin in Eclipse). The ``flex-sdk-converter-1.0.jar`` should now be in the ``target`` directory.
-1. Create a [home] directory. 
-	* Create a ``[home]/flex-sdk/flex`` directory, and copy your Flex SDK(s) there.
-	* Create a ``[home]/flex-sdk/air`` directory, and copy your AIR SDK(s) there (optional, only if you want to build AIR apps).
-1. From the ``mavenizer/target`` directory, run ``java -cp flex-sdk-converter-1.0.jar SDKGenerator "[home]/flex-sdk/" "[home]/flex-sdk-mavenized" true``
-1. Deploy the artifacts to your local repository: ``java -cp flex-sdk-converter-1.0.jar SDKInVMDeployer "[home]/flex-sdk-mavenized" "file:\\C:\Users\NormalUser\.m2\repository"``
+1. Check-out the utilities project from: https://git-wip-us.apache.org/repos/asf/flex-utilities.git. It should contain a ``mavenizer`` dir.
+1. In ``mavenizer``, run ``mvn package`` (or build using the m2 plugin in Eclipse). A jar (e.g. ``flex-sdk-converter-1.0.0-SNAPSHOT.jar``) will be generated in ``mavenizer/target``.
+1. Create a ``mavenizer/target/flex-sdk`` directory. Within this dir:
+	* Create a ``flex`` directory, and copy your Flex SDK(s) there. E.g. ``mavenizer/target/flex-sdk/flex/4.11.0``.
+	* [OPTIONAL] Create an ``air`` directory, and copy your AIR SDK(s) there (optional; probably your SDK already has AIR embeded).
+1. In ``mavenizer/target`` directory, run:
+```
+java -cp flex-sdk-converter-1.0.0-SNAPSHOT.jar SDKGenerator flex-sdk flex-sdk-mavenized true
+```
+1. Deploy the artifacts to your local repository: 
+```
+java -cp flex-sdk-converter-1.0.0-SNAPSHOT.jar SDKInVMDeployer flex-sdk-mavenized file:\\%USERPROFILE%\.m2\repository
+```
 
 ### Build
 
