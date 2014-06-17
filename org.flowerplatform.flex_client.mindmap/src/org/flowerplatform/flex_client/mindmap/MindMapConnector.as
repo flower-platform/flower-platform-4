@@ -33,17 +33,17 @@ package org.flowerplatform.flex_client.mindmap {
 			}
 			
 			if (Node(source).properties[MindMapConstants.EDGE_COLOR] != null) {
-				return Utils.convertValueToColor((source).properties[MindMapConstants.EDGE_COLOR]);
+				return Utils.convertValueToColor(Node(source).getPropertyValue(MindMapConstants.EDGE_COLOR));
 			} else {
-				return Utils.convertValueToColor(Node(target).properties[MindMapConstants.EDGE_COLOR]);
+				return Utils.convertValueToColor(Node(target).getPropertyValue(MindMapConstants.EDGE_COLOR));
 			}
 		}
 		
 		override protected function getEdgeStyle():String {
-			if (Node(source).properties[MindMapConstants.EDGE_STYLE] != null) {
-				return Node(source).properties[MindMapConstants.EDGE_STYLE];
+			if (Node(source).getPropertyValue(MindMapConstants.EDGE_STYLE) != null) {
+				return Node(source).getPropertyValue(MindMapConstants.EDGE_STYLE);
 			} else {
-				var style:String =Node(target).properties[MindMapConstants.EDGE_STYLE]
+				var style:String =Node(target).getPropertyValue(MindMapConstants.EDGE_STYLE)
 				return style == null ? super.getEdgeStyle() : style;
 			}
 		}
@@ -54,10 +54,10 @@ package org.flowerplatform.flex_client.mindmap {
 				return super.getEdgeWidth();
 			}
 			
-			if (Node(source).properties[MindMapConstants.EDGE_WIDTH] != 0) {
-				return Node(source).properties[MindMapConstants.EDGE_WIDTH];
+			if (Node(source).getPropertyValue(MindMapConstants.EDGE_WIDTH) != 0) {
+				return Node(source).getPropertyValue(MindMapConstants.EDGE_WIDTH);
 			} else {
-				return Node(target).properties[MindMapConstants.EDGE_WIDTH];
+				return Node(target).getPropertyValue(MindMapConstants.EDGE_WIDTH);
 			}
 		}
 		

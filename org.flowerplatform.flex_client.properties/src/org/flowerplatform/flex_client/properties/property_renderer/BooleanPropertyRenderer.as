@@ -17,26 +17,26 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
-	import mx.controls.ColorPicker;
-	import mx.events.ColorPickerEvent;
+	
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
-	import org.flowerplatform.flexutil.Utils;
+	
+	import spark.components.CheckBox;
 	
 	/**
 	 * @author Cristina Constantinescu
-	 */ 
-	public class ColorPickerPropertyRenderer extends ColorPicker implements IPropertyRenderer {
+	 */
+	public class BooleanPropertyRenderer extends CheckBox implements IPropertyRenderer {
 		
-		private var _propertyLineRenderer:PropertyLineRenderer;
+		protected var _propertyLineRenderer:PropertyLineRenderer;
 		
-		public function ColorPickerPropertyRenderer() {
-			super();
-			
-			addEventListener(ColorPickerEvent.CHANGE, colorChangeEventHandler);
-			addEventListener(ColorPickerEvent.ENTER, colorChangeEventHandler);
+		public function BooleanPropertyRenderer() {
+			super();			
+			addEventListener(MouseEvent.CLICK, function(event:Event):void { _propertyLineRenderer.commit();});
 		}
-		
+			
 		public function isValidValue():Boolean {	
 			return true;
 		}
@@ -46,20 +46,16 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}			
 		
 		public function get valueToCommit():Object {
-			return Utils.convertColorToString(selectedColor);
+			return selected;
 		}
 		
 		public function valueChangedHandler():void {
-			selectedColor = Utils.convertValueToColor(_propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name));
+			selected = _propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name);
 		}
 		
 		public function propertyDescriptorChangedHandler():void {
-			enabled = !_propertyLineRenderer.propertyDescriptor.readOnly;			
+			enabled = !_propertyLineRenderer.propertyDescriptor.readOnly;
 		}
 		
-		private function colorChangeEventHandler(event:ColorPickerEvent):void {
-			_propertyLineRenderer.commit();
-		}
-				
 	}
 }

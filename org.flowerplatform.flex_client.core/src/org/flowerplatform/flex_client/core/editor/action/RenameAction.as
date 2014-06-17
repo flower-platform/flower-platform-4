@@ -17,12 +17,6 @@
 * license-end
 */
 package org.flowerplatform.flex_client.core.editor.action {
-	import avmplus.getQualifiedClassName;
-	
-	import flash.utils.getDefinitionByName;
-	
-	import mx.utils.ObjectUtil;
-	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -31,7 +25,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 	
 	/**
 	 * @author Cristina Constantinescu

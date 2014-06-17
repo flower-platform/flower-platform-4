@@ -110,6 +110,18 @@ package org.flowerplatform.flex_client.core.editor.remote {
 			return cachedFullNodeId;
 		}
 		
+		public function getPropertyValue(property:String):* {
+			var propertyObj:Object = getPropertyValueOrWrapper(property);
+			if (propertyObj is PropertyWrapper) {
+				return PropertyWrapper(propertyObj).value;
+			}
+			return propertyObj;
+		}
+		
+		public function getPropertyValueOrWrapper(property:String):* {
+			return properties[property];		
+		}
+		
 		public function toString():String {
 			return fullNodeId;
 		}

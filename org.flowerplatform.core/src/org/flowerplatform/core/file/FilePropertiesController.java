@@ -15,12 +15,12 @@ import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
-import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
@@ -65,16 +65,17 @@ public class FilePropertiesController extends AbstractController implements IPro
 			}
 		}
 
+		long size;
 		if ((boolean)node.getProperties().get(FILE_IS_DIRECTORY)) {
-			long folderSize = getFolderSize(file);
-			node.getProperties().put(FILE_SIZE, folderSize);
+			size = getFolderSize(file);			
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/folder.gif"));
 		} else {
+			size = fileAccessController.length(file);
 			node.getProperties().put(IS_OPENABLE_IN_NEW_EDITOR, true);
-			node.getProperties().put(FILE_SIZE, fileAccessController.length(file));
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"));
 			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
 		}
+		node.getProperties().put(FILE_SIZE, FileUtils.byteCountToDisplaySize(size));		
 	}
 
 	private long getFolderSize(Object folder) {
@@ -90,11 +91,11 @@ public class FilePropertiesController extends AbstractController implements IPro
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper value, ServiceContext<NodeService> context) {
+	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		if (CoreConstants.NAME.equals(property)) {
 			Object file;
-			if (!node.getOrPopulateProperties().get(CoreConstants.NAME).equals(value.getPropertyValue())) {
+			if (!node.getOrPopulateProperties().get(CoreConstants.NAME).equals(value)) {
 				try {
 					throw new UnsupportedOperationException();
 //					file = fileAccessController.getFile(node.getIdWithinResource());

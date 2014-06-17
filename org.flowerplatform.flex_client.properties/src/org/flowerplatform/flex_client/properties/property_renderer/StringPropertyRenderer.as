@@ -17,26 +17,35 @@
 * license-end
 */
 package org.flowerplatform.flex_client.properties.property_renderer {
-	import mx.controls.ColorPicker;
-	import mx.events.ColorPickerEvent;
+	
+	import flash.events.FocusEvent;
+	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 	
 	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
-	import org.flowerplatform.flexutil.Utils;
+	
+	import spark.components.TextInput;
 	
 	/**
 	 * @author Cristina Constantinescu
-	 */ 
-	public class ColorPickerPropertyRenderer extends ColorPicker implements IPropertyRenderer {
+	 */
+	public class StringPropertyRenderer extends TextInput implements IPropertyRenderer {
 		
-		private var _propertyLineRenderer:PropertyLineRenderer;
+		protected var _propertyLineRenderer:PropertyLineRenderer;
 		
-		public function ColorPickerPropertyRenderer() {
+		public function StringPropertyRenderer() {
 			super();
-			
-			addEventListener(ColorPickerEvent.CHANGE, colorChangeEventHandler);
-			addEventListener(ColorPickerEvent.ENTER, colorChangeEventHandler);
-		}
 		
+			addEventListener(KeyboardEvent.KEY_UP, 
+				function(event:KeyboardEvent):void {
+					if (event.keyCode == Keyboard.ENTER) {
+						_propertyLineRenderer.commit();
+					}
+				}
+			);
+			addEventListener(FocusEvent.FOCUS_OUT, function(event:FocusEvent):void {_propertyLineRenderer.commit();});
+		}
+				
 		public function isValidValue():Boolean {	
 			return true;
 		}
@@ -46,20 +55,16 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}			
 		
 		public function get valueToCommit():Object {
-			return Utils.convertColorToString(selectedColor);
+			return this.text;
 		}
 		
 		public function valueChangedHandler():void {
-			selectedColor = Utils.convertValueToColor(_propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name));
+			this.text = _propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name);
 		}
 		
 		public function propertyDescriptorChangedHandler():void {
-			enabled = !_propertyLineRenderer.propertyDescriptor.readOnly;			
+			enabled = !_propertyLineRenderer.propertyDescriptor.readOnly;
 		}
 		
-		private function colorChangeEventHandler(event:ColorPickerEvent):void {
-			_propertyLineRenderer.commit();
-		}
-				
 	}
 }

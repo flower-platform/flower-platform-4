@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 creationComplete="creationCompleteHandler(event)"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent">
-	<s:layout>
-		<s:VerticalLayout gap="0"/>
-	</s:layout>
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent" gap="0">
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
+			import mx.core.IDataRenderer;
+			import mx.core.IVisualElement;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
-			import mx.utils.ObjectUtil;
-			import mx.utils.StringUtil;
 			
-			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
-			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.property_line_renderer.IPropertyLineRenderer;
+			import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.ActionBase;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
@@ -34,11 +32,11 @@
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			protected var _viewHost:IViewHost;
-					
-			private var currentPropertyDescriptorsDisplayed:IList;
+								
+			protected var showRawProperties:Boolean = true;
 			
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
-//				// get selection from active provider to populate properties list with data
+				// get selection from active provider to populate properties list with data
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				if (activeSelectionProvider != null) {
 					// create dummy event
@@ -47,7 +45,7 @@
 					
 					selectionChangedHandler(event);
 				}
-//				// listen for selection changes
+				// listen for selection changes
 				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
 				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
 			}
@@ -64,40 +62,26 @@
 				_viewHost = value;
 			}
 			
-			public function getActions(selection:IList):Vector.<IAction> {
+			public function getActions(selection:IList):Vector.<IAction> {				
 				return null;
 			}
-						
+					
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
+			
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				var i:int;
 				
-				// remove listeners from previous selection
-				var previousSelection:IList = PropertiesPlugin.getInstance().currentSelection;
-				if (previousSelection != null) {
-					for (i = 0; i < previousSelection.length; i++) {
-						Node(previousSelection.getItemAt(i)).removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
-					}
-				}
-				
-				// create a map with renderers that can be recicled (key -> renderer's type)
-				var recycledRenderers:Dictionary = new Dictionary();
-				for (i = 0; i < propertyForm.numElements; i++) {
-					var obj:Object = propertyForm.getElementAt(i);
-					if (!(obj is PropertyItemRenderer)) {
-						continue;
-					}
-					var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(obj);
-					var type:String = propertyItemRenderer.propertyDescriptor.type;
-					if (!recycledRenderers[type]) {
-						recycledRenderers[type] = [];
-					}
-					(recycledRenderers[type] as Array).push(propertyItemRenderer);
+				// remove listeners from previous selection				
+				if (PropertiesPlugin.getInstance().currentSelectedNode != null) {
+					PropertiesPlugin.getInstance().currentSelectedNode.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+					PropertiesPlugin.getInstance().currentSelectedNode = null;
 				}
 								
 				label.text = "";
-
-				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view	
-					currentPropertyDescriptorsDisplayed = null;
+								
+				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { // happens when changing active view						
 					propertyForm.removeAllElements();
 					return;
 				}
@@ -105,8 +89,7 @@
 				// get new selected node
 				var node:Node = Node(event.selection.getItemAt(0));
 				
-				if (node.parent == null && node.children == null) { // root node, don't populate with properties
-					currentPropertyDescriptorsDisplayed = null;
+				if (node.parent == null && node.children == null) { // root node, don't populate with properties					
 					propertyForm.removeAllElements();
 					return;					
 				}
@@ -117,55 +100,13 @@
 				label.maxWidth = UIComponent(this).width;
 								
 				// store new selection				
-				PropertiesPlugin.getInstance().currentSelection = new ArrayList(event.selection.toArray());
+				PropertiesPlugin.getInstance().currentSelectedNode = node;
 				
-				// get properties to display
-				var newPropertyDescriptorsToDisplay:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, node);
-			
-				// if same descriptors -> no need to recalculate renderers, only set new node properties
-				if (currentPropertyDescriptorsDisplayed != newPropertyDescriptorsToDisplay) {
-					propertyForm.removeAllElements();
-					
-					// recalculate renderers
-					var currentCategory:String = "";
-					for (i = 0; i < newPropertyDescriptorsToDisplay.length; i++) {	
-						var propertyRenderer:PropertyItemRenderer;
-						var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(newPropertyDescriptorsToDisplay.getItemAt(i)));
-											
-						if (propertyDescriptor.category != currentCategory) {
-							// display category renderer
-							var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
-							categoryItem.label = propertyDescriptor.category;
-							propertyForm.addElement(categoryItem);
-								
-							currentCategory = propertyDescriptor.category;
-						}
-								
-						var renderersToReuse:Array = recycledRenderers[propertyDescriptor.type] as Array;
-						if (renderersToReuse != null && renderersToReuse.length > 0) {
-							// there is already created a renderer for this type of property descriptor, reuse it
-							propertyRenderer = PropertyItemRenderer(renderersToReuse.pop());
-						} else { // new renderer 0> create it
-							propertyRenderer = new PropertyItemRenderer();
-							propertyRenderer.basicPropertyRendererType = propertyDescriptor.type;							
-						}				
-						propertyForm.addElement(propertyRenderer);
-						propertyRenderer.data = propertyDescriptor;
-					}
-				}
-				
-				// cached property descriptors displayed
-				currentPropertyDescriptorsDisplayed = newPropertyDescriptorsToDisplay;
-				
-				// get values from node properties
-				nodeUpdatedHandler(new NodeUpdatedEvent(node));
-										
-				// add listeners to current selection
-				var currentSelection:IList = PropertiesPlugin.getInstance().currentSelection;
-				if (currentSelection != null) {
-					for (i = 0; i < currentSelection.length; i++) {
-						Node(currentSelection.getItemAt(i)).addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
-					}
+				refreshRenderers(node, showRawProperties);
+														
+				// add listeners to current selection				
+				if (PropertiesPlugin.getInstance().currentSelectedNode != null) {					
+					PropertiesPlugin.getInstance().currentSelectedNode.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);					
 				}
 			}
 			
@@ -174,28 +115,128 @@
 				
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					var obj:Object = propertyForm.getElementAt(i);
-					if (!(obj is PropertyItemRenderer)) {
+					if (!(obj is PropertyLineRenderer)) {
 						continue;
 					}
-					var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(obj);
+					var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(obj);
 					if (node.properties == null || !NodeControllerUtils.hasPropertyChanged(node, propertyItemRenderer.propertyDescriptor.name, event)) {
 						continue;
 					}
-					var defaultPropertyName:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, propertyItemRenderer.propertyDescriptor.name);
-					if (node.properties.hasOwnProperty(defaultPropertyName)) {
-						BasicPropertyRenderer(propertyItemRenderer.getElementAt(0)).defaultValue = node.properties[defaultPropertyName];
-					}								
-					PropertyDescriptor(propertyItemRenderer.data).value = node.properties[propertyItemRenderer.propertyDescriptor.name];															
+					propertyItemRenderer.node = node;																		
 				}
+			}		
+					
+			protected function getPropertiesToDisplay(node:Node, includeRawProperties:Boolean = false):Array {
+				var properties:Array = new Array();
+				var categories:Dictionary = new Dictionary();
+				var propertyDescriptor:PropertyDescriptor;
+				
+				for (var key:* in node.properties) {
+					propertyDescriptor = PropertiesPlugin.getInstance().getPropertyDescriptor(node, key, includeRawProperties);
+					if (propertyDescriptor == null) { 
+						// if no property descriptor found -> don't display it
+						continue;
+					}
+					
+					// verify if there is already created a dummy property descriptor for this category
+					if (categories.hasOwnProperty(propertyDescriptor.category)) {
+						// added -> make sure that it has the lowest index 
+						categories[propertyDescriptor.category].orderIndex = Math.min(categories[propertyDescriptor.category].orderIndex, propertyDescriptor.orderIndex - 1);
+					} else {
+						// new category -> create a dummy property descriptor for it
+						var dummyPropertyDescriptor:PropertyDescriptor = new PropertyDescriptor();						
+						dummyPropertyDescriptor.propertyLineRenderer = PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY;
+						dummyPropertyDescriptor.name = propertyDescriptor.category;
+						// category must be displayed first, so it must have the lowest index
+						dummyPropertyDescriptor.orderIndex = propertyDescriptor.orderIndex - 1; 
+						
+						categories[propertyDescriptor.category] = dummyPropertyDescriptor;
+						properties.push(dummyPropertyDescriptor);
+					}						
+					properties.push(propertyDescriptor);
+				}
+				
+				// sort property descriptors based on their orderIndex -> this will represent the display order for visual renderers
+				properties.sort(function sortOnIndex(a:PropertyDescriptor, b:PropertyDescriptor):Number {				
+					if (a.orderIndex > b.orderIndex) {
+						return 1;
+					} else if (a.orderIndex < b.orderIndex) {
+						return -1;
+					}
+					return 0;
+				});
+				
+				return properties;
 			}
 			
-			public function additionalCloseHandler():void {	
-				// nothing to do
+			protected function refreshRenderers(node:Node, includeRawProperties:Boolean = false):void {
+				if (node == null) {
+					return;
+				}								
+				var propertyDescriptor:PropertyDescriptor;				
+				var properties:Array = getPropertiesToDisplay(node, includeRawProperties);
+				
+				var updatePropertyLineRendererData:Function = function(renderer:IPropertyLineRenderer, propertyDescriptor:PropertyDescriptor, node:Node):void {
+					renderer.propertyDescriptor = propertyDescriptor;
+					renderer.node = node;	
+				};
+				
+				for (var i:int = 0; i < properties.length; i++) {
+					var childRendererCandidate:IPropertyLineRenderer = null;
+					propertyDescriptor = PropertyDescriptor(properties[i]);
+										
+					if (i < propertyForm.numElements) {
+						// we still have renderer candidates
+						childRendererCandidate = IPropertyLineRenderer(propertyForm.getElementAt(i)); 
+						var childPropertyDescriptorCandidate:PropertyDescriptor = IPropertyLineRenderer(childRendererCandidate).propertyDescriptor;
+						if (propertyDescriptor == childPropertyDescriptorCandidate) {
+							updatePropertyLineRendererData(childRendererCandidate, propertyDescriptor, node);					
+							// nothing to do, so skip							
+							continue;
+						} else {
+							if (childPropertyDescriptorCandidate.type != propertyDescriptor.type || 
+								childPropertyDescriptorCandidate.propertyLineRenderer != propertyDescriptor.propertyLineRenderer) {
+								// the candidate renderer are not compatible => remove it
+								propertyForm.removeElementAt(i);
+								childRendererCandidate = null; // i.e. instruct the code below to create									
+							} else {
+								// a valid candidate								
+							}
+						}
+					} 
+					
+					if (childRendererCandidate == null) {
+						// i.e. either we have reached numElements,
+						// or the candidate was not compatible/recyclable so it was removed					
+						childRendererCandidate = PropertiesPlugin.getInstance().getNewPropertyLineRendererInstance(propertyDescriptor.propertyLineRenderer);	
+						
+						updatePropertyLineRendererData(childRendererCandidate, propertyDescriptor, node);	
+						propertyForm.addElementAt(IVisualElement(childRendererCandidate), i);						
+					} else {
+						updatePropertyLineRendererData(childRendererCandidate, propertyDescriptor, node);					
+					}					
+				}
+				
+				// this loop happens if the number of models < number of renderers in the (probably recycled) parent renderer
+				while (propertyForm.numElements > properties.length) {
+					childRendererCandidate = IPropertyLineRenderer(propertyForm.getElementAt(propertyForm.numElements - 1));				
+					propertyForm.removeElementAt(propertyForm.numElements - 1);					
+				}
 			}
 			
 		]]>
 	</fx:Script>
-	<s:HGroup id = "iconAndLabel" paddingLeft="5">
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingLeft="5"  paddingRight="5" paddingBottom="5">
+		<s:ToggleButton id="btnShowRawProps" 
+						icon="{Resources.tableGear}" 
+						toolTip="{Resources.getMessage('show.raw.properties')}"
+						selected="{showRawProperties}"
+						creationComplete="{if (!FlexUtilGlobals.getInstance().isMobile) {btnShowRawProps.width=22; btnShowRawProps.height=22;}}"
+						click="{showRawProperties = !showRawProperties; refreshRenderers(PropertiesPlugin.getInstance().currentSelectedNode, showRawProperties);}" />
+	</s:HGroup>
+
+	<s:HGroup id="iconAndLabel" paddingLeft="5" paddingBottom="10" paddingRight="5">
 		<s:Image id="icon" height="100%"/>
 		<s:Label id="label" height ="100%" verticalAlign="middle"/>	
 	</s:HGroup>
@@ -206,4 +247,5 @@
 			</s:Form>
 		</s:Group>
 	</s:Scroller>
-</s:Group>
+	
+</s:VGroup>
