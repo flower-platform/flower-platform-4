@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,15 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.OpenInNewEditorDialog;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
@@ -53,18 +51,20 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			if (value) {
 				// open in new editor?
 				if (node.properties[CoreConstants.IS_OPENABLE_IN_NEW_EDITOR]) {
-					var dialog:OpenInNewEditorDialog = new OpenInNewEditorDialog();
-					dialog.node = node;
-					dialog.setResultHandler(new OpenInNewEditorDialogResultHandler(function(result:Object):void {
-						if (result) {
-							// opened in new editor => collapse
-							collapse(context, node);
-						} else {
-							// default behaviour => expand node
-							expand(context, node);
-						}
-					}));
-					dialog.show();
+//					var dialog:OpenInNewEditorDialog = new OpenInNewEditorDialog();
+//					dialog.node = node;
+//					dialog.setResultHandler(new OpenInNewEditorDialogResultHandler(function(result:Object):void {
+//						if (result) {
+//							// opened in new editor => collapse
+//							collapse(context, node);
+//						} else {
+//							// default behaviour => expand node
+//							expand(context, node);
+//						}
+//					}));
+//					dialog.show();
+					CorePlugin.getInstance().openEditor(node);
+					collapse(context, node);
 				} else {
 					expand(context, node);
 				}

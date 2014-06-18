@@ -1,11 +1,26 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core;
 
 import org.flowerplatform.util.UtilConstants;
 
 public class CoreConstants {
 
-	public static final String APP_VERSION = "1.0.0.M1_2014-04-01";
-	public static final String API_VERSION = "1.0.0.M1_2014-04-01";
+	public static final String APP_VERSION = "0.1.1";
+	public static final String API_VERSION = "0.1.0";
 	
 	//////////////////////////////////
 	// Node types

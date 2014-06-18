@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.core {
@@ -169,15 +166,17 @@ package org.flowerplatform.flex_client.core {
 			
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
-				function (result:Object):void {					
-					if (_appVersion != result[0]) { // application version is old 
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-						.setTitle(Resources.getMessage('version.error'))
-						.setText(Resources.getMessage('version.error.message', [_appVersion, result[0], Resources.getMessage('version.error.details')]))
-						.setWidth(400)
-						.setHeight(300)
-						.showMessageBox();						
-					} else if (_apiVersion != result[1]) { // API version is old
+				function (result:Object):void {		
+					// disable app version check
+//					if (_appVersion != result[0]) { // application version is old 
+//						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+//						.setTitle(Resources.getMessage('version.error'))
+//						.setText(Resources.getMessage('version.error.message', [_appVersion, result[0], Resources.getMessage('version.error.details')]))
+//						.setWidth(400)
+//						.setHeight(300)
+//						.showMessageBox();						
+//					} else
+					if (_apiVersion != result[1]) { // API version is old
 						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setTitle(Resources.getMessage('version.error'))
 						.setText(Resources.getMessage('version.error.message', [_apiVersion, result[1], Resources.getMessage('version.error.details')]))

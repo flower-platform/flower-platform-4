@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,14 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap {
-	
-	import mx.core.FlexGlobals;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -43,7 +38,7 @@ package org.flowerplatform.flex_client.mindmap {
 				
 		public function MindMapEditorDiagramShell() {
 			super();
-						
+									
 			var tools:Array = [ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool];
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				tools.push(InplaceEditorTool);

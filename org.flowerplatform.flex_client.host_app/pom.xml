@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../org.flowerplatform.build/java/pom.xml</relativePath>
+		<groupId>org.flowerplatform</groupId>
+		<artifactId>parent-java</artifactId>
+		<version>0.1.1.qualifier</version>
+	</parent>
+
+	<artifactId>org.flowerplatform.flex_client.host_app</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<!-- override file set from parent to add bin -->
+					<additionalFileSets>
+						<fileSet>
+							<directory>../${output.flex}/distr/${project.artifactId}</directory>
+							<prefix>bin/</prefix>
+							<includes>
+								<include>FlexHostApp.swf</include>
+							</includes>
+						</fileSet>
+
+						<fileSet>
+							<directory>WebContent</directory>
+							<prefix>WebContent/</prefix>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileSet>
+					</additionalFileSets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

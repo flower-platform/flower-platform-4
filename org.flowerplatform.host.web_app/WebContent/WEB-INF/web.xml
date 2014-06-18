@@ -46,7 +46,7 @@
 			The configuration file path and the properties osgi.configuration.area, 
 			osgi.dev are generated based on this info,
 			pointing to the development workspace; it is something like
-			...WORKSPACE/.metadata/.plugins/org.eclipse.pde.core/Flower Platform - Host WebApp (write plugin config to file)
+			...WORKSPACE/.metadata/.plugins/org.eclipse.pde.core/flowerplatform.product
 			
 			NOTE1: The below configuration needs to be launched manually at least once
 			before launching Tomcat (in order to have the proper files generated). It
@@ -58,7 +58,7 @@
 		 -->
 		<init-param>
 			<param-name>developmentLaunchConfigurationWindows</param-name>
-			<param-value>Flower Platform - Host WebApp (write plugin config to file)</param-value>
+			<param-value>flowerplatform.product</param-value>
 		</init-param>
 		<init-param>
 			<param-name>developmentLaunchConfigurationLinux</param-name>

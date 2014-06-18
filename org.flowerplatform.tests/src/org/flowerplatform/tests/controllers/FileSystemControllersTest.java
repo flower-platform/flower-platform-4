@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.tests.controllers;
 
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
@@ -13,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -24,6 +38,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
+import org.flowerplatform.tests.TestUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,52 +48,43 @@ import org.junit.Test;
  */
 public class FileSystemControllersTest {
 	
-	private static IFileAccessController fileAccessController = new PlainFileAccessController();
+	public static final String FILE_SYSTEM_CONTROLLERS_DIR = "fileSystemControllers";
 	
-	private String fileSystemNodeId;
-	private String initialToBeCopied;
+	public static final String DIR = TestUtil.getResourcesDir(FileSystemControllersTest.class);
+	
+	private static IFileAccessController fileAccessController = new PlainFileAccessController();
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		if (CorePlugin.getInstance() == null) {
-			EclipseIndependentTestSuite.startPlugin(new CorePlugin());
-			nodeService = CorePlugin.getInstance().getNodeService();
+			// initialize in case this test is run alone
+			EclipseIndependentTestSuite.beforeClass();
 		}
 	}
 	
 	@Before
 	public void setUp() {
-		File f = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-		f= f.getParentFile();
-		fileSystemNodeId = f.getPath() + "\\temp\\fileSystemNode";
-		initialToBeCopied = f.getPath()  + "\\src\\org\\flowerplatform\\tests\\controllers\\resources\\initial_to_be_copied";
-		
-		fileAccessController.delete(new File(fileSystemNodeId));
-		try {
-			copyDirectory(new File(initialToBeCopied), new File(fileSystemNodeId));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println();
+		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
+		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
 	}
 	
 	@Test
 	public void testGetChildren() {
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, fileSystemNodeId, null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\1", null),
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A", null),
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\B", null)));
+		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR, null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/1", null),
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A", null),
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/B", null)));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\file1", null),
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\Folder1", null),
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\Folder2", null)));
+		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/file1", null),
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null),
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null)));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\Folder1", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\Folder1\\oneFile", null)));
+		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1/oneFile", null)));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\Folder2", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\Folder2\\oneFolder", null)));
+		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder", null)));
 	}
 	
 	@Test
@@ -89,14 +95,14 @@ public class FileSystemControllersTest {
 		context.add("type", FILE_NODE_TYPE);
 		context.add(CoreConstants.NAME, "newFile");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, false);
-		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, fileSystemNodeId, null)).getFullNodeId();
-		String fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder1", null).getFullNodeId();
+		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR, null)).getFullNodeId();
+		String fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null).getFullNodeId();
 	        
 		nodeServiceRemote.addChild(fullNodeId, context);
 							 
 		Object newFile;
 		try {
-			newFile = fileAccessController.getFile(fileSystemNodeId + "\\A\\Folder1\\newFile");
+			newFile = fileAccessController.getFile(FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1/newFile");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -110,11 +116,11 @@ public class FileSystemControllersTest {
 		context.add(CoreConstants.NAME, "newFolder");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, true);
 				
-		fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder1", null).getFullNodeId();
+		fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null).getFullNodeId();
 		nodeServiceRemote.addChild(fullNodeId, context);
 		Object newFolder;
 		try {
-			newFolder = fileAccessController.getFile(fileSystemNodeId + "\\A\\Folder1\\newFolder");
+			newFolder = fileAccessController.getFile(FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1/newFolder");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -125,16 +131,16 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void removeNode() {
-		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, fileSystemNodeId, null)).getFullNodeId();
+		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR, null)).getFullNodeId();
 		//delete oneFolder
-		nodeService.removeChild(new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder2", null), 
-								new Node(FILE_NODE_TYPE, fileSystemFullNodeId, fileSystemNodeId + "\\A\\Folder2\\oneFolder", null), new ServiceContext<NodeService>(nodeService));
+		nodeService.removeChild(new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null), 
+								new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder", null), new ServiceContext<NodeService>(nodeService));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, fileSystemNodeId + "\\A\\Folder2", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), 
+		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), 
 								Arrays.asList());
 		Object newFolder;
 		try {
-			newFolder = fileAccessController.getFile(fileSystemNodeId + "\\A\\Folder2\\oneFolder");
+			newFolder = fileAccessController.getFile(FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
