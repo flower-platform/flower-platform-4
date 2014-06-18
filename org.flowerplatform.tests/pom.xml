@@ -12,18 +12,16 @@
 	<artifactId>org.flowerplatform.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
-			<scope>test</scope>
-		</dependency>
+	<properties>
+		<junit.version>4.11</junit.version>
+		<mockito.version>1.9.5</mockito.version>
+	</properties>
 
+	<dependencies>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
+			<version>${mockito.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -60,6 +58,14 @@
 					<excludes>
 						<exclude>**/resources/</exclude>
 					</excludes>
+			
+					<extraClasspathElements>
+						<extraClassPathElement>
+							<groupId>org.mockito</groupId>
+							<artifactId>mockito-all</artifactId>
+							<version>${mockito.version}</version>
+						</extraClassPathElement>
+					</extraClasspathElements>
 				</configuration>
 			</plugin>
 
@@ -79,6 +85,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>2.17</version>
+					</dependency>
+				</dependencies>
+				
 				<executions>
 					<execution>
 						<id>test</id>

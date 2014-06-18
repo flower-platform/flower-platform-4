@@ -15,5 +15,4 @@ Require-Bundle: org.eclipse.jdt.core,
  org.flowerplatform.resources
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- libs/mockito-all-1.9.5.jar
+Bundle-ClassPath: .

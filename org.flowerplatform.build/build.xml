@@ -107,6 +107,9 @@
 		</condition>
 
 		<artifact:mvn pom="pom.xml" mavenHome="${mavenHome}" fork="true">
+			<jvmarg value="-Xmx1024m" />
+			<jvmarg value="-XX:MaxPermSize=256m" />
+			
 			<arg value="clean" />
 			
 			<!-- performs build, without installing into repo (i.e. "install") -->
