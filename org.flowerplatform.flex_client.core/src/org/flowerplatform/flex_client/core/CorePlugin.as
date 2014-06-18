@@ -33,7 +33,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.UpdateTimer;
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
-	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
@@ -58,6 +57,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.core.node_tree.GenericNodeTreeViewProvider;
+	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
@@ -234,7 +234,6 @@ package org.flowerplatform.flex_client.core {
 			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addSingleController(CoreConstants.NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR))
-				.addSingleController(CoreConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR))
 				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			new TypeDescriptorRegistryDebugControllers().registerControllers();
@@ -347,32 +346,40 @@ package org.flowerplatform.flex_client.core {
 			return null;
 		}
 
-		
+
 		/**
+		 * @author Mariana Gheorghe
 		 * @author Claudiu Matei
 		 */
 		public function getSubscribableResource(node:Node):Pair {
-			var pair:Pair = null;
-			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
-			if (subscribableResources != null && subscribableResources.length > 0) {
-				pair = Pair(subscribableResources.getItemAt(0));
+			var resourceUri:String = node.nodeUri;
+			var contentType:String = null;
+			if (!node.properties[CoreConstants.USE_NODE_URI_ON_NEW_EDITOR]) {
+				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+				if (subscribableResources != null && subscribableResources.length > 0) {
+					var pair:Pair = Pair(subscribableResources.getItemAt(0));
+					resourceUri = pair.a as String;
+					contentType = pair.b as String;
+				}
 			}
-			if (pair == null) {
-				pair = new Pair();
-				pair.a = node.nodeUri;
-				pair.b = contentTypeRegistry.defaultContentType;
+			if (contentType == null) {
+				contentType = contentTypeRegistry.defaultContentType;
 			}
-			return pair;
+			var sr:Pair = new Pair();
+			sr.a = resourceUri;
+			sr.b = contentType;
+			return sr;
 		}
-		
+
 		/**
 		 * @author Mariana Gheorghe
 		 * @author Claudiu Matei
 		 */
 		public function openEditor(node:Node):void {
-			var pair:Pair = getSubscribableResource(node);
-			var resourceUri:String = String(pair.a);
-			var contentType:String = String(pair.b);
+			var sr:Pair = getSubscribableResource(node);
+			var resourceUri:String = sr.a as String;
+			var contentType:String = sr.b as String;
+
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
 			editorDescriptor.openEditor(resourceUri, true);
 		}

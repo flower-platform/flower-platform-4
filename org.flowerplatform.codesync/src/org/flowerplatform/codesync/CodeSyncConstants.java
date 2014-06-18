@@ -12,7 +12,23 @@ public class CodeSyncConstants {
 	// Node types and categories
 	//////////////////////////////////
 	
-	public static final String CATEGORY_CODESYNC = UtilConstants.CATEGORY_PREFIX + "codesync";
+	public static final String CODESYNC_TYPE = "codesync";
+	public static final String CATEGORY_CODESYNC = UtilConstants.CATEGORY_PREFIX + CODESYNC_TYPE;
+	public static final String CODESYNC_FILE = getFileExtension(CODESYNC_TYPE);
+	
+	public static final String MDA_TYPE = "mda";
+	public static final String MDA_FILE = getFileExtension(MDA_TYPE);
+	
+	public static final String CODESYNC_ROOT_TYPE = "codeSyncRoot";
+	public static final String MDA_ROOT_TYPE = "mdaRoot";
+	public static final String DIAGRAM_TYPE = "diagram";
+	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM_TYPE);
+			
+	private static final String getFileExtension(String extension) {
+		return "." + extension;
+	}
+	
+	public static final String CATEGORY_MODEL = UtilConstants.CATEGORY_PREFIX + "model";
 	
 	//////////////////////////////////
 	// Controllers

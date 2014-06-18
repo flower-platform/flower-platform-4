@@ -3,7 +3,7 @@ package org.flowerplatform.core.file;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
-import static org.flowerplatform.core.file.FileControllerUtils.getFilePath;
+import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithoutRepo;
 import static org.flowerplatform.core.file.FileControllerUtils.getRepo;
 
 import org.flowerplatform.core.node.remote.Node;
@@ -27,7 +27,7 @@ public class FileSystemResourceHandler implements IResourceHandler {
 
 	@Override
 	public Node createNodeFromRawNodeData(String nodeUri, Object rawNodeData) {
-		String type = getFilePath(nodeUri) == null ? FILE_SYSTEM_NODE_TYPE : FILE_NODE_TYPE; 
+		String type = getFilePathWithoutRepo(nodeUri) == null ? FILE_SYSTEM_NODE_TYPE : FILE_NODE_TYPE; 
 		return new Node(nodeUri, type);
 	}
 

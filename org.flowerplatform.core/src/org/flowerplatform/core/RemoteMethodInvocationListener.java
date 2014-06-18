@@ -1,7 +1,6 @@
 package org.flowerplatform.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +42,7 @@ public class RemoteMethodInvocationListener {
 			List<String> notFoundResources = new ArrayList<String>();
 						
 			for (String clientResource : clientResources) {			
-				if (Collections.binarySearch(serverResources, clientResource) >= 0) { // search in a sorted list
+				if (serverResources.contains(clientResource)) {
 					continue;
 				}
 				

@@ -53,6 +53,12 @@ package org.flowerplatform.flex_client.core.node {
 						
 		protected var registry:Dictionary = new Dictionary();
 		
+		protected var rootNodeUri:String;
+		
+		public function getRootNodeUri():String {
+			return rootNodeUri;
+		}
+		
 		public function getNodeById(id:String):Node {
 			return Node(registry[id]);
 		}
@@ -304,13 +310,27 @@ package org.flowerplatform.flex_client.core.node {
 			}
 		}
 		
+		mx_internal function mergeOrRegisterNode(node:Node):Node {
+			var existingNode:Node = getNodeById(node.nodeUri);
+			if (existingNode == null) {
+				registerNode(node, null);
+				return node;
+			}
+			existingNode.properties = node.properties;
+			return existingNode;
+		}
+		
 		/**
 		 * Adds <code>node</code> to <code>parent</code> at given index and registers it in registry. <br>
 		 * 
 		 * If <code>parent</code> is null, the node will only be registered
 		 * If <code>index</code> is -1, the node will be added last.
 		 */ 
-		mx_internal function registerNode(node:Node, parent:Node, index:int = -1):void {		
+		mx_internal function registerNode(node:Node, parent:Node, index:int = -1):void {
+			if (rootNodeUri == null) {
+				rootNodeUri = node.nodeUri;
+			}
+			
 			registry[node.nodeUri] = node;
 			
 			if (parent != null) {

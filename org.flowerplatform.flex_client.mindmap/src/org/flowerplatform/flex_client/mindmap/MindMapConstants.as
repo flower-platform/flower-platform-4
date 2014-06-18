@@ -25,6 +25,9 @@ package org.flowerplatform.flex_client.mindmap {
 		// Node properties
 		//////////////////////////////////
 		
+		public static const PROPERTY_FOR_SIDE_DESCRIPTOR:String = "propertyForSideDescriptor";
+		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
+		
 		// CLOUD SHAPES
 		public static const SHAPE_NONE:String = "none";		
 		public static const SHAPE_RECTANGLE:String = "rectangle";

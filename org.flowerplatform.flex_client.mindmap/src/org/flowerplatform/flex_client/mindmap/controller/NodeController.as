@@ -83,7 +83,8 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {			
-			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getSideProvider(MindMapEditorDiagramShell(context.diagramShell).registry, model);
+			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getValueProvider(
+				MindMapEditorDiagramShell(context.diagramShell).registry, model, MindMapConstants.NODE_SIDE_PROVIDER);
 			if (sideProvider != null) {
 				var side:int = int(sideProvider.getValue(Node(model)));
 				if (side == 0 && Node(model).parent != null) { // no side -> get side from parent

@@ -1,4 +1,4 @@
-package org.flowerplatform.core.file;
+package org.flowerplatform.codesync.controller;
 
 import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
@@ -6,7 +6,11 @@ import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -17,29 +21,19 @@ import org.flowerplatform.util.controller.AbstractController;
 /**
  * @author Mariana Gheorghe
  */
-public class FileSubscribableProvider extends AbstractController implements IPropertiesProvider {
+public class CodeSyncSubscribableResourceProvider extends AbstractController implements IPropertiesProvider, IChildrenProvider {
 
-	private String extension;
+	private String resource;
 	
-	private String scheme;
-	
-	private String contentType;
-	
-	private boolean insertAtBeginning;
-	
-	public FileSubscribableProvider(String extension, String scheme, String contentType, boolean insertAtBeginning) {
+	public CodeSyncSubscribableResourceProvider(String resource) {
 		super();
-		this.extension = extension;
-		this.scheme = scheme;
-		this.contentType = contentType;
-		this.insertAtBeginning = insertAtBeginning;
+		this.resource = resource;
 	}
-
+	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		if (!node.getNodeUri().endsWith(extension)) {
-			return;
-		}
+		String resourceUri = getResourceUri(node);
+		String contentType = "mindmap";
 		
 		@SuppressWarnings("unchecked")
 		List<Pair<String, String>> subscribableResources = (List<Pair<String, String>>) 
@@ -48,14 +42,27 @@ public class FileSubscribableProvider extends AbstractController implements IPro
 			subscribableResources = new ArrayList<Pair<String, String>>();
 			node.getProperties().put(SUBSCRIBABLE_RESOURCES, subscribableResources);
 		}
-		String resourceUri = Utils.getUri(scheme, Utils.getSchemeSpecificPart(node.getNodeUri()), null);
 		Pair<String, String> subscribableResource = new Pair<String, String>(resourceUri, contentType);
-		if (insertAtBeginning) {
-			subscribableResources.add(0, subscribableResource);
-		} else {
-			subscribableResources.add(subscribableResource);
-		}
+		subscribableResources.add(0, subscribableResource);
+		
+		node.getProperties().put(CoreConstants.USE_NODE_URI_ON_NEW_EDITOR, true);
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
+	}
+
+	@Override
+	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getNode(getResourceUri(node));
+		return context.getService().getChildren(resourceNode, context);
+	}
+
+	@Override
+	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+		return true;
+	}
+
+	protected String getResourceUri(Node node) {
+		String repo = FileControllerUtils.getRepo(node);
+		return Utils.getUri("fpp", repo + "|" + resource);
 	}
 	
 }

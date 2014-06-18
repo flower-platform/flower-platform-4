@@ -7,7 +7,7 @@ import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
-import static org.flowerplatform.core.file.FileControllerUtils.getFilePath;
+import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 import static org.flowerplatform.core.file.FileControllerUtils.getRepo;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class FileChildrenController extends AbstractController
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		String path = FileControllerUtils.getFilePath(node);
+		String path = FileControllerUtils.getFilePathWithRepo(node);
 		Object file = null;
 		try {
 			file = getFileAccessController().getFile(path);
@@ -41,10 +41,6 @@ public class FileChildrenController extends AbstractController
 		Object[] files = getFileAccessController().listFiles(file);
 		List<Node> children = new ArrayList<Node>();
 		for (Object object : files) {
-			if (CoreConstants.METADATA.equals(getFileAccessController().getName(object)) && path == null) {
-				// don't show metadata directory from workspace
-				continue;
-			}
 			Node child = new Node(createFileNodeUri(FileControllerUtils.getRepo(node), getFileAccessController().getPath(object)), FILE_NODE_TYPE);
 			children.add(child);
 		}
@@ -54,7 +50,7 @@ public class FileChildrenController extends AbstractController
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		Object file = null;
-		String path = getFilePath(node);
+		String path = getFilePathWithRepo(node);
 		try {
 			file = getFileAccessController().getFile(path);
 		} catch (Exception e) {
@@ -75,7 +71,7 @@ public class FileChildrenController extends AbstractController
 	@Override
 	public void addNode(Node parentNode, Node child, ServiceContext<NodeService> context) {
 		Object parentFile;
-		String path = getFilePath(parentNode);
+		String path = getFilePathWithRepo(parentNode);
 		try {
 			parentFile = getFileAccessController().getFile(path);
 		} catch (Exception e) {
@@ -113,7 +109,7 @@ public class FileChildrenController extends AbstractController
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
 		try {
-			getFileAccessController().delete(getFileAccessController().getFile(getFilePath(child)));
+			getFileAccessController().delete(getFileAccessController().getFile(getFilePathWithRepo(child)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -28,10 +28,11 @@ package org.flowerplatform.flex_client.core {
 		public static const ICONS:String = "icons";
 		public static const ICONS_SEPARATOR:String = ",";
 		
-		public static const CONTENT_TYPE:String = "contentType";
-		
 		public static const IS_DIRTY:String = "isDirty";
 		public static const SUBSCRIBABLE_RESOURCES:String = "subscribableResources";
+		
+		public static const USE_NODE_URI_ON_NEW_EDITOR:String = "useNodeUriOnNewEditor";
+		public static const AUTO_SUBSCRIBE_ON_EXPAND:String = "autoSubscribeOnExpand";
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
 		
@@ -61,7 +62,6 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const NODE_TITLE_PROVIDER:String = "nodeTitleProvider";
 		public static const NODE_ICONS_PROVIDER:String = "nodeIconProvider";
-		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
 		
 		//////////////////////////////////
 		// Descriptors
@@ -75,7 +75,6 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
 		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
-		public static const PROPERTY_FOR_SIDE_DESCRIPTOR:String = "propertyForSideDescriptor";
 		
 		//////////////////////////////////
 		// Resource

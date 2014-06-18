@@ -7,7 +7,7 @@ import static org.flowerplatform.core.CoreConstants.IS_OPENABLE_IN_NEW_EDITOR;
 import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 import static org.flowerplatform.core.CoreConstants.TEXT_CONTENT_TYPE;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
-import static org.flowerplatform.core.file.FileControllerUtils.getFilePath;
+import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,7 +41,7 @@ public class FilePropertiesController extends AbstractController implements IPro
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		Object file;
 		try {
-			file = getFileAccessController().getFile(getFilePath(node));
+			file = getFileAccessController().getFile(getFilePathWithRepo(node));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

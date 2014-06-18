@@ -142,6 +142,10 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				if (resourceUris.length == 0) {
 					delete nodeRegistryToResourceUris[nodeRegistry];
 				}
+				if (resourceNodeFromRegistry.nodeUri != nodeRegistry.getRootNodeUri() && 
+					resourceNodeFromRegistry.parent == null && resourceUris.indexOf(resourceUri) < 0) {
+					nodeRegistry.mx_internal::unregisterNode(resourceNodeFromRegistry);
+				}
 			}
 			
 			// remove resourceSet from registry
@@ -156,60 +160,88 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		}
 		
 		public function expand(nodeRegistry:NodeRegistry, node:Node, additionalHandler:Function = null):void {
-			var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
-			if (subscribableResources == null || subscribableResources.length == 0) {
+			if (node == null || !node.properties[CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND]) {
 				nodeRegistry.expand(node, additionalHandler);
 			} else {
-				// a subscribable node => subscribe to the first resource
-				var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
-				subscribe(String(subscribableResource.a), nodeRegistry, function(rootNode:Node):void {
-					nodeRegistry.expand(node, additionalHandler);
-				});
+				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+				if (subscribableResources != null && subscribableResources.length > 0) {
+					// a subscribable node => subscribe to the first resource
+					var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
+					subscribe(String(subscribableResource.a), nodeRegistry, function(rootNode:Node, resourceNode:Node):void {
+						nodeRegistry.expand(node, additionalHandler);
+					});
+				}
 			}
 		}
 		
 		public function collapse(nodeRegistry:NodeRegistry, node:Node, refreshChildren:Boolean = true):void {
-			// get all dirty resourceNodes starting from node
+			// get all the resources starting from node
 			var dirtyResourceUris:Array = [];
 			var savedResourceUris:Array = [];
 			
-			for each (var obj:Object in getResourceUrisForNodeRegistry(nodeRegistry)) {
-				var resourceNodeId:String = String(obj);
-				var resourceNode:Node = nodeRegistry.getNodeById(resourceNodeId);
-				var parent:Node = resourceNode;
-				while (parent != null && parent != node) {					
-					parent = parent.parent;					
-				}
-				if (parent == node) {
-					var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
-					if (subscribableResources != null && subscribableResources.length > 0) {
-						if (isResourceNodeDirty(resourceNodeId, nodeRegistry) && dirtyResourceUris.indexOf(resourceNodeId) == -1) {
-							dirtyResourceUris.push(resourceNodeId);
-						} else {
-							savedResourceUris.push(resourceNodeId);
-						}
-					}
-				}
-			}
-			
-			// remove nodes that are already saved
-			for each (var savedResourceNodeId:String in savedResourceUris) {
-				unlinkResourceNodeFromNodeRegistry(savedResourceNodeId, nodeRegistry);	
-			}
+			getResourceUrisForSubTree(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 			
 			if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog
-				resourceOperationsManager.showSaveDialogIfDirtyStateOrCloseEditors([this], dirtyResourceUris, 
+				resourceOperationsManager.showSaveDialogIfDirtyStateOrCloseEditors([this], getResourceSetsForResourceUris(dirtyResourceUris), 
 					function():void {
-						for (var i:int = 0; i < dirtyResourceUris.length; i++) {
-							unlinkResourceNodeFromNodeRegistry(dirtyResourceUris[i], nodeRegistry);
-						}
-						// wait for server response before collapse			
-						nodeRegistry.collapse(node, refreshChildren);
+						// wait for server response before collapse	
+						collapseHandler(node, nodeRegistry, refreshChildren, dirtyResourceUris, savedResourceUris);
 					}
 				);
 			} else {
-				nodeRegistry.collapse(node, refreshChildren);
+				collapseHandler(node, nodeRegistry, refreshChildren, dirtyResourceUris, savedResourceUris);
 			}
+		}
+		
+		private function collapseHandler(node:Node, nodeRegistry:NodeRegistry, refreshChildren:Boolean,
+											dirtyResourceUris:Array, savedResoureUris:Array):void {
+			for each (var dirtyResourceUri:String in dirtyResourceUris) {
+				unlinkResourceNodeFromNodeRegistry(dirtyResourceUri, nodeRegistry);
+			}
+			for each (var savedResourceUri:String in savedResoureUris) {
+				unlinkResourceNodeFromNodeRegistry(savedResourceUri, nodeRegistry);
+			}
+			nodeRegistry.collapse(node, refreshChildren);
+		}
+		
+		/**
+		 * Iterate the subtree starting from <code>node</code> and add all the resources to the dirty or saved resource arrays.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		private function getResourceUrisForSubTree(node:Node, nodeRegistry:NodeRegistry, dirtyResourceUris:Array, savedResourceUris:Array):void {
+			var subscribableResources:ArrayCollection = ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+			if (subscribableResources != null) {
+				for each (var pair:Pair in subscribableResources) {
+					var resourceUri:String = String(pair.a);
+					var resourceNode:Node = nodeRegistry.getNodeById(resourceUri);
+					if (resourceNode != null) {
+						if (resourceNode.properties[CoreConstants.IS_DIRTY]) {
+							dirtyResourceUris.push(resourceUri);
+						} else {
+							savedResourceUris.push(resourceUri);
+						}
+					}
+				}
+			}
+			
+			// recurse
+			for each (var child:Node in node.children) {
+				getResourceUrisForSubTree(child, nodeRegistry, dirtyResourceUris, savedResourceUris);
+			}
+		}
+		
+		private function hasSubscribableResource(node:Node, resourceUri:String):Boolean {
+			var subscribableResources:ArrayCollection = ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+			if (subscribableResources == null || subscribableResources.length == 0) {
+				return false;
+			}
+			for each (var pair:Pair in subscribableResources) {
+				if (pair.a == resourceUri) {
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		/**
@@ -222,22 +254,13 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function subscribe(nodeId:String, nodeRegistry:NodeRegistry, subscribeResultCallback:Function = null, subscribeFaultCallback:Function = null):void {
 			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
 				function(subscriptionInfo:SubscriptionInfo):void {
-					var existingRootNode:Node = nodeRegistry.getNodeById(subscriptionInfo.rootNode.nodeUri);
-					if (existingRootNode == null) {
-						// root node was expanded in an existing editor
-						nodeRegistry.mx_internal::registerNode(subscriptionInfo.rootNode, null);
-					} else {
-						subscriptionInfo.rootNode = existingRootNode;
-					}
-					if (subscriptionInfo.resourceNode != null && subscriptionInfo.rootNode.nodeUri != subscriptionInfo.resourceNode.nodeUri) {
-						// register resource node if different from root node
-						nodeRegistry.mx_internal::registerNode(subscriptionInfo.resourceNode, null);
-					}
+					subscriptionInfo.rootNode = nodeRegistry.mx_internal::mergeOrRegisterNode(subscriptionInfo.rootNode);
 					if (subscriptionInfo.resourceNode != null) {
+						subscriptionInfo.resourceNode = nodeRegistry.mx_internal::mergeOrRegisterNode(subscriptionInfo.resourceNode);
 						linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, subscriptionInfo.resourceSet, nodeRegistry);
 					}
 					if (subscribeResultCallback != null) {
-						subscribeResultCallback(subscriptionInfo.rootNode);
+						subscribeResultCallback(subscriptionInfo.rootNode, subscriptionInfo.resourceNode);
 					}
 				},
 				function(event:FaultEvent):void {
@@ -267,6 +290,17 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 			
 			resourceOperationsManager.updateGlobalDirtyState(false);
+		}
+		
+		public function getResourceSetsForResourceUris(resourceUris:Array):Array {
+			var resourceSets:Array = [];
+			for each (var resourceUri:String in resourceUris) {
+				var resourceSet:String = resourceUriToResourceSet[resourceUri];
+				if (resourceSets.indexOf(resourceSet) < 0) {
+					resourceSets.push(resourceSet);
+				}
+			}
+			return resourceSets;
 		}
 		
 		/**
@@ -356,7 +390,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 					
 		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
 			var resourceNode:Node = event.node;
-			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY)) {
+			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY, event)) {
 				resourceOperationsManager.updateGlobalDirtyState(resourceNode.properties[CoreConstants.IS_DIRTY]);
 			}
 		}

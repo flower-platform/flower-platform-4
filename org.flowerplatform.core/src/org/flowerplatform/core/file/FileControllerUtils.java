@@ -28,11 +28,15 @@ public class FileControllerUtils {
 		return fullPathWithRepo.substring(0, index);
 	}
 	
-	public static String getFilePath(Node node) {
-		return getFilePath(node.getNodeUri());
+	public static String getFilePathWithRepo(Node node) {
+		return getFilePathWithRepo(node.getNodeUri());
 	}
 	
-	public static String getFilePath(String nodeUri) {
+	public static String getFilePathWithRepo(String nodeUri) {
+		return Utils.getSchemeSpecificPart(nodeUri).replace("|", "/");
+	}
+	
+	public static String getFilePathWithoutRepo(String nodeUri) {
 		String fullPathWithRepo = Utils.getSchemeSpecificPart(nodeUri);
 		int index = fullPathWithRepo.indexOf("|");
 		if (index < 0) {
@@ -42,6 +46,10 @@ public class FileControllerUtils {
 	}
 	
 	public static String createFileNodeUri(String repo, String path) {
+		// remove the repo prefix from the file path
+		if (path != null && path.startsWith(repo)) {
+			path = path.substring(repo.length() + 1);
+		}
 		return Utils.getUri(FILE_SCHEME, repo + 
 				(path == null ? "" : "|" + path), null);
 	}

@@ -154,16 +154,18 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		/**
 		 * @author Mariana Gheorghe
 		 */
-		public function showReloadDialog(nodeRegistries:Array = null):void {
+		public function showReloadDialog(nodeRegistries:Array = null, resourceSets:Array = null):void {
 			if (nodeRegistries == null) {
 				nodeRegistries = nodeRegistryManager.getNodeRegistries();
 			}
 			
 			var resourceNodes:ArrayList = new ArrayList();
-			for each (var nodeRegistry:NodeRegistry in nodeRegistries) {
-				for each (var resourceNodeId:String in nodeRegistryManager.getResourceUrisForNodeRegistry(nodeRegistry)) {
-					resourceNodes.addItem(new ResourceNode(resourceNodeId, true));
-				}
+			if (resourceSets == null) {
+				resourceSets = nodeRegistryManager.getDirtyResourceSetsFromNodeRegistries(nodeRegistries);
+			}
+			
+			for each (var resourceSet:String in resourceSets) {
+				resourceNodes.addItem(new ResourceNode(resourceSet, true));
 			}
 			
 			var reloadView:ResourceNodesListView = new ResourceNodesListView();

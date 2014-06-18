@@ -84,10 +84,9 @@ package org.flowerplatform.flex_client.core.editor {
 			throw new Error("Must provide a diagram shell!");
 		}
 		
-		override protected function subscribeResultCallback(rootNode:Node):void {
-			super.subscribeResultCallback(rootNode);
+		override protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
+			super.subscribeResultCallback(rootNode, resourceNode);
 			diagramShell.rootModel = rootNode;
-			
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

@@ -49,7 +49,7 @@
 				_viewHost = viewHost;
 			}
 				
-			protected function subscribeResultCallback(rootNode:Node):void {
+			protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
 				treeList.rootNode = rootNode;
 				nodeRegistry.expand(rootNode);
 			}

@@ -1,5 +1,6 @@
 package org.flowerplatform.core.file;
 
+import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 
@@ -25,6 +26,7 @@ public class FileSystemNodeController extends AbstractController implements IPro
 		List<Pair<String, String>> subscribableResources = new ArrayList<Pair<String, String>>();
 		subscribableResources.add(new Pair<String, String>(node.getNodeUri(), null));
 		node.getProperties().put(SUBSCRIBABLE_RESOURCES, subscribableResources);
+		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}
 	
 }

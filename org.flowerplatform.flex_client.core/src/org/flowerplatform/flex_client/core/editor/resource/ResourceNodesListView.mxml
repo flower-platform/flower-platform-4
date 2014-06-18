@@ -86,13 +86,13 @@
 				if (handler == null) { // don't execute the default behavior, let the handler to take the lead
 					CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.removeNodeRegistries(nodeRegistries);
 				}
+				if (handler != null) { // execute handler before closing view
+					handler();
+				}
 				closeView();	
 			}
 			
 			protected function closeView():void {
-				if (handler != null) { // execute handler before closing view
-					handler();
-				}
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			

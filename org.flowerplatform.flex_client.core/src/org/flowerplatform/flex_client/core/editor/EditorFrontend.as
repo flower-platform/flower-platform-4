@@ -69,7 +69,7 @@ package org.flowerplatform.flex_client.core.editor {
 			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.subscribe(editorInput, nodeRegistry, subscribeResultCallback, subscribeFaultCallback);
 		}
 		
-		protected function subscribeResultCallback(rootNode:Node):void {
+		protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
 			// nothing to do
 		}
 		
