@@ -1,13 +1,13 @@
 package org.flowerplatform.flex_client.core.node_tree {
+	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Claudiu Matei
 	 */
-	public class NodeTreeAction extends ActionBase {
+	public class NodeTreeAction extends DiagramShellAwareActionBase {
 		
 		public function NodeTreeAction() {
 			super();

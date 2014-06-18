@@ -27,6 +27,8 @@
 			[Bindable]
 			protected var hierarchicalModelAdapter:NodeTreeHierarchicalModelAdapter = new NodeTreeHierarchicalModelAdapter();
 			
+			protected var rendererControllerFactoryCache:Dictionary = new Dictionary();
+
 			protected function creationCompleteHandler():void {
 				// iau selectia (cf. PropertiesView), fac cast la Node, iau nodeUri
 				// fac subscribe cf. EditorFrontend.setEditorInput; la handlerul de complete primesc nodul, pe care il injectez in treelist
@@ -77,10 +79,19 @@
 				}
 			}
 			
+			protected function getItemRenderer(item:Object):IFactory {
+				var node:Node = Node(item.treeNode);
+				var renderer:IFactory = rendererControllerFactoryCache[node.type];
+				if (renderer == null) {
+					renderer = new RendererControllerFactory(node);
+					rendererControllerFactoryCache[node.type] = renderer;
+				}
+				return renderer;	
+			}
 			
 		]]>
 	</fx:Script>
 	<tree:TreeList id="treeList" width="100%" height="100%" 
-				   hierarchicalModelAdapter="{hierarchicalModelAdapter}" itemRenderer="org.flowerplatform.flex_client.core.node_tree.NodeTreeItemRenderer" 
+				   hierarchicalModelAdapter="{hierarchicalModelAdapter}" itemRendererFunction="getItemRenderer" 
 				   itemOpen="treeListItemOpenCloseHandler(event)" itemClose="treeListItemOpenCloseHandler(event)"/>
 </s:Group>
