@@ -3,13 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<relativePath>../../org.flowerplatform.build/pom.xml</relativePath>
-		<groupId>org.flowerplatform</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.1.1</version>
-	</parent>
-
+	<groupId>org.flowerplatform</groupId>
 	<artifactId>org.flowerplatform.host.web_app</artifactId>
 	<version>0.1.1_war</version>
 	<packaging>war</packaging>
@@ -72,7 +66,7 @@
 		<dependency>
 			<groupId>org.flowerplatform.host</groupId>
 			<artifactId>org.flowerplatform.host.servletbridge.base</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${appVersion}</version>
 		</dependency>
 	</dependencies>
 </project>

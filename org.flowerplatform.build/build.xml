@@ -2,7 +2,7 @@
 
 	<property file="build.properties" />
 
-	<property file="DO_NOT_COMMIT/keystore.properties" />
+	<property file="DO_NOT_COMMIT/build.properties.local" />
 	<property name="keystore.file" location="DO_NOT_COMMIT/${keystore.fileName}" />
 
 	<target name="update-license-header" description="Update license header">
@@ -113,14 +113,18 @@
 			<arg value="verify" />
 
 			<!-- shows errors -->
-			<!-- <arg value="-e" /> -->
+			<arg value="-e" />
 			
 			<!-- verbose mode -->
 			<!-- <arg value="-X" /> -->
 
 			<arg value="-P${buildProfiles}" />
 
+			<arg value="-Doutput.flex=${output.flex}" />
+			<arg value="-Doutput.java=${output.java}" />
+			
 			<!-- Java build -->
+			<arg value="-DappVersion=${version.appVersion}" />
 			<arg value="-Dos=${os}" />
 			<arg value="-Dws=${ws}" />
 			<arg value="-Darch=${arch}" />
@@ -129,7 +133,9 @@
 
 
 			<!-- Flex build -->
-			<arg value="-DflexHome = ${flexHome}" />
+			<arg value="-DflexVersion=${flexVersion}" />
+			<arg value="-DairVersion=${airVersion}" />
+			<arg value="-DflexHome=${flexHome}" />
 			<arg value="-Dkeystore.file=${keystore.file}" />
 			<arg value="-Dkeystore.password=${keystore.password}" />
 		</artifact:mvn>

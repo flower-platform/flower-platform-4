@@ -17,14 +17,14 @@
 		<sourceDirectory>../src</sourceDirectory>
 		<messagesDirectory>../messages</messagesDirectory>
 		<iconsDirectory>../icons</iconsDirectory>
-		<output.flex>../org.flowerplatform.build/flex</output.flex>
+		<output.flex.prefix>../..</output.flex.prefix>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.flex.framework</groupId>
 			<artifactId>flex-framework</artifactId>
-			<version>${flex.version}</version>
+			<version>${flexVersion}</version>
 			<type>pom</type>
 		</dependency>
 

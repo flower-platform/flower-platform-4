@@ -3,13 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<relativePath>../pom.xml</relativePath>
-		<groupId>org.flowerplatform</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.1.1</version>
-	</parent>
-
+	<groupId>org.flowerplatform</groupId>
 	<artifactId>parent-flex</artifactId>
 	<packaging>pom</packaging>
 
@@ -21,9 +15,6 @@
 	<profiles>
 		<profile>
 			<id>flex-base</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<modules>
 				<!-- base libraries -->
 				<module>../../org.flowerplatform.flexutil</module>
@@ -51,6 +42,10 @@
 	</profiles>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+		<output.flex.prefix>..</output.flex.prefix>
+	
 		<!-- modules may override -->
 		<sourceDirectory>src</sourceDirectory>
 		<messagesDirectory>messages</messagesDirectory>
@@ -58,14 +53,12 @@
 		<finalName>${project.artifactId}</finalName>
 
 		<flexmojos.version>7.0.0</flexmojos.version>
-		<flex.version>4.11.0.20131017</flex.version>
-		<air.version>3.2</air.version>
 	</properties>
 
 	<build>
 		<sourceDirectory>${sourceDirectory}</sourceDirectory>
-		<outputDirectory>../${output.flex}/classes/${project.artifactId}</outputDirectory>
-		<directory>../${output.flex}/distr/${project.artifactId}</directory>
+		<outputDirectory>${output.flex.prefix}/${output.flex}/classes/${project.artifactId}</outputDirectory>
+		<directory>${output.flex.prefix}/${output.flex}/distr/${project.artifactId}</directory>
 
 		<plugins>
 			<plugin>
@@ -78,7 +71,7 @@
 					<dependency>
 						<groupId>org.apache.flex</groupId>
 						<artifactId>compiler</artifactId>
-						<version>${flex.version}</version>
+						<version>${flexVersion}</version>
 						<type>pom</type>
 					</dependency>
 				</dependencies>

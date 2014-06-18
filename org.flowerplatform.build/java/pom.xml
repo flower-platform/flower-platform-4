@@ -3,23 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<relativePath>../pom.xml</relativePath>
-		<groupId>org.flowerplatform</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.1.1</version>
-	</parent>
-
+	<groupId>org.flowerplatform</groupId>
 	<artifactId>parent-java</artifactId>
+	<version>0.1.1.qualifier</version>
 	<packaging>pom</packaging>
 
 	<!-- list of modules to build -->
 	<profiles>
 		<profile>
 			<id>java-base</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<modules>
 				<!-- base plugins -->
 				<module>../../org.flowerplatform.util</module>
@@ -62,6 +54,10 @@
 	</profiles>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+		<output.java.prefix>..</output.java.prefix>
+	
 		<tycho.version>0.20.0</tycho.version>
 		<eclipseRepo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipseRepo.url>
 	</properties>
@@ -76,8 +72,8 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>../${output.java}/classes/${project.artifactId}</outputDirectory>
-		<directory>../${output.java}/distr/${project.artifactId}</directory>
+		<outputDirectory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</outputDirectory>
+		<directory>${output.java.prefix}/${output.java}/distr/${project.artifactId}</directory>
 
 		<plugins>
 			<plugin>
@@ -99,7 +95,7 @@
 						<extraClasspathElement>
 							<groupId>org.flowerplatform.host</groupId>
 							<artifactId>org.flowerplatform.host.web_app</artifactId>
-							<version>${project.parent.parent.version}</version>
+							<version>${appVersion}</version>
 						</extraClasspathElement>
 					</extraClasspathElements>
 				</configuration>
@@ -231,5 +227,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-<version>0.1.1.qualifier</version>
 </project> 

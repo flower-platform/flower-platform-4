@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>org.apache.flex.framework</groupId>
 			<artifactId>flex-framework</artifactId>
-			<version>${flex.version}</version>
+			<version>${flexVersion}</version>
 			<type>pom</type>
 		</dependency>
 
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.apache.flex.framework.themes</groupId>
 			<artifactId>halo</artifactId>
-			<version>${flex.version}</version>
+			<version>${flexVersion}</version>
 			<type>swc</type>
 			<scope>theme</scope>
 		</dependency>
