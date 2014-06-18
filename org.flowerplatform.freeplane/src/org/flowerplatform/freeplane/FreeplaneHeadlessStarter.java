@@ -59,7 +59,7 @@ public class FreeplaneHeadlessStarter extends org.freeplane.main.headlessmode.Fr
 			FreeplaneGUIStarter.showSysInfo();
 			final HeadlessMapViewController mapViewController = new HeadlessMapViewController();
 			controller.setMapViewManager(mapViewController);
-			controller.setViewController(new HeadlessUIController());
+			controller.setViewController(new HeadlessUIController(controller, mapViewController, ""));
 			System.setSecurityManager(new FreeplaneSecurityManager());
 			FilterController.install();
 			FormatController.install(new FormatController());

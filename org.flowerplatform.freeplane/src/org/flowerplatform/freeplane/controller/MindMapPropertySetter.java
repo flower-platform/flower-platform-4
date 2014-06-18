@@ -50,7 +50,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -83,7 +82,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		boolean isPropertySet = false;
 		// if null -> no additional updates
@@ -235,7 +234,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				break;
 			case STYLE_NAME:
 				String styleName = (String) wrapper.getPropertyValue();
-				MapModel mapModel = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(node.getResource());
+				MapModel mapModel = (MapModel) node.getRawNodeData();
 				
 				Set<IStyle> styles = MapStyleModel.getExtension(mapModel).getStyles();
 				IStyle style = null;
@@ -286,7 +285,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			return;
 		}
 		
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		boolean isPropertyUnset = false;
 		// if null -> no additional updates

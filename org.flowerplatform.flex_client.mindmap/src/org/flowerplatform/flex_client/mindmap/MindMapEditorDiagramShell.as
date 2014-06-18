@@ -17,7 +17,9 @@ package org.flowerplatform.flex_client.mindmap {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
@@ -34,7 +36,7 @@ package org.flowerplatform.flex_client.mindmap {
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell {
 
-		public var updateProcessor:NodeUpdateProcessor;
+		public var nodeRegistry:NodeRegistry;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
@@ -43,13 +45,14 @@ package org.flowerplatform.flex_client.mindmap {
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				tools.push(InplaceEditorTool);
 			}
-			registerTools(tools);
-				
+			registerTools(tools);				
 		}
 		
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
-			var rootModel:Node = updateProcessor.getNodeById(Node(MindMapRootModelWrapper(rootModel).model).fullNodeId);			
-			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) { 
+			var rootModel:Node = Node(MindMapRootModelWrapper(rootModel).model);
+			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getValueProvider(
+				MindMapEditorDiagramShell(context.diagramShell).registry, rootModel, MindMapConstants.NODE_SIDE_PROVIDER);
+			if (sideProvider != null) {
 				return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/2; // horizontal align = center
 			}
 			return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/8; // horizontal align = left, but not 0

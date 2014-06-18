@@ -49,7 +49,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.removeChild", [Node(selection.getItemAt(0)).parent.fullNodeId, Node(selection.getItemAt(0)).fullNodeId]);
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.removeChild", [Node(selection.getItemAt(0)).parent.nodeUri, Node(selection.getItemAt(0)).nodeUri]);
 		}
 	}
 }

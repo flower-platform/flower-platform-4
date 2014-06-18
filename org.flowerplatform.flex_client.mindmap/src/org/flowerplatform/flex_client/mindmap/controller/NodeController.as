@@ -74,30 +74,26 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		private function expand(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).updateProcessor.requestChildren(context, node);
+			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context[CoreConstants.HANDLER]);
 		}
 		
 		private function collapse(context:DiagramShellContext, node:Node):void {
-			MindMapEditorDiagramShell(context.diagramShell).updateProcessor.removeChildren(context, node);
+			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node);
 		}
 		
-		override public function getSide(context:DiagramShellContext, model:Object):int {
-			var mindmapDiagramShell:MindMapEditorDiagramShell = MindMapEditorDiagramShell(context.diagramShell);
-			var rootModel:Node = mindmapDiagramShell.updateProcessor.getNodeById(Node(MindMapRootModelWrapper(mindmapDiagramShell.rootModel).model).fullNodeId);
-			
-			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) {
-				//root node is mm file -> get side from provider
-				var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getSideProvider(mindmapDiagramShell.registry, model);
-				if (sideProvider != null) {
-					var side:int = int(sideProvider.getValue(Node(model)));
-					if (side == 0 && Node(model).parent != null) { // no side -> get side from parent
-						side = getSide(context, Node(model).parent);
-					}
-					if (side != 0) { // side found (left/right)
-						return side;
-					}
+		override public function getSide(context:DiagramShellContext, model:Object):int {			
+			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getValueProvider(
+				MindMapEditorDiagramShell(context.diagramShell).registry, model, MindMapConstants.NODE_SIDE_PROVIDER);
+			if (sideProvider != null) {
+				var side:int = int(sideProvider.getValue(Node(model)));
+				if (side == 0 && Node(model).parent != null) { // no side -> get side from parent
+					side = getSide(context, Node(model).parent);
+				}
+				if (side != 0) { // side found (left/right)
+					return side;
 				}
 			}
+
 			// default side
 			return MindMapDiagramShell.POSITION_RIGHT;
 		}

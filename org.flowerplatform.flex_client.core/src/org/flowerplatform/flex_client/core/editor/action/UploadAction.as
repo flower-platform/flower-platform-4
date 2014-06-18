@@ -50,7 +50,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			var node:Node = Node(selection.getItemAt(0));	
 			
 			var view:UploadView = new UploadView();
-			view.uploadLocationAsFullNodeId = node.fullNodeId;
+			view.uploadLocationNode = node;
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)
 				.setWidth(500)

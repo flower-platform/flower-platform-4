@@ -26,15 +26,13 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
-			import mx.controls.Alert;
 			import mx.core.UIComponent;
-			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+			import org.flowerplatform.flex_client.core.node.NodeRegistry;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -45,7 +43,7 @@
 			
 			private static const ZIP_EXTENSION:String = ".zip";
 			
-			public var uploadLocationAsFullNodeId:String;
+			public var uploadLocationNode:Node;
 			
 			protected var fileReference:FileReference;
 							
@@ -80,7 +78,7 @@
 			}
 						
 			protected function prepareToUpload(unzipFile:Boolean=false):void {				
-				CorePlugin.getInstance().serviceLocator.invoke("uploadService.prepareUpload", [uploadLocationAsFullNodeId, fileReference.name, unzipFile], 
+				CorePlugin.getInstance().serviceLocator.invoke("uploadService.prepareUpload", [uploadLocationNode.nodeUri, fileReference.name, unzipFile], 
 					function(result:Object):void {
 						if (result) {
 							var request:URLRequest = new URLRequest();
@@ -122,11 +120,8 @@
 				var activeComponent:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
 				
 				if (activeComponent is EditorFrontend) {
-					var nodeUpdateProcessor:NodeUpdateProcessor = EditorFrontend(activeComponent).nodeUpdateProcessor;
-					var node:Node = nodeUpdateProcessor.getNodeById(uploadLocationAsFullNodeId);
-					if (node != null) {
-						nodeUpdateProcessor.refresh(EditorFrontend(activeComponent).nodeUpdateProcessor.context, node);
-					}
+					var nodeRegistry:NodeRegistry = EditorFrontend(activeComponent).nodeRegistry;
+					nodeRegistry.refresh(uploadLocationNode);					
 				}
 				
 				cancelHandler();

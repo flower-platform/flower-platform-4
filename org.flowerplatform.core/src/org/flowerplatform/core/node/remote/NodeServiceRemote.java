@@ -31,21 +31,21 @@ import org.flowerplatform.util.controller.TypeDescriptorRemote;
  */
 public class NodeServiceRemote {
 	
-	public List<Node> getChildren(String fullNodeId, ServiceContext<NodeService> context) {
+	public List<Node> getChildren(String nodeUri, ServiceContext<NodeService> context) {
 		if (context == null) {
 			context = new ServiceContext<NodeService>(getNodeService());
 		} else {
 			context.setService(getNodeService());
 		}
-		return getNodeService().getChildren(new Node(fullNodeId), context);		
+		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), context);		
 	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
-		getNodeService().setProperty(new Node(fullNodeId), property, value, new ServiceContext<NodeService>(getNodeService()));	
+		getNodeService().setProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
 		
 	public void unsetProperty(String fullNodeId, String property) {
-		getNodeService().unsetProperty(new Node(fullNodeId), property, new ServiceContext<NodeService>(getNodeService()));	
+		getNodeService().unsetProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, new ServiceContext<NodeService>(getNodeService()));	
 	}
 	
 	/**
@@ -59,19 +59,20 @@ public class NodeServiceRemote {
 			context.setService(getNodeService());
 		}
 				
-		Node parent = new Node(parentFullNodeId);
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId);
 		String childType = (String) context.get(TYPE_KEY);
 		if (childType == null) {
 			throw new RuntimeException("Type for new child node must be provided in context!");
 		}
-		Node child = new Node(childType, parent.getResource(), null, null);
+		Node child = new Node(null, childType);
 		
 		getNodeService().addChild(parent, child, context);
-		return child.getFullNodeId();
+		return child.getNodeUri();
 	}
 	
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
-		getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId), new ServiceContext<NodeService>(getNodeService()));
+		getNodeService().removeChild(CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId), 
+				CorePlugin.getInstance().getResourceService().getNode(childFullNodeId), new ServiceContext<NodeService>(getNodeService()));
 	}
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
@@ -95,14 +96,14 @@ public class NodeServiceRemote {
 		
 		for (Node child : getChildren(query.getFullNodeId(), null)) { // get new children list
 			// search corresponding child in query
-			FullNodeIdWithChildren childQuery = getChildQueryFromQuery(query, child.getFullNodeId());
+			FullNodeIdWithChildren childQuery = getChildQueryFromQuery(query, child.getNodeUri());
 			if (childQuery == null) { 
 				// not found, so this node is probably newly added;
 				// create a dummy query and populate it only with the fullNodeId
 				// this way, the recursive algorithm will go only one level deep,
-				// the node's properties will be populated, and the recurssion will stop
+				// the node's properties will be populated, and the recursion will stop
 				childQuery = new FullNodeIdWithChildren();
-				childQuery.setFullNodeId(child.getFullNodeId());
+				childQuery.setFullNodeId(child.getNodeUri());
 			}
 			NodeWithChildren childResponse = refresh(childQuery);
 			if (response.getChildren() == null) {
@@ -114,7 +115,7 @@ public class NodeServiceRemote {
 	}
 	
 	public Node getNode(String fullNodeId) {
-		Node node = new Node(fullNodeId);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
 		// forces population of properties
 		node.getOrPopulateProperties();
 		return node;

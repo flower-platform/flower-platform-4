@@ -34,13 +34,13 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		public function updateLabel():void {
-			if (CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient == -1) {
+			if (CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient == -1) {
 				label = "No resource updates requested yet";
 			} else {
 				var formatter:DateTimeFormatter = new DateTimeFormatter();
 				formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
 				var date:Date = new Date();
-				date.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
+				date.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient;
 				label = "Last update: " + formatter.format(date);
 			}
 		}

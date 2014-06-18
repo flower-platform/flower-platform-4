@@ -89,7 +89,7 @@ package org.flowerplatform.flex_client.properties.action {
 					.setWidth(400)
 					.show();
 			} else {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.nodeUri, context], 
 					function(childFullNodeId:String):void {
 						// expand parentNode, select the added child.
 						if (!ControllerUtils.getMindMapModelController(diagramShellContext, parentNode).getExpanded(diagramShellContext, parentNode)) {

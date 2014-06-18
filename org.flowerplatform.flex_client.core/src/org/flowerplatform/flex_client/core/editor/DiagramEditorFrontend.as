@@ -70,7 +70,6 @@ package org.flowerplatform.flex_client.core.editor {
 			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
 			diagramShell.typeProvider = CorePlugin.getInstance().nodeTypeProvider;
 			diagramShell.diagramRenderer = diagramRenderer;
-			diagramShell.rootModel = new Node(editorInput);
 			
 			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
@@ -82,9 +81,9 @@ package org.flowerplatform.flex_client.core.editor {
 			throw new Error("Must provide a diagram shell!");
 		}
 		
-		override protected function subscribeResultCallback(resourceNode:Node):void {
-			super.subscribeResultCallback(resourceNode);
-			nodeUpdateProcessor.requestChildren(diagramShell.getNewDiagramShellContext(), null);
+		override protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
+			super.subscribeResultCallback(rootNode, resourceNode);
+			diagramShell.rootModel = rootNode;
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

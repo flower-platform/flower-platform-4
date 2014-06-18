@@ -22,30 +22,21 @@
 		<![CDATA[
 			import flashx.textLayout.conversion.TextConverter;
 			
-			import mx.collections.IList;
 			import mx.core.DPIClassification;
 			import mx.core.FlexGlobals;
-			import mx.core.IVisualElement;
-			import mx.core.IVisualElementContainer;
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.events.ResizeEvent;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+			import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
-			import org.flowerplatform.flex_client.mindmap.controller.NodeController;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
-			import org.flowerplatform.flexdiagram.DiagramShellContext;
-			import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
-			import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
-			import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-			import org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.FlowerArrayList;
 			import org.flowerplatform.flexutil.Utils;
@@ -205,7 +196,7 @@
 				var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
 				var iconsChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, iconsProperty, event);
 				if (iconsChanged) {
-					var iconsValue:String = String(iconsProvider.getValue(node));
+					var iconsValue:String = iconsProvider.getValue(node) as String;
 					if (iconsValue != null) {
 						icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
 					} else {

@@ -136,7 +136,7 @@
 					}
 				}
 				
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.fullNodeId, context], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.nodeUri, context], 
 					function(childFullNodeId:String):void {
 						// setProperty for properties that don't contribute to creation.
 						for (var i:int=0; i < propertiesToSetAfterAddingNode.length; i++) {

@@ -16,9 +16,8 @@
 package org.flowerplatform.flex_client.core.node.controller {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
@@ -33,13 +32,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 		
 		public static function getIconsProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
 			return getValueProvider(registry, node, CoreConstants.NODE_ICONS_PROVIDER);
-		}
-		
-		/**
-		 * @author Cristina Constantinescu
-		 */
-		public static function getSideProvider(registry:TypeDescriptorRegistry, node:Object):GenericValueProviderFromDescriptor {
-			return getValueProvider(registry, node, CoreConstants.NODE_SIDE_PROVIDER);
 		}
 		
 		public static function getValueProvider(registry:TypeDescriptorRegistry, 

@@ -49,6 +49,7 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 
 /**
  * Mapped to {@link ASTNode}.
@@ -194,7 +195,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 			javadoc.tags().add(tag);
 			TextElement text = javadoc.getAST().newTextElement();
 			tag.fragments().add(text);
-			text.setText(((Node) correspondingElement).getIdWithinResource());
+			text.setText(Utils.getFragment(((Node) correspondingElement).getNodeUri()));
 			System.out.println(javadoc);
 		}
 	}

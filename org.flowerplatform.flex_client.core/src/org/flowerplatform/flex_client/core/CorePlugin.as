@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.UpdateTimer;
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
@@ -37,18 +38,18 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.NodeWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.SubscriptionInfo;
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodeIdsToNodeUpdateProcessors;
-	import org.flowerplatform.flex_client.core.editor.resource.ResourceNodesManager;
+	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
-	import org.flowerplatform.flex_client.core.editor.update.UpdateTimer;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
+	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
@@ -96,10 +97,8 @@ package org.flowerplatform.flex_client.core {
 		
 		public var editorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 
-		public var resourceNodesManager:ResourceNodesManager;
+		public var resourceNodesManager:ResourceOperationsManager;
 
-		public var resourceNodeIdsToNodeUpdateProcessors:ResourceNodeIdsToNodeUpdateProcessors = new ResourceNodeIdsToNodeUpdateProcessors();
-		
 		public var updateTimer:UpdateTimer;
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
@@ -137,7 +136,7 @@ package org.flowerplatform.flex_client.core {
 			INSTANCE = this;
 				
 			correspondingJavaPlugin = "org.flowerplatform.core";
-			resourceNodesManager = new ResourceNodesManager();
+			resourceNodesManager = new ResourceOperationsManager();
 			
 			var channelSet:ChannelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
@@ -229,10 +228,10 @@ package org.flowerplatform.flex_client.core {
 			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addSingleController(CoreConstants.NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR))
-				.addSingleController(CoreConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR))
 				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
 			
 			new TypeDescriptorRegistryDebugControllers().registerControllers();
+			new ResourceDebugControllers().registerControllers();
 			
 			linkHandlers = new Dictionary();
 			
@@ -288,7 +287,7 @@ package org.flowerplatform.flex_client.core {
 				.setIcon(Resources.openIcon)
 				.setParentId(CoreConstants.DEBUG)
 				.setFunctionDelegate(function ():void {
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "root:user/repo");
 				})
 			);
 					
@@ -321,6 +320,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(ChildrenUpdate);
 			registerClassAliasFromAnnotation(NodeWithChildren);
 			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
+			registerClassAliasFromAnnotation(SubscriptionInfo);
 		
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
 			registerClassAliasFromAnnotation(GenericValueDescriptor);
@@ -346,14 +346,21 @@ package org.flowerplatform.flex_client.core {
 		 * @author Mariana Gheorghe
 		 */
 		public function openEditor(node:Node):void {
-			var contentType:String = node.properties[CoreConstants.CONTENT_TYPE];
+			var resourceUri:String = node.nodeUri;
+			var contentType:String = null;
+			if (!node.properties[CoreConstants.USE_NODE_URI_ON_NEW_EDITOR]) {
+				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+				if (subscribableResources != null && subscribableResources.length > 0) {
+					var pair:Pair = Pair(subscribableResources.getItemAt(0));
+					resourceUri = pair.a as String;
+					contentType = pair.b as String;
+				}
+			}
 			if (contentType == null) {
 				contentType = contentTypeRegistry.defaultContentType;
 			}
-			var hideRootNode:Boolean = node.properties[CoreConstants.HIDE_ROOT_NODE];
-			
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
-			editorDescriptor.openEditor(node.fullNodeId, true, hideRootNode);
+			editorDescriptor.openEditor(resourceUri, true);
 		}
 		
 		/**
@@ -441,7 +448,7 @@ package org.flowerplatform.flex_client.core {
 		public function selectNode(diagramShellContext:DiagramShellContext, fullNodeId:String):void {
 			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 			var editor:EditorFrontend = EditorFrontend(workbench.getEditorFromViewComponent(workbench.getActiveView()));
-			var childNode:Node = editor.nodeUpdateProcessor.getNodeById(fullNodeId);
+			var childNode:Node = editor.nodeRegistry.getNodeById(fullNodeId);
 			
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.resetSelection();
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);

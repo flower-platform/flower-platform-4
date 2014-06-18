@@ -68,7 +68,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 			
 			view.resultHandler = function(newValue:String):void {				
 				// invoke service method and wait for result to close the rename popup
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, titleProvider.getPropertyNameFromGenericDescriptor(node), newValue], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, titleProvider.getPropertyNameFromGenericDescriptor(node), newValue], 
 					function(data:Object):void {
 						if (view != null) {
 							FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);

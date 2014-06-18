@@ -19,6 +19,7 @@ import java.io.File;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.remote.Node;
@@ -49,7 +50,8 @@ public class MindMapFileAddNodeController extends AbstractController implements 
 		
 		try {
 			MapModel model = Controller.getCurrentModeController().getMapController().newModel();
-			((MFileManager) UrlManager.getController()).writeToFile(model, (File) CorePlugin.getInstance().getFileAccessController().getFile(child.getIdWithinResource()));
+			((MFileManager) UrlManager.getController()).writeToFile(model, (File) CorePlugin.getInstance().getFileAccessController().getFile(
+					FileControllerUtils.getFilePathWithRepo(child)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

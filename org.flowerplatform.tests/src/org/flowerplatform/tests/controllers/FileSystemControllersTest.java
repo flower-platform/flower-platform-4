@@ -39,6 +39,7 @@ import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.flowerplatform.tests.TestUtil;
+import org.flowerplatform.util.Utils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -70,21 +71,21 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void testGetChildren() {
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR, null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/1", null),
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A", null),
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/B", null)));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/1"), FILE_NODE_TYPE),
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A"), FILE_NODE_TYPE),
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/B"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/file1", null),
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null),
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null)));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/file1"), FILE_NODE_TYPE),
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1"), FILE_NODE_TYPE),
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1/oneFile", null)));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1/oneFile"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
-								new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder", null)));
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+								new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder"), FILE_NODE_TYPE)));
 	}
 	
 	@Test
@@ -95,8 +96,8 @@ public class FileSystemControllersTest {
 		context.add("type", FILE_NODE_TYPE);
 		context.add(CoreConstants.NAME, "newFile");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, false);
-		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR, null)).getFullNodeId();
-		String fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null).getFullNodeId();
+		String fileSystemFullNodeId = (new Node(Utils.getUri(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR), FILE_NODE_TYPE)).getNodeUri();
+		String fullNodeId = new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1"), FILE_NODE_TYPE).getNodeUri();
 	        
 		nodeServiceRemote.addChild(fullNodeId, context);
 							 
@@ -116,7 +117,7 @@ public class FileSystemControllersTest {
 		context.add(CoreConstants.NAME, "newFolder");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, true);
 				
-		fullNodeId = new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1", null).getFullNodeId();
+		fullNodeId = new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1"), FILE_NODE_TYPE).getNodeUri();
 		nodeServiceRemote.addChild(fullNodeId, context);
 		Object newFolder;
 		try {
@@ -131,12 +132,12 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void removeNode() {
-		String fileSystemFullNodeId = (new Node(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR, null)).getFullNodeId();
+		String fileSystemFullNodeId = (new Node(Utils.getUri(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR), FILE_NODE_TYPE)).getNodeUri();
 		//delete oneFolder
-		nodeService.removeChild(new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null), 
-								new Node(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder", null), new ServiceContext<NodeService>(nodeService));
+		nodeService.removeChild(new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2"), FILE_NODE_TYPE), 
+								new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService));
 
-		assertEquals(nodeService.getChildren(new Node(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2", null), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), 
+		assertEquals(nodeService.getChildren(new Node(Utils.getUri(FILE_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), 
 								Arrays.asList());
 		Object newFolder;
 		try {

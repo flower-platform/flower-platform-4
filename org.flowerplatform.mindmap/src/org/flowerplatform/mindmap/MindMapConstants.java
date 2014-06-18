@@ -47,6 +47,12 @@ public class MindMapConstants {
 		}
 	}
 	
+
+	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
+	public static final String SIDE = "side";
+	public static final int POSITION_LEFT = -1;
+	public static final int POSITION_RIGHT = 1;
+	
 	// CLOUD SHAPES
 	public static final String SHAPE_NONE = "none";		
 	public static final String SHAPE_RECTANGLE = "rectangle";
@@ -91,8 +97,8 @@ public class MindMapConstants {
 	// Resource
 	//////////////////////////////////
 	
-	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "freePlaneMindMap";
-	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "freePlanePersistence";
+	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "fpm";
+	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "fpp";
 	public static final String FREEPLANE_MINDMAP_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 	public static final String FREEPLANE_PERSISTENCE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 	

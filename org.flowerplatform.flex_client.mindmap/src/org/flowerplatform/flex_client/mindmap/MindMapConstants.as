@@ -30,8 +30,8 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		public static const MINDMAP_NODE_TYPE:String = "freeplaneNode"
 		
-		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "freePlaneMindMap";
-		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "freePlanePersistence";
+		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "fpm";
+		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "fpp";
 		
 		public static const FREEPLANE_MINDMAP_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
@@ -39,6 +39,9 @@ package org.flowerplatform.flex_client.mindmap {
 		//////////////////////////////////
 		// Node properties
 		//////////////////////////////////
+		
+		public static const PROPERTY_FOR_SIDE_DESCRIPTOR:String = "propertyForSideDescriptor";
+		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
 		
 		// CLOUD SHAPES
 		public static const SHAPE_NONE:String = "none";		

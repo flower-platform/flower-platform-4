@@ -14,7 +14,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.editor.resource {
-	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	
 	
 	/**
 	 * @see SaveResourceNodesView

@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.core {
 		//////////////////////////////////
 		
 		public static const TYPE_KEY:String = "type";
-		public static const FILE_SYSTEM_NODE_TYPE:String = "fileSystem";
+		public static const FILE_SYSTEM_NODE_TYPE:String = "fileSystemNode";
 		public static const FILE_NODE_TYPE:String = "fileNode";
 		public static const ROOT_TYPE:String = "root";
 		public static const REPOSITORY_TYPE:String = "repository";
@@ -43,11 +43,11 @@ package org.flowerplatform.flex_client.core {
 		public static const ICONS:String = "icons";
 		public static const ICONS_SEPARATOR:String = ",";
 		
-		public static const CONTENT_TYPE:String = "contentType";
-		public static const HIDE_ROOT_NODE:String = "hideRootNode";
-		
-		public static const IS_SUBSCRIBABLE:String = "isSubscribable";
 		public static const IS_DIRTY:String = "isDirty";
+		public static const SUBSCRIBABLE_RESOURCES:String = "subscribableResources";
+		
+		public static const USE_NODE_URI_ON_NEW_EDITOR:String = "useNodeUriOnNewEditor";
+		public static const AUTO_SUBSCRIBE_ON_EXPAND:String = "autoSubscribeOnExpand";
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
 		
@@ -77,7 +77,6 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const NODE_TITLE_PROVIDER:String = "nodeTitleProvider";
 		public static const NODE_ICONS_PROVIDER:String = "nodeIconProvider";
-		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
 		
 		//////////////////////////////////
 		// Descriptors
@@ -91,7 +90,6 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const PROPERTY_FOR_TITLE_DESCRIPTOR:String = "propertyForTitleDescriptor";
 		public static const PROPERTY_FOR_ICONS_DESCRIPTOR:String = "propertyForIconDescriptor";
-		public static const PROPERTY_FOR_SIDE_DESCRIPTOR:String = "propertyForSideDescriptor";
 		
 		//////////////////////////////////
 		// Resource
@@ -111,7 +109,8 @@ package org.flowerplatform.flex_client.core {
 		//////////////////////////////////
 		
 		public static const MESSAGE_RESULT:String = "messageResult";
-		public static const RESOURCE_NODE_IDS:String = "resourceNodeIds";
+		public static const RESOURCE_SETS:String = "resourceSets";
+		public static const RESOURCE_URIS:String = "resourceUris";
 		public static const RESOURCE_NODE_IDS_NOT_FOUND:String = "resourceNodeIdsNotFound";
 		public static const LAST_UPDATE_TIMESTAMP:String = "timestampOfLastUpdate";
 		public static const UPDATES:String = "updates";

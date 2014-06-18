@@ -18,11 +18,10 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	
 	import flashx.textLayout.conversion.TextConverter;
 	
-	import mx.core.UIComponent;
 	import mx.graphics.SolidColorStroke;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
+	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;

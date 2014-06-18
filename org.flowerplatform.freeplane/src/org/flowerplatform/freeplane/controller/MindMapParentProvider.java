@@ -15,11 +15,13 @@
  */
 package org.flowerplatform.freeplane.controller;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IParentProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.core.node.resource.IResourceHandler;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.map.NodeModel;
 
@@ -30,12 +32,16 @@ public class MindMapParentProvider extends AbstractController implements IParent
 
 	@Override
 	public Node getParent(Node node, ServiceContext<NodeService> context) {
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());		
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());		
 		NodeModel parentNodeModel = rawNodeData.getParentNode();
 		if (parentNodeModel == null) {
 			return null;
 		}
-		return FreeplanePlugin.getInstance().getStandardNode(parentNodeModel, node.getResource());
+		String scheme = Utils.getScheme(node.getNodeUri());
+		String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
+		String parentUri = scheme + ":" + ssp + "#" + parentNodeModel.createID();
+		IResourceHandler resourceHandler = CorePlugin.getInstance().getResourceService().getResourceHandler(scheme);
+		return resourceHandler.createNodeFromRawNodeData(parentUri, parentNodeModel);
 	}
 
 }

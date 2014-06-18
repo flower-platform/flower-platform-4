@@ -19,8 +19,8 @@
 @author Sebastian Solomon
 -->
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				xmlns:s="library://ns.adobe.com/flex/spark"
-				creationComplete="creationCompleteHandler()">
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				creationComplete="creationCompleteHandler()" implements="mx.managers.IFocusManagerComponent">
 	
 	<s:layout>
 		<s:VerticalLayout verticalAlign="middle" horizontalAlign="center"/>
@@ -38,13 +38,14 @@
 				super.data = value;
 				line.visible = false;
 				line.includeInLayout = false;
+				
 				image.source = Resources.mindmapIcons[data];
 				if (image.source == null) {
 					image.source = Resources[data];
 				}
 				
 				switch (data) {
-					case "removeAllIconsIcon" :
+					case "removeAllIconsIcon":
 						toolTip = Resources.getMessage('manageIcons.remove.all.label');
 						line.visible = true;
 						line.includeInLayout = true;
@@ -52,7 +53,7 @@
 					case "removeFirstIconIcon":
 						toolTip = Resources.getMessage('manageIcons.remove.first.label');
 						break;
-					case "removeLastIconIcon" :
+					case "removeLastIconIcon":
 						toolTip = Resources.getMessage('manageIcons.remove.last.label');
 						break;
 				}
@@ -97,14 +98,14 @@
 					width = 22;
 					height = 22;
 				}
-			}
+			}			
 			
 		]]>
 	</fx:Script>
 		
-	<s:Image id="image" width="100%"/>	
+	<s:BitmapImage id="image" />	
 	
-	<s:Line id="line" width="100%">
+	<s:Line id="line" width="100%" >
 		<s:stroke>
 			<s:SolidColorStroke color="gray" weight="1"/>
 		</s:stroke>

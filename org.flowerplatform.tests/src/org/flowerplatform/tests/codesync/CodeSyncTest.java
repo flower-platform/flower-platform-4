@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.Match.MatchType;
@@ -39,13 +40,12 @@ import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.flowerplatform.tests.TestUtil;
+import org.flowerplatform.util.Utils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -68,7 +68,7 @@ public class CodeSyncTest {
 	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
-	private static final String resourceNodeId = new Node(CoreConstants.CODE_TYPE, CoreConstants.SELF_RESOURCE, PROJECT + "/FAP-FlowerPlatform4.mm", null).getFullNodeId();
+	private static final String resourceNodeId = new Node(Utils.getUri(CodeSyncConstants.CODESYNC_TYPE, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm"), CodeSyncConstants.CODESYNC_TYPE).getNodeUri();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -77,7 +77,7 @@ public class CodeSyncTest {
 		startPlugin(new CodeSyncCodePlugin());
 		startPlugin(new CodeSyncCodeJavaPlugin());
 		
-		CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(resourceNodeId, "", new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+//		CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(resourceNodeId, "", new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
 	}
 	
 	@Test
@@ -247,18 +247,18 @@ public class CodeSyncTest {
 		// change superCls, superInterfaces
 		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext<NodeService>(nodeService));
-		Node superInterface = new Node(CodeSyncCodeJavaConstants.SUPER_INTERFACE, root.getResource(), null, null);
+		Node superInterface = new Node(Utils.getUri(CodeSyncCodeJavaConstants.SUPER_INTERFACE, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.SUPER_INTERFACE);
 		nodeService.addChild(cls, superInterface, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(superInterface, CoreConstants.NAME, "IFromModel", new ServiceContext<NodeService>(nodeService));
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
-//		Node val = new Node();
+//		Node val = new Node(Utils.getUri();
 //		val.setType(MEMBER_VALUE_PAIR);
 //		nodeService.addChild(deprecated, val);
 //		nodeService.setProperty(val, NAME, "_");
 //		nodeService.setProperty(val, ANNOTATION_VALUE_VALUE, "test");
 
 		// add class
-		Node internalCls = new Node(CodeSyncCodeJavaConstants.CLASS, root.getResource(), null, null);
+		Node internalCls = new Node(Utils.getUri(CodeSyncCodeJavaConstants.CLASS, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.CLASS);
 		nodeService.addChild(cls, internalCls, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(internalCls, CoreConstants.NAME, "InternalClassFromModel", new ServiceContext<NodeService>(nodeService));
 
@@ -268,7 +268,7 @@ public class CodeSyncTest {
 		
 		// change modifiers + annotations
 		Node test = getChild(cls, new String[] {"test(String)"});
-		Node privateModif = new Node(CodeSyncCodeJavaConstants.MODIFIER, root.getResource(), null, null);
+		Node privateModif = new Node(Utils.getUri(CodeSyncCodeJavaConstants.MODIFIER, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.MODIFIER);
 		nodeService.addChild(test, privateModif, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(privateModif, CoreConstants.NAME, "private", new ServiceContext<NodeService>(nodeService));
 		Node publicModif = getChild(test, new String[] {"public"});
@@ -276,14 +276,14 @@ public class CodeSyncTest {
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
-		Node orphanRemoval = new Node(CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR, root.getResource(), null, null);
+		Node orphanRemoval = new Node(Utils.getUri(CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR);
 		nodeService.addChild(a, orphanRemoval, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, CoreConstants.NAME, "orphanRemoval", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true", new ServiceContext<NodeService>(nodeService));
 		
 		// change parameters
 		Node getTest = getChild(cls, new String[] {"getTest()"});
-		Node param = new Node(CodeSyncCodeJavaConstants.PARAMETER, root.getResource(), null, null);
+		Node param = new Node(Utils.getUri(CodeSyncCodeJavaConstants.PARAMETER, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.PARAMETER);
 		nodeService.addChild(getTest, param, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(param, CoreConstants.NAME, "a", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int", new ServiceContext<NodeService>(nodeService));
@@ -313,12 +313,12 @@ public class CodeSyncTest {
 ////				CodeSyncCodePlugin.getInstance().getUtils().setModifiers(op, modifiers);
 
 		// add element
-		Node t = new Node(CodeSyncCodeJavaConstants.ATTRIBUTE, root.getResource(), null, null);
+		Node t = new Node(Utils.getUri(CodeSyncCodeJavaConstants.ATTRIBUTE, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.ATTRIBUTE);
 		nodeService.addChild(cls, t, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(t, CoreConstants.NAME, "t", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int", new ServiceContext<NodeService>(nodeService));
 //		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
-		publicModif = new Node(CodeSyncCodeJavaConstants.MODIFIER, root.getResource(), null, null);
+		publicModif = new Node(Utils.getUri(CodeSyncCodeJavaConstants.MODIFIER, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.MODIFIER);
 		nodeService.addChild(t, publicModif, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(publicModif, CoreConstants.NAME, "public", new ServiceContext<NodeService>(nodeService));
 		
@@ -353,7 +353,7 @@ public class CodeSyncTest {
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
-		Node orphanRemoval = new Node(CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR, root.getResource(), null, null);
+		Node orphanRemoval = new Node(Utils.getUri(CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR);
 
 		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncCodeJavaConstants.TECHNOLOGY, false);
 		

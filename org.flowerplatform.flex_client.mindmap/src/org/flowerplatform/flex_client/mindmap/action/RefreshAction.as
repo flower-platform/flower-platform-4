@@ -40,7 +40,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 			for (var i:int = 0; i < selection.length; i++) {
 				var obj:Object = selection.getItemAt(i);
 				if (obj is Node) {
-					MindMapEditorDiagramShell(diagramShell).updateProcessor.refresh(diagramShellContext, Node(obj));
+					MindMapEditorDiagramShell(diagramShell).nodeRegistry.refresh(Node(obj));
 				}
 			}
 		}	

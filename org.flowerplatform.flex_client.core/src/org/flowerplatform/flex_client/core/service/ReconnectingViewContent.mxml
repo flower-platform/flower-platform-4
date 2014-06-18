@@ -73,9 +73,9 @@
 			
 			protected function getReconnectingMessage():String {
 				var server:Date = new Date();
-				server.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
+				server.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer;
 				var client:Date = new Date();
-				client.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
+				client.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient;
 				return Resources.getMessage('reconnect.message', [formatter.format(client), formatter.format(server)]);
 			}
 			

@@ -25,24 +25,16 @@ import java.util.Map;
  */
 public class SessionInfo {
 
-	private List<String> subscribedResourceNodeIds = new ArrayList<String>();
+	private List<String> subscribedResourceUris = new ArrayList<String>();
 	
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	
-	public List<String> getSubscribedResourceNodeIds() {
-		return subscribedResourceNodeIds;
-	}
-	
-	public void setSubscribedResourceNodeIds(List<String> subscribedResourceNodeIds) {
-		this.subscribedResourceNodeIds = subscribedResourceNodeIds;
+	public List<String> getSubscribedResourceUris() {
+		return subscribedResourceUris;
 	}
 	
 	public Map<String, Object> getProperties() {
 		return properties;
-	}
-	
-	public void setProperties(Map<String, Object> properties) {
-		this.properties = properties;
 	}
 	
 }

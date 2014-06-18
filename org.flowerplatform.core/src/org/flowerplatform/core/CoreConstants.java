@@ -27,13 +27,13 @@ public class CoreConstants {
 	//////////////////////////////////
 	
 	public static final String TYPE_KEY = "type";
-	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystem";
+	public static final String FILE_SCHEME = "file";
+	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
 	public static final String ROOT_TYPE = "root";
 	public static final String REPOSITORY_TYPE = "repository";
-	public static final String CODE_TYPE = "code";
 	
-	public final static String DEBUG = "_debug";
+	public final static String DEBUG = "debug";
 	
 	//////////////////////////////////
 	// Node properties
@@ -45,19 +45,16 @@ public class CoreConstants {
 	public static final String ICONS = "icons";
 	public static final String ICONS_SEPARATOR = ",";
 	
-	public static final String CONTENT_TYPE = "contentType";
-	public static final String HIDE_ROOT_NODE = "hideRootNode";
-	
 	public static final String IS_DIRTY = "isDirty";
-	public static final String IS_SUBSCRIBABLE = "isSubscribable";
+	public static final String RESOURCE_SET = "resourceSet";
+	public static final String SUBSCRIBABLE_RESOURCES = "subscribableResources";
+	
+	public static final String USE_NODE_URI_ON_NEW_EDITOR = "useNodeUriOnNewEditor";
+	public static final String AUTO_SUBSCRIBE_ON_EXPAND = "autoSubscribeOnExpand";
 	
 	public static final String IS_OPENABLE_IN_NEW_EDITOR = "isOpenableInNewEditor";
 	
 	public static final String INSERT_BEFORE_FULL_NODE_ID = "insertBeforeFullNodeId"; 
-	
-	public static final String SIDE = "side";
-	public static final int POSITION_LEFT = -1;
-	public static final int POSITION_RIGHT = 1;
 	
 	public static final String PROPERTY_DEFAULT_FORMAT = "%s.default";
 	
@@ -83,7 +80,6 @@ public class CoreConstants {
 	public static final String PROPERTY_SETTER = "propertySetter";
 	public static final String RAW_NODE_DATA_PROVIDER = "rawNodeDataProvider";
 	public static final String REMOVE_NODE_CONTROLLER = "removeNodeController";
-	public static final String RESOURCE_ACCESS_CONTROLLER = "resourceAccessController";
 	
 	//////////////////////////////////
 	// Descriptors
@@ -109,7 +105,6 @@ public class CoreConstants {
 	
 	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";
 	public static final String PROPERTY_FOR_ICON_DESCRIPTOR = "propertyForIconDescriptor";
-	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
 	
 	//////////////////////////////////
 	// Service context options
@@ -164,7 +159,8 @@ public class CoreConstants {
 	//////////////////////////////////
 	
 	public static final String MESSAGE_RESULT = "messageResult";
-	public static final String RESOURCE_NODE_IDS = "resourceNodeIds";
+	public static final String RESOURCE_SETS = "resourceSets";
+	public static final String RESOURCE_URIS = "resourceUris";
 	public static final String RESOURCE_NODE_IDS_NOT_FOUND = "resourceNodeIdsNotFound";
 	public static final String LAST_UPDATE_TIMESTAMP = "timestampOfLastUpdate";
 	public static final String UPDATES = "updates";

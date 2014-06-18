@@ -28,16 +28,20 @@ import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
+import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
-import org.flowerplatform.core.node.controller.ResourceTypeDynamicCategoryProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
-import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceDAO;
+import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceService;
+import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceSetService;
+import org.flowerplatform.core.node.resource.in_memory.InMemorySessionService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
@@ -45,6 +49,7 @@ import org.flowerplatform.core.repository.RootChildrenProvider;
 import org.flowerplatform.core.repository.RootPropertiesProvider;
 import org.flowerplatform.core.session.ComposedSessionListener;
 import org.flowerplatform.core.session.ISessionListener;
+import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -77,7 +82,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
 	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
+	
 	protected ResourceService resourceService;
+	protected ResourceSetService resourceSetService;
+	protected SessionService sessionService;
 		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
@@ -119,6 +127,14 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	public ResourceService getResourceService() {
 		return resourceService;
+	}
+	
+	public ResourceSetService getResourceSetService() {
+		return resourceSetService;
+	}
+	
+	public SessionService getSessionService() {
+		return sessionService;
 	}
 	
 	/**
@@ -187,7 +203,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			
 		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
-		resourceService = new ResourceService(nodeTypeDescriptorRegistry, new InMemoryResourceDAO());
+		resourceService = new InMemoryResourceService();
+		resourceSetService = new InMemoryResourceSetService();
+		sessionService = new InMemorySessionService();
 		
 		getServiceRegistry().registerService("nodeService", new NodeServiceRemote());
 		getServiceRegistry().registerService("resourceService", new ResourceServiceRemote());
@@ -197,29 +215,36 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		new ResourceUnsubscriber().start();
 		
+		getResourceService().addResourceHandler(CoreConstants.ROOT_TYPE, new BaseResourceHandler(CoreConstants.ROOT_TYPE));
+		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.ROOT_TYPE)
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
-		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootChildrenProvider());
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
+			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootChildrenProvider());
 
+		getResourceService().addResourceHandler(CoreConstants.REPOSITORY_TYPE, new BaseResourceHandler(CoreConstants.REPOSITORY_TYPE));
+		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.REPOSITORY_TYPE)
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RepositoryPropertiesProvider())
-		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RepositoryChildrenProvider());
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RepositoryPropertiesProvider())
+			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RepositoryChildrenProvider());
 
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, CoreConstants.CODE_TYPE))
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true));
-		
-		getNodeTypeDescriptorRegistry().addDynamicCategoryProvider(new ResourceTypeDynamicCategoryProvider());
-		
 		UpdateController updateController = new UpdateController();
+		DelegateToResourceController delegateToResourceController = new DelegateToResourceController();
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL)
-		.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, updateController)
-		.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, updateController)
-		.addAdditiveController(CoreConstants.PROPERTY_SETTER, updateController)
-		.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider())
-		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
-		.addSingleController(CoreConstants.PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.SIDE))
-		.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, delegateToResourceController)
+			.addAdditiveController(CoreConstants.PROPERTY_SETTER, delegateToResourceController)
+			.addAdditiveController(CoreConstants.DEFAULT_PROPERTY_PROVIDER, delegateToResourceController)
+			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, delegateToResourceController)
+			.addSingleController(CoreConstants.PARENT_PROVIDER, delegateToResourceController)
+			.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, delegateToResourceController)
+			.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, delegateToResourceController)
+		
+			.addAdditiveController(CoreConstants.PROPERTY_SETTER, updateController)
+			.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, updateController)
+			.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, updateController)
+		
+			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider())
+			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
+			.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
 		
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();

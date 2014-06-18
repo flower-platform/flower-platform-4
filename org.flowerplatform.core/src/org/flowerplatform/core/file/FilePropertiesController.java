@@ -15,19 +15,23 @@
  */
 package org.flowerplatform.core.file;
 
-import static org.flowerplatform.core.CoreConstants.CONTENT_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_SIZE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.IS_OPENABLE_IN_NEW_EDITOR;
+import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 import static org.flowerplatform.core.CoreConstants.TEXT_CONTENT_TYPE;
+import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
+import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
@@ -39,6 +43,8 @@ import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.Pair;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -48,17 +54,16 @@ public class FilePropertiesController extends AbstractController implements IPro
 	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object file;
 		try {
-			file = fileAccessController.getFile(node.getIdWithinResource());
+			file = getFileAccessController().getFile(getFilePathWithRepo(node));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		node.getProperties().put(CoreConstants.NAME, fileAccessController.getName(file));
-		node.getProperties().put(CoreConstants.HAS_CHILDREN, fileAccessController.hasChildren(file));
+		node.getProperties().put(CoreConstants.NAME, getFileAccessController().getName(file));
+		node.getProperties().put(CoreConstants.HAS_CHILDREN, getFileAccessController().hasChildren(file));
 		
-		Path path = Paths.get(fileAccessController.getAbsolutePath(file));
+		Path path = Paths.get(getFileAccessController().getAbsolutePath(file));
 		Map<String, Object> atributes = null;
 		
 		try {
@@ -86,9 +91,20 @@ public class FilePropertiesController extends AbstractController implements IPro
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/folder.gif"));
 		} else {
 			node.getProperties().put(IS_OPENABLE_IN_NEW_EDITOR, true);
-			node.getProperties().put(FILE_SIZE, fileAccessController.length(file));
+			node.getProperties().put(FILE_SIZE, getFileAccessController().length(file));
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"));
-			node.getProperties().put(CONTENT_TYPE, TEXT_CONTENT_TYPE);
+			
+			@SuppressWarnings("unchecked")
+			List<Pair<String, String>> subscribableResources = (List<Pair<String, String>>) 
+					node.getProperties().get(SUBSCRIBABLE_RESOURCES);
+			if (subscribableResources == null) {
+				subscribableResources = new ArrayList<Pair<String, String>>();
+				node.getProperties().put(SUBSCRIBABLE_RESOURCES, subscribableResources);
+			}
+			
+			String resourceUri = Utils.getUri("txt", Utils.getSchemeSpecificPart(node.getNodeUri()), null);
+			Pair<String, String> subscribableResource = new Pair<String, String>(resourceUri, TEXT_CONTENT_TYPE);
+			subscribableResources.add(subscribableResource);
 		}
 	}
 
@@ -106,7 +122,6 @@ public class FilePropertiesController extends AbstractController implements IPro
 	
 	@Override
 	public void setProperty(Node node, String property, PropertyValueWrapper value, ServiceContext<NodeService> context) {
-		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		if (CoreConstants.NAME.equals(property)) {
 			Object file;
 			if (!node.getOrPopulateProperties().get(CoreConstants.NAME).equals(value.getPropertyValue())) {

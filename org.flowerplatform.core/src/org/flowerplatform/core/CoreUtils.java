@@ -25,36 +25,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Mariana Gheorghe
  */
 public class CoreUtils {
 
-	public static boolean isSubscribable(Map<String, Object> properties) {
-		Boolean isSubscribable = (Boolean) properties.get(CoreConstants.IS_SUBSCRIBABLE);
-		if (isSubscribable == null) {
-			return false;
-		}
-		return isSubscribable;
-	}
-	
-	public static Node getResourceNode(Node node) {
-		if (node.getResource() == null) {
-			return null;
-		} else if (CoreConstants.SELF_RESOURCE.equals(node.getResource())) {
-			return node;
-		}
-		return new Node(node.getResource());
-	}
-	
 	public static void delete(File f) {	
 		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
 			for (File c : f.listFiles()) {

@@ -49,7 +49,6 @@ package  org.flowerplatform.flex_client.core.editor {
 	public class EditorDescriptor extends BasicEditorDescriptor implements IViewProvider {
 		
 		private static const OPEN_FORCED_BY_SERVER_EDITOR_INPUT_MARKER:String = "???___open_forced_by_server";
-		private static const HIDE_ROOT_NODE_MARKER:String = "???___hide_root_node";
 		
 		/**
 		 * Abstract method.
@@ -81,7 +80,7 @@ package  org.flowerplatform.flex_client.core.editor {
 		 * @author Mariana Gheorghe
 		 * @author Cristina Constantinescu
 		 */
-		override public function openEditor(editableResourcePath:String, preferNewEditor:Boolean = false, hideRootNode:Boolean = false, 
+		override public function openEditor(editableResourcePath:String, preferNewEditor:Boolean = false,
 											forceNewEditor:Boolean = false, openForcedByServer:Boolean = false, 
 											handleAsClientSubscription:Boolean = false):UIComponent {
 			var viewLayoutData:ViewLayoutData = new ViewLayoutData();
@@ -92,10 +91,7 @@ package  org.flowerplatform.flex_client.core.editor {
 			if (openForcedByServer) {
 				viewLayoutData.customData += OPEN_FORCED_BY_SERVER_EDITOR_INPUT_MARKER;
 			}
-			if (hideRootNode) {
-				viewLayoutData.customData += HIDE_ROOT_NODE_MARKER;
-			}
-			
+						
 			viewLayoutData.isEditor = true;
 			
 			return FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);		
@@ -125,11 +121,7 @@ package  org.flowerplatform.flex_client.core.editor {
 				viewLayoutData.customData = viewLayoutData.customData.replace(OPEN_FORCED_BY_SERVER_EDITOR_INPUT_MARKER, "");
 				openForcedByServer = true;
 			}
-			if (viewLayoutData.customData.indexOf(HIDE_ROOT_NODE_MARKER) >= 0) {
-				viewLayoutData.customData = viewLayoutData.customData.replace(HIDE_ROOT_NODE_MARKER, "");
-				editor.hideRootNode = true;
-			}
-			
+						
 			editor.editorInput = viewLayoutData.customData;
 			return editor;
 		}
