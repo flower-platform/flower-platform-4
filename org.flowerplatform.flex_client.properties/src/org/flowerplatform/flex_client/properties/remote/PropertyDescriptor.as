@@ -20,7 +20,6 @@ package org.flowerplatform.flex_client.properties.remote {
 	import org.flowerplatform.flexutil.controller.AbstractController;
 
 	/**
-	 * @author Razvan Tache
 	 * @author Cristina Constantinescu
 	 * @author Sebastian Solomon
 	 */
@@ -28,35 +27,31 @@ package org.flowerplatform.flex_client.properties.remote {
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
 	public class PropertyDescriptor extends AbstractController {
 		
-		public var name:String;
-		
+		public var name:String;		
 		public var title:String;
+								
+		public var type:String;		
+		public var category:String;
+				
+		public var propertyLineRenderer:String;
 		
-		public var value:Object;
+		public var contributesToCreation:Boolean;		
+		public var mandatory:Boolean;
 		
 		public var defaultValue:Object;
 		
-		public var readOnly:Boolean;
-		
-		public var type:String;
-		
-		public var category:String;
-		
-		public var hasChangeCheckbox:Boolean;
-		
 		public var possibleValues:ArrayCollection;
 		
-		public var contributesToCreation:Boolean;
-		
-		public var mandatory:Boolean;
+		public var readOnly:Boolean;	
 		
 		override public function toString():String {
-			return StringUtil.substitute("PropertiesDescriptor [name = {0}, title = {1}, category = {2}, " +
-				"\ntype = {3}, readOnly = {4}, possibleValues = {5}, " +
-				"\ncontributeToCreation = {6}, isMandatory = {7}, orderIndex = {8}]", 
-				name, title, category,
-				type, readOnly, possibleValues,
-				contributesToCreation, mandatory, orderIndex);
+			return "PropertyDescriptor [name=" + name + ", title=" + title
+				+ ", type=" + type + ", category=" + category
+				+ ", propertyLineRenderer=" + propertyLineRenderer
+				+ ", contributesToCreation=" + contributesToCreation
+				+ ", mandatory=" + mandatory + ", readOnly=" + readOnly
+				+ ", possibleValues=" + possibleValues + ", defaultValue="
+				+ defaultValue + "]";
 		}
 		
 	}

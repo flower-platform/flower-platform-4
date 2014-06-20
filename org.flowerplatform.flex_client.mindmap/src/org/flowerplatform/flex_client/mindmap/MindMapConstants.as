@@ -44,9 +44,9 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
 		
 		// CLOUD SHAPES
-		public static const SHAPE_NONE:String = "none";		
-		public static const SHAPE_RECTANGLE:String = "rectangle";
-		public static const SHAPE_ROUND_RECTANGLE:String = "roundRectangle";
+		public static const SHAPE_NONE:String = "ARC";		
+		public static const SHAPE_RECTANGLE:String = "RECT";
+		public static const SHAPE_ROUND_RECTANGLE:String = "ROUND_RECT";
 				
 		public static const TEXT:String = "text";
 		
