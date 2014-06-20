@@ -113,7 +113,7 @@ package org.flowerplatform.flex_client.mindmap {
 			var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
 			if (Node(rootModel.model).nodeUri == event.resourceNodeId) {
 				// remove the editor
-				FlexUtilGlobals.getInstance().workbench.closeView(this);
+				FlexUtilGlobals.getInstance().workbench.closeView(this, true, true);
 			} else {
 				// collapse the node
 				nodeRegistry.collapse(nodeRegistry.getNodeById(event.resourceNodeId), true);

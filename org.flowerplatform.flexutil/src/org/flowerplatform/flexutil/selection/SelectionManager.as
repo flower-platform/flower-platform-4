@@ -131,11 +131,10 @@ package org.flowerplatform.flexutil.selection {
 				if (selectionProvider is ISelectionForServerProvider) {
 					event.selectionForServer = ISelectionForServerProvider(selectionProvider).convertSelectionToSelectionForServer(selection);
 				}			
-			}
-			
-			// dispatch event even if selectionProvider == null -> it means that the last view was closed
-			
-			dispatchEvent(event);
+				// dispatch event even if selectionProvider == null -> it means that the last view was closed			
+				dispatchEvent(event);
+			}			
+		
 		}
 		
 	}

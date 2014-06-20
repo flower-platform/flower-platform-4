@@ -72,7 +72,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected function subscribeFaultCallback(event:FaultEvent):void {
 			// close editor
-			FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost));
+			FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost), true, true);
 		}
 		
 		public function getActions(selection:IList):Vector.<IAction> {
@@ -115,7 +115,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected function nodeRegistryRemovedHandler(event:NodeRegistryRemovedEvent):void {
 			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
-			workbench.closeView(workbench.getViewComponentForEditor(this), false);		
+			workbench.closeView(workbench.getViewComponentForEditor(this), true, false);		
 		}
 		
 		public function additionalCloseHandler():void {	

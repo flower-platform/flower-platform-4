@@ -89,19 +89,24 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			}
 		}
 			
-		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean=true):void {
-			closeViews(new ArrayCollection([view]), shouldDispatchEvent);
+		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
+			closeViews(new ArrayCollection([view]), shouldDispatchEvent, canPreventDefault);
 		}
 		
-		public function closeViews(views:ArrayCollection, shouldDispatchEvent:Boolean=true):void {
+		public function closeViews(views:ArrayCollection, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
 			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
-			dispatchEvent(viewsRemovedEvent);
+			if (shouldDispatchEvent) {
+				viewsRemovedEvent.canPreventDefault = canPreventDefault;
+				dispatchEvent(viewsRemovedEvent);
+			}
 
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
+					if (shouldDispatchEvent) {
+						viewRemovedEvent.canPreventDefault = canPreventDefault;
+						view.dispatchEvent(viewRemovedEvent);
+					}
 					view.dispatchEvent(viewRemovedEvent);
 				}				
 			}

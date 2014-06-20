@@ -45,7 +45,7 @@ package com.crispico.flower.util.layout.actions {
 				// get graphic component
 				var component:UIComponent = workbench.layoutDataToComponent[viewLayoutData];			
 				// close the view from workbench
-				workbench.closeView(component, false);
+				workbench.closeView(component, false, false);
 				
 				workbench.addViewInPopupWindow(viewLayoutData, NaN, NaN, NaN, NaN, false, component);			}
 		}

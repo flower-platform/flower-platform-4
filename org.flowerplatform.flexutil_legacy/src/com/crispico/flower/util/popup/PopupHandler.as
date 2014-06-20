@@ -83,7 +83,7 @@ package com.crispico.flower.util.popup {
 				// verify if viewId component already exists on workbench; if true, reuse component
 				var component:UIComponent = workbench.getComponentById(String(_viewIdInWorkbench));
 				if (component != null) {
-					workbench.closeView(component, false);
+					workbench.closeView(component, false, false);
 				}				
 				workbench.addViewInPopupWindow(_viewIdInWorkbench, NaN, NaN, _width, _height, false, component, new ViewPopupWindowViewHost());		
 			} else {

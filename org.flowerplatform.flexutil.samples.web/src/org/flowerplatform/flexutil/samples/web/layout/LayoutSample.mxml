@@ -103,7 +103,7 @@
 			
 			private function confirmCloseHandler(event:CloseEvent):void {
 				if (event.detail == Alert.YES) {
-					workbench.closeViews(editors, false);
+					workbench.closeViews(editors, false, false);
 				}
 			}
 			
@@ -156,7 +156,7 @@
 			private function btnRemoveView_clickHandler(event:MouseEvent):void {
 				var customView:UIComponent = workbench.getComponentById("normal_view");
 				if (customView != null) {
-					workbench.closeView(customView);
+					workbench.closeView(customView, true, true);
 				} else {
 					Alert.show("Normal View doesn't exist on workbench!", "Info");
 				}				
