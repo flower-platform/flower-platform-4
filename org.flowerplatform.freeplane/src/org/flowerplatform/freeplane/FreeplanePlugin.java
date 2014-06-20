@@ -20,7 +20,6 @@ import static org.flowerplatform.core.CoreConstants.CATEGORY_RESOURCE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
-import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
@@ -32,7 +31,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.controller.DefaultPropertiesProvider;
@@ -121,9 +119,6 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_RESOURCE_PREFIX + MIND_MAP_STYLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider())
 			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new MindMapDefaultPropertyValueProvider());
-		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
-		.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController());
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());	
 	}

@@ -149,7 +149,7 @@ public class RemoteMethodInvocationListener {
 				CorePlugin.getInstance().getResourceService().setUpdateRequestedTimestamp(resource, timestamp);
 			}
 		}
-			
+
 		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
 	}
 	

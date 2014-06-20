@@ -19,13 +19,17 @@ package org.flowerplatform.flexutil.tree {
 	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
-	import mx.controls.treeClasses.TreeItemRenderer;
-	import mx.core.ClassFactory;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
+	import mx.events.TreeEvent;
 	
 	import spark.components.List;
 	
+	[Event(name="itemOpen", type="mx.events.TreeEvent")]
+	[Event(name="itemClose", type="mx.events.TreeEvent")]
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public class TreeList extends List {
 		public static const UPDATE_TREE_RENDERER_EVENT:String = "updateTreeRenderer";
 
@@ -162,6 +166,14 @@ package org.flowerplatform.flexutil.tree {
 		
 		public function expandCollapseNode(modelWrapper:HierarchicalModelWrapper):void {
 			modelWrapper.expanded = !modelWrapper.expanded;
+			
+			var event:TreeEvent = new TreeEvent(modelWrapper.expanded ? TreeEvent.ITEM_OPEN : TreeEvent.ITEM_CLOSE);
+			event.item = modelWrapper.treeNode;
+			dispatchEvent(event);
+			if (event.isDefaultPrevented()) {
+				return;
+			}
+			
 			requestRefreshLinearizedDataProvider();
 		}
 	}

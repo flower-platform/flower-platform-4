@@ -92,6 +92,9 @@ package org.flowerplatform.flex_client.mindmap {
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
 				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR));
 			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
+				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR));
+			
 			// register PropertiesPlugin Renderer
 			PropertiesPlugin.getInstance().propertyRendererClasses[MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE] = new FactoryWithInitialization
 				(IconsWithButtonPropertyRenderer, {

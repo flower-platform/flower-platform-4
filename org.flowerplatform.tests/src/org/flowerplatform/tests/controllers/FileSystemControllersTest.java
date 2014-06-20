@@ -96,6 +96,7 @@ public class FileSystemControllersTest {
 		context.add("type", FILE_NODE_TYPE);
 		context.add(CoreConstants.NAME, "newFile");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, false);
+
 		String fileSystemFullNodeId = (new Node(Utils.getUri(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR), FILE_NODE_TYPE)).getNodeUri();
 		String fullNodeId = new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1"), FILE_NODE_TYPE).getNodeUri();
 	        
@@ -116,8 +117,9 @@ public class FileSystemControllersTest {
 		context.add("type", FILE_NODE_TYPE);
 		context.add(CoreConstants.NAME, "newFolder");
 		context.add(CoreConstants.FILE_IS_DIRECTORY, true);
-				
+
 		fullNodeId = new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1"), FILE_NODE_TYPE).getNodeUri();
+
 		nodeServiceRemote.addChild(fullNodeId, context);
 		Object newFolder;
 		try {
@@ -133,6 +135,7 @@ public class FileSystemControllersTest {
 	@Test
 	public void removeNode() {
 		String fileSystemFullNodeId = (new Node(Utils.getUri(FILE_SYSTEM_NODE_TYPE, null, FILE_SYSTEM_CONTROLLERS_DIR), FILE_NODE_TYPE)).getNodeUri();
+
 		//delete oneFolder
 		nodeService.removeChild(new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2"), FILE_NODE_TYPE), 
 								new Node(Utils.getUri(FILE_NODE_TYPE, fileSystemFullNodeId, FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService));

@@ -33,7 +33,7 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		private var _type:String;		
 		
 		private var _nodeUri:String;
-				
+
 		private var _properties:Object;
 		
 		[Transient]

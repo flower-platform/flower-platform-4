@@ -47,7 +47,6 @@ public class MindMapConstants {
 		}
 	}
 	
-
 	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
 	public static final String SIDE = "side";
 	public static final int POSITION_LEFT = -1;

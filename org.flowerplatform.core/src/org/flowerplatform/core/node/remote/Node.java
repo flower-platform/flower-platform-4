@@ -138,4 +138,5 @@ public class Node {
 	public String toString() {
 		return String.format("Node [fullNodeId = %s]", getNodeUri());
 	}
+
 }
