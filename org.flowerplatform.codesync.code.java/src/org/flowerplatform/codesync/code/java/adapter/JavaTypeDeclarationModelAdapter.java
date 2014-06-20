@@ -166,7 +166,7 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 				Node superInterface = (Node) correspondingChild;
 				AbstractTypeDeclaration cls = (AbstractTypeDeclaration) element;
 				AST ast = cls.getAST();
-				Type type = getTypeFromString(ast, (String) superInterface.getOrPopulateProperties().get(CoreConstants.NAME));
+				Type type = getTypeFromString(ast, (String) superInterface.getPropertyValue(CoreConstants.NAME));
 				if (cls instanceof TypeDeclaration) {
 					((TypeDeclaration) cls).superInterfaceTypes().add(type);
 				} else if (cls instanceof EnumDeclaration) {

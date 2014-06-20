@@ -114,11 +114,8 @@ public class NodeServiceRemote {
 		return response;
 	}
 	
-	public Node getNode(String fullNodeId) {
-		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
-		// forces population of properties
-		node.getOrPopulateProperties();
-		return node;
+	public Node getNode(String fullNodeId) {	
+		return CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
 	}
 	
 	private FullNodeIdWithChildren getChildQueryFromQuery(FullNodeIdWithChildren query, String fullChildNodeId) {

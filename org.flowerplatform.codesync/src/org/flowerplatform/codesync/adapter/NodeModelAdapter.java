@@ -85,12 +85,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {		
-		return getNode(element).getOrPopulateProperties().get(feature);
+		return getNode(element).getPropertyValue((String) feature);
 	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrPopulateProperties().get(CoreConstants.NAME);
+		return getNode(element).getPropertyValue(CoreConstants.NAME);
 	}
 	
 	@Override
@@ -180,11 +180,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				if (childNode.getOrPopulateProperties().containsKey(ADDED)) {
+				if (childNode.getProperties().containsKey(ADDED)) {
 					service.unsetProperty(childNode, ADDED, new ServiceContext<NodeService>(service));
 				}
 			} else {
-				if (childNode.getOrPopulateProperties().containsKey(REMOVED)) {
+				if (childNode.getProperties().containsKey(REMOVED)) {
 					service.removeChild(node, childNode, new ServiceContext<NodeService>(service));
 					// set childrenSync now, because after this match is synced, the parent won't be notified because this child is already removed
 					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node, service);

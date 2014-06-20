@@ -118,7 +118,6 @@ public class FileChildrenController extends AbstractController
 		} else if (!getFileAccessController().createFile(fileToCreate, isDir)) {
 			throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
 		}
-		child.getOrPopulateProperties();
 	}
 	
 	@Override

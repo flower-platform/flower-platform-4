@@ -48,6 +48,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyWrapper;
@@ -264,20 +265,18 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (!isPropertySet) {
 			super.setProperty(node, property, value, context);
 		} else {
-			rawNodeData.getMap().setSaved(false);
-			
-			// set the property on the node instance too
-			node.getOrPopulateProperties().put(property, value);
+			rawNodeData.getMap().setSaved(false);			
 		}
 		
 		if (addAdditionalSetPropertyUpdatesFor != null) {
-			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {
-				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
+			node = CorePlugin.getInstance().getResourceService().getNode(node.getNodeUri());
+			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {				
+				for (Map.Entry<String, Object> entry : node.getProperties().entrySet()) {
 					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {
 				for (String entry : addAdditionalSetPropertyUpdatesFor) {
-					context.getService().setProperty(node, entry, node.getOrPopulateProperties().get(entry), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+					context.getService().setProperty(node, entry, node.getPropertyValue(entry), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}
 			}
 		}
@@ -369,12 +368,12 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			super.unsetProperty(node, property, serviceContext);
 		} else {
 			rawNodeData.getMap().setSaved(false);			
-			node.getOrPopulateProperties();
 		}
 		
 		if (addAdditionalUnsetPropertyUpdatesFor != null) {
+			node = CorePlugin.getInstance().getResourceService().getNode(node.getNodeUri());
 			if (addAdditionalUnsetPropertyUpdatesFor.isEmpty()) {
-				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
+				for (Map.Entry<String, Object> entry : node.getProperties().entrySet()) {
 					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {

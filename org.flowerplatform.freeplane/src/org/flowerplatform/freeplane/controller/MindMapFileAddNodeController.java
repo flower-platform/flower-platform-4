@@ -43,7 +43,7 @@ public class MindMapFileAddNodeController extends AbstractController implements 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
-		String filename = (String) child.getOrPopulateProperties().get(CoreConstants.NAME);
+		String filename = (String) child.getPropertyValue(CoreConstants.NAME);
 		if (!filename.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
 			return;
 		}

@@ -126,7 +126,7 @@ public class FilePropertiesController extends AbstractController implements IPro
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		if (CoreConstants.NAME.equals(property)) {
 			Object file;
-			if (!node.getOrPopulateProperties().get(CoreConstants.NAME).equals(value)) {
+			if (!node.getPropertyValue(CoreConstants.NAME).equals(value)) {
 				try {
 					throw new UnsupportedOperationException();
 //					file = fileAccessController.getFile(node.getIdWithinResource());
@@ -150,7 +150,7 @@ public class FilePropertiesController extends AbstractController implements IPro
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
-		node.getOrPopulateProperties().remove(property);
+//		node.getOrPopulateProperties().remove(property);
 	}
 
 }

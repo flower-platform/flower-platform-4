@@ -109,7 +109,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 				AST ast = parent.getAST();
 				
 				if (CodeSyncCodeJavaConstants.MODIFIER.equals(node.getType())) {
-					String keyword = (String) node.getOrPopulateProperties().get(CoreConstants.NAME);
+					String keyword = (String) node.getPropertyValue(CoreConstants.NAME);
 					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
 				} else if (CodeSyncCodeJavaConstants.ANNOTATION.equals(node.getType())) {
 					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, false)).size();

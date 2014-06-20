@@ -76,7 +76,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		if (CodeSyncConstants.CHILDREN.equals(feature)) {
 			Node node = (Node) correspondingChild;
 			return CorePlugin.getInstance().getFileAccessController()
-					.getFile(element, (String) node.getOrPopulateProperties().get(CoreConstants.NAME));
+					.getFile(element, (String) node.getPropertyValue(CoreConstants.NAME));
 		}
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
