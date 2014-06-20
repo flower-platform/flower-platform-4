@@ -35,11 +35,11 @@
 					
 					selectionChangedHandler(event);
 				}
-				// listen for selection changes
-				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+				// listen for selection changes				
 				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
 			}
-			
+		
 			private function viewRemovedHandler(event:ViewRemovedEvent):void {
 				FlexUtilGlobals.getInstance().selectionManager.removeEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
 			}
@@ -52,10 +52,6 @@
 				_viewHost = value;
 			}
 			
-			public function getActions(selection:IList):Vector.<IAction> {				
-				return null;
-			}
-					
 			public function additionalCloseHandler():void {	
 				// nothing to do
 			}

@@ -1,6 +1,7 @@
-package org.flowerplatform.flex_client.properties.preferences {
+package org.flowerplatform.flex_client.properties.action {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.properties.preferences.PreferencesViewProvider;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;

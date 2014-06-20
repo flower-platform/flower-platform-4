@@ -12,10 +12,9 @@
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTree"/>
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTreeHierarchicalModelAdapter"/>
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTreeItemRenderer"/>
-
     <classEntry path="org.flowerplatform.flex_client.core.editor.remote.PropertyWrapper"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.remote.StylePropertyWrapper"/>
-
+    <classEntry path="org.flowerplatform.flex_client.core.editor.remote.PreferencePropertyWrapper"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

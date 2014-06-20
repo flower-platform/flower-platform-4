@@ -7,7 +7,7 @@
 		 xmlns:ns="org.flowerplatform.flex_client.properties.ui.*" 
 		 xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*" 
 		 xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*"
-		 xmlns:mindmap="org.flowerplatform.flex_client.mindmap.*">
+		 xmlns:mindmap="org.flowerplatform.flex_client.mindmap.*" xmlns:ns1="org.flowerplatform.flex_client.core.node_tree.*" xmlns:tree="org.flowerplatform.flexutil.tree.*" xmlns:ns2="http://flex.apache.org/experimental/ns">
 	
 	<s:layout>
 		<s:HorizontalLayout gap="0"/>
@@ -18,14 +18,30 @@
 			import mx.collections.IList;
 			import mx.events.CollectionEvent;
 			import mx.events.FlexEvent;
+			import mx.events.TreeEvent;
 			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.node.NodeRegistry;
+			import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
+			import org.flowerplatform.flex_client.core.node_tree.NodeTreeHierarchicalModelAdapter;
 			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			import spark.events.IndexChangeEvent;
 			
 			protected var _viewHost:IViewHost;
 			
+			protected var nodeRegistry:NodeRegistry;
+			
+			[Bindable]
+			protected var hierarchicalModelAdapter:NodeTreeHierarchicalModelAdapter = new NodeTreeHierarchicalModelAdapter();
+						
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
-//				editor.diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);	
+				nodeRegistry = new NodeRegistry();
+				nodeRegistry.addEventListener(RefreshEvent.REFRESH, nodeRegistryRefreshCallback);
+				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.subscribe("fpp:user1/repo-1/preferences.mm", nodeRegistry, subscribeResultCallback);
 			}
 			
 			public function get viewHost():IViewHost {
@@ -35,29 +51,45 @@
 			public function set viewHost(value:IViewHost):void {
 				_viewHost = value;
 			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
+						
 			public function additionalCloseHandler():void {	
 				// nothing to do
 			}
 			
-			protected function selectionChangedHandler(event:CollectionEvent):void {
-				// CollectionEvent.COLLECTION_CHANGE will be triggered even when an item is updated (CollectionEventKind.UPDATE), so ignore it
-//				if (!editor.diagramShell.selectedItems.eventsCanBeIgnored && event.kind != CollectionEventKind.UPDATE) { // catch events only if necessary
-//					var selection:IList = editor.diagramShell.selectedItems;
-//					if (selection == null || selection.length == 0 || !(selection.getItemAt(0) is Node)) { // happens when changing active view						
-//						return;
-//					}					
-//					propertiesForm.refreshForm(Node(event.items[0]), true);					
-//				}
+			protected function nodeRegistryRefreshCallback(event:RefreshEvent):void {
+				treeList.requestRefreshLinearizedDataProvider();
+				treeList.invalidateDisplayList();
 			}
-						
+			
+			protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
+				treeList.rootNode = rootNode;
+				nodeRegistry.expand(rootNode);
+			}
+			
+			protected function treeListItemOpenCloseHandler(event:TreeEvent):void {			
+				if (event.type == TreeEvent.ITEM_OPEN) {
+					nodeRegistry.expand(Node(event.item));
+					event.preventDefault();
+				}
+				else if (event.type == TreeEvent.ITEM_CLOSE) {
+					nodeRegistry.collapse(Node(event.item), false);
+					event.preventDefault();
+				}
+			}
+
+			protected function treeList_changeHandler(event:IndexChangeEvent):void {
+				propertiesForm.refreshForm(Node(HierarchicalModelWrapper(treeList.dataProvider.getItemAt(event.newIndex)).treeNode), false);		
+			}
+			
 		]]>
 	</fx:Script>
+	<mx:HDividedBox width="100%" height="100%">
+		<tree:TreeList id="treeList" width="50%" height="100%" change="treeList_changeHandler(event)"
+					   hierarchicalModelAdapter="{hierarchicalModelAdapter}" itemRenderer="org.flowerplatform.flex_client.core.node_tree.NodeTreeItemRenderer"
+					   itemOpen="treeListItemOpenCloseHandler(event)" itemClose="treeListItemOpenCloseHandler(event)"/>
 		
-	<ns:PropertiesComponent id="propertiesForm" width="30%" height="100%" />
+		<ns:PropertiesComponent id="propertiesForm" width="50%" height="100%" />
+		
+	</mx:HDividedBox>
 	
 </s:Group>

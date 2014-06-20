@@ -16,6 +16,9 @@
 package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,12 +30,12 @@ import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
@@ -246,6 +249,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
 			.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
 		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.PREFERENCE_TYPE)
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER).setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE));
+			
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
 		new TypeDescriptorRegistryDebugControllers().registerControllers();

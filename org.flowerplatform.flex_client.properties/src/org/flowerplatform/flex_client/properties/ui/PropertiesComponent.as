@@ -11,6 +11,7 @@ package org.flowerplatform.flex_client.properties.ui {
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.IPropertyLineRenderer;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
+	import org.flowerplatform.flex_client.properties.remote.IPropertyDescriptor;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	
 	import spark.components.Form;
@@ -63,7 +64,7 @@ package org.flowerplatform.flex_client.properties.ui {
 		private function getPropertiesToDisplay(node:Node, includeRawProperties:Boolean = false):Array {
 			var properties:Array = new Array();
 			var categories:Dictionary = new Dictionary();
-			var propertyDescriptor:PropertyDescriptor;
+			var propertyDescriptor:IPropertyDescriptor;
 			
 			for (var key:* in node.properties) {
 				propertyDescriptor = PropertiesPlugin.getInstance().getPropertyDescriptor(node, key, includeRawProperties);
@@ -91,7 +92,7 @@ package org.flowerplatform.flex_client.properties.ui {
 			}
 			
 			// sort property descriptors based on their orderIndex -> this will represent the display order for visual renderers
-			properties.sort(function sortOnIndex(a:PropertyDescriptor, b:PropertyDescriptor):Number {				
+			properties.sort(function sortOnIndex(a:IPropertyDescriptor, b:IPropertyDescriptor):Number {				
 				if (a.orderIndex > b.orderIndex) {
 					return 1;
 				} else if (a.orderIndex < b.orderIndex) {

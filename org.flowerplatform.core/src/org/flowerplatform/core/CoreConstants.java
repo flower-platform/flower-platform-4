@@ -36,7 +36,6 @@ public class CoreConstants {
 	public final static String DEBUG = "debug";
 	
 	public static final String PREFERENCE_TYPE = "preference";
-	public static final String PREFERENCE_FILE_TYPE = "preferencesFile";
 		
 	//////////////////////////////////
 	// Node properties
@@ -107,6 +106,7 @@ public class CoreConstants {
 	
 		public static final String PROPERTY_LINE_RENDERER_TYPE_DEFAULT = "Default";
 		public static final String PROPERTY_LINE_RENDERER_TYPE_STYLABLE = "Stylable";
+		public static final String PROPERTY_LINE_RENDERER_TYPE_PREFERENCE = "Preference";
 		
 	// Generic value descriptors
 	
