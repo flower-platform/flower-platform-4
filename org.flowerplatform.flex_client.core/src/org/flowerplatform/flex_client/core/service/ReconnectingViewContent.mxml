@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
 <!--
 	Displayed when the connection to the server has been lost. It shows the last update timestamp (client-side and server-side).
 
@@ -57,9 +73,9 @@
 			
 			protected function getReconnectingMessage():String {
 				var server:Date = new Date();
-				server.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfServer;
+				server.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer;
 				var client:Date = new Date();
-				client.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
+				client.time = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient;
 				return Resources.getMessage('reconnect.message', [formatter.format(client), formatter.format(server)]);
 			}
 			
@@ -73,6 +89,9 @@
 				return null;
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	

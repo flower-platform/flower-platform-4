@@ -2,4 +2,4 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Properties
 Bundle-SymbolicName: org.flowerplatform.flex_client.properties
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.1.qualifier

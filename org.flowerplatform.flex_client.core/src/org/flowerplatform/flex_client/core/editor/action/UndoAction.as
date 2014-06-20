@@ -16,7 +16,7 @@ package org.flowerplatform.flex_client.core.editor.action
 		override public function run():void
 		{
 			var node:Node = Node(selection.getItemAt(0));
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.undo", [node.resource, node.idWithinResource]); 
+			CorePlugin.getInstance().serviceLocator.invoke("nodeService.undo", [node.nodeUri]); 
 		}
 		
 	}

@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import flash.events.IEventDispatcher;
 	
@@ -80,15 +95,14 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		
 		public function closeViews(views:ArrayCollection, shouldDispatchEvent:Boolean=true):void {
 			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			if (shouldDispatchEvent) {
-				dispatchEvent(viewsRemovedEvent);
-			}
+			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
+			dispatchEvent(viewsRemovedEvent);
+
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					if (shouldDispatchEvent) {
-						view.dispatchEvent(viewRemovedEvent);
-					}
+					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
+					view.dispatchEvent(viewRemovedEvent);
 				}				
 			}
 		}

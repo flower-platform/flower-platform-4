@@ -1,512 +1,219 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.node.resource;
 
-import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
 import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
-import static org.flowerplatform.core.CoreConstants.RESOURCE_ACCESS_CONTROLLER;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.flowerplatform.core.ContextThreadLocal;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.FlowerProperties;
-import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.update.Command;
-import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
-import org.flowerplatform.core.node.update.remote.PropertyUpdate;
-import org.flowerplatform.core.node.update.remote.Update;
-import org.flowerplatform.core.session.ISessionListener;
-import org.flowerplatform.util.controller.TypeDescriptor;
-import org.flowerplatform.util.controller.TypeDescriptorRegistry;
+import org.flowerplatform.core.node.remote.SubscriptionInfo;
+import org.flowerplatform.core.session.SessionService;
+import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Manages resources that are requested by the clients.
+ * 
  * @author Mariana Gheorghe
  */
-public class ResourceService implements ISessionListener {
+public abstract class ResourceService implements IResourceHolder {
+
+	protected final static Logger logger = LoggerFactory.getLogger(ResourceService.class);
 	
-	private final static Logger logger = LoggerFactory.getLogger(ResourceService.class);
+	private Map<String, IResourceHandler> resourceHandlers = new HashMap<String, IResourceHandler>();
 	
-	private TypeDescriptorRegistry registry;
-	
-	private IResourceDAO resourceDao;
-	
-	public ResourceService(TypeDescriptorRegistry registry, IResourceDAO resourceDao) {
-		this.registry = registry;
-		this.resourceDao = resourceDao;	
-		CorePlugin.getInstance().addSessionListener(this);
-		
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(IResourceDAO.PROP_RESOURCE_UPDATES_MARGIN, IResourceDAO.PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
+	public void addResourceHandler(String scheme, IResourceHandler resourceHandler) {
+		resourceHandlers.put(scheme, resourceHandler);
 	}
 	
-	public Node subscribeToSelfOrParentResource(String nodeId, String sessionId, ServiceContext<ResourceService> context) {
-		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeId);
-		
-		Node node = new Node(nodeId);
-		Node subscribableNode = null;
-		if (CoreUtils.isSubscribable(node.getOrPopulateProperties())) {
-			subscribableNode = node;
-		} else {
-			Node resourceNode = CoreUtils.getResourceNode(node);
-			if (resourceNode != null && CoreUtils.isSubscribable(resourceNode.getOrPopulateProperties())) {
-				subscribableNode = resourceNode;
-			}
+	@Override
+	public IResourceHandler getResourceHandler(String scheme) {
+		IResourceHandler resourceHandler = resourceHandlers.get(scheme);
+		if (resourceHandler == null) {
+			throw new RuntimeException("No resource handler registered for scheme: " + scheme);
 		}
-		if (subscribableNode == null) {
-			return null;
-		}			
-		sessionSubscribedToResource(subscribableNode.getFullNodeId(), sessionId, context);
-		
-		// populate resourceNode with isDirty			
-		subscribableNode.getOrPopulateProperties().put(IS_DIRTY, isDirty(subscribableNode.getFullNodeId(), new ServiceContext<ResourceService>(context.getService())));
-				
-		return subscribableNode;
+		return resourceHandler;
 	}
 	
 	/**
-	 * Subscribes the client with this <code>sessionId</code> to the <code>resourceNode</code>. 
-	 * Notifies all registered subscription listeners if this is the first client to subscribe
-	 * to this node.
+	 * Delegate to a {@link IResourceHandler} based on the scheme.
 	 */
-	public void sessionSubscribedToResource(String resourceNodeId, String sessionId, ServiceContext<ResourceService> context) {
-		boolean firstSubscription = false;
-		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
-			// first subscription
-			firstSubscription = true;
-			for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
-				try {
-					controller.firstClientSubscribed(resourceNodeId, context);
-					if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
-						break;
-					}
-				} catch (Exception e) {
-					// there was an error loading the resource
-					throw new RuntimeException(e);
-				}
-			}
-		}
-		resourceDao.sessionSubscribedToResource(resourceNodeId, sessionId);
-		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Subscribed session {} to root node {}, first subscription {}", new Object[] { sessionId, resourceNodeId, firstSubscription });
-		}
+	@Override
+	public Node getNode(String nodeUri) {
+		logger.debug("Get node for URI: {}", nodeUri);
+	
+		String scheme = Utils.getScheme(nodeUri);
+		IResourceHandler resourceHandler = getResourceHandler(scheme);
+		return getNode(nodeUri, resourceHandler);
+	}
+	
+	protected Node getNode(String nodeUri, IResourceHandler resourceHandler) {
+		String resourceUri = resourceHandler.getResourceUri(nodeUri);
+		Object resourceData = resourceUri == null ? null : getResourceData(resourceUri);
+		Object rawNodeData = resourceHandler.getRawNodeDataFromResource(nodeUri, resourceData);
+		Node node = resourceHandler.createNodeFromRawNodeData(nodeUri, rawNodeData);
+		node.getOrPopulateProperties();
+		return node;
 	}
 	
 	/**
-	 * Unsubscribes the client with this <code>sessionId</code> from the <code>resourceNode</code>. 
-	 * Notifies all registered subscription listeners if this is the last client to unsubscribe
-	 * from this node.
-	 */
-	public void sessionUnsubscribedFromResource(String resourceNodeId, String sessionId, ServiceContext<ResourceService> context) {
-		resourceDao.sessionUnsubscribedFromResource(resourceNodeId, sessionId);
-		boolean lastUnsubscription = false;
-		if (resourceDao.getSessionsSubscribedToResource(resourceNodeId).isEmpty()) {
-			// last unsubscription
-			lastUnsubscription = true;
-			for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
-				controller.lastClientUnubscribed(resourceNodeId, context);
-				if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
-					break;
-				}
-			}
-		}
-		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Unsubscribed session {} from root node {}, last unsubscription {}", new Object[] { sessionId, resourceNodeId, lastUnsubscription });
-		}
-	}
-	
-	/**
-	 * @author Cristina Constantinescu
-	 */
-	public void save(String resourceNodeId, ServiceContext<ResourceService> context) {
-		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
-			controller.save(resourceNodeId, context);
-			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
-				break;
-			}
-		}
-		
-		// update isDirty property
-		CorePlugin.getInstance().getNodeService().setProperty(
-				new Node(resourceNodeId), 
-				IS_DIRTY, 
-				isDirty(resourceNodeId, new ServiceContext<ResourceService>(context.getService())), 
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
-	}
-	
-	public void reload(String resourceNodeId, ServiceContext<ResourceService> context) {
-		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
-			try {
-				controller.reload(resourceNodeId, context);
-				if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
-					break;
-				}
-			} catch (Exception e) {
-				// there was an error loading the resource
-				// unsubscribe all other clients
-				List<String> sessionIds = getSessionsSubscribedToResource(resourceNodeId);
-				for (int i = sessionIds.size() - 1; i >= 0; i--) {
-					sessionUnsubscribedFromResource(resourceNodeId, sessionIds.get(i), new ServiceContext<ResourceService>(context.getService()));
-				}
-				throw new RuntimeException(e);
-			}
-		}
-		
-		// update isDirty property
-		CorePlugin.getInstance().getNodeService().setProperty(
-				new Node(resourceNodeId), 
-				CoreConstants.IS_DIRTY, 
-				isDirty(resourceNodeId, new ServiceContext<ResourceService>(context.getService())), 
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
-	}
-	
-	/**
-	 * @author Cristina Constantinescu
-	 */
-	public boolean isDirty(String resourceNodeId, ServiceContext<ResourceService> context) {
-		boolean isDirty = false;
-		for (ResourceAccessController controller : getResourceAccessControllers(resourceNodeId)) {
-			isDirty = controller.isDirty(resourceNodeId, context);
-			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
-				break;
-			}
-		}
-		return isDirty;
-	}
-	
-	public Object getRawResourceData(String resourceNodeId) {
-		return resourceDao.getRawResourceData(resourceNodeId);
-	}
-	
-	public String getResourceCategory(String resourceNodeId) {
-		return resourceDao.getResourceCategory(resourceNodeId);
-	}
-	/**
-	 * Delegates to {@link IResourceDAO#setRawResourceData(String, Object)}.
-	 */
-	public void setRawResourceData(String resourceNodeId, Object rawResourceData, String resourceCategory) {
-		resourceDao.setRawResourceData(resourceNodeId, rawResourceData, resourceCategory);
-	}
-	
-	public void unsetRawResourceData(String resourceNodeId) {
-		resourceDao.unsetRawResourceData(resourceNodeId);
-	}
-	
-	public long getUpdateRequestedTimestamp(String resourceNodeId) {
-		return resourceDao.getUpdateRequestedTimestamp(resourceNodeId);
-	}
-	
-	/**
-	 * Called by the registered {@link ResourceSessionListener} when a new session
-	 * is created.
+	 * Subscribes to the parent resource of the <code>node</code>.
 	 * 
-	 * @author Mariana Gheorghe
-	 * @author Cristina Constantinescu
+	 * <p>
+	 * Note: there is no unsubscribe method, because if the user has two open
+	 * applications with the same session ID (e.g. the client app is open in two
+	 * browser tabs) and the same resource open in both applications, we do not
+	 * want to unsubscribe the client.
+	 * 
+	 * @return a pair containing the root node, resource node and 
+	 * resource set
 	 */
-	public void sessionCreated(String sessionId) {		
-		HttpServletRequest request = CorePlugin.getInstance().getRequestThreadLocal().get();
-		if (request == null) {
-			// request doesn't come from FlowerMessageBrokerServlet, ignore it
-			return;
-		}
-		logger.debug("Session created {}", sessionId);
+	public SubscriptionInfo subscribeToParentResource(String sessionId, String nodeUri, ServiceContext<ResourceService> context) {
+		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeUri);
 		
-		resourceDao.sessionCreated(sessionId);
-		
-		String ipAddress = request.getHeader("X-FORWARDED-FOR");
-		if (ipAddress == null) {
-			ipAddress = request.getRemoteAddr();
-		}
-		resourceDao.updateSessionProperty(sessionId, "ip", ipAddress);
-	}
-	
-	/**
-	 * Called by the registered {@link ResourceSessionListener} when a session
-	 * is removed.
-	 */
-	public void sessionRemoved(String sessionId) {
-		logger.debug("Session removed {}", sessionId);
-		
-		List<String> resources = resourceDao.getResourcesSubscribedBySession(sessionId);
-		for (int i = resources.size() - 1; i >= 0; i--) {
-			sessionUnsubscribedFromResource(resources.get(i), sessionId, new ServiceContext<ResourceService>(this));
+		String scheme = Utils.getScheme(nodeUri);
+		IResourceHandler resourceHandler = getResourceHandler(scheme);
+		String resourceUri = resourceHandler.getResourceUri(nodeUri);
+		if (resourceUri == null) {
+			return new SubscriptionInfo(getNode(nodeUri, resourceHandler));
 		}
 		
-		resourceDao.sessionRemoved(sessionId);
-	}
-	
-	/**
-	 * Delegates to {@link IResourceDAO#getSubscribedSessions()}.
-	 */
-	public List<String> getSubscribedSessions() {
-		return resourceDao.getSubscribedSessions();
-	}
-	
-	public Object getSessionProperty(String sessionId, String property) {
-		return resourceDao.getSessionProperty(sessionId, property);
-	}
-	
-	public void updateSessionProperty(String sessionId, String property, Object value) {
-		resourceDao.updateSessionProperty(sessionId, property, value);
-	}
-	
-	public List<String> getResourcesSubscribedBySession(String sessionId) {
-		return resourceDao.getResourcesSubscribedBySession(sessionId);
-	}
-	
-	public List<String> getSessionsSubscribedToResource(String resourceNodeId) {
-		return resourceDao.getSessionsSubscribedToResource(resourceNodeId);
-	}
-	
-	public List<String> getResources() {
-		return resourceDao.getResources();
-	}
-	
-	public void addUpdate(String resourceNodeId, Update update) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("For resource = {} adding update = {}", resourceNodeId, update);
-		}
-		resourceDao.addUpdate(resourceNodeId, update);
-	}
-	
-	public List<Update> getUpdates(String resourceNodeId, long timestampOfLastRequest, long timestampOfThisRequest) {
-		return resourceDao.getUpdates(resourceNodeId, timestampOfLastRequest, timestampOfThisRequest);
-	}
-	
-	/**
-	 * @author Claudiu Matei 
-	 */
-	public void startCommand(String resourceNodeId, String commandTitle) {
-		CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
-		Command command=new Command();
-		command.setResource(resourceNodeId);
-		command.setTitle(commandTitle);
-		Update lastUpdate = resourceDao.getLastUpdate(resourceNodeId);
-		if (lastUpdate != null) command.setLastUpdateIdBeforeCommandExecution(lastUpdate.getId());
+		// subscribe
+		sessionSubscribedToResource(sessionId, resourceUri, context);
+		CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, resourceUri, null);
 		
-		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
-		context.setCommand(command);
-	}
-	
-	/**
-	 * @author Claudiu Matei 
-	 */
-	public void addCommand(Command command) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("For resource = {} adding command = {}", command.getResource(), command);
-		}
-
-		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, "self", RemoteMethodInvocationListener.escapeFullNodeId(command.getResource()), null);
-		String commandToUndoId = resourceDao.getCommandToUndoId(command.getResource());
-
-		List<Command> removedCommands = resourceDao.deleteCommandsAfter(command.getResource(), commandToUndoId);
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		for (Command cmd : removedCommands) {
-			Node node = new Node(CoreConstants.COMMAND_TYPE, commandStackNode.getFullNodeId(), cmd.getId(), null);
-			CorePlugin.getInstance().getNodeService().removeChild(commandStackNode, node, context);
+		// get resource node
+		Node resourceNode = getNode(resourceUri, resourceHandler);
+		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
+		if (resourceSet == null) {
+			resourceSet = resourceUri;
 		}
 		
-		command.setLastUpdateId(resourceDao.getLastUpdate(command.getResource()).getId());
-		resourceDao.addCommand(command);
-		Node newCommandNode = new Node(CoreConstants.COMMAND_TYPE, commandStackNode.getFullNodeId(), command.getId(), null);
-		newCommandNode.getProperties().put(CoreConstants.NAME, command.getTitle());
-		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, newCommandNode, new ServiceContext<NodeService>());
-
-		resourceDao.setCommandToUndoId(command.getResource(), command.getId());
-		resourceDao.setCommandToRedoId(command.getResource(), null);
-	}
-
-	/**
-	 * @author Claudiu Matei 
-	 */
-	public List<Command> getCommands(String resourceNodeId) {
-		return resourceDao.getCommands(resourceNodeId);
-	}
-
-	/**
-	 * @author Claudiu Matei 
-	 */
-	public List<Update> getCommandUpdates(Command command) {
-		return resourceDao.getUpdates(command.getResource(), command.getLastUpdateIdBeforeCommandExecution(), command.getLastUpdateId());
-	}
-
-	/**
-	 * @author Claudiu Matei 
-	 */
-	public void resetCommandStack(String resourceNodeId) {
-		resourceDao.clearCommandStack(resourceNodeId);
-		resourceDao.setCommandToUndoId(resourceNodeId, null);
-		resourceDao.setCommandToRedoId(resourceNodeId, null);
-		NodeService nodeService = CorePlugin.getInstance().getNodeService();
-		ServiceContext<NodeService> context=new ServiceContext<NodeService>();
-		Node commandStackNode = new Node(CoreConstants.COMMAND_STACK_TYPE, CoreConstants.SELF_RESOURCE, RemoteMethodInvocationListener.escapeFullNodeId(resourceNodeId), null);
-		List<Node> commandNodes = nodeService.getChildren(commandStackNode, context);
-		for (Node node : commandNodes) {
-			nodeService.removeChild(commandStackNode, node, context);
-		}
+		// add to resource set
+		CorePlugin.getInstance().getResourceSetService().addToResourceSet(resourceSet, resourceUri);
+		
+		return new SubscriptionInfo(getNode(nodeUri, resourceHandler), resourceNode, resourceSet);
 	}
 	
 	/**
-	 * @author Claudiu Matei 
+	 * Subscribes the client with this <code>sessionId</code> to the <code>resourceUri</code>.
+	 * 
+	 * <p>
+	 * Paired with {@link SessionService#sessionSubscribedToResource(String, String, ServiceContext)}.
 	 */
-	public void undo(String resourceNodeId, String commandId) {
+	public void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<ResourceService> context) {
+		logger.debug("Subscribe session {} to resource {}", sessionId, resourceUri);
+		doSessionSubscribedToResource(sessionId, resourceUri);
+	}
+	
+	protected abstract void doSessionSubscribedToResource(String sessionId, String resourceUri);
+	
+	/**
+	 * Unsubscribes the client with this <code>sessionId</code> from the <code>resourceUri</code>.
+	 * 
+	 * <p>
+	 * Paired with {@link SessionService#sessionUnsubscribedFromResource(String, String, ServiceContext)}.
+	 */
+	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<ResourceService> context) {
+		logger.debug("Unsubscribe session {} from resource {}", sessionId, resourceUri);
+		Node resourceNode = getNode(resourceUri);
+		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
+		if (resourceSet == null) {
+			resourceSet = resourceUri;
+		}
+		doSessionUnsubscribedFromResource(sessionId, resourceUri);
+		
+		if (getSessionsSubscribedToResource(resourceUri).isEmpty()) {
+			// remove from resource set as well
+			CorePlugin.getInstance().getResourceSetService().removeFromResourceSet(resourceSet, resourceUri);
+		}
+	}
+	
+	protected abstract void doSessionUnsubscribedFromResource(String sessionId, String resourceUri);
+	
+	public void save(String resourceUri, ServiceContext<ResourceService> context) {
+		logger.debug("Save resource {}", resourceUri);
+		
+		String scheme = Utils.getScheme(resourceUri);
+		IResourceHandler resourceHandler = getResourceHandler(scheme);
+		Object resourceData = getResourceData(resourceUri);
 		try {
-			CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
-			String commandToUndoId = resourceDao.getCommandToUndoId(resourceNodeId);
-			Command command = resourceDao.getCommand(resourceNodeId, commandId);
-			Integer comp = resourceDao.compareCommands(resourceNodeId, commandId, commandToUndoId);
-			if (command == null) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to undo is: %s", resourceNodeId, commandId,
-						commandToUndoId));
-			} else if (comp == null || comp > 0) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s has already been undone. Current command to undo is: %s", resourceNodeId, commandId,
-						commandToUndoId));
-			} else {
-				List<Command> commands = resourceDao.getCommands(resourceNodeId, commandId, commandToUndoId);
-				for (int i = commands.size() - 1; i >= 0; i--) {
-					Command cmd = commands.get(i);
-					List<Update> updates = resourceDao.getUpdates(resourceNodeId, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
-					for (int k = updates.size() - 1; k >= (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k--) {
-						Update update = updates.get(k);
-						undoUpdate(update);
-					}
-				}
-				Command previousCommand = resourceDao.getCommandBefore(resourceNodeId, commandId);
-				resourceDao.setCommandToUndoId(resourceNodeId, (previousCommand != null ? previousCommand.getId() : null));
-				resourceDao.setCommandToRedoId(command.getResource(), commandId);
-
-			}
-		} finally {
-			CorePlugin.getInstance().getLockManager().unlock(resourceNodeId);
+			resourceHandler.save(resourceData);
+		} catch (Exception e) {
+			throw new RuntimeException("Error saving resource: " + resourceUri, e);
 		}
-	}
-	
-	/**
-	 * @author Claudiu Matei 
-	 */
-	private void undoUpdate(Update update) {
-		if (update instanceof PropertyUpdate) {
-			undoPropertyUpdate((PropertyUpdate)update);
-		}
-		if (update instanceof ChildrenUpdate) {
-			undoChildrenUpdate((ChildrenUpdate)update);
-		}
-	}
-	
-	/**
-	 * @author Claudiu Matei 
-	 */
-	private void undoPropertyUpdate(PropertyUpdate update) {
-		Node node = new Node(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		if (update.getHasOldValue()) {
-			CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getOldValue(), context);
-		}
-		else {
-			CorePlugin.getInstance().getNodeService().unsetProperty(node, update.getKey(), context);
-		}
+		
+		// update isDirty property
+		Node resourceNode = getNode(resourceUri, resourceHandler);
+		CorePlugin.getInstance().getNodeService().setProperty(
+				resourceNode, 
+				IS_DIRTY, 
+				resourceHandler.isDirty(resourceData),
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 
-	/**
-	 * @author Claudiu Matei 
-	 */
-	private void undoChildrenUpdate(ChildrenUpdate update) {
-		Node node = new Node(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		switch (update.getType()) {
-		case CoreConstants.UPDATE_CHILD_ADDED:
-			CorePlugin.getInstance().getNodeService().removeChild(node, update.getTargetNode(), context);
-			break;
-		}
-	}
-
-	/**
-	 * @author Claudiu Matei 
-	 */
-	public void redo(String resourceNodeId, String commandId) {
+	public void reload(String resourceUri, ServiceContext<ResourceService> context) {
+		logger.debug("Reload resource {}", resourceUri);
+		
+		String scheme = Utils.getScheme(resourceUri);
+		IResourceHandler resourceHandler = getResourceHandler(scheme);
+		Object resourceData = getResourceData(resourceUri);
 		try {
-			CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
-			String commandToRedoId = resourceDao.getCommandToRedoId(resourceNodeId);
-			Command command=resourceDao.getCommand(resourceNodeId, commandId);
-			Integer comp = resourceDao.compareCommands(resourceNodeId, commandId, commandToRedoId);
-			if (command == null) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to redo is: %s", resourceNodeId, commandId,	commandToRedoId));
-			} else if (comp == null || comp < 0) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s has already been redone. Current command to redo is: %s", resourceNodeId, commandId, commandToRedoId));
-			} else {
-				List<Command> commands = resourceDao.getCommands(resourceNodeId, commandToRedoId, commandId);
-				for (int i = 0; i < commands.size(); i++) {
-					Command cmd = commands.get(i);
-					List<Update> updates = resourceDao.getUpdates(resourceNodeId, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
-					for (int k = (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k < updates.size(); k++) {
-						Update update = updates.get(k);
-						redoUpdate(update);
-					}
-				}
-				Command nextCommand = resourceDao.getCommandAfter(resourceNodeId, commandId);
-				resourceDao.setCommandToRedoId(resourceNodeId, (nextCommand != null ? nextCommand.getId() : null));
-				resourceDao.setCommandToUndoId(resourceNodeId, commandId);
-			}
-		} finally {
-			CorePlugin.getInstance().getLockManager().unlock(resourceNodeId);
+			resourceHandler.unload(resourceData);
+			registerResourceData(resourceUri, resourceHandler.load(resourceUri));
+		} catch (Exception e) {
+			throw new RuntimeException("Error reloading resource: " + resourceUri, e);
 		}
-	}
-
-	/**
-	 * @author Claudiu Matei 
-	 */
-	private void redoUpdate(Update update) {
-		if (update instanceof PropertyUpdate) {
-			redoPropertyUpdate((PropertyUpdate)update);
-		}
-		if (update instanceof ChildrenUpdate) {
-			redoChildrenUpdate((ChildrenUpdate)update);
-		}
+		
+		// update isDirty property
+		Node resourceNode = getNode(resourceUri, resourceHandler);
+		CorePlugin.getInstance().getNodeService().setProperty(
+				resourceNode, 
+				IS_DIRTY, 
+				resourceHandler.isDirty(resourceData),
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
-	/**
-	 * @author Claudiu Matei 
-	 */
-	private void redoPropertyUpdate(PropertyUpdate update) {
-		Node node = new Node(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getValue(), context);
+	public boolean isDirty(String nodeUri, ServiceContext<ResourceService> serviceContext) {
+		IResourceHandler resourceHandler = getResourceHandler(Utils.getScheme(nodeUri));
+		String resourceUri = resourceHandler.getResourceUri(nodeUri);
+		return resourceHandler.isDirty(getResourceData(resourceUri));
 	}
 
-	/**
-	 * @author Claudiu Matei 
-	 */
-	private void redoChildrenUpdate(ChildrenUpdate update) {
-		Node node = new Node(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		switch (update.getType()) {
-		case CoreConstants.UPDATE_CHILD_ADDED:
-			CorePlugin.getInstance().getNodeService().addChild(node, update.getTargetNode(), context);
-			break;
-		}
-	}
+	public abstract List<String> getResources();
+	
+	public abstract List<String> getSessionsSubscribedToResource(String resourceNodeId);
 
-	/**
-	 * @author Claudiu Matei 
-	 */
-	protected List<ResourceAccessController> getResourceAccessControllers(String resourceNodeId) {
-		Node resourceNode = new Node(resourceNodeId);
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(resourceNode.getType());
-		if (descriptor != null) {
-			return descriptor.getAdditiveControllers(RESOURCE_ACCESS_CONTROLLER, resourceNode);
-		}
-		return Collections.emptyList();
-	}
+	public abstract long getUpdateRequestedTimestamp(String resourceNodeId);
+	
+	public abstract void setUpdateRequestedTimestamp(String resourceUri, long timestamp);
 
+	public Node getResourceNode(String nodeUri) {
+		IResourceHandler resourceHandler = getResourceHandler(Utils.getScheme(nodeUri));
+		return getNode(resourceHandler.getResourceUri(nodeUri), resourceHandler);
+	}
+	
 }

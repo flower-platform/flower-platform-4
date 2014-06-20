@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package  com.crispico.flower.util.layout {
@@ -235,8 +232,7 @@ package  com.crispico.flower.util.layout {
 
 			addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU, fillContextMenuHandler);
 			
-			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.
-			//(new KeyBindings()).registerBinding(new Shortcut(true, false, "m"), maximizeRestoreActiveStackLayoutData);
+			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.			
 			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.M), maximizeRestoreActiveStackLayoutData); // CTRL + M
 			
 			// prepare default actions for the right click menu on a tab name
@@ -2063,16 +2059,16 @@ package  com.crispico.flower.util.layout {
 		 */
 		public function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void {			
 			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			if (shouldDispatchEvent) {
-				dispatchEvent(viewsRemovedEvent);
-			}
+			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
+			dispatchEvent(viewsRemovedEvent);
+
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					if (shouldDispatchEvent) {
-						view.dispatchEvent(viewRemovedEvent);
-					}
-					if (!viewRemovedEvent.dontRemoveView) {
+					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
+					view.dispatchEvent(viewRemovedEvent);
+
+					if (viewRemovedEvent.canRemoveView) {
 						removeViewInternal(view);
 					}
 				}				

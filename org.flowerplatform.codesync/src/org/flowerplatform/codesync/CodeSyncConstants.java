@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync;
 
 import org.flowerplatform.util.UtilConstants;
@@ -12,7 +27,23 @@ public class CodeSyncConstants {
 	// Node types and categories
 	//////////////////////////////////
 	
-	public static final String CATEGORY_CODESYNC = UtilConstants.CATEGORY_PREFIX + "codesync";
+	public static final String CODESYNC_TYPE = "codesync";
+	public static final String CATEGORY_CODESYNC = UtilConstants.CATEGORY_PREFIX + CODESYNC_TYPE;
+	public static final String CODESYNC_FILE = getFileExtension(CODESYNC_TYPE);
+	
+	public static final String MDA_TYPE = "mda";
+	public static final String MDA_FILE = getFileExtension(MDA_TYPE);
+	
+	public static final String CODESYNC_ROOT_TYPE = "codeSyncRoot";
+	public static final String MDA_ROOT_TYPE = "mdaRoot";
+	public static final String DIAGRAM_TYPE = "diagram";
+	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM_TYPE);
+			
+	private static final String getFileExtension(String extension) {
+		return "." + extension;
+	}
+	
+	public static final String CATEGORY_MODEL = UtilConstants.CATEGORY_PREFIX + "model";
 	
 	//////////////////////////////////
 	// Controllers

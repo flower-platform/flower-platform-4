@@ -1,25 +1,34 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.mindmap.renderer {
 	
-	import flash.events.MouseEvent;
-	
-	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
-	import mx.skins.spark.EditableComboBoxSkin;
 	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	
@@ -194,9 +203,9 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 		
 			for (var i:int=0; i < model.children.length; i++) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [model.children[i].fullNodeId], 
-					function(returnedNode:Node):void {
-						var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
+				var childNode:Node = Node(model.children[i]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [childNode.nodeUri], 
+					function(returnedNode:Node):void {						
 						var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
 						var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
 						

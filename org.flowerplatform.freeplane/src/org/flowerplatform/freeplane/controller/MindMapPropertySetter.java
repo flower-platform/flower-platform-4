@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
@@ -35,7 +50,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
@@ -68,7 +82,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		boolean isPropertySet = false;
 		// if null -> no additional updates
@@ -117,15 +131,19 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				break;
 			case NOTE:
 				String note = (String) wrapper.getPropertyValue();
-				NoteModel.createNote(rawNodeData).setHtml(note);
+				NoteModel.createNote(rawNodeData).setXml(note);
+								
+				isPropertySet = true;
 				if (addAdditionalSetPropertyUpdatesFor == null) {
 					addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
-				}
+				}				
 				addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
 				break;
 			case NODE_DETAILS:
 				String nodeDetails = (String) wrapper.getPropertyValue();
-				DetailTextModel.createDetailText(rawNodeData).setHtml(nodeDetails);
+				DetailTextModel.createDetailText(rawNodeData).setXml(nodeDetails);
+				isPropertySet = true;
+				break;
 			case FONT_FAMILY:	
 				String fontFamily = (String) wrapper.getPropertyValue();
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);
@@ -216,7 +234,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				break;
 			case STYLE_NAME:
 				String styleName = (String) wrapper.getPropertyValue();
-				MapModel mapModel = (MapModel) CorePlugin.getInstance().getResourceService().getRawResourceData(node.getResource());
+				MapModel mapModel = (MapModel) node.getRawNodeData();
 				
 				Set<IStyle> styles = MapStyleModel.getExtension(mapModel).getStyles();
 				IStyle style = null;
@@ -267,7 +285,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			return;
 		}
 		
-		NodeModel rawNodeData = ((NodeModel) node.getOrRetrieveRawNodeData());
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		boolean isPropertyUnset = false;
 		// if null -> no additional updates

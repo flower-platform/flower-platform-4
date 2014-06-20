@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,9 +13,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 	
-	Contributors:
-	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
- 
 	license-end
 -->
 <!---
@@ -81,6 +78,7 @@
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.CommunicationErrorView;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
+			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccount;
 			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsView;
 			import org.flowerplatform.flex_client.host_app.mobile.view_server_account.ServerAccountsViewProvider;
 			import org.flowerplatform.flex_client.mindmap.MindMapPlugin;
@@ -165,19 +163,34 @@
 				FlexUtilGlobals.getInstance().clientCommunicationErrorViewContent = CommunicationErrorView;
 				var serverAccounts:ArrayCollection = ServerAccountsView.getSharedObject().data.serverAccounts;
 				
+				if (serverAccounts == null || serverAccounts.length == 0 ) {
+					// add FP hub
+					var hub:ServerAccount = new ServerAccount();
+					hub.host = "http://hub.flower-platform.com/";
+					hub.friendlyName = "Flower Platform Hub";
+					hub.user = "";
+					hub.isDefault = true;
+					if (serverAccounts == null) {
+						serverAccounts = new ArrayCollection();
+					}
+					serverAccounts.addItem(hub);
+					ServerAccountsView.getSharedObject().data.serverAccounts = serverAccounts;
+					ServerAccountsView.getSharedObject().flush(10000);
+				}
+				
 				if (serverAccounts == null || serverAccounts.length == 0 ) { // if no account
 					openEditAccount();
 					setBackButtonEnabled(false);
 				} else {
-					var hasDefaultAccout:Boolean = false;
+					var hasDefaultAccount:Boolean = false;
 					for (var i:int=0; i<serverAccounts.length; i++) {
 						if (serverAccounts[i].isDefault == true) {
-							hasDefaultAccout = true;
+							hasDefaultAccount = true;
 							handleDialogResult(serverAccounts[i]);
 							break;
 						}
 					}
-					if (!hasDefaultAccout) { // if no default
+					if (!hasDefaultAccount) { // if no default
 						setBackButtonEnabled(false);
 						var serverAccountsView:ServerAccountsView = new ServerAccountsView();
 						serverAccountsView.setResultHandler(this);

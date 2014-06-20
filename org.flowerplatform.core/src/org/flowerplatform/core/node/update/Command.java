@@ -9,7 +9,7 @@ public class Command {
 
 	private String id;
 	
-	private String resource;
+	private String resourceSet;
 	
 	private String title;
 	
@@ -25,12 +25,12 @@ public class Command {
 		this.id = id;
 	}
 
-	public String getResource() {
-		return resource;
+	public String getResourceSet() {
+		return resourceSet;
 	}
 
-	public void setResource(String resource) {
-		this.resource = resource;
+	public void setResourceSet(String resourceSet) {
+		this.resourceSet = resourceSet;
 	}
 
 	public String getTitle() {

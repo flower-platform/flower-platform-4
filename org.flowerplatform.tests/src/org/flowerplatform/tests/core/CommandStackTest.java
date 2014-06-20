@@ -9,7 +9,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +20,8 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.resource.IResourceDAO;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.core.node.update.remote.PropertyUpdate;
@@ -31,6 +30,7 @@ import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.mindmap.MindMapPlugin;
 import org.flowerplatform.tests.TestUtil;
+import org.flowerplatform.util.Utils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -41,9 +41,8 @@ public class CommandStackTest {
 
 	public static final String PROJECT = "commandstack";
 	public static final String DIR = TestUtil.getResourcesDir(CommandStackTest.class);
-	private static final String resourceNodeId = new Node(CoreConstants.FILE_NODE_TYPE, "(fileSystem|self|)", PROJECT + "/FAP-FlowerPlatform4.mm", null).getFullNodeId();
-	private static final String commandStackNodeId = new Node(CoreConstants.COMMAND_STACK_TYPE, CoreConstants.SELF_RESOURCE,
-			RemoteMethodInvocationListener.escapeFullNodeId(resourceNodeId), null).getFullNodeId();
+	private static final String resourceNodeUri = Utils.getUri("fpm", PROJECT + "/repository|FAP-FlowerPlatform4.mm");
+	private static final String commandStackNodeUri = Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceNodeUri);
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -52,6 +51,7 @@ public class CommandStackTest {
 	private static NodeServiceRemote nodeServiceRemote;
 	private static RemoteMethodInvocationListener remoteMethodInvocationListener;
 	private static ResourceService resourceService;
+	private static ResourceSetService resourceSetService;
 
 	private RemoteMethodInvocationInfo remoteMethodInvocationInfo;
 	private ServiceContext<NodeService> context;
@@ -62,11 +62,12 @@ public class CommandStackTest {
 		startPlugin(new FreeplanePlugin());
 		startPlugin(new MindMapPlugin());
 
-		CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(resourceNodeId, "", new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
-		List<Node> children = nodeService.getChildren(new Node(resourceNodeId), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
-		rootNode = children.get(0);
-		nodeServiceRemote = new NodeServiceRemote();
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummy-session", resourceNodeUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummy-session", commandStackNodeUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		resourceService = CorePlugin.getInstance().getResourceService();
+		resourceSetService = CorePlugin.getInstance().getResourceSetService();
+		rootNode = resourceService.getNode(resourceNodeUri);
+		nodeServiceRemote = new NodeServiceRemote();
 
 		remoteMethodInvocationListener = spy(CorePlugin.getInstance().getRemoteMethodInvocationListener());
 		doReturn("dummy-session").when(remoteMethodInvocationListener).getSessionId();
@@ -77,25 +78,26 @@ public class CommandStackTest {
 	public void setUp() {
 		context = new ServiceContext<NodeService>();
 		remoteMethodInvocationInfo = spy(new RemoteMethodInvocationInfo());
-		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceNodeIds();
+		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
+		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
 		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
+		remoteMethodInvocationInfo.setMethodName("test");
 	}
 
 	@Test
 	public void testNewCommand_SetProperty() {
-		// tests are not ordered, thus command stack may already be populated
-		resourceService.resetCommandStack(resourceNodeId);
+		resourceSetService.resetCommandStack(resourceNodeUri);
 
 		String property = "fontFamily";
 		Node node = nodeService.getChildren(rootNode, context).get(0);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.setProperty(node.getFullNodeId(), property, "Changed");
+		nodeServiceRemote.setProperty(node.getNodeUri(), property, "Changed");
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		assertEquals("There is one command in the scommand stack", 1, commands.size());
-		List<Update> updates = resourceService.getCommandUpdates(commands.get(0));
+		List<Update> updates = resourceSetService.getCommandUpdates(commands.get(0));
 		assertEquals("There are 2 updates for the command", 2, updates.size());
 
 		boolean foundPropertyUpdate = false;
@@ -111,17 +113,16 @@ public class CommandStackTest {
 
 	@Test
 	public void testNewCommand_AddChild() {
-		// tests are not ordered, thus command stack may already be populated
-		resourceService.resetCommandStack(resourceNodeId);
+		resourceSetService.resetCommandStack(resourceNodeUri);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
-		nodeServiceRemote.addChild(rootNode.getFullNodeId(), context);
+		nodeServiceRemote.addChild(rootNode.getNodeUri(), context);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		assertEquals("There is one command in the command stack", 1, commands.size());
-		List<Update> updates = resourceService.getCommandUpdates(commands.get(0));
+		List<Update> updates = resourceSetService.getCommandUpdates(commands.get(0));
 		assertEquals("There are 3 updates for the command", 3, updates.size());
 		int childrenUpdateIndex = -1;
 		for (int i = 0; i < updates.size(); i++) {
@@ -141,14 +142,14 @@ public class CommandStackTest {
 		String oldValue = node.getOrPopulateProperties().get(property).toString();
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.setProperty(node.getFullNodeId(), property, "Changed");
+		nodeServiceRemote.setProperty(node.getNodeUri(), property, "Changed");
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		node = nodeService.getChildren(rootNode, context).get(0);
 		assertEquals("Changed", node.getOrPopulateProperties().get(property));
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
-		resourceService.undo(resourceNodeId, commands.get(commands.size() - 1).getId());
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
 		node = nodeService.getChildren(rootNode, context).get(0);
 		assertEquals(oldValue, node.getOrPopulateProperties().get(property));
@@ -160,17 +161,17 @@ public class CommandStackTest {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childId = nodeServiceRemote.addChild(node.getFullNodeId(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Node> children = nodeService.getChildren(node, context);
-		assertTrue("A new node was created and added as a child", children.contains(new Node(childId)));
+		assertTrue("A new node was created and added as a child", children.contains(new Node(childUri, MindMapConstants.MINDMAP_NODE_TYPE)));
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
-		resourceService.undo(resourceNodeId, commands.get(commands.size() - 1).getId());
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
 		children = nodeService.getChildren(node, context);
-		assertFalse("The newly created node was removed", children.contains(new Node(childId)));
+		assertFalse("The newly created node was removed", children.contains(new Node(childUri, MindMapConstants.MINDMAP_NODE_TYPE)));
 
 	}
 
@@ -180,13 +181,13 @@ public class CommandStackTest {
 		Node node = nodeService.getChildren(rootNode, context).get(0);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.setProperty(node.getFullNodeId(), property, newValue);
+		nodeServiceRemote.setProperty(node.getNodeUri(), property, newValue);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
-		resourceService.undo(resourceNodeId, commands.get(commands.size() - 1).getId());
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
-		resourceService.redo(resourceNodeId, commands.get(commands.size() - 1).getId());
+		resourceSetService.redo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
 		node = nodeService.getChildren(rootNode, context).get(0);
 		assertEquals(newValue, node.getOrPopulateProperties().get(property));
@@ -198,16 +199,16 @@ public class CommandStackTest {
 		Node node = nodeService.getChildren(rootNode, context).get(0);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.setProperty(node.getFullNodeId(), property, newValue);
+		nodeServiceRemote.setProperty(node.getNodeUri(), property, newValue);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.undo(commandStackNodeId, commands.get(commands.size() - 1).getId());
+		nodeServiceRemote.undo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.redo(commandStackNodeId, commands.get(commands.size() - 1).getId());
+		nodeServiceRemote.redo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		node = nodeService.getChildren(rootNode, context).get(0);
@@ -220,16 +221,16 @@ public class CommandStackTest {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childId = nodeServiceRemote.addChild(node.getFullNodeId(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
-		resourceService.undo(resourceNodeId, commands.get(commands.size() - 1).getId());
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
-		resourceService.redo(resourceNodeId, commands.get(commands.size() - 1).getId());
+		resourceSetService.redo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
 		List<Node> children = nodeService.getChildren(node, context);
-		assertTrue("A new node was created and added as a child", children.contains(new Node(childId)));
+		assertTrue("A new node was created and added as a child", children.contains(new Node(childUri, MindMapConstants.MINDMAP_NODE_TYPE)));
 	}
 
 	@Test
@@ -238,20 +239,20 @@ public class CommandStackTest {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childId = nodeServiceRemote.addChild(node.getFullNodeId(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.undo(commandStackNodeId, commands.get(commands.size() - 1).getId());
+		nodeServiceRemote.undo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.redo(commandStackNodeId, commands.get(commands.size() - 1).getId());
+		nodeServiceRemote.redo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Node> children = nodeService.getChildren(node, context);
-		assertTrue("A new node was created and added as a child", children.contains(new Node(childId)));
+		assertTrue("A new node was created and added as a child", children.contains(new Node(childUri, MindMapConstants.MINDMAP_NODE_TYPE)));
 	}
 
 	@Test
@@ -261,49 +262,39 @@ public class CommandStackTest {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childId = nodeServiceRemote.addChild(node.getFullNodeId(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.setProperty(childId, property, newValue);
+		nodeServiceRemote.setProperty(childUri, property, newValue);
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Command> commands = resourceService.getCommands(resourceNodeId);
-		resourceService.undo(resourceNodeId, commands.get(commands.size() - 2).getId());
+		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 2).getId());
 
-		resourceService.redo(resourceNodeId, commands.get(commands.size() - 1).getId());
+		resourceSetService.redo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
 		// List<Node> children = nodeService.getChildren(node, context);
 		// assertTrue("A new node was created and added as a child",
-		// children.contains(new Node(childId)));
+		// children.contains(new Node(childUri)));
 	}
 
 	@Test
 	public void testCommandStack() {
-		// tests are not ordered, thus command stack may already be populated
-		resourceService.resetCommandStack(resourceNodeId);
+		resourceSetService.resetCommandStack(resourceNodeUri);
 
 		Node node = nodeService.getChildren(rootNode, context).get(0);
-		Field f = null;
-		IResourceDAO resourceDao = null;
-		try {
-			f = resourceService.getClass().getDeclaredField("resourceDao");
-			f.setAccessible(true);
-			resourceDao = (IResourceDAO) f.get(resourceService);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 
 		String newNodeId;
 		{
 			context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-			newNodeId = nodeServiceRemote.addChild(node.getFullNodeId(), context);
+			newNodeId = nodeServiceRemote.addChild(node.getNodeUri(), context);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
-			assertEquals("Command to undo has index 0", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(0).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(0).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
 		{
@@ -311,117 +302,116 @@ public class CommandStackTest {
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
-			assertEquals("Command to undo has index 1", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(1).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(1).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
-		// {
-		// List<Command> commands = resourceService.getCommands(resourceNodeId);
-		// resourceService.undo(resourceNodeId, commands.get(0).getId());
-		//
-		// assertEquals("Command to undo is null",
-		// resourceDao.getCommandToUndoId(resourceNodeId), null);
-		// assertEquals("Command to redo has index 0",
-		// resourceDao.getCommandToRedoId(resourceNodeId),
-		// commands.get(0).getId());
-		// }
-		//
-		// {
-		// List<Command> commands = resourceService.getCommands(resourceNodeId);
-		// resourceService.redo(resourceNodeId, commands.get(commands.size() -
-		// 1).getId());
-		//
-		// assertEquals("Command to undo has index 1",
-		// resourceDao.getCommandToUndoId(resourceNodeId),
-		// commands.get(1).getId());
-		// assertEquals("Command to redo is null",
-		// resourceDao.getCommandToRedoId(resourceNodeId), null);
-		// }
+//		 {
+//			 List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+//			 resourceSetService.undo(resourceNodeUri, commands.get(0).getId());
+//			
+//			 assertEquals("Command to undo is null",
+//			 resourceSetService.getCommandToUndoId(resourceNodeUri), null);
+//			 assertEquals("Command to redo has index 0",
+//			 resourceSetService.getCommandToRedoId(resourceNodeUri),
+//			 commands.get(0).getId());
+//		 }
+//		
+//		 {
+//			 List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+//			 resourceSetService.redo(resourceNodeUri, commands.get(commands.size() - 1).getId());
+//			
+//			 assertEquals("Command to undo has index 1",
+//			 resourceSetService.getCommandToUndoId(resourceNodeUri),
+//			 commands.get(1).getId());
+//			 assertEquals("Command to redo is null",
+//			 resourceSetService.getCommandToRedoId(resourceNodeUri), null);
+//		 }
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
 			try {
-				resourceService.redo(resourceNodeId, commands.get(1).getId());
+				resourceSetService.redo(resourceNodeUri, commands.get(1).getId());
 				fail("Consistency exception is thrown");
 			} catch (IllegalArgumentException e) {
 				assertTrue("Consistency exception", e.getMessage().contains("has already been redone"));
 			}
 
-			assertEquals("Command to undo has index 1", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(1).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(1).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
 			try {
-				resourceService.redo(resourceNodeId, "000");
+				resourceSetService.redo(resourceNodeUri, "000");
 				fail("Inexistent command exception is thrown");
 			} catch (IllegalArgumentException e) {
 				assertTrue("Inexistent command exception", e.getMessage().contains("doesn't exist"));
 			}
 
-			assertEquals("Command to undo has index 1", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(1).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(1).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
-			resourceService.undo(resourceNodeId, commands.get(1).getId());
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+			resourceSetService.undo(resourceNodeUri, commands.get(1).getId());
 
-			assertEquals("Command to undo has index 0", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(0).getId());
-			assertEquals("Command to redo has index 1", resourceDao.getCommandToRedoId(resourceNodeId), commands.get(1).getId());
+			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(0).getId());
+			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(resourceNodeUri), commands.get(1).getId());
 		}
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
 			try {
-				resourceService.undo(resourceNodeId, commands.get(1).getId());
+				resourceSetService.undo(resourceNodeUri, commands.get(1).getId());
 				fail("Consistency exception is thrown");
 			} catch (IllegalArgumentException e) {
 				assertTrue("Consistency exception", e.getMessage().contains("has already been undone"));
 			}
 
-			assertEquals("Command to undo has index 0", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(0).getId());
-			assertEquals("Command to redo has index 1", resourceDao.getCommandToRedoId(resourceNodeId), commands.get(1).getId());
+			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(0).getId());
+			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(resourceNodeUri), commands.get(1).getId());
 		}
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
 			try {
-				resourceService.undo(resourceNodeId, "000");
+				resourceSetService.undo(resourceNodeUri, "000");
 				fail("Inexistent command exception is thrown");
 			} catch (IllegalArgumentException e) {
 				assertTrue("Inexistent command exception", e.getMessage().contains("doesn't exist"));
 			}
 
-			assertEquals("Command to undo has index 0", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(0).getId());
-			assertEquals("Command to redo has index 1", resourceDao.getCommandToRedoId(resourceNodeId), commands.get(1).getId());
+			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(0).getId());
+			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(resourceNodeUri), commands.get(1).getId());
 		}
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 			Command testCommand = commands.get(1);
 			String property = "text", newValue = "Test 2";
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-			commands = resourceService.getCommands(resourceNodeId);
+			commands = resourceSetService.getCommands(resourceNodeUri);
 			assertFalse("Command 2 is deleted", commands.contains(testCommand));
 			try {
-				resourceService.undo(resourceNodeId, testCommand.getId());
+				resourceSetService.undo(resourceNodeUri, testCommand.getId());
 				fail("Inexistent command exception is thrown");
 			} catch (IllegalArgumentException e) {
 				assertTrue("Inexistent command exception", e.getMessage().contains("doesn't exist"));
 			}
-			assertEquals("Command to undo has index 1", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(1).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(1).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
 		{
@@ -429,10 +419,10 @@ public class CommandStackTest {
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
-			assertEquals("Command to undo has index 2", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(2).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 2", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(2).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
 		{
@@ -440,26 +430,26 @@ public class CommandStackTest {
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 
-			assertEquals("Command to undo has index 3", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(3).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 3", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(3).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
-			resourceService.undo(resourceNodeId, commands.get(1).getId());
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+			resourceSetService.undo(resourceNodeUri, commands.get(1).getId());
 
-			assertEquals("Command to undo has index 0", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(0).getId());
-			assertEquals("Command to redo has index 1", resourceDao.getCommandToRedoId(resourceNodeId), commands.get(1).getId());
+			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(0).getId());
+			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(resourceNodeUri), commands.get(1).getId());
 		}
 
 		{
-			List<Command> commands = resourceService.getCommands(resourceNodeId);
-			resourceService.redo(resourceNodeId, commands.get(3).getId());
+			List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+			resourceSetService.redo(resourceNodeUri, commands.get(3).getId());
 
-			assertEquals("Command to undo has index 3", resourceDao.getCommandToUndoId(resourceNodeId), commands.get(3).getId());
-			assertEquals("Command to redo is null", resourceDao.getCommandToRedoId(resourceNodeId), null);
+			assertEquals("Command to undo has index 3", resourceSetService.getCommandToUndoId(resourceNodeUri), commands.get(3).getId());
+			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(resourceNodeUri), null);
 		}
 
 	}

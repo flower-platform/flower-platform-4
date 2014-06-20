@@ -1,8 +1,22 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.host.servletbridge.registry;
 
 import javax.servlet.ServletContext;
 
-import org.apache.tomcat.InstanceManager;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.http.servlet.HttpServiceServlet;
@@ -40,7 +54,11 @@ public class Activator implements BundleActivator {
 		 * @see CustomJSPFactory
 		 * @see CustomJSPServlet
 		 */
-		ServletUtils.addServletContextAdditionalAttributes(InstanceManager.class.getName(), httpServiceServlet.getServletContext().getAttribute(InstanceManager.class.getName()));
+		String instanceManagerClass = "org.apache.tomcat.InstanceManager";
+		if (Class.forName(instanceManagerClass) == null) {
+			throw new RuntimeException("The application is not running in a Tomcat servlet container! Please contact the Flower team if you need support for other servlet containers.");
+		}
+		ServletUtils.addServletContextAdditionalAttributes(instanceManagerClass, httpServiceServlet.getServletContext().getAttribute(instanceManagerClass));
 		
 		IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.flowerplatform.host.servletbridge.registry.listeners");
 		for (IConfigurationElement configurationElement : configurationElements) {

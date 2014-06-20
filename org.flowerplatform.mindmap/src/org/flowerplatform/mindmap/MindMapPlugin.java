@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.mindmap;
 
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
@@ -28,9 +43,11 @@ import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUT
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_NODE_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.SIDE;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
@@ -110,7 +127,8 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.cloud")).setOrderIndexAs(410))
 		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE).setLabelAs(resourcesPlugin.getMessage("mindmap.add")))
 		// lower order index to override the default title property
-		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
+		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000))
+		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(SIDE));
 	}	
 	
 	public void stop(BundleContext bundleContext) throws Exception {

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.util.plugin;
@@ -65,9 +62,6 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			resourceBundle = new PropertyResourceBundle(inputStream);
 		} catch (IOException e) {
 			logger.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s", getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
-		} catch (Throwable t) {
-			// TODO CS temp hack for test to work!!!
-			logger.warn("temp hack!!!");
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
