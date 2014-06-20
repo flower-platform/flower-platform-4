@@ -23,6 +23,8 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.properties.action.NewComposedAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
+	import org.flowerplatform.flex_client.properties.preferences.PreferencesViewProvider;
+	import org.flowerplatform.flex_client.properties.preferences.ShowPreferencesAction;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.CategoryPropertyLineRenderer;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.IPropertyLineRenderer;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
@@ -36,6 +38,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.properties.property_renderer.NumericStepperPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -68,6 +71,9 @@ package org.flowerplatform.flex_client.properties {
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
 			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
+			
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PreferencesViewProvider());
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new ShowPreferencesAction());
 		}
 		
 		override public function start():void {
@@ -151,7 +157,8 @@ package org.flowerplatform.flex_client.properties {
 				if (type != null) {
 					propertyDescriptor = new PropertyDescriptor();
 					propertyDescriptor.type = type;
-					propertyDescriptor.name = property;				
+					propertyDescriptor.name = property;		
+					propertyDescriptor.category = Resources.getMessage("raw.properties");
 					propertyDescriptor.orderIndex = int.MAX_VALUE;
 					return propertyDescriptor;
 				}

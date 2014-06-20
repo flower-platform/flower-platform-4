@@ -32,13 +32,13 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 	 */
 	public class StylablePropertyLineRenderer extends PropertyLineRenderer {
 		
-		protected var defaultCheckBox:CheckBox;
+		protected var changedCheckBox:CheckBox;
 				
 		override protected function createChildren():void {			
-			defaultCheckBox = new CheckBox();
-			defaultCheckBox.label = Resources.getMessage("default");
-			defaultCheckBox.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
-				if (defaultCheckBox.selected) {
+			changedCheckBox = new CheckBox();
+			changedCheckBox.label = Resources.getMessage("change");
+			changedCheckBox.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {
+				if (!changedCheckBox.selected) {
 					CorePlugin.getInstance().serviceLocator.invoke(
 						"nodeService.unsetProperty", 
 						[node.nodeUri, propertyDescriptor.name]);
@@ -47,14 +47,14 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			
 			super.createChildren();
 			
-			rendererArea.addElement(defaultCheckBox);	
+			rendererArea.addElement(changedCheckBox);	
 		}		
 		
 		override protected function nodeUpdated():void {
 			super.nodeUpdated();
 			
-			if (defaultCheckBox != null) {				
-				defaultCheckBox.selected = StylePropertyWrapper(node.getPropertyValueOrWrapper(propertyDescriptor.name)).isDefault;
+			if (changedCheckBox != null) {				
+				changedCheckBox.selected = !StylePropertyWrapper(node.getPropertyValueOrWrapper(propertyDescriptor.name)).isDefault;
 			}
 		}
 		

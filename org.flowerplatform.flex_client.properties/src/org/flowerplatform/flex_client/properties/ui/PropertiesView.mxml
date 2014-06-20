@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent" gap="0" xmlns:ns="org.flowerplatform.flex_client.properties.ui.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
+			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			import org.flowerplatform.flexutil.selection.ISelectionProvider;
+			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			protected var _viewHost:IViewHost;
+								
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+				// get selection from active provider to populate properties list with data
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				if (activeSelectionProvider != null) {
+					// create dummy event
+					var event:SelectionChangedEvent = new SelectionChangedEvent();
+					event.selection = activeSelectionProvider.getSelection();
+					
+					selectionChangedHandler(event);
+				}
+				// listen for selection changes
+				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+			}
+			
+			private function viewRemovedHandler(event:ViewRemovedEvent):void {
+				FlexUtilGlobals.getInstance().selectionManager.removeEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+			}
+						
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {				
+				return null;
+			}
+					
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
+			
+			private function selectionChangedHandler(event:SelectionChangedEvent):void {
+				var i:int;
+											
+				label.text = "";
+								
+				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { 
+					// happens when changing active view						
+					propertiesForm.clearForm();
+					PropertiesPlugin.getInstance().currentSelectedNode = null;
+					return;
+				}
+				
+				// get new selected node
+				var node:Node = Node(event.selection.getItemAt(0));
+				PropertiesPlugin.getInstance().currentSelectedNode = node;
+				
+				// update label
+				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
+				label.text = String(titleProvider.getValue(node));
+				label.maxWidth = this.width;
+								
+				// update form
+				propertiesForm.refreshForm(PropertiesPlugin.getInstance().currentSelectedNode, btnShowRawProps.selected);
+			}
+				
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingLeft="5"  paddingRight="5" paddingBottom="5">
+		<s:ToggleButton id="btnShowRawProps" selected="true"
+						icon="{Resources.tableGear}" toolTip="{Resources.getMessage('show.raw.properties')}"					
+						creationComplete="{if (!FlexUtilGlobals.getInstance().isMobile) {btnShowRawProps.width=22; btnShowRawProps.height=22;}}"
+						click="{propertiesForm.refreshForm(PropertiesPlugin.getInstance().currentSelectedNode, btnShowRawProps.selected);}" />
+	</s:HGroup>
+
+	<s:HGroup id="iconAndLabel" paddingLeft="5" paddingBottom="10" paddingRight="5">
+		<s:Image id="icon" height="100%"/>
+		<s:Label id="label" height ="100%" verticalAlign="middle"/>	
+	</s:HGroup>
+	
+	<ns:PropertiesComponent id="propertiesForm" width="100%" height="100%" />
+	
+</s:VGroup>

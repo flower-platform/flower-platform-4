@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent" 
+		 xmlns:ns="org.flowerplatform.flex_client.properties.ui.*" 
+		 xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*" 
+		 xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*"
+		 xmlns:mindmap="org.flowerplatform.flex_client.mindmap.*">
+	
+	<s:layout>
+		<s:HorizontalLayout gap="0"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.events.CollectionEvent;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			protected var _viewHost:IViewHost;
+			
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+//				editor.diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);	
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
+			
+			protected function selectionChangedHandler(event:CollectionEvent):void {
+				// CollectionEvent.COLLECTION_CHANGE will be triggered even when an item is updated (CollectionEventKind.UPDATE), so ignore it
+//				if (!editor.diagramShell.selectedItems.eventsCanBeIgnored && event.kind != CollectionEventKind.UPDATE) { // catch events only if necessary
+//					var selection:IList = editor.diagramShell.selectedItems;
+//					if (selection == null || selection.length == 0 || !(selection.getItemAt(0) is Node)) { // happens when changing active view						
+//						return;
+//					}					
+//					propertiesForm.refreshForm(Node(event.items[0]), true);					
+//				}
+			}
+						
+		]]>
+	</fx:Script>
+		
+	<ns:PropertiesComponent id="propertiesForm" width="30%" height="100%" />
+	
+</s:Group>

@@ -35,6 +35,9 @@ public class CoreConstants {
 	
 	public final static String DEBUG = "debug";
 	
+	public static final String PREFERENCE_TYPE = "preference";
+	public static final String PREFERENCE_FILE_TYPE = "preferencesFile";
+		
 	//////////////////////////////////
 	// Node properties
 	//////////////////////////////////

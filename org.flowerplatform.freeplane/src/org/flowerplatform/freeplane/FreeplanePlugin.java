@@ -31,6 +31,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.controller.DefaultPropertiesProvider;
@@ -116,8 +117,10 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_RESOURCE_PREFIX + MIND_MAP_STYLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider());
+
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.PREFERENCE_TYPE);
 		
-		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());	
+		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
