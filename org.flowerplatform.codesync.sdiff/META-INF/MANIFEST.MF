@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Structured_diff
+Bundle-SymbolicName: org.flowerplatform.codesync.sdiff
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.flowerplatform.core,
+ org.flowerplatform.util, 
+ org.flowerplatform.codesync,
+ org.eclipse.compare.core
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.flowerplatform.codesync.structured_diff.CodeSyncSdiffPlugin

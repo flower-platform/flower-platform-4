@@ -68,7 +68,7 @@ public class CodeSyncTest {
 	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
-	private static final String resourceNodeId = new Node(Utils.getUri(CodeSyncConstants.CODESYNC_TYPE, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm"), CodeSyncConstants.CODESYNC_TYPE).getNodeUri();
+	private static final String resourceNodeId = new Node(Utils.getUri(CodeSyncConstants.CODESYNC, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

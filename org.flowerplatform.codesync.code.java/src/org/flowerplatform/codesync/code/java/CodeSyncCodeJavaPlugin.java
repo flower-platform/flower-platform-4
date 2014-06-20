@@ -16,6 +16,8 @@
 package org.flowerplatform.codesync.code.java;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_RIGHT;
 import static org.flowerplatform.codesync.code.CodeSyncCodeConstants.FILE;
 import static org.flowerplatform.codesync.code.CodeSyncCodeConstants.FOLDER;
@@ -361,6 +363,8 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 	private TypeDescriptor createNodeTypeDescriptor(String type, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
 		descriptor.addCategory(CodeSyncConstants.CATEGORY_CODESYNC);
+		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
+		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
 		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
 		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
 		return descriptor;

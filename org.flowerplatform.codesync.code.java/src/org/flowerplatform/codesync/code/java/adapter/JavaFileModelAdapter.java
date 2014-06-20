@@ -30,8 +30,8 @@ import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.file.FileHolder;
 
 /**
  * Mapped to files with the extension <code>java</code>. Chidren are {@link ASTNode}s.
@@ -80,8 +80,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	protected Object createFileInfo(Object file) {
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setCompilerOptions(getOptions());
-		boolean fileExists = CorePlugin.getInstance().getFileAccessController().exists(file);
-		char[] initialContent = fileExists ? getFileContent(file) : new char[0];
+		char[] initialContent = getFileContent(file);
 		parser.setSource(initialContent);
 		CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
 		astRoot.recordModifications();
@@ -95,8 +94,11 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	}
 	
 	private char[] getFileContent(Object file) {
-		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
-		return fileAccessController.readFileToString(file).toCharArray();
+		boolean fileExists = ((FileHolder) file).exists();
+		if (!fileExists) {
+			return new char[0];
+		}
+		return ((FileHolder) file).getContent().toCharArray();
 	}
 
 	@Override

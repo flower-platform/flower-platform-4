@@ -24,9 +24,14 @@ import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
  */
 public abstract class AstModelElementAdapter extends AbstractModelAdapter {
 
+	public AstModelElementAdapter() {
+		setOrderIndex(-10000);
+	}
+	
 	@Override
 	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight) {
-		throw new UnsupportedOperationException("AstModelElementAdapter.removeFromMap() attempted.");
+//		throw new UnsupportedOperationException("AstModelElementAdapter.removeFromMap() attempted.");
+		return super.removeFromMap(element, leftOrRightMap, isRight);
 	}
 
 	abstract protected void updateUID(Object element, Object correspondingElement);
