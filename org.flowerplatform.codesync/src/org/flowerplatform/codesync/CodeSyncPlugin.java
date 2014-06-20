@@ -288,8 +288,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		MatchController matchController = new MatchController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
-			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, matchController)
-			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, matchController)
+//			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, matchController)
+//			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, matchController)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_TYPE).setTitleAs("Match Type").setReadOnlyAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_FEATURE).setTitleAs("Feature").setReadOnlyAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_LEFT).setTitleAs("Children Modified (Left)").setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))

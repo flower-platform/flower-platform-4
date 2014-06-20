@@ -56,6 +56,7 @@
       <plugin id="org.flowerplatform.codesync.sdiff"/>
       <plugin id="org.flowerplatform.core"/>
       <plugin id="org.flowerplatform.flex_client.codesync"/>
+      <plugin id="org.flowerplatform.flex_client.codesync.sdiff"/>
       <plugin id="org.flowerplatform.flex_client.core"/>
       <plugin id="org.flowerplatform.flex_client.host_app"/>
       <plugin id="org.flowerplatform.flex_client.host_app.config.web"/>
@@ -104,6 +105,7 @@
       <plugin id="org.flowerplatform.codesync.sdiff" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.codesync" autoStart="true" startLevel="0" />
+      <plugin id="org.flowerplatform.flex_client.codesync.sdiff" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.host_app" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.host_app.config.web" autoStart="true" startLevel="0" />

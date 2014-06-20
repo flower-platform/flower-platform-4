@@ -7,5 +7,6 @@ public class CodeSyncSdiffConstants {
 	//////////////////////////////////
 	
 	public static final String STRUCTURE_DIFF = "structureDiff";
+	public static final String STRUCTURE_DIFF_EXTENSION = ".sdiff";
 	
 }
