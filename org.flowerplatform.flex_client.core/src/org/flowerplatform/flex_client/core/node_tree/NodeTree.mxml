@@ -39,16 +39,11 @@
 				var resourceUri:String = String(pair.a);
 				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.subscribe(resourceUri, nodeRegistry, subscribeResultCallback, subscribeFaultCallback);
 			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				// TODO Auto Generated method stub
-				return null;
-			}
-			
+						
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewHost = viewHost;
 			}
-				
+												
 			protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
 				treeList.rootNode = rootNode;
 				nodeRegistry.expand(rootNode);

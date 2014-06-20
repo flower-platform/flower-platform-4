@@ -118,8 +118,6 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_RESOURCE_PREFIX + MIND_MAP_STYLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider());
 
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.PREFERENCE_TYPE);
-		
 		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());
 	}
 

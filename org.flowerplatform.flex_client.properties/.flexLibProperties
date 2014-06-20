@@ -12,6 +12,7 @@
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.StylablePropertyLineRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.PreferencePropertyLineRenderer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

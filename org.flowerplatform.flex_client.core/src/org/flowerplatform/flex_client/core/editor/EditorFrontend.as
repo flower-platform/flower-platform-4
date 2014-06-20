@@ -25,9 +25,9 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.layout.ITitleDecorator;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
@@ -40,7 +40,7 @@ package org.flowerplatform.flex_client.core.editor {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator {
+	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator, IActionProvider {
 		
 		private var _editorInput:String;
 				

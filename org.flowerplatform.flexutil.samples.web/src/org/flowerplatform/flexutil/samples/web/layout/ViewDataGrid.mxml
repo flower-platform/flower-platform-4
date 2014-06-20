@@ -36,12 +36,6 @@
 			{
 				_viewHost = value;
 			}
-
-			
-			public function getActions(selection:IList):Vector.<IAction>
-			{
-				return null;
-			}
 			
 			public function getSelection():IList
 			{

@@ -24,6 +24,7 @@ package com.crispico.flower.util.layout {
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.context_menu.FillContextMenuEvent;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
@@ -111,7 +112,7 @@ package com.crispico.flower.util.layout {
 			buttonBar.paddingLeft = 2;
 			buttonBar.paddingRight = 2;
 			buttonBar.horizontalAlign = "right";
-			buttonBar.height = 24;
+			buttonBar.height = activeViewContent is IActionProvider ? 24 : 0;
 			addChild(buttonBar);
 			
 			addElement(activeViewContent);
@@ -144,7 +145,7 @@ package com.crispico.flower.util.layout {
 			}
 			
 			selection = ISelectionProvider(viewContent).getSelection();
-			allActions = viewContent.getActions(selection);
+			allActions = viewContent is IActionProvider ? IActionProvider(viewContent).getActions(selection) : null;
 			contextForActions = null;
 			
 			buttonBar.removeAllElements();
