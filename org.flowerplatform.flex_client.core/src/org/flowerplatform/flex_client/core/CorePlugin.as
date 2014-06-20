@@ -54,6 +54,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
+	import org.flowerplatform.flex_client.core.node_tree.GenericNodeTreeViewProvider;
+	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
@@ -160,6 +162,9 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
+
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
+			editorClassFactoryActionProvider.addActionClass(NodeTreeAction);
 			
 			editorClassFactoryActionProvider.addActionClass(UndoAction);
 			editorClassFactoryActionProvider.addActionClass(RedoAction);
@@ -347,11 +352,13 @@ package org.flowerplatform.flex_client.core {
 			}
 			return null;
 		}
-		
+
+
 		/**
 		 * @author Mariana Gheorghe
+		 * @author Claudiu Matei
 		 */
-		public function openEditor(node:Node):void {
+		public function getSubscribableResource(node:Node):Pair {
 			var resourceUri:String = node.nodeUri;
 			var contentType:String = null;
 			if (!node.properties[CoreConstants.USE_NODE_URI_ON_NEW_EDITOR]) {
@@ -365,10 +372,25 @@ package org.flowerplatform.flex_client.core {
 			if (contentType == null) {
 				contentType = contentTypeRegistry.defaultContentType;
 			}
+			var sr:Pair = new Pair();
+			sr.a = resourceUri;
+			sr.b = contentType;
+			return sr;
+		}
+		
+		/**
+		 * @author Mariana Gheorghe
+		 * @author Claudiu Matei
+		 */
+		public function openEditor(node:Node):void {
+			var sr:Pair = getSubscribableResource(node);
+			var resourceUri:String = sr.a as String;
+			var contentType:String = sr.b as String;
+			
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
 			editorDescriptor.openEditor(resourceUri, true);
 		}
-		
+
 		/**
 		 * @author Cristina Constantinescu
 		 */

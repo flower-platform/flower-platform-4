@@ -18,6 +18,9 @@ package org.flowerplatform.flex_client.mindmap {
 	import mx.collections.ArrayCollection;
 	import mx.utils.ObjectUtil;
 	
+	import mx.collections.ArrayCollection;
+	import mx.utils.ObjectUtil;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.InplaceEditorAction;

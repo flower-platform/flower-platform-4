@@ -92,6 +92,9 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * Don't remove editors immediately. If there are dirty editors, show save dialog.
 		 */ 
 		public function viewsRemovedHandler(e:ViewsRemovedEvent):void {
+			if (!e.canPreventDefault) {
+				return;
+			}
 			var nodeRegistries:Array = [];
 			for each (var view:Object in e.removedViews) {
 				var viewComponent:UIComponent = FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(UIComponent(view));			

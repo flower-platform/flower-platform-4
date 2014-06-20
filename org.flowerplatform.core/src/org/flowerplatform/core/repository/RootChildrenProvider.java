@@ -74,9 +74,6 @@ public class RootChildrenProvider extends AbstractController implements IChildre
 			throw new RuntimeException("Error accessing the workspace", e);
 		}
 		for (Object user : fileAccessController.listFiles(root)) {
-			//TODO CM hack: .gitignore should also be ignored
-			if (((File)user).isFile()) continue;
-			
 			if (METADATA.equals(fileAccessController.getName(user))) {
 				// skip the .metadata directory from the workspace
 				continue;

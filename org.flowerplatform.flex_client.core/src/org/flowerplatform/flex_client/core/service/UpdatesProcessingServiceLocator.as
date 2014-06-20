@@ -136,5 +136,6 @@ package org.flowerplatform.flex_client.core.service {
 				super.faultHandler(event, responder);
 			}
 		}
+
 	}
 }

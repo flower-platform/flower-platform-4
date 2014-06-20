@@ -331,5 +331,5 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService)));
 	}
-	
+
 }
