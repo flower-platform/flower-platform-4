@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.codesync.code.java;
 
+import static org.flowerplatform.util.UtilConstants.CATEGORY_PREFIX;
+
 import org.flowerplatform.resources.ResourcesPlugin;
 
 /**
@@ -27,6 +29,11 @@ public class CodeSyncCodeJavaConstants {
 	////////////////////////////////////////////
 	// Node types
 	////////////////////////////////////////////
+	
+	public static final String CATEGORY_TYPE = CATEGORY_PREFIX + "codesync-java-type";
+	public static final String CATEGORY_CAN_CONTAIN_TYPES = CATEGORY_PREFIX + "codesync-java-can-contain-types";
+	public static final String CATEGORY_HAS_SUPER_INTERFACES = CATEGORY_PREFIX + "codesync-java-has-super-interfaces";
+	public static final String CATEGORY_MODIFIABLE = CATEGORY_PREFIX + "codesync-java-modifiable";
 	
 	public static final String CLASS = "javaClass";
 	public static final String INTERFACE = "javaInterface";

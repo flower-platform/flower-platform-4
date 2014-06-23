@@ -9,4 +9,7 @@ public class CodeSyncSdiffConstants {
 	public static final String STRUCTURE_DIFF = "structureDiff";
 	public static final String STRUCTURE_DIFF_EXTENSION = ".sdiff";
 	
+	// relative to repository
+	public static final String STRUCTURE_DIFFS_FOLDER = "sdiffs";
+	
 }

@@ -27,9 +27,6 @@ public class CodeSyncRepositoryChildrenProvider extends AbstractController imple
 		String repo = FileControllerUtils.getRepo(node);
 		children.add(new Node(Utils.getUri(CODESYNC, repo), CODESYNC));
 		children.add(new Node(Utils.getUri(MDA, repo), MDA));
-		
-		children.add(new Node(Utils.getUri("structureDiff", repo), "structureDiff"));
-		
 		return children;
 	}
 

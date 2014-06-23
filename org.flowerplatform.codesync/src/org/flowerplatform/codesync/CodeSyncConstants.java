@@ -41,7 +41,6 @@ public class CodeSyncConstants {
 	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM);
 	
 	public static final String MATCH = "match";
-	public static final String MATCH_ID_SEPARATOR = "/";
 			
 	private static final String getFileExtension(String extension) {
 		return "." + extension;
@@ -75,7 +74,8 @@ public class CodeSyncConstants {
 	public static final String CHILDREN = "children";
 	
 	public static final String MATCH_TYPE ="matchType";
-	public static final String MATCH_FEATURE ="feature";
+	public static final String MATCH_FEATURE = "feature";
+	public static final String MATCH_MODEL_ELEMENT_TYPE = "modeElementType";
 	public static final String MATCH_CHILDREN_MODIFIED_LEFT ="childrenModifiedLeft";
 	public static final String MATCH_CHILDREN_MODIFIED_RIGHT ="childrenModifiedRight";
 	public static final String MATCH_CHILDREN_CONFLICT ="childrenConflict";

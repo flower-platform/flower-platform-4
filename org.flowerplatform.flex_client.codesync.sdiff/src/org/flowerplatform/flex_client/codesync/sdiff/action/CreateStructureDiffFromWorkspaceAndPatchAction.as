@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 	import org.flowerplatform.flex_client.codesync.sdiff.CreateStructureDiffDialog;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -15,7 +16,7 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 		public function CreateStructureDiffFromWorkspaceAndPatchAction() {
 			super();
 			
-			label = "Create Structure Diff from Workspace and Patch";
+			label = Resources.getMessage("codesync.sdiff.action.createSdiffFromWorkspaceAndPatch");
 		}
 		
 		override public function get visible():Boolean {

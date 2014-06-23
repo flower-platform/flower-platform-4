@@ -8,14 +8,22 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_CONFLICT
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_LEFT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_RIGHT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_FEATURE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_MODEL_ELEMENT_TYPE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
+import static org.flowerplatform.codesync.structured_diff.CodeSyncSdiffConstants.STRUCTURE_DIFFS_FOLDER;
+import static org.flowerplatform.codesync.structured_diff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
+import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
@@ -24,20 +32,19 @@ import org.eclipse.compare.patch.IFilePatchResult;
 import org.eclipse.compare.patch.PatchConfiguration;
 import org.eclipse.compare.patch.ReaderCreator;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.file.StringHolder;
 
@@ -47,27 +54,41 @@ import org.flowerplatform.util.file.StringHolder;
 @SuppressWarnings("restriction")
 public class StructureDiffService {
 
-	public Node createStructureDiff(String patch, String sDiffPath) {
+	/**
+	 * 
+	 * @param patch
+	 * @param repo
+	 * @param sdiffPath relative to structure diffs folder
+	 * @return
+	 */
+	public Node createStructureDiff(String patch, String repo, String sdiffPath) {
 		boolean reverse = true;
 		
-		String repo = sDiffPath.substring(0, sDiffPath.indexOf("|"));
-		String sdiffFileUri = createSdiffFile(repo, sDiffPath.substring(sDiffPath.lastIndexOf("/") + 1));
-		sdiffFileUri = sdiffFileUri.replace("file", "fpp");
-		new ResourceServiceRemote().subscribeToParentResource(sdiffFileUri);
-		Node sdiffRoot = CorePlugin.getInstance().getResourceService().getNode(sdiffFileUri);
+		// create file and subscribe to sdiff root
+		String sdiffFileUri = createSdiffFile(repo, sdiffPath);
+		String sdiffUri = sdiffFileUri.replace(FILE_SCHEME, "fpp");
+		new ResourceServiceRemote().subscribeToParentResource(sdiffUri);
+		Node sdiffRoot = CorePlugin.getInstance().getResourceService().getNode(sdiffUri);
+		CorePlugin.getInstance().getNodeService().setProperty(sdiffRoot, NAME,
+				ResourcesPlugin.getInstance().getMessage("codesync.sdiff.structureDiff"),
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
+		// prepare to parse patch
 		PatchReader reader = new PatchReader();
 		try {
 			reader.parse(new BufferedReader(new StringReader(patch)));
 		} catch (IOException e) {
-			throw new RuntimeException("Cannot parse patch", e);
+			throw new RuntimeException(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.error.cannotParsePatch"), e);
 		}
 		
 		// apply patch per file
 		FilePatch2[] filePatches = reader.getDiffs();
+		if (filePatches.length == 0) {
+			throw new RuntimeException(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.error.noFileDiffs"));
+		}
 		for (FilePatch2 filePatch : filePatches) {
 			// get the current file content
-			String filePath = repo + "/" + getFilePath(filePatch.getPath(true).toString(), reader.isGitPatch());
+			String filePath = repo + "/" + getFilePath(filePatch.getPath(reverse).toString(), reader.isGitPatch());
 			String currentContent = getFileContent(filePath);
 			
 			// apply patch
@@ -82,14 +103,15 @@ public class StructureDiffService {
 			}
 			
 			// start codesync
-			Match match = sync(patchedContent, currentContent, filePath.substring(filePath.lastIndexOf("/")));
+			Match match = sync(patchedContent, currentContent, filePath.substring(filePath.lastIndexOf("/") + 1));
 			addToSdiffFile(sdiffRoot, match);
 		}
 		
-		CorePlugin.getInstance().getResourceService().save(sdiffFileUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+		// save the structure diff file
+		CorePlugin.getInstance().getResourceService().save(sdiffUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		
-		String nodeUri = FileControllerUtils.createFileNodeUri(repo, sDiffPath);
-		return CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		// return the file node
+		return CorePlugin.getInstance().getResourceService().getNode(sdiffFileUri);
 	}
 	
 	private Match sync(String before, String after, String name) {
@@ -128,8 +150,10 @@ public class StructureDiffService {
 		
 		// populate properties from match
 		CorePlugin.getInstance().getNodeService().setProperty(child, NAME, match.getMatchKey(), context);
-		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_TYPE, match.getMatchType(), context);
+		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_TYPE, match.getMatchType().toString(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_FEATURE, match.getFeature() == null ? "" : match.getFeature(), context);
+		Object modelElementType = match.getCodeSyncAlgorithm().getTypeProvider().getType(match.getDelegate());
+		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_LEFT, match.isChildrenModifiedLeft(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_RIGHT, match.isChildrenModifiedRight(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_CONFLICT, match.isChildrenConflict(), context);
@@ -143,15 +167,75 @@ public class StructureDiffService {
 		}
 	}
 	
+	/**
+	 * Create a new structure diff file in the structure diffs folder
+	 * (also create the folder if it does not yet exist).
+	 * 
+	 * <p>
+	 * If a file with that name already exists, the next available name
+	 * will be used instead (e.g. trying to create Untitled, when
+	 * Untitled, Untitled1 and Untitled2 already exist => Untitled3 
+	 * will be created).
+	 */
 	private String createSdiffFile(String repo, String fileName) {
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(
-				FileControllerUtils.createFileNodeUri(repo, "sdiffs"));
+		// subscribe to file system to avoid errors
+		new ResourceServiceRemote().subscribeToParentResource(Utils.getUri(FILE_SCHEME, repo));
+		
+		// check if structure diffs folder exists
+		String sdiffsFolderUri = createFileNodeUri(repo, STRUCTURE_DIFFS_FOLDER);
+		Object sdiffsFolder;
+		try {
+			sdiffsFolder = CorePlugin.getInstance().getFileAccessController().getFile(getFilePathWithRepo(sdiffsFolderUri));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		if (!CorePlugin.getInstance().getFileAccessController().exists(sdiffsFolder)) {
+			// create the folder
+			createSdiffsFolder(repo);
+		}
+		
+		// create the file
+		fileName = getNextAvailableName(repo, fileName);
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(sdiffsFolderUri);
 		Node child = new Node(null, FILE_NODE_TYPE);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		context.getContext().put(NAME, fileName);
+		context.getContext().put(NAME, fileName + STRUCTURE_DIFF_EXTENSION);
 		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, false);
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
 		return child.getNodeUri();
+	}
+	
+	private void createSdiffsFolder(String repo) {
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(createFileNodeUri(repo, null));
+		Node child = new Node(null, FILE_NODE_TYPE);
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		context.getContext().put(NAME, STRUCTURE_DIFFS_FOLDER);
+		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, true);
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
+	}
+	
+	private String getNextAvailableName(String repo, String fileName) {
+		try {
+			Object file = CorePlugin.getInstance().getFileAccessController().getFile(
+					repo + "/" + STRUCTURE_DIFFS_FOLDER + "/" + fileName + STRUCTURE_DIFF_EXTENSION);
+			if (!CorePlugin.getInstance().getFileAccessController().exists(file)) {
+				return fileName;
+			}
+			// first group is name, second group is index
+			Pattern pattern = Pattern.compile("(.*?)(\\d*)$");
+			Matcher matcher = pattern.matcher(fileName);
+			if (matcher.find()) {
+				int index = 1;
+				if (matcher.group(2).length() > 0) {
+					index = Integer.parseInt(matcher.group(2));
+				}
+				index++;
+				return getNextAvailableName(repo, matcher.group(1) + index);
+			}
+			return getNextAvailableName(repo, fileName + "2");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	private String getFilePath(String path, boolean isGitPatch) {
