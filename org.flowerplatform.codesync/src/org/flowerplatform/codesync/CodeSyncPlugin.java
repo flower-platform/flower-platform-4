@@ -76,7 +76,9 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.remote.SubscriptionInfo;
 import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -502,12 +504,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	 * @author Sebastian Solomon
 	 */
 	public Node getResource(Object file) {
-//		URI uri = EditorModelPlugin.getInstance().getModelAccessController().getURIFromFile(file);
-//		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
-//		return getResource(resourceSet, uri, fileExists);
-		NodeService service = CorePlugin.getInstance().getNodeService();
-		Node node = new Node((String) file, null);
-		return service.getChildren(node, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true)).get(0);
+		SubscriptionInfo info = new ResourceServiceRemote().subscribeToParentResource((String) file);
+		return info.getResourceNode();
 	}
 	
 //	

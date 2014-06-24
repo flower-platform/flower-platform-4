@@ -79,6 +79,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	@Override
 	public String getLabel(Object modelElement) {
 		return ((FileHolder) modelElement).getName();
+//		return CorePlugin.getInstance().getFileAccessController().getName(modelElement);
 	}
 	
 	@Override

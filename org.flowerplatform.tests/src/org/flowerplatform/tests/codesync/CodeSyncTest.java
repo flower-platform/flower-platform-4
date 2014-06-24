@@ -19,6 +19,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.SUPER_CLASS;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE;
+import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.junit.Assert.assertEquals;
@@ -43,6 +44,7 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.Utils;
@@ -68,7 +70,7 @@ public class CodeSyncTest {
 	
 	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
 	
-	private static final String resourceNodeId = new Node(Utils.getUri(CodeSyncConstants.CODESYNC, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm"), CodeSyncConstants.CODESYNC).getNodeUri();
+	private static final String resourceNodeId = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|FAP-FlowerPlatform4.mm"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

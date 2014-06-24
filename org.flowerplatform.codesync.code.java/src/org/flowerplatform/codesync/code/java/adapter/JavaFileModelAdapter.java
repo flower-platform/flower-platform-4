@@ -30,6 +30,7 @@ import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.file.FileHolder;
 
@@ -94,11 +95,14 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	}
 	
 	private char[] getFileContent(Object file) {
+//		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		boolean fileExists = ((FileHolder) file).exists();
+//		boolean fileExists = fileAccessController.exists(file);
 		if (!fileExists) {
 			return new char[0];
 		}
 		return ((FileHolder) file).getContent().toCharArray();
+//		return fileAccessController.readFileToString(file).toCharArray();
 	}
 
 	@Override
