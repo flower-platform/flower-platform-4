@@ -19,6 +19,7 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.PropertyWrapper;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.util.controller.AbstractController;
@@ -50,18 +51,20 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 			rawNodeData.addExtension(attributeTable);
 		}		
 		
+		Object propertyValue = value instanceof PropertyWrapper ? ((PropertyWrapper) value).getValue() : value;
+		
 		boolean set = false;
 		for (Attribute attribute : attributeTable.getAttributes()) {
 			if (attribute.getName().equals(property)) {
 				// there was already an attribute with this value; overwrite it
-				attribute.setValue(value);
+				attribute.setValue(propertyValue);
 				set = true;
 				break;
 			}
 		}
 		if (!set) {
 			// new attribute; add it
-			attributeTable.getAttributes().add(new Attribute(property, value));
+			attributeTable.getAttributes().add(new Attribute(property, propertyValue));
 		}
 		rawNodeData.getMap().setSaved(false);		
 	}

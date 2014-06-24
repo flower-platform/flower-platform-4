@@ -18,6 +18,14 @@ package org.flowerplatform.flex_client.properties.ui {
 	import spark.components.Group;
 	import spark.components.Scroller;
 	
+	/**
+	 * Component can be used to display a node's properties.
+	 * 
+	 * <p>
+	 * Use <code>refreshForm</code> to populate with data and <code>clearForm</code> to clear data.
+	 * 
+	 * @author Cristina Constantinescu
+	 */ 
 	public class PropertiesComponent extends Scroller {
 		
 		protected var propertiesForm:Form;
@@ -104,6 +112,9 @@ package org.flowerplatform.flex_client.properties.ui {
 			return properties;
 		}
 		
+		/**
+		 * Note: code copied and adapted from SequentialLayoutVisualChildrenController (same mechanism, but different data, hard to create common code).
+		 */ 
 		private function refreshRenderers(node:Node, includeRawProperties:Boolean = false):void {
 			if (node == null) {
 				return;

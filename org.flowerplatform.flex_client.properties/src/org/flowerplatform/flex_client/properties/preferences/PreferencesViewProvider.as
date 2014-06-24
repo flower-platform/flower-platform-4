@@ -23,7 +23,7 @@ package org.flowerplatform.flex_client.properties.preferences {
 		}
 		
 		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
-			return Resources.propertiesIcon;
+			return Resources.preferencesIcon;
 		}
 		
 	}

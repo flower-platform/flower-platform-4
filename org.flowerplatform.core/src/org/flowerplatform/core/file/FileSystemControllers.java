@@ -34,7 +34,6 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_DAT
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;

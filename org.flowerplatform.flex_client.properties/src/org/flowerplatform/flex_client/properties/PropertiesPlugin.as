@@ -93,8 +93,8 @@ package org.flowerplatform.flex_client.properties {
 				.addAdditiveController(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, new PropertyDescriptorProvider())
 				.addAdditiveController(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, new RawPropertyDescriptorProvider(10000));
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(PropertiesConstants.PREFERENCE_TYPE)
-				.addAdditiveController(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, new PreferencePropertyDescriptorProvider(-1000));
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(PropertiesConstants.PREFERENCE_CATEGORY_TYPE)
+				.addAdditiveController(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, new PreferencePropertyDescriptorProvider(-1000)); // higher priority than one from category.all
 		}
 		
 		override protected function registerMessageBundle():void {

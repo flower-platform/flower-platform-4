@@ -88,7 +88,9 @@ public class UpdateController extends AbstractController
 
 	@Override
 	public void unsetProperty(Node node, String key, ServiceContext<NodeService> context) {
-		setUnsetProperty(node, key, node.getPropertyValueOrWrapper(key), false, context);
+		Object propertyValue = node.getPropertyValueOrWrapper(key);
+		// consider property "unset" if its value is null (doesn't exist in map)
+		setUnsetProperty(node, key, propertyValue, propertyValue == null, context);
 	}
 	
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext<NodeService> context) {		

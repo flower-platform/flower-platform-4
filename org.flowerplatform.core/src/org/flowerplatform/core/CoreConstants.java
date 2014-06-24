@@ -36,6 +36,7 @@ public class CoreConstants {
 	public final static String DEBUG = "debug";
 	
 	public static final String PREFERENCE_TYPE = "preference";
+	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
 		
 	//////////////////////////////////
 	// Node properties
@@ -177,5 +178,9 @@ public class CoreConstants {
 	//////////////////////////////////
 	
 	public static final String METADATA = ".metadata";
+	
+	public static final String DEFAULT_SUFFIX = ".default";
+	public static final String GLOBAL_SUFFIX = ".global";
+	public static final String USER_SUFFIX = ".user";
 		
 }

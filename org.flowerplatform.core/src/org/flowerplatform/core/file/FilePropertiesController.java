@@ -150,7 +150,7 @@ public class FilePropertiesController extends AbstractController implements IPro
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
-//		node.getOrPopulateProperties().remove(property);
+		node.getOrPopulateProperties().remove(property);
 	}
 
 }

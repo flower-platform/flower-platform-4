@@ -524,5 +524,11 @@ package org.flowerplatform.flex_client.resources {
 			"division" : mindmap_divisionIcon
 		};
 		
+		[Embed(source="/properties/preference.png")]
+		public static const preferenceIcon:Class;
+		
+		[Embed(source="/properties/preferences.png")]
+		public static const preferencesIcon:Class;
+		
 	}
 }

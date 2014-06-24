@@ -33,7 +33,7 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class PropertyLineRenderer extends FormItem implements IFocusManagerComponent, IPropertyLineRenderer {
+	public class PropertyLineRenderer extends FormItem implements IPropertyLineRenderer {
 						
 		public var savePropertyEnabled:Boolean = true;
 		
@@ -105,7 +105,7 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			nodeUpdated();
 		}		
 		
-		public function commit():void {			
+		public function commit(callbackHandler:Function = null):void {			
 			if (!savePropertyEnabled || propertyDescriptor.readOnly || !renderer.isValidValue()) {
 				return;
 			}
@@ -115,21 +115,22 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			var propertyValueOrWrapper:Object = node.getPropertyValueOrWrapper(propertyDescriptor.name);
 						
 			if (oldPropertyValue != newPropertyValue) {
-				prepareCommit(propertyValueOrWrapper, newPropertyValue);
+				var newPropertyValueOrWrapper:Object = prepareCommit(propertyValueOrWrapper, newPropertyValue);
 				
 				CorePlugin.getInstance().serviceLocator.invoke(
 					"nodeService.setProperty", 
-					[node.nodeUri, propertyDescriptor.name, propertyValueOrWrapper]);
+					[node.nodeUri, propertyDescriptor.name, newPropertyValueOrWrapper], callbackHandler);
 			}	
 		}
 		
-		protected function prepareCommit(propertyValueOrWrapper:Object, newPropertyValue:Object):void {
+		protected function prepareCommit(propertyValueOrWrapper:Object, newPropertyValue:Object):Object {
 			// set new value
 			if (propertyValueOrWrapper is PropertyWrapper) {
 				PropertyWrapper(propertyValueOrWrapper).value = newPropertyValue;
 			} else {
 				propertyValueOrWrapper = newPropertyValue;
 			}
+			return propertyValueOrWrapper;
 		}
 		
 		public function get value():Object {

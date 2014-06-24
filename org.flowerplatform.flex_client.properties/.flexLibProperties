@@ -12,9 +12,8 @@
     <classEntry path="org.flowerplatform.flex_client.properties.property_renderer.BooleanPropertyRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.StylablePropertyLineRenderer"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.remote.IPropertyDescriptor"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.controllers.PropertyDescriptorProvider"/>
-    <classEntry path="org.flowerplatform.flex_client.properties.controllers.RawPropertyDescriptorProvider"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.PreferencePropertyLineRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.properties.property_line_renderer.PreferenceFormItemSkin"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

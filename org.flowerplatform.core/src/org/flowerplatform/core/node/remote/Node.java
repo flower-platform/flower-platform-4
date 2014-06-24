@@ -91,6 +91,9 @@ public class Node {
 	 * <strong>WARNING:</strong> shouldn't be used for writing values. E.g. if {@link IPropertiesProvider}'s try
 	 * to use this method, an infinite call loop will be created ({@link StackOverflowError}).
 	 * 
+	 * <p>
+	 * Note: used {@link #getPropertyValue(String)} when necessary.
+	 * 
 	 * @return The properties map (populated if not already populated).
 	 */
 	public Map<String, Object> getOrPopulateProperties() {
@@ -109,10 +112,7 @@ public class Node {
 	public void setRawNodeData(Object rawNodeData) {
 		this.rawNodeData = rawNodeData;
 	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
+		
 	public Object getPropertyValue(String property) {
 		Object propertyObj = getPropertyValueOrWrapper(property);
 		if (propertyObj instanceof PropertyWrapper) {

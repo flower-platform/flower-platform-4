@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
 /**
@@ -115,7 +117,7 @@ public class NodeServiceRemote {
 	}
 	
 	public Node getNode(String fullNodeId) {	
-		return CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
+		return CorePlugin.getInstance().getResourceService().getNode(fullNodeId, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
 	}
 	
 	private FullNodeIdWithChildren getChildQueryFromQuery(FullNodeIdWithChildren query, String fullChildNodeId) {

@@ -6,12 +6,15 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */ 
 	public class ShowPreferencesAction extends ActionBase {
 		
 		public function ShowPreferencesAction(){
 			super();
 			label = Resources.getMessage("preferences.action.show");
-			icon = Resources.propertiesIcon;
+			icon = Resources.preferencesIcon;
 			parentId = CoreConstants.TOOLS_MENU_ID;
 		}
 		

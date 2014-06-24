@@ -48,7 +48,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyWrapper;
@@ -269,9 +268,8 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		}
 		
 		if (addAdditionalSetPropertyUpdatesFor != null) {
-			node = CorePlugin.getInstance().getResourceService().getNode(node.getNodeUri());
 			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {				
-				for (Map.Entry<String, Object> entry : node.getProperties().entrySet()) {
+				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
 					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {
@@ -369,11 +367,10 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		} else {
 			rawNodeData.getMap().setSaved(false);			
 		}
-		
+				
 		if (addAdditionalUnsetPropertyUpdatesFor != null) {
-			node = CorePlugin.getInstance().getResourceService().getNode(node.getNodeUri());
 			if (addAdditionalUnsetPropertyUpdatesFor.isEmpty()) {
-				for (Map.Entry<String, Object> entry : node.getProperties().entrySet()) {
+				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
 					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {

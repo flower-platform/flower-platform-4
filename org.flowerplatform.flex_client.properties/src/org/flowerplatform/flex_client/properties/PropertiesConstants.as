@@ -14,6 +14,8 @@
  * license-end
  */
 package org.flowerplatform.flex_client.properties {
+	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	public class PropertiesConstants {
 		
@@ -21,6 +23,7 @@ package org.flowerplatform.flex_client.properties {
 		// Descriptors
 		//////////////////////////////////
 		public static const PREFERENCE_TYPE:String = "preference";
+		public static const PREFERENCE_CATEGORY_TYPE:String = FlexUtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
 		
 		public static const PROPERTY_DESCRIPTOR:String = "propertyDescriptor";
 		
@@ -43,6 +46,10 @@ package org.flowerplatform.flex_client.properties {
 		public static const PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER:String = "ColorPicker";
 		public static const PROPERTY_DESCRIPTOR_TYPE_DATE:String = "Date";
 		public static const PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY:String = "";
+		
+		public static const DEFAULT_SUFFIX:String = ".default";
+		public static const GLOBAL_SUFFIX:String = ".global";
+		public static const USER_SUFFIX:String = ".user";
 		
 	}
 }

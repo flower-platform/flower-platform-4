@@ -58,10 +58,12 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			}
 		}
 		
-		override protected function prepareCommit(propertyValueOrWrapper:Object, newPropertyValue:Object):void {
-			super.prepareCommit(propertyValueOrWrapper, newPropertyValue);
+		override protected function prepareCommit(propertyValueOrWrapper:Object, newPropertyValue:Object):Object {
+			var newPropertyValueOrWrapper:Object = super.prepareCommit(propertyValueOrWrapper, newPropertyValue);
 			
-			StylePropertyWrapper(propertyValueOrWrapper).isDefault = false;
+			StylePropertyWrapper(newPropertyValueOrWrapper).isDefault = false;
+			
+			return newPropertyValueOrWrapper;
 		}
 		
 	}

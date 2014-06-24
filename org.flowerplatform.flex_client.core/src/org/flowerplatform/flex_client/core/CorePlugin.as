@@ -152,6 +152,7 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("resourceService");
 			serviceLocator.addService("downloadService");
 			serviceLocator.addService("uploadService");
+			serviceLocator.addService("preferenceService");
 			
  			updateTimer = new UpdateTimer(5000);
 			

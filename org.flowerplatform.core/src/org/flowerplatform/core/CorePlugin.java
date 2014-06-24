@@ -17,7 +17,6 @@ package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +45,8 @@ import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceService;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceSetService;
 import org.flowerplatform.core.node.resource.in_memory.InMemorySessionService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
+import org.flowerplatform.core.preference.PreferencePropertiesProvider;
+import org.flowerplatform.core.preference.remote.PreferencesServiceRemote;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
 import org.flowerplatform.core.repository.RootChildrenProvider;
@@ -215,6 +216,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("coreService", new CoreService());
 		getServiceRegistry().registerService("downloadService", new DownloadService());
 		getServiceRegistry().registerService("uploadService", new UploadService());
+		getServiceRegistry().registerService("preferenceService", new PreferencesServiceRemote());
 		
 		new ResourceUnsubscriber().start();
 		
@@ -249,8 +251,13 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
 			.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
 		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)
+			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PreferencePropertiesProvider().setOrderIndexAs(1000)); // after persistence props provider
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.PREFERENCE_TYPE)
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER).setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE));
+			.addCategory(CoreConstants.PREFERENCE_CATEGORY_TYPE)
+			// TODO CC: to remove when working at preferences persistence
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING).setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
 			
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
