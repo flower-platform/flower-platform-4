@@ -22,6 +22,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_EXTENSION;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_CONFLICT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_MODIFIED_LEFT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_MODIFIED_RIGHT;
@@ -61,6 +62,8 @@ import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
 import org.flowerplatform.codesync.controller.CodeSyncSubscribableResourceProvider;
 import org.flowerplatform.codesync.controller.ModelResourceSetProvider;
+import org.flowerplatform.codesync.line_information_provider.ComposedLineInformationProvider;
+import org.flowerplatform.codesync.line_information_provider.ILineInformationProvider;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
@@ -96,6 +99,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	protected ComposedFullyQualifiedNameProvider fullyQualifiedNameProvider;
 	
 	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
+	
+	protected ComposedLineInformationProvider lineInformationProvider = new ComposedLineInformationProvider();
 
 	protected Map<String, List<String>> dataProvidersForDropDownListProperties = new HashMap<String, List<String>>();
 
@@ -150,6 +155,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	public ITypeProvider getTypeProvider(String technology) {
 		return typeProviders.get(technology);
+	}
+	
+	public void addLineInformationProvider(ILineInformationProvider provider) {
+		this.lineInformationProvider.addLineInformationProvider(provider);
+	}
+	
+	public ILineInformationProvider getLineInformationProvider() {
+		return lineInformationProvider;
 	}
 		
 	/**
@@ -296,8 +309,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT).setTitleAs(getLabel("codesync.match.children.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT).setTitleAs(getLabel("codesync.match.diffs.modifiedLeft")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setTitleAs(getLabel("codesync.match.diffs.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setTitleAs(getLabel("codesync.match.diffs.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN));
-	
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setTitleAs(getLabel("codesync.match.diffs.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setTitleAs(getLabel("codesync.match.body.modified")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN));
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());

@@ -99,6 +99,7 @@ import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePai
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider;
+import org.flowerplatform.codesync.code.java.line_information_provider.JavaOperationLineInformationProvider;
 import org.flowerplatform.codesync.code.java.type_provider.JavaTypeProvider;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
@@ -136,6 +137,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 		
 		CodeSyncPlugin.getInstance().addTypeProvider(TECHNOLOGY, new JavaTypeProvider());
+		CodeSyncPlugin.getInstance().addLineInformationProvider(new JavaOperationLineInformationProvider());
 		
 		MemberOfChildCategoryDescriptor childrenDescriptor = new MemberOfChildCategoryDescriptor(CodeSyncConstants.CHILDREN);
 	

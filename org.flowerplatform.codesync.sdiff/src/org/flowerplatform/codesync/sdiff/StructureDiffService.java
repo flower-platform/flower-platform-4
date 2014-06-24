@@ -1,4 +1,4 @@
-package org.flowerplatform.codesync.structured_diff;
+package org.flowerplatform.codesync.sdiff;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_CONFLICT;
@@ -10,8 +10,8 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_FEATURE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_MODEL_ELEMENT_TYPE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
-import static org.flowerplatform.codesync.structured_diff.CodeSyncSdiffConstants.STRUCTURE_DIFFS_FOLDER;
-import static org.flowerplatform.codesync.structured_diff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFFS_FOLDER;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
@@ -27,11 +27,15 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
+import org.eclipse.compare.internal.core.patch.Hunk;
 import org.eclipse.compare.internal.core.patch.PatchReader;
+import org.eclipse.compare.patch.IFilePatch2;
 import org.eclipse.compare.patch.IFilePatchResult;
+import org.eclipse.compare.patch.IHunk;
 import org.eclipse.compare.patch.PatchConfiguration;
 import org.eclipse.compare.patch.ReaderCreator;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
@@ -104,7 +108,7 @@ public class StructureDiffService {
 			
 			// start codesync
 			Match match = sync(patchedContent, currentContent, filePath.substring(filePath.lastIndexOf("/") + 1));
-			addToSdiffFile(sdiffRoot, match);
+			addToSdiffFile(sdiffRoot, match, filePatch);
 		}
 		
 		// save the structure diff file
@@ -142,7 +146,7 @@ public class StructureDiffService {
 		return match;
 	}
 	
-	private void addToSdiffFile(Node parent, Match match) {
+	private void addToSdiffFile(Node parent, Match match, FilePatch2 patch) {
 		// create child
 		Node child = new Node(null, MATCH);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
@@ -161,10 +165,76 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_MODIFIED_RIGHT, match.isDiffsModifiedRight(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_CONFLICT, match.isDiffsConflict(), context);
 		
+		// match to lines from patch
+		if (match.getLeft() != null && match.getRight() != null) {
+			Object model = match.getRight();
+			int modelStartLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getStartLine(model);
+			int modelEndLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getEndLine(model);
+			if (modelStartLine >= 0 && modelEndLine >= 0) {
+				CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, 
+						isBodyModified(patch, modelStartLine, modelEndLine), context);
+			}
+		}
+		
 		// recurse for submatches
 		for (Match subMatch : match.getSubMatches()) {
-			addToSdiffFile(child, subMatch);
+			addToSdiffFile(child, subMatch, patch);
 		}
+	}
+	
+	private boolean isBodyModified(IFilePatch2 patch, int modelStartLine, int modelEndLine) {
+		for (IHunk iHunk : patch.getHunks()) {
+			Hunk hunk = (Hunk) iHunk;
+			int hunkStartLine = hunk.getStart(true);
+			int hunkEndLine = hunkStartLine + hunk.getLength(true);
+			int overlap = overlap(hunkStartLine, hunkEndLine, modelStartLine, modelEndLine);
+			if (overlap == 0) {
+				// this hunk overlaps with the model element
+				// check if the modified lines appear in the model element
+				int index = hunkStartLine;
+				for (String line : hunk.getLines()) {
+					if (line.startsWith("+")) {
+						// added line
+						if (overlap(index, index, modelStartLine, modelEndLine) == 0) { 
+							return true;
+						}
+						index++;
+					} else if (line.startsWith("-")) {
+						// deleted line
+						if (overlap(index, index, modelStartLine, modelEndLine) == 0) { 
+							return true;
+						}
+					} else {
+						// context line, no change
+						index++;
+					}
+				}
+			}
+			if (overlap >= 0) {
+				// this hunk appears after the model element
+				// since the hunk are sorted, there's no need to continue
+				break;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @return 
+	 * <ul>
+	 * 	<li> -1, if the left line range appears before the right line range
+	 * 	<li> 0, if the ranges overlap
+	 * 	<li> 1, if the left line range appears after the right line range
+	 * </ul>
+	 */
+	private int overlap(int startLeft, int endLeft, int startRight, int endRight) {
+		if (endLeft < startRight) {
+			return -1;
+		}
+		if (endRight < startLeft) {
+			return 1;
+		}
+		return 0;
 	}
 	
 	/**

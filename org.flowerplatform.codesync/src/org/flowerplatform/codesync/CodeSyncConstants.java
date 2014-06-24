@@ -76,12 +76,13 @@ public class CodeSyncConstants {
 	public static final String MATCH_TYPE ="matchType";
 	public static final String MATCH_FEATURE = "feature";
 	public static final String MATCH_MODEL_ELEMENT_TYPE = "modeElementType";
-	public static final String MATCH_CHILDREN_MODIFIED_LEFT ="childrenModifiedLeft";
-	public static final String MATCH_CHILDREN_MODIFIED_RIGHT ="childrenModifiedRight";
-	public static final String MATCH_CHILDREN_CONFLICT ="childrenConflict";
-	public static final String MATCH_DIFFS_MODIFIED_LEFT ="diffsModifiedLeft";
-	public static final String MATCH_DIFFS_MODIFIED_RIGHT ="diffsModifiedRight";
-	public static final String MATCH_DIFFS_CONFLICT ="diffsConflict";
+	public static final String MATCH_CHILDREN_MODIFIED_LEFT = "childrenModifiedLeft";
+	public static final String MATCH_CHILDREN_MODIFIED_RIGHT = "childrenModifiedRight";
+	public static final String MATCH_CHILDREN_CONFLICT = "childrenConflict";
+	public static final String MATCH_DIFFS_MODIFIED_LEFT = "diffsModifiedLeft";
+	public static final String MATCH_DIFFS_MODIFIED_RIGHT = "diffsModifiedRight";
+	public static final String MATCH_DIFFS_CONFLICT = "diffsConflict";
+	public static final String MATCH_BODY_MODIFIED = "bodyModified";
 	
 	//////////////////////////////////
 	// Features
