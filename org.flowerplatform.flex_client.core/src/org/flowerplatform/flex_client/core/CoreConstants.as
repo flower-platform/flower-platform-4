@@ -123,7 +123,6 @@ package org.flowerplatform.flex_client.core {
 		public static const OPEN_RESOURCES_SELECT_RESOURCE_AT_INDEX:String = "selectResourceAtIndex";
 		public static const OPEN_RESOURCES_SEPARATOR:String = ",";
 		
-		public static const TEXT_CONTENT_TYPE:String = "text";
 		
 		//////////////////////////////////
 		// Global menu

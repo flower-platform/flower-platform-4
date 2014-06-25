@@ -36,6 +36,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/icon_flower.gif")]
 		public static const flowerIcon:Class;
 		
+		[Embed(source="/core/file.gif")]
+		public static const fileIcon:Class;
+		
 		[Embed(source="/core/disk.png")]
 		public static const saveIcon:Class;
 

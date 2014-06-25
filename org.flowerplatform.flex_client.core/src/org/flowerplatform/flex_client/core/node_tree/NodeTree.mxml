@@ -31,9 +31,8 @@
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
 				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
-				var resourceUri:String = String(pair.a);
-				
-				treeList.initializeTree(resourceUri);				
+			
+				treeList.initializeTree(pair == null ? node.nodeUri : pair.a as String);				
 			}
 			
 			private function viewRemovedHandler(event:ViewRemovedEvent):void {

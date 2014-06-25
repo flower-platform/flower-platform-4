@@ -60,12 +60,14 @@
       <plugin id="org.flowerplatform.flex_client.mindmap"/>
       <plugin id="org.flowerplatform.flex_client.properties"/>
       <plugin id="org.flowerplatform.flex_client.server"/>
+      <plugin id="org.flowerplatform.flex_client.text"/>
       <plugin id="org.flowerplatform.flex_client.web"/>
       <plugin id="org.flowerplatform.freeplane"/>
       <plugin id="org.flowerplatform.host.servletbridge.extensionbundle" fragment="true"/>
       <plugin id="org.flowerplatform.host.servletbridge.registry"/>
       <plugin id="org.flowerplatform.mindmap"/>
       <plugin id="org.flowerplatform.resources"/>
+      <plugin id="org.flowerplatform.text"/>
       <plugin id="org.flowerplatform.util"/>
    </plugins>
 
@@ -106,11 +108,13 @@
       <plugin id="org.flowerplatform.flex_client.mindmap" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.properties" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.server" autoStart="true" startLevel="0" />
+      <plugin id="org.flowerplatform.flex_client.text" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.web" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.freeplane" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.host.servletbridge.registry" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.mindmap" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.resources" autoStart="true" startLevel="0" />
+      <plugin id="org.flowerplatform.text" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.util" autoStart="true" startLevel="0" />
    </configurations>
 

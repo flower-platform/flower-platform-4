@@ -6,6 +6,7 @@ import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -37,7 +38,7 @@ public class FileSubscribableProvider extends AbstractController implements IPro
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		if (!node.getNodeUri().endsWith(extension)) {
+		if (!extension.equals(CoreConstants.ALL) && !node.getNodeUri().endsWith(extension)) {
 			return;
 		}
 		
