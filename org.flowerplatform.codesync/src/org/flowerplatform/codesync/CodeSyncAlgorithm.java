@@ -201,6 +201,7 @@ public class CodeSyncAlgorithm {
 				childMatch.setAncestor(ancestorChild);
 				ancestorChildModelAdapter = getAncestorModelAdapter(childMatch, ancestorChild);
 				if (ancestorChildModelAdapter != null) {
+					childMatch.setMatchKey(ancestorChildModelAdapter.getMatchKey(ancestorChild));
 					childMatch.setLeft(ancestorChildModelAdapter.removeFromMap(ancestorChild, leftMap, false));
 					childMatch.setRight(ancestorChildModelAdapter.removeFromMap(ancestorChild, rightMap, true));
 					childMatch.setFeature(feature);
@@ -226,6 +227,7 @@ public class CodeSyncAlgorithm {
 				// or if there are no ancestor children
 				leftChildModelAdapter = getLeftModelAdapter(childMatch, leftChild);
 			}
+			childMatch.setMatchKey(leftChildModelAdapter.getMatchKey(leftChild));
 			childMatch.setRight(leftChildModelAdapter.removeFromMap(leftChild, rightMap, true));
 			childMatch.setFeature(feature);
 
@@ -242,6 +244,7 @@ public class CodeSyncAlgorithm {
 			// this will be a 1-match-ancestor (i.e. deleted left & right)
 			Match childMatch = new Match();
 			childMatch.setRight(rightChild);
+			childMatch.setMatchKey(getRightModelAdapter(childMatch, rightChild).getMatchKey(rightChild));
 			childMatch.setFeature(feature);
 			
 			if (!childMatch.isEmptyMatch()) {

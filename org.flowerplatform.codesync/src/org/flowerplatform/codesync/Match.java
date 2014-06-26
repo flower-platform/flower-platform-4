@@ -53,6 +53,8 @@ public class Match {
 	
 	private Object right;
 
+	private Object matchKey;
+	
 	private List<Diff> diffs;
 
 	/**
@@ -128,7 +130,15 @@ public class Match {
 	public void setRight(Object right) {
 		this.right = right;
 	}
+	
+	public Object getMatchKey() {
+		return matchKey;
+	}
 
+	public void setMatchKey(Object matchKey) {
+		this.matchKey = matchKey;
+	}
+	
 	/**
 	 * This field should be used only in read mode. The add
 	 * should be done using {@link #addDiff()}.

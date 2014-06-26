@@ -27,17 +27,20 @@ public class CodeSyncConstants {
 	// Node types and categories
 	//////////////////////////////////
 	
-	public static final String CODESYNC_TYPE = "codesync";
-	public static final String CATEGORY_CODESYNC = UtilConstants.CATEGORY_PREFIX + CODESYNC_TYPE;
-	public static final String CODESYNC_FILE = getFileExtension(CODESYNC_TYPE);
+	public static final String CODESYNC = "codesync";
+	public static final String CATEGORY_CODESYNC = UtilConstants.CATEGORY_PREFIX + CODESYNC;
+	public static final String CODESYNC_FILE = getFileExtension(CODESYNC);
 	
-	public static final String MDA_TYPE = "mda";
-	public static final String MDA_FILE = getFileExtension(MDA_TYPE);
+	public static final String MDA = "mda";
+	public static final String MDA_FILE = getFileExtension(MDA);
 	
-	public static final String CODESYNC_ROOT_TYPE = "codeSyncRoot";
-	public static final String MDA_ROOT_TYPE = "mdaRoot";
-	public static final String DIAGRAM_TYPE = "diagram";
-	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM_TYPE);
+	public static final String CODESYNC_ROOT = "codeSyncRoot";
+	public static final String MDA_ROOT = "mdaRoot";
+	
+	public static final String DIAGRAM = "diagram";
+	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM);
+	
+	public static final String MATCH = "match";
 			
 	private static final String getFileExtension(String extension) {
 		return "." + extension;
@@ -69,6 +72,17 @@ public class CodeSyncConstants {
 	public static final String CONFLICT_SUFFIX = ".conflict";
 	
 	public static final String CHILDREN = "children";
+	
+	public static final String MATCH_TYPE ="matchType";
+	public static final String MATCH_FEATURE = "feature";
+	public static final String MATCH_MODEL_ELEMENT_TYPE = "modeElementType";
+	public static final String MATCH_CHILDREN_MODIFIED_LEFT = "childrenModifiedLeft";
+	public static final String MATCH_CHILDREN_MODIFIED_RIGHT = "childrenModifiedRight";
+	public static final String MATCH_CHILDREN_CONFLICT = "childrenConflict";
+	public static final String MATCH_DIFFS_MODIFIED_LEFT = "diffsModifiedLeft";
+	public static final String MATCH_DIFFS_MODIFIED_RIGHT = "diffsModifiedRight";
+	public static final String MATCH_DIFFS_CONFLICT = "diffsConflict";
+	public static final String MATCH_BODY_MODIFIED = "bodyModified";
 	
 	//////////////////////////////////
 	// Features

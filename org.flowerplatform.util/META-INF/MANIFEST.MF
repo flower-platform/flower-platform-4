@@ -12,6 +12,7 @@ Export-Package: ch.qos.logback.core,
  org.flowerplatform.util.log,
  org.flowerplatform.util.plugin,
  org.flowerplatform.util.regex,
+ org.flowerplatform.util.file,
  org.flowerplatform.util.servlet,
  org.slf4j
 Bundle-ClassPath: lib/logback-core-1.0.7.jar,

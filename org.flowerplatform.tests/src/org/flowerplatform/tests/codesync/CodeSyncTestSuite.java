@@ -20,10 +20,15 @@ import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import java.io.File;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
+import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
+import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.mindmap.MindMapPlugin;
 import org.flowerplatform.tests.EclipseDependentTestSuiteBase;
+import org.flowerplatform.tests.EclipseIndependentTestSuite;
+import org.flowerplatform.tests.TestUtil;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -34,17 +39,28 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	CodeSyncTest.class, 
+//	CodeSyncTest.class, 
+	CodeSyncAsTest.class
 //	CodeSyncJavascriptTest.class,
 //	CodeSyncWikiTest.class 
 })
 public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	
+	public static final String PROJECT = "codesync";
+	
+	public static final String DIR = TestUtil.getResourcesDir(CodeSyncTestSuite.class);
+	
+	public static final CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
+	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		startPlugin(new CodeSyncPlugin());
+		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
+		
 		startPlugin(new FreeplanePlugin());
 		startPlugin(new MindMapPlugin());
+		startPlugin(new CodeSyncPlugin());
+		startPlugin(new CodeSyncCodePlugin());
+		startPlugin(new CodeSyncCodeJavaPlugin());
 	}
 	
 	public static File getFile(String path) {

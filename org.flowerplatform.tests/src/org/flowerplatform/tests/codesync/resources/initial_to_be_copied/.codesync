@@ -84,7 +84,7 @@
         </body>
     </html>
 </richcontent>
-<node TEXT="initial" POSITION="right" ID="ID_1494658957" CREATED="1392727571546" MODIFIED="1392727571546">
+<node TEXT="initial" FOLDED="true" POSITION="right" ID="ID_1494658957" CREATED="1392727571546" MODIFIED="1392727571546">
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -235,7 +235,7 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_no_conflicts" POSITION="right" ID="ID_1674185911" CREATED="1392727571546" MODIFIED="1392730370672">
+<node TEXT="modified_no_conflicts" FOLDED="true" POSITION="right" ID="ID_1674185911" CREATED="1392727571546" MODIFIED="1392730370672">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
@@ -389,7 +389,7 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_no_conflicts_perform_sync" POSITION="right" ID="ID_605803515" CREATED="1392727571546" MODIFIED="1392737861202">
+<node TEXT="modified_no_conflicts_perform_sync" FOLDED="true" POSITION="right" ID="ID_605803515" CREATED="1392727571546" MODIFIED="1392737861202">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="202"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
@@ -543,7 +543,7 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_conflicts" POSITION="right" ID="ID_79630243" CREATED="1392727571546" MODIFIED="1392736415327">
+<node TEXT="modified_conflicts" FOLDED="true" POSITION="right" ID="ID_79630243" CREATED="1392727571546" MODIFIED="1392736415327">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
@@ -696,6 +696,15 @@
 </node>
 </node>
 </node>
+</node>
+<node TEXT="initial_as" POSITION="left" ID="ID_356645421" CREATED="1392727571546" MODIFIED="1403681170483">
+<attribute_layout NAME_WIDTH="71" VALUE_WIDTH="94"/>
+<attribute NAME="nodeType" VALUE="codesyncFolder"/>
+<attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
+<attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="initial_as"/>
+<attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
 </map>
