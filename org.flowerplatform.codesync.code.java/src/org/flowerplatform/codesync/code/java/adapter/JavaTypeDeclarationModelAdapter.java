@@ -51,6 +51,7 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 	/**
 	 * Returns only types, fields and methods.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<?> getChildren(Object modelElement) {
 		List<ASTNode> children = new ArrayList<ASTNode>();
@@ -158,6 +159,7 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 		super.setValueFeatureValue(element, feature, value);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		// declared as containment by JavaFeatureProvider 

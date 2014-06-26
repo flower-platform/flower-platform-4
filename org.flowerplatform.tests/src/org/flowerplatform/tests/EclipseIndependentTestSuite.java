@@ -49,7 +49,7 @@ import org.osgi.framework.BundleContext;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	CodeSyncTestSuite.class,
-	FileSystemControllersTest.class
+//	FileSystemControllersTest.class
 	
 //	RegexTestSuite.class
 })

@@ -95,14 +95,14 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	}
 	
 	private char[] getFileContent(Object file) {
-//		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
-		boolean fileExists = ((FileHolder) file).exists();
-//		boolean fileExists = fileAccessController.exists(file);
+		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
+//		boolean fileExists = ((FileHolder) file).exists();
+		boolean fileExists = fileAccessController.exists(file);
 		if (!fileExists) {
 			return new char[0];
 		}
-		return ((FileHolder) file).getContent().toCharArray();
-//		return fileAccessController.readFileToString(file).toCharArray();
+//		return ((FileHolder) file).getContent().toCharArray();
+		return fileAccessController.readFileToString(file).toCharArray();
 	}
 
 	@Override

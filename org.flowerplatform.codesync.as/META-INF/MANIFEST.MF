@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: As
+Bundle-SymbolicName: org.flowerplatform.codesync.as
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: .,
+ lib/asc.jar,
+ lib/mxmlc.jar
+Require-Bundle: org.flowerplatform.core,
+ org.flowerplatform.util,
+ org.flowerplatform.codesync,
+ org.flowerplatform.codesync.code
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.flowerplatform.codesync.as.CodeSyncAsPlugin
+Export-Package: org.flowerplatform.codesync.as

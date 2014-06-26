@@ -58,7 +58,6 @@ public class CodeSyncCodeJavaConstants {
 	
 	// Value features
 	
-	public static final String MODIFIERS = "modifiers";
 	public static final String DOCUMENTATION = "documentation";
 	public static final String TYPED_ELEMENT_TYPE = "typedElementType";
 	public static final String SUPER_CLASS = "superClass";
@@ -71,6 +70,7 @@ public class CodeSyncCodeJavaConstants {
 	// Containment features
 	
 	public static final String TYPE_MEMBERS = "typeMembers";
+	public static final String MODIFIERS = "modifiers";
 	public static final String OPERATION_PARAMETERS = "operationParameters";
 	public static final String ANNOTATION_VALUES = "annotationValues";
 	public static final String SUPER_INTERFACES = "superInterfaces";

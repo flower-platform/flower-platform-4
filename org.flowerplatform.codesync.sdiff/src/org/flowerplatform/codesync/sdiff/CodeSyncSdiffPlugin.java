@@ -24,7 +24,7 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 
-protected static CodeSyncSdiffPlugin INSTANCE;
+	protected static CodeSyncSdiffPlugin INSTANCE;
 	
 	public static CodeSyncSdiffPlugin getInstance() {
 		return INSTANCE;

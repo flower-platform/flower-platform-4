@@ -23,6 +23,7 @@ import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import java.util.Iterator;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -34,6 +35,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
@@ -156,7 +158,13 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public boolean save(Object element) {
-//		CodeSyncPlugin.getInstance().getNodeService().save();
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(getNode(element).getNodeUri());
+		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
+		if (resourceSet == null) {
+			resourceSet = resourceNode.getNodeUri();
+		}
+		CorePlugin.getInstance().getResourceSetService().save(resourceSet, 
+				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 		return false;
 	}
 

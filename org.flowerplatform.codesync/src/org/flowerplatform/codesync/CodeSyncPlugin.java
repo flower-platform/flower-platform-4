@@ -606,7 +606,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	 */
 	public Node getSrcDir(Node root, String name) {
 		NodeService service = CorePlugin.getInstance().getNodeService();
-		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(root, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true));
+		List<Node> children = service.getChildren(root, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true));
 		for (Node child : children) {
 			if (name.equals(child.getOrPopulateProperties().get(NAME))) {
 				return child;

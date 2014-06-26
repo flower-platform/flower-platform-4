@@ -78,8 +78,8 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	 */
 	@Override
 	public String getLabel(Object modelElement) {
-		return ((FileHolder) modelElement).getName();
-//		return CorePlugin.getInstance().getFileAccessController().getName(modelElement);
+//		return ((FileHolder) modelElement).getName();
+		return CorePlugin.getInstance().getFileAccessController().getName(modelElement);
 	}
 	
 	@Override
@@ -119,7 +119,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 				try {
 					document = new Document(fileAccessController.readFileToString(file));
 					TextEdit edits = rewrite(document, fileInfo);
-					if (edits.getChildrenSize() != 0) {
+					if (edits != null && edits.getChildrenSize() != 0) {
 						edits.apply(document);
 						fileAccessController.writeStringToFile(file, document.get());
 					}
