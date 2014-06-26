@@ -160,7 +160,7 @@ public class CoreConstants {
 	// Content types
 	//////////////////////////////////
 	
-	public static final String TEXT_CONTENT_TYPE = "text";
+	public static final String ALL = "all";
 	
 	//////////////////////////////////
 	// Remote method invocation params

@@ -15,20 +15,33 @@
  */
 package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
 	 * @author Mariana Gheorghe
+	 * @author Cristina Constantinescu
 	 */
 	public class OpenAction extends ActionBase {
 		
-		public function OpenAction() {
+		public var contentType:String;
+		
+		public function OpenAction(contentType:String = null) {
 			super();
-			orderIndex = 20;
-			label = Resources.getMessage("editor.action.open");
-			icon = Resources.openIcon;
+						
+			this.contentType = contentType;
+			if (contentType != null) {
+				var editorDescriptor:BasicEditorDescriptor = CorePlugin.getInstance().contentTypeRegistry[contentType];
+				label = editorDescriptor.getEditorName();
+				icon = editorDescriptor.getIcon();
+				parentId = OpenWithEditorComposedAction.ACTION_ID_OPEN_WITH;
+			} else {
+				orderIndex = 20;
+				label = Resources.getMessage("editor.action.open");
+				icon = Resources.openIcon;
+			}
 		}
 		
 		override public function get visible():Boolean {			
@@ -36,7 +49,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		override public function run():void {
-			CorePlugin.getInstance().openEditor(Node(selection.getItemAt(0)));
+			var node:Node = Node(selection.getItemAt(0));									
+			CorePlugin.getInstance().openEditor(node, contentType);
 		}
 		
 	}

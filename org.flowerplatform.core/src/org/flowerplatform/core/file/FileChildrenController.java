@@ -52,12 +52,15 @@ public class FileChildrenController extends AbstractController
 			file = getFileAccessController().getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-		Object[] files = getFileAccessController().listFiles(file);
+		}		
 		List<Node> children = new ArrayList<Node>();
-		for (Object object : files) {
-			Node child = new Node(createFileNodeUri(FileControllerUtils.getRepo(node), getFileAccessController().getPath(object)), FILE_NODE_TYPE);
-			children.add(child);
+		
+		Object[] files = getFileAccessController().listFiles(file);
+		if (files != null) {			
+			for (Object object : files) {
+				Node child = new Node(createFileNodeUri(FileControllerUtils.getRepo(node), getFileAccessController().getPath(object)), FILE_NODE_TYPE);
+				children.add(child);
+			}
 		}
 		return children;
 	}
