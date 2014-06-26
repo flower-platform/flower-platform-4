@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.codesync.code.java;
 
+import static org.flowerplatform.util.UtilConstants.CATEGORY_PREFIX;
+
 import org.flowerplatform.resources.ResourcesPlugin;
 
 /**
@@ -27,6 +29,11 @@ public class CodeSyncCodeJavaConstants {
 	////////////////////////////////////////////
 	// Node types
 	////////////////////////////////////////////
+	
+	public static final String CATEGORY_TYPE = CATEGORY_PREFIX + "codesync-java-type";
+	public static final String CATEGORY_CAN_CONTAIN_TYPES = CATEGORY_PREFIX + "codesync-java-can-contain-types";
+	public static final String CATEGORY_HAS_SUPER_INTERFACES = CATEGORY_PREFIX + "codesync-java-has-super-interfaces";
+	public static final String CATEGORY_MODIFIABLE = CATEGORY_PREFIX + "codesync-java-modifiable";
 	
 	public static final String CLASS = "javaClass";
 	public static final String INTERFACE = "javaInterface";
@@ -51,7 +58,6 @@ public class CodeSyncCodeJavaConstants {
 	
 	// Value features
 	
-	public static final String MODIFIERS = "modifiers";
 	public static final String DOCUMENTATION = "documentation";
 	public static final String TYPED_ELEMENT_TYPE = "typedElementType";
 	public static final String SUPER_CLASS = "superClass";
@@ -64,6 +70,7 @@ public class CodeSyncCodeJavaConstants {
 	// Containment features
 	
 	public static final String TYPE_MEMBERS = "typeMembers";
+	public static final String MODIFIERS = "modifiers";
 	public static final String OPERATION_PARAMETERS = "operationParameters";
 	public static final String ANNOTATION_VALUES = "annotationValues";
 	public static final String SUPER_INTERFACES = "superInterfaces";

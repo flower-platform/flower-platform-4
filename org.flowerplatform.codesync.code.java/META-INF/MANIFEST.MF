@@ -6,7 +6,8 @@ Bundle-Version: 0.1.1.qualifier
 Bundle-Activator: org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin
 Require-Bundle: org.flowerplatform.codesync.code;visibility:=reexport,
  org.eclipse.jdt.core;visibility:=reexport,
- org.flowerplatform.resources
+ org.flowerplatform.resources,
+ org.flowerplatform.util
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.flowerplatform.codesync.code.java,org.flowerplatfo

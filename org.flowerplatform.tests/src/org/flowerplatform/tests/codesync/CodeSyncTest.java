@@ -19,8 +19,12 @@ import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.SUPER_CLASS;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE;
+import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
+import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.DIR;
+import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.PROJECT;
+import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.codeSyncService;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,12 +42,10 @@ import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
-import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.Utils;
 import org.junit.BeforeClass;
@@ -54,30 +56,19 @@ import org.junit.Test;
  */
 public class CodeSyncTest {
 
-	public static final String PROJECT = "codesync";
 	public static final String INITIAL = "initial";
 	public static final String CACHE_DELETED = "cache_deleted";
 	public static final String MODIFIED_NO_CONFLICTS = "modified_no_conflicts";
 	public static final String MODIFIED_CONFLICTS = "modified_conflicts";
 	public static final String MODIFIED_NO_CONFLICTS_PERFORM_SYNC = "modified_no_conflicts_perform_sync";
 	
-	public static final String DIR = TestUtil.getResourcesDir(CodeSyncTest.class);
-	
 	public static final String SOURCE_FILE = "Test.java";
-	public static final String MODEL_FILE = "CSE.notation";
 	
-	private CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
-	
-	private static final String resourceNodeId = new Node(Utils.getUri(CodeSyncConstants.CODESYNC_TYPE, CoreConstants.SELF_RESOURCE, "workspace/" + PROJECT + "/FAP-FlowerPlatform4.mm"), CodeSyncConstants.CODESYNC_TYPE).getNodeUri();
+	private static final String resourceNodeId = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
-
-		startPlugin(new CodeSyncCodePlugin());
 		startPlugin(new CodeSyncCodeJavaPlugin());
-		
-//		CorePlugin.getInstance().getResourceService().sessionSubscribedToResource(resourceNodeId, "", new ServiceContext<ResourceService2>(CorePlugin.getInstance().getResourceService()));
 	}
 	
 	@Test
@@ -353,7 +344,6 @@ public class CodeSyncTest {
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
-		Node orphanRemoval = new Node(Utils.getUri(CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncCodeJavaConstants.MEMBER_VALUE_PAIR);
 
 		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncCodeJavaConstants.TECHNOLOGY, false);
 		

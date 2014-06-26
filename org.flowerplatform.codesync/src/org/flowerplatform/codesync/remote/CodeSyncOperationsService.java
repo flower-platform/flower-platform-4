@@ -78,6 +78,7 @@ public class CodeSyncOperationsService {
 		
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm(typeDescriptorRegistry, typeProvider);
 		match.setCodeSyncAlgorithm(algorithm);
+		match.setMatchKey(algorithm.getAncestorModelAdapter(match, srcDir).getMatchKey(srcDir));
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
 		algorithm.generateDiff(match, oneStepSync);

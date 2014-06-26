@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.jdt.core,
  org.flowerplatform.core,
  org.flowerplatform.freeplane,
  org.flowerplatform.mindmap,
- org.flowerplatform.resources
+ org.flowerplatform.resources,
+ org.flowerplatform.codesync.as
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

@@ -27,6 +27,7 @@ import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
+import org.flowerplatform.util.file.FileHolder;
 
 /**
  * @see FolderFeatureProvider
@@ -77,6 +78,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	 */
 	@Override
 	public String getLabel(Object modelElement) {
+//		return ((FileHolder) modelElement).getName();
 		return CorePlugin.getInstance().getFileAccessController().getName(modelElement);
 	}
 	
@@ -117,7 +119,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 				try {
 					document = new Document(fileAccessController.readFileToString(file));
 					TextEdit edits = rewrite(document, fileInfo);
-					if (edits.getChildrenSize() != 0) {
+					if (edits != null && edits.getChildrenSize() != 0) {
 						edits.apply(document);
 						fileAccessController.writeStringToFile(file, document.get());
 					}
