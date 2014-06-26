@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
-	license-start
- 
-	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 3.
-	 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-	
-	license-end
--->
 <!---
 @author Sebastian Solomon
 -->
@@ -27,26 +11,22 @@
 		<![CDATA[
 			import flashx.textLayout.conversion.TextConverter;
 			
+			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
-			import mx.managers.IFocusManagerComponent;
-			import mx.utils.ObjectUtil;
 			
-			import org.apache.flex.collections.ArrayList;
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
-			import org.flowerplatform.flex_client.properties.property_renderer.BasicPropertyRenderer;
-			import org.flowerplatform.flex_client.properties.property_renderer.CategoryPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.PropertiesConstants;
+			import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			
-			import spark.components.FormItem;
 			
 			public static const SHOW_ALL:String = "showAll";
 			public static const SHOW_ONLY_CONTRIBUTES_TO_CREATION:String = "showOnlyContributingToCreation"; // mandatory & optional
@@ -63,11 +43,10 @@
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);
 				
-				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-					.getExpectedTypeDescriptor(nodeType).getAdditiveControllers("propertyDescriptor", null);
+				var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(nodeType).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, null);
 				var currentCategory:String = "";
 				for ( var i:int = 0; i < propertyDescriptors.length; i++) {
-					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(ObjectUtil.copy(propertyDescriptors.getItemAt(i)));
+					var propertyDescriptor:PropertyDescriptor = PropertyDescriptor(propertyDescriptors.getItemAt(i));
 					switch(option) {
 						case SHOW_ALL:
 							addFormItem(propertyDescriptor, currentCategory);
@@ -85,29 +64,19 @@
 							break;
 					}
 				}
-								
-				focusManager.setFocus(BasicPropertyRenderer(FormItem(propertyForm.getElementAt(0)).getElementAt(0)).getElementAt(0) as IFocusManagerComponent);		
-				
+			
 				tmpLabel.visible = tmpLabel.includeInLayout = nodeType == CoreConstants.FILE_NODE_TYPE;
 				tmpLabel.textFlow = TextConverter.importToFlow(Resources.getMessage('mindmap.create.note'), TextConverter.TEXT_FIELD_HTML_FORMAT);
 			}
 			
 			private function addFormItem(propertyDescriptor:PropertyDescriptor, currentCategory:String):void {
-				var propertyRenderer:PropertyItemRenderer = new PropertyItemRenderer();
-				propertyRenderer.basicPropertyRendererType = propertyDescriptor.type;
-				propertyRenderer.savePropertyEnabled = false;
-				var itemCategory:String = propertyDescriptor.category;
-				if (itemCategory != currentCategory) {
-					var categoryItem:CategoryPropertyRenderer = new CategoryPropertyRenderer();
-					currentCategory = itemCategory;
-					categoryItem.label = currentCategory;
-					propertyForm.addElement(categoryItem);
-				}
+				var propertyRenderer:PropertyLineRenderer = new PropertyLineRenderer();
+				propertyRenderer.propertyDescriptor = propertyDescriptor;
+				propertyRenderer.savePropertyEnabled = false;		
 				propertyForm.addElement(propertyRenderer);
 				if (propertyDescriptor.contributesToCreation) {
 					propertyDescriptor.readOnly = false;
 				}				
-				propertyRenderer.data = propertyDescriptor;
 			}
 						
 			override protected function okHandler(evt:Event = null):void {
@@ -115,22 +84,22 @@
 				var context:ServiceContext = new ServiceContext();
 				context.add("type", nodeType);
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
-					if (propertyForm.getElementAt(i) is PropertyItemRenderer) {
-						var propertyItemRenderer:PropertyItemRenderer = PropertyItemRenderer(propertyForm.getElementAt(i));
-						if (PropertyDescriptor(propertyItemRenderer.data).mandatory && propertyItemRenderer.data.value == "" && propertyItemRenderer.data.type != "Boolean") {
+					if (propertyForm.getElementAt(i) is PropertyLineRenderer) {
+						var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(propertyForm.getElementAt(i));
+						if (propertyItemRenderer.propertyDescriptor.mandatory && propertyItemRenderer.value == "" && propertyItemRenderer.propertyDescriptor.type != "Boolean") {
 							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 								.setText(Resources.getMessage("field_required_title"))
-								.setTitle("\'" + propertyItemRenderer.data[CoreConstants.NAME] + "\' " + Resources.getMessage("field_is_mandatory_message"))
+								.setTitle("\'" + propertyItemRenderer.propertyDescriptor[CoreConstants.NAME] + "\' " + Resources.getMessage("field_is_mandatory_message"))
 								.setWidth(300)
 								.setHeight(200)
 								.showMessageBox();
 							return;
 						}
-						if (PropertyDescriptor(propertyItemRenderer.data).contributesToCreation) {
-							context.add(propertyItemRenderer.data[CoreConstants.NAME], propertyItemRenderer.data.value);
+						if (propertyItemRenderer.propertyDescriptor.contributesToCreation) {
+							context.add(propertyItemRenderer.propertyDescriptor[CoreConstants.NAME], propertyItemRenderer.value);
 						} else {
-							if (propertyItemRenderer.data.value != null && propertyItemRenderer.data.value != "") {
-								propertiesToSetAfterAddingNode.addItem(propertyItemRenderer.data);
+							if (propertyItemRenderer.value != null && propertyItemRenderer.value != "") {
+								propertiesToSetAfterAddingNode.addItem(propertyItemRenderer);
 							}
 						}
 					}
@@ -140,8 +109,8 @@
 					function(childFullNodeId:String):void {
 						// setProperty for properties that don't contribute to creation.
 						for (var i:int=0; i < propertiesToSetAfterAddingNode.length; i++) {
-							var propDescriptor:PropertyDescriptor = PropertyDescriptor(propertiesToSetAfterAddingNode.getItemAt(i));
-							CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [childFullNodeId, propDescriptor.name, propDescriptor.value], null);
+							var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(propertiesToSetAfterAddingNode.getItemAt(i));
+							CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [childFullNodeId, propertyItemRenderer.propertyDescriptor.name, propertyItemRenderer.value], null);
 						}
 						cancelHandler();
 						

@@ -20,43 +20,118 @@ package org.flowerplatform.flex_client.properties.remote {
 	import org.flowerplatform.flexutil.controller.AbstractController;
 
 	/**
-	 * @author Razvan Tache
 	 * @author Cristina Constantinescu
 	 * @author Sebastian Solomon
 	 */
 	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
-	public class PropertyDescriptor extends AbstractController {
+	public class PropertyDescriptor extends AbstractController implements IPropertyDescriptor {
 		
-		public var name:String;
+		private var _name:String;		
+		private var _title:String;
+								
+		private var _type:String;		
+		private var _category:String;
+				
+		private var _propertyLineRenderer:String;
 		
-		public var title:String;
+		private var _contributesToCreation:Boolean;		
+		private var _mandatory:Boolean;
 		
-		public var value:Object;
+		private var _defaultValue:Object;
 		
-		public var defaultValue:Object;
+		private var _possibleValues:ArrayCollection;
 		
-		public var readOnly:Boolean;
-		
-		public var type:String;
-		
-		public var category:String;
-		
-		public var hasChangeCheckbox:Boolean;
-		
-		public var possibleValues:ArrayCollection;
-		
-		public var contributesToCreation:Boolean;
-		
-		public var mandatory:Boolean;
-		
+		private var _readOnly:Boolean;	
+					
+		public function get readOnly():Boolean {
+			return _readOnly;
+		}
+
+		public function set readOnly(value:Boolean):void {
+			_readOnly = value;
+		}
+
+		public function get possibleValues():ArrayCollection {
+			return _possibleValues;
+		}
+
+		public function set possibleValues(value:ArrayCollection):void {
+			_possibleValues = value;
+		}
+
+		public function get defaultValue():Object {
+			return _defaultValue;
+		}
+
+		public function set defaultValue(value:Object):void {
+			_defaultValue = value;
+		}
+
+		public function get mandatory():Boolean {
+			return _mandatory;
+		}
+
+		public function set mandatory(value:Boolean):void {
+			_mandatory = value;
+		}
+
+		public function get contributesToCreation():Boolean {
+			return _contributesToCreation;
+		}
+
+		public function set contributesToCreation(value:Boolean):void {
+			_contributesToCreation = value;
+		}
+
+		public function get propertyLineRenderer():String {
+			return _propertyLineRenderer;
+		}
+
+		public function set propertyLineRenderer(value:String):void {
+			_propertyLineRenderer = value;
+		}
+
+		public function get category():String {
+			return _category;
+		}
+
+		public function set category(value:String):void {
+			_category = value;
+		}
+
+		public function get type():String {
+			return _type;
+		}
+
+		public function set type(value:String):void {
+			_type = value;
+		}
+
+		public function get title():String {
+			return _title;
+		}
+
+		public function set title(value:String):void {
+			_title = value;
+		}
+
+		public function get name():String {
+			return _name;
+		}
+
+		public function set name(value:String):void {
+			_name = value;
+		}
+
 		override public function toString():String {
-			return StringUtil.substitute("PropertiesDescriptor [name = {0}, title = {1}, category = {2}, " +
-				"\ntype = {3}, readOnly = {4}, possibleValues = {5}, " +
-				"\ncontributeToCreation = {6}, isMandatory = {7}, orderIndex = {8}]", 
-				name, title, category,
-				type, readOnly, possibleValues,
-				contributesToCreation, mandatory, orderIndex);
+			return "PropertyDescriptor [name=" + name + ", title=" + title
+				+ ", type=" + type + ", category=" + category
+				+ ", propertyLineRenderer=" + propertyLineRenderer
+				+ ", contributesToCreation=" + contributesToCreation
+				+ ", mandatory=" + mandatory + ", readOnly=" + readOnly
+				+ ", possibleValues=" + possibleValues + ", defaultValue="
+				+ defaultValue + "]";
 		}
 		
 	}

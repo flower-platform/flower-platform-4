@@ -18,7 +18,6 @@ package org.flowerplatform.flex_client.core.service {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.events.FaultEvent;

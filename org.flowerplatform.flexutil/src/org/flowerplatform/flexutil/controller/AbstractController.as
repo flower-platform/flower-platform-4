@@ -16,6 +16,7 @@
 package org.flowerplatform.flexutil.controller {
 	import flash.utils.getQualifiedClassName;
 	
+	import mx.utils.OrderedObject;
 	import mx.utils.StringUtil;
 	
 	/**
@@ -26,7 +27,15 @@ package org.flowerplatform.flexutil.controller {
 	 */ 
 	public class AbstractController {
 	
-		public var orderIndex:int;
+		private var _orderIndex:int;
+		
+		public function get orderIndex():int {
+			return _orderIndex;
+		}
+		
+		public function set orderIndex(value:int):void {
+			_orderIndex = value;
+		}
 		
 		public function AbstractController(orderIndex:int = 0) {
 			this.orderIndex = orderIndex;

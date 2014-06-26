@@ -78,6 +78,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/keyboard.png")]
 		public static const keyboardIcon:Class;
 		
+		[Embed(source="/core/table_gear.png")]
+		public static const tableGear:Class;
+		
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]
@@ -520,6 +523,12 @@ package org.flowerplatform.flex_client.resources {
 			"multiplication" : mindmap_multiplicationIcon,
 			"division" : mindmap_divisionIcon
 		};
+		
+		[Embed(source="/properties/preference.png")]
+		public static const preferenceIcon:Class;
+		
+		[Embed(source="/properties/preferences.png")]
+		public static const preferencesIcon:Class;
 		
 	}
 }

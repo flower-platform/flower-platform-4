@@ -86,11 +86,7 @@
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewHost = viewHost;
 			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
+						
 			public function additionalCloseHandler():void {	
 				// nothing to do
 			}

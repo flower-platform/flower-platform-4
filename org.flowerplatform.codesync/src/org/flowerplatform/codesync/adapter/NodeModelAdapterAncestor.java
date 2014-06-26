@@ -39,7 +39,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
-				Boolean isAdded = (Boolean) getNode(candidate).getOrPopulateProperties().get(CodeSyncConstants.ADDED);
+				Boolean isAdded = (Boolean) getNode(candidate).getPropertyValue(CodeSyncConstants.ADDED);
 				if (isAdded != null && isAdded) {
 					return false;
 				}

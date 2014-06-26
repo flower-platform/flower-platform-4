@@ -97,7 +97,7 @@ package com.crispico.flower.util.layout.actions {
 				for each (var view:ViewLayoutData in views) {
 					components.addItem(workbench.layoutDataToComponent[view]);							
 				}
-				workbench.closeViews(components);
+				workbench.closeViews(components, true, true);
 			}
 		}
 	}

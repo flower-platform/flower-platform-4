@@ -14,9 +14,6 @@
  * license-end
  */
 package org.flowerplatform.flex_client.properties.property_renderer {
-	import mx.binding.utils.BindingUtils;
-	import mx.events.FlexEvent;
-	
 	import spark.formatters.DateTimeFormatter;
 	
 	/**
@@ -25,22 +22,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	 */
 	public class DatePropertyRenderer extends StringPropertyRenderer {
 		
-		override protected function getValue():Object {
-			return data.value;	
-		}
-		
-		override protected function creationCompleteHandler(event:FlexEvent):void {
-			BindingUtils.bindSetter(updateDate, data, "value");
-		}
-		
-		private function updateDate(newValue:Object):void {				
+		override public function valueChangedHandler():void {
+			var newValue:Object = _propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name);
 			if (newValue is Date) {
 				var dtf:DateTimeFormatter = new DateTimeFormatter();
 				dtf.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
-				propertyValue.text = dtf.format(newValue);
-			}
-			
+				text = dtf.format(newValue);
+			}			
 		}
-		
+				
 	}
 }

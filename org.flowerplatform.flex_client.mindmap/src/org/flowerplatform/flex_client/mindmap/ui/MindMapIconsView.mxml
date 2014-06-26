@@ -39,11 +39,7 @@
 			private var resultHandler:IDialogResultHandler;
 			
 			private var _viewHost:IViewHost;
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
+						
 			public function get viewHost():IViewHost {
 				return _viewHost;
 			}

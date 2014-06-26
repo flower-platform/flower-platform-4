@@ -135,12 +135,12 @@ package org.flowerplatform.flexutil.shortcut {
 				// search actionId also in active's view list of available actions	
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 				var view:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
-				if (view != null && view is IViewContent) {
+				if (view != null && view is IActionProvider) {
 					var selection:IList = null;
 					if (view is IViewHostAware) {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
-					var viewActions:Vector.<IAction> = IViewContent(view).getActions(selection);					
+					var viewActions:Vector.<IAction> = IActionProvider(view).getActions(selection);					
 					for (i = 0; i < viewActions.length; i++) {
 						actions.push(viewActions[i]);
 					}

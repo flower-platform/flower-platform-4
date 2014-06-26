@@ -28,5 +28,9 @@ package org.flowerplatform.flexutil {
 		public function Pair() {			
 		}
 		
+		public function toString():String {	
+			return "Pair [a=" + a + ", b=" + b +  "]";			
+		}
+				
 	}
 }

@@ -58,11 +58,7 @@
 			
 			public var iconForSingleResourceNode:Object;
 			public var iconForMultipleResourceNodes:Object;
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
+						
 			public function get viewHost():IViewHost {
 				return _viewHost;
 			}

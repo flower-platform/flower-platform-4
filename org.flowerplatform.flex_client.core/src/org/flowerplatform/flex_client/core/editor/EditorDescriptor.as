@@ -16,18 +16,11 @@
 package  org.flowerplatform.flex_client.core.editor {
 	
 	
-	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
-	import mx.core.mx_internal;
 	
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
-	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
-	import org.flowerplatform.flexutil.view_content_host.IViewContent;
-	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 
 	/**
 	 * Abstract class; should be subclassed.

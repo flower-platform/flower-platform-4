@@ -171,7 +171,7 @@ package  com.crispico.flower.util.layout.view {
 		private function tabMiddleClickHadler(event:MouseEvent):void {
 			if (event.target != null && DisplayObject(event.target).parent is FlowerSuperTab) {				
 				var viewLayoutData:ViewLayoutData = ViewLayoutData(stackLayoutData.children.getItemAt(tabBar.getChildIndex(DisplayObject(event.target).parent)));
-				workbench.closeView(workbench.layoutDataToComponent[viewLayoutData]);
+				workbench.closeView(workbench.layoutDataToComponent[viewLayoutData], true, true);
 			}
 		}
 		
@@ -285,7 +285,7 @@ package  com.crispico.flower.util.layout.view {
 		private function closeTabHandler(event:SuperTabEvent):void {			
 			var viewLayoutData:ViewLayoutData = ViewLayoutData(stackLayoutData.children.getItemAt(event.tabIndex));
 			
-			workbench.closeView(workbench.layoutDataToComponent[viewLayoutData]);	
+			workbench.closeView(workbench.layoutDataToComponent[viewLayoutData], true, true);	
 			
 			event.preventDefault();			
 		}

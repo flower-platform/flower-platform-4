@@ -25,9 +25,9 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.layout.ITitleDecorator;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
@@ -40,7 +40,7 @@ package org.flowerplatform.flex_client.core.editor {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator {
+	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator, IActionProvider {
 		
 		private var _editorInput:String;
 				
@@ -72,7 +72,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected function subscribeFaultCallback(event:FaultEvent):void {
 			// close editor
-			FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost));
+			FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost), true, true);
 		}
 		
 		public function getActions(selection:IList):Vector.<IAction> {
@@ -115,7 +115,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected function nodeRegistryRemovedHandler(event:NodeRegistryRemovedEvent):void {
 			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
-			workbench.closeView(workbench.getViewComponentForEditor(this), false);		
+			workbench.closeView(workbench.getViewComponentForEditor(this), true, false);		
 		}
 		
 		public function additionalCloseHandler():void {	

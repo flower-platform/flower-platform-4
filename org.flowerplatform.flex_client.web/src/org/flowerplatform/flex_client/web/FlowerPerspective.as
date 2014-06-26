@@ -46,7 +46,7 @@ package org.flowerplatform.flex_client.web {
 			var wld:WorkbenchLayoutData = new WorkbenchLayoutData();
 			wld.direction = SashLayoutData.HORIZONTAL;
 			wld.ratios = new ArrayCollection([100]);
-			wld.mrmRatios = new ArrayCollection([0, 0]);
+			wld.mrmRatios = new ArrayCollection([0]);
 							
 			var sashEditor:SashLayoutData = addSash(wld, SashLayoutData.HORIZONTAL, [100], [0], true);	
 			

@@ -89,7 +89,7 @@ public class CodeSyncControllerUtils {
 		
 		// check if it has any property.original set
 		boolean sync = true;
-		for (String property : node.getOrPopulateProperties().keySet()) {
+		for (String property : node.getProperties().keySet()) {
 			if (isOriginalPropertyName(property)) {
 				sync = false;
 			}
@@ -162,7 +162,7 @@ public class CodeSyncControllerUtils {
 		
 		// check if it has any other property.conflict set
 		boolean conflict = false;
-		for (String property : node.getOrPopulateProperties().keySet()) {
+		for (String property : node.getProperties().keySet()) {
 			if (isConflictPropertyName(property)) {
 				conflict = true;
 			}
@@ -236,7 +236,7 @@ public class CodeSyncControllerUtils {
 	}
 	
 	private static boolean hasFlagTrue(Node node, String flag) {
-		Boolean b = (Boolean) node.getOrPopulateProperties().get(flag);
+		Boolean b = (Boolean) node.getPropertyValue(flag);
 		return b != null && b;
 	}
 }
