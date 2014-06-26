@@ -41,6 +41,11 @@ public class PersistenceAddNodeProvider extends MindMapAddNodeController {
 			rawNodeData.addExtension(attributeTable);
 		}		
 		attributeTable.getAttributes().add(new Attribute(FREEPLANE_PERSISTENCE_NODE_TYPE_KEY, child.getType()));
+		
+		for (String attr : context.getContext().keySet()) {
+			attributeTable.getAttributes().add(new Attribute(attr, context.get(attr)));
+			
+		}
 		rawNodeData.getMap().setSaved(false);
 	}
 		

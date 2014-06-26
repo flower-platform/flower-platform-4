@@ -69,6 +69,9 @@ public class NodeServiceRemote {
 		Node child = new Node(null, childType);
 		
 		getNodeService().addChild(parent, child, context);
+		
+		child.getOrPopulateProperties();
+		
 		return child.getNodeUri();
 	}
 	

@@ -52,8 +52,10 @@
       <plugin id="org.flowerplatform.codesync"/>
       <plugin id="org.flowerplatform.codesync.code"/>
       <plugin id="org.flowerplatform.codesync.code.java"/>
+      <plugin id="org.flowerplatform.codesync.regex"/>
       <plugin id="org.flowerplatform.core"/>
       <plugin id="org.flowerplatform.flex_client.codesync"/>
+      <plugin id="org.flowerplatform.flex_client.codesync.regex"/>
       <plugin id="org.flowerplatform.flex_client.core"/>
       <plugin id="org.flowerplatform.flex_client.host_app"/>
       <plugin id="org.flowerplatform.flex_client.host_app.config.web"/>
@@ -100,8 +102,10 @@
       <plugin id="org.flowerplatform.codesync" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync.code" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync.code.java" autoStart="true" startLevel="0" />
+      <plugin id="org.flowerplatform.codesync.regex" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.codesync" autoStart="true" startLevel="0" />
+      <plugin id="org.flowerplatform.flex_client.codesync.regex" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.host_app" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.host_app.config.web" autoStart="true" startLevel="0" />

@@ -65,7 +65,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			textArea.setStyle("color", rendererLabelDisplay.getStyle("color"));
 					
 			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
-			textArea.text = String(titleProvider.getValue(Node(model)));			
+			textArea.text = titleProvider.getValue(Node(model)) as String;			
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
 			// select all text

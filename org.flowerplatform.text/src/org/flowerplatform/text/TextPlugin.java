@@ -6,9 +6,7 @@ import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.text.TextConstants.TEXT_CONTENT_TYPE;
 import static org.flowerplatform.text.TextConstants.TEXT_RESOURCE_KEY;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -42,4 +40,5 @@ public class TextPlugin extends AbstractFlowerJavaPlugin {
 	public void registerMessageBundle() throws Exception {
 		// messages come from .resources
 	}
+	
 }

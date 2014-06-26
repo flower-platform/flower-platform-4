@@ -533,5 +533,22 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/properties/preferences.png")]
 		public static const preferencesIcon:Class;
 		
+		// CodeSync Regex
+		
+		[Embed(source="/codesync.regex/brick.png")]
+		public static const brickIcon:Class;
+		
+		[Embed(source="/codesync.regex/bricks.png")]
+		public static const bricksIcon:Class;
+		
+		[Embed(source="/codesync.regex/bullet_star.png")]
+		public static const bulletIcon:Class;
+		
+		[Embed(source="/codesync.regex/percent.png")]
+		public static const percentIcon:Class;
+		
+		[Embed(source="/codesync.regex/wrench.png")]
+		public static const wrenchIcon:Class;
+		
 	}
 }
