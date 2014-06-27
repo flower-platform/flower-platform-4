@@ -3,23 +3,14 @@ package org.flowerplatform.codesync.as.adapter;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import macromedia.asc.parser.AttributeListNode;
-import macromedia.asc.parser.DefinitionNode;
-import macromedia.asc.parser.DocCommentNode;
-import macromedia.asc.parser.ListNode;
-import macromedia.asc.parser.MetaDataEvaluator;
-import macromedia.asc.parser.Node;
-import macromedia.asc.parser.StatementListNode;
-import macromedia.asc.util.Context;
-
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 
 /**
- * Mapped to {@link Node}.
+ * Mapped to {@link IASNode}.
  * 
  * @author Mariana Gheorghe
  */
@@ -28,52 +19,64 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (DOCUMENTATION.equals(feature)) {
-			if (element instanceof DefinitionNode) {
-				DefinitionNode def = (DefinitionNode) element;
-				StatementListNode metaData = def.metaData;
-				if (metaData == null) {
-					return null;
-				}
-				for (Node node : metaData.items) {
-					if (node instanceof DocCommentNode) {
-						DocCommentNode comment = (DocCommentNode) node;
-						MetaDataEvaluator eval = new MetaDataEvaluator();
-						comment.evaluate(getContext(element), eval);
-						if (comment.getMetadata() == null) {
-							return null;
-						}
-						return comment.getMetadata().id;
-					}
-				}
-			}
+//			if (element instanceof DefinitionNode) {
+//				DefinitionNode def = (DefinitionNode) element;
+//				StatementListNode metaData = def.metaData;
+//				if (metaData == null) {
+//					return null;
+//				}
+//				for (Node node : metaData.items) {
+//					if (node instanceof DocCommentNode) {
+//						DocCommentNode comment = (DocCommentNode) node;
+//						MetaDataEvaluator eval = new MetaDataEvaluator();
+//						comment.evaluate(getContext(element), eval);
+//						if (comment.getMetadata() == null) {
+//							return null;
+//						}
+//						return comment.getMetadata().id;
+//					}
+//				}
+//				return null;
+//			}
+			return null;
 		} 
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 
-	protected abstract Context getContext(Object element);
-	
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (MODIFIERS.equals(feature)) {
-			if (element instanceof DefinitionNode) {
-				AttributeListNode attrs = ((DefinitionNode) element).attrs;
-				if (attrs == null) {
-					return Collections.emptyList();
-				}
-				List<Node> modifiers = new ArrayList<Node>();
-				for (Node node : attrs.items) {
-					if (node instanceof ListNode) {
-						for (Node modifier : ((ListNode) node).items) {
-							modifiers.add(modifier);
-						}
-					}
-				}
-				return modifiers;
-			}
+//			if (element instanceof DefinitionNode) {
+//				AttributeListNode attrs = ((DefinitionNode) element).attrs;
+//				if (attrs == null) {
+//					return Collections.emptyList();
+//				}
+//				List<Node> modifiers = new ArrayList<Node>();
+//				getIdentifiers(modifiers, attrs);
+//				return modifiers;
+//			}
 			return Collections.emptyList();
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
+	
+//	protected void getIdentifiers(List<Node> identifiers, Node node) {
+//		if (node instanceof AttributeListNode) {
+//			for (Node attr : ((AttributeListNode) node).items) {
+//				getIdentifiers(identifiers, attr);
+//			}
+//		} else if (node instanceof ListNode) {
+//			for (Node attr : ((ListNode) node).items) {
+//				getIdentifiers(identifiers, attr);
+//			}
+//		} else if (node instanceof MemberExpressionNode) {
+//			getIdentifiers(identifiers, ((MemberExpressionNode) node).selector.getIdentifier());
+//		} else if (node instanceof IdentifierNode) {
+//			identifiers.add(node);
+//		} else if (node instanceof LiteralStringNode) {
+//			identifiers.add(node);
+//		}
+//	}
 	
 	@Override
 	public boolean hasChildren(Object modelElement) {
@@ -105,8 +108,4 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 
 	}
 
-	protected Node getNode(Object element) {
-		return (Node) element;
-	}
-	
 }

@@ -697,12 +697,11 @@
 </node>
 </node>
 </node>
-<node TEXT="initial_as" POSITION="left" ID="ID_356645421" CREATED="1392727571546" MODIFIED="1403681170483">
+<node TEXT="initial_as" POSITION="left" ID="ID_356645421" CREATED="1392727571546" MODIFIED="1403854710493">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="94"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
 <attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
-<attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="initial_as"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>

@@ -1,22 +1,15 @@
 package org.flowerplatform.codesync.as.adapter;
 
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_CLASS;
-import macromedia.asc.parser.ClassDefinitionNode;
-import macromedia.asc.parser.FunctionDefinitionNode;
-import macromedia.asc.parser.LiteralStringNode;
-import macromedia.asc.parser.MemberExpressionNode;
-import macromedia.asc.parser.Node;
-import macromedia.asc.parser.VariableDefinitionNode;
-import macromedia.asc.util.Context;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_INTERFACES;
 
-import org.flowerplatform.codesync.FilteredIterable;
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
 import org.flowerplatform.codesync.as.feature_provider.AsClassFeatureProvider;
 import org.flowerplatform.core.CoreConstants;
 
 /**
- * Mapped to {@link ClassDefinitionNode}. Children are {@link VariableDefinitionNode}s
- * and {@link FunctionDefinitionNode}s.
+ * Mapped to {@link IClassDefinition}.
  * 
  * @see AsClassFeatureProvider
  * 
@@ -26,20 +19,16 @@ public class AsClassModelAdapter extends AsAbstractAstModelAdapter {
 
 	@Override
 	public Object getMatchKey(Object element) {
-		return getClassDef(element).name.name;
+		return getClassDefinition(element).getBaseName();
 	}
 	
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (CodeSyncAsConstants.STATEMENTS.equals(feature)) {
-			return new FilteredIterable<Node, Node>(getClassDef(element).statements.items.iterator()) {
-
-				@Override
-				protected boolean isAccepted(Node node) {
-					return node instanceof VariableDefinitionNode ||
-							node instanceof FunctionDefinitionNode;
-				}
-			};
+			return getClassDefinition(element).getContainedScope().getAllLocalDefinitions();
+		} else if (SUPER_INTERFACES.equals(feature)) {
+//			return Arrays.asList(getClassDefinition(element).getImplementedInterfaceReferences());
+			return null;
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
@@ -47,29 +36,15 @@ public class AsClassModelAdapter extends AsAbstractAstModelAdapter {
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (CoreConstants.NAME.equals(feature)) {
-			return getClassDef(element).name.name;
+			return getClassDefinition(element).getBaseName();
 		} else if (SUPER_CLASS.equals(feature)) {
-			Node baseClass = getClassDef(element).baseclass;
-			if (baseClass == null) {
-				return null;
-			}
-			if (baseClass instanceof MemberExpressionNode) {
-				MemberExpressionNode member = (MemberExpressionNode) getClassDef(element).baseclass;
-				return member.selector.getIdentifier().name;
-			} else if (baseClass instanceof LiteralStringNode) {
-				return ((LiteralStringNode) baseClass).value;
-			}
+			return getClassDefinition(element).getBaseClassAsDisplayString();
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
-
-	protected ClassDefinitionNode getClassDef(Object element) {
-		return (ClassDefinitionNode) element;
-	}
-
-	@Override
-	protected Context getContext(Object element) {
-		return getClassDef(element).cx;
+	
+	protected IClassDefinition getClassDefinition(Object element) {
+		return (IClassDefinition) element;
 	}
 	
 }

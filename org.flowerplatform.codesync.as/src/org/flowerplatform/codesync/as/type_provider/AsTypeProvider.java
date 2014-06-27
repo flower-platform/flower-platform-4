@@ -2,19 +2,13 @@ package org.flowerplatform.codesync.as.type_provider;
 
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CLASS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.FUNCTION;
-import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIER;
-import static org.flowerplatform.codesync.as.CodeSyncAsConstants.PARAMETER;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.INTERFACE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VARIABLE;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import macromedia.asc.parser.ClassDefinitionNode;
-import macromedia.asc.parser.FunctionDefinitionNode;
-import macromedia.asc.parser.MemberExpressionNode;
-import macromedia.asc.parser.ParameterNode;
-import macromedia.asc.parser.VariableDefinitionNode;
-
+import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IInterfaceDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.flowerplatform.codesync.code.CodeSyncCodeConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
@@ -25,16 +19,6 @@ import org.flowerplatform.core.file.IFileAccessController;
  */
 public class AsTypeProvider implements ITypeProvider {
 
-	private Map<Class<?>, String> directMap = new HashMap<Class<?>, String>();
-
-	public AsTypeProvider() {
-		directMap.put(ClassDefinitionNode.class, CLASS);
-		directMap.put(VariableDefinitionNode.class, VARIABLE);
-		directMap.put(FunctionDefinitionNode.class, FUNCTION);
-		directMap.put(MemberExpressionNode.class, MODIFIER);
-		directMap.put(ParameterNode.class, PARAMETER);
-	}
-	
 	@Override
 	public String getType(Object object) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
@@ -44,8 +28,16 @@ public class AsTypeProvider implements ITypeProvider {
 			} else {
 				return CodeSyncCodeConstants.FILE;
 			}
+		} else if (object instanceof IClassDefinition) {
+			return CLASS;
+		} else if (object instanceof IInterfaceDefinition) {
+			return INTERFACE;
+		} else if (object instanceof IFunctionDefinition) {
+			return FUNCTION;
+		} else if (object instanceof IVariableDefinition) {
+			return VARIABLE;
 		}
-		return directMap.get(object.getClass());
+		return null;
 	}
 
 }

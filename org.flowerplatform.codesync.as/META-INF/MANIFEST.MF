@@ -5,8 +5,16 @@ Bundle-SymbolicName: org.flowerplatform.codesync.as
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
- lib/asc.jar,
- lib/mxmlc.jar
+ lib/compiler.jar,
+ lib/falcon-asc.jar,
+ lib/falcon-compc.jar,
+ lib/falcon-flexTasks.jar,
+ lib/falcon-mxmlc.jar,
+ lib/falcon-optimizer.jar,
+ lib/falcon-swfdump.jar,
+ lib/flex-compiler-oem.jar,
+ lib/guava-17.0.jar,
+ lib/antlr-3.5.2-complete.jar
 Require-Bundle: org.flowerplatform.core,
  org.flowerplatform.util,
  org.flowerplatform.codesync,

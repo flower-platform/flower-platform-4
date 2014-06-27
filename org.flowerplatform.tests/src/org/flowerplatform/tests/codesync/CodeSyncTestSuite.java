@@ -54,6 +54,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
+		EclipseIndependentTestSuite.deleteFiles(PROJECT);
 		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
 		
 		startPlugin(new FreeplanePlugin());

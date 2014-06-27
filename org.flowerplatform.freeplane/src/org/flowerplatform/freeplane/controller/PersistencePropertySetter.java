@@ -66,7 +66,10 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 			// new attribute; add it
 			attributeTable.getAttributes().add(new Attribute(property, propertyValue));
 		}
-		rawNodeData.getMap().setSaved(false);		
+		rawNodeData.getMap().setSaved(false);
+		
+		// set the property on the node instance too
+		node.getOrPopulateProperties().put(property, value);
 	}
 
 	@Override
@@ -90,7 +93,10 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 					break;
 				}
 			}
-		}		
+		}
+		
+		// remove the property from the node instance too
+		node.getOrPopulateProperties().remove(property);
 	}
 	
 }

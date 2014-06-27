@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/mxmlc.jar" sourcepath="D:/data/java_work/git/flex-sdk/modules/compiler/src"/>
-	<classpathentry exported="true" kind="lib" path="lib/asc.jar" sourcepath="D:/data/java_work/git/flex-sdk/modules/asc/src/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr-3.5.2-complete.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-17.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/falcon-asc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/falcon-compc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/falcon-flexTasks.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/falcon-mxmlc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/falcon-optimizer.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/falcon-swfdump.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/flex-compiler-oem.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
+	<referencedentry exported="true" kind="lib" path="lib/compiler.jar" sourcepath="D:/dwn/apache-flex-falconjx-0.0.1-bin"/>
 </classpath>
