@@ -3,6 +3,7 @@
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.codesync.regex.CodeSyncRegexPlugin"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.regex.CodeSyncRegexConstants"/>
+    <classEntry path="org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

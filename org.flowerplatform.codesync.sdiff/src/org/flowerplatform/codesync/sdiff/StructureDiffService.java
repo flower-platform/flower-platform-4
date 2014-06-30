@@ -42,6 +42,7 @@ import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -247,7 +248,7 @@ public class StructureDiffService {
 	 * Untitled, Untitled1 and Untitled2 already exist => Untitled3 
 	 * will be created).
 	 */
-	private String createSdiffFile(String repo, String fileName) {
+	private String createSdiffFile(String repo, String filePathWithoutRepo) {
 		// subscribe to file system to avoid errors
 		new ResourceServiceRemote().subscribeToParentResource(Utils.getUri(FILE_SCHEME, repo));
 		
@@ -265,11 +266,11 @@ public class StructureDiffService {
 		}
 		
 		// create the file
-		fileName = getNextAvailableName(repo, fileName);
+		String fileName = FileControllerUtils.getNextAvailableName(repo + "/" + filePathWithoutRepo);
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(sdiffsFolderUri);
 		Node child = new Node(null, FILE_NODE_TYPE);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		context.getContext().put(NAME, fileName + STRUCTURE_DIFF_EXTENSION);
+		context.getContext().put(NAME, fileName);
 		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, false);
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
 		return child.getNodeUri();

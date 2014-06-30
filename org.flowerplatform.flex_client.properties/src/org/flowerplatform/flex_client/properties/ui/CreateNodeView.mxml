@@ -86,7 +86,7 @@
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					if (propertyForm.getElementAt(i) is PropertyLineRenderer) {
 						var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(propertyForm.getElementAt(i));
-						if (propertyItemRenderer.propertyDescriptor.mandatory && propertyItemRenderer.value == "" && propertyItemRenderer.propertyDescriptor.type != "Boolean") {
+						if (propertyItemRenderer.propertyDescriptor.mandatory && (propertyItemRenderer.value == null || propertyItemRenderer.value == "") && propertyItemRenderer.propertyDescriptor.type != "Boolean") {
 							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 								.setText(Resources.getMessage("field_required_title"))
 								.setTitle("\'" + propertyItemRenderer.propertyDescriptor[CoreConstants.NAME] + "\' " + Resources.getMessage("field_is_mandatory_message"))

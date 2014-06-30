@@ -18,7 +18,7 @@
 			override protected function okHandler(event:Event=null):void {
 				okButton.enabled = false;
 				CorePlugin.getInstance().serviceLocator.invoke("structureDiffService.createStructureDiff", 
-					[patch.text, repo, filename.text],
+					[patch.text, repo, 'sdiffs/' + filename.text + '.sdiff'],
 					function(node:Node):void {
 						CorePlugin.getInstance().openEditor(node);
 						cancelHandler();

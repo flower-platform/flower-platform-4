@@ -1,5 +1,6 @@
 package org.flowerplatform.flex_client.codesync.regex {
 	
+	import org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
@@ -35,6 +36,9 @@ package org.flowerplatform.flex_client.codesync.regex {
 						return Pair(item).a + " - " + 	Pair(item).b;
 					}
 				});	
+			
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GenerateMatchesAction);
+			
 		}
 		
 		override protected function registerClassAliases():void	{
