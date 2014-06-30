@@ -20,6 +20,7 @@ package org.flowerplatform.flexutil {
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
 	import flashx.textLayout.utils.CharacterUtil;
@@ -97,6 +98,10 @@ package org.flowerplatform.flexutil {
 			return simpleClassName;
 		}
 		
+		public static function getClass(obj:Object):Class {			
+			return Class(getDefinitionByName(getQualifiedClassName(obj)));
+		}
+			
 		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
 			return str == null ? defaultStr : str;
 		}

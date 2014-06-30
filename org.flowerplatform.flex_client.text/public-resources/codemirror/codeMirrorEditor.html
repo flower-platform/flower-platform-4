@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html style="height: 100%;">
+	<head>
+		<meta http-equiv="Content-Language" content="en-us">
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+		<script src="lib/codemirror-compressed.js"></script>	
+		<script src="lib/overlay.js"></script>		
+		<link rel="stylesheet" href="codeMirrorEditor.css" />
+		
+		<script>
+			function getURLParam(name) {
+				name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+			  	var regexS = "[\\?&]"+name+"=([^&#]*)";
+			  	var regex = new RegExp(regexS);
+			 	var results = regex.exec(window.location.href);
+			 	if (results == null) {
+			   	 	return "";
+			  	} else {
+			    	return results[1];
+			  	}
+			}	
+				
+			// Invert map
+			function invert(obj) {
+				var result = {};
+				for (var key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						var arr = obj[key];
+						if (arr instanceof Array) {
+							for (var i=0; i < arr.length; i++) {
+								var val = arr[i];
+								result[val] = key;
+							}
+						} else {
+							result[arr] = key;
+						}
+					}
+				}
+				return result;
+			}
+			
+			var mime2Ext = {
+				"text/x-csrc": ["c", "C", "h"],
+				"text/x-c++src": ["cc", "cpp", "c++"],
+				"text/x-clojure": ["clj"],
+				"text/x-coffeescript": ["coffee"],
+				"text/x-csharp": ["cs"],
+				"text/css": ["css"],
+				"text/x-diff": ["diff", "patch"],
+				"text/x-erlang": ["erlang"],
+				"text/x-go": ["go"],
+				"text/x-groovy": ["groovy"],
+				"text/x-haskell": ["hs"],
+				"text/html": ["html", "htm"],
+				"text/x-java": ["java"],
+				"text/javascript": ["js"],
+				"application/json": ["json"],
+				"jinja2": [],
+				"text/x-lua": ["lua"],
+				"text/x-markdown": ["md"],
+				"text/n-triples": ["nt"],
+				"text/x-ocaml": ["ocaml"],
+				"text/x-pascal": ["pascal", "p"],
+				"text/x-perl": ["pl"],
+				"text/x-php": ["php", "php3", "php4", "php5"],
+				"application/x-httpd-php": ["phtml"],
+				"text/x-properties": ["properties", "ini"/*, "conf"*/],
+				"text/x-python": ["py"],
+				"text/x-rsrc": ["r"],
+				"text/x-rst": ["rst"],
+				"text/x-ruby": ["rb"],
+				"text/x-rust": ["rs", "rc"],
+				"text/x-scheme": ["scm", "ss"],
+				"text/x-sh": ["sh"],
+				"text/x-stsrc": ["sm"],
+				"application/x-sparql-query": ["spk"],
+				"text/x-plsql": ["sql"],
+				"text/stex": [],
+				"text/x-tiddlywiki": [],
+				"text/x-vb": ["vb"],
+				"text/vbscript": ["vbs"],
+				"text/velocity": [],
+				// "text/xml": ["xml"],
+				"application/xml": ["xml"],
+				"text/x-yaml": ["yaml", "yml"]
+			};
+		
+			var ext2Mime = invert(mime2Ext);
+			
+			var isMobile = getURLParam('isMobile');
+			if (isMobile == "true") {	
+				document.write("<script src='lib/StageWebViewBridge.js'><\/script>");
+			}
+			
+			var myCodeMirror;
+			var editorStatefulClientId;
+			
+			function initialize(args) {				
+				myCodeMirror.setValue(unescape(args[0]));
+				editorStatefulClientId = args[1];
+				if (args[2]) { // readOnly = true
+					disableEditing();
+				}
+				
+				myCodeMirror.on("change", function (instance, changeObj) {					
+					while(changeObj) { // works like an iterator
+						var offset = myCodeMirror.indexFromPos(changeObj.from);
+						var oldText = changeObj.removed.join('\n');
+						var newText = changeObj.text.join('\n');
+						if (isMobile == "true") {						
+							StageWebViewBridge.call("codeMirrorEditorChangedHandler", null, editorStatefulClientId, offset, oldText, newText);
+						} else {
+							parent.getFlexApp().codeMirrorEditorChangedHandler(editorStatefulClientId, offset, oldText, newText);
+						}						
+						changeObj = changeObj.next;
+					}					
+				});
+			}
+			
+			function setContent(args) {				
+				myCodeMirror.setValue(unescape(args[0]));		
+			}
+			
+			function getContent() {
+				var result = myCodeMirror.getValue();
+				if (isMobile) {
+					document.location = result;
+				} else {
+					return result;	
+				}					
+			}
+			
+			function disableEditing() {
+				myCodeMirror.readOnly = true;
+			}
+			
+			function enableEditing() {
+				myCodeMirror.readOnly = false;
+			}
+			
+			function updateText(args) {			
+				myCodeMirror.replaceRange(unescape(args[2]), myCodeMirror.posFromIndex(args[0]), myCodeMirror.posFromIndex(args[0] + args[1]));
+			}		
+			
+			function colorText(args) {
+				var marks = myCodeMirror.getAllMarks();
+				if (marks.length > 0) {
+					for (var i=0; i < marks.length; i++) {						
+						marks[i].clear();
+					}
+				}
+				
+				var matches = args[0];
+				for (var i=0; i < matches.length; i++) {
+					var match = matches[i];
+					myCodeMirror.markText(
+							{line: match.start.nbLine, ch: match.start.nbCharacter}, 
+							{line: match.end.nbLine, ch: match.end.nbCharacter}, 
+							{className: "match"}
+					);
+					if (match.subMatches != null) {
+						for (var j=0; j < match.subMatches.length; j++) {
+							var subMatch = match.subMatches.source[j];
+						
+							myCodeMirror.markText(
+									{line: subMatch.start.nbLine, ch: subMatch.start.nbCharacter}, 
+									{line: subMatch.end.nbLine, ch: subMatch.end.nbCharacter}, 
+									{className: "submatch"}
+							);
+						}
+					}
+				}
+				
+				myCodeMirror.scrollIntoView({line: matches[matches.length - 1].end.nbLine, ch: matches[matches.length - 1].end.nbCharacter}, 3);
+			}	
+			
+		</script>
+				
+	</head>
+	
+	<body style="padding: 0; margin: 0; width: 100%; height: 100%;">			
+		<script>	
+			myCodeMirror = CodeMirror(document.body, {			 
+				mode: CodeMirror.mimeModes[ext2Mime[getURLParam('extension')]],
+			  	lineNumbers: true,
+			  	readOnly: true
+			});		
+		</script>
+	</body>
+</html>

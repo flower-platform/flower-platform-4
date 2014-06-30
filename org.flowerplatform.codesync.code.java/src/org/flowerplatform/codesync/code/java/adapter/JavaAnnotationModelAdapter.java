@@ -119,7 +119,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 				// if the existing annotation is a SingleMemberAnnotation, then set its value
 				if (parent instanceof SingleMemberAnnotation) {
 					ASTNode expression = getExpressionFromString(parent.getAST(), 
-							(String) value.getOrPopulateProperties().get(CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE));
+							(String) value.getPropertyValue(CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE));
 					((SingleMemberAnnotation) parent).setValue((Expression) expression);
 					child = ast.newMemberValuePair(); // avoid NPE later
 				}

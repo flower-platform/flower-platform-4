@@ -71,7 +71,7 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 		if (CodeSyncCodeJavaConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
 			EnumConstantDeclaration parent = (EnumConstantDeclaration) element;
 			AST ast = parent.getAST();
-			Expression arg = getExpressionFromString(ast, ((Node) correspondingChild).getOrPopulateProperties().get(CoreConstants.NAME).toString());
+			Expression arg = getExpressionFromString(ast, ((Node) correspondingChild).getPropertyValue(CoreConstants.NAME).toString());
 			parent.arguments().add(arg);
 			return arg;
 		}

@@ -14,6 +14,8 @@
  * license-end
  */
 package org.flowerplatform.flex_client.properties.property_renderer {
+	import flash.events.Event;
+	
 	import flashx.textLayout.formats.TextAlign;
 	
 	import mx.events.FlexEvent;
@@ -33,21 +35,24 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		private var numberValidator:NumberValidator;
 		
-		override protected function creationCompleteHandler(event:FlexEvent):void {
-			super.creationCompleteHandler(event);
+		public function NumberPropertyRenderer() {
+			super();
 			
-			numberValidator = new NumberValidator();
-			
-			propertyValue.restrict = "0-9\\-";
-			propertyValue.setStyle("textAlign", TextAlign.RIGHT);
+			addEventListener(FlexEvent.CREATION_COMPLETE, 
+				function(event:FlexEvent):void {
+					numberValidator = new NumberValidator();				
+					restrict = "0-9\\-";
+					setStyle("textAlign", TextAlign.RIGHT);
+				}
+			);
 		}
-		
-		override protected function validPropertyValue():Boolean {
-			var value:Object = getValue();
+				
+		override public function isValidValue():Boolean {	
+			var value:Object = valueToCommit;
 			if (value == null) {
 				return true;
 			}
-			if (value != 0) {// done to alow '0', see: https://forums.adobe.com/thread/1038745
+			if (value != 0) { // done to alow '0', see: https://forums.adobe.com/thread/1038745
 				var validationResultEvent:ValidationResultEvent = numberValidator.validate(value);			
 				if (validationResultEvent.type == ValidationResultEvent.INVALID) {	
 					// show validation error to client
@@ -62,13 +67,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			}
 			return true;
 		}
-		
-		override protected function getValue():Object {
-			var value:Object = super.getValue();
+				
+		override public function get valueToCommit():Object {
+			var value:Object = super.valueToCommit;
 			if (value == "") {
 				return null;
 			}
 			return new Number(value);
 		}
+		
 	}
 }

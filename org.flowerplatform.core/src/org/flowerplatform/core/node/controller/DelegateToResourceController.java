@@ -63,7 +63,7 @@ public class DelegateToResourceController extends AbstractController implements
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper value, ServiceContext<NodeService> context) {
+	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
 			((IPropertySetter) controller).setProperty(node, property, value, context);
 		}

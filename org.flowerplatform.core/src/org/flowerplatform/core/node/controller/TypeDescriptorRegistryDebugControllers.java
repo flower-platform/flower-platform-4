@@ -178,11 +178,11 @@ public class TypeDescriptorRegistryDebugControllers {
 			// add cached controller
 			if (cachedController != null) {
 				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(cachedController, CONTROLLER_SINGLE, node.getNodeUri()); 
-				String icons = (String) child.getOrPopulateProperties().get(ICONS);
+				String icons = (String) child.getProperties().get(ICONS);
 				if (cachedController != selfController) {
 					// override
 					icons += ICONS_SEPARATOR + ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/attach.png");
-					child.getOrPopulateProperties().put(ICONS, icons);
+					child.getProperties().put(ICONS, icons);
 				}
 				children.add(child);
 			}
@@ -191,7 +191,7 @@ public class TypeDescriptorRegistryDebugControllers {
 			if (selfController != null && selfController != cachedController) {
 				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(selfController, CONTROLLER_SINGLE, node.getNodeUri()); 
 				// deleted
-				child.getOrPopulateProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/button-cancel.png"));
+				child.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/button-cancel.png"));
 				children.add(child);
 			}
 			
@@ -231,11 +231,11 @@ public class TypeDescriptorRegistryDebugControllers {
 			// add controllers
 			for (IController cachedController : cachedControllers) {
 				Node child = TypeDescriptorRegistryDebugControllers.this.createControllerNode(cachedController, CONTROLLER_ADDITIVE, node.getNodeUri()); 
-				String icons = (String) child.getOrPopulateProperties().get(ICONS);
+				String icons = (String) child.getPropertyValue(ICONS);
 				if (!selfControllers.contains(cachedController)) {
 					// contributed
 					icons += ICONS_SEPARATOR + ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/attach.png");
-					child.getOrPopulateProperties().put(ICONS, icons);
+					child.getProperties().put(ICONS, icons);
 				}
 				children.add(child);
 			}
@@ -346,8 +346,8 @@ public class TypeDescriptorRegistryDebugControllers {
 	private Node createControllerNode(Object controller, String type, String resource) {
 		String id = controller.toString();
 		Node node = new Node(Utils.getUri(type, resource, id), type);
-		node.getOrPopulateProperties().put(NAME, id);
-		node.getOrPopulateProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/executable.png"));
+		node.getProperties().put(NAME, id);
+		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/executable.png"));
 		return node;
 	}
 	

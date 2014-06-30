@@ -55,11 +55,7 @@
 			public function set viewHost(value:IViewHost):void {
 				_viewHost = value;
 			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return new Vector.<IAction>();
-			}
-			
+						
 			protected function button1_clickHandler(event:MouseEvent):void {
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewIdInWorkbench(ServerAccountsViewProvider.ID)

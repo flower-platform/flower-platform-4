@@ -122,7 +122,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 				// don't decorate if the modifier was marked removed
 				continue;
 			}
-			String keyword = (String) modifier.getOrPopulateProperties().get(CoreConstants.NAME);
+			String keyword = (String) modifier.getPropertyValue(CoreConstants.NAME);
 			if (keyword == null || keyword.length() == 0) {
 				continue;
 			}

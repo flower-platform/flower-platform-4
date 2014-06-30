@@ -24,6 +24,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.action.MenuClosedEvent;
 	import org.flowerplatform.flexutil.mobile.spinner.MobileSpinner;
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
@@ -179,7 +180,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			// for SplitViewWrapper, viewContent may be null if the current active view (left or right) is
 			// not a IViewContent. However, we want the action logic to execute, so that SplitViewWrapper can
 			// add its switch* actions
-			return viewContent != null ? viewContent.getActions(selection) : new Vector.<IAction>();
+			return viewContent != null && (viewContent is IActionProvider) ? IActionProvider(viewContent).getActions(selection) : new Vector.<IAction>();
 		}
 		
 		/**

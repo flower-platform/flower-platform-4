@@ -39,9 +39,7 @@
 			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.popup.IMessageBox;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			private var _title:String;
@@ -57,11 +55,7 @@
 			private var _viewHost:IViewHost;
 						
 			private var additionalHandlerToBeExecutedAtClosing:Function;
-			
-			public function getActions(selection:IList):Vector.<IAction>{
-				return new Vector.<IAction>();
-			}
-			
+						
 			public function get viewHost():IViewHost {
 				return _viewHost;
 			}

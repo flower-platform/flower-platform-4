@@ -2057,17 +2057,19 @@ package  com.crispico.flower.util.layout {
 		 * 		
 		 * 
 		 */
-		public function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void {			
-			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
-			dispatchEvent(viewsRemovedEvent);
-
+		public function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {			
+			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);	
+			if (shouldDispatchEvent) {
+				viewsRemovedEvent.canPreventDefault = canPreventDefault;
+				dispatchEvent(viewsRemovedEvent);
+			}
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
-					view.dispatchEvent(viewRemovedEvent);
-
+					if (shouldDispatchEvent) {
+						viewRemovedEvent.canPreventDefault = canPreventDefault;
+						view.dispatchEvent(viewRemovedEvent);
+					}
 					if (viewRemovedEvent.canRemoveView) {
 						removeViewInternal(view);
 					}
@@ -2087,8 +2089,8 @@ package  com.crispico.flower.util.layout {
 		 * If a view represents the current active view, 
 		 * then it will be removed from <code>activeViewList</code>.
 		 */ 		
-		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true):void {
-			closeViews(new ArrayCollection([view]), shouldDispatchEvent);			
+		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
+			closeViews(new ArrayCollection([view]), shouldDispatchEvent, canPreventDefault);			
 		}
 
 		/**

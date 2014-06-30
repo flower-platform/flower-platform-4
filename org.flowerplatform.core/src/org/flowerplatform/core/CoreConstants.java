@@ -38,6 +38,9 @@ public class CoreConstants {
 	
 	public final static String DEBUG = "debug";
 	
+	public static final String PREFERENCE_TYPE = "preference";
+	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
+		
 	//////////////////////////////////
 	// Node properties
 	//////////////////////////////////
@@ -102,8 +105,13 @@ public class CoreConstants {
 		public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER = "NumberStepper";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST = "DropDownList";
 		public static final String PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER = "ColorPicker";
+		public static final String PROPERTY_DESCRIPTOR_TYPE_DATE = "Date";
 		public static final String PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY = "";
 	
+		public static final String PROPERTY_LINE_RENDERER_TYPE_DEFAULT = "Default";
+		public static final String PROPERTY_LINE_RENDERER_TYPE_STYLABLE = "Stylable";
+		public static final String PROPERTY_LINE_RENDERER_TYPE_PREFERENCE = "Preference";
+		
 	// Generic value descriptors
 	
 	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";
@@ -162,7 +170,7 @@ public class CoreConstants {
 	// Content types
 	//////////////////////////////////
 	
-	public static final String TEXT_CONTENT_TYPE = "text";
+	public static final String ALL = "all";
 	
 	//////////////////////////////////
 	// Remote method invocation params
@@ -180,5 +188,9 @@ public class CoreConstants {
 	//////////////////////////////////
 	
 	public static final String METADATA = ".metadata";
+	
+	public static final String DEFAULT_SUFFIX = ".default";
+	public static final String GLOBAL_SUFFIX = ".global";
+	public static final String USER_SUFFIX = ".user";
 	
 }

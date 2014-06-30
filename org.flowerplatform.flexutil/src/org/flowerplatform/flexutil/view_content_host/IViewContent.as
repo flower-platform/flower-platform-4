@@ -22,7 +22,7 @@ package org.flowerplatform.flexutil.view_content_host {
 	 * @see ISelectionProvider
 	 * @author Cristian Spiescu
 	 */
-	public interface IViewContent extends IVisualElement, IActionProvider {
+	public interface IViewContent extends IVisualElement {
 		
 		function set viewHost(viewHost:IViewHost):void;
 		

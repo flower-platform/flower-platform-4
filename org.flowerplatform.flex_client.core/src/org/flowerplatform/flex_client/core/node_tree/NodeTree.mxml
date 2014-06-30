@@ -4,86 +4,44 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:tree="org.flowerplatform.flexutil.tree.*"
 		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent"
-		 creationComplete="creationCompleteHandler()">
+		 creationComplete="creationCompleteHandler()" xmlns:ns="org.flowerplatform.flex_client.core.node_tree.*">
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
-			import mx.events.TreeEvent;
-			import mx.rpc.events.FaultEvent;
-			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.node.NodeRegistry;
-			import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Pair;
-			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-			protected var nodeRegistry:NodeRegistry;
 			protected var _viewHost:IViewHost;
-			
-			[Bindable]
-			protected var hierarchicalModelAdapter:NodeTreeHierarchicalModelAdapter = new NodeTreeHierarchicalModelAdapter();
-			
-			protected function creationCompleteHandler():void {
-				// iau selectia (cf. PropertiesView), fac cast la Node, iau nodeUri
-				// fac subscribe cf. EditorFrontend.setEditorInput; la handlerul de complete primesc nodul, pe care il injectez in treelist
-				
-				nodeRegistry = new NodeRegistry();
-				nodeRegistry.addEventListener(RefreshEvent.REFRESH, nodeRegistryRefreshCallback);
-				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
-				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
-				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
-				var resourceUri:String = String(pair.a);
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.subscribe(resourceUri, nodeRegistry, subscribeResultCallback, subscribeFaultCallback);
-			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				// TODO Auto Generated method stub
-				return null;
-			}
-			
+									
 			public function set viewHost(viewHost:IViewHost):void {
 				_viewHost = viewHost;
 			}
-				
-			protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
-				treeList.rootNode = rootNode;
-				nodeRegistry.expand(rootNode);
-			}
-			
-			protected function subscribeFaultCallback(event:FaultEvent):void {
-				// close editor
-//				FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost));
-			}
 
-			protected function nodeRegistryRefreshCallback(event:RefreshEvent):void {
-				trace("REFRESH");
-				treeList.requestRefreshLinearizedDataProvider();
-				treeList.invalidateDisplayList();
-			}
-			
-			protected function treeListItemOpenCloseHandler(event:TreeEvent):void {
-				// TODO nodeReg.expand
-				if (event.type == TreeEvent.ITEM_OPEN) {
-					nodeRegistry.expand(Node(event.item));
-					event.preventDefault();
-				}
-				else if (event.type == TreeEvent.ITEM_CLOSE) {
-					nodeRegistry.collapse(Node(event.item), false);
-					event.preventDefault();
-				}
-			}
-			
 			public function additionalCloseHandler():void {
 				// do nothing
 			}	
 			
+			protected function creationCompleteHandler():void {		
+				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+				
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
+				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
+			
+				treeList.initializeTree(pair == null ? node.nodeUri : pair.a as String);				
+			}
+			
+			private function viewRemovedHandler(event:ViewRemovedEvent):void {
+				treeList.finalizeTree();
+			}
+			
 		]]>
 	</fx:Script>
-	<tree:TreeList id="treeList" width="100%" height="100%" 
-				   hierarchicalModelAdapter="{hierarchicalModelAdapter}" itemRenderer="org.flowerplatform.flex_client.core.node_tree.NodeTreeItemRenderer" 
-				   itemOpen="treeListItemOpenCloseHandler(event)" itemClose="treeListItemOpenCloseHandler(event)"/>
+	
+	<ns:NodeTreeComponent id="treeList" width="100%" height="100%" />
+	
 </s:Group>

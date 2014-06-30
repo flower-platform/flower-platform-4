@@ -20,8 +20,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
-import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.DEFAULT_MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.EDGE_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.EDGE_HIDE;
 import static org.flowerplatform.mindmap.MindMapConstants.EDGE_HORIZONTAL;
@@ -51,9 +49,11 @@ import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.PropertyWrapper;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.remote.StylePropertyWrapper;
+import org.flowerplatform.mindmap.MindMapConstants;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudModel;
 import org.freeplane.features.cloud.CloudModel.Shape;
@@ -78,7 +78,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 	private static final Pattern ICON_URL_PATTERN = Pattern.compile("((.*?/)+)(.*?).png");
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext<NodeService> context) {
+	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
 			return;
 		}
@@ -89,33 +89,37 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		// if empty -> additional updates for all properties
 		List<String> addAdditionalSetPropertyUpdatesFor = null;
 		
+		Object propertyValue = value instanceof PropertyWrapper ? ((PropertyWrapper) value).getValue() : value;
 		switch (property) {
 			case TEXT:
-				rawNodeData.setText((String) wrapper.getPropertyValue());
+				rawNodeData.setText((String) propertyValue);
 				isPropertySet = true;
 				break;
 			case MIN_WIDTH:
-				Integer newMinValue = NodeSizeModel.NOT_SET;
-				if (wrapper.getPropertyValue() == null) {
-					wrapper.setPropertyValue(DEFAULT_MIN_WIDTH);					
+				Integer newMinValue = propertyValue == null ? NodeSizeModel.NOT_SET : (Integer) propertyValue;
+				if (newMinValue < 1) {
+					context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+					context.getService().setProperty(node, property, new StylePropertyWrapper().setIsDefaultAs(true).setValueAs(MindMapConstants.DEFAULT_MIN_WIDTH), new ServiceContext<NodeService>(context.getService()));
+					return;				
 				} else {
-					newMinValue = (Integer) wrapper.getPropertyValue();
-				}
-				NodeSizeModel.createNodeSizeModel(rawNodeData).setMinNodeWidth(newMinValue);		
-				isPropertySet = true;
+					NodeSizeModel.createNodeSizeModel(rawNodeData).setMinNodeWidth(newMinValue);		
+					isPropertySet = true;
+				}				
 				break;
 			case MAX_WIDTH:	
-				Integer newMaxValue = NodeSizeModel.NOT_SET;
-				if (wrapper.getPropertyValue() == null) {
-					wrapper.setPropertyValue(DEFAULT_MAX_WIDTH);					
+				Integer newMaxValue = propertyValue == null ? NodeSizeModel.NOT_SET : (Integer) propertyValue;
+				if (newMaxValue < 1) {
+					context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+					context.getService().setProperty(node, property, new PropertyWrapper().setValueAs(MindMapConstants.DEFAULT_MAX_WIDTH), new ServiceContext<NodeService>(context.getService()));
+					return;								
 				} else {
-					newMaxValue = (Integer) wrapper.getPropertyValue();
-				}
-				NodeSizeModel.createNodeSizeModel(rawNodeData).setMaxNodeWidth(newMaxValue);	
-				isPropertySet = true;
+					newMaxValue = (Integer) propertyValue;
+					NodeSizeModel.createNodeSizeModel(rawNodeData).setMaxNodeWidth(newMaxValue);	
+					isPropertySet = true;
+				}				
 				break;
 			case CoreConstants.ICONS:
-				String icons = (String) wrapper.getPropertyValue();
+				String icons = (String) propertyValue;
 				rawNodeData.getIcons().clear();
 				if (icons != null) {					
 					String[] array = icons.split(CoreConstants.ICONS_SEPARATOR);
@@ -130,7 +134,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				isPropertySet = true;
 				break;
 			case NOTE:
-				String note = (String) wrapper.getPropertyValue();
+				String note = (String) propertyValue;
 				NoteModel.createNote(rawNodeData).setXml(note);
 								
 				isPropertySet = true;
@@ -140,52 +144,52 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
 				break;
 			case NODE_DETAILS:
-				String nodeDetails = (String) wrapper.getPropertyValue();
+				String nodeDetails = (String) propertyValue;
 				DetailTextModel.createDetailText(rawNodeData).setXml(nodeDetails);
 				isPropertySet = true;
 				break;
 			case FONT_FAMILY:	
-				String fontFamily = (String) wrapper.getPropertyValue();
+				String fontFamily = (String) propertyValue;
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);
 				isPropertySet = true;
 				break;
 			case FONT_SIZE:	
-				Integer fontSize = Integer.valueOf((String) wrapper.getPropertyValue());				
+				Integer fontSize = Integer.valueOf((String) propertyValue);				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontSize(fontSize);				
 				isPropertySet = true;
 				break;
 			case FONT_BOLD:	
-				Boolean fontBold = (Boolean) wrapper.getPropertyValue();				
+				Boolean fontBold = (Boolean) propertyValue;				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setBold(fontBold);				
 				isPropertySet = true;
 				break;
 			case FONT_ITALIC:	
-				Boolean fontItalic = (Boolean) wrapper.getPropertyValue();				
+				Boolean fontItalic = (Boolean) propertyValue;				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setItalic(fontItalic);				
 				isPropertySet = true;
 				break;
 			case COLOR_TEXT:	
-				String color = (String) wrapper.getPropertyValue();				
+				String color = (String) propertyValue;				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setColor(ColorUtils.stringToColor(color));				
 				isPropertySet = true;
 				break;
 			case COLOR_BACKGROUND:	
-				String backgroundColor = (String) wrapper.getPropertyValue();				
+				String backgroundColor = (String) propertyValue;				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(ColorUtils.stringToColor(backgroundColor));				
 				isPropertySet = true;
 				break;
 			case EDGE_COLOR:
-				String edgeColor = (String) wrapper.getPropertyValue();
+				String edgeColor = (String) propertyValue;
 				EdgeModel.createEdgeModel(rawNodeData).setColor(ColorUtils.stringToColor(edgeColor));
 				isPropertySet = true;
 				break;
 			case EDGE_WIDTH:
-				int edgeWidth = (int) wrapper.getPropertyValue();
+				int edgeWidth = (int) propertyValue;
 				EdgeModel.createEdgeModel(rawNodeData).setWidth(edgeWidth);
 				isPropertySet = true;
 				break;
 			case EDGE_STYLE:
-				String edgeStyleProperty = (String) wrapper.getPropertyValue();
+				String edgeStyleProperty = (String) propertyValue;
 				EdgeStyle edgeStyle = null;
 				switch (edgeStyleProperty) {
 				case EDGE_SMOOTHLY_CURVED:
@@ -204,17 +208,17 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 					edgeStyle = EdgeStyle.EDGESTYLE_BEZIER;
 					break;
 				}
-				EdgeModel.createEdgeModel(rawNodeData).setStyle(edgeStyle);;
+				EdgeModel.createEdgeModel(rawNodeData).setStyle(edgeStyle);
 				isPropertySet = true;
 				break;
 				
 			case CLOUD_COLOR:
-				String cloudColor = (String) wrapper.getPropertyValue();				
+				String cloudColor = (String) propertyValue;				
 				CloudModel.createModel(rawNodeData).setColor(ColorUtils.stringToColor(cloudColor));				
 				isPropertySet = true;
 				break;
 			case CLOUD_SHAPE:
-				String cloudShape = (String) wrapper.getPropertyValue();
+				String cloudShape = (String) propertyValue;
 				Shape shape = null;
 				// get shape correspondence from freeplane
 				switch (cloudShape) {
@@ -233,8 +237,8 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				isPropertySet = true;
 				break;
 			case STYLE_NAME:
-				String styleName = (String) wrapper.getPropertyValue();
-				MapModel mapModel = (MapModel) node.getRawNodeData();
+				String styleName = (String) propertyValue;
+				MapModel mapModel = ((NodeModel) node.getRawNodeData()).getMap();
 				
 				Set<IStyle> styles = MapStyleModel.getExtension(mapModel).getStyles();
 				IStyle style = null;
@@ -258,22 +262,19 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		}
 				
 		if (!isPropertySet) {
-			super.setProperty(node, property, wrapper, context);
+			super.setProperty(node, property, value, context);
 		} else {
-			rawNodeData.getMap().setSaved(false);
-			
-			// set the property on the node instance too
-			node.getOrPopulateProperties().put(property, wrapper.getPropertyValue());
+			rawNodeData.getMap().setSaved(false);			
 		}
 		
 		if (addAdditionalSetPropertyUpdatesFor != null) {
-			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {
+			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {				
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
 					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {
 				for (String entry : addAdditionalSetPropertyUpdatesFor) {
-					context.getService().setProperty(node, entry, node.getOrPopulateProperties().get(entry), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+					context.getService().setProperty(node, entry, node.getPropertyValue(entry), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}
 			}
 		}
@@ -365,9 +366,8 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 			super.unsetProperty(node, property, serviceContext);
 		} else {
 			rawNodeData.getMap().setSaved(false);			
-			node.getOrPopulateProperties();
 		}
-		
+				
 		if (addAdditionalUnsetPropertyUpdatesFor != null) {
 			if (addAdditionalUnsetPropertyUpdatesFor.isEmpty()) {
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {

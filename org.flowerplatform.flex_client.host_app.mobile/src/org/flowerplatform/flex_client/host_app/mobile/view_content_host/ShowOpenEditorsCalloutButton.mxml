@@ -54,7 +54,7 @@
 						protected function closeEditorFrontend(event:MouseEvent):void {
 							// remove from the list of components
 							splitView.rightComponents.removeItem(editorFrontend);
-							splitView.closeView(editorFrontend);
+							splitView.closeView(editorFrontend, true, true);
 							if (splitView.rightActiveComponent == editorFrontend) {
 								// remove it if it was the active component
 								splitView.rightActiveComponent = null;

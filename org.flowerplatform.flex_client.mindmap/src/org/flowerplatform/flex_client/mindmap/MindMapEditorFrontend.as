@@ -18,12 +18,10 @@ package org.flowerplatform.flex_client.mindmap {
 	import mx.collections.ArrayCollection;
 	import mx.utils.ObjectUtil;
 	
-	import mx.collections.ArrayCollection;
-	import mx.utils.ObjectUtil;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.InplaceEditorAction;
+	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorActionProvider;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
 	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
@@ -52,6 +50,7 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			actionProvider.actionProviders.push(CorePlugin.getInstance().editorClassFactoryActionProvider);
 			actionProvider.actionProviders.push(new AddChildActionProvider());
+			actionProvider.actionProviders.push(new OpenWithEditorActionProvider());
 			
 			var shortcutsActionProvider:VectorActionProvider = new VectorActionProvider();
 			shortcutsActionProvider.addAction(new NodeUpAction());
@@ -113,7 +112,7 @@ package org.flowerplatform.flex_client.mindmap {
 			var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
 			if (Node(rootModel.model).nodeUri == event.resourceNodeId) {
 				// remove the editor
-				FlexUtilGlobals.getInstance().workbench.closeView(this);
+				FlexUtilGlobals.getInstance().workbench.closeView(this, true, true);
 			} else {
 				// collapse the node
 				nodeRegistry.collapse(nodeRegistry.getNodeById(event.resourceNodeId), true);

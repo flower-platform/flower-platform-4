@@ -16,6 +16,7 @@
 package org.flowerplatform.flex_client.properties {
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flex_client.properties.ui.PropertiesView;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;

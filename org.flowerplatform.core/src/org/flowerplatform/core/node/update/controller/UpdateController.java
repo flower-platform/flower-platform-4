@@ -26,7 +26,6 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
-import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceSetService;
@@ -83,13 +82,15 @@ public class UpdateController extends AbstractController
 	}
 	
 	@Override
-	public void setProperty(Node node, String key, PropertyValueWrapper wrapper, ServiceContext<NodeService> context) {	
-		setUnsetProperty(node, key, wrapper.getPropertyValue(), false, context);
+	public void setProperty(Node node, String key, Object value, ServiceContext<NodeService> context) {	
+		setUnsetProperty(node, key, value, false, context);
 	}
 
 	@Override
 	public void unsetProperty(Node node, String key, ServiceContext<NodeService> context) {
-		setUnsetProperty(node, key, node.getOrPopulateProperties().get(key), false, context);
+		Object propertyValue = node.getPropertyValueOrWrapper(key);
+		// consider property "unset" if its value is null (doesn't exist in map)
+		setUnsetProperty(node, key, propertyValue, propertyValue == null, context);
 	}
 	
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext<NodeService> context) {		

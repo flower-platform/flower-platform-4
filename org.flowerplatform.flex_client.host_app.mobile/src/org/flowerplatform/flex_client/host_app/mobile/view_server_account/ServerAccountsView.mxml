@@ -22,7 +22,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 creationComplete="creationCompleteHandler(event)"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent, org.flowerplatform.flexutil.dialog.IDialog">
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent, org.flowerplatform.flexutil.dialog.IDialog, org.flowerplatform.flexutil.action.IActionProvider">
 	<s:layout>
 		<s:VerticalLayout gap="0"/>
 	</s:layout>

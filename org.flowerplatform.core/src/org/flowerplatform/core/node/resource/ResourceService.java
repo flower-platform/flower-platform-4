@@ -18,6 +18,7 @@ package org.flowerplatform.core.node.resource;
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
 import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import java.util.HashMap;
 import java.util.List;
@@ -62,20 +63,28 @@ public abstract class ResourceService implements IResourceHolder {
 	 * Delegate to a {@link IResourceHandler} based on the scheme.
 	 */
 	@Override
-	public Node getNode(String nodeUri) {
+	public Node getNode(String nodeUri) {		
+		return getNode(nodeUri, new ServiceContext<ResourceService>());
+	}
+	
+	public Node getNode(String nodeUri, ServiceContext<ResourceService> context) {
 		logger.debug("Get node for URI: {}", nodeUri);
 	
 		String scheme = Utils.getScheme(nodeUri);
 		IResourceHandler resourceHandler = getResourceHandler(scheme);
-		return getNode(nodeUri, resourceHandler);
+		return getNode(nodeUri, resourceHandler, context);
 	}
 	
-	protected Node getNode(String nodeUri, IResourceHandler resourceHandler) {
+	protected Node getNode(String nodeUri, IResourceHandler resourceHandler, ServiceContext<ResourceService> context) {
 		String resourceUri = resourceHandler.getResourceUri(nodeUri);
 		Object resourceData = resourceUri == null ? null : getResourceData(resourceUri);
 		Object rawNodeData = resourceHandler.getRawNodeDataFromResource(nodeUri, resourceData);
 		Node node = resourceHandler.createNodeFromRawNodeData(nodeUri, rawNodeData);
-		node.getOrPopulateProperties();
+		
+		if (context.getBooleanValue(POPULATE_WITH_PROPERTIES)) {			
+			node.getOrPopulateProperties();
+		}
+		
 		return node;
 	}
 	
@@ -98,7 +107,7 @@ public abstract class ResourceService implements IResourceHolder {
 		IResourceHandler resourceHandler = getResourceHandler(scheme);
 		String resourceUri = resourceHandler.getResourceUri(nodeUri);
 		if (resourceUri == null) {
-			return new SubscriptionInfo(getNode(nodeUri, resourceHandler));
+			return new SubscriptionInfo(getNode(nodeUri, resourceHandler, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true)));
 		}
 		
 		// subscribe
@@ -106,7 +115,7 @@ public abstract class ResourceService implements IResourceHolder {
 		CorePlugin.getInstance().getSessionService().sessionSubscribedToResource(sessionId, resourceUri, null);
 		
 		// get resource node
-		Node resourceNode = getNode(resourceUri, resourceHandler);
+		Node resourceNode = getNode(resourceUri, resourceHandler, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
 		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceUri;
@@ -115,7 +124,7 @@ public abstract class ResourceService implements IResourceHolder {
 		// add to resource set
 		CorePlugin.getInstance().getResourceSetService().addToResourceSet(resourceSet, resourceUri);
 		
-		return new SubscriptionInfo(getNode(nodeUri, resourceHandler), resourceNode, resourceSet);
+		return new SubscriptionInfo(getNode(nodeUri, resourceHandler, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true)), resourceNode, resourceSet);
 	}
 	
 	/**
@@ -167,7 +176,7 @@ public abstract class ResourceService implements IResourceHolder {
 		}
 		
 		// update isDirty property
-		Node resourceNode = getNode(resourceUri, resourceHandler);
+		Node resourceNode = getNode(resourceUri, resourceHandler, new ServiceContext<ResourceService>());
 		CorePlugin.getInstance().getNodeService().setProperty(
 				resourceNode, 
 				IS_DIRTY, 
@@ -189,7 +198,7 @@ public abstract class ResourceService implements IResourceHolder {
 		}
 		
 		// update isDirty property
-		Node resourceNode = getNode(resourceUri, resourceHandler);
+		Node resourceNode = getNode(resourceUri, resourceHandler, new ServiceContext<ResourceService>());
 		CorePlugin.getInstance().getNodeService().setProperty(
 				resourceNode, 
 				IS_DIRTY, 
@@ -213,7 +222,7 @@ public abstract class ResourceService implements IResourceHolder {
 
 	public Node getResourceNode(String nodeUri) {
 		IResourceHandler resourceHandler = getResourceHandler(Utils.getScheme(nodeUri));
-		return getNode(resourceHandler.getResourceUri(nodeUri), resourceHandler);
+		return getNode(resourceHandler.getResourceUri(nodeUri), resourceHandler, new ServiceContext<ResourceService>());
 	}
 
 }

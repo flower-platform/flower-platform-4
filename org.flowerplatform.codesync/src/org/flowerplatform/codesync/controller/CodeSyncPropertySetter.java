@@ -25,7 +25,6 @@ import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertySetter;
-import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
@@ -44,7 +43,7 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext<NodeService> context) {
+	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
 			setSyncFalseAndPropagateToParents(node, context.getService());
@@ -60,16 +59,16 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 		Object originalValue = null;
 		String originalProperty = getOriginalPropertyName(property);
 		// get the original value from property.original or property
-		if (node.getOrPopulateProperties().containsKey(originalProperty)) {
+		if (node.getProperties().containsKey(originalProperty)) {
 			isOriginalPropertySet = true;
-			originalValue = node.getOrPopulateProperties().get(originalProperty);
-		} else if (node.getOrPopulateProperties().containsKey(property)) {
-			originalValue = node.getOrPopulateProperties().get(property);
+			originalValue = node.getPropertyValue(originalProperty);
+		} else if (node.getProperties().containsKey(property)) {
+			originalValue = node.getPropertyValue(property);
 		} else {
-			originalValue = wrapper.getPropertyValue();
+			originalValue = value;
 		}
 		
-		if (!Utils.safeEquals(originalValue, wrapper.getPropertyValue())) {
+		if (!Utils.safeEquals(originalValue, value)) {
 			if (!isOriginalPropertySet) {
 				// trying to set a different value; keep the old value in property.original if it does not exist
 				context.getService().setProperty(node, originalProperty, originalValue, new ServiceContext<NodeService>(context.getService()));

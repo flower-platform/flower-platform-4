@@ -16,7 +16,6 @@
 package org.flowerplatform.flex_client.properties.action {
 	
 	import mx.collections.IList;
-	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -24,8 +23,8 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
-	import org.flowerplatform.flex_client.properties.CreateNodeView;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flex_client.properties.ui.CreateNodeView;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;

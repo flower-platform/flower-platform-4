@@ -31,6 +31,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.RedoAction;
+	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorComposedAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
 	import org.flowerplatform.flex_client.core.editor.action.UndoAction;
@@ -39,12 +40,14 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.NodeWithChildren;
+	import org.flowerplatform.flex_client.core.editor.remote.PreferencePropertyWrapper;
+	import org.flowerplatform.flex_client.core.editor.remote.PropertyWrapper;
+	import org.flowerplatform.flex_client.core.editor.remote.StylePropertyWrapper;
 	import org.flowerplatform.flex_client.core.editor.remote.SubscriptionInfo;
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
-	import org.flowerplatform.flex_client.core.editor.text.TextEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
@@ -150,6 +153,7 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("resourceService");
 			serviceLocator.addService("downloadService");
 			serviceLocator.addService("uploadService");
+			serviceLocator.addService("preferenceService");
 			
 			// use 0 to disable it
 			updateTimer = new UpdateTimer(0);
@@ -162,7 +166,8 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
 			editorClassFactoryActionProvider.addActionClass(OpenAction);
-
+			editorClassFactoryActionProvider.addActionClass(OpenWithEditorComposedAction);
+			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
 			editorClassFactoryActionProvider.addActionClass(NodeTreeAction);
 			
@@ -331,8 +336,12 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(ChildrenUpdate);
 			registerClassAliasFromAnnotation(NodeWithChildren);
 			registerClassAliasFromAnnotation(FullNodeIdWithChildren);
+			registerClassAliasFromAnnotation(PropertyWrapper);
+			registerClassAliasFromAnnotation(StylePropertyWrapper);
+			registerClassAliasFromAnnotation(PreferencePropertyWrapper);
 			registerClassAliasFromAnnotation(SubscriptionInfo);
-		
+			registerClassAliasFromAnnotation(PropertyWrapper);
+			registerClassAliasFromAnnotation(StylePropertyWrapper);
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
 			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
@@ -357,35 +366,35 @@ package org.flowerplatform.flex_client.core {
 		/**
 		 * @author Mariana Gheorghe
 		 * @author Claudiu Matei
+		 * @author Cristina Constantinescu
 		 */
-		public function getSubscribableResource(node:Node):Pair {
-			var resourceUri:String = node.nodeUri;
-			var contentType:String = null;
+		public function getSubscribableResource(node:Node, contentType:String = null):Pair {			
 			if (!node.properties[CoreConstants.USE_NODE_URI_ON_NEW_EDITOR]) {
 				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
 				if (subscribableResources != null && subscribableResources.length > 0) {
-					var pair:Pair = Pair(subscribableResources.getItemAt(0));
-					resourceUri = pair.a as String;
-					contentType = pair.b as String;
+					var index:int = 0;
+					if (contentType != null) {
+						for (index = 0; index < subscribableResources.length; index++) {
+							if (Pair(subscribableResources.getItemAt(index)).b == contentType) {															
+								break;
+							}
+						}
+					}
+					return Pair(subscribableResources.getItemAt(index));
 				}
-			}
-			if (contentType == null) {
-				contentType = contentTypeRegistry.defaultContentType;
-			}
-			var sr:Pair = new Pair();
-			sr.a = resourceUri;
-			sr.b = contentType;
-			return sr;
+			}		
+			return null;
 		}
 		
 		/**
 		 * @author Mariana Gheorghe
 		 * @author Claudiu Matei
+		 * @author Cristina Constantinescu
 		 */
-		public function openEditor(node:Node):void {
-			var sr:Pair = getSubscribableResource(node);
-			var resourceUri:String = sr.a as String;
-			var contentType:String = sr.b as String;
+		public function openEditor(node:Node, ct:String = null):void {
+			var sr:Pair = getSubscribableResource(node, ct);
+			var resourceUri:String = sr == null ? node.nodeUri : sr.a as String;
+			var contentType:String = sr == null ? contentTypeRegistry.defaultContentType : sr.b as String;
 			
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
 			editorDescriptor.openEditor(resourceUri, true);
