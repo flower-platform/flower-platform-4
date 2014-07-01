@@ -176,35 +176,35 @@ public abstract class ResourceSetService {
 	/**
 	 * @author Claudiu Matei 
 	 */
-	public void undo(String resourceNodeId, String commandId) {
+	public void undo(String resourceSet, String commandId) {
 		try {
-			CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
-			String commandToUndoId = getCommandToUndoId(resourceNodeId);
-			Command command = getCommand(resourceNodeId, commandId);
-			Integer comp = compareCommands(resourceNodeId, commandId, commandToUndoId);
+			CorePlugin.getInstance().getLockManager().lock(resourceSet);
+			String commandToUndoId = getCommandToUndoId(resourceSet);
+			Command command = getCommand(resourceSet, commandId);
+			Integer comp = compareCommands(resourceSet, commandId, commandToUndoId);
 			if (command == null) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to undo is: %s", resourceNodeId, commandId,
+				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to undo is: %s", resourceSet, commandId,
 						commandToUndoId));
 			} else if (comp == null || comp > 0) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s has already been undone. Current command to undo is: %s", resourceNodeId, commandId,
+				throw new IllegalArgumentException(String.format("For resource %s command %s has already been undone. Current command to undo is: %s", resourceSet, commandId,
 						commandToUndoId));
 			} else {
-				List<Command> commands = getCommands(resourceNodeId, commandId, commandToUndoId);
+				List<Command> commands = getCommands(resourceSet, commandId, commandToUndoId);
 				for (int i = commands.size() - 1; i >= 0; i--) {
 					Command cmd = commands.get(i);
-					List<Update> updates = getUpdates(resourceNodeId, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
+					List<Update> updates = getUpdates(resourceSet, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
 					for (int k = updates.size() - 1; k >= (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k--) {
 						Update update = updates.get(k);
 						undoUpdate(update);
 					}
 				}
-				Command previousCommand = getCommandBefore(resourceNodeId, commandId);
-				setCommandToUndoId(resourceNodeId, (previousCommand != null ? previousCommand.getId() : null));
+				Command previousCommand = getCommandBefore(resourceSet, commandId);
+				setCommandToUndoId(resourceSet, (previousCommand != null ? previousCommand.getId() : null));
 				setCommandToRedoId(command.getResourceSet(), commandId);
 
 			}
 		} finally {
-			CorePlugin.getInstance().getLockManager().unlock(resourceNodeId);
+			CorePlugin.getInstance().getLockManager().unlock(resourceSet);
 		}
 	}
 	
@@ -250,32 +250,32 @@ public abstract class ResourceSetService {
 	/**
 	 * @author Claudiu Matei 
 	 */
-	public void redo(String resourceNodeId, String commandId) {
+	public void redo(String resourceSet, String commandId) {
 		try {
-			CorePlugin.getInstance().getLockManager().lock(resourceNodeId);
-			String commandToRedoId = getCommandToRedoId(resourceNodeId);
-			Command command=getCommand(resourceNodeId, commandId);
-			Integer comp = compareCommands(resourceNodeId, commandId, commandToRedoId);
+			CorePlugin.getInstance().getLockManager().lock(resourceSet);
+			String commandToRedoId = getCommandToRedoId(resourceSet);
+			Command command=getCommand(resourceSet, commandId);
+			Integer comp = compareCommands(resourceSet, commandId, commandToRedoId);
 			if (command == null) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to redo is: %s", resourceNodeId, commandId,	commandToRedoId));
+				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to redo is: %s", resourceSet, commandId,	commandToRedoId));
 			} else if (comp == null || comp < 0) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s has already been redone. Current command to redo is: %s", resourceNodeId, commandId, commandToRedoId));
+				throw new IllegalArgumentException(String.format("For resource %s command %s has already been redone. Current command to redo is: %s", resourceSet, commandId, commandToRedoId));
 			} else {
-				List<Command> commands = getCommands(resourceNodeId, commandToRedoId, commandId);
+				List<Command> commands = getCommands(resourceSet, commandToRedoId, commandId);
 				for (int i = 0; i < commands.size(); i++) {
 					Command cmd = commands.get(i);
-					List<Update> updates = getUpdates(resourceNodeId, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
+					List<Update> updates = getUpdates(resourceSet, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
 					for (int k = (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k < updates.size(); k++) {
 						Update update = updates.get(k);
 						redoUpdate(update);
 					}
 				}
-				Command nextCommand = getCommandAfter(resourceNodeId, commandId);
-				setCommandToRedoId(resourceNodeId, (nextCommand != null ? nextCommand.getId() : null));
-				setCommandToUndoId(resourceNodeId, commandId);
+				Command nextCommand = getCommandAfter(resourceSet, commandId);
+				setCommandToRedoId(resourceSet, (nextCommand != null ? nextCommand.getId() : null));
+				setCommandToUndoId(resourceSet, commandId);
 			}
 		} finally {
-			CorePlugin.getInstance().getLockManager().unlock(resourceNodeId);
+			CorePlugin.getInstance().getLockManager().unlock(resourceSet);
 		}
 	}
 

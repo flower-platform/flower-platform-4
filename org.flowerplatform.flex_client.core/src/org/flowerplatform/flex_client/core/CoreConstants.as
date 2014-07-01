@@ -116,6 +116,12 @@ package org.flowerplatform.flex_client.core {
 		public static const UPDATES:String = "updates";
 		
 		//////////////////////////////////
+		// Command stack
+		//////////////////////////////////
+
+		public static const COMMAND_STACK:String = "commandStack";
+		
+		//////////////////////////////////
 		// Editor
 		//////////////////////////////////
 		

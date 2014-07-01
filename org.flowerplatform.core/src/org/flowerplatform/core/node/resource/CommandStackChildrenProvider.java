@@ -25,7 +25,7 @@ public class CommandStackChildrenProvider extends AbstractController implements 
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		String resourceSet = null;
+		String resourceSet = node.getNodeUri().substring(CoreConstants.COMMAND_STACK_SCHEME.length()+1);
 		List<Command> commands = CorePlugin.getInstance().getResourceSetService().getCommands(resourceSet);
 		ArrayList<Node> children = new ArrayList<>();
 		Node dummyNode = new Node(Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceSet, "dummy"), CoreConstants.COMMAND_TYPE);

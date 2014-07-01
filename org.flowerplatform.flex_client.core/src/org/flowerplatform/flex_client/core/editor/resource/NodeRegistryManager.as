@@ -302,6 +302,22 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 			return resourceSets;
 		}
+
+		/**
+		 * @return all dirty resourceUris found in <code>nodeRegistries</code>, without duplicates.
+		 */ 
+		public function getResourceSetsFromNodeRegistries(nodeRegistries:Array):Array {			
+			var resourceSets:Array = [];
+			for (var i:int = 0; i < nodeRegistries.length; i++) {	
+				var nodeRegistry:NodeRegistry = NodeRegistry(nodeRegistries[i]);
+				for each (var obj:Object in getResourceUrisForNodeRegistry(nodeRegistry)) {
+					var resourceUri:String = String(obj);
+					var resourceSet:String = resourceUriToResourceSet[resourceUri];
+					resourceSets.push(resourceSet);						
+				}
+			}
+			return resourceSets;
+		}
 		
 		/**
 		 * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
