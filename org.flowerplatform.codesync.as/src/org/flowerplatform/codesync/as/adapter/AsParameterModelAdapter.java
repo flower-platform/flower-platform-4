@@ -1,38 +1,37 @@
 package org.flowerplatform.codesync.as.adapter;
 
-import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_TYPE;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.PARAMETER_DEFAULT_VALUE;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.PARAMETER_IS_REST;
 
-import org.apache.flex.compiler.internal.tree.as.ParameterNode;
+import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.flowerplatform.codesync.as.feature_provider.AsParameterFeatureProvider;
-import org.flowerplatform.core.CoreConstants;
 
 /**
- * Mapped to {@link ParameterNode}. Children are modifiers ({@link MemberExpressionNode}).
+ * Mapped to {@link IParameterDefinition}.
  * 
  * @see AsParameterFeatureProvider
  * 
  * @author Mariana Gheorghe
  */
-public class AsParameterModelAdapter extends AsAbstractAstModelAdapter {
+public class AsParameterModelAdapter extends AsVariableModelAdapter {
 
 	@Override
 	public Object getMatchKey(Object element) {
-//		return getParameter(element).identifier.name; 
-		return null;
+		return getParameter(element).getBaseName();
 	}
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-//			return getParameter(element).identifier.name;
-		} else if (TYPED_ELEMENT_TYPE.equals(feature)) {
-//			TypeExpressionNode type = (TypeExpressionNode) getParameter(element).type;
-//			if (type == null) {
-//				return null;
-//			}
-//			return ((MemberExpressionNode) type.expr).selector.getIdentifier().name;
+		if (PARAMETER_IS_REST.equals(feature)) {
+			return getParameter(element).isRest();
+		} else if (PARAMETER_DEFAULT_VALUE.equals(feature)) {
+			Object value = resolveInitializer(element);
+			return value;
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
+	protected IParameterDefinition getParameter(Object element) {
+		return (IParameterDefinition) element;
+	}
 }

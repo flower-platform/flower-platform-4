@@ -59,10 +59,10 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 		Object originalValue = null;
 		String originalProperty = getOriginalPropertyName(property);
 		// get the original value from property.original or property
-		if (node.getProperties().containsKey(originalProperty)) {
+		if (node.getOrPopulateProperties().containsKey(originalProperty)) {
 			isOriginalPropertySet = true;
 			originalValue = node.getPropertyValue(originalProperty);
-		} else if (node.getProperties().containsKey(property)) {
+		} else if (node.getOrPopulateProperties().containsKey(property)) {
 			originalValue = node.getPropertyValue(property);
 		} else {
 			originalValue = value;

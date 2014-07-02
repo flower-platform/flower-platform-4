@@ -1,16 +1,26 @@
 package org.flowerplatform.codesync.as.adapter;
 
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAGS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_TYPE;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.asdoc.IASDocComment;
+import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IDocumentableDefinition;
+import org.apache.flex.compiler.internal.scopes.ASFileScope;
+import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.scopes.IASScope;
+import org.flowerplatform.codesync.as.asdoc.AsDocComment;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
+import org.flowerplatform.core.CoreConstants;
 
 /**
- * Mapped to {@link IASNode}.
+ * Mapped to {@link IDefinition}.
  * 
  * @author Mariana Gheorghe
  */
@@ -18,27 +28,20 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (DOCUMENTATION.equals(feature)) {
-//			if (element instanceof DefinitionNode) {
-//				DefinitionNode def = (DefinitionNode) element;
-//				StatementListNode metaData = def.metaData;
-//				if (metaData == null) {
-//					return null;
-//				}
-//				for (Node node : metaData.items) {
-//					if (node instanceof DocCommentNode) {
-//						DocCommentNode comment = (DocCommentNode) node;
-//						MetaDataEvaluator eval = new MetaDataEvaluator();
-//						comment.evaluate(getContext(element), eval);
-//						if (comment.getMetadata() == null) {
-//							return null;
-//						}
-//						return comment.getMetadata().id;
-//					}
-//				}
-//				return null;
-//			}
-			return null;
+		if (CoreConstants.NAME.equals(feature)) {
+			return getDefinition(element).getBaseName();
+		} else if (TYPED_ELEMENT_TYPE.equals(feature)) {
+			return getDefinition(element).getTypeAsDisplayString();
+		} else if (VISIBILITY.equals(feature)) {
+			return getDefinition(element).getNamespaceReference().getBaseName();
+		} else if (DOCUMENTATION.equals(feature)) {
+			if (element instanceof IDocumentableDefinition) {
+				IASDocComment comment = ((IDocumentableDefinition) element).getExplicitSourceComment();
+				if (comment == null) {
+					return null;
+				}
+				return ((AsDocComment) comment).getText();
+			}
 		} 
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
@@ -46,37 +49,24 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (MODIFIERS.equals(feature)) {
-//			if (element instanceof DefinitionNode) {
-//				AttributeListNode attrs = ((DefinitionNode) element).attrs;
-//				if (attrs == null) {
-//					return Collections.emptyList();
-//				}
-//				List<Node> modifiers = new ArrayList<Node>();
-//				getIdentifiers(modifiers, attrs);
-//				return modifiers;
-//			}
-			return Collections.emptyList();
+			return Arrays.asList(getDefinition(element).getModifiers().getAllModifiers());
+		} else if (META_TAGS.equals(feature)) {
+			return Arrays.asList(getDefinition(element).getAllMetaTags());
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
-//	protected void getIdentifiers(List<Node> identifiers, Node node) {
-//		if (node instanceof AttributeListNode) {
-//			for (Node attr : ((AttributeListNode) node).items) {
-//				getIdentifiers(identifiers, attr);
-//			}
-//		} else if (node instanceof ListNode) {
-//			for (Node attr : ((ListNode) node).items) {
-//				getIdentifiers(identifiers, attr);
-//			}
-//		} else if (node instanceof MemberExpressionNode) {
-//			getIdentifiers(identifiers, ((MemberExpressionNode) node).selector.getIdentifier());
-//		} else if (node instanceof IdentifierNode) {
-//			identifiers.add(node);
-//		} else if (node instanceof LiteralStringNode) {
-//			identifiers.add(node);
-//		}
-//	}
+	protected ICompilerProject getProject(Object element) {
+		IASScope scope = getDefinition(element).getContainingScope();
+		while (!(scope instanceof ASFileScope)) {
+			scope = scope.getContainingScope();
+		}
+		return ((ASFileScope) scope).getCompilationUnit().getProject();
+	}
+	
+	protected IDefinition getDefinition(Object element) {
+		return (IDefinition) element;
+	}
 	
 	@Override
 	public boolean hasChildren(Object modelElement) {

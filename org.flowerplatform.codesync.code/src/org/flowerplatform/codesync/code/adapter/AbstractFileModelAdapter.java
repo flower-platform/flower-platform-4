@@ -27,7 +27,6 @@ import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.util.file.FileHolder;
 
 /**
  * @see FolderFeatureProvider
