@@ -76,7 +76,7 @@ public class UpdateController extends AbstractController
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_REMOVED)
-							.setTargetNodeAs(child)
+							.setTargetNodeAs((Node)context.get("removedNode"))
 							.setFullNodeIdAs(node.getNodeUri()));		
 		}
 	}

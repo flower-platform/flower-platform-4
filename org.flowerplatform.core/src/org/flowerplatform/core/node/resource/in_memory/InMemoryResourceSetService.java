@@ -57,7 +57,7 @@ public class InMemoryResourceSetService extends ResourceSetService {
 		logger.debug("Adding update {} for resource set {}", update, resourceSet);
 		update.setId(UUID.randomUUID().toString());
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
-		info.getUpdates().add(update);
+		if (info != null) info.getUpdates().add(update);
 	}
 
 	@Override

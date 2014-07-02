@@ -176,6 +176,26 @@ public class CommandStackTest {
 	}
 
 	@Test
+	public void testUndoCommand_RemoveChild() {
+		Node node = nodeService.getChildren(rootNode, context).get(1);
+
+		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
+		nodeServiceRemote.removeChild(rootNode.getNodeUri(), node.getNodeUri());
+		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
+
+//		List<Node> children = nodeService.getChildren(node, context);
+//		assertTrue("A new node was created and added as a child", children.contains(new Node(childUri, MindMapConstants.MINDMAP_NODE_TYPE)));
+//
+//		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
+//		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 1).getId());
+//
+//		children = nodeService.getChildren(node, context);
+//		assertFalse("The newly created node was removed", children.contains(new Node(childUri, MindMapConstants.MINDMAP_NODE_TYPE)));
+
+	}
+
+	
+	@Test
 	public void testRedoCommand_SetProperty() {
 		String property = "text", newValue = "Changed 1";
 		Node node = nodeService.getChildren(rootNode, context).get(0);

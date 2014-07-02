@@ -2,6 +2,7 @@ package org.flowerplatform.core.node.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.ContextThreadLocal;
 import org.flowerplatform.core.CoreConstants;
@@ -239,11 +240,20 @@ public abstract class ResourceSetService {
 	 */
 	private void undoChildrenUpdate(ChildrenUpdate update) {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		Node child=update.getTargetNode();
+		NodeService nodeService = CorePlugin.getInstance().getNodeService();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(nodeService);
 		switch (update.getType()) {
 		case CoreConstants.UPDATE_CHILD_ADDED:
-			CorePlugin.getInstance().getNodeService().removeChild(node, update.getTargetNode(), context);
-			break;
+			nodeService.removeChild(node, update.getTargetNode(), context);
+		break;
+		case CoreConstants.UPDATE_CHILD_REMOVED:
+			nodeService.addChild(node, update.getTargetNode(), context);
+			Map<String, Object> properties = child.getProperties();
+			for (String prop : properties.keySet()) {
+				nodeService.setProperty(child, prop, properties.get(prop), context);
+			}
+		break;
 		}
 	}
 

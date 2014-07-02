@@ -154,7 +154,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				isPropertySet = true;
 				break;
 			case FONT_SIZE:	
-				Integer fontSize = Integer.valueOf((String) propertyValue);				
+				Integer fontSize = (Integer) propertyValue;				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontSize(fontSize);				
 				isPropertySet = true;
 				break;

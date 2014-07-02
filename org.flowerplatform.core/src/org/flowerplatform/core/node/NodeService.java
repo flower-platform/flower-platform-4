@@ -280,10 +280,20 @@ public class NodeService {
 	}
 	
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
+		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, context);
+		for (Node grandChild : grandChildren) {
+			removeChild(child, grandChild, context);
+		}
+		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
+
+		// Save full child in context; used for undo
+		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
+		removedNode.getOrPopulateProperties();
+		context.add("removedNode", removedNode);
 		
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
