@@ -15,10 +15,7 @@
  */
 package org.flowerplatform.freeplane.controller;
 
-import java.util.Map;
-
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.remote.Node;
@@ -50,13 +47,14 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 		// set the id on the node instance
 		String scheme = Utils.getScheme(node.getNodeUri());
 		String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
-		String childId = Utils.getFragment(child.getNodeUri());
-		if (childId == null) {
+		String childUri = child.getNodeUri();
+		if (childUri == null) {
 			child.setNodeUri(Utils.getUri(scheme, ssp, newNodeModel.createID()));
-			child.setRawNodeData(newNodeModel);
 		} else {
+			String childId = Utils.getFragment(child.getNodeUri());
 			newNodeModel.setID(childId);
 		}
+		child.setRawNodeData(newNodeModel);
 	}
 
 }

@@ -281,7 +281,11 @@ public class NodeService {
 	
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
 		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, context);
-		for (Node grandChild : grandChildren) {
+		if (context.get("parentNode") == null) {
+			context.add("parentNode", node);
+		}
+		for (int i = grandChildren.size() - 1; i >= 0; i--) {
+			Node grandChild = grandChildren.get(i);
 			removeChild(child, grandChild, context);
 		}
 		
@@ -294,11 +298,20 @@ public class NodeService {
 		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
 		removedNode.getOrPopulateProperties();
 		context.add("removedNode", removedNode);
-		
+
+		// Find next sibbling and save it for undo of position
+		if (context.get("parentNode")==node) {
+			List<Node> sibblings = getChildren(node, context);
+			int childIndex = sibblings.indexOf(child);
+			if (childIndex < sibblings.size() - 1) {
+				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, sibblings.get(childIndex + 1).getNodeUri());
+			}
+		}
+
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-						
+
 		List<IRemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (IRemoveNodeController controller : controllers) {
 			controller.removeNode(node, child, context);

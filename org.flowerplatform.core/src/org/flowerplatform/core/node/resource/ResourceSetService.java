@@ -245,15 +245,16 @@ public abstract class ResourceSetService {
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(nodeService);
 		switch (update.getType()) {
 		case CoreConstants.UPDATE_CHILD_ADDED:
-			nodeService.removeChild(node, update.getTargetNode(), context);
-		break;
+			nodeService.removeChild(node, child, context);
+			break;
 		case CoreConstants.UPDATE_CHILD_REMOVED:
-			nodeService.addChild(node, update.getTargetNode(), context);
+			context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, update.getFullTargetNodeAddedBeforeId());
+			nodeService.addChild(node, child, context);
 			Map<String, Object> properties = child.getProperties();
 			for (String prop : properties.keySet()) {
 				nodeService.setProperty(child, prop, properties.get(prop), context);
 			}
-		break;
+			break;
 		}
 	}
 
@@ -320,10 +321,11 @@ public abstract class ResourceSetService {
 		case CoreConstants.UPDATE_CHILD_ADDED:
 			CorePlugin.getInstance().getNodeService().addChild(node, update.getTargetNode(), context);
 			break;
+		case CoreConstants.UPDATE_CHILD_REMOVED:
+			CorePlugin.getInstance().getNodeService().removeChild(node, update.getTargetNode(), context);
+			break;
 		}
 	}
-
-	
 	
 	/**
 	 * @author Claudiu Matei

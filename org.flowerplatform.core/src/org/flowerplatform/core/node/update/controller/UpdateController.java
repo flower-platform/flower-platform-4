@@ -64,9 +64,14 @@ public class UpdateController extends AbstractController
 		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
+		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (resourceNode != null) {
 			String resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
 			if (resourceSet == null) {
@@ -77,6 +82,7 @@ public class UpdateController extends AbstractController
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_REMOVED)
 							.setTargetNodeAs((Node)context.get("removedNode"))
+							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
 							.setFullNodeIdAs(node.getNodeUri()));		
 		}
 	}
