@@ -62,8 +62,8 @@ import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
 import org.flowerplatform.codesync.controller.CodeSyncSubscribableResourceProvider;
 import org.flowerplatform.codesync.controller.ModelResourceSetProvider;
-import org.flowerplatform.codesync.line_information_provider.ComposedLineInformationProvider;
-import org.flowerplatform.codesync.line_information_provider.ILineInformationProvider;
+import org.flowerplatform.codesync.line_information_provider.ComposedLineProvider;
+import org.flowerplatform.codesync.line_information_provider.ILineProvider;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
@@ -102,7 +102,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
 	
-	protected ComposedLineInformationProvider lineInformationProvider = new ComposedLineInformationProvider();
+	protected ComposedLineProvider lineProvider = new ComposedLineProvider();
 
 	protected Map<String, List<String>> dataProvidersForDropDownListProperties = new HashMap<String, List<String>>();
 
@@ -159,12 +159,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return typeProviders.get(technology);
 	}
 	
-	public void addLineInformationProvider(ILineInformationProvider provider) {
-		this.lineInformationProvider.addLineInformationProvider(provider);
+	public void addLineProvider(ILineProvider provider) {
+		this.lineProvider.addLineProvider(provider);
 	}
 	
-	public ILineInformationProvider getLineInformationProvider() {
-		return lineInformationProvider;
+	public ILineProvider getLineProvider() {
+		return lineProvider;
 	}
 		
 	/**

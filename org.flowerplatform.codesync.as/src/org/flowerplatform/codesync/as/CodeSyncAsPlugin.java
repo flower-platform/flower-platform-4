@@ -73,7 +73,7 @@ import org.flowerplatform.codesync.as.feature_provider.AsMetaTagAttributeFeature
 import org.flowerplatform.codesync.as.feature_provider.AsMetaTagFeatureProvider;
 import org.flowerplatform.codesync.as.feature_provider.AsParameterFeatureProvider;
 import org.flowerplatform.codesync.as.feature_provider.AsVariableFeatureProvider;
-import org.flowerplatform.codesync.as.line_information_provider.AsFunctionLineInformationProvider;
+import org.flowerplatform.codesync.as.line_information_provider.AsFunctionLineProvider;
 import org.flowerplatform.codesync.as.type_provider.AsTypeProvider;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
 import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
@@ -102,7 +102,7 @@ protected static CodeSyncAsPlugin INSTANCE;
 		INSTANCE = this;
 		
 		CodeSyncPlugin.getInstance().addTypeProvider(TECHNOLOGY, new AsTypeProvider());
-		CodeSyncPlugin.getInstance().addLineInformationProvider(new AsFunctionLineInformationProvider());
+		CodeSyncPlugin.getInstance().addLineProvider(new AsFunctionLineProvider());
 		
 		createNodeTypeDescriptor(FOLDER, new FolderModelAdapter(), new FolderFeatureProvider());
 		createNodeTypeDescriptor(FILE, new AsFileModelAdapter(), new AsFileFeatureProvider());

@@ -16,6 +16,7 @@
 package org.flowerplatform.codesync.line_information_provider;
 
 import org.eclipse.jface.text.IDocument;
+import org.flowerplatform.util.Pair;
 
 /**
  * Provides the start line and end line for a model element.
@@ -24,10 +25,9 @@ import org.eclipse.jface.text.IDocument;
  * 
  * @author Mariana Gheorghe
  */
-public interface ILineInformationProvider {
+public interface ILineProvider {
 
-	int getStartLine(Object model, IDocument document);
-	int getEndLine(Object model, IDocument document);
+	Pair<Integer, Integer> getStartEndLines(Object model, IDocument document);
 	
 	boolean canHandle(Object model);
 }

@@ -19,33 +19,27 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jface.text.IDocument;
-import org.flowerplatform.codesync.line_information_provider.ILineInformationProvider;
+import org.flowerplatform.codesync.line_information_provider.ILineProvider;
+import org.flowerplatform.util.Pair;
 
 /**
  * Mapped to {@link MethodDeclaration}.
  * 
  * @author Mariana Gheorghe
  */
-public class JavaOperationLineInformationProvider implements ILineInformationProvider {
+public class JavaOperationLineProvider implements ILineProvider {
 
 	@Override
-	public int getStartLine(Object model, IDocument document) {
+	public Pair<Integer, Integer> getStartEndLines(Object model, IDocument document) {
 		MethodDeclaration node = getNode(model);
 		if (node.getBody() == null) {
-			return -1;
+			return null;
 		}
 		CompilationUnit cu = getRoot(node);
-		return cu.getLineNumber(node.getBody().getStartPosition());
-	}
-
-	@Override
-	public int getEndLine(Object model, IDocument document) {
-		MethodDeclaration node = getNode(model);
-		if (node.getBody() == null) {
-			return -1;
-		}
-		CompilationUnit cu = getRoot(node);
-		return cu.getLineNumber(node.getBody().getStartPosition() + node.getBody().getLength());
+		int startOffset = node.getBody().getStartPosition();
+		return new Pair<Integer, Integer>(
+				cu.getLineNumber(startOffset), 
+				cu.getLineNumber(startOffset + node.getBody().getLength()));
 	}
 	
 	protected MethodDeclaration getNode(Object model) {

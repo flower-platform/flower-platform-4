@@ -19,36 +19,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.IDocument;
+import org.flowerplatform.util.Pair;
 
 /**
  * @author Mariana Gheorghe
  */
-public class ComposedLineInformationProvider implements ILineInformationProvider {
+public class ComposedLineProvider implements ILineProvider {
 
-	private List<ILineInformationProvider> lineInformationProviders = new ArrayList<ILineInformationProvider>();
+	private List<ILineProvider> lineProviders = new ArrayList<ILineProvider>();
 	
-	public void addLineInformationProvider(ILineInformationProvider provider) {
-		lineInformationProviders.add(provider);
+	public void addLineProvider(ILineProvider provider) {
+		lineProviders.add(provider);
 	}
 	
 	@Override
-	public int getStartLine(Object model, IDocument document) {
-		for (ILineInformationProvider lineInformationProvider : lineInformationProviders) {
+	public Pair<Integer, Integer> getStartEndLines(Object model, IDocument document) {
+		for (ILineProvider lineInformationProvider : lineProviders) {
 			if (lineInformationProvider.canHandle(model)) {
-				return lineInformationProvider.getStartLine(model, document);
+				return lineInformationProvider.getStartEndLines(model, document);
 			}
 		}
-		return -1;
-	}
-
-	@Override
-	public int getEndLine(Object model, IDocument document) {
-		for (ILineInformationProvider lineInformationProvider : lineInformationProviders) {
-			if (lineInformationProvider.canHandle(model)) {
-				return lineInformationProvider.getEndLine(model, document);
-			}
-		}
-		return -1;
+		return null;
 	}
 
 	@Override

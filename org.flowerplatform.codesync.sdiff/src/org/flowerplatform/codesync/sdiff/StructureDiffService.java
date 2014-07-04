@@ -65,6 +65,7 @@ import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.file.StringHolder;
@@ -190,11 +191,14 @@ public class StructureDiffService {
 		// match to lines from patch
 		if (match.getLeft() != null && match.getRight() != null) {
 			Object model = match.getRight();
-			int modelStartLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getStartLine(model, document);
-			int modelEndLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getEndLine(model, document);
-			if (modelStartLine >= 0 && modelEndLine >= 0) {
-				CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, 
-						isBodyModified(patch, modelStartLine, modelEndLine), context);
+			Pair<Integer, Integer> lines = CodeSyncPlugin.getInstance().getLineProvider().getStartEndLines(model, document);
+			if (lines != null) {
+				int modelStartLine = lines.a;
+				int modelEndLine = lines.b;
+				if (modelStartLine >= 0 && modelEndLine >= 0) {
+					CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, 
+							isBodyModified(patch, modelStartLine, modelEndLine), context);
+				}
 			}
 		}
 		
