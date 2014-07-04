@@ -22,7 +22,6 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_T
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.flex.compiler.asdoc.IASDocComment;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -83,30 +82,6 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 		return (IDefinition) element;
 	}
 	
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getLabel(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
 		// TODO Auto-generated method stub

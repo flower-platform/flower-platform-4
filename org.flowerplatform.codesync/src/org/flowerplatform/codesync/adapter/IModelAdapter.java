@@ -26,7 +26,7 @@ import org.flowerplatform.codesync.type_provider.ITypeProvider;
 /**
  * @see AbstractModelAdapter
  */
-public interface IModelAdapter extends IModelAdapterUI {
+public interface IModelAdapter {
 
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable);
 	

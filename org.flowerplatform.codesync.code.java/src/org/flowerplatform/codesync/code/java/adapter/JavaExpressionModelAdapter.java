@@ -15,12 +15,8 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.Type;
-import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link Expression} and {@link Type}.
@@ -38,19 +34,6 @@ public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	@Override
 	public Object getMatchKey(Object element) {
 		return element.toString();
-	}
-
-	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return element.toString();
-		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
 	}
 
 	@Override

@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
@@ -40,9 +37,7 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getMatchKey(element);
-		} else if (CodeSyncCodeJavaConstants.ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			return getStringFromExpression(getAnnotationMember(element).getDefault());
 		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getAnnotationMember(element).getType());
@@ -65,11 +60,6 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 		super.setValueFeatureValue(element, feature, value);
 	}
 
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
-	
 	private AnnotationTypeMemberDeclaration getAnnotationMember(Object element) {
 		return (AnnotationTypeMemberDeclaration) element;
 	}

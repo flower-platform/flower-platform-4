@@ -52,8 +52,7 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 	 * Returns only types, fields and methods.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public List<?> getChildren(Object modelElement) {
+	protected List<?> getChildren(Object modelElement) {
 		List<ASTNode> children = new ArrayList<ASTNode>();
 		AbstractTypeDeclaration type = getAbstractTypeDeclaration(modelElement);
 		children.addAll(type.bodyDeclarations());
@@ -124,9 +123,7 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getLabel(element);
-		} else if (CodeSyncCodeJavaConstants.SUPER_CLASS.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				TypeDeclaration type = (TypeDeclaration) element;
 				if (type.getSuperclassType() != null) {

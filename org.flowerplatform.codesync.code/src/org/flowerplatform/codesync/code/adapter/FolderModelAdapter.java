@@ -54,16 +54,20 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (CoreConstants.NAME.equals(feature)) {
-			return getLabel(element);
+			return getName(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getLabel(element);
+		return getName(element);
 	}
 
+	protected String getName(Object element) {
+		return CorePlugin.getInstance().getFileAccessController().getName(element);
+	}
+	
 	@Override
 	public void setValueFeatureValue(Object folder, Object feature, Object value) {
 		if (CoreConstants.NAME.equals(feature)) {
@@ -88,31 +92,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		}
 	}
 
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		return getChildren(modelElement).size() > 0;
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		Object[] files = CorePlugin.getInstance().getFileAccessController().listFiles(modelElement);
-		if (files == null) {
-			return Collections.emptyList();
-		}
-		return Arrays.asList(files);
-	}
-
-	@Override
-	public String getLabel(Object modelElement) {
-		return CorePlugin.getInstance().getFileAccessController().getName(modelElement);
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (CodeSyncConstants.CHILDREN.equals(feature)) {
@@ -135,6 +115,14 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 
+	protected List<?> getChildren(Object modelElement) {
+		Object[] files = CorePlugin.getInstance().getFileAccessController().listFiles(modelElement);
+		if (files == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.asList(files);
+	}
+	
 	public String getLimitedPath() {
 		return limitedPath;
 	}

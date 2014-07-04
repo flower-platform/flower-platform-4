@@ -19,7 +19,6 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.FlexProject;
@@ -63,12 +62,6 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 			return Arrays.asList(ast.getTopLevelDefinitions(true, true));
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**

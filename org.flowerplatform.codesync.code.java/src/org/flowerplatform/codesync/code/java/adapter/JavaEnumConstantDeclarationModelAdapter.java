@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
@@ -42,14 +39,6 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getMatchKey(element);
-		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
-	}
-
-	@Override
 	public void setValueFeatureValue(Object element, Object feature, Object value) {
 		if (CoreConstants.NAME.equals(feature)) {
 			EnumConstantDeclaration enumConstant = getEnumConstant(element);
@@ -66,6 +55,7 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (CodeSyncCodeJavaConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
@@ -78,11 +68,6 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
-	
 	private EnumConstantDeclaration getEnumConstant(Object element) {
 		return (EnumConstantDeclaration) element;
 	}

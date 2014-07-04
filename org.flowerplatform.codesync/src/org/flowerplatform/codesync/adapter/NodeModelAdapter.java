@@ -23,7 +23,6 @@ import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import java.util.Iterator;
 import java.util.List;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -44,19 +43,6 @@ import org.flowerplatform.util.controller.TypeDescriptor;
  */
 public class NodeModelAdapter extends AbstractModelAdapter {
 
-	/**
-	 * Checks for a {@link FeatureChange} on the name feature first.
-	 */
-	@Override
-	public String getLabel(Object modelElement) {
-		return (String) getMatchKey(modelElement);
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		return null;
-	}
-	
 	/**
 	 * Get the children that are registered as members of this feature (via {@link MemberOfChildCategoryDescriptor}s).
 	 */
@@ -144,18 +130,6 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	public boolean save(Object element) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(getNode(element).getNodeUri());

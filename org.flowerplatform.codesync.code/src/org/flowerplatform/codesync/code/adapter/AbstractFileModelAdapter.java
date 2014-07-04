@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync.code.adapter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -56,7 +55,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		if (CoreConstants.NAME.equals(feature)) {
-			return getLabel(element);
+			return getName(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
@@ -70,29 +69,17 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getLabel(element);
+		return getName(element);
 	}
 
 	/**
 	 * @author Sebastian Solomonm
 	 */
-	@Override
-	public String getLabel(Object modelElement) {
-		if (modelElement instanceof FileHolder) {
-			return ((FileHolder) modelElement).getName();
+	protected String getName(Object element) {
+		if (element instanceof FileHolder) {
+			return ((FileHolder) element).getName();
 		}
-		return CorePlugin.getInstance().getFileAccessController().getName(modelElement);
-	}
-	
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		return true;
+		return CorePlugin.getInstance().getFileAccessController().getName(element);
 	}
 	
 	/**

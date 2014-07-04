@@ -23,7 +23,6 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
 import org.flowerplatform.codesync.as.feature_provider.AsFunctionFeatureProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
 /**
  * Mapped to {@link IFunctionDefinition}. Children are {@link IParameterDefinition}s.

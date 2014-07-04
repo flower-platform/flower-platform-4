@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.codesync.as.adapter;
 
-import java.util.List;
-
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
@@ -43,30 +41,6 @@ public class AsReferenceModelAdapter extends AstModelElementAdapter {
 
 	protected IReference getReference(Object element) {
 		return (IReference) element;
-	}
-
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getLabel(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

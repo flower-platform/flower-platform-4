@@ -365,7 +365,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		descriptor.addCategory(CodeSyncConstants.CATEGORY_CODESYNC);
 //		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
 //		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
-//		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
+		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
 		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
 		return descriptor;
 	}

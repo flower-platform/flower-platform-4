@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.codesync.as.adapter;
 
-import java.util.List;
-
 import org.apache.flex.compiler.common.ASModifier;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
@@ -45,30 +43,6 @@ public class AsModifierModelAdapter extends AstModelElementAdapter {
 		return (ASModifier) element;
 	}
 	
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getLabel(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
 		// TODO Auto-generated method stub

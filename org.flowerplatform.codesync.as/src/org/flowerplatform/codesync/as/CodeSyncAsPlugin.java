@@ -172,10 +172,10 @@ protected static CodeSyncAsPlugin INSTANCE;
 	}
 	
 	private void registerAdapterAndFeatureProvider(TypeDescriptor descriptor, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
-		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
-		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
-		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
-		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
+//		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
+//		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
+//		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
+//		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
 	}
 	
 	public void stop(BundleContext bundleContext) throws Exception {

@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync.code.java.adapter;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -42,8 +41,8 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 
 	@Override
 	public Object getMatchKey(Object modelElement) {
-		Annotation annotation = (Annotation) modelElement;
-		String matchKey = (String) getAnnotationName(modelElement);
+//		Annotation annotation = (Annotation) modelElement;
+		String matchKey = getName(modelElement);
 		// TODO fix this
 //		if (annotation instanceof MarkerAnnotation) {
 //			matchKey += CodeSyncCodePlugin.MARKER_ANNOTATION;
@@ -56,18 +55,10 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 //		}
 		return matchKey;
 	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getAnnotationName(element);
-		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+	protected String getName(Object element) {
+		return ((Annotation) element).getTypeName().getFullyQualifiedName();
 	}
 	
 	@Override
@@ -102,6 +93,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (CodeSyncCodeJavaConstants.ANNOTATION_VALUES.equals(feature)) {
@@ -138,9 +130,4 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 		}
 		super.removeChildrenOnContainmentFeature(parent, feature, child);
 	}
-
-	private Object getAnnotationName(Object element) {
-		return ((Annotation) element).getTypeName().getFullyQualifiedName();
-	}
-	
 }

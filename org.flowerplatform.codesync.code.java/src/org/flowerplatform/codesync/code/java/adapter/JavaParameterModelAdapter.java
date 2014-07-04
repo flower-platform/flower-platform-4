@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
@@ -35,20 +32,13 @@ import org.flowerplatform.core.CoreConstants;
 public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public Object getMatchKey(Object modelElement) {
 		return getVariableDeclaration(modelElement).getName().getIdentifier();
 	}
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getVariableDeclaration(element).getName().getIdentifier();
-		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getVariableDeclaration(element).getType());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

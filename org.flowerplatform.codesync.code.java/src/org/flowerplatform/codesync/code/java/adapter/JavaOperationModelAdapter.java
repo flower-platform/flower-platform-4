@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -38,11 +35,6 @@ import org.flowerplatform.core.CoreConstants;
 public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (CodeSyncCodeJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
 			return ((MethodDeclaration) element).parameters();
@@ -52,9 +44,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getLabel(element);
-		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getMethodDeclaration(element).getReturnType2());
 		} else if (CodeSyncCodeJavaConstants.OPERATION_HAS_BODY.equals(feature)) {
 			return getMethodDeclaration(element).getBody() != null;
@@ -91,6 +81,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 		super.setValueFeatureValue(element, feature, value);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (CodeSyncCodeJavaConstants.OPERATION_PARAMETERS.equals(feature)) {

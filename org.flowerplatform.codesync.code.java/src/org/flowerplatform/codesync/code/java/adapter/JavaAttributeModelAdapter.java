@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Type;
@@ -36,11 +33,6 @@ import org.flowerplatform.core.CoreConstants;
 public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public Object getMatchKey(Object modelElement) {
 		VariableDeclaration var = (VariableDeclaration) getFieldDeclaration(modelElement).fragments().get(0);
 		return var.getName().getIdentifier();
@@ -48,9 +40,7 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getLabel(element);
-		} else if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getFieldDeclaration(element).getType());
 		} else if (CodeSyncCodeJavaConstants.ATTRIBUTE_INITIALIZER.equals(feature)) {
 			VariableDeclaration var = (VariableDeclaration) getFieldDeclaration(element).fragments().get(0);

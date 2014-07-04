@@ -20,7 +20,6 @@ import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
-import java.util.List;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -56,12 +55,8 @@ import org.flowerplatform.util.Utils;
  * 
  * @author Mariana
  */
+@SuppressWarnings("restriction")
 public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAdapter {
-
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		return getChildren(modelElement).size() > 0;
-	}
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
@@ -81,7 +76,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CodeSyncCodeJavaConstants.DOCUMENTATION.equals(feature)) {
+		if (CoreConstants.NAME.equals(feature)) {
+			return getName(element);
+		} else if (CodeSyncCodeJavaConstants.DOCUMENTATION.equals(feature)) {
 			return getJavaDoc(element);
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);
@@ -92,6 +89,10 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		if (CodeSyncCodeJavaConstants.DOCUMENTATION.equals(feature)) {
 			setJavaDoc(element, (String) value);
 		}
+	}
+	
+	protected String getName(Object element) {
+		return (String) getMatchKey(element);
 	}
 
 	@Override
@@ -133,6 +134,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void addModifier(ASTNode parent, IExtendedModifier modifier) {
 		if (parent instanceof BodyDeclaration) {
 			((BodyDeclaration) parent).modifiers().add(modifier);
@@ -144,19 +146,6 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
 		((ASTNode) child).delete();
-	}
-
-	@Override
-	abstract public List<?> getChildren(Object modelElement);
-
-	@Override
-	public String getLabel(Object modelElement) {
-		return (String) getMatchKey(modelElement);
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		return null;
 	}
 	
 	@Override
@@ -171,6 +160,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
 		if (element instanceof BodyDeclaration) {
@@ -210,6 +200,7 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return null;
 	}
 	
+	@SuppressWarnings({ "rawtypes" })
 	protected void setJavaDoc(Object element, String docComment) {
 		if (element instanceof BodyDeclaration) {
 			BodyDeclaration node = (BodyDeclaration) element;

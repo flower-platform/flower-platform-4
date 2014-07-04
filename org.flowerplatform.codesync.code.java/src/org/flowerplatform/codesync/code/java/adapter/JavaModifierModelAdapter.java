@@ -15,11 +15,7 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.Modifier;
-import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link Modifier}.
@@ -31,24 +27,6 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	@Override
 	public Object getMatchKey(Object element) {
 		return ((Modifier) element).getKeyword().toString();
-	}
-
-	@Override
-	public String getLabel(Object modelElement) {
-		return (String) getMatchKey(modelElement);
-	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
-	
-	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getLabel(element);
-		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
 	}
 	
 }

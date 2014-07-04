@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaMemberValuePairFeatureProvider;
@@ -33,20 +30,13 @@ import org.flowerplatform.core.CoreConstants;
 public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
-	public List<?> getChildren(Object modelElement) {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public Object getMatchKey(Object modelElement) {
 		return ((MemberValuePair) modelElement).getName().getIdentifier();
 	}
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return ((MemberValuePair) element).getName().getIdentifier();
-		} else if (CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE.equals(feature)) {
+		if (CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE.equals(feature)) {
 			return getStringFromExpression(((MemberValuePair) element).getValue());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue);

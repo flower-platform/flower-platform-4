@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync.code.java.adapter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.core.JavaCore;
@@ -32,7 +31,6 @@ import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.file.FileHolder;
 
 /**
  * Mapped to files with the extension <code>java</code>. Chidren are {@link ASTNode}s.
@@ -44,11 +42,12 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
-			return getChildren(element);
+			return getOrCreateCompilationUnit(element).types();
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object file, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
 		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
@@ -65,11 +64,6 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 		((ASTNode) child).delete();
 	}
 
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		return getOrCreateCompilationUnit(modelElement).types();
-	}
-	
 	private CompilationUnit getOrCreateCompilationUnit(Object file) {
 		return (CompilationUnit) getOrCreateFileInfo(file);
 	}
@@ -88,6 +82,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 		return astRoot;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Map getOptions() {
 		Map options = new HashMap<>(JavaCore.getOptions());
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_7);
