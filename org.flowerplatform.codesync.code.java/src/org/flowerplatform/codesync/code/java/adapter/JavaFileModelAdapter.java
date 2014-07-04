@@ -27,10 +27,8 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to files with the extension <code>java</code>. Chidren are {@link ASTNode}s.
@@ -47,18 +45,6 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object createChildOnContainmentFeature(Object file, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
-			CompilationUnit cu = getOrCreateCompilationUnit(file);
-			ASTNode node = (ASTNode) JavaTypeDeclarationModelAdapter.createCorrespondingModelElement(cu.getAST(), (Node) correspondingChild);
-			cu.types().add(node);
-			return node;
-		}
-		return super.createChildOnContainmentFeature(file, feature, correspondingChild, typeProvider);
-	}
-
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
 		((ASTNode) child).delete();

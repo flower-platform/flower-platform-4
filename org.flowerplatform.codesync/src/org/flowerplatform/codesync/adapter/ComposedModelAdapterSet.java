@@ -13,23 +13,24 @@
  * 
  * license-end
  */
-package org.flowerplatform.codesync.action;
+package org.flowerplatform.codesync.adapter;
 
-import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.adapter.IModelAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
+ * @author Mariana Gheorghe
  */
-public class MatchActionAddAncestorToLeftRight extends DiffAction {
+public class ComposedModelAdapterSet extends ModelAdapterSet {
 
-	@Override
-	public ActionResult execute(Match match, int diffIndex) {
-		Object child = match.getAncestor();
-		new MatchActionAddAncestorToLeft(false).execute(match, -1);
-		new MatchActionAddAncestorToRight(false).execute(match, -1);
-		IModelAdapter adapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(child);
-		return new ActionResult(false, false, false, adapter.getMatchKey(child), true);
+	private List<ModelAdapterSet> modelAdapterSets = new ArrayList<ModelAdapterSet>();
+	
+	public ComposedModelAdapterSet addModelAdapterSet(ModelAdapterSet modelAdapterSet) {
+		modelAdapterSets.add(modelAdapterSet);
+		return this;
 	}
-
+	
+	
+	
 }

@@ -15,16 +15,16 @@
  */
 package org.flowerplatform.codesync.remote;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
+
 import java.io.File;
+import java.util.Collections;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 
 /**
  * @author Mariana Gheorghe
@@ -71,14 +71,13 @@ public class CodeSyncOperationsService {
 		match.setRight(ast);
 		
 		// initialize the algorithm
-		ITypeProvider typeProvider = new ComposedTypeProvider()
-				.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider("node"))
-				.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider(technology));
-		TypeDescriptorRegistry typeDescriptorRegistry = CorePlugin.getInstance().getNodeTypeDescriptorRegistry();
-		
-		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm(typeDescriptorRegistry, typeProvider);
+		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
+		algorithm.initializeModelAdapterSets(
+				Collections.singletonList(NODE_LEFT), 
+				Collections.singletonList(technology),
+				Collections.singletonList(NODE_ANCESTOR));
 		match.setCodeSyncAlgorithm(algorithm);
-		match.setMatchKey(algorithm.getAncestorModelAdapter(match, srcDir).getMatchKey(srcDir));
+		match.setMatchKey(algorithm.getAncestorModelAdapter(srcDir).getMatchKey(srcDir));
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
 		algorithm.generateDiff(match, oneStepSync);

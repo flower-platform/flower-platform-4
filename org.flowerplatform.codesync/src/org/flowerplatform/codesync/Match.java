@@ -219,32 +219,6 @@ public class Match {
 	}
 	
 	/**
-	 * @author Cristi
-	 * @author Mariana
-	 */
-	public Object[] getDelegateAndModelAdapter(CodeSyncAlgorithm algorithm) {
-		Object delegate = null;
-		IModelAdapter modelAdapter = null;
-		if (getAncestor() != null && !getAncestor().equals(CodeSyncConstants.UNDEFINED)) {
-			delegate = getAncestor();
-			modelAdapter = algorithm.getAncestorModelAdapter(this, delegate);
-		} else if (getLeft() != null && !getLeft().equals(CodeSyncConstants.UNDEFINED)) {
-			delegate = getLeft();
-			modelAdapter = algorithm.getLeftModelAdapter(this, delegate);
-		} else if (getRight() != null && !getRight().equals(CodeSyncConstants.UNDEFINED)) {
-			delegate = getRight();
-			modelAdapter = algorithm.getRightModelAdapter(this, delegate);
-		}
-		
-		if (delegate == null)
-			return null;
-		else 
-			return new Object[] { delegate, modelAdapter };
-	}
-	
-
-	
-	/**
 	 * Calculated.
 	 * 
 	 * 

@@ -31,13 +31,11 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.flowerplatform.codesync.FilteredIterable;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaTypeDeclarationFeatureProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to {@link AbstractTypeDeclaration}. Children are {@link BodyDeclaration}s.
@@ -158,58 +156,30 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet modelAdapterSet) {
 		// declared as containment by JavaFeatureProvider 
-		if (CodeSyncCodeJavaConstants.SUPER_INTERFACES.equals(feature)) {
-			if (element instanceof TypeDeclaration || element instanceof EnumDeclaration) {
-				Node superInterface = (Node) correspondingChild;
-				AbstractTypeDeclaration cls = (AbstractTypeDeclaration) element;
-				AST ast = cls.getAST();
-				Type type = getTypeFromString(ast, (String) superInterface.getPropertyValue(CoreConstants.NAME));
-				if (cls instanceof TypeDeclaration) {
-					((TypeDeclaration) cls).superInterfaceTypes().add(type);
-				} else if (cls instanceof EnumDeclaration) {
-					((EnumDeclaration) cls).superInterfaceTypes().add(type);
-				}
-				return type;
-			}
-			return null;
-		} else if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
-			Node node = (Node) correspondingChild;
-			AbstractTypeDeclaration parent = (AbstractTypeDeclaration) element;
-			AST ast = parent.getAST();
-			ASTNode child = (ASTNode) createCorrespondingModelElement(ast, node);
-			
-			if (parent instanceof EnumDeclaration) {
-				((EnumDeclaration) parent).enumConstants().add(child);
-			} else {
-				parent.bodyDeclarations().add(child);
-			}
+		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
+			AbstractTypeDeclaration type = (AbstractTypeDeclaration) parent;
+			AST ast = type.getAST();
+			ASTNode child = createCorrespondingModelElement(ast, modelAdapterSet.getType(correspondingChild));
+			type.bodyDeclarations().add(child);
 			return child;
 		}
 
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet);
 	}
 	
-	public static Object createCorrespondingModelElement(AST ast, Node node) {
+	protected ASTNode createCorrespondingModelElement(AST ast, String type) {
 		ASTNode child = null;
-		if (CodeSyncCodeJavaConstants.ATTRIBUTE.equals(node.getType())) {
-			VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
-			FieldDeclaration field = ast.newFieldDeclaration(fragment);
-			child = field;
-		} else if (CodeSyncCodeJavaConstants.OPERATION.equals(node.getType())) {
-			child = ast.newMethodDeclaration();
-		} else if (CodeSyncCodeJavaConstants.ENUM_CONSTANT.equals(node.getType())) {
-			child = ast.newEnumConstantDeclaration();
-		} else if (CodeSyncCodeJavaConstants.CLASS.equals(node.getType())) {
+		if (CodeSyncCodeJavaConstants.CLASS.equals(type)) {
 			child = ast.newTypeDeclaration();
-		} else if (CodeSyncCodeJavaConstants.INTERFACE.equals(node.getType())) {
-			TypeDeclaration type = ast.newTypeDeclaration();
-			type.setInterface(true);
-			child = type;
-		} else if (CodeSyncCodeJavaConstants.ENUM.equals(node.getType())) {
+		} else if (CodeSyncCodeJavaConstants.INTERFACE.equals(type)) {
+			TypeDeclaration i = ast.newTypeDeclaration();
+			i.setInterface(true);
+			child = i;
+		} else if (CodeSyncCodeJavaConstants.ENUM.equals(type)) {
 			child = ast.newEnumDeclaration();
-		} else if (CodeSyncCodeJavaConstants.ANNOTATION_TYPE.equals(node.getType())) {
+		} else if (CodeSyncCodeJavaConstants.ANNOTATION_TYPE.equals(type)) {
 			child = ast.newAnnotationTypeDeclaration();
 		}
 		return child;

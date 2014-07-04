@@ -15,10 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_RIGHT;
 import static org.flowerplatform.codesync.code.CodeSyncCodeConstants.FILE;
 import static org.flowerplatform.codesync.code.CodeSyncCodeConstants.FOLDER;
 import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.ANNOTATION;
@@ -75,7 +71,7 @@ import java.util.Arrays;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
 import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
 import org.flowerplatform.codesync.code.java.adapter.JavaAnnotationModelAdapter;
@@ -136,12 +132,31 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		CodeSyncPlugin.getInstance().addTypeProvider(TECHNOLOGY, new JavaTypeProvider());
-		CodeSyncPlugin.getInstance().addLineProvider(new JavaOperationLineProvider());
+		JavaTypeDeclarationModelAdapter typeModelAdapter = new JavaTypeDeclarationModelAdapter();
+		JavaExpressionModelAdapter expressionModelAdapter = new JavaExpressionModelAdapter();
+		CodeSyncPlugin.getInstance().addModelAdapterSet(TECHNOLOGY, new ModelAdapterSet()
+				.setTypeProvider(new JavaTypeProvider())
+				.setLineProvider(new JavaOperationLineProvider())
+				.addModelAdapter(FOLDER, new FolderModelAdapter())
+				.addModelAdapter(FILE, new JavaFileModelAdapter())
+				.addModelAdapter(CLASS, typeModelAdapter)
+				.addModelAdapter(INTERFACE, typeModelAdapter)
+				.addModelAdapter(ENUM, typeModelAdapter)
+				.addModelAdapter(ANNOTATION_TYPE, typeModelAdapter)
+				.addModelAdapter(ATTRIBUTE, new JavaAttributeModelAdapter())
+				.addModelAdapter(OPERATION, new JavaOperationModelAdapter())
+				.addModelAdapter(ENUM_CONSTANT, new JavaEnumConstantDeclarationModelAdapter())
+				.addModelAdapter(ENUM_CONSTANT_ARGUMENT, expressionModelAdapter)
+				.addModelAdapter(ANNOTATION_MEMBER, new JavaAnnotationTypeMemberDeclarationModelAdapter())
+				.addModelAdapter(ANNOTATION, new JavaAnnotationModelAdapter())
+				.addModelAdapter(MEMBER_VALUE_PAIR, new JavaMemberValuePairModelAdapter())
+				.addModelAdapter(MODIFIER, new JavaModifierModelAdapter())
+				.addModelAdapter(PARAMETER, new JavaParameterModelAdapter())
+				.addModelAdapter(SUPER_INTERFACE, expressionModelAdapter));
 		
 		MemberOfChildCategoryDescriptor childrenDescriptor = new MemberOfChildCategoryDescriptor(CodeSyncConstants.CHILDREN);
 	
-		createNodeTypeDescriptor(FOLDER, new FolderModelAdapter(), new FolderFeatureProvider())
+		createNodeTypeDescriptor(FOLDER, new FolderFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, childrenDescriptor)
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FOLDER).setLabelAs(getLabel("codesync.java.package"))
 					.setIconAs(getImagePathFromPublicResources(IMG_WIZ_PACKAGE)).setOrderIndexAs(10))
@@ -149,18 +164,17 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 					.setIconAs(getImagePathFromPublicResources(IMG_FILE)).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_PACKAGE)));
 	
-		createNodeTypeDescriptor(FILE, new JavaFileModelAdapter(), new JavaFileFeatureProvider())
+		createNodeTypeDescriptor(FILE, new JavaFileFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, childrenDescriptor)
 			.addCategory(CATEGORY_CAN_CONTAIN_TYPES)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_FILE)));
 		
 		PropertyDescriptor returnType = new PropertyDescriptor().setNameAs(TYPED_ELEMENT_TYPE);
-		JavaTypeDeclarationModelAdapter typeModelAdapter = new JavaTypeDeclarationModelAdapter();
-		JavaTypeDeclarationFeatureProvider typeFeatureProvider = new JavaTypeDeclarationFeatureProvider();
 		
 		MemberOfChildCategoryDescriptor typeMembersDescriptor = new MemberOfChildCategoryDescriptor(TYPE_MEMBERS);
+		JavaTypeDeclarationFeatureProvider typeFeatureProvider = new JavaTypeDeclarationFeatureProvider();
 		
-		createNodeTypeDescriptor(CLASS, typeModelAdapter, typeFeatureProvider)
+		createNodeTypeDescriptor(CLASS, typeFeatureProvider)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CodeSyncCodeJavaConstants.CATEGORY_TYPE)
 			.addCategory(CATEGORY_CAN_CONTAIN_TYPES)
@@ -168,7 +182,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_MODIFIABLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_TYPE_CLASS)));
 		
-		createNodeTypeDescriptor(INTERFACE, typeModelAdapter, typeFeatureProvider)
+		createNodeTypeDescriptor(INTERFACE, typeFeatureProvider)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CATEGORY_TYPE)
 			.addCategory(CATEGORY_CAN_CONTAIN_TYPES)
@@ -176,7 +190,7 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_MODIFIABLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_TYPE_INTERFACE)));
 	
-		createNodeTypeDescriptor(ENUM, typeModelAdapter, typeFeatureProvider)
+		createNodeTypeDescriptor(ENUM, typeFeatureProvider)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CATEGORY_TYPE)
 			.addCategory(CATEGORY_CAN_CONTAIN_TYPES)
@@ -186,20 +200,20 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 					.setIconAs(getImagePathFromPublicResources(IMG_FIELD)).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_TYPE_ENUM)));
 	
-		createNodeTypeDescriptor(ANNOTATION_TYPE, typeModelAdapter, typeFeatureProvider)
+		createNodeTypeDescriptor(ANNOTATION_TYPE, typeFeatureProvider)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CATEGORY_TYPE)
 			.addCategory(CATEGORY_CAN_CONTAIN_TYPES)
 			.addCategory(CATEGORY_MODIFIABLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_TYPE_ANNOTATION)));
 		
-		createNodeTypeDescriptor(ATTRIBUTE, new JavaAttributeModelAdapter(), new JavaAttributeFeatureProvider())
+		createNodeTypeDescriptor(ATTRIBUTE, new JavaAttributeFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CATEGORY_MODIFIABLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_FIELD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		
-		createNodeTypeDescriptor(OPERATION, new JavaOperationModelAdapter(), new JavaOperationFeatureProvider())
+		createNodeTypeDescriptor(OPERATION, new JavaOperationFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CATEGORY_MODIFIABLE)
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(PARAMETER).setLabelAs(getLabel("codesync.java.parameter"))
@@ -207,17 +221,17 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_METHOD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		
-		createNodeTypeDescriptor(ENUM_CONSTANT, new JavaEnumConstantDeclarationModelAdapter(), new JavaEnumConstantDeclarationFeatureProvider())
+		createNodeTypeDescriptor(ENUM_CONSTANT, new JavaEnumConstantDeclarationFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM_CONSTANT_ARGUMENT).setLabelAs(getLabel("codesync.java.enum.constant.argument")).setOrderIndexAs(10))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ANNOTATION).setLabelAs(getLabel("codesync.java.annotation"))
 					.setIconAs(getImagePathFromPublicResources(IMG_ANNOTATION)).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_FIELD)));
 		
-		createNodeTypeDescriptor(ENUM_CONSTANT_ARGUMENT, new JavaExpressionModelAdapter(ENUM_CONSTANT_ARGUMENT), new NodeFeatureProvider())
+		createNodeTypeDescriptor(ENUM_CONSTANT_ARGUMENT, new NodeFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(ENUM_CONSTANT_ARGUMENTS));
 	
-		createNodeTypeDescriptor(ANNOTATION_MEMBER, new JavaAnnotationTypeMemberDeclarationModelAdapter(), new JavaAnnotationTypeMemberDeclarationFeatureProvider())
+		createNodeTypeDescriptor(ANNOTATION_MEMBER, new JavaAnnotationTypeMemberDeclarationFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CATEGORY_MODIFIABLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_METHOD)))
@@ -225,14 +239,14 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 		MemberOfChildCategoryDescriptor modifiers = new MemberOfChildCategoryDescriptor(MODIFIERS);
 		
-		createNodeTypeDescriptor(ANNOTATION, new JavaAnnotationModelAdapter(), new JavaAnnotationFeatureProvider())
+		createNodeTypeDescriptor(ANNOTATION, new JavaAnnotationFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_ANNOTATION)));
 	
-		createNodeTypeDescriptor(MEMBER_VALUE_PAIR, new JavaMemberValuePairModelAdapter(), new JavaMemberValuePairFeatureProvider())
+		createNodeTypeDescriptor(MEMBER_VALUE_PAIR, new JavaMemberValuePairFeatureProvider())
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(ANNOTATION_VALUES));
 		
-		createNodeTypeDescriptor(MODIFIER, new JavaModifierModelAdapter(), new NodeFeatureProvider())
+		createNodeTypeDescriptor(MODIFIER, new NodeFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
 					"public",
@@ -247,13 +261,13 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 					"volatile",
 					"strictfp")));
 		
-		createNodeTypeDescriptor(PARAMETER, new JavaParameterModelAdapter(), new JavaParameterFeatureProvider())
+		createNodeTypeDescriptor(PARAMETER, new JavaParameterFeatureProvider())
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(OPERATION_PARAMETERS))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MODIFIER).setLabelAs(getLabel("codesync.java.modifier")).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_LOCAL_VAR)));
 		
-		createNodeTypeDescriptor(SUPER_INTERFACE, new JavaExpressionModelAdapter(SUPER_INTERFACE), new NodeFeatureProvider())
+		createNodeTypeDescriptor(SUPER_INTERFACE, new NodeFeatureProvider())
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(SUPER_INTERFACES));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_TYPES)
@@ -360,14 +374,8 @@ public class CodeSyncCodeJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 	}
 	
-	private TypeDescriptor createNodeTypeDescriptor(String type, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
-		descriptor.addCategory(CodeSyncConstants.CATEGORY_CODESYNC);
-//		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
-//		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
-		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
-		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
-		return descriptor;
+	private TypeDescriptor createNodeTypeDescriptor(String type, FeatureProvider featureProvider) {
+		return CodeSyncPlugin.getInstance().createCodeSyncTypeDescriptor(type, featureProvider);
 	}
 	
 	private String getLabel(String key) {

@@ -27,7 +27,6 @@ import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -91,7 +90,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
 		// first check if the child already exists
 //		Iterable<?> children = super.getContainmentFeatureIterable(eObject, feature, null);
 //		IModelAdapter adapter = codeSyncElementConverter.getModelAdapter(correspondingChild);
@@ -110,15 +109,15 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 //		}
 //		
 //		if (eObject != null) {
-				Node parent = getNode(element);
+				Node parentNode = getNode(parent);
 				// set the type for the new node; needed by the action performed handler
-				String type = typeProvider.getType(correspondingChild);
+				String type = correspondingModelAdapterSet.getType(correspondingChild);
 				
-				String scheme = Utils.getScheme(parent.getNodeUri());
-				String ssp = Utils.getSchemeSpecificPart(parent.getNodeUri());
+				String scheme = Utils.getScheme(parentNode.getNodeUri());
+				String ssp = Utils.getSchemeSpecificPart(parentNode.getNodeUri());
 				String childUri = Utils.getUri(scheme, ssp, null);
 				Node child = new Node(childUri, type);
-				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 				return child;
 //		}
 //		
@@ -195,7 +194,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				}
 			}
 			if (child != null) {
-				Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(match, child).getMatchKey(child);
+				Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(child).getMatchKey(child);
 				if (matchKey.equals(childMatchKey)) {
 					return child;
 				}

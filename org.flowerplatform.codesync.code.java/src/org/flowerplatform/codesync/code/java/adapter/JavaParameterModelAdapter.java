@@ -15,9 +15,12 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaParameterFeatureProvider;
 import org.flowerplatform.core.CoreConstants;
@@ -56,6 +59,19 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			parameter.setType(type);
 		}
 		super.setValueFeatureValue(element, feature, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
+			MethodDeclaration method = (MethodDeclaration) parent;
+			AST ast = method.getAST();
+			SingleVariableDeclaration parameter = ast.newSingleVariableDeclaration();
+			method.parameters().add(parameter);
+			return parameter;
+		}
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
 	}
 
 	private SingleVariableDeclaration getVariableDeclaration(Object element) {

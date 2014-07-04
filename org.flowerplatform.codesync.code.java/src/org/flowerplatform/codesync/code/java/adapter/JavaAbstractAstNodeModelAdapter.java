@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync.code.java.adapter;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.FLOWER_UID;
-import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -29,11 +28,7 @@ import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.Javadoc;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
-import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
-import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
@@ -42,12 +37,8 @@ import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -95,45 +86,6 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return (String) getMatchKey(element);
 	}
 
-	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		// handle modifiers here to avoid using the same code in multiple adapters
-		if (CodeSyncCodeJavaConstants.MODIFIERS.equals(feature)) {
-			if (!(element instanceof BodyDeclaration || element instanceof SingleVariableDeclaration)) {
-				return null;
-			} else {
-				IExtendedModifier extendedModifier = null;
-				
-				Node node = (Node) correspondingChild;
-				
-				ASTNode parent = (ASTNode) element;
-				AST ast = parent.getAST();
-				
-				if (CodeSyncCodeJavaConstants.MODIFIER.equals(node.getType())) {
-					String keyword = (String) node.getPropertyValue(CoreConstants.NAME);
-					extendedModifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
-				} else if (CodeSyncCodeJavaConstants.ANNOTATION.equals(node.getType())) {
-					int valuesCount = CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, false)).size();
-					if (valuesCount == 0) {
-						MarkerAnnotation markerAnnotation = ast.newMarkerAnnotation();
-						extendedModifier = markerAnnotation;
-					} else if (valuesCount == 1) {
-						SingleMemberAnnotation singleMemberAnnotation = ast.newSingleMemberAnnotation();
-						extendedModifier = singleMemberAnnotation;
-					} else {
-						NormalAnnotation normalAnnotation = ast.newNormalAnnotation();
-						extendedModifier = normalAnnotation;
-					}
-				}
-				
-				addModifier(parent, extendedModifier);
-				return extendedModifier;
-			}
-		}
-		
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
-	}
-	
 	@SuppressWarnings("unchecked")
 	protected void addModifier(ASTNode parent, IExtendedModifier modifier) {
 		if (parent instanceof BodyDeclaration) {

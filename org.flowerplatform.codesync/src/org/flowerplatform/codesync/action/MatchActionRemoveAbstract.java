@@ -35,11 +35,11 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Match parentMatch = match.getParentMatch();
-		IModelAdapter modelAdapter = getModelAdapter(match.getParentMatch() != null ? match.getParentMatch() : match);
+		IModelAdapter modelAdapter = getModelAdapter(match);
 		Object child = getThis(match);
 		IModelAdapter childModelAdapter = getModelAdapter(match);
 		modelAdapter.removeChildrenOnContainmentFeature(
-				match.getParentMatch() != null ? getThis(match.getParentMatch()) : null, 
+				parentMatch != null ? getThis(parentMatch) : null, 
 				match.getFeature(), 
 				child);
 		
@@ -62,6 +62,7 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 			recurseUpdateFieldsAndFlags(match);
 			result = new ActionResult(false, true, true, childModelAdapter.getMatchKey(child), false);
 		}
+		
 		
 		actionPerformed(parentMatch, getModelAdapter(parentMatch), getThis(parentMatch), getOppositeModelAdapter(parentMatch), getOpposite(parentMatch), match.getFeature(), result);
 		return result;

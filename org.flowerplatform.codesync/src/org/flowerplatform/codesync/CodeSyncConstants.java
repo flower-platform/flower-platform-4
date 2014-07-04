@@ -52,9 +52,6 @@ public class CodeSyncConstants {
 	// Controllers
 	//////////////////////////////////
 	
-	public static final String MODEL_ADAPTER_ANCESTOR = "modelAdapterAncestor";
-	public static final String MODEL_ADAPTER_LEFT = "modelAdapterLeft";
-	public static final String MODEL_ADAPTER_RIGHT = "modelAdapterRight";
 	public static final String FEATURE_PROVIDER = "featureProvider";
 	
 	//////////////////////////////////
@@ -101,5 +98,13 @@ public class CodeSyncConstants {
 	 * @author Mariana
 	 */
 	public static final String UNDEFINED = "UNDEFINED_VALUE";
+	
+	//////////////////////////////////
+	// Technologies
+	//////////////////////////////////
+	
+	public static final String NODE_LEFT = "nodeLeft";
+	public static final String NODE_RIGHT = "nodeRight";
+	public static final String NODE_ANCESTOR = "nodeAncestor";
 	
 }

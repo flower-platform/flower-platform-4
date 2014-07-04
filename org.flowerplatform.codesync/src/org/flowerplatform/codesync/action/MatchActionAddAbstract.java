@@ -18,6 +18,7 @@ package org.flowerplatform.codesync.action;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 
 
@@ -30,8 +31,13 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 	
 	protected abstract Object getThis(Match match); 
 	protected abstract Object getOpposite(Match match);
+	
 	protected abstract IModelAdapter getThisModelAdapter(Match match);
 	protected abstract IModelAdapter getOppositeModelAdapter(Match match);
+	
+	protected abstract ModelAdapterSet getThisModelAdapterSet(Match match);
+	protected abstract ModelAdapterSet getOppositeModelAdapterSet(Match match);
+	
 	protected abstract void setOpposite(Match match, Object elment);
 	protected abstract void processDiffs(Match match);
 	protected abstract void setChildrenModified(Match match);
@@ -52,16 +58,17 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		Object this_ = getThis(match);
 		if (this_ == null) // this happens when parentMatch was a 2-match-ancestor-left/right and match is 1-match-ancestor (i.e. del left & right)
 			return;
-		IModelAdapter oppositeParentMa = getOppositeModelAdapter(parentMatch);
-		Object opposite = oppositeParentMa.createChildOnContainmentFeature(getOpposite(parentMatch), match.getFeature(), this_, match.getCodeSyncAlgorithm().getTypeProvider());
+		
+		String type = getThisModelAdapterSet(match).getType(this_);
+		IModelAdapter oppositeMa = getOppositeModelAdapterSet(parentMatch).getModelAdapterForType(type);	
+		Object opposite = oppositeMa.createChildOnContainmentFeature(getOpposite(parentMatch), match.getFeature(), this_, getThisModelAdapterSet(match));
 		setOpposite(match, opposite);
 		// from 1-match-left or 1-match-right, the match became 2-match-left-right
 
 		// process value features 
 		IModelAdapter thisMa = getThisModelAdapter(match);
-		IModelAdapter oppositeMa = getOppositeModelAdapter(match);
 		FeatureProvider featureProvider = match.getCodeSyncAlgorithm().getFeatureProvider(match);
-		for (Object childFeature : featureProvider.getValueFeatures(this_)) {
+		for (Object childFeature : featureProvider.getValueFeatures()) {
 			Object value = thisMa.getValueFeatureValue(this_, childFeature, null);
 			Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null);
 			if (!CodeSyncAlgorithm.safeEquals(value, valueOpposite)) {
@@ -84,6 +91,7 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		
 		ActionResult result = new ActionResult(false, true, true, thisMa.getMatchKey(this_), true);
 		IModelAdapter thisParentMa = getThisModelAdapter(parentMatch);
+		IModelAdapter oppositeParentMa = getOppositeModelAdapter(parentMatch);
 		actionPerformed(parentMatch, thisParentMa, getThis(parentMatch), oppositeParentMa, getOpposite(parentMatch), match.getFeature(), result);
 	}
 }

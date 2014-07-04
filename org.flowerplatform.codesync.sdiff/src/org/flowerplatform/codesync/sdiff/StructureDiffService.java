@@ -37,6 +37,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,10 +55,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncConstants;
-import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -67,7 +66,6 @@ import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.file.StringHolder;
 
 /**
@@ -156,11 +154,9 @@ public class StructureDiffService {
 		match.setRight(new StringHolder(path, after));
 		
 		// initialize the algorithm
-		ITypeProvider typeProvider = new ComposedTypeProvider()
-				.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider("as"));
-		TypeDescriptorRegistry typeDescriptorRegistry = CorePlugin.getInstance().getNodeTypeDescriptorRegistry();
-		
-		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm(typeDescriptorRegistry, typeProvider);
+		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
+		List<String> technologies = Collections.singletonList("java");
+		algorithm.initializeModelAdapterSets(technologies, technologies, technologies);
 		match.setCodeSyncAlgorithm(algorithm);
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
@@ -179,7 +175,8 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, NAME, match.getMatchKey(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_TYPE, match.getMatchType().toString(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_FEATURE, match.getFeature() == null ? "" : match.getFeature(), context);
-		Object modelElementType = match.getCodeSyncAlgorithm().getTypeProvider().getType(match.getDelegate());
+		Object modelElementType = null; 
+				//match.getCodeSyncAlgorithm().getTypeProvider().getType(match.getDelegate());
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_LEFT, match.isChildrenModifiedLeft(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_RIGHT, match.isChildrenModifiedRight(), context);
@@ -191,7 +188,7 @@ public class StructureDiffService {
 		// match to lines from patch
 		if (match.getLeft() != null && match.getRight() != null) {
 			Object model = match.getRight();
-			Pair<Integer, Integer> lines = CodeSyncPlugin.getInstance().getLineProvider().getStartEndLines(model, document);
+			Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);
 			if (lines != null) {
 				int modelStartLine = lines.a;
 				int modelEndLine = lines.b;

@@ -16,9 +16,6 @@
 package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_RIGHT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,46 +30,62 @@ import org.flowerplatform.codesync.action.MatchActionAddRightToLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveAbstract;
 import org.flowerplatform.codesync.action.MatchActionRemoveLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveRight;
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
+import org.flowerplatform.codesync.adapter.ComposedModelAdapterSet;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
-import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 
- */
 public class CodeSyncAlgorithm {
 	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
 	
-	protected TypeDescriptorRegistry typeDescriptorRegistry;
+	protected ModelAdapterSet modelAdapterSetLeft;
+	protected ModelAdapterSet modelAdapterSetRight;
+	protected ModelAdapterSet modelAdapterSetAncestor;
+
+	public ModelAdapterSet getModelAdapterSetLeft() {
+		return modelAdapterSetLeft;
+	}
+
+	public ModelAdapterSet getModelAdapterSetRight() {
+		return modelAdapterSetRight;
+	}
+
+	public ModelAdapterSet getModelAdapterSetAncestor() {
+		return modelAdapterSetAncestor;
+	}
+
+	public void initializeModelAdapterSets(List<String> leftTechnologies, List<String> rightTechnologies, List<String> ancestorTechnologies) {
+		modelAdapterSetLeft = getModelAdapterSet(leftTechnologies);
+		modelAdapterSetRight = getModelAdapterSet(rightTechnologies);
+		modelAdapterSetAncestor = getModelAdapterSet(ancestorTechnologies);
+	}
 	
-	protected ITypeProvider typeProvider;
-	
-	
-	public CodeSyncAlgorithm(TypeDescriptorRegistry typeDescriptorRegistry, ITypeProvider typeProvider) {
-		super();
-		this.typeDescriptorRegistry = typeDescriptorRegistry;
-		this.typeProvider = typeProvider;
+	private ModelAdapterSet getModelAdapterSet(List<String> technologies) {
+		if (technologies.size() == 1) {
+			return CodeSyncPlugin.getInstance().getModelAdapterSet(technologies.get(0));
+		} else {
+			ComposedModelAdapterSet composedModelAdapterSet = new ComposedModelAdapterSet();
+			for (String technology : technologies) {
+				composedModelAdapterSet.addModelAdapterSet(CodeSyncPlugin.getInstance().getModelAdapterSet(technology));
+			}
+			return composedModelAdapterSet;
+		}
 	}
 
 	public void generateDiff(Match match, boolean performAction) {
 		logger.debug("Generate diff for {}", match);
 		
 		beforeOrAfterFeaturesProcessed(match, true);
-		Object[] delegateAndAdapter = match.getDelegateAndModelAdapter(this);
-		if (delegateAndAdapter == null) {
-			throw new IllegalArgumentException("A match with no members has been given as parameter.");
-		}
 		FeatureProvider featureProvider = getFeatureProvider(match);
 		
 		// first iterate over value features
-		for (Object feature : featureProvider.getValueFeatures(delegateAndAdapter[0])) {
+		for (Object feature : featureProvider.getValueFeatures()) {
 			processValueFeature(feature, match);
 		}
 		
@@ -90,7 +103,7 @@ public class CodeSyncAlgorithm {
 		}
 		
 		// iterate over containment features
-		for (Object feature : featureProvider.getContainmentFeatures(delegateAndAdapter[0])) {
+		for (Object feature : featureProvider.getContainmentFeatures()) {
 			processContainmentFeature(feature, match, !performLater && performAction);
 		}
 
@@ -116,17 +129,17 @@ public class CodeSyncAlgorithm {
 		Object right = match.getRight();
 		IModelAdapter rightAdapter = null;
 		if (right != null) {
-			rightAdapter = getRightModelAdapter(match, right);
+			rightAdapter = getRightModelAdapter(right);
 		}
 		Object ancestor = match.getAncestor();
 		IModelAdapter ancestorAdapter = null;
 		if (ancestor != null) {
-			ancestorAdapter = getAncestorModelAdapter(match, ancestor);
+			ancestorAdapter = getAncestorModelAdapter(ancestor);
 		}
 		Object left = match.getLeft();
 		IModelAdapter leftAdapter = null;
 		if (left != null) {
-			leftAdapter = getLeftModelAdapter(match, left);
+			leftAdapter = getLeftModelAdapter(left);
 		}
 		
 		if (before) {
@@ -167,10 +180,10 @@ public class CodeSyncAlgorithm {
 		Map<Object, Object> rightMap = new HashMap<Object, Object>();
 		Iterable<?> rightList = null;
 		if (match.getRight() != null) {
-			IModelAdapter modelAdapter = getRightModelAdapter(match, match.getRight());
+			IModelAdapter modelAdapter = getRightModelAdapter(match.getRight());
 			rightList = modelAdapter.getContainmentFeatureIterable(match.getRight(), feature, null); 
 			for (Object rightChild : rightList) {
-				rightChildModelAdapter = getRightModelAdapter(null, rightChild);
+				rightChildModelAdapter = getRightModelAdapter(rightChild);
 				if (rightChildModelAdapter != null) {
 					rightChildModelAdapter.addToMap(rightChild, rightMap);
 				}
@@ -180,10 +193,10 @@ public class CodeSyncAlgorithm {
 		// FILL_LEFT_MAP
 		Map<Object, Object> leftMap = new HashMap<Object, Object>();
 		if (match.getLeft() != null) {
-			IModelAdapter modelAdapter = getLeftModelAdapter(match, match.getLeft());
+			IModelAdapter modelAdapter = getLeftModelAdapter(match.getLeft());
 			Iterable<?> leftList = modelAdapter.getContainmentFeatureIterable(match.getLeft(), feature, rightList); 
 			for (Object leftChild : leftList) {
-				leftChildModelAdapter = getLeftModelAdapter(null, leftChild);
+				leftChildModelAdapter = getLeftModelAdapter(leftChild);
 				if (leftChildModelAdapter != null) {
 					leftChildModelAdapter.addToMap(leftChild, leftMap);
 				}
@@ -192,14 +205,14 @@ public class CodeSyncAlgorithm {
 		
 		// ITERATE_ANCESTOR_LIST
 		if (match.getAncestor() != null) {
-			IModelAdapter modelAdapter = getAncestorModelAdapter(match, match.getAncestor());
+			IModelAdapter modelAdapter = getAncestorModelAdapter(match.getAncestor());
 			Iterable<?> ancestorList = modelAdapter.getContainmentFeatureIterable(match.getAncestor(), feature, rightList);
 			for (Object ancestorChild : ancestorList) {
 				// this will be a 3-match, 2-match or 1-match
 				// depending on what we find in the maps
 				Match childMatch = new Match();
 				childMatch.setAncestor(ancestorChild);
-				ancestorChildModelAdapter = getAncestorModelAdapter(childMatch, ancestorChild);
+				ancestorChildModelAdapter = getAncestorModelAdapter(ancestorChild);
 				if (ancestorChildModelAdapter != null) {
 					childMatch.setMatchKey(ancestorChildModelAdapter.getMatchKey(ancestorChild));
 					childMatch.setLeft(ancestorChildModelAdapter.removeFromMap(ancestorChild, leftMap, false));
@@ -225,7 +238,7 @@ public class CodeSyncAlgorithm {
 			if (leftChildModelAdapter == null) {
 				// might be null for CodeSync/code, because the leftMap iteration doesn't happen
 				// or if there are no ancestor children
-				leftChildModelAdapter = getLeftModelAdapter(childMatch, leftChild);
+				leftChildModelAdapter = getLeftModelAdapter(leftChild);
 			}
 			childMatch.setMatchKey(leftChildModelAdapter.getMatchKey(leftChild));
 			childMatch.setRight(leftChildModelAdapter.removeFromMap(leftChild, rightMap, true));
@@ -244,7 +257,7 @@ public class CodeSyncAlgorithm {
 			// this will be a 1-match-ancestor (i.e. deleted left & right)
 			Match childMatch = new Match();
 			childMatch.setRight(rightChild);
-			childMatch.setMatchKey(getRightModelAdapter(childMatch, rightChild).getMatchKey(rightChild));
+			childMatch.setMatchKey(getRightModelAdapter(rightChild).getMatchKey(rightChild));
 			childMatch.setFeature(feature);
 			
 			if (!childMatch.isEmptyMatch()) {
@@ -292,17 +305,17 @@ public class CodeSyncAlgorithm {
 		Object rightValue = null;
 		
 		if (right != null) {
-			IModelAdapter modelAdapter = getRightModelAdapter(match, right);
+			IModelAdapter modelAdapter = getRightModelAdapter(right);
 			rightValue = modelAdapter.getValueFeatureValue(right, feature, null);
 		}
 		
 		if (ancestor != null) {
-			IModelAdapter modelAdapter = getAncestorModelAdapter(match, ancestor);
+			IModelAdapter modelAdapter = getAncestorModelAdapter(ancestor);
 			ancestorValue = modelAdapter.getValueFeatureValue(ancestor, feature, rightValue); 
 		}
 		
 		if (left != null) {
-			IModelAdapter modelAdapter = getLeftModelAdapter(match, left);
+			IModelAdapter modelAdapter = getLeftModelAdapter(left);
 			leftValue = modelAdapter.getValueFeatureValue(left, feature, rightValue);
 		}
 		
@@ -311,8 +324,8 @@ public class CodeSyncAlgorithm {
 				diff = new Diff();
 				diff.setLeftModified(true);
 				diff.setRightModified(true);
-				getLeftModelAdapter(match, left).unsetConflict(left, feature);
-				getRightModelAdapter(match, right).unsetConflict(right, feature);
+				getLeftModelAdapter(left).unsetConflict(left, feature);
+				getRightModelAdapter(right).unsetConflict(right, feature);
 			}
 		} else {
 			if (ancestor != null && left != null && safeEquals(ancestorValue, leftValue)) {
@@ -320,24 +333,24 @@ public class CodeSyncAlgorithm {
 				if (right != null) {
 					diff = new Diff();
 					diff.setRightModified(true);
-					getLeftModelAdapter(match, left).unsetConflict(left, feature);
+					getLeftModelAdapter(left).unsetConflict(left, feature);
 				}
 			} else if (ancestor != null && right != null && safeEquals(ancestorValue, rightValue)) {
 				// modif on LEFT
 				if (left != null) {
 					diff = new Diff();
 					diff.setLeftModified(true);
-					getRightModelAdapter(match, right).unsetConflict(right, feature);
+					getRightModelAdapter(right).unsetConflict(right, feature);
 				}
 			} else {
 				diff = new Diff();
 				if (left != null) {
 					diff.setLeftModified(true);
-					getLeftModelAdapter(match, left).setConflict(left, feature, rightValue);
+					getLeftModelAdapter(left).setConflict(left, feature, rightValue);
 				}
 				if (right != null) {
 					diff.setRightModified(true);
-					getRightModelAdapter(match, right).setConflict(right, feature, leftValue);
+					getRightModelAdapter(right).setConflict(right, feature, leftValue);
 				}
 				diff.setConflict(true);
 				
@@ -347,10 +360,10 @@ public class CodeSyncAlgorithm {
 			diff.setFeature(feature);
 			match.addDiff(diff);
 			if (match.getLeft() != null) {
-				getLeftModelAdapter(match, left).unsetConflict(left, feature);
+				getLeftModelAdapter(left).unsetConflict(left, feature);
 			}
 			if (match.getRight() != null) {
-				getRightModelAdapter(match, right).unsetConflict(right, feature);
+				getRightModelAdapter(right).unsetConflict(right, feature);
 			}
 		}
 	}
@@ -381,10 +394,10 @@ public class CodeSyncAlgorithm {
 			// no action performed; inform the ancestor
 			if (match.getParentMatch() != null && match.getParentMatch().getAncestor() != null) {
 				Match parentMatch = match.getParentMatch();
-				Object matchKey = match.getAncestor() != null ? getAncestorModelAdapter(match, match.getAncestor()).getMatchKey(match.getAncestor())
-						: getLeftModelAdapter(match, match.getLeft()).getMatchKey(match.getLeft());
+				Object matchKey = match.getAncestor() != null ? getAncestorModelAdapter(match.getAncestor()).getMatchKey(match.getAncestor())
+						: getLeftModelAdapter(match.getLeft()).getMatchKey(match.getLeft());
 				ActionResult result = new ActionResult(false, false, false, matchKey, !(match.getLeft() == null));
-				getAncestorModelAdapter(match, parentMatch.getAncestor()).actionPerformed(parentMatch.getAncestor(), match.getFeature(), result, parentMatch);
+				getAncestorModelAdapter(parentMatch.getAncestor()).actionPerformed(parentMatch.getAncestor(), match.getFeature(), result, parentMatch);
 			}
 		}
 		
@@ -394,13 +407,13 @@ public class CodeSyncAlgorithm {
 		// update sync flags
 		
 		if (match.getAncestor() != null) {
-			getAncestorModelAdapter(match, match.getAncestor()).allActionsPerformed(match.getAncestor(), null, this);
+			getAncestorModelAdapter(match.getAncestor()).allActionsPerformed(match.getAncestor(), null, this);
 		}
 		if (match.getLeft() != null) {
-			getLeftModelAdapter(match, match.getLeft()).allActionsPerformed(match.getLeft(), match.getRight(), this);
+			getLeftModelAdapter(match.getLeft()).allActionsPerformed(match.getLeft(), match.getRight(), this);
 		}
 		if (match.getRight() != null) {
-			getRightModelAdapter(match, match.getRight()).allActionsPerformed(match.getRight(), match.getLeft(), this);
+			getRightModelAdapter(match.getRight()).allActionsPerformed(match.getRight(), match.getLeft(), this);
 		}
 		
 		// recurse
@@ -434,13 +447,13 @@ public class CodeSyncAlgorithm {
 		
 		// save left
 		if (match.getLeft() != null) {
-			AbstractModelAdapter leftModelAdapter = getLeftModelAdapter(match, match.getLeft());
+			IModelAdapter leftModelAdapter = getLeftModelAdapter(match.getLeft());
 			saveSubMatches |= leftModelAdapter.save(match.getLeft());
 		}
 		
 		// save right
 		if (match.getRight() != null) {
-			AbstractModelAdapter rightModelAdapter = getRightModelAdapter(match, match.getRight());
+			IModelAdapter rightModelAdapter = getRightModelAdapter(match.getRight());
 			saveSubMatches |= rightModelAdapter.save(match.getRight());
 		}
 		
@@ -452,38 +465,33 @@ public class CodeSyncAlgorithm {
 		}
 	}
 	
-	public ITypeProvider getTypeProvider() {
-		return typeProvider;
-	}
-	
-	/**
-	 * Use the delegate's descriptor to find the controller, because otherwise we risk getting the wrong 
-	 * descriptor for an element that does not exist (e.g. the type for a newly created folder will be 
-	 * File (because it was not yet written to disk).
-	 * 
-	 * <p>
-	 * 
-	 * Same applies for all the methods below.
-	 */
 	public FeatureProvider getFeatureProvider(Match match) {
-		return getDescriptor(match.getDelegate()).getSingleController(FEATURE_PROVIDER, match.getDelegate());
+		String type = null;
+		Object model = null;
+		if (match.getLeft() != null) {
+			model = match.getLeft();
+			type = modelAdapterSetLeft.getType(model);
+		} else if (match.getRight() != null) {
+			model = match.getRight();
+			type = modelAdapterSetRight.getType(model);
+		} else if (match.getAncestor() != null) {
+			model = match.getAncestor();
+			type = modelAdapterSetAncestor.getType(model);
+		}
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
+		return descriptor.getSingleController(FEATURE_PROVIDER, model);
 	}
 
-	public AbstractModelAdapter getRightModelAdapter(Match match, Object right) {
-		return getDescriptor(match != null ? match.getDelegate() : right).getSingleController(MODEL_ADAPTER_RIGHT, right);
+	public IModelAdapter getRightModelAdapter(Object right) {
+		return modelAdapterSetRight.getModelAdapter(right);
 	}
 	
-	public AbstractModelAdapter getAncestorModelAdapter(Match match, Object ancestor) {
-		return getDescriptor(match != null ? match.getDelegate() : ancestor).getSingleController(MODEL_ADAPTER_ANCESTOR, ancestor);
+	public IModelAdapter getAncestorModelAdapter(Object ancestor) {
+		return modelAdapterSetAncestor.getModelAdapter(ancestor);
 	}
 
-	public AbstractModelAdapter getLeftModelAdapter(Match match, Object left) {
-		return getDescriptor(match != null ? match.getDelegate() : left).getSingleController(MODEL_ADAPTER_LEFT, left);
-	}
-	
-	private TypeDescriptor getDescriptor(Object object) {
-		String type = typeProvider.getType(object);
-		return typeDescriptorRegistry.getExpectedTypeDescriptor(type);
+	public IModelAdapter getLeftModelAdapter(Object left) {
+		return modelAdapterSetLeft.getModelAdapter(left);
 	}
 	
 }

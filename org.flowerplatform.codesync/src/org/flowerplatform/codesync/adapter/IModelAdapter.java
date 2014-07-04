@@ -21,7 +21,6 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.action.DiffAction;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 
 /**
  * @see AbstractModelAdapter
@@ -40,7 +39,7 @@ public interface IModelAdapter {
 	
 	public void setValueFeatureValue(Object element, Object feature, Object value);
 	
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider);
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet modelAdapterSet);
 	
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child);
 	

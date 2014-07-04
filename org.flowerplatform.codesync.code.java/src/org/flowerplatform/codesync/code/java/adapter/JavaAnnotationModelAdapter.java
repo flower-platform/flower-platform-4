@@ -15,20 +15,25 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import static org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants.MODIFIERS;
+
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Annotation;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationFeatureProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to {@link Annotation}. Children are annotation values, i.e. {@link MemberValuePair}.
@@ -93,41 +98,39 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		if (CodeSyncCodeJavaConstants.ANNOTATION_VALUES.equals(feature)) {
-			ASTNode child = null;
-			ASTNode parent = (ASTNode) element;
-			AST ast = parent.getAST();
-			
-			// for an existing NormalAnnotation, just add the new value
-			if (parent instanceof NormalAnnotation) {
-				MemberValuePair pair = ast.newMemberValuePair();
-				((NormalAnnotation) parent).values().add(pair);
-				child = pair;
-			} else {
-				Node value = (Node) correspondingChild;
-				// if the existing annotation is a SingleMemberAnnotation, then set its value
-				if (parent instanceof SingleMemberAnnotation) {
-					ASTNode expression = getExpressionFromString(parent.getAST(), 
-							(String) value.getPropertyValue(CodeSyncCodeJavaConstants.ANNOTATION_VALUE_VALUE));
-					((SingleMemberAnnotation) parent).setValue((Expression) expression);
-					child = ast.newMemberValuePair(); // avoid NPE later
-				}
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.MODIFIERS.equals(feature)) {
+			if (!(parent instanceof BodyDeclaration || parent instanceof SingleVariableDeclaration)) {
+				throw new RuntimeException("Cannot create modifier for " + parent);
 			}
 			
-			return child;
+			Annotation annotation;
+			AST ast = ((ASTNode) parent).getAST();
+			IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild);
+			
+			int valuesCount = getIterableSize(correspondingModelAdapter.getContainmentFeatureIterable(correspondingChild, MODIFIERS, null).iterator());
+			if (valuesCount == 0) {
+				annotation = ast.newMarkerAnnotation();
+			} else if (valuesCount == 1) {
+				annotation = ast.newSingleMemberAnnotation();
+			} else {
+				annotation = ast.newNormalAnnotation();
+			}
+			
+			addModifier((ASTNode) parent, annotation);
+			return annotation;
 		}
-		
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
 	}
 
-	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		if (CodeSyncCodeJavaConstants.ANNOTATION_VALUES.equals(feature) && !(parent instanceof NormalAnnotation)) {
-			return;
+	private int getIterableSize(Iterator<?> it) {
+		int size = 0;
+		while (it.hasNext()) {
+			it.next();
+			size++;
 		}
-		super.removeChildrenOnContainmentFeature(parent, feature, child);
+		return size;
 	}
+
 }

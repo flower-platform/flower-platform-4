@@ -15,10 +15,15 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAttributeFeatureProvider;
 import org.flowerplatform.core.CoreConstants;
@@ -65,6 +70,21 @@ public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			var.setInitializer(getExpressionFromString(var.getAST(), (String) value));
 		}
 		super.setValueFeatureValue(element, feature, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object createChildOnContainmentFeature(Object parent, Object feature, 
+			Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
+			AST ast = ((ASTNode) parent).getAST();
+			VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
+			FieldDeclaration field = ast.newFieldDeclaration(fragment);
+			((AbstractTypeDeclaration) parent).bodyDeclarations().add(field);
+			return field;
+		} 
+		return super.createChildOnContainmentFeature(parent, feature,
+				correspondingChild, correspondingModelAdapterSet);
 	}
 
 	private FieldDeclaration getFieldDeclaration(Object element) {

@@ -16,13 +16,15 @@
 package org.flowerplatform.codesync.code.java.adapter;
 
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaOperationFeatureProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 
 /**
@@ -83,15 +85,16 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		if (CodeSyncCodeJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
-			MethodDeclaration method = (MethodDeclaration) element;
-			AST ast = method.getAST();
-			SingleVariableDeclaration parameter = ast.newSingleVariableDeclaration();
-			method.parameters().add(parameter);
-			return parameter;
-		}
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
+	public Object createChildOnContainmentFeature(Object parent, Object feature, 
+			Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
+			AST ast = ((ASTNode) parent).getAST();
+			MethodDeclaration method = ast.newMethodDeclaration();
+			((AbstractTypeDeclaration) parent).bodyDeclarations().add(method);
+			return method;
+		} 
+		return super.createChildOnContainmentFeature(parent, feature,
+				correspondingChild, correspondingModelAdapterSet);
 	}
 	
 	private MethodDeclaration getMethodDeclaration(Object element) {

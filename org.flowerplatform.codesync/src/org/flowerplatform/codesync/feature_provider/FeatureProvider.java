@@ -30,11 +30,11 @@ public abstract class FeatureProvider extends AbstractController {
 	
 	protected List<Object> containmentFeatures = new ArrayList<>();
 	
-	public List<?> getValueFeatures(Object element) {
+	public List<?> getValueFeatures() {
 		return valueFeatures;
 	}
 	
-	public List<?> getContainmentFeatures(Object element) {
+	public List<?> getContainmentFeatures() {
 		return containmentFeatures;
 	}
 	

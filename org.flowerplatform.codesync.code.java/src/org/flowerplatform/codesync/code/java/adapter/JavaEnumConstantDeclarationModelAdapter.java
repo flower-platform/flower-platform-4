@@ -16,13 +16,14 @@
 package org.flowerplatform.codesync.code.java.adapter;
 
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaEnumConstantDeclarationFeatureProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Mapped to {@link EnumConstantDeclaration}. Children are enum constant arguments (i.e. {@link Expression}).
@@ -57,15 +58,14 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		if (CodeSyncCodeJavaConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
-			EnumConstantDeclaration parent = (EnumConstantDeclaration) element;
-			AST ast = parent.getAST();
-			Expression arg = getExpressionFromString(ast, ((Node) correspondingChild).getPropertyValue(CoreConstants.NAME).toString());
-			parent.arguments().add(arg);
-			return arg;
-		}
-		return super.createChildOnContainmentFeature(element, feature, correspondingChild, typeProvider);
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet modelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
+			AST ast = ((ASTNode) parent).getAST();
+			EnumConstantDeclaration enumCt = ast.newEnumConstantDeclaration();
+			((EnumDeclaration) parent).enumConstants().add(enumCt);
+			return enumCt;
+		} 
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet);
 	}
 
 	private EnumConstantDeclaration getEnumConstant(Object element) {

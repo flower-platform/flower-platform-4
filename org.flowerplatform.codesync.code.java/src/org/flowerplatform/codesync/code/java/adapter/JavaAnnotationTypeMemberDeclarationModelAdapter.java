@@ -15,8 +15,12 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.feature_provider.JavaAnnotationTypeMemberDeclarationFeatureProvider;
 import org.flowerplatform.core.CoreConstants;
@@ -58,6 +62,20 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 			member.setType(getTypeFromString(member.getAST(), (String) value));
 		}
 		super.setValueFeatureValue(element, feature, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object createChildOnContainmentFeature(Object parent, Object feature,
+			Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.TYPE_MEMBERS.equals(feature)) {
+			AST ast = ((ASTNode) parent).getAST();
+			AnnotationTypeMemberDeclaration member = ast.newAnnotationTypeMemberDeclaration();
+			((AbstractTypeDeclaration) parent).bodyDeclarations().add(member);
+			return member;
+		} 
+		return super.createChildOnContainmentFeature(parent, feature,
+				correspondingChild, correspondingModelAdapterSet);
 	}
 
 	private AnnotationTypeMemberDeclaration getAnnotationMember(Object element) {

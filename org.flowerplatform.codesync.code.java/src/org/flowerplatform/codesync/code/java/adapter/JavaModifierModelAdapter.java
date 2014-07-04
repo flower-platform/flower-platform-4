@@ -15,7 +15,16 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import static org.flowerplatform.core.CoreConstants.NAME;
+
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 
 /**
  * Mapped to {@link Modifier}.
@@ -27,6 +36,24 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	@Override
 	public Object getMatchKey(Object element) {
 		return ((Modifier) element).getKeyword().toString();
+	}
+
+	@Override
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.MODIFIERS.equals(feature)) {
+			if (!(parent instanceof BodyDeclaration || parent instanceof SingleVariableDeclaration)) {
+				throw new RuntimeException("Cannot create modifier for " + parent);
+			}
+			Modifier modifier = null;
+			
+			AST ast = ((ASTNode) parent).getAST();
+			String keyword = (String) correspondingModelAdapterSet.getModelAdapter(correspondingChild)
+					.getValueFeatureValue(correspondingChild, NAME, null);
+			modifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
+			addModifier((ASTNode) parent, modifier);
+			return modifier;
+		}
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
 	}
 	
 }

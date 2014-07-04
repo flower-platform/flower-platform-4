@@ -15,10 +15,6 @@
  */
 package org.flowerplatform.codesync.as;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_RIGHT;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CATEGORY_FUNCTION;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CATEGORY_VARIABLE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CLASS;
@@ -46,17 +42,14 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_INTERFACE
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TECHNOLOGY;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VARIABLE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.getImagePath;
-import static org.flowerplatform.codesync.code.CodeSyncCodeConstants.FILE;
-import static org.flowerplatform.codesync.code.CodeSyncCodeConstants.FOLDER;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.as.adapter.AsClassModelAdapter;
-import org.flowerplatform.codesync.as.adapter.AsFileModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsFunctionModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsInterfaceModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsMetaTagAttributeModelAdapter;
@@ -65,19 +58,10 @@ import org.flowerplatform.codesync.as.adapter.AsModifierModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsParameterModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsReferenceModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsVariableModelAdapter;
-import org.flowerplatform.codesync.as.feature_provider.AsClassFeatureProvider;
-import org.flowerplatform.codesync.as.feature_provider.AsFileFeatureProvider;
 import org.flowerplatform.codesync.as.feature_provider.AsFunctionFeatureProvider;
-import org.flowerplatform.codesync.as.feature_provider.AsInterfaceFeatureProvider;
-import org.flowerplatform.codesync.as.feature_provider.AsMetaTagAttributeFeatureProvider;
-import org.flowerplatform.codesync.as.feature_provider.AsMetaTagFeatureProvider;
-import org.flowerplatform.codesync.as.feature_provider.AsParameterFeatureProvider;
 import org.flowerplatform.codesync.as.feature_provider.AsVariableFeatureProvider;
 import org.flowerplatform.codesync.as.line_information_provider.AsFunctionLineProvider;
 import org.flowerplatform.codesync.as.type_provider.AsTypeProvider;
-import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
-import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
 import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
@@ -101,43 +85,57 @@ protected static CodeSyncAsPlugin INSTANCE;
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		CodeSyncPlugin.getInstance().addTypeProvider(TECHNOLOGY, new AsTypeProvider());
-		CodeSyncPlugin.getInstance().addLineProvider(new AsFunctionLineProvider());
+		AsReferenceModelAdapter referenceModelAdapter = new AsReferenceModelAdapter();
+		NodeFeatureProvider referenceFeatureProvider = new NodeFeatureProvider();
+		AsVariableModelAdapter varModelAdapter = new AsVariableModelAdapter();
+		AsVariableFeatureProvider varFeatureProvider = new AsVariableFeatureProvider();
+		AsFunctionModelAdapter asFunctionModelAdapter = new AsFunctionModelAdapter();
+		AsFunctionFeatureProvider asFunctionFeatureProvider = new AsFunctionFeatureProvider();
 		
-		createNodeTypeDescriptor(FOLDER, new FolderModelAdapter(), new FolderFeatureProvider());
-		createNodeTypeDescriptor(FILE, new AsFileModelAdapter(), new AsFileFeatureProvider());
-	
+		CodeSyncPlugin.getInstance().addModelAdapterSet(TECHNOLOGY, new ModelAdapterSet()
+				.setTypeProvider(new AsTypeProvider())
+				.setLineProvider(new AsFunctionLineProvider())
+				.addModelAdapter(CLASS, new AsClassModelAdapter())
+				.addModelAdapter(INTERFACE, new AsInterfaceModelAdapter())
+				.addModelAdapter(SUPER_INTERFACE, referenceModelAdapter)
+				.addModelAdapter(META_TAG, new AsMetaTagModelAdapter())
+				.addModelAdapter(META_TAG_ATTRIBUTE, new AsMetaTagAttributeModelAdapter())
+				.addModelAdapter(VARIABLE, varModelAdapter)
+				.addModelAdapter(CONST, varModelAdapter)
+				.addModelAdapter(FUNCTION, asFunctionModelAdapter)
+				.addModelAdapter(GETTER, asFunctionModelAdapter)
+				.addModelAdapter(SETTER, asFunctionModelAdapter)
+				.addModelAdapter(MODIFIER, new AsModifierModelAdapter())
+				.addModelAdapter(PARAMETER, new AsParameterModelAdapter()));
+		
 		MemberOfChildCategoryDescriptor statementsChildDescriptor = new MemberOfChildCategoryDescriptor(STATEMENTS);
 		
-		createNodeTypeDescriptor(CLASS, new AsClassModelAdapter(), new AsClassFeatureProvider())
+		createNodeTypeDescriptor(CLASS)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, statementsChildDescriptor)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_TYPE_CLASS)));
 		
-		createNodeTypeDescriptor(INTERFACE, new AsInterfaceModelAdapter(), new AsInterfaceFeatureProvider())
+		createNodeTypeDescriptor(INTERFACE)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, statementsChildDescriptor)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_TYPE_INTERFACE)));
 		
-		AsReferenceModelAdapter referenceModelAdapter = new AsReferenceModelAdapter();
-		NodeFeatureProvider referenceFeatureProvider = new NodeFeatureProvider();
-		
-		createNodeTypeDescriptor(SUPER_INTERFACE, referenceModelAdapter, referenceFeatureProvider)
+		createNodeTypeDescriptor(SUPER_INTERFACE)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(SUPER_INTERFACES))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_INTERFACE_REALIZATION)));
 		
-		createNodeTypeDescriptor(META_TAG, new AsMetaTagModelAdapter(), new AsMetaTagFeatureProvider())
+		createNodeTypeDescriptor(META_TAG)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(META_TAGS));
 		
-		createNodeTypeDescriptor(META_TAG_ATTRIBUTE, new AsMetaTagAttributeModelAdapter(), new AsMetaTagAttributeFeatureProvider())
+		createNodeTypeDescriptor(META_TAG_ATTRIBUTE)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(META_TAG_ATTRIBUTES));
 		
-		createCategoryTypeDescriptor(CATEGORY_VARIABLE, new AsVariableModelAdapter(), new AsVariableFeatureProvider())
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_VARIABLE)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, statementsChildDescriptor)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_VARIABLE)));
 		
 		createNodeTypeDescriptor(VARIABLE).addCategory(CATEGORY_VARIABLE);
 		createNodeTypeDescriptor(CONST).addCategory(CATEGORY_VARIABLE);
 		
-		createCategoryTypeDescriptor(CATEGORY_FUNCTION, new AsFunctionModelAdapter(), new AsFunctionFeatureProvider())
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_FUNCTION)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, statementsChildDescriptor)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_FUNCTION)));
 	
@@ -145,39 +143,20 @@ protected static CodeSyncAsPlugin INSTANCE;
 		createNodeTypeDescriptor(GETTER).addCategory(CATEGORY_FUNCTION);
 		createNodeTypeDescriptor(SETTER).addCategory(CATEGORY_FUNCTION);
 		
-		createNodeTypeDescriptor(MODIFIER, new AsModifierModelAdapter(), new NodeFeatureProvider())
+		createNodeTypeDescriptor(MODIFIER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(MODIFIERS));
 		
-		createNodeTypeDescriptor(PARAMETER, new AsParameterModelAdapter(), new AsParameterFeatureProvider())
+		createNodeTypeDescriptor(PARAMETER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(FUNCTION_PARAMETERS));
 	}
 	
 	private TypeDescriptor createNodeTypeDescriptor(String type) {
-		return createNodeTypeDescriptor(type, null, null);
-	}
-	
-	private TypeDescriptor createNodeTypeDescriptor(String type, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
 		descriptor.addCategory(CodeSyncConstants.CATEGORY_CODESYNC);
-		if (modelAdapterRight != null && featureProvider != null) {
-			registerAdapterAndFeatureProvider(descriptor, modelAdapterRight, featureProvider);
-		}
 		return descriptor;
 	}
 	
-	private TypeDescriptor createCategoryTypeDescriptor(String category, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) { 
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(category);
-		registerAdapterAndFeatureProvider(descriptor, modelAdapterRight, featureProvider);
-		return descriptor;
-	}
-	
-	private void registerAdapterAndFeatureProvider(TypeDescriptor descriptor, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
-//		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
-//		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
-//		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
-//		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
-	}
-	
+	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
 		INSTANCE = null;

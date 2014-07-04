@@ -20,15 +20,13 @@ import java.util.Map;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * Convenience implementation.
  * 
  * @author Mariana Gheorghe
  */
-public abstract class AbstractModelAdapter extends AbstractController implements IModelAdapter {
+public abstract class AbstractModelAdapter implements IModelAdapter {
 
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
@@ -46,8 +44,8 @@ public abstract class AbstractModelAdapter extends AbstractController implements
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
-		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + element);
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet modelAdapterSet) {
+		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + parent);
 	}
 	
 	@Override

@@ -15,8 +15,19 @@
  */
 package org.flowerplatform.codesync.code.java.adapter;
 
+import static org.flowerplatform.core.CoreConstants.NAME;
+
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
+import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 
 /**
  * Mapped to {@link Expression} and {@link Type}.
@@ -25,20 +36,39 @@ import org.eclipse.jdt.core.dom.Type;
  */
 public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
-	private String type;
-	
-	public JavaExpressionModelAdapter(String type) {
-		this.type = type;
-	}
-	
 	@Override
 	public Object getMatchKey(Object element) {
 		return element.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public String toString() {
-		return String.format("JavaExpressionModelAdapter [type = %s, orderIndex = %d]", type, getOrderIndex());
+	public Object createChildOnContainmentFeature(Object parent, Object feature, 
+			Object correspondingChild, ModelAdapterSet correspondingModelAdapterSet) {
+		if (CodeSyncCodeJavaConstants.SUPER_INTERFACES.equals(feature)) {
+			if (parent instanceof TypeDeclaration || parent instanceof EnumDeclaration) {
+				AbstractTypeDeclaration cls = (AbstractTypeDeclaration) parent;
+				AST ast = cls.getAST();
+				IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild);
+				String value = (String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, NAME, null);
+				Type type = getTypeFromString(ast, value);
+				if (cls instanceof TypeDeclaration) {
+					((TypeDeclaration) cls).superInterfaceTypes().add(type);
+				} else if (cls instanceof EnumDeclaration) {
+					((EnumDeclaration) cls).superInterfaceTypes().add(type);
+				}
+				return type;
+			}
+			throw new RuntimeException("Cannot create super interface for " + parent);
+		} else if (CodeSyncCodeJavaConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
+			AST ast = ((ASTNode) parent).getAST();
+			IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild);
+			String value = (String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, NAME, null);
+			Expression arg = getExpressionFromString(ast, value);
+			((EnumConstantDeclaration) parent).arguments().add(arg);
+			return arg;
+		}
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
 	}
 	
 }

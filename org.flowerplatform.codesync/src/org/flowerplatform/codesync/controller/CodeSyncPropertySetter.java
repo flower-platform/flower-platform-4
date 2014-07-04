@@ -95,7 +95,7 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 		}
 		
 		FeatureProvider featureProvider = descriptor.getSingleController(FEATURE_PROVIDER, node);
-		if (featureProvider.getValueFeatures(node).contains(property)) {
+		if (featureProvider.getValueFeatures().contains(property)) {
 			return true;
 		}
 		return false;
