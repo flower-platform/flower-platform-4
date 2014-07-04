@@ -7,7 +7,8 @@ Bundle-Activator: org.flowerplatform.codesync.CodeSyncPlugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.flowerplatform.util;visibility:=reexport,
  org.flowerplatform.core;visibility:=reexport,
- org.flowerplatform.resources
+ org.flowerplatform.resources,
+ org.eclipse.text
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.flowerplatform.codesync,

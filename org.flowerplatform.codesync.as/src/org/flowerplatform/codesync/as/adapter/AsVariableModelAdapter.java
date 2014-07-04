@@ -45,7 +45,8 @@ public class AsVariableModelAdapter extends AsAbstractAstModelAdapter {
 	}
 
 	protected Object resolveInitializer(Object element) {
-		Object value = getVariable(element).resolveInitialValue(getProject(element));
+		IVariableDefinition var = getVariable(element);
+		Object value = var.resolveInitialValue(getCompilationUnit(var).getProject());
 		if (ABCConstants.NULL_VALUE.equals(value)) {
 			return CodeSyncAsConstants.PARAMETER_NULL_VALUE;
 		}

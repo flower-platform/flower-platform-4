@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.SourcePathManager;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
@@ -34,9 +33,11 @@ import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
+import org.flowerplatform.codesync.as.DelegatingFileSpecification;
 import org.flowerplatform.codesync.as.asdoc.AsDocDelegate;
 import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.util.Pair;
+import org.flowerplatform.util.file.FileHolder;
 
 /**
  * @author Mariana Gheorghe
@@ -44,21 +45,15 @@ import org.flowerplatform.core.CorePlugin;
 public class AsFileModelAdapter extends AbstractFileModelAdapter {
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element,
-			Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (CodeSyncAsConstants.STATEMENTS.equals(feature)) {
-			ICompilationUnit cu = (ICompilationUnit) getOrCreateFileInfo(element);
-			if (cu == null) {
+			@SuppressWarnings("unchecked")
+			Pair<ICompilationUnit, IFileNode> pair = (Pair<ICompilationUnit, IFileNode>) getOrCreateFileInfo(element);
+			if (pair.a == null) {
 				return Collections.emptyList();
 			}
-			IRequest<ISyntaxTreeRequestResult, ICompilationUnit> astRequest = cu.getSyntaxTreeRequest();
-			IFileNode ast;
-			try {
-				ast = (IFileNode) astRequest.get().getAST();
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-			
+
+			IFileNode ast = pair.b;
 			if (ast == null) {
 				return Collections.emptyList();
 			}
@@ -77,26 +72,43 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 	}
 
 	/**
-	 * The file info must be a {@link ICompilationUnit}, not the AST root, because the 
-	 * compilation units are refered through {@link WeakReference}s, and will be garbage
-	 * collected during sync.
+	 * The file info must be a pair of {@link ICompilationUnit} and AST root, because the 
+	 * they are referred through {@link WeakReference}s, and will be garbage collected during sync.
 	 */
 	@Override
 	protected Object createFileInfo(Object file) {
+		// prepare the workspace and project
 		Workspace ws = new Workspace();
 		ws.setASDocDelegate(new AsDocDelegate());
 		FlexProject project = new FlexProject(ws);
 		
-		String path = null;
+		// add the file spec that will be used during AST build
+		ws.fileAdded(new DelegatingFileSpecification(file));
+		
+		// create compilation unit
+		ICompilationUnit cu = project.getSourceCompilationUnitFactory().createCompilationUnit(new File(getPath(file)),  
+				DefinitionPriority.BasePriority.SOURCE_PATH, 0, null, null);
+		IRequest<ISyntaxTreeRequestResult, ICompilationUnit> req = cu.getSyntaxTreeRequest();
+		
+		// create AST rooted at IFileNode
+		IFileNode ast = null;
 		try {
-			path = SourcePathManager.computeQName((File) CorePlugin.getInstance().getFileAccessController().getFile(null), (File) file);
-		} catch (Exception e) {
+			ast = (IFileNode) req.get().getAST();
+		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		return project.getSourceCompilationUnitFactory().createCompilationUnit((File) file, 
-				DefinitionPriority.BasePriority.SOURCE_PATH, 0, path, null);
+		return new Pair<ICompilationUnit, IFileNode>(cu, ast);
 	}
 
+	private String getPath(Object file) {
+		if (file instanceof File) {
+			return ((File) file).getPath();
+		} else if (file instanceof FileHolder) {
+			return ((FileHolder) file).getPath();
+		}
+		return null;
+	}
+	
 	@Override
 	protected TextEdit rewrite(Document document, Object fileInfo) {
 		// TODO Auto-generated method stub

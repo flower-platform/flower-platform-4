@@ -18,6 +18,8 @@ package org.flowerplatform.codesync.line_information_provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.text.IDocument;
+
 /**
  * @author Mariana Gheorghe
  */
@@ -30,20 +32,20 @@ public class ComposedLineInformationProvider implements ILineInformationProvider
 	}
 	
 	@Override
-	public int getStartLine(Object model) {
+	public int getStartLine(Object model, IDocument document) {
 		for (ILineInformationProvider lineInformationProvider : lineInformationProviders) {
 			if (lineInformationProvider.canHandle(model)) {
-				return lineInformationProvider.getStartLine(model);
+				return lineInformationProvider.getStartLine(model, document);
 			}
 		}
 		return -1;
 	}
 
 	@Override
-	public int getEndLine(Object model) {
+	public int getEndLine(Object model, IDocument document) {
 		for (ILineInformationProvider lineInformationProvider : lineInformationProviders) {
 			if (lineInformationProvider.canHandle(model)) {
-				return lineInformationProvider.getEndLine(model);
+				return lineInformationProvider.getEndLine(model, document);
 			}
 		}
 		return -1;

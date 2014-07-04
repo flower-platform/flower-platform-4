@@ -19,11 +19,11 @@ public class StringHolder extends FileHolder {
 
 	private String content;
 	
-	private String name;
+	private String path;
 	
-	public StringHolder(String content, String name) {
+	public StringHolder(String path, String content) {
+		this.path = path;
 		this.content = content;
-		this.name = name;
 	}
 	
 	@Override
@@ -32,8 +32,17 @@ public class StringHolder extends FileHolder {
 	}
 
 	@Override
+	public String getPath() {
+		return path;
+	}
+	
+	@Override
 	public String getName() {
-		return name;
+		int index = path.lastIndexOf("/");
+		if (index < 0) {
+			return path;
+		}
+		return path.substring(index + 1);
 	}
 
 	@Override

@@ -44,6 +44,7 @@ import org.flowerplatform.codesync.code.CodeSyncCodeConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
+import org.flowerplatform.util.file.StringHolder;
 
 /**
  * @author Mariana Gheorghe
@@ -84,6 +85,8 @@ public class AsTypeProvider implements ITypeProvider {
 			} else {
 				return CodeSyncCodeConstants.FILE;
 			}
+		} else if (object instanceof StringHolder) {
+			return CodeSyncCodeConstants.FILE;
 		}
 		return null;
 	}

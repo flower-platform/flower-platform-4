@@ -28,8 +28,8 @@ import org.apache.flex.compiler.asdoc.IASDocComment;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IDocumentableDefinition;
 import org.apache.flex.compiler.internal.scopes.ASFileScope;
-import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.flowerplatform.codesync.as.asdoc.AsDocComment;
 import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
@@ -71,12 +71,12 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
 	}
 	
-	protected ICompilerProject getProject(Object element) {
-		IASScope scope = getDefinition(element).getContainingScope();
+	protected ICompilationUnit getCompilationUnit(IDefinition definition) {
+		IASScope scope = definition.getContainingScope();
 		while (!(scope instanceof ASFileScope)) {
 			scope = scope.getContainingScope();
 		}
-		return ((ASFileScope) scope).getCompilationUnit().getProject();
+		return ((ASFileScope) scope).getCompilationUnit();
 	}
 	
 	protected IDefinition getDefinition(Object element) {

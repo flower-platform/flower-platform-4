@@ -49,6 +49,8 @@ import org.eclipse.compare.patch.IFilePatchResult;
 import org.eclipse.compare.patch.IHunk;
 import org.eclipse.compare.patch.PatchConfiguration;
 import org.eclipse.compare.patch.ReaderCreator;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
@@ -89,7 +91,7 @@ public class StructureDiffService {
 		new ResourceServiceRemote().subscribeToParentResource(sdiffUri);
 		Node sdiffRoot = CorePlugin.getInstance().getResourceService().getNode(sdiffUri);
 		CorePlugin.getInstance().getNodeService().setProperty(sdiffRoot, NAME,
-				ResourcesPlugin.getInstance().getMessage("codesync.sdiff.structureDiff"),
+				sdiffPath,
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
 		// prepare to parse patch
@@ -122,34 +124,39 @@ public class StructureDiffService {
 			}
 			
 			// start codesync
-			Match match = sync(patchedContent, currentContent, filePath.substring(filePath.lastIndexOf("/") + 1));
-			addToSdiffFile(sdiffRoot, match, filePatch);
+			Match match = sync(patchedContent, currentContent, filePath);
+			addToSdiffFile(sdiffRoot, match, filePatch, new Document(currentContent));
 		}
 		
 		// save the structure diff file
 		CorePlugin.getInstance().getResourceService().save(sdiffUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		
 		// return the file node
-		return CorePlugin.getInstance().getResourceService().getNode(sdiffFileUri);
+		return CorePlugin.getInstance().getResourceService().getNode(sdiffUri);
 	}
 	
-	private Match sync(String before, String after, String name) {
+	private Match sync(String before, String after, String path) {
 		// START THE ALGORITHM
 		
 		// STEP 1: create a match
 		Match match = new Match();
+		int index = path.lastIndexOf("/");
+		String name = path;
+		if (index >= 0) {
+			name = path.substring(++index);
+		}
 		match.setMatchKey(name);
 		
 		// ancestor + left: original content obtained after applying reverse patch
-		match.setAncestor(new StringHolder(before, name));
-		match.setLeft(new StringHolder(before, name));
+		match.setAncestor(new StringHolder(path, before));
+		match.setLeft(new StringHolder(path, before));
 	
 		// right: current content for this patch
-		match.setRight(new StringHolder(after, name));
+		match.setRight(new StringHolder(path, after));
 		
 		// initialize the algorithm
 		ITypeProvider typeProvider = new ComposedTypeProvider()
-				.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider("java"));
+				.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider("as"));
 		TypeDescriptorRegistry typeDescriptorRegistry = CorePlugin.getInstance().getNodeTypeDescriptorRegistry();
 		
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm(typeDescriptorRegistry, typeProvider);
@@ -161,7 +168,7 @@ public class StructureDiffService {
 		return match;
 	}
 	
-	private void addToSdiffFile(Node parent, Match match, FilePatch2 patch) {
+	private void addToSdiffFile(Node parent, Match match, FilePatch2 patch, IDocument document) {
 		// create child
 		Node child = new Node(null, MATCH);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
@@ -183,8 +190,8 @@ public class StructureDiffService {
 		// match to lines from patch
 		if (match.getLeft() != null && match.getRight() != null) {
 			Object model = match.getRight();
-			int modelStartLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getStartLine(model);
-			int modelEndLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getEndLine(model);
+			int modelStartLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getStartLine(model, document);
+			int modelEndLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getEndLine(model, document);
 			if (modelStartLine >= 0 && modelEndLine >= 0) {
 				CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, 
 						isBodyModified(patch, modelStartLine, modelEndLine), context);
@@ -193,7 +200,7 @@ public class StructureDiffService {
 		
 		// recurse for submatches
 		for (Match subMatch : match.getSubMatches()) {
-			addToSdiffFile(child, subMatch, patch);
+			addToSdiffFile(child, subMatch, patch, document);
 		}
 	}
 	
@@ -225,7 +232,7 @@ public class StructureDiffService {
 					}
 				}
 			}
-			if (overlap >= 0) {
+			if (overlap > 0) {
 				// this hunk appears after the model element
 				// since the hunk are sorted, there's no need to continue
 				break;

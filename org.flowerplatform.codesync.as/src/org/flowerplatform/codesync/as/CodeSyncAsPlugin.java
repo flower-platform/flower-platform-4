@@ -16,6 +16,8 @@
 package org.flowerplatform.codesync.as;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_RIGHT;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CATEGORY_FUNCTION;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CATEGORY_VARIABLE;
@@ -71,6 +73,7 @@ import org.flowerplatform.codesync.as.feature_provider.AsMetaTagAttributeFeature
 import org.flowerplatform.codesync.as.feature_provider.AsMetaTagFeatureProvider;
 import org.flowerplatform.codesync.as.feature_provider.AsParameterFeatureProvider;
 import org.flowerplatform.codesync.as.feature_provider.AsVariableFeatureProvider;
+import org.flowerplatform.codesync.as.line_information_provider.AsFunctionLineInformationProvider;
 import org.flowerplatform.codesync.as.type_provider.AsTypeProvider;
 import org.flowerplatform.codesync.code.adapter.FolderModelAdapter;
 import org.flowerplatform.codesync.code.feature_provider.FolderFeatureProvider;
@@ -99,6 +102,7 @@ protected static CodeSyncAsPlugin INSTANCE;
 		INSTANCE = this;
 		
 		CodeSyncPlugin.getInstance().addTypeProvider(TECHNOLOGY, new AsTypeProvider());
+		CodeSyncPlugin.getInstance().addLineInformationProvider(new AsFunctionLineInformationProvider());
 		
 		createNodeTypeDescriptor(FOLDER, new FolderModelAdapter(), new FolderFeatureProvider());
 		createNodeTypeDescriptor(FILE, new AsFileModelAdapter(), new AsFileFeatureProvider());
@@ -168,8 +172,8 @@ protected static CodeSyncAsPlugin INSTANCE;
 	}
 	
 	private void registerAdapterAndFeatureProvider(TypeDescriptor descriptor, AbstractModelAdapter modelAdapterRight, FeatureProvider featureProvider) {
-//		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
-//		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
+		descriptor.addSingleController(MODEL_ADAPTER_LEFT, modelAdapterRight);
+		descriptor.addSingleController(MODEL_ADAPTER_ANCESTOR, modelAdapterRight);
 		descriptor.addSingleController(MODEL_ADAPTER_RIGHT, modelAdapterRight);
 		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
 	}

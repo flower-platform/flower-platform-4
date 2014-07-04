@@ -15,13 +15,19 @@
  */
 package org.flowerplatform.codesync.line_information_provider;
 
+import org.eclipse.jface.text.IDocument;
+
 /**
+ * Provides the start line and end line for a model element.
+ * The full text of the source file should also be provided,
+ * in case it cannot be obtained from the model.
+ * 
  * @author Mariana Gheorghe
  */
 public interface ILineInformationProvider {
 
-	int getStartLine(Object model);
-	int getEndLine(Object model);
+	int getStartLine(Object model, IDocument document);
+	int getEndLine(Object model, IDocument document);
 	
 	boolean canHandle(Object model);
 }

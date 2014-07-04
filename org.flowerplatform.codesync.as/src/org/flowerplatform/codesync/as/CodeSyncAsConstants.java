@@ -37,13 +37,13 @@ public class CodeSyncAsConstants {
 	public static final String META_TAG_ATTRIBUTE = "asMetaTagAttribute";
 	
 	public static final String CATEGORY_VARIABLE = CodeSyncConstants.CATEGORY_CODESYNC + ".asVar";
-	public static final String VARIABLE = "asVar";
-	public static final String CONST = "asConst";
+	public static final String VARIABLE = "asVarAttribute";
+	public static final String CONST = "asConstAttribute";
 	
 	public static final String CATEGORY_FUNCTION = CodeSyncConstants.CATEGORY_CODESYNC + ".asFunction";
-	public static final String FUNCTION = "asFunction";
-	public static final String GETTER = "asGettter";
-	public static final String SETTER = "asSetter";
+	public static final String FUNCTION = "asFunctionOperation";
+	public static final String GETTER = "asGettterOperation";
+	public static final String SETTER = "asSetterOperation";
 	
 	public static final String MODIFIER = "asModifier";
 	public static final String PARAMETER = "asParameter";

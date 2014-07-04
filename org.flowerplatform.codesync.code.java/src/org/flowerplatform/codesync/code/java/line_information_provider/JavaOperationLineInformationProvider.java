@@ -18,6 +18,7 @@ package org.flowerplatform.codesync.code.java.line_information_provider;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.line_information_provider.ILineInformationProvider;
 
 /**
@@ -28,7 +29,7 @@ import org.flowerplatform.codesync.line_information_provider.ILineInformationPro
 public class JavaOperationLineInformationProvider implements ILineInformationProvider {
 
 	@Override
-	public int getStartLine(Object model) {
+	public int getStartLine(Object model, IDocument document) {
 		MethodDeclaration node = getNode(model);
 		if (node.getBody() == null) {
 			return -1;
@@ -38,7 +39,7 @@ public class JavaOperationLineInformationProvider implements ILineInformationPro
 	}
 
 	@Override
-	public int getEndLine(Object model) {
+	public int getEndLine(Object model, IDocument document) {
 		MethodDeclaration node = getNode(model);
 		if (node.getBody() == null) {
 			return -1;

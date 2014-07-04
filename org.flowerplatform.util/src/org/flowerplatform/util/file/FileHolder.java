@@ -19,6 +19,8 @@ public abstract class FileHolder {
 
 	public abstract boolean exists();
 	
+	public abstract String getPath();
+	
 	public abstract String getName();
 	
 	public abstract String getContent();
