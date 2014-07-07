@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"  creationComplete="init();">
+	
+	<fx:Script>
+		<![CDATA[
+		import mx.events.PropertyChangeEvent;
+		import mx.utils.ObjectProxy;
+		
+		private var object:Object = {};
+		private var objectProxy:ObjectProxy;
+		
+		private function init():void {
+			objectProxy = new ObjectProxy(object);
+			objectProxy.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updateChange);
+			objectProxy.name = "Node";
+			objectProxy.id = 31;
+			
+			/* Note: Any assignments made directly to the "object"
+			Object do not dispatch the propertyChange event. */
+			object.hasChildren = false;
+			object.id = 33;
+			
+			/* Note: Even though the earlier assignment to the "id"
+			property  didn't dispatch the propertyChange event,
+			the "oldValue" property is still displayed as 33. */
+			objectProxy.id = 45;
+						
+			objectProxy.name = "Node 2";
+		}
+		
+		private function updateChange(evt:PropertyChangeEvent):void {
+			arrColl.addItem(evt);
+		}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:ArrayCollection id="arrColl" />
+		
+	</fx:Declarations>
+	
+	<s:DataGrid dataProvider="{arrColl}"
+				 sortableColumns="false"
+				 draggableColumns="false"
+				 width="100%"
+				 height="100%">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn dataField="type" />
+				<s:GridColumn dataField="property" />
+				<s:GridColumn dataField="newValue" />
+				<s:GridColumn dataField="oldValue" />
+				<s:GridColumn dataField="source" />
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+	
+</s:Group>
