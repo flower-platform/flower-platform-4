@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil {
@@ -23,6 +20,7 @@ package org.flowerplatform.flexutil {
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
 	import flashx.textLayout.utils.CharacterUtil;
@@ -100,6 +98,10 @@ package org.flowerplatform.flexutil {
 			return simpleClassName;
 		}
 		
+		public static function getClass(obj:Object):Class {			
+			return Class(getDefinitionByName(getQualifiedClassName(obj)));
+		}
+			
 		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
 			return str == null ? defaultStr : str;
 		}

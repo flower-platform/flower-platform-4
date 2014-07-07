@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,16 +11,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil {
 	import mx.utils.LoaderUtil;
 	
-	import spark.core.ContentCache;
-	
+	import org.flowerplatform.flexutil.action.ActionHelper;
 	import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
 	import org.flowerplatform.flexutil.layout.ComposedViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
@@ -30,6 +26,8 @@ package org.flowerplatform.flexutil {
 	import org.flowerplatform.flexutil.popup.IProgressMonitorFactory;
 	import org.flowerplatform.flexutil.selection.SelectionManager;
 	import org.flowerplatform.flexutil.shortcut.KeyBindings;
+	
+	import spark.core.ContentCache;
 
 	public class FlexUtilGlobals {
 
@@ -77,6 +75,11 @@ package org.flowerplatform.flexutil {
 		public var selectionManager:SelectionManager = new SelectionManager();
 		
 		public var flexPluginManager:FlexPluginManager = new FlexPluginManager();
+		
+		/**
+		 * @author Cristina Contantinescu
+		 */
+		public var actionHelper:ActionHelper = new ActionHelper();
 		
 		/**
 		 * @author Cristina Contantinescu

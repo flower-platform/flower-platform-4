@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Resources
 Bundle-SymbolicName: org.flowerplatform.resources;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.1.qualifier
 Require-Bundle: org.flowerplatform.util,
  org.eclipse.osgi
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.resources.ResourcesPlugin
 Export-Package: org.flowerplatform.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

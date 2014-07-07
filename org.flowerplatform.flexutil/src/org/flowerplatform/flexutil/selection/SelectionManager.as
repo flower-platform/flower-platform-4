@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexutil.selection {
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
@@ -88,6 +103,9 @@ package org.flowerplatform.flexutil.selection {
 		 * in handler, and the second via the selection changed handler. In this case, we want to optimize, and have only
 		 * one processing for the selection/actions. However, there are cases, when clicking on a VH doesn't trigger the 
 		 * selection changed listener; so we need the focus in mechanism as well.
+		 * 
+		 * @author Cristian Spiescu
+		 * @author Cristina Constantinescu
 		 */
 		public function selectionChanged(viewHost:IViewHost, selectionProvider:IViewContent):void {
 			if (timerAfterFocusIn.running) {
@@ -102,19 +120,21 @@ package org.flowerplatform.flexutil.selection {
 				var selection:IList = viewHost.selectionChanged();
 			}
 			
+			var event:SelectionChangedEvent = new SelectionChangedEvent();
 			if (selectionProvider != null && activeSelectionProvider == selectionProvider) {
 				// this "if" is intended for a case like the following: there are 2 ViewContent/SelectionProviders;
 				// the user clicks on VC1 and selects/deselects. So VC1 is the activeSelectionProvider.
 				// Meanwhile, the selection is changed programmatically in VC2. In this case, we don't need to dispatch,
-				// because the "global" selection still comes from VC1
-				var event:SelectionChangedEvent = new SelectionChangedEvent();
+				// because the "global" selection still comes from VC1				
 				event.selectionProvider = activeSelectionProvider;
 				event.selection = selection;
 				if (selectionProvider is ISelectionForServerProvider) {
 					event.selectionForServer = ISelectionForServerProvider(selectionProvider).convertSelectionToSelectionForServer(selection);
-				}
+				}			
+				// dispatch event even if selectionProvider == null -> it means that the last view was closed			
 				dispatchEvent(event);
-			}
+			}			
+		
 		}
 		
 	}

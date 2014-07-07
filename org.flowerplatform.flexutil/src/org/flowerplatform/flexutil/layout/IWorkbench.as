@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.layout {
@@ -28,8 +25,8 @@ package org.flowerplatform.flexutil.layout {
 		function getComponentById(viewId:String, customData:String = null):UIComponent;
 		function getComponent(viewLayoutData:ViewLayoutData):UIComponent;
 		
-		function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void;		
-		function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true):void;
+		function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void;		
+		function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void;
 		
 		function getActiveView():UIComponent;
 		function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void;

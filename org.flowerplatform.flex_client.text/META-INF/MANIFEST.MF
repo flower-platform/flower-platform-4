@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Text
+Bundle-SymbolicName: org.flowerplatform.flex_client.text
+Bundle-Version: 1.0.0.qualifier

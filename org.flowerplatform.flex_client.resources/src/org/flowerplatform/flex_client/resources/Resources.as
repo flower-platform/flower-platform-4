@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.resources {
 	import mx.resources.ResourceManager;
 	
@@ -20,6 +35,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/core/icon_flower.gif")]
 		public static const flowerIcon:Class;
+		
+		[Embed(source="/core/file.gif")]
+		public static const fileIcon:Class;
 		
 		[Embed(source="/core/disk.png")]
 		public static const saveIcon:Class;
@@ -62,6 +80,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/core/keyboard.png")]
 		public static const keyboardIcon:Class;
+		
+		[Embed(source="/core/table_gear.png")]
+		public static const tableGear:Class;
 		
 		// Properties
 		
@@ -505,6 +526,12 @@ package org.flowerplatform.flex_client.resources {
 			"multiplication" : mindmap_multiplicationIcon,
 			"division" : mindmap_divisionIcon
 		};
+		
+		[Embed(source="/properties/preference.png")]
+		public static const preferenceIcon:Class;
+		
+		[Embed(source="/properties/preferences.png")]
+		public static const preferencesIcon:Class;
 		
 	}
 }

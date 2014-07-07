@@ -1,13 +1,26 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.node.remote;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.PropertiesProvider;
+import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -20,43 +33,19 @@ import org.flowerplatform.util.Utils;
  */
 public class Node {
 	
-	private static final String FULL_NODE_ID_SEPARATOR = "|";
-	
-	private static final Pattern FULL_NODE_ID_PATTERN = Pattern.compile("\\((.*?)\\|(\\(?.*\\)?)\\|(.*)\\)");
-	
 	private String type;
 	
-	private String resource;
-	
-	private String idWithinResource;
-	
-	private String cachedFullNodeId;
+	private String nodeUri;
 	
 	private Map<String, Object> properties;
 	
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
-	private boolean rawNodeDataRetrieved;
 		
-	public Node(String type, String resource, String idWithinResource, Object rawNodeData) {		
-		this.type = type;
-		this.resource = resource;
-		this.idWithinResource = idWithinResource;
-		
-		if (rawNodeData != null) {
-			setRawNodeData(rawNodeData);
-		}
-	}
-
-	public Node(String fullNodeId) {
-		Matcher matcher = FULL_NODE_ID_PATTERN.matcher(fullNodeId);
-		if (matcher.find()) {
-			type = matcher.group(1);
-			resource = matcher.group(2).isEmpty() ? null : matcher.group(2);
-			idWithinResource = matcher.group(3).isEmpty() ? null : matcher.group(3);
-			cachedFullNodeId = fullNodeId;
-		}
+	public Node(String nodeUri, String type) {
+		setNodeUri(nodeUri);
+		setType(type);
 	}
 	
 	public String getType() {
@@ -65,36 +54,22 @@ public class Node {
 
 	public void setType(String type) {
 		this.type = type;
-		cachedFullNodeId = null;
 	}
 
-	public String getResource() {
-		return resource;
-	}
-
-	public void setResource(String resource) {
-		this.resource = resource;
-		cachedFullNodeId = null;
+	public String getNodeUri() {
+		return nodeUri;
 	}
 	
-	public String getIdWithinResource() {
-		return idWithinResource;
+	public void setNodeUri(String nodeUri) {
+		this.nodeUri = nodeUri;
 	}
-
-	public void setIdWithinResource(String idWithinResource) {
-		this.idWithinResource = idWithinResource;
-		cachedFullNodeId = null;
+	
+	public String getScheme() {
+		return Utils.getScheme(nodeUri);
 	}
-
-	public String getFullNodeId() {
-		if (cachedFullNodeId == null) {
-			cachedFullNodeId = "(" + Utils.defaultIfNull(type) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(resource) + FULL_NODE_ID_SEPARATOR + Utils.defaultIfNull(idWithinResource) + ")";
-		}
-		return cachedFullNodeId;
-	}
-
+	
 	/**
-	 * Should be used for writing values in the map. Probably by {@link PropertiesProvider}.
+	 * Should be used for writing values in the map. Probably by {@link IPropertiesProvider}.
 	 * 
 	 * @return The properties map (lazy initialized in here), without any other processing.
 	 */
@@ -113,8 +88,11 @@ public class Node {
 	 * Populates the node (if not populated). Should be used for reading values from the map.
 	 * 
 	 * <p>
-	 * <strong>WARNING:</strong> shouldn't be used for writing values. E.g. if {@link PropertiesProvider}'s try
+	 * <strong>WARNING:</strong> shouldn't be used for writing values. E.g. if {@link IPropertiesProvider}'s try
 	 * to use this method, an infinite call loop will be created ({@link StackOverflowError}).
+	 * 
+	 * <p>
+	 * Note: used {@link #getPropertyValue(String)} when necessary.
 	 * 
 	 * @return The properties map (populated if not already populated).
 	 */
@@ -126,47 +104,46 @@ public class Node {
 		}
 		return getProperties();
 	}
-			
-	public Object getOrRetrieveRawNodeData() {
-		if (!rawNodeDataRetrieved) {
-			// lazy initialization
-			setRawNodeData(CorePlugin.getInstance().getNodeService().getRawNodeData(this, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService())));		
-		}
+	
+	public Object getRawNodeData() {
 		return rawNodeData;
 	}
-
-	private void setRawNodeData(Object rawNodeData) {
+	
+	public void setRawNodeData(Object rawNodeData) {
 		this.rawNodeData = rawNodeData;
-		rawNodeDataRetrieved = true;
+	}
+		
+	public Object getPropertyValue(String property) {
+		Object propertyObj = getPropertyValueOrWrapper(property);
+		if (propertyObj instanceof PropertyWrapper) {
+			return ((PropertyWrapper) propertyObj).getValue();
+		}
+		return propertyObj;
 	}
 	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public Object getPropertyValue(String property) {
-		if (properties.containsKey(property)) {
-			return properties.get(property);
-		} else {
+	public Object getPropertyValueOrWrapper(String property) {		
+		if (!getOrPopulateProperties().containsKey(property)) {
 			return CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(this, property, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
+		return getOrPopulateProperties().get(property);
 	}
 	
 	@Override
 	public int hashCode() {
-		return getFullNodeId().hashCode();
+		return getNodeUri().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Node) {
-			return getFullNodeId().equals(((Node) obj).getFullNodeId());
+			return getNodeUri().equals(((Node) obj).getNodeUri());
 		}
 		return false;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("Node [fullNodeId = %s]", getFullNodeId());
+		return String.format("Node [fullNodeId = %s]", getNodeUri());
 	}
 
 }

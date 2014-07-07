@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
 <!--
  @author Cristina Constantinescu
  @author Mariana Gheorghe
@@ -21,7 +37,7 @@
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
-			public var editors:Array;		
+			public var nodeRegistries:Array;		
 			
 			[Bindable]
 			public var resourceNodes:IList;
@@ -42,11 +58,7 @@
 			
 			public var iconForSingleResourceNode:Object;
 			public var iconForMultipleResourceNodes:Object;
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
+						
 			public function get viewHost():IViewHost {
 				return _viewHost;
 			}
@@ -84,16 +96,20 @@
 			
 			protected function noButton_clickHandler(event:MouseEvent = null):void {
 				if (handler == null) { // don't execute the default behavior, let the handler to take the lead
-					CorePlugin.getInstance().resourceNodesManager.closeEditors(editors);
+					CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.removeNodeRegistries(nodeRegistries);
+				}
+				if (handler != null) { // execute handler before closing view
+					handler();
 				}
 				closeView();	
 			}
 			
 			protected function closeView():void {
-				if (handler != null) { // execute handler before closing view
-					handler();
-				}
 				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
+			
+			public function additionalCloseHandler():void {	
+				// nothing to do
 			}
 			
 		]]>

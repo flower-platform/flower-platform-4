@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync.adapter;
@@ -37,6 +34,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
@@ -87,12 +85,12 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {		
-		return getNode(element).getOrPopulateProperties().get(feature);
+		return getNode(element).getPropertyValue((String) feature);
 	}
 	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getNode(element).getOrPopulateProperties().get(CoreConstants.NAME);
+		return getNode(element).getPropertyValue(CoreConstants.NAME);
 	}
 	
 	@Override
@@ -127,8 +125,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				Node parent = getNode(element);
 				// set the type for the new node; needed by the action performed handler
 				String type = typeProvider.getType(correspondingChild);
-						
-				Node child = new Node(type, parent.getResource(), null, null);
+				
+				String scheme = Utils.getScheme(parent.getNodeUri());
+				String ssp = Utils.getSchemeSpecificPart(parent.getNodeUri());
+				String childUri = Utils.getUri(scheme, ssp, null);
+				Node child = new Node(childUri, type);
 				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 				return child;
 //		}
@@ -179,11 +180,11 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
-				if (childNode.getOrPopulateProperties().containsKey(ADDED)) {
+				if (childNode.getProperties().containsKey(ADDED)) {
 					service.unsetProperty(childNode, ADDED, new ServiceContext<NodeService>(service));
 				}
 			} else {
-				if (childNode.getOrPopulateProperties().containsKey(REMOVED)) {
+				if (childNode.getProperties().containsKey(REMOVED)) {
 					service.removeChild(node, childNode, new ServiceContext<NodeService>(service));
 					// set childrenSync now, because after this match is synced, the parent won't be notified because this child is already removed
 					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node, service);

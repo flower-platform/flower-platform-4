@@ -20,5 +20,12 @@
             runnable="org.flowerplatform.core.session.ServletBridgeRegistryListenerRunnable">
       </listener>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.filters">
+      <filter
+            alias="/"
+            class="org.flowerplatform.flex_client.server.IndexFilter">
+      </filter>
+   </extension>
 
 </plugin>

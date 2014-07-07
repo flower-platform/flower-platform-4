@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.controller;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.ADDED;
@@ -10,7 +25,6 @@ import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
 import static org.flowerplatform.codesync.CodeSyncConstants.SYNC;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -75,7 +89,7 @@ public class CodeSyncControllerUtils {
 		
 		// check if it has any property.original set
 		boolean sync = true;
-		for (String property : node.getOrPopulateProperties().keySet()) {
+		for (String property : node.getProperties().keySet()) {
 			if (isOriginalPropertyName(property)) {
 				sync = false;
 			}
@@ -148,7 +162,7 @@ public class CodeSyncControllerUtils {
 		
 		// check if it has any other property.conflict set
 		boolean conflict = false;
-		for (String property : node.getOrPopulateProperties().keySet()) {
+		for (String property : node.getProperties().keySet()) {
 			if (isConflictPropertyName(property)) {
 				conflict = true;
 			}
@@ -222,7 +236,7 @@ public class CodeSyncControllerUtils {
 	}
 	
 	private static boolean hasFlagTrue(Node node, String flag) {
-		Boolean b = (Boolean) node.getOrPopulateProperties().get(flag);
+		Boolean b = (Boolean) node.getPropertyValue(flag);
 		return b != null && b;
 	}
 }

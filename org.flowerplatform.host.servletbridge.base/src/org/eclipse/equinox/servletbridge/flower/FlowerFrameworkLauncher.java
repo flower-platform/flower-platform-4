@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.eclipse.equinox.servletbridge.flower;
@@ -245,8 +242,10 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			throw new RuntimeException(osgiInstanceArea + " workspace location not found", e);
 		}
 		properties.put("osgi.instance.area", "file:" + osgiInstanceArea);
+		properties.put(OSGI_INSTALL_AREA, osgiConfigurationArea + "/..");
 		
-		properties.put("flower.server.app.context", context.getContextPath().substring(1));
+		// check if context path is empty, if the app is ROOT
+		properties.put("flower.server.app.context", context.getContextPath().length() == 0 ? "" : context.getContextPath().substring(1));
 		properties.put("flower.server.app.location", context.getRealPath(File.separator));
 		properties.put("flower.server.tmpdir", ((File) context.getAttribute(context.getTempDir())).getAbsolutePath());
 		return properties;
