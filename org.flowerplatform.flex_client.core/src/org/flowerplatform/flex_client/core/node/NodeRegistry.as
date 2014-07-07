@@ -79,19 +79,28 @@ package org.flowerplatform.flex_client.core.node {
 			}						
 		}
 			
-		public function expand(node:Node, additionalHandler:Function = null):void {		
+		public function expand(node:Node, context:Object):void {		
 			if (!registry.hasOwnProperty(node.nodeUri)) {
 				return;
 			}
+			
+			var serviceContext:ServiceContext = new ServiceContext();
+			if (context != null) {
+				for (var key:Object in context) {
+					serviceContext.context[key] = context[key];
+				}
+			}
+			serviceContext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+			
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
-				[node.nodeUri, new ServiceContext().add(CoreConstants.POPULATE_WITH_PROPERTIES, true)], 
+				[node.nodeUri, serviceContext], 
 				function (result:Object):void {
 					expandCallbackHandler(node, ArrayCollection(result)); 
 					
 					// additional handler to be executed
-					if (additionalHandler != null) {
-						additionalHandler();
+					if (context != null && context.hasOwnProperty(CoreConstants.HANDLER)) {
+						context[CoreConstants.HANDLER]();
 					}
 				});	
 		}

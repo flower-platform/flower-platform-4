@@ -96,10 +96,10 @@ public class Node {
 	 * 
 	 * @return The properties map (populated if not already populated).
 	 */
-	public Map<String, Object> getOrPopulateProperties() {
+	public Map<String, Object> getOrPopulateProperties(ServiceContext<NodeService> context) {
 		if (!propertiesPopulated) {	
 			// lazy population
-			CorePlugin.getInstance().getNodeService().populateNodeProperties(this, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+			CorePlugin.getInstance().getNodeService().populateNodeProperties(this, context);
 			propertiesPopulated = true;
 		}
 		return getProperties();
@@ -121,11 +121,12 @@ public class Node {
 		return propertyObj;
 	}
 	
-	public Object getPropertyValueOrWrapper(String property) {		
-		if (!getOrPopulateProperties().containsKey(property)) {
+	public Object getPropertyValueOrWrapper(String property) {
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		if (!getOrPopulateProperties(context).containsKey(property)) {
 			return CorePlugin.getInstance().getNodeService().getDefaultPropertyValue(this, property, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
-		return getOrPopulateProperties().get(property);
+		return getOrPopulateProperties(context).get(property);
 	}
 	
 	@Override

@@ -75,7 +75,7 @@ package  org.flowerplatform.flex_client.core.editor {
 		 */
 		override public function openEditor(editableResourcePath:String, preferNewEditor:Boolean = false,
 											forceNewEditor:Boolean = false, openForcedByServer:Boolean = false, 
-											handleAsClientSubscription:Boolean = false):UIComponent {
+											handleAsClientSubscription:Boolean = false, addViewInOtherStack:Boolean = false):UIComponent {
 			var viewLayoutData:ViewLayoutData = new ViewLayoutData();
 			viewLayoutData.viewId = getId();
 			viewLayoutData.customData = editableResourcePath;
@@ -87,7 +87,7 @@ package  org.flowerplatform.flex_client.core.editor {
 						
 			viewLayoutData.isEditor = true;
 			
-			return FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);		
+			return FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true, null, addViewInOtherStack);		
 		}
 		
 		public function getTabCustomizer(viewLayoutData:ViewLayoutData):Object {			

@@ -82,7 +82,7 @@ public abstract class ResourceService implements IResourceHolder {
 		Node node = resourceHandler.createNodeFromRawNodeData(nodeUri, rawNodeData);
 		
 		if (context.getBooleanValue(POPULATE_WITH_PROPERTIES)) {			
-			node.getOrPopulateProperties();
+			node.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
 		
 		return node;

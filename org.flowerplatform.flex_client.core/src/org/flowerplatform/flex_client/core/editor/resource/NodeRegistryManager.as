@@ -159,16 +159,16 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 		}
 		
-		public function expand(nodeRegistry:NodeRegistry, node:Node, additionalHandler:Function = null):void {
+		public function expand(nodeRegistry:NodeRegistry, node:Node, context:Object):void {
 			if (node == null || !node.properties[CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND]) {
-				nodeRegistry.expand(node, additionalHandler);
+				nodeRegistry.expand(node, context);
 			} else {
 				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
 				if (subscribableResources != null && subscribableResources.length > 0) {
 					// a subscribable node => subscribe to the first resource
 					var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
 					subscribe(String(subscribableResource.a), nodeRegistry, function(rootNode:Node, resourceNode:Node):void {
-						nodeRegistry.expand(node, additionalHandler);
+						nodeRegistry.expand(node, context);
 					});
 				}
 			}
@@ -193,7 +193,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 		}
 		
-		private function collapseHandler(node:Node, nodeRegistry:NodeRegistry, refreshChildren:Boolean,
+		private function collapseHandler(node:Node, nodeRegistry:NodeRegistry,refreshChildren:Boolean,
 											dirtyResourceUris:Array, savedResoureUris:Array):void {
 			for each (var dirtyResourceUri:String in dirtyResourceUris) {
 				unlinkResourceNodeFromNodeRegistry(dirtyResourceUri, nodeRegistry);

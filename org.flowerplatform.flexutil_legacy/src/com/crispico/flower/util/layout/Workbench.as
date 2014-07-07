@@ -41,8 +41,6 @@ package  com.crispico.flower.util.layout {
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	
-	import flexlib.containers.SuperTabNavigator;
-	
 	import mx.collections.ArrayCollection;
 	import mx.containers.BoxDirection;
 	import mx.containers.Canvas;
@@ -58,6 +56,8 @@ package  com.crispico.flower.util.layout {
 	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	import mx.events.FlexEvent;
+	
+	import flexlib.containers.SuperTabNavigator;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -1948,7 +1948,7 @@ package  com.crispico.flower.util.layout {
 		 * @param setFocusOnView - sets focus after creating the view
 		 * @param existingComponent - if not null, it is used as view's graphical component (no new component will be created)
 		 */ 
-		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean = false, existingComponent:UIComponent= null):UIComponent {
+		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean = false, existingComponent:UIComponent= null, addViewInOtherStack:Boolean = false):UIComponent {
 			var array:ArrayCollection = new ArrayCollection;
 			getAllSashEditorLayoutData(_rootLayout, array);	
 			if (array.length == 0) {
@@ -1958,7 +1958,7 @@ package  com.crispico.flower.util.layout {
 			var sashEditorLayoutData:SashLayoutData = array[0];
 			var stack:StackLayoutData;
 			var tabNavigator:SuperTabNavigator;
-			if (sashEditorLayoutData.children.length == 0) {
+			if (sashEditorLayoutData.children.length == 0 || addViewInOtherStack) {
 				stack = new StackLayoutData();
 				stack.parent = sashEditorLayoutData;	
 				sashEditorLayoutData.children.addItem(stack);
@@ -1969,7 +1969,7 @@ package  com.crispico.flower.util.layout {
 				layoutDataToComponent[sashEditorLayoutData].addChild(tabNavigator);
 				_componentToLayoutData[tabNavigator] = stack; 
 				_layoutDataToComponent[stack] = tabNavigator;			
-			} else {
+			} else {				
 				var stacks:ArrayCollection = new ArrayCollection();
 				getAllStackLayoutData(sashEditorLayoutData, stacks);
 				stack = StackLayoutData(stacks.getItemAt(0));

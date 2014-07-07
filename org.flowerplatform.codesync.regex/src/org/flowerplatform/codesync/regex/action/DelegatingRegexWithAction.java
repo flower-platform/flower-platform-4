@@ -44,7 +44,7 @@ public class DelegatingRegexWithAction extends AbstractRegexWithAction {
 	@Override
 	public String getRegex() {
 		if (regex == null) {
-			regex = (String) node.getPropertyValue(CodeSyncRegexConstants.REGEX_WITH_MACROS);
+			regex = (String) node.getPropertyValue(CodeSyncRegexConstants.FULL_REGEX);
 		}
 		return regex;
 	} 

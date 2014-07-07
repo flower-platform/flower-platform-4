@@ -49,7 +49,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 				
 		protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
 			this.rootNode = rootNode;
-			nodeRegistry.expand(rootNode);
+			nodeRegistry.expand(rootNode, null);
 		}
 		
 		protected function nodeRegistryRefreshCallback(event:RefreshEvent):void {			
@@ -59,7 +59,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 		
 		protected function treeListItemOpenCloseHandler(event:TreeEvent):void {		
 			if (event.type == TreeEvent.ITEM_OPEN) {
-				nodeRegistry.expand(Node(event.item));
+				nodeRegistry.expand(Node(event.item), null);
 				event.preventDefault();
 			}
 			else if (event.type == TreeEvent.ITEM_CLOSE) {

@@ -95,7 +95,7 @@ public class NodeService {
 				for (Node currentChild : childrenFromCurrentProvider) {
 					if (context.getBooleanValue(POPULATE_WITH_PROPERTIES)) {
 						// ... and then populate them
-						currentChild.getOrPopulateProperties();
+						currentChild.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 					}
 					
 					// and add them to the result list

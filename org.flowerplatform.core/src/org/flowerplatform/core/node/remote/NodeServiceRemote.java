@@ -70,7 +70,7 @@ public class NodeServiceRemote {
 		
 		getNodeService().addChild(parent, child, context);
 		
-		child.getOrPopulateProperties();
+		child.getOrPopulateProperties(new ServiceContext<NodeService>(getNodeService()));
 		
 		return child.getNodeUri();
 	}

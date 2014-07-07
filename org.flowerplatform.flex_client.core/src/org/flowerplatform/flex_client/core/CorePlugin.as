@@ -76,6 +76,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
+	import org.flowerplatform.flexutil.dialog.SelectObjListPopup;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
@@ -380,13 +381,13 @@ package org.flowerplatform.flex_client.core {
 		 * @author Claudiu Matei
 		 * @author Cristina Constantinescu
 		 */
-		public function openEditor(node:Node, ct:String = null):void {
+		public function openEditor(node:Node, ct:String = null, addEditorInRight:Boolean = false):UIComponent {
 			var sr:Pair = getSubscribableResource(node, ct);
 			var resourceUri:String = sr == null ? node.nodeUri : sr.a as String;
-			var contentType:String = sr == null ? contentTypeRegistry.defaultContentType : sr.b as String;
+			var contentType:String = sr == null ? (ct == null ? contentTypeRegistry.defaultContentType : ct) : sr.b as String;
 			
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
-			editorDescriptor.openEditor(resourceUri, true);
+			return editorDescriptor.openEditor(resourceUri, true, false, false, false, addEditorInRight);
 		}
 
 		/**

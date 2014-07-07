@@ -23,7 +23,6 @@ package org.flowerplatform.flex_client.text {
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.text.codemirror_editor.ICodeMirrorEditor;
 	import org.flowerplatform.flex_client.text.codemirror_editor.MobileCodeMirrorEditor;
 	import org.flowerplatform.flex_client.text.codemirror_editor.WebCodeMirrorEditor;

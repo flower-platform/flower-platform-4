@@ -20,7 +20,7 @@ package org.flowerplatform.flexutil.layout {
 	import mx.core.UIComponent;
 
 	public interface IWorkbench {
-		function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean = false, existingComponent:UIComponent = null):UIComponent;
+		function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean = false, existingComponent:UIComponent = null, addViewInOtherStack:Boolean = false):UIComponent;
 		
 		function getComponentById(viewId:String, customData:String = null):UIComponent;
 		function getComponent(viewLayoutData:ViewLayoutData):UIComponent;

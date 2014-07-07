@@ -20,6 +20,8 @@ package org.flowerplatform.flex_client.core.editor {
 	import mx.managers.IFocusManagerComponent;
 	import mx.rpc.events.FaultEvent;
 	
+	import spark.components.VGroup;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
@@ -34,8 +36,6 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
-	
-	import spark.components.VGroup;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -54,7 +54,9 @@ package org.flowerplatform.flex_client.core.editor {
 			super();
 			nodeRegistry = new NodeRegistry();
 			
-			nodeRegistry.addEventListener(NodeRegistryRemovedEvent.REMOVED, nodeRegistryRemovedHandler);				
+			nodeRegistry.addEventListener(NodeRegistryRemovedEvent.REMOVED, nodeRegistryRemovedHandler);		
+			
+			actionProvider.composedActionProviderProcessors.push(new EditorFrontendAwareProcessor(this));
 		}
 					
 		public function get editorInput():String {

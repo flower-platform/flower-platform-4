@@ -155,24 +155,24 @@
 				for (var i=0; i < matches.length; i++) {
 					var match = matches[i];
 					myCodeMirror.markText(
-							{line: match.start.nbLine, ch: match.start.nbCharacter}, 
-							{line: match.end.nbLine, ch: match.end.nbCharacter}, 
+							{line: match.startLine, ch: match.startChar}, 
+							{line: match.endLine, ch: match.endChar}, 
 							{className: "match"}
 					);
-					if (match.subMatches != null) {
-						for (var j=0; j < match.subMatches.length; j++) {
-							var subMatch = match.subMatches.source[j];
+					if (match.children != null) {
+						for (var j=0; j < match.children.length; j++) {
+							var subMatch = match.children[j];
 						
 							myCodeMirror.markText(
-									{line: subMatch.start.nbLine, ch: subMatch.start.nbCharacter}, 
-									{line: subMatch.end.nbLine, ch: subMatch.end.nbCharacter}, 
+									{line: subMatch.startLine, ch: subMatch.startChar}, 
+									{line: subMatch.endLine, ch: subMatch.endChar}, 
 									{className: "submatch"}
 							);
 						}
 					}
 				}
 				
-				myCodeMirror.scrollIntoView({line: matches[matches.length - 1].end.nbLine, ch: matches[matches.length - 1].end.nbCharacter}, 3);
+				myCodeMirror.scrollIntoView({line: matches[matches.length - 1].endLine, ch: matches[matches.length - 1].endChar}, 3);
 			}	
 			
 		</script>

@@ -97,9 +97,9 @@ package org.flowerplatform.flex_client.mindmap {
 			super.subscribeResultCallback(rootNode, resourceNode);
 			
 			if (resourceNode == null) {
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(nodeRegistry, rootNode);
+				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(nodeRegistry, rootNode, null);
 			} else {
-				nodeRegistry.expand(rootNode);
+				nodeRegistry.expand(rootNode, null);
 			}
 		}
 		

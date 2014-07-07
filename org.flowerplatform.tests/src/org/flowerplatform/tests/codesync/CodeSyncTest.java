@@ -43,6 +43,7 @@ import org.flowerplatform.codesync.code.CodeSyncCodePlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaConstants;
 import org.flowerplatform.codesync.code.java.CodeSyncCodeJavaPlugin;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -416,7 +417,7 @@ public class CodeSyncTest {
 		for (String name : names) {
 			List<Node> children = nodeService.getChildren(parent, new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
 			for (Node child : children) {
-				if (name.equals(child.getOrPopulateProperties().get(CoreConstants.NAME))) {
+				if (name.equals(child.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService())).get(CoreConstants.NAME))) {
 					parent = child;
 					break;
 				}

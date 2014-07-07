@@ -18,10 +18,10 @@ package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.mx_internal;
 	
-	import org.apache.flex.collections.ArrayList;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
 	
