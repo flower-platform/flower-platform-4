@@ -16,9 +16,9 @@ Bundle-ClassPath: .,
  lib/guava-17.0.jar,
  lib/antlr-3.5.2-complete.jar
 Require-Bundle: org.flowerplatform.core,
- org.flowerplatform.util,
  org.flowerplatform.codesync,
- org.flowerplatform.codesync.code
+ org.flowerplatform.util,
+ org.eclipse.text
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.codesync.as.CodeSyncAsPlugin
 Export-Package: org.flowerplatform.codesync.as

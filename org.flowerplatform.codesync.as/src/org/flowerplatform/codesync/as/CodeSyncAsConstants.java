@@ -22,7 +22,10 @@ import org.flowerplatform.codesync.CodeSyncConstants;
  */
 public class CodeSyncAsConstants {
 
-	public static final String TECHNOLOGY = "as";
+	public static final String ACTIONSCRIPT = "as";
+	
+	public static final String EXTENSION_AS = "as";
+	public static final String EXTENSION_MXML = "mxml";
 	
 	////////////////////////////////////////////
 	// Node types

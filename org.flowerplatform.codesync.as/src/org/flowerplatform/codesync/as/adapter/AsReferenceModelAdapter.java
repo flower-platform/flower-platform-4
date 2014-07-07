@@ -16,7 +16,7 @@
 package org.flowerplatform.codesync.as.adapter;
 
 import org.apache.flex.compiler.definitions.references.IReference;
-import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
+import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
 
 /**

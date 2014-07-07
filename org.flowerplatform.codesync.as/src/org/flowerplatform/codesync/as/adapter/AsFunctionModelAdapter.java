@@ -15,27 +15,47 @@
  */
 package org.flowerplatform.codesync.as.adapter;
 
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.FUNCTION_PARAMETERS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAGS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_TYPE;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IGetterDefinition;
 import org.apache.flex.compiler.definitions.IParameterDefinition;
+import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
-import org.flowerplatform.codesync.as.feature_provider.AsFunctionFeatureProvider;
 
 /**
  * Mapped to {@link IFunctionDefinition}. Children are {@link IParameterDefinition}s.
- * 
- * @see AsFunctionFeatureProvider
  * 
  * @author Mariana Gheorghe
  */
 public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 
+	public AsFunctionModelAdapter() {
+		valueFeatures.add(DOCUMENTATION);
+		valueFeatures.add(TYPED_ELEMENT_TYPE);
+		valueFeatures.add(VISIBILITY);
+		
+		containmentFeatures.add(META_TAGS);
+		containmentFeatures.add(MODIFIERS);
+		containmentFeatures.add(FUNCTION_PARAMETERS);
+	}
+	
 	@Override
 	public Object getMatchKey(Object element) {
-		return getFunction(element).getBaseName();
+		String name = getFunction(element).getBaseName();
+		if (element instanceof ISetterDefinition) {
+			return "set " + name;
+		} else if (element instanceof IGetterDefinition) {
+			return "get " + name;
+		}
+		return name;
 	}
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {

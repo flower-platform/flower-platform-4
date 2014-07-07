@@ -15,11 +15,15 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * Convenience implementation.
@@ -28,6 +32,42 @@ import org.flowerplatform.codesync.action.ActionResult;
  */
 public abstract class AbstractModelAdapter implements IModelAdapter {
 
+	protected List<Object> valueFeatures = new ArrayList<>();
+	
+	protected List<Object> containmentFeatures = new ArrayList<>();
+	
+	public AbstractModelAdapter() {
+		valueFeatures.add(CoreConstants.NAME);
+	}
+	
+	@Override
+	public List<?> getValueFeatures(Object element) {
+		return valueFeatures;
+	}
+
+	@Override
+	public List<?> getContainmentFeatures(Object element) {
+		return containmentFeatures;
+	}
+
+	@Override
+	public int getFeatureType(Object element, Object feature) {
+		if (valueFeatures.contains(feature)) {
+			return CodeSyncConstants.FEATURE_TYPE_VALUE;
+		} else if (containmentFeatures.contains(feature)) {
+			return CodeSyncConstants.FEATURE_TYPE_CONTAINMENT;
+		}
+		throw new RuntimeException("Feature " + getFeatureName(element, feature) + " is not registered");
+	}
+
+	@Override
+	public String getFeatureName(Object element, Object feature) {
+		if (feature != null) {
+			return feature.toString();
+		}
+		throw new RuntimeException("Feature is null");
+	}
+	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
 		throw new IllegalArgumentException("Attempted to acces value feature " + feature + " for element " + element);
@@ -44,7 +84,7 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet modelAdapterSet) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet) {
 		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + parent);
 	}
 	

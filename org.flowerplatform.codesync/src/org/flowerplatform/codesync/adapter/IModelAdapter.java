@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
@@ -26,6 +27,14 @@ import org.flowerplatform.codesync.action.DiffAction;
  * @see AbstractModelAdapter
  */
 public interface IModelAdapter {
+	
+	public List<?> getValueFeatures(Object element);
+	
+	public List<?> getContainmentFeatures(Object element);
+	
+	public int getFeatureType(Object element, Object feature);
+	
+	public String getFeatureName(Object element, Object feature);
 
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable);
 	
@@ -39,7 +48,7 @@ public interface IModelAdapter {
 	
 	public void setValueFeatureValue(Object element, Object feature, Object value);
 	
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, ModelAdapterSet modelAdapterSet);
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet);
 	
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child);
 	

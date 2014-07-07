@@ -15,6 +15,9 @@
  */
 package org.flowerplatform.util.file;
 
+/**
+ * @author Mariana Gheorghe
+ */
 public abstract class FileHolder {
 
 	public abstract boolean exists();

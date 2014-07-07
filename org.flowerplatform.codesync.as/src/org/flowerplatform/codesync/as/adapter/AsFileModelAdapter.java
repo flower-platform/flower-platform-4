@@ -31,18 +31,22 @@ import org.apache.flex.compiler.units.requests.IRequest;
 import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.adapter.file.AbstractFileModelAdapter;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
 import org.flowerplatform.codesync.as.DelegatingFileSpecification;
 import org.flowerplatform.codesync.as.asdoc.AsDocDelegate;
-import org.flowerplatform.codesync.code.adapter.AbstractFileModelAdapter;
 import org.flowerplatform.util.Pair;
-import org.flowerplatform.util.file.FileHolder;
 
 /**
  * @author Mariana Gheorghe
  */
 public class AsFileModelAdapter extends AbstractFileModelAdapter {
 
+	public AsFileModelAdapter() {
+		containmentFeatures.add(CodeSyncAsConstants.STATEMENTS);
+	}
+	
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
 		if (CodeSyncAsConstants.STATEMENTS.equals(feature)) {
@@ -79,7 +83,8 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 		ws.fileAdded(new DelegatingFileSpecification(file));
 		
 		// create compilation unit
-		ICompilationUnit cu = project.getSourceCompilationUnitFactory().createCompilationUnit(new File(getPath(file)),  
+		ICompilationUnit cu = project.getSourceCompilationUnitFactory().createCompilationUnit(
+				new File(CodeSyncAlgorithm.fileAccessController.getAbsolutePath(file)),  
 				DefinitionPriority.BasePriority.SOURCE_PATH, 0, null, null);
 		IRequest<ISyntaxTreeRequestResult, ICompilationUnit> req = cu.getSyntaxTreeRequest();
 		
@@ -93,15 +98,6 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 		return new Pair<ICompilationUnit, IFileNode>(cu, ast);
 	}
 
-	private String getPath(Object file) {
-		if (file instanceof File) {
-			return ((File) file).getPath();
-		} else if (file instanceof FileHolder) {
-			return ((FileHolder) file).getPath();
-		}
-		return null;
-	}
-	
 	@Override
 	protected TextEdit rewrite(Document document, Object fileInfo) {
 		// TODO Auto-generated method stub

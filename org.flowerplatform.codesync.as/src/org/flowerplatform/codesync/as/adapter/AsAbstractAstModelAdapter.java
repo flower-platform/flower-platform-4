@@ -29,8 +29,8 @@ import org.apache.flex.compiler.definitions.IDocumentableDefinition;
 import org.apache.flex.compiler.internal.scopes.ASFileScope;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.codesync.as.asdoc.AsDocComment;
-import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
 
 /**

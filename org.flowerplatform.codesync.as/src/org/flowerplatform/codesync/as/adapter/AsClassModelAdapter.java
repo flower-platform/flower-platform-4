@@ -15,26 +15,39 @@
  */
 package org.flowerplatform.codesync.as.adapter;
 
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAGS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.STATEMENTS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_CLASS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_INTERFACES;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.flowerplatform.codesync.as.feature_provider.AsClassFeatureProvider;
 
 /**
  * Mapped to {@link IClassDefinition}. Children are {@link IFunctionDefinition}s
  * and {@link IVariableDefinition}s.
  * 
- * @see AsClassFeatureProvider
- * 
  * @author Mariana Gheorghe
  */
 public class AsClassModelAdapter extends AsTypeModelAdapter {
 
+	public AsClassModelAdapter() {
+		valueFeatures.add(SUPER_CLASS);
+		valueFeatures.add(DOCUMENTATION);
+		valueFeatures.add(VISIBILITY);
+		
+		containmentFeatures.add(STATEMENTS);
+		containmentFeatures.add(META_TAGS);
+		containmentFeatures.add(SUPER_INTERFACES);
+		containmentFeatures.add(MODIFIERS);
+	}
+	
 	@Override
 	public Object getMatchKey(Object element) {
 		return getClassDefinition(element).getBaseName();

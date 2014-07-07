@@ -21,7 +21,7 @@ import java.io.StringReader;
 
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.utils.FilenameNormalization;
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.util.file.FileHolder;
 
@@ -32,7 +32,7 @@ import org.flowerplatform.util.file.FileHolder;
  */
 public class DelegatingFileSpecification implements IFileSpecification {
 
-	IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
+	IFileAccessController fileAccessController = CodeSyncAlgorithm.fileAccessController;
 	
 	private Object file;
 	
@@ -42,27 +42,17 @@ public class DelegatingFileSpecification implements IFileSpecification {
 	
 	@Override
 	public String getPath() {
-		if (file instanceof FileHolder) {
-			String path = ((FileHolder) file).getPath();
-			return FilenameNormalization.normalize(path);
-		}
 		return FilenameNormalization.normalize(fileAccessController.getAbsolutePath(file));
 	}
 
 	@Override
 	public Reader createReader() throws FileNotFoundException {
-		if (file instanceof FileHolder) {
-			return new StringReader(((FileHolder) file).getContent());
-		}
 		String content = fileAccessController.readFileToString(file);
 		return new StringReader(content);
 	}
 
 	@Override
 	public long getLastModified() {
-		if (file instanceof FileHolder) {
-			return 0;
-		}
 		return fileAccessController.getLastModifiedTimestamp(file);
 	}
 

@@ -22,7 +22,6 @@ import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_EXTENSION;
-import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_CONFLICT;
@@ -65,9 +64,6 @@ import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
 import org.flowerplatform.codesync.controller.CodeSyncSubscribableResourceProvider;
 import org.flowerplatform.codesync.controller.ModelResourceSetProvider;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
-import org.flowerplatform.codesync.line_information_provider.ComposedLineProvider;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
@@ -102,14 +98,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	protected List<String> srcDirs = null;
 	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncPlugin.class);
-
-	protected ComposedFullyQualifiedNameProvider fullyQualifiedNameProvider;
-	
-	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
-	
-	protected ComposedLineProvider lineProvider = new ComposedLineProvider();
-
-	protected Map<String, List<String>> dataProvidersForDropDownListProperties = new HashMap<String, List<String>>();
 
 //	protected List<DependentFeature> dependentFeatures;
 //	
@@ -152,10 +140,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		return codeSyncTypeCriterionDispatcherProcessor;
 //	}
 
-	public ComposedFullyQualifiedNameProvider getFullyQualifiedNameProvider() {
-		return fullyQualifiedNameProvider;
-	}
-	
 	/**
 	 * Platform-dependent.
 	 * 
@@ -236,6 +220,16 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	public ModelAdapterSet getModelAdapterSet(String technology) {
 		return modelAdapterSets.get(technology);
+	}
+	
+	protected Map<String, String> fileModelAdapterDelegates = new HashMap<String, String>();
+	
+	public void addFileModelAdapterDelegate(String extension, String technology) {
+		fileModelAdapterDelegates.put(extension, technology);
+	}
+	
+	public String getFileModelAdapterDelegate(String extension) {
+		return fileModelAdapterDelegates.get(extension);
 	}
 	
 	/**
@@ -335,8 +329,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		inplaceEditorExtensions = new ArrayList<InplaceEditorExtension>();
 //		
 //		featureAccessExtensions = new ArrayList<FeatureAccessExtension>();
-		
-		fullyQualifiedNameProvider = new ComposedFullyQualifiedNameProvider();
 		
 //		dependentFeatures = new ArrayList<DependentFeature>();
 //		dependentFeatures.add(new DependentFeature(NotationPackage.eINSTANCE.getView(), NotationPackage.eINSTANCE.getEdge_Source(), true));
@@ -505,12 +497,11 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //
 
 	/**
-	 * Add the type to {@link CATEGORY_CODESYNC} and register the feature provider.
+	 * Add the type to {@link CATEGORY_CODESYNC}.
 	 */
-	public TypeDescriptor createCodeSyncTypeDescriptor(String type, FeatureProvider featureProvider) {
+	public TypeDescriptor createCodeSyncTypeDescriptor(String type) {
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
 		descriptor.addCategory(CATEGORY_CODESYNC);
-		descriptor.addSingleController(FEATURE_PROVIDER, featureProvider);
 		return descriptor;
 	}
 	

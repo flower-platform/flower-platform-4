@@ -15,10 +15,15 @@
  */
 package org.flowerplatform.codesync.as;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
+import static org.flowerplatform.codesync.CodeSyncConstants.FOLDER;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.ACTIONSCRIPT;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CATEGORY_FUNCTION;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CATEGORY_VARIABLE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CLASS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CONST;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.EXTENSION_AS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.EXTENSION_MXML;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.FUNCTION;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.FUNCTION_PARAMETERS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.GETTER;
@@ -39,17 +44,16 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SETTER;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.STATEMENTS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_INTERFACE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_INTERFACES;
-import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TECHNOLOGY;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VARIABLE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.getImagePath;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 
-import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.adapter.ModelAdapterSet;
+import org.flowerplatform.codesync.adapter.file.FileModelAdapterSet;
 import org.flowerplatform.codesync.as.adapter.AsClassModelAdapter;
+import org.flowerplatform.codesync.as.adapter.AsFileModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsFunctionModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsInterfaceModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsMetaTagAttributeModelAdapter;
@@ -58,11 +62,8 @@ import org.flowerplatform.codesync.as.adapter.AsModifierModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsParameterModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsReferenceModelAdapter;
 import org.flowerplatform.codesync.as.adapter.AsVariableModelAdapter;
-import org.flowerplatform.codesync.as.feature_provider.AsFunctionFeatureProvider;
-import org.flowerplatform.codesync.as.feature_provider.AsVariableFeatureProvider;
 import org.flowerplatform.codesync.as.line_information_provider.AsFunctionLineProvider;
 import org.flowerplatform.codesync.as.type_provider.AsTypeProvider;
-import org.flowerplatform.codesync.feature_provider.NodeFeatureProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
@@ -85,16 +86,17 @@ protected static CodeSyncAsPlugin INSTANCE;
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		AsReferenceModelAdapter referenceModelAdapter = new AsReferenceModelAdapter();
-		NodeFeatureProvider referenceFeatureProvider = new NodeFeatureProvider();
-		AsVariableModelAdapter varModelAdapter = new AsVariableModelAdapter();
-		AsVariableFeatureProvider varFeatureProvider = new AsVariableFeatureProvider();
-		AsFunctionModelAdapter asFunctionModelAdapter = new AsFunctionModelAdapter();
-		AsFunctionFeatureProvider asFunctionFeatureProvider = new AsFunctionFeatureProvider();
+		CodeSyncPlugin.getInstance().addFileModelAdapterDelegate(EXTENSION_AS, ACTIONSCRIPT);
+		CodeSyncPlugin.getInstance().addFileModelAdapterDelegate(EXTENSION_MXML, ACTIONSCRIPT);
 		
-		CodeSyncPlugin.getInstance().addModelAdapterSet(TECHNOLOGY, new ModelAdapterSet()
+		AsReferenceModelAdapter referenceModelAdapter = new AsReferenceModelAdapter();
+		AsVariableModelAdapter varModelAdapter = new AsVariableModelAdapter();
+		AsFunctionModelAdapter asFunctionModelAdapter = new AsFunctionModelAdapter();
+		
+		CodeSyncPlugin.getInstance().addModelAdapterSet(ACTIONSCRIPT, new FileModelAdapterSet()
 				.setTypeProvider(new AsTypeProvider())
 				.setLineProvider(new AsFunctionLineProvider())
+				.setFileModelAdapterDelegate(new AsFileModelAdapter())
 				.addModelAdapter(CLASS, new AsClassModelAdapter())
 				.addModelAdapter(INTERFACE, new AsInterfaceModelAdapter())
 				.addModelAdapter(SUPER_INTERFACE, referenceModelAdapter)
@@ -107,6 +109,9 @@ protected static CodeSyncAsPlugin INSTANCE;
 				.addModelAdapter(SETTER, asFunctionModelAdapter)
 				.addModelAdapter(MODIFIER, new AsModifierModelAdapter())
 				.addModelAdapter(PARAMETER, new AsParameterModelAdapter()));
+		
+		createNodeTypeDescriptor(FOLDER);
+		createNodeTypeDescriptor(FILE);
 		
 		MemberOfChildCategoryDescriptor statementsChildDescriptor = new MemberOfChildCategoryDescriptor(STATEMENTS);
 		
@@ -151,9 +156,7 @@ protected static CodeSyncAsPlugin INSTANCE;
 	}
 	
 	private TypeDescriptor createNodeTypeDescriptor(String type) {
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
-		descriptor.addCategory(CodeSyncConstants.CATEGORY_CODESYNC);
-		return descriptor;
+		return CodeSyncPlugin.getInstance().createCodeSyncTypeDescriptor(type);
 	}
 	
 	@Override

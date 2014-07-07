@@ -15,6 +15,9 @@
  */
 package org.flowerplatform.util.file;
 
+/**
+ * @author Mariana Gheorghe
+ */
 public class StringHolder extends FileHolder {
 
 	private String content;

@@ -40,7 +40,8 @@ import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.definitions.references.IReference;
-import org.flowerplatform.codesync.code.CodeSyncCodeConstants;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
@@ -78,15 +79,13 @@ public class AsTypeProvider implements ITypeProvider {
 		} else if (object instanceof IMetaTagAttribute) {
 			return META_TAG_ATTRIBUTE;
 		}
-		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
+		IFileAccessController fileAccessController = CodeSyncAlgorithm.fileAccessController;
 		if (fileAccessController.isFile(object)) {
 			if (fileAccessController.isDirectory(object)) {
-				return CodeSyncCodeConstants.FOLDER;
+				return CodeSyncConstants.FOLDER;
 			} else {
-				return CodeSyncCodeConstants.FILE;
+				return CodeSyncConstants.FILE;
 			}
-		} else if (object instanceof StringHolder) {
-			return CodeSyncCodeConstants.FILE;
 		}
 		return null;
 	}

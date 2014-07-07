@@ -15,23 +15,35 @@
  */
 package org.flowerplatform.codesync.as.adapter;
 
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAGS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.STATEMENTS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_INTERFACES;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
-import org.flowerplatform.codesync.as.feature_provider.AsInterfaceFeatureProvider;
 
 /**
  * Mapped to {@link IInterfaceDefinition}. Children are {@link IFunctionDefinition}s.
- * 
- * @see AsInterfaceFeatureProvider
  * 
  * @author Mariana Gheorghe
  */
 public class AsInterfaceModelAdapter extends AsTypeModelAdapter {
 
+	public AsInterfaceModelAdapter() {
+		valueFeatures.add(DOCUMENTATION);
+		valueFeatures.add(VISIBILITY);
+		
+		containmentFeatures.add(STATEMENTS);
+		containmentFeatures.add(META_TAGS);
+		containmentFeatures.add(SUPER_INTERFACES);
+		containmentFeatures.add(MODIFIERS);
+	}
+	
 	@Override
 	public Object getMatchKey(Object element) {
 		return getInterface(element).getBaseName();

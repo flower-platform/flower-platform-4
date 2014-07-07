@@ -15,21 +15,28 @@
  */
 package org.flowerplatform.codesync.as.adapter;
 
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.PARAMETER_DEFAULT_VALUE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.PARAMETER_IS_REST;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_TYPE;
 
 import org.apache.flex.compiler.definitions.IParameterDefinition;
-import org.flowerplatform.codesync.as.feature_provider.AsParameterFeatureProvider;
 
 /**
  * Mapped to {@link IParameterDefinition}.
- * 
- * @see AsParameterFeatureProvider
  * 
  * @author Mariana Gheorghe
  */
 public class AsParameterModelAdapter extends AsVariableModelAdapter {
 
+	public AsParameterModelAdapter() {
+		valueFeatures.add(TYPED_ELEMENT_TYPE);
+		valueFeatures.add(PARAMETER_IS_REST);
+		valueFeatures.add(PARAMETER_DEFAULT_VALUE);
+		
+		containmentFeatures.add(MODIFIERS);
+	}
+	
 	@Override
 	public Object getMatchKey(Object element) {
 		return getParameter(element).getBaseName();

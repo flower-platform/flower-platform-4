@@ -18,19 +18,69 @@ package org.flowerplatform.codesync.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.text.IDocument;
+import org.flowerplatform.util.Pair;
+
 /**
  * 
  * @author Mariana Gheorghe
  */
-public class ComposedModelAdapterSet extends ModelAdapterSet {
+public class ComposedModelAdapterSet implements IModelAdapterSet {
 
-	private List<ModelAdapterSet> modelAdapterSets = new ArrayList<ModelAdapterSet>();
+	private List<IModelAdapterSet> modelAdapterSets = new ArrayList<IModelAdapterSet>();
 	
-	public ComposedModelAdapterSet addModelAdapterSet(ModelAdapterSet modelAdapterSet) {
+	public ComposedModelAdapterSet addModelAdapterSet(IModelAdapterSet modelAdapterSet) {
 		modelAdapterSets.add(modelAdapterSet);
 		return this;
 	}
+
+	@Override
+	public String getType(Object model) {
+		for (IModelAdapterSet set : modelAdapterSets) {
+			String type = set.getType(model);
+			if (type != null) {
+				return type;
+			}
+		}
+		throw new RuntimeException("No type registered for " +  model);
+	}
+
+	@Override
+	public IModelAdapter getModelAdapter(Object model) {
+		for (IModelAdapterSet set : modelAdapterSets) {
+			IModelAdapter adapter = set.getModelAdapter(model);
+			if (adapter != null) {
+				return adapter;
+			}
+		}
+		throw new RuntimeException("No model adapter registered for " + model);
+	}
+
+	@Override
+	public IModelAdapter getModelAdapterForType(String type) {
+		for (IModelAdapterSet set : modelAdapterSets) {
+			IModelAdapter adapter = set.getModelAdapterForType(type);
+			if (adapter != null) {
+				return adapter;
+			}
+		}
+		throw new RuntimeException("No model adapter registered for type " + type);
+	}
+
+	@Override
+	public IModelAdapter getFileModelAdapterDelegate() {
+		throw new UnsupportedOperationException("Cannot get file model adapter delegate for composed set");
+	}
 	
-	
+	@Override
+	public Pair<Integer, Integer> getStartEndLine(Object model, IDocument document) {
+		for (IModelAdapterSet set : modelAdapterSets) {
+			Pair<Integer, Integer> lines = set.getStartEndLine(model, document);
+			if (lines != null) {
+				return lines;
+			}
+		}
+		return null;
+	}
 	
 }

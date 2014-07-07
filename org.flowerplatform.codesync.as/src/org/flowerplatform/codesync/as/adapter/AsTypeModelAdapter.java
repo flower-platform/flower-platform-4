@@ -36,7 +36,7 @@ public abstract class AsTypeModelAdapter extends AsAbstractAstModelAdapter {
 
 				@Override
 				protected boolean isAccepted(IDefinition candidate) {
-					if (candidate.isImplicit()) {
+					if (candidate.isImplicit() || candidate.getNode() == null) {
 						return false;
 					}
 					return true;

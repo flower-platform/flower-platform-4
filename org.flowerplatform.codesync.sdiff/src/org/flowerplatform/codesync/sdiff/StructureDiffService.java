@@ -54,10 +54,12 @@ import org.eclipse.compare.patch.ReaderCreator;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.FileHolderAccessController;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -157,6 +159,8 @@ public class StructureDiffService {
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
 		List<String> technologies = Collections.singletonList("java");
 		algorithm.initializeModelAdapterSets(technologies, technologies, technologies);
+		algorithm.initializeFeatureProvider(Side.RIGHT);
+		CodeSyncAlgorithm.fileAccessController = new FileHolderAccessController();
 		match.setCodeSyncAlgorithm(algorithm);
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
@@ -175,8 +179,7 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, NAME, match.getMatchKey(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_TYPE, match.getMatchType().toString(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_FEATURE, match.getFeature() == null ? "" : match.getFeature(), context);
-		Object modelElementType = null; 
-				//match.getCodeSyncAlgorithm().getTypeProvider().getType(match.getDelegate());
+		Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_LEFT, match.isChildrenModifiedLeft(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_RIGHT, match.isChildrenModifiedRight(), context);

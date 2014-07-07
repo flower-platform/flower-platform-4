@@ -15,21 +15,17 @@
  */
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
-import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Mariana Gheorghe
@@ -89,16 +85,7 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 	}
 	
 	private boolean isSyncProperty(Node node, String property) {
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return false;
-		}
-		
-		FeatureProvider featureProvider = descriptor.getSingleController(FEATURE_PROVIDER, node);
-		if (featureProvider.getValueFeatures().contains(property)) {
-			return true;
-		}
-		return false;
+		return !CodeSyncControllerUtils.isCodeSyncFlagConstant(property);
 	}
 	
 }

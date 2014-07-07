@@ -18,7 +18,7 @@ package org.flowerplatform.codesync.action;
 import org.flowerplatform.codesync.Diff;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
-import org.flowerplatform.codesync.adapter.ModelAdapterSet;
+import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
@@ -39,7 +39,7 @@ public abstract class MatchActionAddAncestorAbstract extends MatchActionAddAbstr
 	}
 
 	@Override
-	protected ModelAdapterSet getThisModelAdapterSet(Match match) {
+	protected IModelAdapterSet getThisModelAdapterSet(Match match) {
 		return match.getCodeSyncAlgorithm().getModelAdapterSetAncestor();
 	}
 

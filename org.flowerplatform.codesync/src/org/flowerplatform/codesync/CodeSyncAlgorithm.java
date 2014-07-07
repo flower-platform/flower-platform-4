@@ -15,7 +15,7 @@
  */
 package org.flowerplatform.codesync;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.NAME;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,11 +32,10 @@ import org.flowerplatform.codesync.action.MatchActionRemoveLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveRight;
 import org.flowerplatform.codesync.adapter.ComposedModelAdapterSet;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
-import org.flowerplatform.codesync.adapter.ModelAdapterSet;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.codesync.adapter.IModelAdapterSet;
+import org.flowerplatform.codesync.adapter.file.FileModelAdapter;
+import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.util.controller.TypeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,29 +43,37 @@ public class CodeSyncAlgorithm {
 	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
 	
-	protected ModelAdapterSet modelAdapterSetLeft;
-	protected ModelAdapterSet modelAdapterSetRight;
-	protected ModelAdapterSet modelAdapterSetAncestor;
+	protected IModelAdapterSet modelAdapterSetLeft;
+	protected IModelAdapterSet modelAdapterSetRight;
+	protected IModelAdapterSet modelAdapterSetAncestor;
+	
+	protected Side featureProviderSide;
+	
+	public static IFileAccessController fileAccessController;
 
-	public ModelAdapterSet getModelAdapterSetLeft() {
+	public IModelAdapterSet getModelAdapterSetLeft() {
 		return modelAdapterSetLeft;
 	}
 
-	public ModelAdapterSet getModelAdapterSetRight() {
+	public IModelAdapterSet getModelAdapterSetRight() {
 		return modelAdapterSetRight;
 	}
 
-	public ModelAdapterSet getModelAdapterSetAncestor() {
+	public IModelAdapterSet getModelAdapterSetAncestor() {
 		return modelAdapterSetAncestor;
 	}
-
+	
 	public void initializeModelAdapterSets(List<String> leftTechnologies, List<String> rightTechnologies, List<String> ancestorTechnologies) {
 		modelAdapterSetLeft = getModelAdapterSet(leftTechnologies);
 		modelAdapterSetRight = getModelAdapterSet(rightTechnologies);
 		modelAdapterSetAncestor = getModelAdapterSet(ancestorTechnologies);
 	}
 	
-	private ModelAdapterSet getModelAdapterSet(List<String> technologies) {
+	public void initializeFeatureProvider(Side side) {
+		featureProviderSide = side;
+	}
+	
+	private IModelAdapterSet getModelAdapterSet(List<String> technologies) {
 		if (technologies.size() == 1) {
 			return CodeSyncPlugin.getInstance().getModelAdapterSet(technologies.get(0));
 		} else {
@@ -465,23 +472,82 @@ public class CodeSyncAlgorithm {
 		}
 	}
 	
-	public FeatureProvider getFeatureProvider(Match match) {
-		String type = null;
-		Object model = null;
+	public String getElementTypeForMatch(Match match) {
 		if (match.getLeft() != null) {
-			model = match.getLeft();
-			type = modelAdapterSetLeft.getType(model);
+			return modelAdapterSetLeft.getType(match.getLeft());
 		} else if (match.getRight() != null) {
-			model = match.getRight();
-			type = modelAdapterSetRight.getType(model);
-		} else if (match.getAncestor() != null) {
-			model = match.getAncestor();
-			type = modelAdapterSetAncestor.getType(model);
+			return modelAdapterSetRight.getType(match.getRight());
+		} else {
+			return modelAdapterSetAncestor.getType(match.getAncestor());
 		}
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type);
-		return descriptor.getSingleController(FEATURE_PROVIDER, model);
 	}
-
+	
+	public FeatureProvider getFeatureProvider(Match match) {
+		if (featureProviderSide == null) {
+			throw new RuntimeException("No feature provider side registered for algorithm");
+		}
+		
+		// get the type from the first !null element
+		String type = null;
+		Side delegateSide = null;
+		if (match.getLeft() != null) {
+			delegateSide = Side.LEFT;
+			type = modelAdapterSetLeft.getType(match.getLeft());
+		} else if (match.getRight() != null) {
+			delegateSide = Side.RIGHT;
+			type = modelAdapterSetRight.getType(match.getRight());
+		} else {
+			delegateSide = Side.ANCESTOR;
+			type = modelAdapterSetAncestor.getType(match.getAncestor());
+		}
+		
+		// get the adapter from the set Side for the found type
+		IModelAdapter modelAdapter = null;
+		Object model = null;
+		switch (featureProviderSide) {
+		case LEFT: 
+			model = match.getLeft();
+			modelAdapter = modelAdapterSetLeft.getModelAdapterForType(type);
+			break;
+		case RIGHT:
+			model = match.getRight();
+			modelAdapter = modelAdapterSetRight.getModelAdapterForType(type);
+			break;
+		case ANCESTOR:
+			model = match.getAncestor();
+			modelAdapter = modelAdapterSetAncestor.getModelAdapterForType(type);
+			break;
+		}
+		
+		FeatureProvider featureProvider = new FeatureProvider(modelAdapter); 
+		
+		// special case for files that have delegates based on extension
+		if (modelAdapter instanceof FileModelAdapter) {
+			String name = null;
+			if (model != null) {
+				delegateSide = featureProviderSide;
+			}
+			switch (delegateSide) {
+			case LEFT: {
+				name = (String) getModelAdapterSetLeft().getModelAdapterForType(type).getValueFeatureValue(match.getLeft(), NAME, null);
+				break;
+			}
+			case RIGHT:
+				name = (String) getModelAdapterSetRight().getModelAdapterForType(type).getValueFeatureValue(match.getRight(), NAME, null);
+				break;
+			case ANCESTOR:
+				name = (String) getModelAdapterSetAncestor().getModelAdapterForType(type).getValueFeatureValue(match.getAncestor(), NAME, null);
+				break;
+			}
+			int index = name.lastIndexOf(".");
+			if (index >= 0) {
+				featureProvider.setExtension(name.substring(index + 1));
+			}
+		}
+		
+		return featureProvider;
+	}
+	
 	public IModelAdapter getRightModelAdapter(Object right) {
 		return modelAdapterSetRight.getModelAdapter(right);
 	}
@@ -492,6 +558,12 @@ public class CodeSyncAlgorithm {
 
 	public IModelAdapter getLeftModelAdapter(Object left) {
 		return modelAdapterSetLeft.getModelAdapter(left);
+	}
+	
+	public enum Side {
+		LEFT, 
+		RIGHT,
+		ANCESTOR
 	}
 	
 }

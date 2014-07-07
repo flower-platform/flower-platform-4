@@ -15,22 +15,34 @@
  */
 package org.flowerplatform.codesync.as.adapter;
 
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAGS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_TYPE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VARIABLE_INITIALIZER;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import org.apache.flex.abc.ABCConstants;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
-import org.flowerplatform.codesync.as.feature_provider.AsVariableFeatureProvider;
 
 /**
  * Mapped to {@link IVariableDefinition}.
- * 
- * @see AsVariableFeatureProvider
  * 
  * @author Mariana Gheorghe
  */
 public class AsVariableModelAdapter extends AsAbstractAstModelAdapter {
 
+	public AsVariableModelAdapter() {
+		valueFeatures.add(DOCUMENTATION);
+		valueFeatures.add(TYPED_ELEMENT_TYPE);
+		valueFeatures.add(VISIBILITY);
+		valueFeatures.add(VARIABLE_INITIALIZER);
+		
+		containmentFeatures.add(META_TAGS);
+		containmentFeatures.add(MODIFIERS);
+	}
+	
 	@Override
 	public Object getMatchKey(Object element) {
 		return getVariable(element).getBaseName();

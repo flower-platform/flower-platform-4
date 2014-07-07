@@ -21,19 +21,20 @@ import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.flowerplatform.codesync.as.feature_provider.AsMetaTagFeatureProvider;
-import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
+import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
 
 /**
  * Mapped to {@link IMetaTag}. Children are {@link IMetaTagAttribute}s.
  * 
- * @see AsMetaTagFeatureProvider
- * 
  * @author Mariana Gheorghe
  */
 public class AsMetaTagModelAdapter extends AstModelElementAdapter {
 
+	public AsMetaTagModelAdapter() {
+		containmentFeatures.add(META_TAG_ATTRIBUTES);
+	}
+	
 	@Override
 	public Object getMatchKey(Object element) {
 		return getMetaTag(element).getTagName();

@@ -16,10 +16,10 @@
 package org.flowerplatform.codesync.action;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.FeatureProvider;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
-import org.flowerplatform.codesync.adapter.ModelAdapterSet;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
+import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
@@ -35,8 +35,8 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 	protected abstract IModelAdapter getThisModelAdapter(Match match);
 	protected abstract IModelAdapter getOppositeModelAdapter(Match match);
 	
-	protected abstract ModelAdapterSet getThisModelAdapterSet(Match match);
-	protected abstract ModelAdapterSet getOppositeModelAdapterSet(Match match);
+	protected abstract IModelAdapterSet getThisModelAdapterSet(Match match);
+	protected abstract IModelAdapterSet getOppositeModelAdapterSet(Match match);
 	
 	protected abstract void setOpposite(Match match, Object elment);
 	protected abstract void processDiffs(Match match);

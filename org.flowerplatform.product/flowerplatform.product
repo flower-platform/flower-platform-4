@@ -52,8 +52,7 @@
       <plugin id="org.eclipse.text"/>
       <plugin id="org.flowerplatform.codesync"/>
       <plugin id="org.flowerplatform.codesync.as"/>
-      <plugin id="org.flowerplatform.codesync.code"/>
-      <plugin id="org.flowerplatform.codesync.code.java"/>
+      <plugin id="org.flowerplatform.codesync.java"/>
       <plugin id="org.flowerplatform.codesync.sdiff"/>
       <plugin id="org.flowerplatform.core"/>
       <plugin id="org.flowerplatform.flex_client.codesync"/>
@@ -104,8 +103,7 @@
       <plugin id="org.eclipse.text" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync.as" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.codesync.code" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.codesync.code.java" autoStart="true" startLevel="0" />
+      <plugin id="org.flowerplatform.codesync.java" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync.sdiff" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.codesync" autoStart="true" startLevel="0" />

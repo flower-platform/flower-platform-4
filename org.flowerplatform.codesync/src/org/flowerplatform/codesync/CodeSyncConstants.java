@@ -46,6 +46,9 @@ public class CodeSyncConstants {
 		return "." + extension;
 	}
 	
+	public static final String FOLDER = "codesyncFolder";
+	public static final String FILE = "codesyncFile";
+	
 	public static final String CATEGORY_MODEL = UtilConstants.CATEGORY_PREFIX + "model";
 	
 	//////////////////////////////////
@@ -72,7 +75,7 @@ public class CodeSyncConstants {
 	
 	public static final String MATCH_TYPE ="matchType";
 	public static final String MATCH_FEATURE = "feature";
-	public static final String MATCH_MODEL_ELEMENT_TYPE = "modeElementType";
+	public static final String MATCH_MODEL_ELEMENT_TYPE = "modelElementType";
 	public static final String MATCH_CHILDREN_MODIFIED_LEFT = "childrenModifiedLeft";
 	public static final String MATCH_CHILDREN_MODIFIED_RIGHT = "childrenModifiedRight";
 	public static final String MATCH_CHILDREN_CONFLICT = "childrenConflict";

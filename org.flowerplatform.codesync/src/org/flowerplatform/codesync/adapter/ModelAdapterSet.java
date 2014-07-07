@@ -28,7 +28,7 @@ import org.flowerplatform.util.Pair;
 /**
  * @author Mariana Gheorghe
  */
-public class ModelAdapterSet {
+public class ModelAdapterSet implements IModelAdapterSet {
 
 	private ITypeProvider typeProvider;
 	
@@ -38,14 +38,17 @@ public class ModelAdapterSet {
 	
 	private IModelAdapter fileModelAdapterDelegate;
 
+	@Override
 	public String getType(Object model) { 
 		return typeProvider.getType(model);
 	}
 	
+	@Override
 	public IModelAdapter getModelAdapter(Object model) {
 		return getModelAdapterForType(getType(model));
 	}
 	
+	@Override
 	public IModelAdapter getModelAdapterForType(String type) {
 		IModelAdapter adapter = modelAdapters.get(type);
 		if (adapter != null) {
@@ -54,6 +57,12 @@ public class ModelAdapterSet {
 		return modelAdapters.get(CATEGORY_CODESYNC);
 	}
 	
+	@Override
+	public IModelAdapter getFileModelAdapterDelegate() {
+		return fileModelAdapterDelegate;
+	}
+	
+	@Override
 	public Pair<Integer, Integer> getStartEndLine(Object model, IDocument document) {
 		if (lineProvider.canHandle(model)) {
 			return lineProvider.getStartEndLines(model, document);
@@ -76,12 +85,9 @@ public class ModelAdapterSet {
 		return this;
 	}
 
-	public IModelAdapter getFileModelAdapterDelegate() {
-		return fileModelAdapterDelegate;
-	}
-
 	public ModelAdapterSet setFileModelAdapterDelegate(IModelAdapter fileModelAdapterDelegate) {
 		this.fileModelAdapterDelegate = fileModelAdapterDelegate;
 		return this;
 	}
+
 }
