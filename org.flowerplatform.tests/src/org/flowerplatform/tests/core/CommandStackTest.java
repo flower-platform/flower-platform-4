@@ -11,6 +11,7 @@ import static org.mockito.Mockito.spy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -178,21 +179,31 @@ public class CommandStackTest {
 	@Test
 	public void testUndoCommand_RemoveChild() {
 		Node node = nodeService.getChildren(rootNode, context).get(5);
-		
-		System.out.println("**** "+node.getOrPopulateProperties().get(MindMapConstants.TEXT));
 
+		Map<String, Object> nodeProperties = node.getOrPopulateProperties();
+		List<Node> nodeChildren = nodeService.getChildren(node, context);
+		
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 		nodeServiceRemote.removeChild(rootNode.getNodeUri(), node.getNodeUri());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
-		List<Node> children = nodeService.getChildren(rootNode, context);
-		assertTrue("Child node is removed from parent's children", !children.contains(node));
+		List<Node> rootChildren = nodeService.getChildren(rootNode, context);
+		assertTrue("Child node is removed from parent", !rootChildren.contains(node));
 
 		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
-		children = nodeService.getChildren(rootNode, context);
-		assertTrue("Child node was added back", children.contains(node));
+		node = nodeService.getChildren(rootNode, context).get(5);
+
+		rootChildren = nodeService.getChildren(rootNode, context);
+		assertTrue("Child node is added", rootChildren.contains(node));
+
+		Map<String, Object> properties = node.getOrPopulateProperties();
+		assertTrue("Properties are repopulated.", nodeProperties.keySet().equals(properties.keySet()));
+		
+		List<Node> nodeChildrenUndo = nodeService.getChildren(node, context);
+		
+		assertTrue("Grandchildren nodes are added", nodeChildren.equals(nodeChildrenUndo));
 
 	}
 	
