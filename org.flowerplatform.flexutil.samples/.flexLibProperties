@@ -15,6 +15,7 @@
     <classEntry path="org.flowerplatform.flexutil.samples.spinner.ModalSpinnerSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.spinner.RemoveGlobalSpinnerViewContent"/>
     <classEntry path="org.flowerplatform.flexutil.samples.object_proxy.ObjectProxySample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.object_proxy.INodeChangedListener"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
