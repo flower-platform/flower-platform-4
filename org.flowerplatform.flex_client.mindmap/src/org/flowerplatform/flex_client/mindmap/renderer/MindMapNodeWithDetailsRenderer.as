@@ -139,6 +139,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		}
 		
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+			//TODO CC: to be replaced with impl INodeChangeListener.nodeUpdated
+			
 			super.nodeUpdatedHandler(event);
 			if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
 				setDetailsGroupVisibile(true);

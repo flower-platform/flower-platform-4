@@ -178,6 +178,8 @@
 			}
 			
 			protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+				//TODO CC: to be replaced with impl INodeChangeListener.nodeUpdated
+				
 				var invalidateDisplayListFlag:Boolean = false;
 				
 				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(mindMapDiagramShell.registry, node);

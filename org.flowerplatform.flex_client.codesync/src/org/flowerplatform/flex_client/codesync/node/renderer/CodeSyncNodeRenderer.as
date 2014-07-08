@@ -29,6 +29,8 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 	public class CodeSyncNodeRenderer extends NodeRenderer {
 		
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+			//TODO CC: to be replaced with impl INodeChangeListener.nodeUpdated
+			
 			super.nodeUpdatedHandler(event);
 			
 			if (NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.SYNC, event) ||

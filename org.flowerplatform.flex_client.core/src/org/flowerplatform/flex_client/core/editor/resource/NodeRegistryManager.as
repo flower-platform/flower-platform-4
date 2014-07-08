@@ -112,6 +112,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 			nodeRegistries.push(nodeRegistry);
 			
+			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
 			// listen for resourceNode properties modifications like isDirty
 			nodeRegistry.getNodeById(resourceUri).addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
 			resourceNodeUpdated(new NodeUpdatedEvent(nodeRegistry.getNodeById(resourceUri)));
@@ -121,6 +122,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			// change isDirty to false and dispatch event
 			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceUri);
 			resourceNodeFromRegistry.properties[CoreConstants.IS_DIRTY] = false;
+			
+			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
 			resourceNodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(resourceNodeFromRegistry, new ArrayList([CoreConstants.IS_DIRTY])));
 			resourceNodeFromRegistry.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
 			
@@ -182,6 +185,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			getResourceUrisForSubTree(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 			
 			if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog
+				//TODO CC: remove connection with resourceOperationsManager; delete it from here
 				resourceOperationsManager.showSaveDialogIfDirtyStateOrCloseEditors([this], getResourceSetsForResourceUris(dirtyResourceUris), 
 					function():void {
 						// wait for server response before collapse	
@@ -252,6 +256,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * </ul>
 		 */ 
 		public function subscribe(nodeId:String, nodeRegistry:NodeRegistry, subscribeResultCallback:Function = null, subscribeFaultCallback:Function = null):void {
+			//TODO CC: service method invocation must be moved somewhere else
 			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
 				function(subscriptionInfo:SubscriptionInfo):void {
 					subscriptionInfo.rootNode = nodeRegistry.mx_internal::mergeOrRegisterNode(subscriptionInfo.rootNode);
@@ -289,6 +294,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				nodeRegistry.dispatchEvent(new NodeRegistryRemovedEvent());							
 			}
 			
+			//TODO CC: remove connection with resourceOperationsManager; delete it from here
 			resourceOperationsManager.updateGlobalDirtyState(false);
 		}
 		
@@ -391,6 +397,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
 			var resourceNode:Node = event.node;
 			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY, event)) {
+				//TODO CC: remove connection with resourceOperationsManager; delete it from here
 				resourceOperationsManager.updateGlobalDirtyState(resourceNode.properties[CoreConstants.IS_DIRTY]);
 			}
 		}

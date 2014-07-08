@@ -21,6 +21,8 @@ package org.flowerplatform.flex_client.core.node {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	import mx.core.mx_internal;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -55,6 +57,8 @@ package org.flowerplatform.flex_client.core.node {
 		
 		protected var rootNodeUri:String;
 		
+		protected var nodeChangeListeners:IList = new ArrayList();
+		
 		public function getRootNodeUri():String {
 			return rootNodeUri;
 		}
@@ -62,7 +66,11 @@ package org.flowerplatform.flex_client.core.node {
 		public function getNodeById(id:String):Node {
 			return Node(registry[id]);
 		}
+		
+		public function addNodeChangeListener(listener:INodeChangeListener):void {
 			
+		}
+		
 		public function collapse(node:Node, refreshChildren:Boolean = true):void {
 			if (!registry.hasOwnProperty(node.nodeUri)) {
 				return;
@@ -75,6 +83,7 @@ package org.flowerplatform.flex_client.core.node {
 			}
 								
 			if (refreshChildren) {	
+				// TODO CC: don't dispatch; use a method from interface instead
 				dispatchEvent(new RefreshEvent(node));
 			}						
 		}
@@ -92,6 +101,7 @@ package org.flowerplatform.flex_client.core.node {
 			}
 			serviceContext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
 			
+			// TODO CC: extract this service method invocation and put it somewhere else
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.getChildren", 
 				[node.nodeUri, serviceContext], 
@@ -200,11 +210,13 @@ package org.flowerplatform.flex_client.core.node {
 					}
 					
 					if (refresh) {
+						// TODO CC: don't dispatch; use a method from interface instead
 						dispatchEvent(new RefreshEvent(nodeFromRegistry));
 					}
 				}				
 			}		
 			
+			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
 			for (var key:String in nodeToNodeUpdatedEvent) {
 				var event:NodeUpdatedEvent = NodeUpdatedEvent(nodeToNodeUpdatedEvent[key]);
 				event.node.dispatchEvent(event);				
@@ -215,6 +227,7 @@ package org.flowerplatform.flex_client.core.node {
 			if (!registry.hasOwnProperty(node.nodeUri)) {
 				return;
 			}
+			// TODO CC: extract this service method invocation and put it somewhere else
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.refresh", 
 				[getFullNodeIdWithChildren(node)], 
@@ -270,6 +283,7 @@ package org.flowerplatform.flex_client.core.node {
 			if (nodeFromRegistry != null && nodeFromRegistry != node) {
 				nodeFromRegistry.properties = nodeWithVisibleChildren.node.properties;
 			}
+			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
 			node.dispatchEvent(new NodeUpdatedEvent(node));	
 			
 			var newNodeToCurrentNodeIndex:Dictionary = new Dictionary();
@@ -353,6 +367,8 @@ package org.flowerplatform.flex_client.core.node {
 					parent.children.addItem(node);
 				}
 			}
+			
+			//TODO CC: call INodeChangeListener.nodeAdded
 		}
 		
 		/**
@@ -368,6 +384,7 @@ package org.flowerplatform.flex_client.core.node {
 			
 			var nodeFromRegistry:Node = registry[node.nodeUri];
 			if (nodeFromRegistry != null) {
+				//TODO CC: don't dispatch event; call INodeChangeListener.nodeRemoved
 				nodeFromRegistry.dispatchEvent(new NodeRemovedEvent(nodeFromRegistry));
 				delete registry[node.nodeUri];
 			}
@@ -391,6 +408,7 @@ package org.flowerplatform.flex_client.core.node {
 				registerNode(child, node);
 			}
 			
+			// TODO CC: don't dispatch; use a method from interface instead
 			// refresh diagram's children and their positions
 			dispatchEvent(new RefreshEvent(node));
 		}

@@ -22,6 +22,8 @@ package org.flowerplatform.flex_client.core.node_tree
 		}
 		
 		override public function set data(value:Object):void {
+			//TODO CC: to be replaced with impl INodeChangeListener.nodeUpdated
+			
 			if (data != null) {
 				data.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, modelChangedHandler);
 			}

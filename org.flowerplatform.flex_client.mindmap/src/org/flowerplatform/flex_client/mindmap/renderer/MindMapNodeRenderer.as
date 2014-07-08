@@ -101,6 +101,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		 * @author Sebastian Solomon
 		 */
 		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+			//TODO CC: to be replaced with impl INodeChangeListener.nodeUpdated
+						
 			super.nodeUpdatedHandler(event);
 			
 			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);

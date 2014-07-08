@@ -39,6 +39,7 @@ package org.flowerplatform.flex_client.core.node.event {
 	 * @author Cristina Constantinescu
 	 * 
 	 */
+	//TODO CC: remove
 	public class NodeUpdatedEvent extends Event {
 		
 		public static const NODE_UPDATED:String = "NodeUpdatedEvent";

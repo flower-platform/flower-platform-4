@@ -36,7 +36,10 @@ package org.flowerplatform.flex_client.properties.ui {
 			super();
 		}
 	
-		public function refreshForm(node:Node, includeRawProperties:Boolean = false):void {			
+		public function refreshForm(node:Node, includeRawProperties:Boolean = false):void {		
+			
+			//TODO CC: impl INodeChangeListener.nodeUpdated
+			
 			// remove listeners from previous node				
 			if (currentNode != null) {
 				currentNode.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
