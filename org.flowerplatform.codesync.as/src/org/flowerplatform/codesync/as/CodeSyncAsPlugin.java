@@ -86,8 +86,8 @@ protected static CodeSyncAsPlugin INSTANCE;
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		CodeSyncPlugin.getInstance().addFileModelAdapterDelegate(EXTENSION_AS, ACTIONSCRIPT);
-		CodeSyncPlugin.getInstance().addFileModelAdapterDelegate(EXTENSION_MXML, ACTIONSCRIPT);
+		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_AS, ACTIONSCRIPT);
+		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_MXML, ACTIONSCRIPT);
 		
 		AsReferenceModelAdapter referenceModelAdapter = new AsReferenceModelAdapter();
 		AsVariableModelAdapter varModelAdapter = new AsVariableModelAdapter();

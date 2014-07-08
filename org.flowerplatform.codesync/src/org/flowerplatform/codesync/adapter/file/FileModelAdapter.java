@@ -21,10 +21,17 @@ import org.flowerplatform.codesync.adapter.DelegatingModelAdapter;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 /**
+ * Registered for all {@link FileModelAdapterSet}s. Delegates to
+ * a technology-specific model adapter based on the file's extension.
+ * 
  * @author Mariana Gheorghe
  */
 public class FileModelAdapter extends DelegatingModelAdapter {
 
+	/**
+	 * @param element may be a string representing the extension,
+	 * or a file recognized by the file access controller
+	 */
 	protected IModelAdapter getDelegate(Object element) {
 		String extension = null;
 		if (element instanceof String) {
@@ -32,7 +39,10 @@ public class FileModelAdapter extends DelegatingModelAdapter {
 		} else {
 			extension = CodeSyncAlgorithm.fileAccessController.getFileExtension(element);
 		}
-		String technology = CodeSyncPlugin.getInstance().getFileModelAdapterDelegate(extension);
+		String technology = CodeSyncPlugin.getInstance().getTechnologyForExtension(extension);
+		if (technology == null) {
+			return new UnknownFileModelAdapter();
+		}
 		return CodeSyncPlugin.getInstance().getModelAdapterSet(technology).getFileModelAdapterDelegate();
 	}
 	

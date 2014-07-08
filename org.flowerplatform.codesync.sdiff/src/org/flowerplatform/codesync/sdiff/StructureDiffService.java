@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
 import org.eclipse.compare.internal.core.patch.Hunk;
@@ -56,6 +57,7 @@ import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
 import org.flowerplatform.codesync.CodeSyncConstants;
+import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -141,11 +143,7 @@ public class StructureDiffService {
 		
 		// STEP 1: create a match
 		Match match = new Match();
-		int index = path.lastIndexOf("/");
-		String name = path;
-		if (index >= 0) {
-			name = path.substring(++index);
-		}
+		String name = FilenameUtils.getName(path);
 		match.setMatchKey(name);
 		
 		// ancestor + left: original content obtained after applying reverse patch
@@ -157,7 +155,11 @@ public class StructureDiffService {
 		
 		// initialize the algorithm
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
-		List<String> technologies = Collections.singletonList("java");
+		String technology = CodeSyncPlugin.getInstance().getTechnologyForExtension(FilenameUtils.getExtension(path));
+		if (technology == null) {
+			return match;
+		}
+		List<String> technologies = Collections.singletonList(technology);
 		algorithm.initializeModelAdapterSets(technologies, technologies, technologies);
 		algorithm.initializeFeatureProvider(Side.RIGHT);
 		CodeSyncAlgorithm.fileAccessController = new FileHolderAccessController();
@@ -179,8 +181,6 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, NAME, match.getMatchKey(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_TYPE, match.getMatchType().toString(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_FEATURE, match.getFeature() == null ? "" : match.getFeature(), context);
-		Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
-		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_LEFT, match.isChildrenModifiedLeft(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_RIGHT, match.isChildrenModifiedRight(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_CONFLICT, match.isChildrenConflict(), context);
@@ -189,15 +189,22 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_CONFLICT, match.isDiffsConflict(), context);
 		
 		// match to lines from patch
-		if (match.getLeft() != null && match.getRight() != null) {
-			Object model = match.getRight();
-			Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);
-			if (lines != null) {
-				int modelStartLine = lines.a;
-				int modelEndLine = lines.b;
-				if (modelStartLine >= 0 && modelEndLine >= 0) {
-					CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, 
-							isBodyModified(patch, modelStartLine, modelEndLine), context);
+		if (match.getCodeSyncAlgorithm() != null) {
+			Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
+			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
+			if (match.getLeft() != null && match.getRight() != null) {
+				Object model = match.getRight();
+				Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);
+				if (lines != null) {
+					int modelStartLine = lines.a;
+					int modelEndLine = lines.b;
+					if (modelStartLine >= 0 && modelEndLine >= 0) {
+						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine);;
+						CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, isBodyModified, context);
+						if (isBodyModified) {
+							propagateBodyModifiedToParents(child);
+						}
+					}
 				}
 			}
 		}
@@ -205,6 +212,21 @@ public class StructureDiffService {
 		// recurse for submatches
 		for (Match subMatch : match.getSubMatches()) {
 			addToSdiffFile(child, subMatch, patch, document);
+		}
+	}
+	
+	private void propagateBodyModifiedToParents(Node child) {
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		while (child != null) {
+			Node parent = CorePlugin.getInstance().getNodeService().getParent(child, context);
+			if (parent != null) {
+				Boolean childrenModified = (Boolean) parent.getPropertyValue(MATCH_CHILDREN_MODIFIED_RIGHT);
+				if (childrenModified != null && childrenModified) {
+					break;
+				}
+				CorePlugin.getInstance().getNodeService().setProperty(parent, MATCH_CHILDREN_MODIFIED_RIGHT, true, context);
+			}
+			child = parent;
 		}
 	}
 	

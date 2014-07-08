@@ -25,6 +25,7 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -78,6 +79,7 @@ public class CodeSyncOperationsService {
 				Collections.singletonList(technology),
 				Collections.singletonList(NODE_ANCESTOR));
 		algorithm.initializeFeatureProvider(Side.RIGHT);
+		algorithm.fileAccessController = CorePlugin.getInstance().getFileAccessController(); 
 		match.setCodeSyncAlgorithm(algorithm);
 		match.setMatchKey(algorithm.getAncestorModelAdapter(srcDir).getMatchKey(srcDir));
 		

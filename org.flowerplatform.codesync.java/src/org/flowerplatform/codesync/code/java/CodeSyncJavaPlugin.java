@@ -121,7 +121,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		CodeSyncPlugin.getInstance().addFileModelAdapterDelegate(EXTENSION_JAVA, JAVA);
+		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_JAVA, JAVA);
 		
 		JavaTypeDeclarationModelAdapter typeModelAdapter = new JavaTypeDeclarationModelAdapter();
 		JavaExpressionModelAdapter expressionModelAdapter = new JavaExpressionModelAdapter();

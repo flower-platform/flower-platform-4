@@ -222,14 +222,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return modelAdapterSets.get(technology);
 	}
 	
-	protected Map<String, String> fileModelAdapterDelegates = new HashMap<String, String>();
+	protected Map<String, String> extensionToTechnology = new HashMap<String, String>();
 	
-	public void addFileModelAdapterDelegate(String extension, String technology) {
-		fileModelAdapterDelegates.put(extension, technology);
+	public void addTechnologyForExtension(String extension, String technology) {
+		extensionToTechnology.put(extension, technology);
 	}
 	
-	public String getFileModelAdapterDelegate(String extension) {
-		return fileModelAdapterDelegates.get(extension);
+	public String getTechnologyForExtension(String extension) {
+		return extensionToTechnology.get(extension);
 	}
 	
 	/**
