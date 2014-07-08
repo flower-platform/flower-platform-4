@@ -29,6 +29,7 @@ import org.apache.flex.compiler.definitions.IDocumentableDefinition;
 import org.apache.flex.compiler.internal.scopes.ASFileScope;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.codesync.as.asdoc.AsDocComment;
 import org.flowerplatform.core.CoreConstants;
@@ -41,7 +42,7 @@ import org.flowerplatform.core.CoreConstants;
 public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			return getDefinition(element).getBaseName();
 		} else if (TYPED_ELEMENT_TYPE.equals(feature)) {
@@ -57,17 +58,17 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 				return ((AsDocComment) comment).getText();
 			}
 		} 
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (MODIFIERS.equals(feature)) {
 			return Arrays.asList(getDefinition(element).getModifiers().getAllModifiers());
 		} else if (META_TAGS.equals(feature)) {
 			return Arrays.asList(getDefinition(element).getAllMetaTags());
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
 	protected ICompilationUnit getCompilationUnit(IDefinition definition) {

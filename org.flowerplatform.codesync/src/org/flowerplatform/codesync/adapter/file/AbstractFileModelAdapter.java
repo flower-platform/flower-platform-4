@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.codesync.adapter.file;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -27,77 +24,63 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.file.IFileAccessController;
 
 /**
- * @see FolderFeatureProvider
- * 
  * @author Mariana Gheorghe
  * @author Sebastian Solomon
  */
 public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 
-	protected Map<Object, Object> fileInfos = new HashMap<Object, Object>();
-	
-	protected Map<Object, String> filesToRename = new HashMap<Object, String>();
-	
-	protected Object getOrCreateFileInfo(Object file) {
-		if (fileInfos.containsKey(file)) {
-			return fileInfos.get(file);
-		} else {
-			Object fileInfo = createFileInfo(file);
-			fileInfos.put(file, fileInfo);
-			return fileInfo;
-		}
+	protected CodeSyncFile getCodeSyncFile(Object file) {
+		return (CodeSyncFile) file;
 	}
 	
-	protected abstract Object createFileInfo(Object file);
+	protected Object getOrCreateFileInfo(Object element, IFileAccessController fileAccessController) {
+		CodeSyncFile codeSyncFile = getCodeSyncFile(element);
+		if (codeSyncFile.getFileInfo() == null) {
+			codeSyncFile.setFileInfo(createFileInfo(codeSyncFile.getFile(), fileAccessController));
+		}
+		return codeSyncFile.getFileInfo();
+	}
+	
+	protected abstract Object createFileInfo(Object file, IFileAccessController fileAccessController);
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
-			return getName(element);
+			return getName(element, codeSyncAlgorithm.getFileAccessController());
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object file, Object feature, Object value) {
+	public void setValueFeatureValue(Object file, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
-			filesToRename.put(file, (String) value);
+			codeSyncAlgorithm.getFilesToRename().put(getCodeSyncFile(file).getFile(), (String) value);
 		}
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
-		return getName(element);
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getName(element, codeSyncAlgorithm.getFileAccessController());
 	}
 
-	/**
-	 * @author Sebastian Solomonm
-	 */
-	protected String getName(Object element) {
-		return CodeSyncAlgorithm.fileAccessController.getName(element);
+	protected String getName(Object element, IFileAccessController fileAccessController) {
+		return fileAccessController.getName(getCodeSyncFile(element).getFile());
 	}
 	
 	/**
 	 * Creates the file, if it does not exist, and commits all the modifications recorded by the AST.
 	 */
 	@Override
-	public boolean save(Object file) {
-		IFileAccessController fileAccessController = CodeSyncAlgorithm.fileAccessController;
-		Object initialFile = file;
-		
-		String newName = filesToRename.get(file);
-		if (newName != null) {
-			Object dest = fileAccessController.getFile(fileAccessController.getParent(initialFile), newName);
-			fileAccessController.rename(file, dest);
-			file = dest;
-		}
+	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		IFileAccessController fileAccessController = codeSyncAlgorithm.getFileAccessController();
+		Object file = getCodeSyncFile(element).getFile();
 		
 		if (!fileAccessController.exists(file)) {
 			fileAccessController.createFile(file, false);
 		}
 		
 		if (fileAccessController.exists(file)) {
-			Object fileInfo = fileInfos.get(initialFile);
+			Object fileInfo = getCodeSyncFile(element).getFileInfo();
 			if (fileInfo != null) {
 				Document document;
 				try {
@@ -112,7 +95,12 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 				}
 			}
 		}
-		fileInfos.remove(initialFile);
+		
+		String newName = codeSyncAlgorithm.getFilesToRename().get(file);
+		if (newName != null) {
+			Object dest = fileAccessController.getFile(fileAccessController.getParent(file), newName);
+			fileAccessController.rename(file, dest);
+		}
 		
 		// no need to call save for the AST
 		return false;
@@ -124,9 +112,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	 * Discards the AST corresponding to this file.
 	 */
 	@Override
-	public boolean discard(Object element) {
-		fileInfos.remove(element);
-		
+	public boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// no need to call discard for the AST
 		return false;
 	}

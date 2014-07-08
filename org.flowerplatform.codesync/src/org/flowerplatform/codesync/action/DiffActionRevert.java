@@ -36,12 +36,12 @@ public class DiffActionRevert extends DiffAction {
 		if (diff.isRightModified())
 			rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
 		
-		Object value = ancestorModelAdapter.getValueFeatureValue(match.getAncestor(), diff.getFeature(), null);
+		Object value = ancestorModelAdapter.getValueFeatureValue(match.getAncestor(), diff.getFeature(), null, match.getCodeSyncAlgorithm());
 		if (diff.isLeftModified()) {
-			leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value);
+			leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value, match.getCodeSyncAlgorithm());
 		}
 		if (diff.isRightModified()) {
-			rightModelAdapter.setValueFeatureValue(match.getRight(), diff.getFeature(), value);
+			rightModelAdapter.setValueFeatureValue(match.getRight(), diff.getFeature(), value, match.getCodeSyncAlgorithm());
 		}
 		match.getDiffs().remove(diffIndex);
 

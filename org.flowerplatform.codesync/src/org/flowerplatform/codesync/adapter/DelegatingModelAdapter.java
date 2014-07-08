@@ -27,116 +27,115 @@ import org.flowerplatform.codesync.action.ActionResult;
  */
 public abstract class DelegatingModelAdapter extends AbstractModelAdapter {
 	
-	protected abstract IModelAdapter getDelegate(Object element);
+	protected abstract IModelAdapter getDelegate(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	@Override
-	public List<?> getValueFeatures(Object element) {
-		return getDelegate(element).getValueFeatures(element);
+	public List<?> getValueFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).getValueFeatures(element, codeSyncAlgorithm);
 	}
 
 	@Override
-	public List<?> getContainmentFeatures(Object element) {
-		return getDelegate(element).getContainmentFeatures(element);
+	public List<?> getContainmentFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).getContainmentFeatures(element, codeSyncAlgorithm);
 	}
 
 	@Override
-	public int getFeatureType(Object element, Object feature) {
-		return getDelegate(element).getFeatureType(element, feature);
+	public int getFeatureType(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).getFeatureType(element, feature, codeSyncAlgorithm);
 	}
 
 	@Override
-	public String getFeatureName(Object element, Object feature) {
-		return getDelegate(element).getFeatureName(element, feature);
+	public String getFeatureName(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).getFeatureName(element, feature, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
-		return getDelegate(element).getMatchKey(element);
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).getMatchKey(element, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		return getDelegate(element).getValueFeatureValue(element, feature, correspondingValue);
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element,
-			Object feature, Iterable<?> correspondingIterable) {
-		return getDelegate(element).getContainmentFeatureIterable(element, feature, correspondingIterable);
+			Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
-		getDelegate(element).setValueFeatureValue(element, feature, value);
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(element, codeSyncAlgorithm).setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object parent,
-			Object feature, Object correspondingChild,
-			IModelAdapterSet modelAdapterSet) {
-		return getDelegate(parent).createChildOnContainmentFeature(parent, feature,
-				correspondingChild, modelAdapterSet);
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild,
+			IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(parent, codeSyncAlgorithm).createChildOnContainmentFeature(parent, feature,
+				correspondingChild, modelAdapterSet, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
-		getDelegate(parent).removeChildrenOnContainmentFeature(parent, feature, child);
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(parent, codeSyncAlgorithm).removeChildrenOnContainmentFeature(parent, feature, child, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void addToMap(Object element, Map<Object, Object> map) {
-		getDelegate(element).addToMap(element, map);
+	public void addToMap(Object element, Map<Object, Object> map, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(element, codeSyncAlgorithm).addToMap(element, map, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight) {
-		return getDelegate(element).removeFromMap(element, leftOrRightMap, isRight);
+	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).removeFromMap(element, leftOrRightMap, isRight, codeSyncAlgorithm);
 	}
 
 	@Override
-	public boolean save(Object element) {
-		return getDelegate(element).save(element);
+	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).save(element, codeSyncAlgorithm);
 	}
 
 	@Override
-	public boolean discard(Object element) {
-		return getDelegate(element).discard(element);
+	public boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getDelegate(element, codeSyncAlgorithm).discard(element, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void beforeFeaturesProcessed(Object element, Object correspondingElement) {
-		getDelegate(element).beforeFeaturesProcessed(element, correspondingElement);
+	public void beforeFeaturesProcessed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(element, codeSyncAlgorithm).beforeFeaturesProcessed(element, correspondingElement, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void featuresProcessed(Object element) {
-		getDelegate(element).featuresProcessed(element);
+	public void featuresProcessed(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(element, codeSyncAlgorithm).featuresProcessed(element, codeSyncAlgorithm);
 	}
 
 	@Override
 	public void actionPerformed(Object element, Object feature, ActionResult result, Match match) {
-		getDelegate(element).actionPerformed(element, feature, result, match);
+		getDelegate(element, match.getCodeSyncAlgorithm()).actionPerformed(element, feature, result, match);
 	}
 
 	@Override
-	public void allActionsPerformedForFeature(Object element, Object correspondingElement, Object feature) {
-		getDelegate(element).allActionsPerformedForFeature(element, correspondingElement, feature);
+	public void allActionsPerformedForFeature(Object element, Object correspondingElement, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(element, codeSyncAlgorithm).allActionsPerformedForFeature(element, correspondingElement, feature, codeSyncAlgorithm);
 	}
 
 	@Override
 	public void allActionsPerformed(Object element,
 			Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
-		getDelegate(element).allActionsPerformed(element, correspondingElement, codeSyncAlgorithm);
+		getDelegate(element, codeSyncAlgorithm).allActionsPerformed(element, correspondingElement, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void setConflict(Object element, Object feature, Object oppositeValue) {
-		getDelegate(element).setConflict(element, feature, oppositeValue);
+	public void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(element, codeSyncAlgorithm).setConflict(element, feature, oppositeValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void unsetConflict(Object element, Object feature) {
-		getDelegate(element).unsetConflict(element, feature);
+	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
+		getDelegate(element, codeSyncAlgorithm).unsetConflict(element, feature, codeSyncAlgorithm);
 	}
 	
 }

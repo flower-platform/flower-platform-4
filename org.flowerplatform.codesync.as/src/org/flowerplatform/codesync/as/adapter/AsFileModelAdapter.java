@@ -36,6 +36,7 @@ import org.flowerplatform.codesync.adapter.file.AbstractFileModelAdapter;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
 import org.flowerplatform.codesync.as.DelegatingFileSpecification;
 import org.flowerplatform.codesync.as.asdoc.AsDocDelegate;
+import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.util.Pair;
 
 /**
@@ -48,10 +49,11 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 	}
 	
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncAsConstants.STATEMENTS.equals(feature)) {
 			@SuppressWarnings("unchecked")
-			Pair<ICompilationUnit, IFileNode> pair = (Pair<ICompilationUnit, IFileNode>) getOrCreateFileInfo(element);
+			Pair<ICompilationUnit, IFileNode> pair = (Pair<ICompilationUnit, IFileNode>) 
+					getOrCreateFileInfo(element, codeSyncAlgorithm.getFileAccessController());
 			if (pair.a == null) {
 				return Collections.emptyList();
 			}
@@ -65,7 +67,7 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 			}
 			return Arrays.asList(ast.getTopLevelDefinitions(true, true));
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	/**
@@ -73,18 +75,18 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 	 * they are referred through {@link WeakReference}s, and will be garbage collected during sync.
 	 */
 	@Override
-	protected Object createFileInfo(Object file) {
+	protected Object createFileInfo(Object file, IFileAccessController fileAccessController) {
 		// prepare the workspace and project
 		Workspace ws = new Workspace();
 		ws.setASDocDelegate(new AsDocDelegate());
 		FlexProject project = new FlexProject(ws);
 		
 		// add the file spec that will be used during AST build
-		ws.fileAdded(new DelegatingFileSpecification(file));
+		ws.fileAdded(new DelegatingFileSpecification(file, fileAccessController));
 		
 		// create compilation unit
 		ICompilationUnit cu = project.getSourceCompilationUnitFactory().createCompilationUnit(
-				new File(CodeSyncAlgorithm.fileAccessController.getAbsolutePath(file)),  
+				new File(fileAccessController.getAbsolutePath(file)),  
 				DefinitionPriority.BasePriority.SOURCE_PATH, 0, null, null);
 		IRequest<ISyntaxTreeRequestResult, ICompilationUnit> req = cu.getSyntaxTreeRequest();
 		

@@ -48,7 +48,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ 
-//	CodeSyncJavaTest.class, 
+	CodeSyncJavaTest.class, 
 	CodeSyncAsTest.class
 //	CodeSyncJavascriptTest.class,
 //	CodeSyncWikiTest.class 

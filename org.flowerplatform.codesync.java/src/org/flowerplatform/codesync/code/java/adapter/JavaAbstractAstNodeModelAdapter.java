@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.internal.core.dom.rewrite.NodeInfoStore;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
@@ -50,7 +51,7 @@ import org.flowerplatform.util.Utils;
 public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAdapter {
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// handle modifiers here to avoid using the same code in multiple adapters
 		if (CodeSyncJavaConstants.MODIFIERS.equals(feature)) {
 			if (element instanceof BodyDeclaration) {
@@ -62,28 +63,28 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 			return Collections.emptyList();
 		}
 		
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
-			return getName(element);
+			return getName(element, codeSyncAlgorithm);
 		} else if (CodeSyncJavaConstants.DOCUMENTATION.equals(feature)) {
 			return getJavaDoc(element);
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.DOCUMENTATION.equals(feature)) {
 			setJavaDoc(element, (String) value);
 		}
 	}
 	
-	protected String getName(Object element) {
-		return (String) getMatchKey(element);
+	protected String getName(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return (String) getMatchKey(element, codeSyncAlgorithm);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -96,18 +97,18 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 	}
 
 	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
 		((ASTNode) child).delete();
 	}
 	
 	@Override
-	public boolean save(Object element) {
+	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do, the changes to the AST will be saved when the file is saved
 		return false;
 	}
 	
 	@Override
-	public boolean discard(Object element) {
+	public boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do, the changes to the AST will be discarded when the file is discarded
 		return false;
 	}

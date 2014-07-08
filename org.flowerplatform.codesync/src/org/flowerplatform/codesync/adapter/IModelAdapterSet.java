@@ -16,6 +16,7 @@
 package org.flowerplatform.codesync.adapter;
 
 import org.eclipse.jface.text.IDocument;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.util.Pair;
 
 /**
@@ -23,9 +24,9 @@ import org.flowerplatform.util.Pair;
  */
 public interface IModelAdapterSet {
 
-	public abstract String getType(Object model);
+	public abstract String getType(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
 
-	public abstract IModelAdapter getModelAdapter(Object model);
+	public abstract IModelAdapter getModelAdapter(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
 
 	public abstract IModelAdapter getModelAdapterForType(String type);
 

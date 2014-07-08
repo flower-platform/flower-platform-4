@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 
 /**
  * Mapped to {@link IInterfaceDefinition}. Children are {@link IFunctionDefinition}s.
@@ -45,16 +46,16 @@ public class AsInterfaceModelAdapter extends AsTypeModelAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getInterface(element).getBaseName();
 	}
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (SUPER_INTERFACES.equals(feature)) {
 			return Arrays.asList(getInterface(element).getExtendedInterfaceReferences());
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
 	protected IInterfaceDefinition getInterface(Object element) {

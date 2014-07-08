@@ -26,21 +26,23 @@ public class FeatureProvider {
 
 	private String extension;
 	private IModelAdapter modelAdapter;
+	private CodeSyncAlgorithm codeSyncAlgorithm;
 	
-	public FeatureProvider(IModelAdapter modelAdapter) {
+	public FeatureProvider(IModelAdapter modelAdapter, CodeSyncAlgorithm codeSyncAlgorithm) {
 		this.modelAdapter = modelAdapter;
+		this.codeSyncAlgorithm = codeSyncAlgorithm;
 	}
 
 	public List<?> getValueFeatures() {
-		return modelAdapter.getValueFeatures(extension);
+		return modelAdapter.getValueFeatures(extension, codeSyncAlgorithm);
 	}
 	
 	public List<?> getContainmentFeatures() {
-		return modelAdapter.getContainmentFeatures(extension);
+		return modelAdapter.getContainmentFeatures(extension, codeSyncAlgorithm);
 	}
 	
 	public int getFeatureType(Object feature) {
-		return modelAdapter.getFeatureType(extension, feature);
+		return modelAdapter.getFeatureType(extension, feature, codeSyncAlgorithm);
 	}
 
 	public String getExtension() {

@@ -16,6 +16,7 @@
 package org.flowerplatform.codesync.as.adapter;
 
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
 
@@ -27,16 +28,16 @@ import org.flowerplatform.core.CoreConstants;
 public class AsReferenceModelAdapter extends AstModelElementAdapter {
 
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getReference(element).getName();
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			return getReference(element).getName();
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	protected IReference getReference(Object element) {

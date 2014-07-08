@@ -32,12 +32,12 @@ public class FileModelAdapter extends DelegatingModelAdapter {
 	 * @param element may be a string representing the extension,
 	 * or a file recognized by the file access controller
 	 */
-	protected IModelAdapter getDelegate(Object element) {
+	protected IModelAdapter getDelegate(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		String extension = null;
 		if (element instanceof String) {
 			extension = (String) element;
 		} else {
-			extension = CodeSyncAlgorithm.fileAccessController.getFileExtension(element);
+			extension = codeSyncAlgorithm.getFileAccessController().getFileExtension(((CodeSyncFile) element).getFile());
 		}
 		String technology = CodeSyncPlugin.getInstance().getTechnologyForExtension(extension);
 		if (technology == null) {

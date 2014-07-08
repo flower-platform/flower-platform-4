@@ -24,6 +24,7 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import org.apache.flex.abc.ABCConstants;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
 
 /**
@@ -44,16 +45,16 @@ public class AsVariableModelAdapter extends AsAbstractAstModelAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getVariable(element).getBaseName();
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (VARIABLE_INITIALIZER.equals(feature)) {
 			return resolveInitializer(element);
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	protected Object resolveInitializer(Object element) {

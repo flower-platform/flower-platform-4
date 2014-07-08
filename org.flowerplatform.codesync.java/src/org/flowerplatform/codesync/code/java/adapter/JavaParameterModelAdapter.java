@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
@@ -37,20 +38,20 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object modelElement) {
+	public Object getMatchKey(Object modelElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getVariableDeclaration(modelElement).getName().getIdentifier();
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getVariableDeclaration(element).getType());
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			SingleVariableDeclaration parameter = getVariableDeclaration(element);
 			String name = (String) value;
@@ -60,12 +61,12 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			Type type = getTypeFromString(parameter.getAST(), (String) value);
 			parameter.setType(type);
 		}
-		super.setValueFeatureValue(element, feature, value);
+		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
 			MethodDeclaration method = (MethodDeclaration) parent;
 			AST ast = method.getAST();
@@ -73,7 +74,7 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			method.parameters().add(parameter);
 			return parameter;
 		}
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet, codeSyncAlgorithm);
 	}
 
 	private SingleVariableDeclaration getVariableDeclaration(Object element) {

@@ -29,7 +29,7 @@ public class MatchActionAddAncestorToLeftRight extends DiffAction {
 		new MatchActionAddAncestorToLeft(false).execute(match, -1);
 		new MatchActionAddAncestorToRight(false).execute(match, -1);
 		IModelAdapter adapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(child);
-		return new ActionResult(false, false, false, adapter.getMatchKey(child), true);
+		return new ActionResult(false, false, false, adapter.getMatchKey(child, match.getCodeSyncAlgorithm()), true);
 	}
 
 }

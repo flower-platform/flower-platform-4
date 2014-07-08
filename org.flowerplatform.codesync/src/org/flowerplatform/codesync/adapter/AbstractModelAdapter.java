@@ -41,27 +41,27 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 	
 	@Override
-	public List<?> getValueFeatures(Object element) {
+	public List<?> getValueFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return valueFeatures;
 	}
 
 	@Override
-	public List<?> getContainmentFeatures(Object element) {
+	public List<?> getContainmentFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return containmentFeatures;
 	}
 
 	@Override
-	public int getFeatureType(Object element, Object feature) {
+	public int getFeatureType(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (valueFeatures.contains(feature)) {
 			return CodeSyncConstants.FEATURE_TYPE_VALUE;
 		} else if (containmentFeatures.contains(feature)) {
 			return CodeSyncConstants.FEATURE_TYPE_CONTAINMENT;
 		}
-		throw new RuntimeException("Feature " + getFeatureName(element, feature) + " is not registered");
+		throw new RuntimeException("Feature " + getFeatureName(element, feature, codeSyncAlgorithm) + " is not registered");
 	}
 
 	@Override
-	public String getFeatureName(Object element, Object feature) {
+	public String getFeatureName(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (feature != null) {
 			return feature.toString();
 		}
@@ -69,57 +69,57 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		throw new IllegalArgumentException("Attempted to acces value feature " + feature + " for element " + element);
 	}
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		throw new IllegalArgumentException("Attempted to acces containment feature " + feature + " for element " + element);
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		throw new IllegalArgumentException("Attempted to set value feature " + feature + " for element " + element);
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		throw new IllegalArgumentException("Attempted to create child on containment feature " + feature + " for element " + parent);
 	}
 	
 	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
 		throw new IllegalArgumentException("Attempted to remove child on containment feature " + feature + " for element " + parent);
 	}
 
 	@Override
-	public void addToMap(Object element, Map<Object, Object> map) {
-		map.put(getMatchKey(element), element);
+	public void addToMap(Object element, Map<Object, Object> map, CodeSyncAlgorithm codeSyncAlgorithm) {
+		map.put(getMatchKey(element, codeSyncAlgorithm), element);
 	}
 
 	@Override
-	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight) {
-		return leftOrRightMap.remove(getMatchKey(element));
+	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return leftOrRightMap.remove(getMatchKey(element, codeSyncAlgorithm));
 	}
 
 	@Override
-	public boolean save(Object element) {
+	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return false;
 	}
 
 	@Override
-	public boolean discard(Object element) {
+	public boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return false;
 	}
 
 	@Override
-	public void beforeFeaturesProcessed(Object element, Object correspondingElement) {
+	public void beforeFeaturesProcessed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 
 	@Override
-	public void featuresProcessed(Object element) {
+	public void featuresProcessed(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 
@@ -129,7 +129,7 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 
 	@Override
-	public void allActionsPerformedForFeature(Object element, Object correspondingElement, Object feature) {
+	public void allActionsPerformedForFeature(Object element, Object correspondingElement, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 
@@ -139,12 +139,12 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	}
 	
 	@Override
-	public void setConflict(Object element, Object feature, Object oppositeValue) {
+	public void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 	
 	@Override
-	public void unsetConflict(Object element, Object feature) {
+	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
 }

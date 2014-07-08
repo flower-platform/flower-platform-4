@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
@@ -37,20 +38,20 @@ import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return element.toString();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object parent, Object feature, 
-			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet) {
+			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.SUPER_INTERFACES.equals(feature)) {
 			if (parent instanceof TypeDeclaration || parent instanceof EnumDeclaration) {
 				AbstractTypeDeclaration cls = (AbstractTypeDeclaration) parent;
 				AST ast = cls.getAST();
-				IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild);
-				String value = (String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, NAME, null);
+				IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild, codeSyncAlgorithm);
+				String value = (String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, NAME, null, codeSyncAlgorithm);
 				Type type = getTypeFromString(ast, value);
 				if (cls instanceof TypeDeclaration) {
 					((TypeDeclaration) cls).superInterfaceTypes().add(type);
@@ -62,13 +63,13 @@ public class JavaExpressionModelAdapter extends JavaAbstractAstNodeModelAdapter 
 			throw new RuntimeException("Cannot create super interface for " + parent);
 		} else if (CodeSyncJavaConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
 			AST ast = ((ASTNode) parent).getAST();
-			IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild);
-			String value = (String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, NAME, null);
+			IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild, codeSyncAlgorithm);
+			String value = (String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, NAME, null, codeSyncAlgorithm);
 			Expression arg = getExpressionFromString(ast, value);
 			((EnumConstantDeclaration) parent).arguments().add(arg);
 			return arg;
 		}
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet, codeSyncAlgorithm);
 	}
 	
 }

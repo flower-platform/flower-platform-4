@@ -28,6 +28,7 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
 import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
 
 /**
@@ -48,7 +49,7 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		String name = getFunction(element).getBaseName();
 		if (element instanceof ISetterDefinition) {
 			return "set " + name;
@@ -58,19 +59,19 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 		return name;
 	}
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getFunction(element).getReturnTypeAsDisplayString();
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncAsConstants.FUNCTION_PARAMETERS.equals(feature)) {
 			return Arrays.asList(getFunction(element).getParameters());
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	protected IFunctionDefinition getFunction(Object element) {

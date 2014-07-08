@@ -42,30 +42,30 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	}
 	
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
-			return getOrCreateCompilationUnit(element).types();
+			return getOrCreateCompilationUnit(element, codeSyncAlgorithm.getFileAccessController()).types();
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
 		((ASTNode) child).delete();
 	}
 
-	private CompilationUnit getOrCreateCompilationUnit(Object file) {
-		return (CompilationUnit) getOrCreateFileInfo(file);
+	private CompilationUnit getOrCreateCompilationUnit(Object file, IFileAccessController fileAccessController) {
+		return (CompilationUnit) getOrCreateFileInfo(file, fileAccessController);
 	}
 	
 	/**
 	 * Creates a new compilation unit from the file's content.
 	 */
 	@Override
-	protected Object createFileInfo(Object file) {
+	protected Object createFileInfo(Object file, IFileAccessController fileAccessController) {
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setCompilerOptions(getOptions());
-		char[] initialContent = getFileContent(file);
+		char[] initialContent = getFileContent(file, fileAccessController);
 		parser.setSource(initialContent);
 		CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
 		astRoot.recordModifications();
@@ -79,8 +79,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 		return options;
 	}
 	
-	private char[] getFileContent(Object file) {
-		IFileAccessController fileAccessController = CodeSyncAlgorithm.fileAccessController;
+	private char[] getFileContent(Object file, IFileAccessController fileAccessController) {
 		boolean fileExists = fileAccessController.exists(file);
 		if (!fileExists) {
 			return new char[0];

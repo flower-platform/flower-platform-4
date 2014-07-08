@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
@@ -36,37 +37,37 @@ public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNode
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getEnumConstant(element).getName().getIdentifier();
 	}
 
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			EnumConstantDeclaration enumConstant = getEnumConstant(element);
 			enumConstant.setName(enumConstant.getAST().newSimpleName((String) value));
 		}
-		super.setValueFeatureValue(element, feature, value);
+		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.ENUM_CONSTANT_ARGUMENTS.equals(feature)) {
 			return getEnumConstant(element).arguments();
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
 			AST ast = ((ASTNode) parent).getAST();
 			EnumConstantDeclaration enumCt = ast.newEnumConstantDeclaration();
 			((EnumDeclaration) parent).enumConstants().add(enumCt);
 			return enumCt;
 		} 
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet, codeSyncAlgorithm);
 	}
 
 	private EnumConstantDeclaration getEnumConstant(Object element) {

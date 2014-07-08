@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 
@@ -34,12 +35,12 @@ import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return ((Modifier) element).getKeyword().toString();
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.MODIFIERS.equals(feature)) {
 			if (!(parent instanceof BodyDeclaration || parent instanceof SingleVariableDeclaration)) {
 				throw new RuntimeException("Cannot create modifier for " + parent);
@@ -47,13 +48,13 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			Modifier modifier = null;
 			
 			AST ast = ((ASTNode) parent).getAST();
-			String keyword = (String) correspondingModelAdapterSet.getModelAdapter(correspondingChild)
-					.getValueFeatureValue(correspondingChild, NAME, null);
+			String keyword = (String) correspondingModelAdapterSet.getModelAdapter(correspondingChild, codeSyncAlgorithm)
+					.getValueFeatureValue(correspondingChild, NAME, null, codeSyncAlgorithm);
 			modifier = ast.newModifier(ModifierKeyword.toKeyword(keyword));
 			addModifier((ASTNode) parent, modifier);
 			return modifier;
 		}
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet, codeSyncAlgorithm);
 	}
 	
 }

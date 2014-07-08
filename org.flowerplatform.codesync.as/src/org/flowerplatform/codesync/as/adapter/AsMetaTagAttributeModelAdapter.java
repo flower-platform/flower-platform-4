@@ -18,6 +18,7 @@ package org.flowerplatform.codesync.as.adapter;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAG_ATTRIBUTE_VALUE;
 
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
 
@@ -33,18 +34,18 @@ public class AsMetaTagAttributeModelAdapter extends AstModelElementAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getMetaTagAttribute(element).getKey();
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			return getMetaTagAttribute(element).getKey();
 		} else if (META_TAG_ATTRIBUTE_VALUE.equals(feature)) {
 			return getMetaTagAttribute(element).getValue();
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
 	protected IMetaTagAttribute getMetaTagAttribute(Object element) {

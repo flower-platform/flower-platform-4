@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.IDocument;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.util.Pair;
 
 /**
@@ -35,9 +36,9 @@ public class ComposedModelAdapterSet implements IModelAdapterSet {
 	}
 
 	@Override
-	public String getType(Object model) {
+	public String getType(Object model, CodeSyncAlgorithm codeSyncAlgorithm) {
 		for (IModelAdapterSet set : modelAdapterSets) {
-			String type = set.getType(model);
+			String type = set.getType(model, codeSyncAlgorithm);
 			if (type != null) {
 				return type;
 			}
@@ -46,9 +47,9 @@ public class ComposedModelAdapterSet implements IModelAdapterSet {
 	}
 
 	@Override
-	public IModelAdapter getModelAdapter(Object model) {
+	public IModelAdapter getModelAdapter(Object model, CodeSyncAlgorithm codeSyncAlgorithm) {
 		for (IModelAdapterSet set : modelAdapterSets) {
-			IModelAdapter adapter = set.getModelAdapter(model);
+			IModelAdapter adapter = set.getModelAdapter(model, codeSyncAlgorithm);
 			if (adapter != null) {
 				return adapter;
 			}

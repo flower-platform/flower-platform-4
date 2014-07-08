@@ -28,6 +28,7 @@ import java.util.Arrays;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 
 /**
  * Mapped to {@link IClassDefinition}. Children are {@link IFunctionDefinition}s
@@ -49,24 +50,24 @@ public class AsClassModelAdapter extends AsTypeModelAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getClassDefinition(element).getBaseName();
 	}
 	
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (SUPER_INTERFACES.equals(feature)) {
 			return Arrays.asList(getClassDefinition(element).getImplementedInterfaceReferences());
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (SUPER_CLASS.equals(feature)) {
 			return getClassDefinition(element).getBaseClassAsDisplayString();
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
 	protected IClassDefinition getClassDefinition(Object element) {

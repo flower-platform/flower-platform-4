@@ -56,6 +56,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
+import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
@@ -147,11 +148,11 @@ public class StructureDiffService {
 		match.setMatchKey(name);
 		
 		// ancestor + left: original content obtained after applying reverse patch
-		match.setAncestor(new StringHolder(path, before));
-		match.setLeft(new StringHolder(path, before));
+		match.setAncestor(new CodeSyncFile(new StringHolder(path, before)));
+		match.setLeft(new CodeSyncFile(new StringHolder(path, before)));
 	
 		// right: current content for this patch
-		match.setRight(new StringHolder(path, after));
+		match.setRight(new CodeSyncFile(new StringHolder(path, after)));
 		
 		// initialize the algorithm
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
@@ -162,7 +163,7 @@ public class StructureDiffService {
 		List<String> technologies = Collections.singletonList(technology);
 		algorithm.initializeModelAdapterSets(technologies, technologies, technologies);
 		algorithm.initializeFeatureProvider(Side.RIGHT);
-		CodeSyncAlgorithm.fileAccessController = new FileHolderAccessController();
+		algorithm.setFileAccessController(new FileHolderAccessController());
 		match.setCodeSyncAlgorithm(algorithm);
 		
 		// STEP 2: generate the diff, i.e. 3-way compare

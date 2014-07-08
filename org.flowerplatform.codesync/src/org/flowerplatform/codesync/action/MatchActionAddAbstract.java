@@ -51,7 +51,7 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 	public ActionResult execute(Match match, int diffIndex) {
 		processMatch(match.getParentMatch(), match, true);
 		Object child = getThis(match);
-		return new ActionResult(false, true, true, getThisModelAdapter(match).getMatchKey(child), true);
+		return new ActionResult(false, true, true, getThisModelAdapter(match).getMatchKey(child, match.getCodeSyncAlgorithm()), true);
 	}
 	
 	protected void processMatch(Match parentMatch, Match match, boolean isFirst) {
@@ -59,9 +59,14 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		if (this_ == null) // this happens when parentMatch was a 2-match-ancestor-left/right and match is 1-match-ancestor (i.e. del left & right)
 			return;
 		
-		String type = getThisModelAdapterSet(match).getType(this_);
+		String type = getThisModelAdapterSet(match).getType(this_, match.getCodeSyncAlgorithm());
 		IModelAdapter oppositeMa = getOppositeModelAdapterSet(parentMatch).getModelAdapterForType(type);	
-		Object opposite = oppositeMa.createChildOnContainmentFeature(getOpposite(parentMatch), match.getFeature(), this_, getThisModelAdapterSet(match));
+		Object opposite = oppositeMa.createChildOnContainmentFeature(
+				getOpposite(parentMatch), 
+				match.getFeature(), 
+				this_, 
+				getThisModelAdapterSet(match),
+				match.getCodeSyncAlgorithm());
 		setOpposite(match, opposite);
 		// from 1-match-left or 1-match-right, the match became 2-match-left-right
 
@@ -69,10 +74,10 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		IModelAdapter thisMa = getThisModelAdapter(match);
 		FeatureProvider featureProvider = match.getCodeSyncAlgorithm().getFeatureProvider(match);
 		for (Object childFeature : featureProvider.getValueFeatures()) {
-			Object value = thisMa.getValueFeatureValue(this_, childFeature, null);
-			Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null);
+			Object value = thisMa.getValueFeatureValue(this_, childFeature, null, match.getCodeSyncAlgorithm());
+			Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null, match.getCodeSyncAlgorithm());
 			if (!CodeSyncAlgorithm.safeEquals(value, valueOpposite)) {
-				oppositeMa.setValueFeatureValue(opposite, childFeature, value);
+				oppositeMa.setValueFeatureValue(opposite, childFeature, value, match.getCodeSyncAlgorithm());
 				actionPerformed(match, thisMa, this_, oppositeMa, opposite, childFeature, new ActionResult(false, true, true));
 			}
 		}
@@ -89,7 +94,7 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 				processMatch(match, childMatch, false);
 		}
 		
-		ActionResult result = new ActionResult(false, true, true, thisMa.getMatchKey(this_), true);
+		ActionResult result = new ActionResult(false, true, true, thisMa.getMatchKey(this_, match.getCodeSyncAlgorithm()), true);
 		IModelAdapter thisParentMa = getThisModelAdapter(parentMatch);
 		IModelAdapter oppositeParentMa = getOppositeModelAdapter(parentMatch);
 		actionPerformed(parentMatch, thisParentMa, getThis(parentMatch), oppositeParentMa, getOpposite(parentMatch), match.getFeature(), result);

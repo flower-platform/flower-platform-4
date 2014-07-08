@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
@@ -43,25 +44,25 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	}
 	
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
 			return ((MethodDeclaration) element).parameters();
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getMethodDeclaration(element).getReturnType2());
 		} else if (CodeSyncJavaConstants.OPERATION_HAS_BODY.equals(feature)) {
 			return getMethodDeclaration(element).getBody() != null;
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			MethodDeclaration method = getMethodDeclaration(element);
 			String name = (String) value;
@@ -86,13 +87,13 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 				method.setBody(null);
 			}
 		}
-		super.setValueFeatureValue(element, feature, value);
+		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object parent, Object feature, 
-			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet) {
+			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
 			AST ast = ((ASTNode) parent).getAST();
 			MethodDeclaration method = ast.newMethodDeclaration();
@@ -100,7 +101,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 			return method;
 		} 
 		return super.createChildOnContainmentFeature(parent, feature,
-				correspondingChild, correspondingModelAdapterSet);
+				correspondingChild, correspondingModelAdapterSet, codeSyncAlgorithm);
 	}
 	
 	private MethodDeclaration getMethodDeclaration(Object element) {
@@ -108,7 +109,7 @@ public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object modelElement) {
+	public Object getMatchKey(Object modelElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		MethodDeclaration method = getMethodDeclaration(modelElement);
 		String label = method.getName().getIdentifier();
 		label += "(";

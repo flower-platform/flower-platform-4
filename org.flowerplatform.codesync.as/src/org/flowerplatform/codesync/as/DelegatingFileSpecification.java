@@ -21,9 +21,7 @@ import java.io.StringReader;
 
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.utils.FilenameNormalization;
-import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.core.file.IFileAccessController;
-import org.flowerplatform.util.file.FileHolder;
 
 /**
  * This implementation delegates to {@link IFileAccessController}.
@@ -32,12 +30,13 @@ import org.flowerplatform.util.file.FileHolder;
  */
 public class DelegatingFileSpecification implements IFileSpecification {
 
-	IFileAccessController fileAccessController = CodeSyncAlgorithm.fileAccessController;
+	private IFileAccessController fileAccessController;
 	
 	private Object file;
 	
-	public DelegatingFileSpecification(Object file) {
+	public DelegatingFileSpecification(Object file, IFileAccessController fileAccessController) {
 		this.file = file;
+		this.fileAccessController = fileAccessController;
 	}
 	
 	@Override

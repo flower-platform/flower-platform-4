@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
 
@@ -36,24 +37,24 @@ public class AsMetaTagModelAdapter extends AstModelElementAdapter {
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getMetaTag(element).getTagName();
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			return getMetaTag(element).getTagName();
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (META_TAG_ATTRIBUTES.equals(feature)) {
 			return Arrays.asList(getMetaTag(element).getAllAttributes());
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	protected IMetaTag getMetaTag(Object element) {

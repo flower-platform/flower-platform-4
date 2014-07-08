@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
@@ -46,9 +47,9 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	}
 	
 	@Override
-	public Object getMatchKey(Object modelElement) {
+	public Object getMatchKey(Object modelElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 //		Annotation annotation = (Annotation) modelElement;
-		String matchKey = getName(modelElement);
+		String matchKey = getName(modelElement, codeSyncAlgorithm);
 		// TODO fix this
 //		if (annotation instanceof MarkerAnnotation) {
 //			matchKey += CodeSyncCodePlugin.MARKER_ANNOTATION;
@@ -63,12 +64,12 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 	}
 	
 	@Override
-	protected String getName(Object element) {
+	protected String getName(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return ((Annotation) element).getTypeName().getFullyQualifiedName();
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			if (element instanceof Annotation) {
 				Annotation annotation = (Annotation) element;
@@ -77,11 +78,11 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 			}
 			return;
 		}
-		super.setValueFeatureValue(element, feature, value);
+		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.ANNOTATION_VALUES.equals(feature)) {
 			if (element instanceof NormalAnnotation) {
 				return ((NormalAnnotation) element).values();
@@ -96,11 +97,11 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 			}
 			return Collections.emptyList();
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.MODIFIERS.equals(feature)) {
 			if (!(parent instanceof BodyDeclaration || parent instanceof SingleVariableDeclaration)) {
 				throw new RuntimeException("Cannot create modifier for " + parent);
@@ -108,9 +109,9 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 			
 			Annotation annotation;
 			AST ast = ((ASTNode) parent).getAST();
-			IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild);
+			IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild, codeSyncAlgorithm);
 			
-			int valuesCount = getIterableSize(correspondingModelAdapter.getContainmentFeatureIterable(correspondingChild, MODIFIERS, null).iterator());
+			int valuesCount = getIterableSize(correspondingModelAdapter.getContainmentFeatureIterable(correspondingChild, MODIFIERS, null, codeSyncAlgorithm).iterator());
 			if (valuesCount == 0) {
 				annotation = ast.newMarkerAnnotation();
 			} else if (valuesCount == 1) {
@@ -122,7 +123,7 @@ public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter 
 			addModifier((ASTNode) parent, annotation);
 			return annotation;
 		}
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet, codeSyncAlgorithm);
 	}
 
 	private int getIterableSize(Iterator<?> it) {

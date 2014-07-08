@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.text.IDocument;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.line_information_provider.ILineProvider;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.util.Pair;
@@ -39,13 +40,13 @@ public class ModelAdapterSet implements IModelAdapterSet {
 	private IModelAdapter fileModelAdapterDelegate;
 
 	@Override
-	public String getType(Object model) { 
-		return typeProvider.getType(model);
+	public String getType(Object model, CodeSyncAlgorithm codeSyncAlgorithm) { 
+		return typeProvider.getType(model, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public IModelAdapter getModelAdapter(Object model) {
-		return getModelAdapterForType(getType(model));
+	public IModelAdapter getModelAdapter(Object model, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getModelAdapterForType(getType(model, codeSyncAlgorithm));
 	}
 	
 	@Override

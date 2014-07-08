@@ -15,25 +15,29 @@
  */
 package org.flowerplatform.codesync.adapter.file;
 
-import org.eclipse.jface.text.Document;
-import org.eclipse.text.edits.TextEdit;
-import org.flowerplatform.core.file.IFileAccessController;
-
 /**
- * Used to handle files with unknown extensions during synchronization.
- * 
  * @author Mariana Gheorghe
  */
-public class UnknownFileModelAdapter extends AbstractFileModelAdapter {
+public class CodeSyncFile {
 
-	@Override
-	protected Object createFileInfo(Object file, IFileAccessController fileAccessController) {
-		return null;
+	private Object file;
+	
+	private Object fileInfo;
+	
+	public CodeSyncFile(Object file) {
+		this.file = file;
 	}
 
-	@Override
-	protected TextEdit rewrite(Document document, Object fileInfo) {
-		return null;
+	public Object getFile() {
+		return file;
 	}
 
+	public Object getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(Object fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+	
 }

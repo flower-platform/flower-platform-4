@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MemberValuePair;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
@@ -40,20 +41,20 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 	}
 	
 	@Override
-	public Object getMatchKey(Object modelElement) {
+	public Object getMatchKey(Object modelElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return ((MemberValuePair) modelElement).getName().getIdentifier();
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.ANNOTATION_VALUE_VALUE.equals(feature)) {
 			return getStringFromExpression(((MemberValuePair) element).getValue());
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			MemberValuePair pair = (MemberValuePair) element;
 			String name = (String) value;
@@ -63,13 +64,13 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 			String expression = (String) value;
 			pair.setValue(getExpressionFromString(pair.getAST(), expression));
 		}
-		super.setValueFeatureValue(element, feature, value);
+		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object parent, Object feature, 
-			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet) {
+			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.ANNOTATION_VALUES.equals(feature)) {
 			ASTNode child = null;
 			AST ast = ((ASTNode) parent).getAST();
@@ -82,9 +83,9 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 			} else {
 				// if the existing annotation is a SingleMemberAnnotation, then set its value
 				if (parent instanceof SingleMemberAnnotation) {
-					IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild);
+					IModelAdapter correspondingModelAdapter = correspondingModelAdapterSet.getModelAdapter(correspondingChild, codeSyncAlgorithm);
 					ASTNode expression = getExpressionFromString(((ASTNode) parent).getAST(), 
-							(String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, ANNOTATION_VALUE_VALUE, null));
+							(String) correspondingModelAdapter.getValueFeatureValue(correspondingChild, ANNOTATION_VALUE_VALUE, null, codeSyncAlgorithm));
 					((SingleMemberAnnotation) parent).setValue((Expression) expression);
 					child = ast.newMemberValuePair(); // avoid NPE later
 				}
@@ -92,15 +93,15 @@ public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAda
 		
 			return child;
 		}
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, correspondingModelAdapterSet, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.ANNOTATION_VALUES.equals(feature) && !(parent instanceof NormalAnnotation)) {
 			return;
 		}
-		super.removeChildrenOnContainmentFeature(parent, feature, child);
+		super.removeChildrenOnContainmentFeature(parent, feature, child, codeSyncAlgorithm);
 	}
 
 }

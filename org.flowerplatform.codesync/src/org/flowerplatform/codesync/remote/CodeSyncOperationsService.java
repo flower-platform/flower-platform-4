@@ -79,9 +79,9 @@ public class CodeSyncOperationsService {
 				Collections.singletonList(technology),
 				Collections.singletonList(NODE_ANCESTOR));
 		algorithm.initializeFeatureProvider(Side.RIGHT);
-		algorithm.fileAccessController = CorePlugin.getInstance().getFileAccessController(); 
+		algorithm.setFileAccessController(CorePlugin.getInstance().getFileAccessController()); 
 		match.setCodeSyncAlgorithm(algorithm);
-		match.setMatchKey(algorithm.getAncestorModelAdapter(srcDir).getMatchKey(srcDir));
+		match.setMatchKey(algorithm.getAncestorModelAdapter(srcDir).getMatchKey(srcDir, algorithm));
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
 		algorithm.generateDiff(match, oneStepSync);

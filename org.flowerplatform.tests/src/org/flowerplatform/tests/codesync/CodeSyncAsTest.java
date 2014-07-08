@@ -61,6 +61,8 @@ public class CodeSyncAsTest {
 						new Pair(_2MATCH_LEFT_RIGHT, 3),				// implements ITest
 				new Pair(_2MATCH_LEFT_RIGHT, 1),				// Test.mxml
 					new Pair(_2MATCH_LEFT_RIGHT, 2),				// s:ItemRenderer
+						new Pair(_2MATCH_LEFT_RIGHT, 3),				// <s:BitmapImage id="hasSubActions"/>
+							new Pair(_2MATCH_LEFT_RIGHT, 4),				// [Bindable]
 						new Pair(_2MATCH_LEFT_RIGHT, 3),				// protected function clickHandler(event:MouseEvent):void
 							new Pair(_2MATCH_LEFT_RIGHT, 4),				// event:MouseEvent 
 						new Pair(_2MATCH_LEFT_RIGHT, 3),				// public static const HEIGHT:int = 22

@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
@@ -40,22 +41,22 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getAnnotationMember(element).getName().getIdentifier();
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.ANNOTATION_MEMBER_DEFAULT_VALUE.equals(feature)) {
 			return getStringFromExpression(getAnnotationMember(element).getDefault());
 		} else if (CodeSyncJavaConstants.TYPED_ELEMENT_TYPE.equals(feature)) {
 			return getStringFromType(getAnnotationMember(element).getType());
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object value) {
+	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
 			member.setName(member.getAST().newSimpleName((String) value));
@@ -66,13 +67,13 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 			AnnotationTypeMemberDeclaration member = getAnnotationMember(element);
 			member.setType(getTypeFromString(member.getAST(), (String) value));
 		}
-		super.setValueFeatureValue(element, feature, value);
+		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object parent, Object feature,
-			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet) {
+			Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
 			AST ast = ((ASTNode) parent).getAST();
 			AnnotationTypeMemberDeclaration member = ast.newAnnotationTypeMemberDeclaration();
@@ -80,7 +81,7 @@ public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstrac
 			return member;
 		} 
 		return super.createChildOnContainmentFeature(parent, feature,
-				correspondingChild, correspondingModelAdapterSet);
+				correspondingChild, correspondingModelAdapterSet, codeSyncAlgorithm);
 	}
 
 	private AnnotationTypeMemberDeclaration getAnnotationMember(Object element) {

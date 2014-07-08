@@ -31,6 +31,7 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
@@ -105,12 +106,12 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 	}
 
 	@Override
-	public Object getMatchKey(Object modelElement) {
+	public Object getMatchKey(Object modelElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getAbstractTypeDeclaration(modelElement).getName().getIdentifier();
 	}
 
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
 			return getChildren(element);
 		} else if (CodeSyncJavaConstants.SUPER_INTERFACES.equals(feature)) {
@@ -122,11 +123,11 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 			}
 			return Collections.emptyList();
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.SUPER_CLASS.equals(feature)) {
 			if (element instanceof TypeDeclaration) {
 				TypeDeclaration type = (TypeDeclaration) element;
@@ -136,11 +137,11 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 			}
 			return null;
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, final Object value) {
+	public void setValueFeatureValue(Object element, Object feature, final Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			AbstractTypeDeclaration type = getAbstractTypeDeclaration(element);
 			String name = (String) value;
@@ -157,22 +158,22 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 				cls.setSuperclassType(type);
 			}
 		}
-		super.setValueFeatureValue(element, feature, value);
+		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// declared as containment by JavaFeatureProvider 
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
 			AbstractTypeDeclaration type = (AbstractTypeDeclaration) parent;
 			AST ast = type.getAST();
-			ASTNode child = createCorrespondingModelElement(ast, modelAdapterSet.getType(correspondingChild));
+			ASTNode child = createCorrespondingModelElement(ast, modelAdapterSet.getType(correspondingChild, codeSyncAlgorithm));
 			type.bodyDeclarations().add(child);
 			return child;
 		}
 
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet, codeSyncAlgorithm);
 	}
 	
 	protected ASTNode createCorrespondingModelElement(AST ast, String type) {
