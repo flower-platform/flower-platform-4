@@ -16,6 +16,9 @@
 package org.flowerplatform.codesync.as.line_information_provider;
 
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IBlockNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.line_information_provider.ILineProvider;
@@ -28,10 +31,15 @@ public class AsFunctionLineProvider implements ILineProvider {
 
 	@Override
 	public Pair<Integer, Integer> getStartEndLines(Object model, IDocument document) {
+		IFunctionNode node = getFunction(model).getFunctionNode();
+		IBlockNode block = getBlock(node);
+		if (block == null) {
+			return null;
+		}
 		try {
 			return new Pair<Integer, Integer>(
-					document.getLineOfOffset(getFunction(model).getStart()),
-					document.getLineOfOffset(getFunction(model).getEnd()));
+					document.getLineOfOffset(block.getStart()),
+					document.getLineOfOffset(block.getEnd()));
 		} catch (BadLocationException e) {
 			throw new RuntimeException(e);
 		}
@@ -39,6 +47,16 @@ public class AsFunctionLineProvider implements ILineProvider {
 	
 	private IFunctionDefinition getFunction(Object model) {
 		return (IFunctionDefinition) model;
+	}
+	
+	private IBlockNode getBlock(IFunctionNode node) {
+		for (int i = 0; i < node.getChildCount(); i++) {
+			IASNode child = node.getChild(i);
+			if (child instanceof IBlockNode) {
+				return (IBlockNode) child;
+			}
+		}
+		return null;
 	}
 
 	@Override

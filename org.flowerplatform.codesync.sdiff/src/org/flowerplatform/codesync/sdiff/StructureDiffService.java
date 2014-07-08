@@ -200,7 +200,11 @@ public class StructureDiffService {
 					int modelStartLine = lines.a;
 					int modelEndLine = lines.b;
 					if (modelStartLine >= 0 && modelEndLine >= 0) {
-						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine);;
+						// if the method was modified or has modified children => ignore the first line
+						if (isModifiedOrChildrenModified(match)) {
+							modelStartLine++;
+						}
+						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine);
 						CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, isBodyModified, context);
 						if (isBodyModified) {
 							propagateBodyModifiedToParents(child);
@@ -214,6 +218,13 @@ public class StructureDiffService {
 		for (Match subMatch : match.getSubMatches()) {
 			addToSdiffFile(child, subMatch, patch, document);
 		}
+	}
+	
+	private boolean isModifiedOrChildrenModified(Match match) {
+		return match.isChildrenModifiedLeft() ||
+				match.isChildrenModifiedRight() ||
+				match.isDiffsModifiedLeft() ||
+				match.isDiffsModifiedRight();
 	}
 	
 	private void propagateBodyModifiedToParents(Node child) {

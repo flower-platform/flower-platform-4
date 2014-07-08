@@ -97,13 +97,14 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 			color = MATCH_COLOR_REMOVED;
 			break;
 		case _3MATCH:
-			if (hasFlagTrue(node, MATCH_BODY_MODIFIED)) {
-				color = MATCH_COLOR_BODY_MODIFIED;
-			} else if (hasFlagTrue(node, MATCH_CHILDREN_MODIFIED_RIGHT)) {
+			if (hasFlagTrue(node, MATCH_CHILDREN_MODIFIED_RIGHT)) {
 				color = MATCH_COLOR_CHILDREN_MODIFIED;
 			} else if (hasFlagTrue(node, MATCH_DIFFS_MODIFIED_RIGHT)) {
 				color = MATCH_COLOR_PROP_MODIFIED;
+			} else if (hasFlagTrue(node, MATCH_BODY_MODIFIED)) {
+				color = MATCH_COLOR_BODY_MODIFIED;
 			}
+			break;
 		}
 		
 		// set color
