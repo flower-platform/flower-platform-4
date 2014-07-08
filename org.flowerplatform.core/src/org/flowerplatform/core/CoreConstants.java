@@ -16,7 +16,6 @@
 package org.flowerplatform.core;
 
 import org.flowerplatform.util.UtilConstants;
-
 public class CoreConstants {
 
 	public static final String APP_VERSION = "0.1.1";
@@ -37,7 +36,10 @@ public class CoreConstants {
 	
 	public static final String PREFERENCE_TYPE = "preference";
 	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
-		
+
+	public static final String LINK_TYPE = "link";
+	public static final String CATEGORY_LINK = UtilConstants.CATEGORY_PREFIX + LINK_TYPE;
+	
 	//////////////////////////////////
 	// Node properties
 	//////////////////////////////////
@@ -60,6 +62,7 @@ public class CoreConstants {
 	public static final String INSERT_BEFORE_FULL_NODE_ID = "insertBeforeFullNodeId"; 
 	
 	public static final String PROPERTY_DEFAULT_FORMAT = "%s.default";
+
 	
 	//////////////////////////////////
 	// File node properties
@@ -70,6 +73,14 @@ public class CoreConstants {
 	public static final String FILE_CREATION_TIME = "creationTime";
 	public static final String FILE_LAST_MODIFIED_TIME = "lastModifiedTime";
 	public static final String FILE_LAST_ACCESS_TIME = "lastAccessTime";
+	
+	//////////////////////////////////
+	// Link node properties
+	//////////////////////////////////
+	
+	public static final String TARGET_NODE_URI = "targetNodeUri";
+	public static final String LINK_TYPE_PROPERTY = "linkType";
+	
 	
 	//////////////////////////////////
 	// Controllers

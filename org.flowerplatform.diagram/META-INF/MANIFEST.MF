@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Diagram
+Bundle-SymbolicName: org.flowerplatform.diagram
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.flowerplatform.core,
+ org.flowerplatform.util,
+ org.eclipse.osgi
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.flowerplatform.diagram.DiagramPlugin
