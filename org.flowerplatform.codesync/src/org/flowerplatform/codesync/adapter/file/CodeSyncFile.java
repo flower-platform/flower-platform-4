@@ -39,5 +39,10 @@ public class CodeSyncFile {
 	public void setFileInfo(Object fileInfo) {
 		this.fileInfo = fileInfo;
 	}
+
+	@Override
+	public String toString() {
+		return file.toString();
+	}
 	
 }

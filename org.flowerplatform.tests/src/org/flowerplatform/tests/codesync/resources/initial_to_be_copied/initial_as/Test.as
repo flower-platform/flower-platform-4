@@ -27,7 +27,8 @@ package org.flowerplatform.flexutil.controller {
 	 */ 
 	public class Test implements ITest {
 	
-		private var _orderIndex:int;
+		[Bindable]
+		public var test:int;
 		
 		public function get orderIndex():int {
 			return _orderIndex;

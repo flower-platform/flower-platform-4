@@ -54,10 +54,11 @@ public class CodeSyncAsTest {
 					new Pair(_2MATCH_LEFT_RIGHT, 2),				// public class Test
 						new Pair(_2MATCH_LEFT_RIGHT, 3),				// public function set orderIndex(value:int):void
 							new Pair(_2MATCH_LEFT_RIGHT, 4),				// value:int 
-						new Pair(_2MATCH_LEFT_RIGHT, 3),				// private var _orderIndex:int
 						new Pair(_2MATCH_LEFT_RIGHT, 3),				// public function Test(orderIndex:int = 0)
 							new Pair(_2MATCH_LEFT_RIGHT, 4),				// orderIndex:int = 0
 						new Pair(_2MATCH_LEFT_RIGHT, 3),				// public function get orderIndex():int
+						new Pair(_2MATCH_LEFT_RIGHT, 3),				// public var test:int
+							new Pair(_2MATCH_LEFT_RIGHT, 4),				// [Bindable]
 						new Pair(_2MATCH_LEFT_RIGHT, 3),				// implements ITest
 				new Pair(_2MATCH_LEFT_RIGHT, 1),				// Test.mxml
 					new Pair(_2MATCH_LEFT_RIGHT, 2),				// s:ItemRenderer

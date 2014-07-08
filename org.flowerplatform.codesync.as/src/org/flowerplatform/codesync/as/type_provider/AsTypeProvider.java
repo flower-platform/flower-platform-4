@@ -41,6 +41,7 @@ import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.internal.definitions.SyntheticBindableGetterDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
@@ -56,6 +57,9 @@ public class AsTypeProvider implements ITypeProvider {
 	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (object instanceof IParameterDefinition) {
 			return PARAMETER;
+		} else if (object instanceof SyntheticBindableGetterDefinition) {
+			// treat the getter as a variable; the setter is ignored
+			return VARIABLE;
 		} else if (object instanceof IGetterDefinition) {
 			return GETTER;
 		} else if (object instanceof ISetterDefinition) {

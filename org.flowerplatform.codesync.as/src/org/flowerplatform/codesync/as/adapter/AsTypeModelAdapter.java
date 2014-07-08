@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.internal.definitions.SyntheticBindableSetterDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
@@ -38,6 +39,10 @@ public abstract class AsTypeModelAdapter extends AsAbstractAstModelAdapter {
 				@Override
 				protected boolean isAccepted(IDefinition candidate) {
 					if (candidate.isImplicit()) {
+						return false;
+					}
+					if (candidate instanceof SyntheticBindableSetterDefinition) {
+						// ignore; the getter will be seen as a variable
 						return false;
 					}
 					return true;
