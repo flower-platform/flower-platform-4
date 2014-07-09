@@ -25,6 +25,7 @@ package org.flowerplatform.flex_client.core.node.event {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 
 	/**
+	 * TODO CC: remove
 	 * Dispatched when a <code>Node</code> has been
 	 * updated (from Java). 
 	 * 
@@ -38,8 +39,7 @@ package org.flowerplatform.flex_client.core.node.event {
 	 * @author Cristian Spiescu
 	 * @author Cristina Constantinescu
 	 * 
-	 */
-	//TODO CC: remove
+	 */	
 	public class NodeUpdatedEvent extends Event {
 		
 		public static const NODE_UPDATED:String = "NodeUpdatedEvent";

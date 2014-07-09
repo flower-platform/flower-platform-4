@@ -22,11 +22,11 @@ package org.flowerplatform.flex_client.core.node.event {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 
 	/**
+	 * TODO CC: remove
 	 * Dispatched when <code>Node</code>s are being removed.
 	 *  
 	 * @author Cristina Constantinescu
-	 */
-	//TODO CC: remove
+	 */	
 	public class NodeRemovedEvent extends Event {
 		
 		public static const NODE_REMOVED:String = "NodeRemovedEvent";
