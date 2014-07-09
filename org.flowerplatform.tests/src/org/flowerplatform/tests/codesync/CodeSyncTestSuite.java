@@ -93,7 +93,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 					new ServiceContext<NodeService>(nodeService).add(
 							CoreConstants.POPULATE_WITH_PROPERTIES, true));
 			for (Node child : children) {
-				if (name.equals(child.getOrPopulateProperties().get(
+				if (name.equals(child.getOrPopulateProperties(new ServiceContext<NodeService>(nodeService)).get(
 						CoreConstants.NAME))) {
 					parent = child;
 					break;

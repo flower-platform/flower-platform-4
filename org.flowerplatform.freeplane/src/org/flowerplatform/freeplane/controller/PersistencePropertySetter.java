@@ -69,7 +69,7 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 		rawNodeData.getMap().setSaved(false);
 		
 		// set the property on the node instance too
-		node.getOrPopulateProperties().put(property, value);
+		node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).put(property, value);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 		}
 		
 		// remove the property from the node instance too
-		node.getOrPopulateProperties().remove(property);
+		node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).remove(property);
 	}
 	
 }
