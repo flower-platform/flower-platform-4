@@ -28,11 +28,11 @@ public class DiffActionCopyRightToLeft extends DiffAction {
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Diff diff = match.getDiffs().get(diffIndex);
-		IModelAdapter leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match, match.getLeft());
-		IModelAdapter rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match, match.getRight());
+		IModelAdapter leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
+		IModelAdapter rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
 		
-		Object value = rightModelAdapter.getValueFeatureValue(match.getRight(), diff.getFeature(), null);
-		leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value);
+		Object value = rightModelAdapter.getValueFeatureValue(match.getRight(), diff.getFeature(), null, match.getCodeSyncAlgorithm());
+		leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value, match.getCodeSyncAlgorithm());
 		diff.setConflict(false);
 		diff.setLeftModified(true);
 		

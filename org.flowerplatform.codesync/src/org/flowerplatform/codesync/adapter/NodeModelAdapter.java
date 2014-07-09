@@ -23,17 +23,18 @@ import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import java.util.Iterator;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
@@ -43,23 +44,10 @@ import org.flowerplatform.util.controller.TypeDescriptor;
 public class NodeModelAdapter extends AbstractModelAdapter {
 
 	/**
-	 * Checks for a {@link FeatureChange} on the name feature first.
-	 */
-	@Override
-	public String getLabel(Object modelElement) {
-		return (String) getMatchKey(modelElement);
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		return null;
-	}
-	
-	/**
 	 * Get the children that are registered as members of this feature (via {@link MemberOfChildCategoryDescriptor}s).
 	 */
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, true));
 		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
 
@@ -84,17 +72,17 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {		
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {		
 		return getNode(element).getPropertyValue((String) feature);
 	}
 	
 	@Override
-	public Object getMatchKey(Object element) {
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getNode(element).getPropertyValue(CoreConstants.NAME);
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object newValue) {		
+	public void setValueFeatureValue(Object element, Object feature, Object newValue, CodeSyncAlgorithm codeSyncAlgorithm) {		
 		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
@@ -103,7 +91,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public Object createChildOnContainmentFeature(Object element, Object feature, Object correspondingChild, ITypeProvider typeProvider) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// first check if the child already exists
 //		Iterable<?> children = super.getContainmentFeatureIterable(eObject, feature, null);
 //		IModelAdapter adapter = codeSyncElementConverter.getModelAdapter(correspondingChild);
@@ -122,15 +110,15 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 //		}
 //		
 //		if (eObject != null) {
-				Node parent = getNode(element);
+				Node parentNode = getNode(parent);
 				// set the type for the new node; needed by the action performed handler
-				String type = typeProvider.getType(correspondingChild);
+				String type = correspondingModelAdapterSet.getType(correspondingChild, codeSyncAlgorithm);
 				
-				String scheme = Utils.getScheme(parent.getNodeUri());
-				String ssp = Utils.getSchemeSpecificPart(parent.getNodeUri());
+				String scheme = Utils.getScheme(parentNode.getNodeUri());
+				String ssp = Utils.getSchemeSpecificPart(parentNode.getNodeUri());
 				String childUri = Utils.getUri(scheme, ssp, null);
 				Node child = new Node(childUri, type);
-				CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 				return child;
 //		}
 //		
@@ -138,35 +126,29 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child) {
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
 		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
 	@Override
-	public boolean hasChildren(Object modelElement) {
-		// TODO Auto-generated method stub
+	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(getNode(element).getNodeUri());
+		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
+		if (resourceSet == null) {
+			resourceSet = resourceNode.getNodeUri();
+		}
+		CorePlugin.getInstance().getResourceSetService().save(resourceSet, 
+				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 		return false;
 	}
 
 	@Override
-	public List<?> getChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public boolean save(Object element) {
-//		CodeSyncPlugin.getInstance().getNodeService().save();
-		return false;
-	}
-
-	@Override
-	public void setConflict(Object element, Object feature, Object oppositeValue) {		
+	public void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm) {		
 		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, CorePlugin.getInstance().getNodeService());
 	}
 	
 	@Override
-	public void unsetConflict(Object element, Object feature) {		
+	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {		
 		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), CorePlugin.getInstance().getNodeService());
 	}
 
@@ -213,7 +195,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				}
 			}
 			if (child != null) {
-				Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(match, child).getMatchKey(child);
+				Object childMatchKey = parentMatch.getCodeSyncAlgorithm().getLeftModelAdapter(child).getMatchKey(child, match.getCodeSyncAlgorithm());
 				if (matchKey.equals(childMatchKey)) {
 					return child;
 				}

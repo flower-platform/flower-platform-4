@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.freeplane.controller;
 
+import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY;
+
 import java.io.File;
 
 import org.flowerplatform.core.CoreConstants;
@@ -25,7 +27,10 @@ import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
+import org.freeplane.features.attribute.Attribute;
+import org.freeplane.features.attribute.NodeAttributeTableModel;
 import org.freeplane.features.map.MapModel;
+import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.url.UrlManager;
 import org.freeplane.features.url.mindmapmode.MFileManager;
@@ -35,26 +40,50 @@ import org.freeplane.features.url.mindmapmode.MFileManager;
  */
 public class MindMapFileAddNodeController extends AbstractController implements IAddNodeController {
 
-	public MindMapFileAddNodeController() {
+	private String extension;
+	private String rootNodeType;
+	
+	public MindMapFileAddNodeController(String extension) {
+		super();
+		this.extension = extension;
+
 		// higher order index, to make sure it's invoked after the file was created
 		setOrderIndex(10000);
+	}
+	
+	public MindMapFileAddNodeController(String extension, String rootNodeType) {
+		this(extension);
+		this.rootNodeType = rootNodeType;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
 		String filename = (String) child.getPropertyValue(CoreConstants.NAME);
-		if (!filename.endsWith(UrlManager.FREEPLANE_FILE_EXTENSION)) {
+		if (!endsWithExtension(filename)) {
 			return;
 		}
 		
 		try {
 			MapModel model = Controller.getCurrentModeController().getMapController().newModel();
+			if (rootNodeType != null) {
+				NodeModel rootNode = model.getRootNode();
+				NodeAttributeTableModel attributeTable = (NodeAttributeTableModel) rootNode.getExtension(NodeAttributeTableModel.class);		
+				if (attributeTable == null) {
+					attributeTable = new NodeAttributeTableModel(rootNode);
+					rootNode.addExtension(attributeTable);
+				}
+				attributeTable.getAttributes().add(new Attribute(FREEPLANE_PERSISTENCE_NODE_TYPE_KEY, rootNodeType));
+			}
 			((MFileManager) UrlManager.getController()).writeToFile(model, (File) CorePlugin.getInstance().getFileAccessController().getFile(
 					FileControllerUtils.getFilePathWithRepo(child)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	protected boolean endsWithExtension(String filename) {
+		return filename.endsWith(extension);
 	}
 
 }

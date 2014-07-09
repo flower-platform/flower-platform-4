@@ -17,6 +17,7 @@ package org.flowerplatform.codesync.action;
 
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
@@ -37,11 +38,21 @@ public class MatchActionAddRightToLeft extends MatchActionAddLateralAbstract {
 	}
 	
 	protected IModelAdapter getThisModelAdapter(Match match) {
-		return match.getCodeSyncAlgorithm().getRightModelAdapter(match, getThis(match));
+		return match.getCodeSyncAlgorithm().getRightModelAdapter(getThis(match));
 	}
 	
 	protected IModelAdapter getOppositeModelAdapter(Match match) {
-		return match.getCodeSyncAlgorithm().getLeftModelAdapter(match, getOpposite(match));
+		return match.getCodeSyncAlgorithm().getLeftModelAdapter(getOpposite(match));
+	}
+	
+	@Override
+	protected IModelAdapterSet getThisModelAdapterSet(Match match) {
+		return match.getCodeSyncAlgorithm().getModelAdapterSetRight();
+	}
+
+	@Override
+	protected IModelAdapterSet getOppositeModelAdapterSet(Match match) {
+		return match.getCodeSyncAlgorithm().getModelAdapterSetLeft();
 	}
 	
 	protected void setOpposite(Match match, Object elment) {
@@ -52,4 +63,5 @@ public class MatchActionAddRightToLeft extends MatchActionAddLateralAbstract {
 	protected void setChildrenModified(Match match) {
 		match.setChildrenModifiedLeft(true);
 	}
+	
 }

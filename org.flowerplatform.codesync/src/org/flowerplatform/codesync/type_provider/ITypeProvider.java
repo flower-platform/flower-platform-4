@@ -15,11 +15,13 @@
  */
 package org.flowerplatform.codesync.type_provider;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
+
 /**
  * @author Mariana Gheorghe
  */
 public interface ITypeProvider {
 
-	public String getType(Object object);
+	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 }

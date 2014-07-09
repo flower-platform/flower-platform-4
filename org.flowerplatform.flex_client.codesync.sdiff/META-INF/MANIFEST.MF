@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sdiff
+Bundle-SymbolicName: org.flowerplatform.flex_client.codesync.sdiff;singleton:=true
+Bundle-Version: 0.1.1.qualifier

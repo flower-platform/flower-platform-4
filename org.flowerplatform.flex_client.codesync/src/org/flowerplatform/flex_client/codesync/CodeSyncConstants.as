@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.codesync {
 		// Node types and categories
 		//////////////////////////////////
 
+		public static const CODESYNC:String = "codesync";
 		public static const CATEGORY_CODESYNC:String = FlexUtilConstants.CATEGORY_PREFIX + "codesync";
 		
 		//////////////////////////////////
