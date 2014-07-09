@@ -18,14 +18,21 @@ package org.flowerplatform.codesync.as.adapter;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
+import org.apache.flex.compiler.internal.tree.as.FileNode;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.IRequest;
 import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
@@ -52,20 +59,28 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncAsConstants.STATEMENTS.equals(feature)) {
 			@SuppressWarnings("unchecked")
-			Pair<ICompilationUnit, IFileNode> pair = (Pair<ICompilationUnit, IFileNode>) 
+			Pair<ICompilationUnit, IASNode> pair = (Pair<ICompilationUnit, IASNode>) 
 					getOrCreateFileInfo(element, codeSyncAlgorithm.getFileAccessController());
 			if (pair.a == null) {
 				return Collections.emptyList();
 			}
 
-			IFileNode ast = pair.b;
+			IASNode ast = pair.b;
 			if (ast == null) {
 				return Collections.emptyList();
 			}
-			if (ast instanceof MXMLFileNode) {
-				return Arrays.asList(((MXMLFileScope) ast.getScope()).getMainClassDefinition());
+			if (ast instanceof FileNode) {
+				FileNode fileNode = (FileNode) ast;
+				return Arrays.asList(fileNode.getTopLevelDefinitions(true, true));
+			} else if (ast instanceof MXMLFileNode) {
+				MXMLFileNode fileNode = (MXMLFileNode) ast;
+				return Arrays.asList(((MXMLFileScope) fileNode.getScope()).getMainClassDefinition());
+			} else {
+				if (ast instanceof IScopedNode) {
+					IASScope scope = ((IScopedNode) ast).getScope();
+					return Arrays.asList(scope.getDefinition());
+				}
 			}
-			return Arrays.asList(ast.getTopLevelDefinitions(true, true));
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
@@ -91,13 +106,24 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 		IRequest<ISyntaxTreeRequestResult, ICompilationUnit> req = cu.getSyntaxTreeRequest();
 		
 		// create AST rooted at IFileNode
-		IFileNode ast = null;
+		IASNode ast = null;
 		try {
 			ast = (IFileNode) req.get().getAST();
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		return new Pair<ICompilationUnit, IFileNode>(cu, ast);
+		if (ast instanceof MXMLFileNode) {
+			MXMLFileNode fileNode = (MXMLFileNode) ast;
+			Collection<IDefinition> definitions = ((MXMLFileScope) fileNode.getScope())
+					.getMainClassDefinition().getContainedScope().getAllLocalDefinitions();
+			if (!definitions.isEmpty()) {
+				IDefinitionNode node = definitions.iterator().next().getNode();
+				if (node != null) {
+					ast = node.getContainingScope();
+				}
+			}
+		}
+		return new Pair<ICompilationUnit, IASNode>(cu, ast);
 	}
 
 	@Override

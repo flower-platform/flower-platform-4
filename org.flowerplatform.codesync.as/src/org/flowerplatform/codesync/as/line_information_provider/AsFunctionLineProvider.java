@@ -18,7 +18,7 @@ package org.flowerplatform.codesync.as.line_information_provider;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.line_information_provider.ILineProvider;
@@ -31,7 +31,7 @@ public class AsFunctionLineProvider implements ILineProvider {
 
 	@Override
 	public Pair<Integer, Integer> getStartEndLines(Object model, IDocument document) {
-		IFunctionNode node = getFunction(model).getFunctionNode();
+		IDefinitionNode node = getFunction(model).getNode();
 		IBlockNode block = getBlock(node);
 		if (block == null) {
 			return null;
@@ -49,7 +49,7 @@ public class AsFunctionLineProvider implements ILineProvider {
 		return (IFunctionDefinition) model;
 	}
 	
-	private IBlockNode getBlock(IFunctionNode node) {
+	private IBlockNode getBlock(IDefinitionNode node) {
 		for (int i = 0; i < node.getChildCount(); i++) {
 			IASNode child = node.getChild(i);
 			if (child instanceof IBlockNode) {
