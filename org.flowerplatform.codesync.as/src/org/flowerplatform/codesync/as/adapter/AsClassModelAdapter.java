@@ -1,75 +1,77 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.as.adapter;
 
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAGS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.STATEMENTS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_CLASS;
-import macromedia.asc.parser.ClassDefinitionNode;
-import macromedia.asc.parser.FunctionDefinitionNode;
-import macromedia.asc.parser.LiteralStringNode;
-import macromedia.asc.parser.MemberExpressionNode;
-import macromedia.asc.parser.Node;
-import macromedia.asc.parser.VariableDefinitionNode;
-import macromedia.asc.util.Context;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.SUPER_INTERFACES;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
-import org.flowerplatform.codesync.FilteredIterable;
-import org.flowerplatform.codesync.as.CodeSyncAsConstants;
-import org.flowerplatform.codesync.as.feature_provider.AsClassFeatureProvider;
-import org.flowerplatform.core.CoreConstants;
+import java.util.Arrays;
+
+import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 
 /**
- * Mapped to {@link ClassDefinitionNode}. Children are {@link VariableDefinitionNode}s
- * and {@link FunctionDefinitionNode}s.
- * 
- * @see AsClassFeatureProvider
+ * Mapped to {@link IClassDefinition}. Children are {@link IFunctionDefinition}s
+ * and {@link IVariableDefinition}s.
  * 
  * @author Mariana Gheorghe
  */
-public class AsClassModelAdapter extends AsAbstractAstModelAdapter {
+public class AsClassModelAdapter extends AsTypeModelAdapter {
 
-	@Override
-	public Object getMatchKey(Object element) {
-		return getClassDef(element).name.name;
+	public AsClassModelAdapter() {
+		valueFeatures.add(SUPER_CLASS);
+		valueFeatures.add(DOCUMENTATION);
+		valueFeatures.add(VISIBILITY);
+		
+		containmentFeatures.add(STATEMENTS);
+		containmentFeatures.add(META_TAGS);
+		containmentFeatures.add(SUPER_INTERFACES);
+		containmentFeatures.add(MODIFIERS);
 	}
 	
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
-		if (CodeSyncAsConstants.STATEMENTS.equals(feature)) {
-			return new FilteredIterable<Node, Node>(getClassDef(element).statements.items.iterator()) {
-
-				@Override
-				protected boolean isAccepted(Node node) {
-					return node instanceof VariableDefinitionNode ||
-							node instanceof FunctionDefinitionNode;
-				}
-			};
+	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return getClassDefinition(element).getBaseName();
+	}
+	
+	@Override
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
+		if (SUPER_INTERFACES.equals(feature)) {
+			return Arrays.asList(getClassDefinition(element).getImplementedInterfaceReferences());
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (CoreConstants.NAME.equals(feature)) {
-			return getClassDef(element).name.name;
-		} else if (SUPER_CLASS.equals(feature)) {
-			Node baseClass = getClassDef(element).baseclass;
-			if (baseClass == null) {
-				return null;
-			}
-			if (baseClass instanceof MemberExpressionNode) {
-				MemberExpressionNode member = (MemberExpressionNode) getClassDef(element).baseclass;
-				return member.selector.getIdentifier().name;
-			} else if (baseClass instanceof LiteralStringNode) {
-				return ((LiteralStringNode) baseClass).value;
-			}
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		if (SUPER_CLASS.equals(feature)) {
+			return getClassDefinition(element).getBaseClassAsDisplayString();
 		}
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
-
-	protected ClassDefinitionNode getClassDef(Object element) {
-		return (ClassDefinitionNode) element;
-	}
-
-	@Override
-	protected Context getContext(Object element) {
-		return getClassDef(element).cx;
+	
+	protected IClassDefinition getClassDefinition(Object element) {
+		return (IClassDefinition) element;
 	}
 	
 }

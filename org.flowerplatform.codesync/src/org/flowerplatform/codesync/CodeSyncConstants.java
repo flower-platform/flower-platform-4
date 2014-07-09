@@ -46,15 +46,15 @@ public class CodeSyncConstants {
 		return "." + extension;
 	}
 	
+	public static final String FOLDER = "codesyncFolder";
+	public static final String FILE = "codesyncFile";
+	
 	public static final String CATEGORY_MODEL = UtilConstants.CATEGORY_PREFIX + "model";
 	
 	//////////////////////////////////
 	// Controllers
 	//////////////////////////////////
 	
-	public static final String MODEL_ADAPTER_ANCESTOR = "modelAdapterAncestor";
-	public static final String MODEL_ADAPTER_LEFT = "modelAdapterLeft";
-	public static final String MODEL_ADAPTER_RIGHT = "modelAdapterRight";
 	public static final String FEATURE_PROVIDER = "featureProvider";
 	
 	//////////////////////////////////
@@ -75,7 +75,7 @@ public class CodeSyncConstants {
 	
 	public static final String MATCH_TYPE ="matchType";
 	public static final String MATCH_FEATURE = "feature";
-	public static final String MATCH_MODEL_ELEMENT_TYPE = "modeElementType";
+	public static final String MATCH_MODEL_ELEMENT_TYPE = "modelElementType";
 	public static final String MATCH_CHILDREN_MODIFIED_LEFT = "childrenModifiedLeft";
 	public static final String MATCH_CHILDREN_MODIFIED_RIGHT = "childrenModifiedRight";
 	public static final String MATCH_CHILDREN_CONFLICT = "childrenConflict";
@@ -101,5 +101,13 @@ public class CodeSyncConstants {
 	 * @author Mariana
 	 */
 	public static final String UNDEFINED = "UNDEFINED_VALUE";
+	
+	//////////////////////////////////
+	// Technologies
+	//////////////////////////////////
+	
+	public static final String NODE_LEFT = "nodeLeft";
+	public static final String NODE_RIGHT = "nodeRight";
+	public static final String NODE_ANCESTOR = "nodeAncestor";
 	
 }

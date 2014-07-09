@@ -385,6 +385,9 @@ package org.flowerplatform.flex_client.core {
 			var sr:Pair = getSubscribableResource(node, ct);
 			var resourceUri:String = sr == null ? node.nodeUri : sr.a as String;
 			var contentType:String = sr == null ? (ct == null ? contentTypeRegistry.defaultContentType : ct) : sr.b as String;
+			if (contentType == null) {
+				contentType = contentTypeRegistry.defaultContentType;
+			}
 			
 			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
 			return editorDescriptor.openEditor(resourceUri, true, false, false, false, addEditorInRight);

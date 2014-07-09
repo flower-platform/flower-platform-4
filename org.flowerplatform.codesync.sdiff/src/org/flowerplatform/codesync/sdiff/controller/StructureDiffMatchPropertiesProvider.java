@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.sdiff.controller;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
@@ -82,13 +97,14 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 			color = MATCH_COLOR_REMOVED;
 			break;
 		case _3MATCH:
-			if (hasFlagTrue(node, MATCH_BODY_MODIFIED)) {
-				color = MATCH_COLOR_BODY_MODIFIED;
-			} else if (hasFlagTrue(node, MATCH_CHILDREN_MODIFIED_RIGHT)) {
+			if (hasFlagTrue(node, MATCH_CHILDREN_MODIFIED_RIGHT)) {
 				color = MATCH_COLOR_CHILDREN_MODIFIED;
 			} else if (hasFlagTrue(node, MATCH_DIFFS_MODIFIED_RIGHT)) {
 				color = MATCH_COLOR_PROP_MODIFIED;
+			} else if (hasFlagTrue(node, MATCH_BODY_MODIFIED)) {
+				color = MATCH_COLOR_BODY_MODIFIED;
 			}
+			break;
 		}
 		
 		// set color

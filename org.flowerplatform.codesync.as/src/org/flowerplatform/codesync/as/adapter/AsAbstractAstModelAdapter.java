@@ -1,112 +1,92 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.as.adapter;
 
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.DOCUMENTATION;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAGS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.MODIFIERS;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_TYPE;
+import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
-import macromedia.asc.parser.AttributeListNode;
-import macromedia.asc.parser.DefinitionNode;
-import macromedia.asc.parser.DocCommentNode;
-import macromedia.asc.parser.ListNode;
-import macromedia.asc.parser.MetaDataEvaluator;
-import macromedia.asc.parser.Node;
-import macromedia.asc.parser.StatementListNode;
-import macromedia.asc.util.Context;
-
-import org.flowerplatform.codesync.code.adapter.AstModelElementAdapter;
+import org.apache.flex.compiler.asdoc.IASDocComment;
+import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IDocumentableDefinition;
+import org.apache.flex.compiler.internal.scopes.ASFileScope;
+import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.units.ICompilationUnit;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
+import org.flowerplatform.codesync.as.asdoc.AsDocComment;
+import org.flowerplatform.core.CoreConstants;
 
 /**
- * Mapped to {@link Node}.
+ * Mapped to {@link IDefinition}.
  * 
  * @author Mariana Gheorghe
  */
 public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		if (DOCUMENTATION.equals(feature)) {
-			if (element instanceof DefinitionNode) {
-				DefinitionNode def = (DefinitionNode) element;
-				StatementListNode metaData = def.metaData;
-				if (metaData == null) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		if (CoreConstants.NAME.equals(feature)) {
+			return getDefinition(element).getBaseName();
+		} else if (TYPED_ELEMENT_TYPE.equals(feature)) {
+			return getDefinition(element).getTypeAsDisplayString();
+		} else if (VISIBILITY.equals(feature)) {
+			return getDefinition(element).getNamespaceReference().getBaseName();
+		} else if (DOCUMENTATION.equals(feature)) {
+			if (element instanceof IDocumentableDefinition) {
+				IASDocComment comment = ((IDocumentableDefinition) element).getExplicitSourceComment();
+				if (comment == null) {
 					return null;
 				}
-				for (Node node : metaData.items) {
-					if (node instanceof DocCommentNode) {
-						DocCommentNode comment = (DocCommentNode) node;
-						MetaDataEvaluator eval = new MetaDataEvaluator();
-						comment.evaluate(getContext(element), eval);
-						if (comment.getMetadata() == null) {
-							return null;
-						}
-						return comment.getMetadata().id;
-					}
-				}
+				return ((AsDocComment) comment).getText();
 			}
 		} 
-		return super.getValueFeatureValue(element, feature, correspondingValue);
+		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
-	protected abstract Context getContext(Object element);
-	
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (MODIFIERS.equals(feature)) {
-			if (element instanceof DefinitionNode) {
-				AttributeListNode attrs = ((DefinitionNode) element).attrs;
-				if (attrs == null) {
-					return Collections.emptyList();
-				}
-				List<Node> modifiers = new ArrayList<Node>();
-				for (Node node : attrs.items) {
-					if (node instanceof ListNode) {
-						for (Node modifier : ((ListNode) node).items) {
-							modifiers.add(modifier);
-						}
-					}
-				}
-				return modifiers;
-			}
-			return Collections.emptyList();
+			return Arrays.asList(getDefinition(element).getModifiers().getAllModifiers());
+		} else if (META_TAGS.equals(feature)) {
+			return Arrays.asList(getDefinition(element).getAllMetaTags());
 		}
-		return super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
-	@Override
-	public boolean hasChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return false;
+	protected ICompilationUnit getCompilationUnit(IDefinition definition) {
+		IASScope scope = definition.getContainingScope();
+		while (!(scope instanceof ASFileScope)) {
+			scope = scope.getContainingScope();
+		}
+		return ((ASFileScope) scope).getCompilationUnit();
 	}
-
-	@Override
-	public List<?> getChildren(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	protected IDefinition getDefinition(Object element) {
+		return (IDefinition) element;
 	}
-
-	@Override
-	public String getLabel(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<String> getIconUrls(Object modelElement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
 		// TODO Auto-generated method stub
 
 	}
 
-	protected Node getNode(Object element) {
-		return (Node) element;
-	}
-	
 }

@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.sdiff;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
@@ -22,9 +37,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
 import org.eclipse.compare.internal.core.patch.Hunk;
@@ -34,12 +52,14 @@ import org.eclipse.compare.patch.IFilePatchResult;
 import org.eclipse.compare.patch.IHunk;
 import org.eclipse.compare.patch.PatchConfiguration;
 import org.eclipse.compare.patch.ReaderCreator;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
+import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.type_provider.ComposedTypeProvider;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -49,8 +69,8 @@ import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.file.StringHolder;
 
 /**
@@ -75,7 +95,7 @@ public class StructureDiffService {
 		new ResourceServiceRemote().subscribeToParentResource(sdiffUri);
 		Node sdiffRoot = CorePlugin.getInstance().getResourceService().getNode(sdiffUri);
 		CorePlugin.getInstance().getNodeService().setProperty(sdiffRoot, NAME,
-				ResourcesPlugin.getInstance().getMessage("codesync.sdiff.structureDiff"),
+				sdiffPath,
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
 		// prepare to parse patch
@@ -108,37 +128,42 @@ public class StructureDiffService {
 			}
 			
 			// start codesync
-			Match match = sync(patchedContent, currentContent, filePath.substring(filePath.lastIndexOf("/") + 1));
-			addToSdiffFile(sdiffRoot, match, filePatch);
+			Match match = sync(patchedContent, currentContent, filePath);
+			addToSdiffFile(sdiffRoot, match, filePatch, new Document(currentContent));
 		}
 		
 		// save the structure diff file
 		CorePlugin.getInstance().getResourceService().save(sdiffUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		
 		// return the file node
-		return CorePlugin.getInstance().getResourceService().getNode(sdiffFileUri);
+		return CorePlugin.getInstance().getResourceService().getNode(sdiffUri);
 	}
 	
-	private Match sync(String before, String after, String name) {
+	private Match sync(String before, String after, String path) {
 		// START THE ALGORITHM
 		
 		// STEP 1: create a match
 		Match match = new Match();
+		String name = FilenameUtils.getName(path);
 		match.setMatchKey(name);
 		
 		// ancestor + left: original content obtained after applying reverse patch
-		match.setAncestor(new StringHolder(before, name));
-		match.setLeft(new StringHolder(before, name));
+		match.setAncestor(new CodeSyncFile(new StringHolder(path, before)));
+		match.setLeft(new CodeSyncFile(new StringHolder(path, before)));
 	
 		// right: current content for this patch
-		match.setRight(new StringHolder(after, name));
+		match.setRight(new CodeSyncFile(new StringHolder(path, after)));
 		
 		// initialize the algorithm
-		ITypeProvider typeProvider = new ComposedTypeProvider()
-				.addTypeProvider(CodeSyncPlugin.getInstance().getTypeProvider("java"));
-		TypeDescriptorRegistry typeDescriptorRegistry = CorePlugin.getInstance().getNodeTypeDescriptorRegistry();
-		
-		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm(typeDescriptorRegistry, typeProvider);
+		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
+		String technology = CodeSyncPlugin.getInstance().getTechnologyForExtension(FilenameUtils.getExtension(path));
+		if (technology == null) {
+			return match;
+		}
+		List<String> technologies = Collections.singletonList(technology);
+		algorithm.initializeModelAdapterSets(technologies, technologies, technologies);
+		algorithm.initializeFeatureProvider(Side.RIGHT);
+		algorithm.setFileAccessController(new FileHolderAccessController());
 		match.setCodeSyncAlgorithm(algorithm);
 		
 		// STEP 2: generate the diff, i.e. 3-way compare
@@ -147,7 +172,7 @@ public class StructureDiffService {
 		return match;
 	}
 	
-	private void addToSdiffFile(Node parent, Match match, FilePatch2 patch) {
+	private void addToSdiffFile(Node parent, Match match, FilePatch2 patch, IDocument document) {
 		// create child
 		Node child = new Node(null, MATCH);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
@@ -157,8 +182,6 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, NAME, match.getMatchKey(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_TYPE, match.getMatchType().toString(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_FEATURE, match.getFeature() == null ? "" : match.getFeature(), context);
-		Object modelElementType = match.getCodeSyncAlgorithm().getTypeProvider().getType(match.getDelegate());
-		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_LEFT, match.isChildrenModifiedLeft(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_MODIFIED_RIGHT, match.isChildrenModifiedRight(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_CHILDREN_CONFLICT, match.isChildrenConflict(), context);
@@ -167,19 +190,55 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_CONFLICT, match.isDiffsConflict(), context);
 		
 		// match to lines from patch
-		if (match.getLeft() != null && match.getRight() != null) {
-			Object model = match.getRight();
-			int modelStartLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getStartLine(model);
-			int modelEndLine = CodeSyncPlugin.getInstance().getLineInformationProvider().getEndLine(model);
-			if (modelStartLine >= 0 && modelEndLine >= 0) {
-				CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, 
-						isBodyModified(patch, modelStartLine, modelEndLine), context);
+		if (match.getCodeSyncAlgorithm() != null) {
+			Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
+			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
+			if (match.getLeft() != null && match.getRight() != null) {
+				Object model = match.getRight();
+				Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);
+				if (lines != null) {
+					int modelStartLine = lines.a;
+					int modelEndLine = lines.b;
+					if (modelStartLine >= 0 && modelEndLine >= 0) {
+						// if the method was modified or has modified children => ignore the first line
+						if (isModifiedOrChildrenModified(match)) {
+							modelStartLine++;
+						}
+						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine);
+						CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, isBodyModified, context);
+						if (isBodyModified) {
+							propagateBodyModifiedToParents(child);
+						}
+					}
+				}
 			}
 		}
 		
 		// recurse for submatches
 		for (Match subMatch : match.getSubMatches()) {
-			addToSdiffFile(child, subMatch, patch);
+			addToSdiffFile(child, subMatch, patch, document);
+		}
+	}
+	
+	private boolean isModifiedOrChildrenModified(Match match) {
+		return match.isChildrenModifiedLeft() ||
+				match.isChildrenModifiedRight() ||
+				match.isDiffsModifiedLeft() ||
+				match.isDiffsModifiedRight();
+	}
+	
+	private void propagateBodyModifiedToParents(Node child) {
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		while (child != null) {
+			Node parent = CorePlugin.getInstance().getNodeService().getParent(child, context);
+			if (parent != null) {
+				Boolean childrenModified = (Boolean) parent.getPropertyValue(MATCH_CHILDREN_MODIFIED_RIGHT);
+				if (childrenModified != null && childrenModified) {
+					break;
+				}
+				CorePlugin.getInstance().getNodeService().setProperty(parent, MATCH_CHILDREN_MODIFIED_RIGHT, true, context);
+			}
+			child = parent;
 		}
 	}
 	
@@ -211,7 +270,7 @@ public class StructureDiffService {
 					}
 				}
 			}
-			if (overlap >= 0) {
+			if (overlap > 0) {
 				// this hunk appears after the model element
 				// since the hunk are sorted, there's no need to continue
 				break;

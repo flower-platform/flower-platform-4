@@ -28,8 +28,8 @@ public class MatchActionAddAncestorToLeftRight extends DiffAction {
 		Object child = match.getAncestor();
 		new MatchActionAddAncestorToLeft(false).execute(match, -1);
 		new MatchActionAddAncestorToRight(false).execute(match, -1);
-		IModelAdapter adapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(match, child);
-		return new ActionResult(false, false, false, adapter.getMatchKey(child), true);
+		IModelAdapter adapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(child);
+		return new ActionResult(false, false, false, adapter.getMatchKey(child, match.getCodeSyncAlgorithm()), true);
 	}
 
 }

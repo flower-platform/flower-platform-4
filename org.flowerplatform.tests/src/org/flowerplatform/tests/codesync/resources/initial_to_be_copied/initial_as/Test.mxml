@@ -1,0 +1,44 @@
+
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" height="{HEIGHT}" click="clickHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.shortcut.AssignShortcutForActionEvent;
+			import org.flowerplatform.flexutil.shortcut.Shortcut;
+			
+			public static const HEIGHT:int = 22;
+			
+			/**
+			 * Test comment.
+			 */
+			protected function clickHandler(event:MouseEvent):void {
+			}
+			
+		]]>
+	</fx:Script>
+	<s:BitmapImage id="hasSubActions" visible="false" includeInLayout="false"/>
+</s:ItemRenderer>
