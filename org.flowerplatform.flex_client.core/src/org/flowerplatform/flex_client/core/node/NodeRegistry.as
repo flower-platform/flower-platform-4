@@ -280,7 +280,7 @@ package org.flowerplatform.flex_client.core.node {
 			if (nodeFromRegistry != null && nodeFromRegistry != node) {
 				nodeFromRegistry.properties = nodeWithVisibleChildren.node.properties;
 			}
-			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
+			//TODO CC: don't dispatch event;
 			node.dispatchEvent(new NodeUpdatedEvent(node));	
 			
 			var newNodeToCurrentNodeIndex:Dictionary = new Dictionary();
@@ -294,7 +294,6 @@ package org.flowerplatform.flex_client.core.node {
 			}
 			
 			if (node.children != null) { // node has children -> merge current list with new list
-				
 				// serch for children that doesn't exist in new list
 				var currentChildren:ArrayCollection = node.children != null ? new ArrayCollection(node.children.toArray()) : new ArrayCollection();			
 				for (i = 0; i < currentChildren.length; i++) {	
@@ -408,6 +407,10 @@ package org.flowerplatform.flex_client.core.node {
 			// TODO CC: don't dispatch; use a method from interface instead
 			// refresh diagram's children and their positions
 			dispatchEvent(new RefreshEvent(node));
+		}
+		
+		public function setPropertyValue(property:String, value:Object):void {
+			
 		}
 				
 	}

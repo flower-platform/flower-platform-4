@@ -28,6 +28,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.remote.SubscriptionInfo;
 	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
 	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
+	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
@@ -46,7 +47,10 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		private var resourceSetToResourceUris:Dictionary = new Dictionary();
 		private var resourceUriToResourceSet:Dictionary = new Dictionary();
 		
+		// TODO CC: ResourceOperationsManagerJs
 		private var resourceOperationsManager:ResourceOperationsManager;
+		
+		private var serviceInvocator:IServiceInvocator;
 		
 		public function NodeRegistryManager(resourceOperationsManager:ResourceOperationsManager) {
 			super();
@@ -200,7 +204,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			getResourceUrisForSubTree(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 			
 			if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog
-				//TODO CC: remove connection with resourceOperationsManager; delete it from here
+				//TODO CC: call method from IResourceOperationsHandler
 				resourceOperationsManager.showSaveDialogIfDirtyStateOrCloseEditors([this], getResourceSetsForResourceUris(dirtyResourceUris), 
 					function():void {
 						// wait for server response before collapse	
@@ -309,7 +313,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				nodeRegistry.dispatchEvent(new NodeRegistryRemovedEvent());							
 			}
 			
-			//TODO CC: remove connection with resourceOperationsManager; delete it from here
+			//TODO CC: call method from IResourceOperationsHandler
 			resourceOperationsManager.updateGlobalDirtyState(false);
 		}
 		
@@ -412,7 +416,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
 			var resourceNode:Node = event.node;
 			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY, event)) {
-				//TODO CC: remove connection with resourceOperationsManager; delete it from here
+				//TODO CC: call method from IResourceOperationsHandler
 				resourceOperationsManager.updateGlobalDirtyState(resourceNode.properties[CoreConstants.IS_DIRTY]);
 			}
 		}

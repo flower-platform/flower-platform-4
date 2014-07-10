@@ -22,7 +22,6 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
@@ -30,6 +29,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	
 	/**
+	 * TODO CC: this class will implement IResourceOperationsHandler
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
@@ -130,7 +130,9 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * @param dirtyResourceNodeIds if <code>null</code>, all dirty resourceNodes from <code>nodeRegistries</code> will be used.
 		 * @param handler Is called before closing the save view. If <code>null</code>, <code>nodeRegistries</code> will be removed.
 		 */ 
-		public function showSaveDialogIfDirtyStateOrCloseEditors(nodeRegistries:Array = null, dirtyResourceNodeIds:Array = null, handler:Function = null):void {	
+		public function showSaveDialogIfDirtyStateOrCloseEditors(nodeRegistries:Array = null, dirtyResourceNodeIds:Array = null, handler:Function = null):void {
+			// TODO CC: to be moved in js class
+			// START
 			if (nodeRegistries == null) {
 				nodeRegistries = nodeRegistryManager.getNodeRegistries();
 			}
@@ -154,6 +156,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				return;
 			}
 					
+			// END
+			
 			var saveView:ResourceNodesListView = new ResourceNodesListView();
 			saveView.nodeRegistries = nodeRegistries;
 			saveView.resourceNodes = dirtyResourceNodes;
@@ -173,6 +177,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * @author Mariana Gheorghe
 		 */
 		public function showReloadDialog(nodeRegistries:Array = null, resourceSets:Array = null):void {
+			// TODO CC: to be moved in js class
+			// START
 			if (nodeRegistries == null) {
 				nodeRegistries = nodeRegistryManager.getNodeRegistries();
 			}
@@ -181,6 +187,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			if (resourceSets == null) {
 				resourceSets = nodeRegistryManager.getDirtyResourceSetsFromNodeRegistries(nodeRegistries);
 			}
+			
+			// END
 			
 			for each (var resourceSet:String in resourceSets) {
 				resourceNodes.addItem(new ResourceNode(resourceSet, true));

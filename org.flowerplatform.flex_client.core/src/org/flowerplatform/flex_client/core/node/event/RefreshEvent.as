@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.node.event {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	
 	/**
+	 * TODO CC: remove
 	 * Dispatched by <code>NodeRegistry</code> when a visual refresh is needed.
 	 * 
 	 * @author Cristina Constantinescu

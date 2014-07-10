@@ -17,8 +17,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTreeComponent"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.OpenWithEditorActionProvider"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.EditorFrontendAwareProcessor"/>
-    <classEntry path="org.flowerplatform.flex_client.core.node.INodeFactory"/>
-    <classEntry path="org.flowerplatform.flex_client.core.node.IServiceInvocationHandler"/>
+    <classEntry path="org.flowerplatform.flex_client.core.node.IResourceOperationsHandler"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
