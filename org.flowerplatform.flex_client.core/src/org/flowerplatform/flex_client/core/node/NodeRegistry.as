@@ -18,21 +18,17 @@ package org.flowerplatform.flex_client.core.node {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.mx_internal;
+	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.NodeWithChildren;
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.event.NodeRemovedEvent;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
 	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	
 	use namespace mx_internal;
@@ -54,7 +50,13 @@ package org.flowerplatform.flex_client.core.node {
 		
 		protected var rootNodeUri:String;
 		
-		protected var nodeChangeListeners:IList = new ArrayList();
+		protected var nodeChangeListeners:IList = new ArrayCollection();
+		
+		protected var nodeRegistryManager:NodeRegistryManager;
+		
+		public function NodeRegistry(nodeRegistryManager:NodeRegistryManager) {	
+			this.nodeRegistryManager = nodeRegistryManager;
+		}
 		
 		public function getRootNodeUri():String {
 			return rootNodeUri;
@@ -65,7 +67,7 @@ package org.flowerplatform.flex_client.core.node {
 		}
 		
 		public function addNodeChangeListener(listener:INodeChangeListener):void {
-			
+			nodeChangeListeners.addItem(listener);
 		}
 		
 		public function collapse(node:Node, refreshChildren:Boolean = true):void {
@@ -77,12 +79,7 @@ package org.flowerplatform.flex_client.core.node {
 			}
 			while (node.children != null) {					
 				unregisterNode(Node(node.children.getItemAt(0)), node);
-			}
-								
-			if (refreshChildren) {	
-				// TODO CC: don't dispatch; use a method from interface instead
-				dispatchEvent(new RefreshEvent(node));
-			}						
+			}			
 		}
 			
 		public function expand(node:Node, context:Object):void {		
@@ -98,8 +95,7 @@ package org.flowerplatform.flex_client.core.node {
 			}
 			serviceContext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
 			
-			// TODO CC: extract this service method invocation and put it somewhere else
-			CorePlugin.getInstance().serviceLocator.invoke(
+			nodeRegistryManager.serviceInvocator.invoke(
 				"nodeService.getChildren", 
 				[node.nodeUri, serviceContext], 
 				function (result:Object):void {
@@ -141,8 +137,6 @@ package org.flowerplatform.flex_client.core.node {
 				return;
 			}
 			
-			var nodeToNodeUpdatedEvent:Dictionary = new Dictionary();			
-			
 			for (var i:int = updates.length - 1; i >= 0; i--) {
 				var update:Update = Update(updates.getItemAt(i));
 				var nodeFromRegistry:Node = getNodeById(update.fullNodeId);	
@@ -151,20 +145,15 @@ package org.flowerplatform.flex_client.core.node {
 				}
 				if (update is PropertyUpdate) { // property update
 					var propertyUpdate:PropertyUpdate = PropertyUpdate(update);
-					if (!nodeToNodeUpdatedEvent.hasOwnProperty(nodeFromRegistry.nodeUri)) {
-						nodeToNodeUpdatedEvent[nodeFromRegistry.nodeUri] = new NodeUpdatedEvent(nodeFromRegistry);
-					}					
+									
 					if (propertyUpdate.isUnset) {
 						delete nodeFromRegistry.properties[propertyUpdate.key];						
-						NodeUpdatedEvent(nodeToNodeUpdatedEvent[nodeFromRegistry.nodeUri]).addRemovedProperty(propertyUpdate.key);
 					} else {
-						nodeFromRegistry.properties[propertyUpdate.key] = propertyUpdate.value;						
-						NodeUpdatedEvent(nodeToNodeUpdatedEvent[nodeFromRegistry.nodeUri]).addUpdatedProperty(propertyUpdate.key);
+						setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);						
 					}					
 				} else { // children update
 					var childrenUpdate:ChildrenUpdate = ChildrenUpdate(update);
 					var targetNodeInRegistry:Node = getNodeById(childrenUpdate.targetNode.nodeUri);	
-					var refresh:Boolean = false;
 					
 					switch (childrenUpdate.type) {
 						case CoreConstants.UPDATE_CHILD_ADDED:	
@@ -176,15 +165,8 @@ package org.flowerplatform.flex_client.core.node {
 									if (targetNodeAddedBeforeInRegistry != null) { // exists, get its index in children list
 										index = nodeFromRegistry.children.getItemIndex(targetNodeAddedBeforeInRegistry);	
 									}
-								}
-								// Children that come with the <code>ChildrenUpdate</code>s must be cloned, so that a different instance
-								// is applied to each editor. Otherwise, the same node will be added to all the node registries, and then 
-								// any <code>NodeUpdatedEvent</code> on this node will be caught by all the renderers from all open editors
-								var newChild:Node = new Node(childrenUpdate.targetNode.nodeUri);
-								newChild.type = childrenUpdate.targetNode.type;
-								newChild.properties = childrenUpdate.targetNode.properties;
-								registerNode(newChild, nodeFromRegistry, index);
-								refresh = true;
+								}								
+								registerNode(childrenUpdate.targetNode, nodeFromRegistry, index);								
 							} else {
 								// child already added, probably after refresh
 								// e.g. I add a children, I expand => I get the list with the new children; when the
@@ -197,41 +179,26 @@ package org.flowerplatform.flex_client.core.node {
 							break;
 						case CoreConstants.UPDATE_CHILD_REMOVED:	
 							if (targetNodeInRegistry != null) {
-								unregisterNode(targetNodeInRegistry, nodeFromRegistry);
-								refresh = true;
+								unregisterNode(targetNodeInRegistry, nodeFromRegistry);								
 							} else {
 								// node not registered, probably it isn't visible for this client
 								// Nothing to do
 							}
 							break;
-					}
-					
-					if (refresh) {
-						// TODO CC: don't dispatch; use a method from interface instead
-						dispatchEvent(new RefreshEvent(nodeFromRegistry));
-					}
+					}					
 				}				
-			}		
-			
-			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
-			for (var key:String in nodeToNodeUpdatedEvent) {
-				var event:NodeUpdatedEvent = NodeUpdatedEvent(nodeToNodeUpdatedEvent[key]);
-				event.node.dispatchEvent(event);				
-			}
+			}			
 		}	
 		
 		public function refresh(node:Node):void {		
 			if (!registry.hasOwnProperty(node.nodeUri)) {
 				return;
 			}
-			// TODO CC: extract this service method invocation and put it somewhere else
-			CorePlugin.getInstance().serviceLocator.invoke(
+			nodeRegistryManager.serviceInvocator.invoke(
 				"nodeService.refresh", 
 				[getFullNodeIdWithChildren(node)], 
 				function (result:Object):void {
 					refreshHandler(node, NodeWithChildren(result));
-					
-					dispatchEvent(new RefreshEvent(node));
 				});
 		}
 		
@@ -274,15 +241,10 @@ package org.flowerplatform.flex_client.core.node {
 		 * </ul>
 		 */ 
 		protected function refreshHandler(node:Node, nodeWithVisibleChildren:NodeWithChildren):void {
-			// set new node properties and dispatch event
-			node.properties = nodeWithVisibleChildren.node.properties;
+			// set new node properties and dispatch event			
 			var nodeFromRegistry:Node = getNodeById(node.nodeUri);
-			if (nodeFromRegistry != null && nodeFromRegistry != node) {
-				nodeFromRegistry.properties = nodeWithVisibleChildren.node.properties;
-			}
-			//TODO CC: don't dispatch event;
-			node.dispatchEvent(new NodeUpdatedEvent(node));	
-			
+			setNodeProperties(nodeFromRegistry, nodeWithVisibleChildren.node.properties);
+						
 			var newNodeToCurrentNodeIndex:Dictionary = new Dictionary();
 			var i:int;
 			var currentChildNode:Node;
@@ -335,7 +297,8 @@ package org.flowerplatform.flex_client.core.node {
 				registerNode(node, null);
 				return node;
 			}
-			existingNode.properties = node.properties;
+			setNodeProperties(existingNode, node.properties);
+			
 			return existingNode;
 		}
 		
@@ -364,7 +327,9 @@ package org.flowerplatform.flex_client.core.node {
 				}
 			}
 			
-			//TODO CC: call INodeChangeListener.nodeAdded
+			for each (var listener:INodeChangeListener in nodeChangeListeners) {
+				listener.nodeAdded(node);
+			}
 		}
 		
 		/**
@@ -380,8 +345,6 @@ package org.flowerplatform.flex_client.core.node {
 			
 			var nodeFromRegistry:Node = registry[node.nodeUri];
 			if (nodeFromRegistry != null) {
-				//TODO CC: don't dispatch event; call INodeChangeListener.nodeRemoved
-				nodeFromRegistry.dispatchEvent(new NodeRemovedEvent(nodeFromRegistry));
 				delete registry[node.nodeUri];
 			}
 			
@@ -391,6 +354,9 @@ package org.flowerplatform.flex_client.core.node {
 				if (parent.children.length == 0) { // parent has no children left -> parent is leaf
 					parent.children = null;
 				}
+			}
+			for each (var listener:INodeChangeListener in nodeChangeListeners) {
+				listener.nodeRemoved(node);
 			}
 		}
 		
@@ -403,14 +369,22 @@ package org.flowerplatform.flex_client.core.node {
 			for each (var child:Node in children) {
 				registerNode(child, node);
 			}
-			
-			// TODO CC: don't dispatch; use a method from interface instead
-			// refresh diagram's children and their positions
-			dispatchEvent(new RefreshEvent(node));
 		}
 		
-		public function setPropertyValue(property:String, value:Object):void {
+		public function setPropertyValue(node:Node, property:String, newValue:Object):void {
+			var oldValue:Object = node.properties.hasOwnProperty(property) ? node.properties[property] : null;
+			node.properties[property] = newValue;
 			
+			for each (var listener:INodeChangeListener in nodeChangeListeners) {
+				listener.nodeUpdated(node, property, oldValue, newValue);
+			}
+		}
+				
+		protected function setNodeProperties(node:Node, newProperties:Object):void {
+			var classInfoProperties:Array = ObjectUtil.getClassInfo(newProperties).properties as Array;
+			for each (var property:String in classInfoProperties) {
+				setPropertyValue(node, property, newProperties[property]);
+			}
 		}
 				
 	}

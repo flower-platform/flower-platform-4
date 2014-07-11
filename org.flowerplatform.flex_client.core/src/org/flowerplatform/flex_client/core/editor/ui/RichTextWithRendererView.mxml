@@ -25,24 +25,21 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import flashx.textLayout.conversion.TextConverter;
-			
 			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
 			import mx.utils.ObjectUtil;
 			
+			import spark.events.TextOperationEvent;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-			import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
 			import org.flowerplatform.flexutil.Utils;
-			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-			
-			import spark.events.TextOperationEvent;
 										
 			public var node:Node;
 			public var text:String;
@@ -103,10 +100,7 @@
 				}
 				// set new text
 				var titleProperty:String = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node).getPropertyNameFromGenericDescriptor(node);				
-				renderer.data.properties[titleProperty] = textEditor.text;
-					
-				// dispatch event to update preview renderer's text
-				renderer.data.dispatchEvent(new NodeUpdatedEvent(Node(renderer.data), new ArrayList([titleProperty])));				
+				renderer.data.properties[titleProperty] = textEditor.text;		
 			}
 			
 		]]>

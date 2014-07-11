@@ -53,7 +53,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			
 			for each (var component:UIComponent in components) {								
 				if (component is TextEditorFrontend) {
-					resourceUris.push(CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForNodeRegistry(TextEditorFrontend(component).nodeRegistry)[0]);
+					resourceUris.push(CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForNodeRegistry(TextEditorFrontend(component).nodeRegistry)[0]);
 				}
 			}
 			

@@ -73,10 +73,10 @@
 			
 			protected function getReconnectingMessage():String {
 				formatter.useUTC = true;
-				var server:String = formatter.format(new Date(CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer));	
+				var server:String = formatter.format(new Date(CorePlugin.getInstance().lastUpdateTimestampOfServer));	
 				
 				formatter.useUTC = false;
-				var client:String = formatter.format(new Date(CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient));	
+				var client:String = formatter.format(new Date(CorePlugin.getInstance().lastUpdateTimestampOfClient));	
 				
 				return Resources.getMessage('reconnect.message', [client, server]);
 			}

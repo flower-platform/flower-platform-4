@@ -73,7 +73,7 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			nodeUpdated();
 		}
 		
-		protected function nodeUpdated():void {
+		public function nodeUpdated():void {
 			if (renderer != null && node != null) {
 				renderer.valueChangedHandler();
 			}

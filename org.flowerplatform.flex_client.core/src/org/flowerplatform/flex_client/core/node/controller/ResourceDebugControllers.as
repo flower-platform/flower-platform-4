@@ -47,10 +47,9 @@ package org.flowerplatform.flex_client.core.node.controller {
 		
 		public function getResourceSets():ArrayCollection {
 			var resourceSets:ArrayCollection = new ArrayCollection();
-			for each (var resourceSet:String in CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceSets()) {
+			for each (var resourceSet:String in CorePlugin.getInstance().nodeRegistryManager.getResourceSets()) {
 				var node:Node = new Node(RESOURCE_SET + ":" + resourceSet);
 				node.type = RESOURCE_SET;
-				node.properties = new Object();
 				node.properties[CoreConstants.NAME] = "ResourceSet: " + resourceSet;
 				node.properties[CoreConstants.HAS_CHILDREN] = true;
 				resourceSets.addItem(node);
@@ -62,10 +61,9 @@ package org.flowerplatform.flex_client.core.node.controller {
 			var children:ArrayCollection = new ArrayCollection();
 			var index:int = 0;
 			for each (var resourceUri:String in 
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForResourceSet(resourceSet)) {
+				CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForResourceSet(resourceSet)) {
 				var node:Node = new Node(RESOURCE_URI + ":" + resourceUri + "#" + index++);
 				node.type = RESOURCE_URI;
-				node.properties = new Object();
 				node.properties[CoreConstants.NAME] = "ResourceURI: " + resourceUri;
 				node.properties[CoreConstants.HAS_CHILDREN] = false;
 				children.addItem(node);

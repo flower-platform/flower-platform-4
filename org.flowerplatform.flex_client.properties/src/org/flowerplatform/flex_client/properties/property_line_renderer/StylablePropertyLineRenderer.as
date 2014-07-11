@@ -47,7 +47,7 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			rendererArea.addElement(changedCheckBox);	
 		}		
 		
-		override protected function nodeUpdated():void {
+		override public function nodeUpdated():void {
 			super.nodeUpdated();
 			
 			if (changedCheckBox != null) {				

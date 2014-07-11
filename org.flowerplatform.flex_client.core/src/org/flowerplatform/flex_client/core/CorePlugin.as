@@ -45,11 +45,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
+	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -76,7 +78,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
-	import org.flowerplatform.flexutil.dialog.SelectObjListPopup;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
@@ -102,8 +103,6 @@ package org.flowerplatform.flex_client.core {
 		
 		public var editorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 
-		public var resourceNodesManager:ResourceOperationsManager;
-
 		public var updateTimer:UpdateTimer;
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
@@ -116,6 +115,11 @@ package org.flowerplatform.flex_client.core {
 					
 		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
 				
+		public var nodeRegistryManager:NodeRegistryManager;
+		
+		public var lastUpdateTimestampOfServer:Number = -1;
+		public var lastUpdateTimestampOfClient:Number = -1;
+		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
@@ -133,6 +137,10 @@ package org.flowerplatform.flex_client.core {
 			return editorClassFactoryActionProvider;
 		}
 		
+		public function get resourceNodesManager():ResourceOperationsManager {
+			return ResourceOperationsManager(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
+		}
+		
 		override public function preStart():void {
 			super.preStart();
 			if (INSTANCE != null) {
@@ -141,8 +149,7 @@ package org.flowerplatform.flex_client.core {
 			INSTANCE = this;
 				
 			correspondingJavaPlugin = "org.flowerplatform.core";
-			resourceNodesManager = new ResourceOperationsManager();
-			
+						
 			var channelSet:ChannelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
 		
@@ -153,6 +160,9 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("downloadService");
 			serviceLocator.addService("uploadService");
 			serviceLocator.addService("preferenceService");
+			
+			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
+			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
 			
  			updateTimer = new UpdateTimer(5000);
 			

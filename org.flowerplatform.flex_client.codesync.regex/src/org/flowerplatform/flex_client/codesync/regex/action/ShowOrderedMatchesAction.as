@@ -34,9 +34,9 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			var node:Node = Node(selection.getItemAt(0));
 			var ds:MindMapEditorDiagramShell = MindMapEditorDiagramShell(diagramShell);
 			if (ds.getModelController(diagramShellContext, node).getExpanded(diagramShellContext, node)) {
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.collapse(ds.nodeRegistry, node);
+				CorePlugin.getInstance().nodeRegistryManager.collapse(ds.nodeRegistry, node);
 			}			
-			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(ds.nodeRegistry, node, getExpandContext());
+			CorePlugin.getInstance().nodeRegistryManager.expand(ds.nodeRegistry, node, getExpandContext());
 		}
 			
 		protected function getExpandContext():Object {

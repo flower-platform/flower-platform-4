@@ -7,7 +7,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.UploadAction"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.ui.UploadView"/>
     <classEntry path="org.flowerplatform.flex_client.core.node.remote.ServiceContext"/>
-    <classEntry path="org.flowerplatform.flex_client.core.editor.resource.NodeRegistryManager"/>
+    <classEntry path="org.flowerplatform.flex_client.core.node.NodeRegistryManager"/>
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTree"/>
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTreeHierarchicalModelAdapter"/>
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTreeItemRenderer"/>
@@ -18,6 +18,8 @@
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.OpenWithEditorActionProvider"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.EditorFrontendAwareProcessor"/>
     <classEntry path="org.flowerplatform.flex_client.core.node.IResourceOperationsHandler"/>
+    <classEntry path="org.flowerplatform.flex_client.core.node.IExternalInvocator"/>
+    <classEntry path="org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

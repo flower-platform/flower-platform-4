@@ -2,37 +2,32 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flexutil.FlexUtilGlobals"/>
+    <classEntry path="org.flowerplatform.flexutil.FlowerArrayList"/>
+    <classEntry path="org.flowerplatform.flexutil.action.ComposedActionProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.action.IComposedActionProviderProcessor"/>
+    <classEntry path="org.flowerplatform.flexutil.action.VectorActionProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistItem"/>
+    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistItemRenderer"/>
+    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistList"/>
+    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistListTextAreaSkin"/>
+    <classEntry path="org.flowerplatform.flexutil.content_assist.IContentAssistProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.NullController"/>
+    <classEntry path="org.flowerplatform.flexutil.dialog.SelectObjListPopup"/>
+    <classEntry path="org.flowerplatform.flexutil.layout.AbstractViewProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.layout.ITitleDecorator"/>
     <classEntry path="org.flowerplatform.flexutil.layout.IViewProvider"/>
     <classEntry path="org.flowerplatform.flexutil.layout.IWorkbench"/>
     <classEntry path="org.flowerplatform.flexutil.layout.LayoutData"/>
     <classEntry path="org.flowerplatform.flexutil.layout.ViewLayoutData"/>
-    <classEntry path="org.flowerplatform.flexutil.popup.ClassFactoryActionProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.popup.IAction"/>
     <classEntry path="org.flowerplatform.flexutil.popup.IMessageBox"/>
     <classEntry path="org.flowerplatform.flexutil.popup.IPopupHandler"/>
     <classEntry path="org.flowerplatform.flexutil.popup.IPopupHandlerFactory"/>
-    <classEntry path="org.flowerplatform.flexutil.popup.IPopupHost"/>
+    <classEntry path="org.flowerplatform.flexutil.popup.ScreenSizeAwarePopup"/>
     <classEntry path="org.flowerplatform.flexutil.tree.HierarchicalModelWrapper"/>
     <classEntry path="org.flowerplatform.flexutil.tree.IHierarchicalModelAdapter"/>
-    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistList"/>
-    <classEntry path="org.flowerplatform.flexutil.content_assist.IContentAssistProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.FlowerArrayList"/>
-    <classEntry path="org.flowerplatform.flexutil.mobile.popup.split_wrapper_view.SplitWrapperView"/>
-    <classEntry path="org.flowerplatform.flexutil.mobile.popup.split_wrapper_view.ToggleOneViewModeAction"/>
-    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistItemRenderer"/>
-    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistItem"/>
-    <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistListTextAreaSkin"/>
-    <classEntry path="org.flowerplatform.flexutil.popup.ScreenSizeAwarePopup"/>
-    <classEntry path="org.flowerplatform.flexutil.view_content_host.IViewHostAware"/>
-    <classEntry path="org.flowerplatform.flexutil.view_content_host.ICachedActionsAndSelectionProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.action.VectorActionProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.layout.ITitleDecorator"/>
-    <classEntry path="org.flowerplatform.flexutil.layout.AbstractViewProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.action.ComposedActionProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.action.IComposedActionProviderProcessor"/>
-    <classEntry path="org.flowerplatform.flexutil.controller.NullController"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.BasicViewContent"/>
-    <classEntry path="org.flowerplatform.flexutil.dialog.SelectObjListPopup"/>
+    <classEntry path="org.flowerplatform.flexutil.view_content_host.ICachedActionsAndSelectionProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.view_content_host.IViewHostAware"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

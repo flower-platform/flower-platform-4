@@ -21,7 +21,6 @@ package org.flowerplatform.flex_client.core.node_tree
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 	import org.flowerplatform.flexutil.tree.TreeListItemRenderer;
 
@@ -37,14 +36,12 @@ package org.flowerplatform.flex_client.core.node_tree
 		}
 		
 		override public function set data(value:Object):void {
-			//TODO CC: to be replaced with impl INodeChangeListener.nodeUpdated
-			
 			if (data != null) {
-				data.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, modelChangedHandler);
+				Node(HierarchicalModelWrapper(data).treeNode).properties.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 			}
 			super.data = value;
 			if (data != null) {
-				data.addEventListener(NodeUpdatedEvent.NODE_UPDATED, modelChangedHandler);
+				Node(HierarchicalModelWrapper(data).treeNode).properties.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 			}
 		}
 		

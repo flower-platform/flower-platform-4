@@ -15,9 +15,14 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
@@ -31,7 +36,7 @@ import org.flowerplatform.util.Utils;
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
  */
-public class Node {
+public class Node implements Externalizable {
 	
 	private String type;
 	
@@ -97,8 +102,13 @@ public class Node {
 	 * @return The properties map (populated if not already populated).
 	 */
 	public Map<String, Object> getOrPopulateProperties(ServiceContext<NodeService> context) {
-		if (!propertiesPopulated) {	
-			// lazy population
+		if (context.getBooleanValue(CoreConstants.POPULATE_WITH_PROPERTIES_FORCEFULLY)) {
+			getProperties().clear();
+			propertiesPopulated = false;
+			context.getContext().remove(CoreConstants.POPULATE_WITH_PROPERTIES_FORCEFULLY);
+		}
+		if (!propertiesPopulated) {		
+			// lazy population			
 			CorePlugin.getInstance().getNodeService().populateNodeProperties(this, context);
 			propertiesPopulated = true;
 		}
@@ -145,6 +155,20 @@ public class Node {
 	@Override
 	public String toString() {
 		return String.format("Node [fullNodeId = %s]", getNodeUri());
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		type = (String) in.readObject(); 
+        nodeUri = (String) in.readObject(); 
+        properties = (Map) in.readObject(); 
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		 out.writeObject(type); 
+		 out.writeObject(nodeUri); 
+         out.writeObject(properties); 
 	}
 
 }

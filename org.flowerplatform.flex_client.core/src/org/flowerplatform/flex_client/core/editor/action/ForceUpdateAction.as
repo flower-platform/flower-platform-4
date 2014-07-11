@@ -34,12 +34,12 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		public function updateLabel():void {
-			if (CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient == -1) {
+			if (CorePlugin.getInstance().lastUpdateTimestampOfClient == -1) {
 				label = "No resource updates requested yet";
 			} else {
 				var formatter:DateTimeFormatter = new DateTimeFormatter();
 				formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";							
-				label = "Last update: " + formatter.format(new Date(CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient));
+				label = "Last update: " + formatter.format(new Date(CorePlugin.getInstance().lastUpdateTimestampOfClient));
 			}
 		}
 		

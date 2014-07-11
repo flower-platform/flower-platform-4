@@ -14,24 +14,20 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.node_tree {
-	import flash.events.Event;
-	
 	import mx.core.ClassFactory;
-	import mx.events.FlexEvent;
 	import mx.events.TreeEvent;
-	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
-	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
 	import org.flowerplatform.flexutil.tree.TreeList;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Claudiu Matei
 	 */ 
-	public class NodeTreeComponent extends TreeList {
+	public class NodeTreeComponent extends TreeList implements INodeChangeListener {
 			
 		protected var nodeRegistry:NodeRegistry;
 		
@@ -43,8 +39,8 @@ package org.flowerplatform.flex_client.core.node_tree {
 		
 		public function NodeTreeComponent() {
 			super();
-			nodeRegistry = new NodeRegistry();
-			nodeRegistry.addEventListener(RefreshEvent.REFRESH, nodeRegistryRefreshCallback);	
+			nodeRegistry = CorePlugin.getInstance().nodeRegistryManager.createNodeRegistry();
+			nodeRegistry.addNodeChangeListener(this);
 			
 			hierarchicalModelAdapter = new NodeTreeHierarchicalModelAdapter();
 			itemRenderer = new ClassFactory(NodeTreeItemRenderer);
@@ -55,23 +51,18 @@ package org.flowerplatform.flex_client.core.node_tree {
 		
 		public function initializeTree(nodeUri:String):void {
 			_nodeUri = nodeUri;	
-			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.subscribe(nodeUri, nodeRegistry, subscribeResultCallback);
+			CorePlugin.getInstance().nodeRegistryManager.subscribe(nodeUri, nodeRegistry, subscribeResultCallback);
 		}
 		
 		public function finalizeTree():void {
-			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.unlinkResourceNodeFromNodeRegistry(nodeUri, nodeRegistry);
+			CorePlugin.getInstance().nodeRegistryManager.unlinkResourceNodeFromNodeRegistry(nodeUri, nodeRegistry);
 		}
 				
 		protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
-			this.rootNode = rootNode;
-			nodeRegistry.expand(rootNode, null);
+			this.rootNode = rootNode;			
+			nodeRegistry.expand(Node(this.rootNode), null);
 		}
-		
-		protected function nodeRegistryRefreshCallback(event:RefreshEvent):void {			
-			requestRefreshLinearizedDataProvider();
-			invalidateDisplayList();
-		}
-		
+					
 		protected function treeListItemOpenCloseHandler(event:TreeEvent):void {		
 			if (event.type == TreeEvent.ITEM_OPEN) {
 				nodeRegistry.expand(Node(event.item), null);
@@ -82,6 +73,20 @@ package org.flowerplatform.flex_client.core.node_tree {
 				event.preventDefault();
 			}
 		}
+		
+		public function nodeUpdated(node:Node, property:String, oldValue:Object, newValue:Object):void {
+			// do nothing
+		}
+		
+		public function nodeAdded(node:Node):void {
+			requestRefreshLinearizedDataProvider();
+			invalidateDisplayList();
+		}
+		
+		public function nodeRemoved(node:Node):void {
+			requestRefreshLinearizedDataProvider();
+			invalidateDisplayList();
+		}		
 		
 	}
 }

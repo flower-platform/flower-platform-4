@@ -22,7 +22,7 @@ package org.flowerplatform.flex_client.text {
 	
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.text.codemirror_editor.ICodeMirrorEditor;
 	import org.flowerplatform.flex_client.text.codemirror_editor.MobileCodeMirrorEditor;
 	import org.flowerplatform.flex_client.text.codemirror_editor.WebCodeMirrorEditor;
@@ -68,9 +68,11 @@ package org.flowerplatform.flex_client.text {
 			ICodeMirrorEditor(editor).load(FlexUtilGlobals.getInstance().createAbsoluteUrl(TextPlugin.getInstance().getResourceUrl(getURL())));
 		}
 			
-		override protected function nodeRegistryRemovedHandler(event:NodeRegistryRemovedEvent):void {
-			ICodeMirrorEditor(editor).dispose();
-			super.nodeRegistryRemovedHandler(event);	
+		override public function nodeRegistryRemoved(nodeRegistry:NodeRegistry):void {
+			if (this.nodeRegistry == nodeRegistry) {
+				ICodeMirrorEditor(editor).dispose();
+			}
+			super.nodeRegistryRemoved(nodeRegistry);	
 		}
 		
 		protected function getURL():String {

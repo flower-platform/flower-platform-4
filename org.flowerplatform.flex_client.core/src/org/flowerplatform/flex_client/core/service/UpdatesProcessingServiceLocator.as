@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.core.service {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
@@ -47,7 +48,7 @@ package org.flowerplatform.flex_client.core.service {
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class UpdatesProcessingServiceLocator extends ServiceLocator {
+	public class UpdatesProcessingServiceLocator extends ServiceLocator implements IServiceInvocator {
 		
 		private var communicationErrorViewContent:IViewContent;
 		
@@ -69,13 +70,13 @@ package org.flowerplatform.flex_client.core.service {
 			var operation:UpdatesProcessingOperation = UpdatesProcessingOperation(super.getOperation(serviceId, name));
 			
 			var headers:Dictionary = new Dictionary();
-			var resourceSets:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceSets();
+			var resourceSets:Array = CorePlugin.getInstance().nodeRegistryManager.getResourceSets();
 			if (resourceSets.length > 0) {
 				// a sorted list is sent to improve search performance on server
 				headers[CoreConstants.RESOURCE_SETS] = new ArrayCollection(resourceSets.sort());
-				headers[CoreConstants.RESOURCE_URIS] = new ArrayCollection(CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUris().sort());
+				headers[CoreConstants.RESOURCE_URIS] = new ArrayCollection(CorePlugin.getInstance().nodeRegistryManager.getResourceUris().sort());
 			}
-			headers[CoreConstants.LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer;
+			headers[CoreConstants.LAST_UPDATE_TIMESTAMP] = CorePlugin.getInstance().lastUpdateTimestampOfServer;
 			operation.messageHeaders = headers;
 			
 			return operation;
@@ -85,18 +86,18 @@ package org.flowerplatform.flex_client.core.service {
 			var result:Object = event.result;
 			
 			if (result.hasOwnProperty(CoreConstants.LAST_UPDATE_TIMESTAMP)) {
-				CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
-				CorePlugin.getInstance().resourceNodesManager.lastUpdateTimestampOfClient = new Date().time;
+				CorePlugin.getInstance().lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
+				CorePlugin.getInstance().lastUpdateTimestampOfClient = new Date().time;
 				
 				CorePlugin.getInstance().debug_forceUpdateAction.updateLabel();
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.UPDATES)) { // updates exists, process them
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.processUpdates(result[CoreConstants.UPDATES]);
+				CorePlugin.getInstance().nodeRegistryManager.processUpdates(result[CoreConstants.UPDATES]);
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND)) {
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.unlinkResourceNodesForcefully(result[CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND]);
+				CorePlugin.getInstance().nodeRegistryManager.unlinkResourceNodesForcefully(result[CoreConstants.RESOURCE_NODE_IDS_NOT_FOUND]);
 			}
 			
 			CorePlugin.getInstance().updateTimer.restart();

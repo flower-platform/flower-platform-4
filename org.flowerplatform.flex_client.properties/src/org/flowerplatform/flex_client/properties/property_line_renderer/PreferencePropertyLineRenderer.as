@@ -15,19 +15,15 @@
  */
 package org.flowerplatform.flex_client.properties.property_line_renderer {
 	
-	import flash.events.MouseEvent;
+	import mx.utils.ObjectUtil;
+	
+	import spark.primitives.BitmapImage;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.PreferencePropertyWrapper;
 	import org.flowerplatform.flex_client.properties.PropertiesConstants;
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.resources.Resources;
-	
-	import spark.components.HGroup;
-	import spark.components.Image;
-	import spark.primitives.BitmapImage;
-	import spark.skins.spark.FormItemSkin;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -74,20 +70,13 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.setProperty", 
-				[node.nodeUri, property == null ? propertyDescriptor.name : property, wrapper], refreshPreferences);
+				[node.nodeUri, property == null ? propertyDescriptor.name : property, wrapper]);
 		}
 		
 		protected function unsetPreference(property:String = null):void {			
 			CorePlugin.getInstance().serviceLocator.invoke(
 				"nodeService.unsetProperty", 
-				[node.nodeUri, property == null ? propertyDescriptor.name : property], refreshPreferences);
-		}
-		
-		protected function refreshPreferences(obj:Object):void {
-			CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [node.nodeUri], 
-				function(returnedNode:Node):void {
-					node.properties = returnedNode.properties;
-			});
+				[node.nodeUri, property == null ? propertyDescriptor.name : property]);
 		}
 
 	}

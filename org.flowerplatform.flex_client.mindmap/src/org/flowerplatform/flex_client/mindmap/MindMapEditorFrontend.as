@@ -15,16 +15,12 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import mx.collections.ArrayCollection;
-	import mx.utils.ObjectUtil;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.DiagramEditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.action.InplaceEditorAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorActionProvider;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
-	import org.flowerplatform.flex_client.core.node.event.RefreshEvent;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
@@ -33,10 +29,10 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 
@@ -68,10 +64,7 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			shortcutsActionProvider.addAction(new InplaceEditorAction());
 			
-			actionProvider.actionProviders.push(shortcutsActionProvider);		
-						
-			nodeRegistry.addEventListener(RefreshEvent.REFRESH, refreshCHandler);
-			nodeRegistry.addEventListener(ResourceNodeRemovedEvent.REMOVED, resourceNodeRemovedHandler);
+			actionProvider.actionProviders.push(shortcutsActionProvider);
 		}
 		
 		/**
@@ -83,6 +76,10 @@ package org.flowerplatform.flex_client.mindmap {
 			diagramShell.nodeRegistry = nodeRegistry;
 			
 			return diagramShell;
+		}
+		
+		override protected function createDiagramRenderer():DiagramRenderer {
+			return new MindMapDiagramRenderer();
 		}
 		
 		override protected function createChildren():void {			
@@ -97,25 +94,23 @@ package org.flowerplatform.flex_client.mindmap {
 			super.subscribeResultCallback(rootNode, resourceNode);
 			
 			if (resourceNode == null) {
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(nodeRegistry, rootNode, null);
+				CorePlugin.getInstance().nodeRegistryManager.expand(nodeRegistry, rootNode, null);
 			} else {
 				nodeRegistry.expand(rootNode, null);
 			}
 		}
 		
-		protected function refreshCHandler(event:RefreshEvent):void {
-			MindMapDiagramShell(diagramShell).refreshRootModelChildren(diagramShell.getNewDiagramShellContext());
-			MindMapDiagramShell(diagramShell).refreshModelPositions(diagramShell.getNewDiagramShellContext(), event.node);
-		}
-				
-		protected function resourceNodeRemovedHandler(event:ResourceNodeRemovedEvent):void {
-			var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
-			if (Node(rootModel.model).nodeUri == event.resourceNodeId) {
-				// remove the editor
-				FlexUtilGlobals.getInstance().workbench.closeView(this, true, true);
-			} else {
-				// collapse the node
-				nodeRegistry.collapse(nodeRegistry.getNodeById(event.resourceNodeId), true);
+		override public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:NodeRegistry):void {
+			super.resourceNodeRemoved(resourceNodeUri, nodeRegistry);
+			if (this.nodeRegistry == nodeRegistry) {
+				var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
+				if (Node(rootModel.model).nodeUri == resourceNodeUri) {
+					// remove the editor
+					FlexUtilGlobals.getInstance().workbench.closeView(this, true, true);
+				} else {
+					// collapse the node
+					nodeRegistry.collapse(nodeRegistry.getNodeById(resourceNodeUri), true);
+				}
 			}
 		}
 		

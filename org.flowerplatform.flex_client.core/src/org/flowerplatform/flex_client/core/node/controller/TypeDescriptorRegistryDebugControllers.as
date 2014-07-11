@@ -176,8 +176,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 		
 		private function createNode(type:String, ssp:String, fragment:String, name:String, icons:String, hasChildren:Boolean = true):Node {
 			var node:Node = new Node(type + ":" + ssp + "#" + fragment);
-			node.type = type;
-			node.properties = new Object();
+			node.type = type;			
 			node.properties[CoreConstants.NAME] = name;
 			node.properties[CoreConstants.ICONS] = icons;
 			node.properties[CoreConstants.HAS_CHILDREN] = hasChildren;

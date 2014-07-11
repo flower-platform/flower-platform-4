@@ -133,6 +133,8 @@ public class CoreConstants {
 	
 	public static final String POPULATE_WITH_PROPERTIES = "populateWithProperties";
 	
+	public static final String POPULATE_WITH_PROPERTIES_FORCEFULLY = "populateWithPropertiesForcefully";
+	
 	/**
 	 * An additive controller may set this option, to ask the {@link UpdatePropertySetterController} to use
 	 * the node given as parameter as the resourceNode where the update will be saved.

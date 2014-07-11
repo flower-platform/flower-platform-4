@@ -31,11 +31,12 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		
 		override public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
+			var dynamicObject:Object = diagramShell.getDynamicObject(context, model);
 			return new Rectangle(
-				diagramShell.getPropertyValue(context, model, "x"), 
-				diagramShell.getPropertyValue(context, model, "y"), 
-				diagramShell.getPropertyValue(context, model, "width"), 
-				diagramShell.getPropertyValue(context, model, "height"));
+				diagramShell.getPropertyValue(context, model, "x", dynamicObject), 
+				diagramShell.getPropertyValue(context, model, "y", dynamicObject), 
+				diagramShell.getPropertyValue(context, model, "width", dynamicObject), 
+				diagramShell.getPropertyValue(context, model, "height", dynamicObject));
 		}
 		
 	}

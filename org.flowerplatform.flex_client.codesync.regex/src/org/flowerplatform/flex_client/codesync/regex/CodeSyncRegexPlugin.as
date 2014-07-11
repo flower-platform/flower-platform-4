@@ -67,7 +67,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 		}
 		
 		public function getTextEditorFrontend(matchesEditorFrontend:EditorFrontend, showIfNecessary:Boolean = false):TextEditorFrontend {
-			var resourceNodeUri:String = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForNodeRegistry(matchesEditorFrontend.nodeRegistry)[0];
+			var resourceNodeUri:String = CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForNodeRegistry(matchesEditorFrontend.nodeRegistry)[0];
 			var resourceNode:Node = matchesEditorFrontend.nodeRegistry.getNodeById(resourceNodeUri);
 			
 			var textEditorResourceNodeUri:String = resourceNode.getPropertyValue(CodeSyncRegexConstants.RESOURCE_URI);
@@ -77,7 +77,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 			
 			var textEditorFrontend:TextEditorFrontend;
 			for each (var component:UIComponent in components) {								
-				if (component is TextEditorFrontend && CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForNodeRegistry(TextEditorFrontend(component).nodeRegistry)[0] == textEditorResourceNodeUri) {
+				if (component is TextEditorFrontend && CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForNodeRegistry(TextEditorFrontend(component).nodeRegistry)[0] == textEditorResourceNodeUri) {
 					if (showIfNecessary) {
 						FlexUtilGlobals.getInstance().workbench.setActiveView(UIComponent(TextEditorFrontend(component).viewHost), true);
 					}

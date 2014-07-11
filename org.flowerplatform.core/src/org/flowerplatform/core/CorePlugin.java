@@ -46,6 +46,7 @@ import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceSetServic
 import org.flowerplatform.core.node.resource.in_memory.InMemorySessionService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.preference.PreferencePropertiesProvider;
+import org.flowerplatform.core.preference.PreferencePropertySetter;
 import org.flowerplatform.core.preference.remote.PreferencesServiceRemote;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
@@ -256,6 +257,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.PREFERENCE_TYPE)
 			.addCategory(CoreConstants.PREFERENCE_CATEGORY_TYPE)
+			.addAdditiveController(CoreConstants.PROPERTY_SETTER, new PreferencePropertySetter())
 			// TODO CC: to remove when working at preferences persistence
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING).setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
 			

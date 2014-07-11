@@ -19,19 +19,15 @@ package org.flowerplatform.flex_client.web {
 	
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
-	import mx.messaging.messages.ErrorMessage;
-	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -79,7 +75,7 @@ package org.flowerplatform.flex_client.web {
 		}	
 		
 		public function invokeSaveResourcesDialog():Boolean {
-			CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors();
+			CorePlugin.getInstance().nodeRegistryManager.resourceOperationsManager.showSaveDialog();
 			return CorePlugin.getInstance().resourceNodesManager.getGlobalDirtyState();
 		}
 		

@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.flex_client.core.editor.resource {
 	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
@@ -22,32 +23,35 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
+	import org.flowerplatform.flex_client.core.node.IExternalInvocator;
+	import org.flowerplatform.flex_client.core.node.IResourceOperationsHandler;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	
 	/**
-	 * TODO CC: this class will implement IResourceOperationsHandler
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class ResourceOperationsManager {
+	public class ResourceOperationsManager implements IResourceOperationsHandler, IExternalInvocator {
 			
 		public var saveAction:SaveAction = new SaveAction();
 		public var saveAllAction:SaveAllAction = new SaveAllAction();		
 		public var reloadAction:ReloadAction = new ReloadAction();
-						
-		public var lastUpdateTimestampOfServer:Number = -1;
-		public var lastUpdateTimestampOfClient:Number = -1;
-		
-		public var nodeRegistryManager:NodeRegistryManager;
-		
-		public function ResourceOperationsManager() {
-			nodeRegistryManager = new NodeRegistryManager(this);
+				
+		private var _nodeRegistryManager:NodeRegistryManager;
+				
+		public function get nodeRegistryManager():NodeRegistryManager {
+			return _nodeRegistryManager;
 		}
-		
+
+		public function set nodeRegistryManager(value:NodeRegistryManager):void {
+			_nodeRegistryManager = value;
+		}
+					
 		public function activeViewChangedHandler(evt:ActiveViewChangedEvent):void {			
 			updateEditorFrontendActionsEnablement();
 		}
@@ -118,7 +122,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 					e.dontRemoveViews.addItem(view);
 				}
 			}
-			showSaveDialogIfDirtyStateOrCloseEditors(nodeRegistries);					
+			_nodeRegistryManager.resourceOperationsManager.showSaveDialog(nodeRegistries);					
 		}
 				
 		
@@ -130,34 +134,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * @param dirtyResourceNodeIds if <code>null</code>, all dirty resourceNodes from <code>nodeRegistries</code> will be used.
 		 * @param handler Is called before closing the save view. If <code>null</code>, <code>nodeRegistries</code> will be removed.
 		 */ 
-		public function showSaveDialogIfDirtyStateOrCloseEditors(nodeRegistries:Array = null, dirtyResourceNodeIds:Array = null, handler:Function = null):void {
-			// TODO CC: to be moved in js class
-			// START
-			if (nodeRegistries == null) {
-				nodeRegistries = nodeRegistryManager.getNodeRegistries();
-			}
-			
-			var dirtyResourceNodes:ArrayList = new ArrayList();
-			if (dirtyResourceNodeIds == null) {
-				nodeRegistryManager.getDirtyResourceSetsFromNodeRegistries(nodeRegistries, function(dirtyResourceNodeId:String):void {
-					dirtyResourceNodes.addItem(new ResourceNode(dirtyResourceNodeId, true));
-				});				
-			} else {
-				for (var i:int = 0; i < dirtyResourceNodeIds.length; i++) {
-					dirtyResourceNodes.addItem(new ResourceNode(dirtyResourceNodeIds[i], true));
-				}
-			}
-			if (dirtyResourceNodes.length == 0) {
-				if (handler != null) {
-					handler();
-				} else {
-					nodeRegistryManager.removeNodeRegistries(nodeRegistries);
-				}
-				return;
-			}
-					
-			// END
-			
+		public function showSaveDialog(nodeRegistries:Array = null, dirtyResourceNodes:IList = null, handler:Function = null):void {			
 			var saveView:ResourceNodesListView = new ResourceNodesListView();
 			saveView.nodeRegistries = nodeRegistries;
 			saveView.resourceNodes = dirtyResourceNodes;
@@ -177,19 +154,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * @author Mariana Gheorghe
 		 */
 		public function showReloadDialog(nodeRegistries:Array = null, resourceSets:Array = null):void {
-			// TODO CC: to be moved in js class
-			// START
-			if (nodeRegistries == null) {
-				nodeRegistries = nodeRegistryManager.getNodeRegistries();
-			}
-			
 			var resourceNodes:ArrayList = new ArrayList();
-			if (resourceSets == null) {
-				resourceSets = nodeRegistryManager.getDirtyResourceSetsFromNodeRegistries(nodeRegistries);
-			}
-			
-			// END
-			
 			for each (var resourceSet:String in resourceSets) {
 				resourceNodes.addItem(new ResourceNode(resourceSet, true));
 			}
@@ -221,5 +186,14 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			return saveAllAction != null ? saveAllAction.enabled : false;
 		}		
 		
+		public function showMessageBox(text:String, title:String):void {			
+			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+				.setText(text)
+				.setTitle(title)
+				.setWidth(300)
+				.setHeight(200)
+				.showMessageBox();
+		}
+				
 	}
 }

@@ -51,7 +51,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 				if (node.type == CodeSyncRegexConstants.VIRTUAL_REGEX_TYPE && node.children == null && Boolean(node.getPropertyValue(CoreConstants.HAS_CHILDREN)).valueOf()) {
 					var context:Object = new Object();
 					context[CoreConstants.HANDLER] = function():void {colorTextEditorFrontend(selection);};
-					CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(editorFrontend.nodeRegistry, node, context);
+					CorePlugin.getInstance().nodeRegistryManager.expand(editorFrontend.nodeRegistry, node, context);
 					return;
 				}				
 				computeMatches(node, array);

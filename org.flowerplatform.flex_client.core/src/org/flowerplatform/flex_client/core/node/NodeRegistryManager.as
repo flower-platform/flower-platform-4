@@ -13,29 +13,24 @@
  * 
  * license-end
  */
-package org.flowerplatform.flex_client.core.editor.resource {
+package org.flowerplatform.flex_client.core.node {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	import mx.core.mx_internal;
+	import mx.events.PropertyChangeEvent;
 	import mx.rpc.events.FaultEvent;
-	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.SubscriptionInfo;
-	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
-	import org.flowerplatform.flex_client.core.editor.resource.event.ResourceNodeRemovedEvent;
-	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public class NodeRegistryManager {
 		
 		/**
@@ -47,14 +42,24 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		private var resourceSetToResourceUris:Dictionary = new Dictionary();
 		private var resourceUriToResourceSet:Dictionary = new Dictionary();
 		
-		// TODO CC: ResourceOperationsManagerJs
-		private var resourceOperationsManager:ResourceOperationsManager;
+		public var resourceOperationsManager:ResourceOperationsManagerJs;		
+		public var serviceInvocator:IServiceInvocator;
+		public var externalInvocator:IExternalInvocator;
 		
-		private var serviceInvocator:IServiceInvocator;
+		public var listeners:IList = new ArrayCollection();
 		
-		public function NodeRegistryManager(resourceOperationsManager:ResourceOperationsManager) {
-			super();
-			this.resourceOperationsManager = resourceOperationsManager;			
+		public function NodeRegistryManager(resourceOperationsHandler:IResourceOperationsHandler, serviceInvocator:IServiceInvocator, externalInvocator:IExternalInvocator) {
+			this.resourceOperationsManager = new ResourceOperationsManagerJs(this, resourceOperationsHandler);
+			this.serviceInvocator = serviceInvocator;
+			this.externalInvocator = externalInvocator;
+		}
+				
+		public function createNodeRegistry():NodeRegistry {
+			return new NodeRegistry(this);
+		}
+		
+		public function addListener(listener:INodeRegistryManagerListener):void {
+			listeners.addItem(listener);
 		}
 		
 		public function getResourceSets():Array {
@@ -131,20 +136,18 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 			nodeRegistries.push(nodeRegistry);
 			
-			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
 			// listen for resourceNode properties modifications like isDirty
-			nodeRegistry.getNodeById(resourceUri).addEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
-			resourceNodeUpdated(new NodeUpdatedEvent(nodeRegistry.getNodeById(resourceUri)));
+			var resourceNode:Node = nodeRegistry.getNodeById(resourceUri);
+			resourceNode.properties.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, resourceNodeUpdated);
+			resourceNodeUpdated(PropertyChangeEvent.createUpdateEvent(resourceNode, CoreConstants.IS_DIRTY, false, resourceNode.properties[CoreConstants.IS_DIRTY]));
 		}
 		
 		public function unlinkResourceNodeFromNodeRegistry(resourceUri:String, nodeRegistry:NodeRegistry):void {
 			// change isDirty to false and dispatch event
 			var resourceNodeFromRegistry:Node = nodeRegistry.getNodeById(resourceUri);
-			resourceNodeFromRegistry.properties[CoreConstants.IS_DIRTY] = false;
+			nodeRegistry.setPropertyValue(resourceNodeFromRegistry, CoreConstants.IS_DIRTY, false);
 			
-			//TODO CC: don't dispatch event; call INodeChangeListener.nodeUpdated
-			resourceNodeFromRegistry.dispatchEvent(new NodeUpdatedEvent(resourceNodeFromRegistry, new ArrayList([CoreConstants.IS_DIRTY])));
-			resourceNodeFromRegistry.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, resourceNodeUpdated);
+			resourceNodeFromRegistry.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, resourceNodeUpdated);
 			
 			var resourceSet:String = resourceUriToResourceSet[resourceUri];
 			
@@ -203,9 +206,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			
 			getResourceUrisForSubTree(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 			
-			if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog
-				//TODO CC: call method from IResourceOperationsHandler
-				resourceOperationsManager.showSaveDialogIfDirtyStateOrCloseEditors([this], getResourceSetsForResourceUris(dirtyResourceUris), 
+			if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog			
+				resourceOperationsManager.showSaveDialog([this], getResourceSetsForResourceUris(dirtyResourceUris), 
 					function():void {
 						// wait for server response before collapse	
 						collapseHandler(node, nodeRegistry, refreshChildren, dirtyResourceUris, savedResourceUris);
@@ -275,8 +277,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		 * </ul>
 		 */ 
 		public function subscribe(nodeId:String, nodeRegistry:NodeRegistry, subscribeResultCallback:Function = null, subscribeFaultCallback:Function = null):void {
-			//TODO CC: service method invocation must be moved somewhere else
-			CorePlugin.getInstance().serviceLocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
+			serviceInvocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
 				function(subscriptionInfo:SubscriptionInfo):void {
 					subscriptionInfo.rootNode = nodeRegistry.mx_internal::mergeOrRegisterNode(subscriptionInfo.rootNode);
 					if (subscriptionInfo.resourceNode != null) {
@@ -288,13 +289,8 @@ package org.flowerplatform.flex_client.core.editor.resource {
 					}
 				},
 				function(event:FaultEvent):void {
-					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setText(Resources.getMessage("editor.error.subscribe.message", [event.fault.faultString]))
-					.setTitle(Resources.getMessage("editor.error.subscribe.title"))
-					.setWidth(300)
-					.setHeight(200)
-					.showMessageBox();
-					
+					externalInvocator.showMessageBox(Resources.getMessage("editor.error.subscribe.message", [event.fault.faultString]), Resources.getMessage("editor.error.subscribe.title"));
+										
 					if (subscribeFaultCallback != null) {
 						subscribeFaultCallback(event);
 					}
@@ -310,11 +306,12 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				for each (var resourceNodeId:Object in getResourceUrisForNodeRegistry(nodeRegistry)) {
 					unlinkResourceNodeFromNodeRegistry(String(resourceNodeId), nodeRegistry);
 				}	
-				nodeRegistry.dispatchEvent(new NodeRegistryRemovedEvent());							
+				for each (var listener:INodeRegistryManagerListener in listeners) {
+					listener.nodeRegistryRemoved(nodeRegistry);
+				}							
 			}
 			
-			//TODO CC: call method from IResourceOperationsHandler
-			resourceOperationsManager.updateGlobalDirtyState(false);
+			resourceOperationsManager.resourceOperationsHandler.updateGlobalDirtyState(false);
 		}
 		
 		public function getResourceSetsForResourceUris(resourceUris:Array):Array {
@@ -396,16 +393,13 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				var nodeRegistries:Array = getNodeRegistriesForResourceSet(resourceNodeId);
 				for each (var nodeRegistry:NodeRegistry in nodeRegistries) {					
 					unlinkResourceNodeFromNodeRegistry(resourceNodeId, nodeRegistry);
-					nodeRegistry.dispatchEvent(new ResourceNodeRemovedEvent(resourceNodeId));
+					for each (var listener:INodeRegistryManagerListener in listeners) {
+						listener.resourceNodeRemoved(resourceNodeId, nodeRegistry);
+					}
 				}
 				idsList += "\n* " + resourceNodeId;
 			}
-			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-				.setText(Resources.getMessage("editor.error.subscribe.message", [idsList]))
-				.setTitle(Resources.getMessage("editor.error.subscribe.title"))
-				.setWidth(300)
-				.setHeight(200)
-				.showMessageBox();
+			externalInvocator.showMessageBox(Resources.getMessage("editor.error.subscribe.message", [idsList]), Resources.getMessage("editor.error.subscribe.title"));
 		}
 		
 		public function isResourceNodeDirty(resourceNodeId:String, nodeRegistry:NodeRegistry):Boolean {
@@ -413,11 +407,9 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			return node == null ? false : node.properties[CoreConstants.IS_DIRTY];
 		}
 					
-		protected function resourceNodeUpdated(event:NodeUpdatedEvent):void {
-			var resourceNode:Node = event.node;
-			if (NodeControllerUtils.hasPropertyChanged(resourceNode, CoreConstants.IS_DIRTY, event)) {
-				//TODO CC: call method from IResourceOperationsHandler
-				resourceOperationsManager.updateGlobalDirtyState(resourceNode.properties[CoreConstants.IS_DIRTY]);
+		protected function resourceNodeUpdated(event:PropertyChangeEvent):void {		
+			if (event.property == CoreConstants.IS_DIRTY) {				
+				resourceOperationsManager.resourceOperationsHandler.updateGlobalDirtyState(event.newValue);
 			}
 		}
 		

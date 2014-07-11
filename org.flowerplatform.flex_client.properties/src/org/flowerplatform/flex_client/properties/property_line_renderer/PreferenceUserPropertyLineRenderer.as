@@ -17,19 +17,12 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 	
 	import flash.events.MouseEvent;
 	
-	import mx.binding.utils.BindingUtils;
-	
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.remote.PreferencePropertyWrapper;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.properties.ui.PropertiesComponent;
-	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.Utils;
-	
 	import spark.components.Button;
 	import spark.components.CheckBox;
+	
+	import org.flowerplatform.flex_client.core.editor.remote.PreferencePropertyWrapper;
+	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -67,16 +60,12 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			rendererArea.addElement(copyToGlobal);					
 		}		
 	
-		override protected function nodeUpdated():void {
+		override public function nodeUpdated():void {
 			super.nodeUpdated();
 			if (usedCheckBox) {
 				usedCheckBox.selected = PreferencePropertyWrapper(node.getPropertyValueOrWrapper(propertyDescriptor.name)).isUsed;
 			}
 		}
 			
-		override public function commit(callbackHandler:Function = null):void {			
-			super.commit(refreshPreferences);
-		}
-		
 	}
 }
