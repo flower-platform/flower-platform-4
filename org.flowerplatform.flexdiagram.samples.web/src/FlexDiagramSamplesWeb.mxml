@@ -23,9 +23,8 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			import org.flowerplatform.flexdiagram.tool.ZoomTool;
-			import org.flowerplatform.flexdiagram.DiagramShell;
-			import org.flowerplatform.flexdiagram.samples.SamplesDiagramShell;
+			import org.flowerplatform.flexdiagram.samples.IModelHolder;
+			import org.flowerplatform.flexdiagram.samples.ModelPopulator;
 			import org.flowerplatform.flexdiagram.tool.DragToCreateRelationTool;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
 			import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
@@ -33,16 +32,16 @@
 			import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.SelectOrDragToCreateElementTool;
-			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+			import org.flowerplatform.flexdiagram.tool.ZoomTool;
 			
-			private var _rootModel:ParentAwareArrayList;
+			private var _rootModel:Object;
 			
 			[Bindable]
-			public function get rootModel():ParentAwareArrayList {
+			public function get rootModel():Object {
 				return _rootModel;
 			}
 			
-			public function set rootModel(value:ParentAwareArrayList):void {
+			public function set rootModel(value:Object):void {
 				_rootModel = value;				
 			}
 			

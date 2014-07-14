@@ -23,8 +23,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	public class NodeRendererController extends MindMapModelRendererController {
 		
 		public function NodeRendererController(rendererClass:Class, orderIndex:int = 0) {
-			super(rendererClass, orderIndex);
-			mindMapConnectorClass = MindMapConnector;
+			super(rendererClass, MindMapConnector, orderIndex);
 		}
 		
 	}
