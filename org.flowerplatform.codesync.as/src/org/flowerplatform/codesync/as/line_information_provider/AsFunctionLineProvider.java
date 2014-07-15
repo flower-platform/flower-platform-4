@@ -33,7 +33,7 @@ public class AsFunctionLineProvider implements ILineProvider {
 	public Pair<Integer, Integer> getStartEndLines(Object model, IDocument document) {
 		IDefinitionNode node = getFunction(model).getNode();
 		IBlockNode block = getBlock(node);
-		if (block == null) {
+		if (block == null || (block.getStart() == -1 && block.getEnd() == -1)) {
 			return null;
 		}
 		try {
