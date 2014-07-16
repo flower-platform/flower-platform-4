@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="Eclipse 4.3.2" sequenceNumber="8">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jdt.source.feature.group" version="3.9.2.v20140221-1700"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.9.2.v20140221-1700"/>
+<unit id="org.eclipse.platform.feature.group" version="4.3.2.v20140221-1852"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700"/>
+</location>
+</locations>
+</target>
