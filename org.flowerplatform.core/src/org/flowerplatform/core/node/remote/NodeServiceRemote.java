@@ -21,12 +21,11 @@ import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
-import org.flowerplatform.util.Utils;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
 /**
@@ -52,12 +51,18 @@ public class NodeServiceRemote {
 	 */
 	public void setProperty(String fullNodeId, String property, Object value) {
 		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
-		rss.startCommand(rss.getResourceSet(fullNodeId), "Set " + property + " to " + value);
-
+		rss.startCommand(rss.getResourceSet(fullNodeId), ResourcesPlugin.getInstance().getMessage("commandStack.command.setProperty", property, value));
 		getNodeService().setProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
 		
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Claudiu Matei
+	 */
 	public void unsetProperty(String fullNodeId, String property) {
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		rss.startCommand(rss.getResourceSet(fullNodeId), ResourcesPlugin.getInstance().getMessage("commandStack.command.unsetProperty", property));
 		getNodeService().unsetProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, new ServiceContext<NodeService>(getNodeService()));	
 	}
 	
@@ -66,14 +71,14 @@ public class NodeServiceRemote {
 	 * @author Sebastian Solomon
 	 * @author Claudiu Matei
 	 */
-	public String addChild(String parentFullNodeId, ServiceContext<NodeService> context) {
+	public String addChild(String parentNodeUri, ServiceContext<NodeService> context) {
 		if (context == null) {
 			context = new ServiceContext<NodeService>(getNodeService());
 		} else {
 			context.setService(getNodeService());
 		}
 				
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId);
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
 		String childType = (String) context.get(TYPE_KEY);
 		if (childType == null) {
 			throw new RuntimeException("Type for new child node must be provided in context!");
@@ -81,7 +86,7 @@ public class NodeServiceRemote {
 		Node child = new Node(null, childType);
 
 		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
-		rss.startCommand(rss.getResourceSet(parentFullNodeId), "Create " + childType + " node");
+		rss.startCommand(rss.getResourceSet(parentNodeUri), ResourcesPlugin.getInstance().getMessage("commandStack.command.addChild", childType));
 		
 		getNodeService().addChild(parent, child, context);
 		return child.getNodeUri();
@@ -92,15 +97,12 @@ public class NodeServiceRemote {
 	 * @author Cristian Spiescu
 	 * @author Claudiu Matei
 	 */
-	public void removeChild(String parentFullNodeId, String childFullNodeId) {
-		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(parentFullNodeId);
-		String resourceSet = (String)resourceNode.getOrPopulateProperties().get(CoreConstants.RESOURCE_SET);
-		if (resourceSet == null) resourceSet = resourceNode.getNodeUri();
+	public void removeChild(String parentNodeUri, String childNodeUri) {
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		rss.startCommand(rss.getResourceSet(parentNodeUri), ResourcesPlugin.getInstance().getMessage("commandStack.command.removeChild", childNodeUri));
 		
-		CorePlugin.getInstance().getResourceSetService().startCommand(resourceSet, "Remove node " + childFullNodeId);
-		
-		getNodeService().removeChild(CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId), 
-				CorePlugin.getInstance().getResourceService().getNode(childFullNodeId), new ServiceContext<NodeService>(getNodeService()));
+		getNodeService().removeChild(CorePlugin.getInstance().getResourceService().getNode(parentNodeUri), 
+				CorePlugin.getInstance().getResourceService().getNode(childNodeUri), new ServiceContext<NodeService>(getNodeService()));
 	}
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
@@ -157,18 +159,6 @@ public class NodeServiceRemote {
 	
 	private NodeService getNodeService() {
 		return CorePlugin.getInstance().getNodeService();
-	}
-
-	public void undo(String commandNodeUri) {
-		String resourceSet = Utils.getSchemeSpecificPart(commandNodeUri);
-		String commandId = Utils.getFragment(commandNodeUri);
-		CorePlugin.getInstance().getResourceSetService().undo(resourceSet, commandId);
-	}
-
-	public void redo(String commandNodeUri) {
-		String resourceSet = Utils.getSchemeSpecificPart(commandNodeUri);
-		String commandId = Utils.getFragment(commandNodeUri);
-		CorePlugin.getInstance().getResourceSetService().redo(resourceSet, commandId);
 	}
 	
 }

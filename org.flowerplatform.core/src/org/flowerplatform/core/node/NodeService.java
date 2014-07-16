@@ -233,7 +233,11 @@ public class NodeService {
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-					
+
+		// Save value before the change
+		Object oldValue = node.getOrPopulateProperties().get(property);
+		context.add(CoreConstants.OLD_VALUE, oldValue);
+		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (IPropertySetter controller : controllers) {
 			controller.unsetProperty(node, property, context);

@@ -99,6 +99,10 @@ public class UpdateController extends AbstractController
 		setUnsetProperty(node, key, propertyValue, propertyValue == null, context);
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext<NodeService> context) {		
 		String resourceSet = null;
 		Node resourceNode;
@@ -118,10 +122,12 @@ public class UpdateController extends AbstractController
 		ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
 		PropertyUpdate update = new PropertyUpdate();
 		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri());
+		
 		if (context.getContext().containsKey(CoreConstants.OLD_VALUE)) {
 			update.setHasOldValueAs(true);
 			update.setOldValueAs(context.get(CoreConstants.OLD_VALUE));
 		}
+		
 		service.addUpdate(resourceSet, update);		
 	}
 

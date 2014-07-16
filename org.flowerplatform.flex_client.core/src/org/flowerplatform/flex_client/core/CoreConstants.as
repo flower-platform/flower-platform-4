@@ -120,6 +120,7 @@ package org.flowerplatform.flex_client.core {
 		//////////////////////////////////
 
 		public static const COMMAND_STACK:String = "commandStack";
+		public static const COMMAND_TYPE:String = "command";
 		
 		//////////////////////////////////
 		// Editor

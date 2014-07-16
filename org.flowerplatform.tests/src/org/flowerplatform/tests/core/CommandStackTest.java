@@ -20,6 +20,7 @@ import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
@@ -52,6 +53,7 @@ public class CommandStackTest {
 	private static NodeServiceRemote nodeServiceRemote;
 	private static RemoteMethodInvocationListener remoteMethodInvocationListener;
 	private static ResourceService resourceService;
+	private static ResourceServiceRemote resourceServiceRemote;
 	private static ResourceSetService resourceSetService;
 
 	private RemoteMethodInvocationInfo remoteMethodInvocationInfo;
@@ -66,6 +68,7 @@ public class CommandStackTest {
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummy-session", resourceNodeUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummy-session", commandStackNodeUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		resourceService = CorePlugin.getInstance().getResourceService();
+		resourceServiceRemote = new ResourceServiceRemote();
 		resourceSetService = CorePlugin.getInstance().getResourceSetService();
 		rootNode = resourceService.getNode(resourceNodeUri);
 		nodeServiceRemote = new NodeServiceRemote();
@@ -236,11 +239,11 @@ public class CommandStackTest {
 
 		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.undo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
+		resourceServiceRemote.undo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.redo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
+		resourceServiceRemote.redo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		node = nodeService.getChildren(rootNode, context).get(0);
@@ -297,11 +300,11 @@ public class CommandStackTest {
 
 		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.undo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
+		resourceServiceRemote.undo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.redo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
+		resourceServiceRemote.redo(commandStackNodeUri + "#" + commands.get(commands.size() - 1).getId());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Node> children = nodeService.getChildren(node, context);

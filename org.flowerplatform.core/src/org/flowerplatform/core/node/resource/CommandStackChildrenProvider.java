@@ -18,9 +18,9 @@ public class CommandStackChildrenProvider extends AbstractController implements 
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-//		List<Command> commands = CorePlugin.getInstance().getResourceService().getCommands(RemoteMethodInvocationListener.unescapeFullNodeId(node.getIdWithinResource()));
-//		return !commands.isEmpty();
-		return true;
+		String resourceSet = node.getNodeUri().substring(CoreConstants.COMMAND_STACK_SCHEME.length()+1);
+		List<Command> commands = CorePlugin.getInstance().getResourceSetService().getCommands(resourceSet);
+		return !commands.isEmpty();
 	}
 
 	@Override
@@ -28,12 +28,10 @@ public class CommandStackChildrenProvider extends AbstractController implements 
 		String resourceSet = node.getNodeUri().substring(CoreConstants.COMMAND_STACK_SCHEME.length()+1);
 		List<Command> commands = CorePlugin.getInstance().getResourceSetService().getCommands(resourceSet);
 		ArrayList<Node> children = new ArrayList<>();
-		Node dummyNode = new Node(Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceSet, "dummy"), CoreConstants.COMMAND_TYPE);
-		dummyNode.getProperties().put(CoreConstants.NAME, "Dummy node");
-		children.add(dummyNode);
 		for (Command command : commands) {
 			Node childNode = new Node(Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceSet, command.getId()), CoreConstants.COMMAND_TYPE);
 			childNode.getProperties().put(CoreConstants.NAME, command.getTitle());
+			childNode.setType(CoreConstants.COMMAND_TYPE);
 			children.add(childNode);
 		}
 		return children;

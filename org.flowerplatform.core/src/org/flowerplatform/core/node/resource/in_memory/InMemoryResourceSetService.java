@@ -57,7 +57,9 @@ public class InMemoryResourceSetService extends ResourceSetService {
 		logger.debug("Adding update {} for resource set {}", update, resourceSet);
 		update.setId(UUID.randomUUID().toString());
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
-		if (info != null) info.getUpdates().add(update);
+		if (info != null) {
+			info.getUpdates().add(update);
+		}
 	}
 
 	@Override
@@ -113,7 +115,9 @@ public class InMemoryResourceSetService extends ResourceSetService {
 			if (foundLastUpdate) {
 				updates.add(0, update);
 			}
-			if (update.getId().equals(firstUpdateId)) break;
+			if (update.getId().equals(firstUpdateId)) {
+				break;
+			}
 		}
 		return updates;
 	}
@@ -126,11 +130,14 @@ public class InMemoryResourceSetService extends ResourceSetService {
 		List<Update> updates = null;
 		Update lastUpdate = null;
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
-		if (info != null) {
-			updates = info.getUpdates();
-			if (updates.size() > 0) {
-				lastUpdate = updates.get(updates.size() - 1);
-			}
+
+		if (info == null) {
+			return lastUpdate;
+		}
+		
+		updates = info.getUpdates();
+		if (updates.size() > 0) {
+			lastUpdate = updates.get(updates.size() - 1);
 		}
 		return lastUpdate;
 	}
@@ -147,16 +154,20 @@ public class InMemoryResourceSetService extends ResourceSetService {
 
 	/**
 	 * @author Claudiu Matei
+	 * Used only for tests
 	 */
 	@Override
 	public List<Command> getCommands(String resourceSet) {
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
-		if (info == null) return new ArrayList<>();
+		if (info == null) {
+			return null;
+		}
 		return info.getCommandStack(); 
 	}
 
 	/**
 	 * @author Claudiu Matei
+	 * @param lastCommandId - if null, returns all commands after firstCommandId
 	 */
 	@Override
 	public List<Command> getCommands(String resourceSet, String firstCommandId, String lastCommandId) {
@@ -181,19 +192,13 @@ public class InMemoryResourceSetService extends ResourceSetService {
 			if (foundLastCommand) {
 				commands.add(0, command);
 			}
-			if (command.getId().equals(firstCommandId)) break;
+			if (command.getId().equals(firstCommandId)) {
+				break;
+			}
 		}
 		return commands;
 	}
 	
-	/**
-	 * @author Claudiu Matei
-	 */
-	@Override
-	public List<Command> getCommandsAfter(String resourceSet, String commandId) {
-		return getCommands(resourceSet, commandId, null);
-	}
-
 	/**
 	 * @author Claudiu Matei
 	 */

@@ -100,7 +100,9 @@ public abstract class ResourceSetService {
 	public String getResourceSet(String nodeUri) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(nodeUri);
 		String resourceSet = (String)resourceNode.getOrPopulateProperties().get(CoreConstants.RESOURCE_SET);
-		if (resourceSet == null) resourceSet = resourceNode.getNodeUri();
+		if (resourceSet == null) {
+			resourceSet = resourceNode.getNodeUri();
+		}
 		return resourceSet;
 	}
 	
@@ -113,12 +115,14 @@ public abstract class ResourceSetService {
 		command.setResourceSet(resourceSet);
 		command.setTitle(commandTitle);
 		Update lastUpdate = getLastUpdate(resourceSet);
-		if (lastUpdate != null) command.setLastUpdateIdBeforeCommandExecution(lastUpdate.getId());
+		if (lastUpdate != null) {
+			command.setLastUpdateIdBeforeCommandExecution(lastUpdate.getId());
+		}
 		
 		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
 		context.setCommand(command);
 	}
-	
+
 	/**
 	 * @author Claudiu Matei 
 	 */
@@ -308,7 +312,12 @@ public abstract class ResourceSetService {
 	private void redoPropertyUpdate(PropertyUpdate update) {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getValue(), context);
+		if (update.getIsUnset()) {
+			CorePlugin.getInstance().getNodeService().unsetProperty(node, update.getKey(), context); 
+		}
+		else {
+			CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getValue(), context);
+		}
 	}
 
 	/**
@@ -344,6 +353,7 @@ public abstract class ResourceSetService {
 	
 	/**
 	 * @author Claudiu Matei
+	 * Used only for tests
 	 */
 	public abstract List<Command> getCommands(String resourceNodeId);
 
@@ -351,11 +361,6 @@ public abstract class ResourceSetService {
 	 * @author Claudiu Matei
 	 */
 	protected abstract List<Command> getCommands(String resourceNodeId, String firstCommandId, String lastCommandId);
-
-	/**
-	 * @author Claudiu Matei
-	 */
-	protected abstract List<Command> getCommandsAfter(String resourceNodeId, String commandId);
 
 	/**
 	 * @author Claudiu Matei
