@@ -25,19 +25,17 @@
 	   <fx:Script>
 		   <![CDATA[
 			   import mx.events.FlexEvent;
-			   
-			   import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 			   protected function applicationCompleteHandler(event:FlexEvent):void	{
 			   }
 			   
-			   private var _rootModel:ParentAwareArrayList;
+			   private var _rootModel:Object;
 			   
 			   [Bindable]
-			   public function get rootModel():ParentAwareArrayList {
+			   public function get rootModel():Object {
 				   return _rootModel;
 			   }
 			   
-			   public function set rootModel(value:ParentAwareArrayList):void {
+			   public function set rootModel(value:Object):void {
 				   _rootModel = value;				
 			   }
 			   
