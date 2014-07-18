@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
@@ -114,12 +115,17 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 		}
 		if (ast instanceof MXMLFileNode) {
 			MXMLFileNode fileNode = (MXMLFileNode) ast;
-			Collection<IDefinition> definitions = ((MXMLFileScope) fileNode.getScope())
-					.getMainClassDefinition().getContainedScope().getAllLocalDefinitions();
-			if (!definitions.isEmpty()) {
-				IDefinitionNode node = definitions.iterator().next().getNode();
-				if (node != null) {
-					ast = node.getContainingScope();
+			ClassDefinition classDef = ((MXMLFileScope) fileNode.getScope()).getMainClassDefinition();
+			if (classDef == null) {
+				// empty file; was added/deleted
+				ast = null; 
+			} else {
+				Collection<IDefinition> definitions = classDef.getContainedScope().getAllLocalDefinitions();
+				if (!definitions.isEmpty()) {
+					IDefinitionNode node = definitions.iterator().next().getNode();
+					if (node != null) {
+						ast = node.getContainingScope();
+					}
 				}
 			}
 		}
