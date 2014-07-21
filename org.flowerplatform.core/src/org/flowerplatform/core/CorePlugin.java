@@ -223,6 +223,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		getResourceService().addResourceHandler(CoreConstants.ROOT_TYPE, new BaseResourceHandler(CoreConstants.ROOT_TYPE));
 		
+		
+		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
 			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootChildrenProvider());

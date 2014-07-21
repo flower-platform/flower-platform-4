@@ -24,6 +24,11 @@ public class CodeSyncSdiffConstants {
 	public static final String STRUCTURE_DIFF = "structureDiff";
 	public static final String STRUCTURE_DIFF_EXTENSION = ".sdiff";
 	
+	// new node Legend //
+	public static final String LEGEND = "legend";
+	public static final String LEGEND_CHILD = "legendChild";
+	public static final int LEGEND_CHILD_NB = 6;
+	
 	public static final String COMMENT = "sdiffComment";
 	
 	// relative to repository

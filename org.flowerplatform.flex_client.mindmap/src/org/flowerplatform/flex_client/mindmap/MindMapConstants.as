@@ -36,6 +36,7 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const FREEPLANE_MINDMAP_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 		
+		
 		//////////////////////////////////
 		// Node properties
 		//////////////////////////////////

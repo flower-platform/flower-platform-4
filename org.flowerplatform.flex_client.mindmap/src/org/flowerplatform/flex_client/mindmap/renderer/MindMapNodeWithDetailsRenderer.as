@@ -16,6 +16,7 @@
 package org.flowerplatform.flex_client.mindmap.renderer {
 	import flash.events.MouseEvent;
 	
+	import mx.controls.Label;
 	import mx.events.PropertyChangeEvent;
 	import mx.graphics.SolidColorStroke;
 	
@@ -46,6 +47,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		protected var detailsIcon:Image;
 		protected var detailsText:RichText;
 		protected var noteComponentExtension:NoteAndDetailsComponentExtension = new NoteAndDetailsComponentExtension();
+		
 		
 		override public function setLayout():void {
 			var vLayout:VerticalLayout = new VerticalLayout();
