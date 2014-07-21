@@ -3,6 +3,7 @@
 	<name>org.flowerplatform.flex_client.codesync.sdiff</name>
 	<comment></comment>
 	<projects>
+		<project>org.flowerplatform.flex_client.mindmap</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
