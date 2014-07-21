@@ -26,6 +26,21 @@ public class CodeSyncSdiffConstants {
 	
 	public static final String COMMENT = "sdiffComment";
 	
+	//////////////////////////////////
+	// Legend
+	//////////////////////////////////
+	
+	public static final String LEGEND = "sdiffLegend";
+	public static final String LEGEND_TEXT = "Legend";
+	public static final String LEGEND_CHILD = "legendChild";
+	
+	public static final String EXAMPLE_ADDED = "Newly added element";
+	public static final String EXAMPLE_REMOVED = "Deleted element";
+	public static final String EXAMPLE_PROP_MODIFIED = "Modified element: only the structure(e.g. visibility of a method)";
+	public static final String EXAMPLE_BODY_MODIFIED = "Modified element: body (e.g. body of a method)";
+	public static final String EXAMPLE_CHILDREN_MODIFIED = "Children are modified: the element is not modified, but one of its children is";
+	public static final String EXAMPLE_COMMENT = "Comment";
+	
 	// relative to repository
 	public static final String STRUCTURE_DIFFS_FOLDER = "sdiffs";
 

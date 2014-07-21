@@ -15,8 +15,11 @@
  */
 package org.flowerplatform.flex_client.codesync.sdiff {
 	import org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction;
+	import org.flowerplatform.flex_client.codesync.sdiff.controller.SDiffNodeWithPathRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -40,6 +43,10 @@ package org.flowerplatform.flex_client.codesync.sdiff {
 			CorePlugin.getInstance().serviceLocator.addService("structureDiffService");
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromWorkspaceAndPatchAction);
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncSDiffConstants.MATCH)
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(SDiffNodeWithPathRenderer,-1));		
+				
 		}
 		
 		override protected function registerMessageBundle():void {
