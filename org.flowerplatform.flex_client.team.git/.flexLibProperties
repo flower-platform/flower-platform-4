@@ -4,6 +4,7 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.GitPlugin"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteBranchAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -1,15 +1,21 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
+import java.util.List;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
 
+
 /**
  * @author Valentina-Camelia Bojan
  */
+
 public class GitService {
 	
 	public boolean validateHash(String hash, String repositoryPath) {				
@@ -30,8 +36,14 @@ public class GitService {
 		} catch (Exception e) {
 			return false;
 		}
-
 		return true;		
 	}
-
+	/**
+	 * @author Marius Iacob
+	 */
+	public void deleteBranch(String repositoryPath, String branchName) throws Exception {
+			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+			Git git = new Git(repo);
+			git.branchDelete().setForce(true).setBranchNames(branchName).call();
+	}
 }
