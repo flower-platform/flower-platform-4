@@ -8,15 +8,11 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
-public class GitLocalBranchesChildrenProvider extends AbstractController implements IChildrenProvider {
+public class RepoChildrenProvider extends AbstractController implements IChildrenProvider {
 
-	/**
-	 * 
-	 */
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		// TODO EC: Returns gitBranch type children
-		// must get them from somewhere
+		// TODO EC: Returns gitRepo type child
 		return null;
 	}
 

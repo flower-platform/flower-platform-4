@@ -12,7 +12,8 @@ public class GitTagsChildrenProvider extends AbstractController implements IChil
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		// TODO Auto-generated method stub
+		// TODO EC: Returns gitTag type children
+		// must get them from somewhere
 		return null;
 	}
 

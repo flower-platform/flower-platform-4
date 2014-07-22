@@ -12,7 +12,8 @@ public class GitRemoteBranchesChildrenProvider extends AbstractController implem
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		// TODO Auto-generated method stub
+		// TODO EC: Returns gitBranch type children
+		// must get them from somewhere
 		return null;
 	}
 

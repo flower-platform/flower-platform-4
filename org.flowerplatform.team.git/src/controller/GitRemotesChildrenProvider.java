@@ -12,7 +12,8 @@ public class GitRemotesChildrenProvider extends AbstractController implements IC
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		// TODO Auto-generated method stub
+		// TODO EC: Returns gitRemote type children
+		// must get them from somewhere
 		return null;
 	}
 
