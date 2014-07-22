@@ -26,6 +26,7 @@ license-end
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.Utils;
 			
@@ -134,6 +135,16 @@ license-end
 				}
 				else
 					getEndInfo.enabled = true;				
+			}
+			
+			override protected function okHandler(event:Event=null):void {
+				okButton.enabled = false;
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.createStructureDiffFromGitCommits", 
+					[startHash.text, endHash.text, repo, 'sdiffs/' + filename.text + '.sdiff'],
+					function(node:Node):void {
+						CorePlugin.getInstance().openEditor(node);
+						cancelHandler();
+					});
 			}
 
 			
