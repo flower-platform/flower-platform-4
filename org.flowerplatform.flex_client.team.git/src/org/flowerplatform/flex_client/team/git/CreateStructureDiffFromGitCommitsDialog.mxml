@@ -43,65 +43,73 @@ license-end
 			}
 			
 			protected function changeToStartResult():void {
-				if(currentState == "EndResult" || currentState == 'Results')
+				if (currentState == "EndResult" || currentState == 'Results') {
 					currentState = "Results";
-				else
+				} else {
 					currentState = "StartResult";
+				}
 			}
 			
 			protected function changeToEndResult():void {
-				if(currentState == "StartResult"  || currentState == 'Results')
+				if (currentState == "StartResult"  || currentState == 'Results') {
 					currentState = "Results";
-				else
+				} else {
 					currentState = "EndResult";
+				}
 			}
 			
 			protected function changeToStartMessage():void {
-				if(currentState == 'Results')
+				if (currentState == 'Results') {
 					currentState = 'EndResult';
-				else
-					if(currentState == 'StartResult')
+				} else {
+					if (currentState == 'StartResult') {
 						currentState = 'Messages';
+					}
+				}
 			}
 			
 			protected function changeToEndMessage():void {
-				if(currentState == 'Results')
+				if (currentState == 'Results') {
 					currentState = 'StartResult';
-				else
-					if(currentState == 'EndResult')
+				} else {
+					if (currentState == 'EndResult') {
 						currentState = 'Messages';
+					}
+				}
 			}
 			
 			protected function validateStartHashHandler(isHashValid:Boolean):void{
-				if(isHashValid == true) {
-					if(okPseudoEnabled == true)
+				if (isHashValid == true) {
+					if (okPseudoEnabled == true) {
 						okButton.enabled = true;
-					else
-						okPseudoEnabled = true;					
+					} else {
+						okPseudoEnabled = true;
+					}
 					changeToStartResult();
-				}
-				else {
+				} else {
 					startResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.invalidState');
 					changeToStartMessage();
-					if(okPseudoEnabled == true)
+					if (okPseudoEnabled == true) {
 						okPseudoEnabled = false;
+					}
 					okButton.enabled = false;
 				}
 			}
 			
 			protected function validateEndHashHandler(isHashValid:Boolean):void{
-				if(isHashValid == true) {
-					if(okPseudoEnabled == true)
+				if (isHashValid == true) {
+					if (okPseudoEnabled == true) {
 						okButton.enabled = true;
-					else
+					} else {
 						okPseudoEnabled = true;
+					}
 					changeToEndResult();
-				}
-				else {
+				} else {
 					endResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.invalidState');
 					changeToEndMessage();
-					if(okPseudoEnabled == true)
+					if (okPseudoEnabled == true) {
 						okPseudoEnabled = false;
+					}
 					okButton.enabled = false;
 				}
 			}
@@ -117,23 +125,23 @@ license-end
 			}
 			
 			protected function changeStartHashHandler(event:Event):void {
-				if(startHash.text.length == 0){
+				if (startHash.text.length == 0){
 					startResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.defaultState');
 					getStartInfo.enabled = false;
 					changeToStartMessage();
-				}
-				else
+				} else {
 					getStartInfo.enabled = true;
+				}
 			}
 			
 			protected function changeEndHashHandler(event:Event):void {	
-				if(endHash.text.length == 0){
+				if (endHash.text.length == 0){
 					endResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.defaultState');
 					getEndInfo.enabled = false;
 					changeToEndMessage();
+				} else {
+					getEndInfo.enabled = true;
 				}
-				else
-					getEndInfo.enabled = true;				
 			}
 
 			
