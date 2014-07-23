@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="500" height="300" xmlns:layout="org.osmf.layout.*">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			
+			[Bindable]
+			public var repo:String;
+
+			protected function deleteGitRepository():void {
+				
+			}
+			
+			override protected function okHandler(event:Event = null):void {			
+				deleteGitRepository();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label fontSize="17" text="{'This will delete repository '+repo+', do you want to continue'}?"></s:Label>
+	<s:CheckBox fontSize="13"> Keep working directory content </s:CheckBox>
+	
+</ns:BasicViewContent>

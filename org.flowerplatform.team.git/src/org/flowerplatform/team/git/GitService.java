@@ -2,6 +2,7 @@ package org.flowerplatform.team.git;
 
 import java.io.File;
 
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -32,6 +33,13 @@ public class GitService {
 		}
 
 		return true;		
+	}
+	
+	public void deleteGitRepository(String repositoryPath) throws Exception {
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Git git = new Git(repo);
+		git.close();
+		
 	}
 
 }
