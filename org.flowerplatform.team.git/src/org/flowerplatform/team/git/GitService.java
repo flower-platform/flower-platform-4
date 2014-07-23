@@ -1,9 +1,13 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.eclipse.jgit.lib.BranchConfig;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
 
@@ -32,6 +36,23 @@ public class GitService {
 		}
 
 		return true;		
+	}
+	
+	public void configureBranch(Repository repo, String branchName, String remote, String upstream){
+		
+		try {
+			//TODO: repo must be a String; get the Repository using getRepo(node.Uri) from Utils.java
+			
+			Ref branchReference = repo.getRef(branchName); 
+			
+			StoredConfig config = repo.getConfig();
+			
+			config.save();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }
