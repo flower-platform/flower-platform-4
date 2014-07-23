@@ -1,11 +1,13 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Valentina-Camelia Bojan
@@ -33,5 +35,26 @@ public class GitService {
 
 		return true;		
 	}
+	
+	/**
+	 * @author Cristina Brinza
+	 */
+	
+	/**
+	 *  Get all branches from a certain repository
+	 *  
+	 */
+	public ArrayList<Node> getBranches(Node repositoryNode) {
+		return null;
+	}
+	
+	/**
+	 * Creates new branch
+	 *  
+	 */
+	public void createBranch(Node repositoryNode, String name, boolean track, boolean setUpstream, boolean checkoutBranch) {
+		
+	}
+	
 
 }

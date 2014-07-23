@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+		 creationComplete="creationCompleteHandler(event)">
+		
+	<fx:Script>
+		<![CDATA[			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+						
+			[Bindable]
+			public var selectedItem:String; 
+			
+			[Bindable]
+			public var branches:ArrayCollection;
+			
+			[Bindable]
+			public var repositoryNode:Node;
+			
+			private const CREATE_BRANCH_ERROR:String = "Create Branch Error!";
+			
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				super.creationCompleteHandler(event);
+				
+				mergeUpstreamRadioButton.selected = true;
+				mergeUpstreamRadioButton.enabled = false;
+				
+				rebaseCommitsRadioButton.selected = false;
+				rebaseCommitsRadioButton.enabled = false;
+				
+				checkoutBranchCheckBox.selected = false;
+				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [repositoryNode], getBranchesHandler); 
+			}
+			
+			protected function getBranchesHandler(serverBranches:ArrayCollection):void {
+				/* populate branches */
+				branches = serverBranches;
+				selectedItem = String(branches.getItemAt(0));
+				selectBranch.dataProvider = branches;
+			}
+			
+			protected function configureUpstreamClickHandler(event:MouseEvent):void {
+				/* enable radio buttons */
+				mergeUpstreamRadioButton.enabled = true;
+				rebaseCommitsRadioButton.enabled = true;
+			}
+					
+			override protected function okHandler(event:Event = null):void {	
+				var track:Boolean;
+				var setUpstream:Boolean;
+				var checkoutBranch:Boolean;
+				
+				/* happens on ok */
+				if (branchNameTextInput.text == "") {
+					Alert.show("Please choose a name for the new branch", CREATE_BRANCH_ERROR);
+				} else {
+					/*						
+						- see which options are selected to know how to call createBranch on server 
+						- track = !noTrack
+						- nameValidation done on server
+					*/
+					
+					/* Merge upstream commits into local branch */
+					track = mergeUpstreamRadioButton.selected;
+					/* Rebase commits of local branch onto upstream */
+					setUpstream = rebaseCommitsRadioButton.selected;
+					/* Checkout new Branch */
+					checkoutBranch = checkoutBranchCheckBox.selected;
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", [repositoryNode, track, setUpstream, checkoutBranch]);
+				}			
+			}
+			
+			override protected function cancelHandler(event:Event = null):void {			
+				/* happens on close */
+				super.cancelHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label text="Create a new Branch"
+			 fontSize="14" fontWeight="bold"/>
+	
+	<s:HGroup>
+		<s:Label text="Source:" />
+		<s:DropDownList id="selectBranch" 
+						requireSelection="true"
+						selectedItem="{selectedItem}"
+						dataProvider="{branches}"/>
+		<!-- data provider from action -->
+	</s:HGroup>
+	
+	<s:HGroup>
+		<s:Label text="Branch name:"/>
+		<s:TextInput id="branchNameTextInput"
+					 width="80%"/>
+	</s:HGroup>  
+	
+	<!-- panel is visible if not tag -->
+	
+	<s:Panel id="configureUpstreamPanel">
+		<s:CheckBox id="configureUpstreamCheckBox"
+					label="Configure upstream for push and pull" />
+		<s:Label text="When doing a pull"/>
+		<s:RadioButton id="mergeUpstreamRadioButton"
+					   label="Merge upstream commits into local branch"
+					   click="rebaseCommitsRadioButton.selected=false;"/>
+		<s:RadioButton id="rebaseCommitsRadioButton"
+					   label="Rebase commits of local branch onto upstream"
+					   click="mergeUpstreamRadioButton.selected=false;"/>
+	</s:Panel>
+	
+	<s:CheckBox id="checkoutBranchCheckBox"
+				label="Checkout new Branch"/>
+		
+</ns:BasicViewContent>
