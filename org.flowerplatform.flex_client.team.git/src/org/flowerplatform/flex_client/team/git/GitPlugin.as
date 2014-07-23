@@ -40,6 +40,9 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
+		
+			//CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
+			
 		}
 		
 		override protected function registerMessageBundle():void {
