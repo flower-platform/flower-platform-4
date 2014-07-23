@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core.node.update.remote;
 
+import org.flowerplatform.core.CoreConstants;
+
 /**
  * @author Cristina Constantinescu
  */
@@ -64,7 +66,12 @@ public class PropertyUpdate extends Update {
 		this.isUnset = isUnset;
 		return this;
 	}
-	
+		
+	public PropertyUpdate() {
+		super();
+		this.setType(CoreConstants.UPDATE_PROPERTY);
+	}
+
 	@Override
 	public String toString() {
 		return "PropertyUpdate [key=" + key + " value=" + value + " isUnset=" + isUnset + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";

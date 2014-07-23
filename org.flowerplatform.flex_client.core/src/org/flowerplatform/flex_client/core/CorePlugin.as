@@ -45,13 +45,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
-	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
+	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsHandler;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
+	import org.flowerplatform.flex_client.core.node.NodeExternalInvocator;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -115,7 +115,9 @@ package org.flowerplatform.flex_client.core {
 					
 		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
 				
-		public var nodeRegistryManager:NodeRegistryManager;
+		public function get nodeRegistryManager():* {
+			return _nodeRegistryManager;
+		}
 		
 		public var lastUpdateTimestampOfServer:Number = -1;
 		public var lastUpdateTimestampOfClient:Number = -1;
@@ -137,8 +139,8 @@ package org.flowerplatform.flex_client.core {
 			return editorClassFactoryActionProvider;
 		}
 		
-		public function get resourceNodesManager():ResourceOperationsManager {
-			return ResourceOperationsManager(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
+		public function get resourceNodesManager():ResourceOperationsHandler {
+			return ResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
 		}
 		
 		override public function preStart():void {
@@ -161,8 +163,8 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("uploadService");
 			serviceLocator.addService("preferenceService");
 			
-			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
-			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
+			var resourceOperationsHandler:ResourceOperationsHandler = new ResourceOperationsHandler();
+			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), new NodeExternalInvocator());
 			
  			updateTimer = new UpdateTimer(5000);
 			
@@ -496,3 +498,9 @@ package org.flowerplatform.flex_client.core {
 			
 	}
 }
+
+include "../../../../../../org.flowerplatform.js_client.core/js/ResourceOperationsManager.js";	
+include "../../../../../../org.flowerplatform.js_client.core/js/NodeRegistryManager.js";	
+include "../../../../../../org.flowerplatform.js_client.core/js/NodeRegistry.js";
+
+

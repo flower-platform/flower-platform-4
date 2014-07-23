@@ -70,7 +70,7 @@
 						
 			protected function setAllSelected(value:Boolean):void {
 				for (var i:int = 0; i < resourceNodes.length; i++) {
-					var resourceNodeData:ResourceNode = ResourceNode(resourceNodes.getItemAt(i));
+					var resourceNodeData:Object = resourceNodes.getItemAt(i);
 					resourceNodeData.selected = value;
 				}
 			}
@@ -78,7 +78,7 @@
 			protected function yesButton_clickHandler(event:MouseEvent):void {
 				var invokedServerMethod:Boolean = false;
 				for (var i:int = 0; i < resourceNodes.length; i++) {
-					var resourceNodeData:ResourceNode = ResourceNode(resourceNodes.getItemAt(i));
+					var resourceNodeData:Object = resourceNodes.getItemAt(i);
 					if (resourceNodeData.selected) {
 						// invoke service method and wait for result to close the view
 						CorePlugin.getInstance().serviceLocator.invoke(serverMethodToInvokeForSelection, [resourceNodeData.resourceNodeId], function(data:Object):void {

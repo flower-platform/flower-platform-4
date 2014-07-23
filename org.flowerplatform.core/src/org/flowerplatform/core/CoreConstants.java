@@ -155,6 +155,7 @@ public class CoreConstants {
 	// Updates
 	//////////////////////////////////
 	
+	public static final String UPDATE_PROPERTY = "PROPERTY_UPDATED";
 	public static final String UPDATE_CHILD_ADDED = "ADDED";
 	public static final String UPDATE_CHILD_REMOVED = "REMOVED";
 	

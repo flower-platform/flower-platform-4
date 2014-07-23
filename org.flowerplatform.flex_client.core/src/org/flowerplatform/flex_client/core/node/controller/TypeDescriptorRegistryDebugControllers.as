@@ -189,7 +189,6 @@ import mx.collections.IList;
 import mx.core.mx_internal;
 
 import org.flowerplatform.flex_client.core.editor.remote.Node;
-import org.flowerplatform.flex_client.core.node.NodeRegistry;
 import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.flexdiagram.DiagramShellContext;
 import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -217,7 +216,7 @@ class FlexTypesNodeController extends MindMapModelController {
 	}
 	
 	override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
-		var nodeRegistry:NodeRegistry = Object(context.diagramShell).nodeRegistry;
+		var nodeRegistry:* = Object(context.diagramShell).nodeRegistry;
 		var node:Node = Node(model);
 		if (value) {
 			var children:ArrayCollection;

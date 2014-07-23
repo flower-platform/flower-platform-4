@@ -22,10 +22,20 @@ import java.util.Date;
  */
 public class Update implements Comparable<Update> {
 
+	private String type;
+	
 	private String fullNodeId;
 	
 	private long timestamp = new Date().getTime();
-	
+		
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String getFullNodeId() {
 		return fullNodeId;
 	}

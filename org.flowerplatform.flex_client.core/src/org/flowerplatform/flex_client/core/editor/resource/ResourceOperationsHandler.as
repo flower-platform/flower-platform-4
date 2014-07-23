@@ -23,32 +23,30 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
-	import org.flowerplatform.flex_client.core.node.IExternalInvocator;
 	import org.flowerplatform.flex_client.core.node.IResourceOperationsHandler;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class ResourceOperationsManager implements IResourceOperationsHandler, IExternalInvocator {
+	public class ResourceOperationsHandler implements IResourceOperationsHandler {
 			
 		public var saveAction:SaveAction = new SaveAction();
 		public var saveAllAction:SaveAllAction = new SaveAllAction();		
 		public var reloadAction:ReloadAction = new ReloadAction();
 				
-		private var _nodeRegistryManager:NodeRegistryManager;
+		private var _nodeRegistryManager:*;
 				
-		public function get nodeRegistryManager():NodeRegistryManager {
+		public function get nodeRegistryManager():* {
 			return _nodeRegistryManager;
 		}
 
-		public function set nodeRegistryManager(value:NodeRegistryManager):void {
+		public function set nodeRegistryManager(value:*):void {
 			_nodeRegistryManager = value;
 		}
 					
@@ -156,7 +154,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function showReloadDialog(nodeRegistries:Array = null, resourceSets:Array = null):void {
 			var resourceNodes:ArrayList = new ArrayList();
 			for each (var resourceSet:String in resourceSets) {
-				resourceNodes.addItem(new ResourceNode(resourceSet, true));
+				resourceNodes.addItem({resourceNodeId: resourceSet, selected:true});
 			}
 			
 			var reloadView:ResourceNodesListView = new ResourceNodesListView();
@@ -185,15 +183,6 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function getGlobalDirtyState():Boolean {			
 			return saveAllAction != null ? saveAllAction.enabled : false;
 		}		
-		
-		public function showMessageBox(text:String, title:String):void {			
-			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-				.setText(text)
-				.setTitle(title)
-				.setWidth(300)
-				.setHeight(200)
-				.showMessageBox();
-		}
 				
 	}
 }

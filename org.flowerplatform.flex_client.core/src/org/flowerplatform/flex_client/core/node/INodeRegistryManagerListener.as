@@ -5,9 +5,9 @@ package org.flowerplatform.flex_client.core.node {
 	 */
 	public interface INodeRegistryManagerListener {
 		
-		function nodeRegistryRemoved(nodeRegistry:NodeRegistry):void;
+		function nodeRegistryRemoved(nodeRegistry:*):void;
 		
-		function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:NodeRegistry):void;
+		function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:*):void;
 		
 	}
 }

@@ -15,11 +15,9 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import mx.core.UIComponent;
-	
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -32,13 +30,14 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.layout.IWorkbench;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
-		private var _nodeRegistry:NodeRegistry;
+		private var _nodeRegistry:*;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
@@ -50,11 +49,11 @@ package org.flowerplatform.flex_client.mindmap {
 			registerTools(tools);
 		}
 			
-		public function get nodeRegistry():NodeRegistry {
+		public function get nodeRegistry():* {
 			return _nodeRegistry;
 		}
 
-		public function set nodeRegistry(value:NodeRegistry):void {
+		public function set nodeRegistry(value:*):void {
 			_nodeRegistry = value;
 			_nodeRegistry.addNodeChangeListener(this);
 		}
@@ -64,7 +63,7 @@ package org.flowerplatform.flex_client.mindmap {
 				refreshRootModelChildren(getNewDiagramShellContext());
 			}
 		}
-		
+			
 		public function nodeRemoved(node:Node):void {
 			unassociateModelFromRenderer(getNewDiagramShellContext(), node, getRendererForModel(getNewDiagramShellContext(), node), true);	
 			
