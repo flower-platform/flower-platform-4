@@ -194,6 +194,8 @@ public class StructureDiffService {
 		if (match.getCodeSyncAlgorithm() != null) {
 			Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
 			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
+			//TODO AT: add MATCH_PATH if modelElementType == codeSyncFile
+			
 			if (match.getLeft() != null && match.getRight() != null) {
 				Object model = match.getRight();
 				Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);

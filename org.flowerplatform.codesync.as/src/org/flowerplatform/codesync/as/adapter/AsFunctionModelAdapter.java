@@ -56,6 +56,7 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 		} else if (element instanceof IGetterDefinition) {
 			return "get " + name;
 		}
+		//TODO AT: append ()
 		return name;
 	}
 	@Override

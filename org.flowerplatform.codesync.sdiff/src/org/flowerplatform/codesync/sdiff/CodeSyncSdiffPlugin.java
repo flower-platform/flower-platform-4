@@ -19,17 +19,23 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_LEGEND;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_LEGEND_CHILDREN;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentController;
+import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendChildrenPropertiesProvider;
+import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchChildrenProvider;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchPropertiesProvider;
+import org.flowerplatform.codesync.sdiff.controller.StructureDiffNodeLegendController;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
+import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -51,7 +57,20 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("structureDiffService", new StructureDiffService());
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF);
+
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF_LEGEND_CHILDREN)
+		.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffLegendChildrenPropertiesProvider());
+		
+		CorePlugin.getInstance().getResourceService().addResourceHandler(STRUCTURE_DIFF_LEGEND_CHILDREN, new BaseResourceHandler(STRUCTURE_DIFF_LEGEND_CHILDREN));
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF_LEGEND)
+		.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffLegendController())
+		.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffLegendController());
+		
+		CorePlugin.getInstance().getResourceService().addResourceHandler(STRUCTURE_DIFF_LEGEND, new BaseResourceHandler(STRUCTURE_DIFF_LEGEND));
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF)
+		.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffNodeLegendController());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(STRUCTURE_DIFF_EXTENSION, "fpp", "mindmap", true));

@@ -23,8 +23,9 @@ public class CodeSyncSdiffConstants {
 	
 	public static final String STRUCTURE_DIFF = "structureDiff";
 	public static final String STRUCTURE_DIFF_EXTENSION = ".sdiff";
-	
 	public static final String COMMENT = "sdiffComment";
+	public static final String STRUCTURE_DIFF_LEGEND = "structureDiffLegend";
+	public static final String STRUCTURE_DIFF_LEGEND_CHILDREN = "structureDiffLegendChildren";
 	
 	// relative to repository
 	public static final String STRUCTURE_DIFFS_FOLDER = "sdiffs";
@@ -39,6 +40,13 @@ public class CodeSyncSdiffConstants {
 	public static final String MATCH_COLOR_BODY_MODIFIED = "#FF00FF";
 	public static final String MATCH_COLOR_CHILDREN_MODIFIED = "#FFCC00";
 	public static final String MATCH_COLOR_COMMENT = "#FFFF00";
+	
+	public static final String MATCH_MESSAGE_ADDED = "Newly added element";
+	public static final String MATCH_MESSAGE_REMOVED = "Deleted element";
+	public static final String MATCH_MESSAGE_PROP_MODIFIED = "Modified element: only the structure (e.g. visibility of a method)";
+	public static final String MATCH_MESSAGE_BODY_MODIFIED = "Modified element: body(e.g. body of a method)";
+	public static final String MATCH_MESSAGE_CHILDREN_MODIFIED = "Children are modified: the element is not modified; but one of its children is modified.";
+	public static final String MATCH_MESSAGE_COMMENT = "Comment";
 	
 	//////////////////////////////////
 	// Service context options
