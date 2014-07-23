@@ -1,7 +1,9 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
+import java.util.ArrayList;
 
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -33,5 +35,17 @@ public class GitService {
 
 		return true;		
 	}
+	
+	public void checkoutBranch(String branchName, String repositoryPath) throws Exception {
+				
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Git g = new Git(repo);		
+		
 
+		g.checkout().setName(branchName);	
+		
+	}
+	
+	
+	
 }
