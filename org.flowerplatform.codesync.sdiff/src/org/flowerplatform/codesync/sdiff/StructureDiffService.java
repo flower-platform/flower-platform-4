@@ -35,7 +35,6 @@ import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRe
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
@@ -43,15 +42,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
 import org.eclipse.compare.internal.core.patch.Hunk;
 import org.eclipse.compare.internal.core.patch.PatchReader;
 import org.eclipse.compare.patch.IFilePatch2;
-import org.eclipse.compare.patch.IFilePatchResult;
 import org.eclipse.compare.patch.IHunk;
-import org.eclipse.compare.patch.PatchConfiguration;
-import org.eclipse.compare.patch.ReaderCreator;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
@@ -79,25 +74,22 @@ import org.flowerplatform.util.file.StringHolder;
  */
 @SuppressWarnings("restriction")
 public class StructureDiffService {
-
-	/**
-	 * 
-	 * @param patch
-	 * @param repo
-	 * @param sdiffPath relative to structure diffs folder
-	 * @return
-	 */
-	public Node createStructureDiff(String patch, String repo, String sdiffPath) {
-		boolean reverse = true;
-		
+	
+	public Node createStructureDiffFromWorkspaceAndPatch(String patch, String repo, String sdiffOutputPath) {
+		return createStructureDiff(patch,
+									repo,
+									sdiffOutputPath,
+									new WorkspaceAndPatchFileContentProvider());
+	}
+	
+	public Node createStructureDiff(String patch, String repo, String sdiffOutputPath, IFileContentProvider fileContentProvider){
 		// create file and subscribe to sdiff root
-		String sdiffFileUri = createSdiffFile(repo, sdiffPath);
+		String sdiffFileUri = createSdiffFile(repo, sdiffOutputPath);
 		String sdiffUri = sdiffFileUri.replace(FILE_SCHEME, "fpp");
 		new ResourceServiceRemote().subscribeToParentResource(sdiffUri);
 		Node sdiffRoot = CorePlugin.getInstance().getResourceService().getNode(sdiffUri);
-		CorePlugin.getInstance().getNodeService().setProperty(sdiffRoot, NAME,
-				sdiffPath,
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		CorePlugin.getInstance().getNodeService().setProperty(sdiffRoot, NAME, sdiffOutputPath,
+					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
 		// prepare to parse patch
 		PatchReader reader = new PatchReader();
@@ -112,25 +104,15 @@ public class StructureDiffService {
 		if (filePatches.length == 0) {
 			throw new RuntimeException(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.error.noFileDiffs"));
 		}
+		
 		for (FilePatch2 filePatch : filePatches) {
-			// get the current file content
-			String filePath = repo + "/" + getFilePath(filePatch.getPath(reverse).toString(), reader.isGitPatch());
-			String currentContent = getFileContent(filePath);
-			
-			// apply patch
-			PatchConfiguration configuration = new PatchConfiguration();
-			configuration.setReversed(reverse);
-			IFilePatchResult result = filePatch.apply(new StringReaderCreator(currentContent), configuration, null);
-			String patchedContent;
-			try {
-				patchedContent = IOUtils.toString(result.getPatchedContents());
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			// get old and new file content
+			String filePath = getFilePath(filePatch.getPath(true).toString(), reader.isGitPatch());
+			FileContent fileContent = fileContentProvider.getFileContent(filePath, repo, filePatch);
 			
 			// start codesync
-			Match match = sync(patchedContent, currentContent, filePath);
-			addToSdiffFile(sdiffRoot, match, filePatch, new Document(currentContent));
+			Match match = sync(fileContent.getOldContent(), fileContent.getNewContent(), filePath);
+			addToSdiffFile(sdiffRoot, match, filePatch, new Document(fileContent.getNewContent()));
 		}
 		
 		// save the structure diff file
@@ -189,7 +171,7 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_MODIFIED_LEFT, match.isDiffsModifiedLeft(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_MODIFIED_RIGHT, match.isDiffsModifiedRight(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_CONFLICT, match.isDiffsConflict(), context);
-		
+
 		// match to lines from patch
 		if (match.getCodeSyncAlgorithm() != null) {
 			Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
@@ -374,36 +356,6 @@ public class StructureDiffService {
 			return path.substring(path.indexOf("/") + 1);
 		}
 		return path;
-	}
-	
-	/**
-	 * Return the content of the file, if the file exists. Otherwise, return the empty string.
-	 */
-	private String getFileContent(String path) {
-		Object file;
-		try {
-			file = CorePlugin.getInstance().getFileAccessController().getFile(path);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		if (CorePlugin.getInstance().getFileAccessController().exists(file)) {
-			return CorePlugin.getInstance().getFileAccessController().readFileToString(file);
-		}
-		return "";
-	}
-	
-	class StringReaderCreator extends ReaderCreator {
-
-		private String content;
-		
-		public StringReaderCreator(String content) {
-			this.content = content;
-		}
-		
-		@Override
-		public Reader createReader() {
-			return new StringReader(content);
-		}
 	}
 	
 }
