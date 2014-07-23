@@ -4,6 +4,10 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.GitPlugin"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.CloneRepoAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoView"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.view.SelectRepository"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoWizardView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
