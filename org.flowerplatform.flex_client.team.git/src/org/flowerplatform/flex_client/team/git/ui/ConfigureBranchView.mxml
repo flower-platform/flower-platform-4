@@ -10,6 +10,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.managers.PopUpManager;
+			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -25,6 +27,7 @@
 				var upstream:String = upstreamTextInput.text;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureBranch",
 					[node.nodeUri,remote,upstream]);
+				PopUpManager.removePopUp(this);
 			}
 		
 		]]>
