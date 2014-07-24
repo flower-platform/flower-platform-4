@@ -77,6 +77,11 @@ package org.flowerplatform.flexutil.global_menu {
 		 */
 		protected var menuItemRender:IFactory;
 		
+		/**
+		 * Label for the action to be considered as separator
+		 */
+		public static const MENU_LABEL_SEPARATOR:String = "--";
+		
 		public function GlobalMenuBar(ap:IActionProvider = null):void {
 			super();
 			
