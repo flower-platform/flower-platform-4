@@ -21,15 +21,11 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var deleteGitRepoView:DeleteGitRepositoryView = new DeleteGitRepositoryView();
-			var index:int = node.nodeUri.indexOf("|");
-			if (index < 0) {
-				index = node.nodeUri.length;
-			}
-			deleteGitRepoView.repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+			deleteGitRepoView.repoNode = node;
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(deleteGitRepoView)
 				.setWidth(650)
-				.setHeight(300)
+				.setHeight(200)
 				.setTitle(label)
 				.setIcon(icon)
 				.show();

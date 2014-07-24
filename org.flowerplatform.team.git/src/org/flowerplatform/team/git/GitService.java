@@ -2,11 +2,12 @@ package org.flowerplatform.team.git;
 
 import java.io.File;
 
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Valentina-Camelia Bojan
@@ -35,11 +36,15 @@ public class GitService {
 		return true;		
 	}
 	
-	public void deleteGitRepository(String repositoryPath) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		Git git = new Git(repo);
-		git.close();
-		
+	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
+		int index = nodeUri.indexOf("|");
+		if (index < 0) {
+			index = nodeUri.length();
+		}
+		String repoPath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		repo.close();
+		RepositoryCache.close(repo);
 	}
 
 }
