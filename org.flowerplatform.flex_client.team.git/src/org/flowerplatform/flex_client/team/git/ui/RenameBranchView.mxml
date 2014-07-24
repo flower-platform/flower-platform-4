@@ -44,11 +44,13 @@
 	</fx:Script>
 
 
-	<s:HGroup baseline="150">
+	<s:HGroup verticalAlign="baseline">
 		<s:Form>
-			<s:FormItem label="New branch name:"  />
+			<s:FormItem label="New branch name:" >
+				<s:TextInput id="newBranchName" baseline="15" width="200" />
+			</s:FormItem>
 		</s:Form>
-		<s:TextInput id="newBranchName" width="250"/>
+		
 	</s:HGroup>
 
 	
