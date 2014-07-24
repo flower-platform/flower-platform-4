@@ -106,7 +106,7 @@ public class GitService {
 					upstream, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
-}
+
 
 	/**
 	 * @author Marius Iacob
