@@ -1,12 +1,10 @@
 package org.flowerplatform.flex_client.team.git.action
 {
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.view.CloneRepoView;
+	import org.flowerplatform.flex_client.team.git.ui.CloneRepoWizardView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-	import org.flowerplatform.flexutil.action.MultipleSelectionActionBase;
 
 	public class CloneRepoAction extends ActionBase {
 		
@@ -34,8 +32,8 @@ package org.flowerplatform.flex_client.team.git.action
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));	
 			
-			var view:CloneRepoView = new CloneRepoView();
-			view.uploadLocationNode = node;
+			var view:CloneRepoWizardView = new CloneRepoWizardView();
+//			view.uploadLocationNode = node;
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)

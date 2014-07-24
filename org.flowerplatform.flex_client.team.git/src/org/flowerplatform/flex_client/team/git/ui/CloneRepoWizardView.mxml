@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<popup:Wizard xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:popup="org.flowerplatform.flexutil.popup.*"
+		 xmlns:component="org.flowerplatform.flex_client.team.git.ui.component.*"
+		 getIndexForStateFunction="getIndexForState"
+		 creationComplete="creationCompleteHandler()"
+		 wizardTitle.selectBranchesPage="{Resources.getMessage('git.cloneRepo.branches.title')}"
+		 wizardTitle.selectRepoPage="{Resources.getMessage('git.selectRepo.title')}"
+		 wizardDescription.selectBranchesPage="{Resources.getMessage('git.cloneRepo.branches.description')}"
+		 wizardDescription.selectRepoPage="{Resources.getMessage('git.selectRepo.description')}"
+		 contentArea.selectBranchesPage="{branchesSelectionPage}"
+		 contentArea.selectRepoPage="{repositorySelectionPage}">
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flex_client.resources.Resources;
+			
+			
+			override protected function creationCompleteHandler():void {
+				src.remoteRepoGroup.visible = false;
+				src.remoteRepoGroup.includeInLayout = false;
+				super.creationCompleteHandler();
+			}
+									
+			 public function getIndexForState(stateName:String):int {
+				 if (stateName == "selectRepoPage") {
+					return 0;
+				}
+				return 1;
+			}
+						
+		]]>
+	</fx:Script>
+	
+	<popup:states>
+		<mx:State name="selectRepoPage" >
+			
+		</mx:State>
+		<mx:State name="selectBranchesPage">
+		</mx:State>
+	</popup:states>
+	
+	<mx:VBox id="repositorySelectionPage" width="100%">
+		<component:SelectRepositoryComponent  id="src" width="100%" height="100%" includeIn="selectRepoPage"/>		
+	</mx:VBox>
+	
+	
+	<mx:VBox id="branchesSelectionPage" width="100%" paddingLeft="10">
+		<s:TextInput id="branchesFilter" text="{Resources.getMessage('git.filter')}" includeIn="selectBranchesPage"/>
+		<s:List id="branchesList" includeIn="selectBranchesPage">
+			
+		</s:List>
+	</mx:VBox>
+		
+</popup:Wizard>
