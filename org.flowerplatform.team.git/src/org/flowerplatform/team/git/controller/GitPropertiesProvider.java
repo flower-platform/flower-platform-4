@@ -8,6 +8,7 @@ import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.ICONS;
 
 /**
  * @author Cojocea Marius Eduard
@@ -17,6 +18,7 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.git"));
+		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "git.gif"));
 	}
 
 }

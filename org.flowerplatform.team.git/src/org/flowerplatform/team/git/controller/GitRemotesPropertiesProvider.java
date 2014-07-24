@@ -1,5 +1,6 @@
 package org.flowerplatform.team.git.controller;
 
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
 import org.flowerplatform.core.node.NodeService;
@@ -17,6 +18,7 @@ public class GitRemotesPropertiesProvider extends AbstractController implements 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.remotes"));
+		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "remotes.gif"));
 	}
 
 }

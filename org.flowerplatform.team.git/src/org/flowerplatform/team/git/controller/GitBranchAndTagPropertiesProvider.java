@@ -1,5 +1,6 @@
 package org.flowerplatform.team.git.controller;
 
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.FULL_NAME;
 import static org.flowerplatform.team.git.GitConstants.CONFIG_REMOTE;
@@ -17,6 +18,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.GitUtils;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
@@ -59,7 +61,24 @@ public class GitBranchAndTagPropertiesProvider extends AbstractController implem
 		node.getProperties().put(FULL_NAME, ((Ref) node.getRawNodeData()).getName());
 		node.getProperties().put(CONFIG_REMOTE, configRemote);
 		node.getProperties().put(CONFIG_UPSTREAM_BRANCH, configUpstreamBranch);
-		node.getProperties().put(CONFIG_REBASE, configRebase);				
+		node.getProperties().put(CONFIG_REBASE, configRebase);
+		node.getProperties().put(ICONS, setIcon(node));
+	}
+	
+	public String setIcon(Node node){
+		String icon = null;
+		
+		if(GitUtils.getType(node.getNodeUri()).equals("gitLocalBranch")){
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "branch.gif");
+		}else if(GitUtils.getType(node.getNodeUri()).equals("gitRemoteBranch")){
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "branch.gif");
+		}else if(GitUtils.getType(node.getNodeUri()).equals("gitTag")){
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "tag.gif");
+		}else if(GitUtils.getType(node.getNodeUri()).equals("gitRemote")){
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "remote.gif");
+		}
+		
+		return icon;
 	}
 	
 }

@@ -1,5 +1,6 @@
 package org.flowerplatform.team.git.controller;
 
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
 import org.flowerplatform.core.node.NodeService;
@@ -17,6 +18,7 @@ public class GitTagsPropertiesProvider extends AbstractController implements IPr
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.tags"));
+		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "tags.gif"));
 	}
 
 }
