@@ -53,11 +53,8 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var dialog:CreateStructureDiffFromGitCommitsDialog = new CreateStructureDiffFromGitCommitsDialog();
-			var index:int = node.nodeUri.indexOf("|");
-			if (index < 0) {
-				index = node.nodeUri.length;
-			}
-			dialog.repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+	
+			dialog.repo = CorePlugin.getInstance().getRepository(node.nodeUri);
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 															 .setViewContent(dialog)
