@@ -19,7 +19,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
-	import org.flowerplatform.flex_client.team.git.action.checkoutAction;
+	import org.flowerplatform.flex_client.team.git.action.CheckoutAction;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -44,7 +44,7 @@ package org.flowerplatform.flex_client.team.git {
 			
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(checkoutAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
 		
 		}
 		

@@ -1,10 +1,12 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -38,14 +40,15 @@ public class GitService {
 	
 	public void checkoutBranch(String branchName, String repositoryPath) throws Exception {
 				
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		Git g = new Git(repo);		
 		
-
-		g.checkout().setName(branchName);	
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		
+		System.out.println("REpopath is here: "+repositoryPath);
+		
+		Git g = new Git(repo);	
+		List<Ref> l = g.branchList().setListMode(ListMode.ALL).call();
+		System.out.println("Aici");
+		g.checkout().setName(branchName).call();		
 		
 	}
-	
-	
-	
 }
