@@ -1,15 +1,17 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
-import java.util.List;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
+import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 
 
 /**
@@ -41,9 +43,12 @@ public class GitService {
 	/**
 	 * @author Marius Iacob
 	 */
-	public void deleteBranch(String repositoryPath, String branchName) throws Exception {
-			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+	public void deleteBranch(String parentUri, String childUri) throws Exception {
+			Node childNode = CorePlugin.getInstance().getResourceService().getNode(childUri);
+			Node parentNode = CorePlugin.getInstance().getResourceService().getNode(parentUri);
+			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(childUri)));
 			Git git = new Git(repo);
-			git.branchDelete().setForce(true).setBranchNames(branchName).call();
+			git.branchDelete().setForce(true).setBranchNames(childNode.getPropertyValue(GitConstants.NAME).toString()).call();
+			CorePlugin.getInstance().getNodeService().removeChild(parentNode, childNode, new ServiceContext<NodeService>());
 	}
 }
