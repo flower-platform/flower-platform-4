@@ -36,7 +36,7 @@
 				} else {
 					/* check the new name from branch */
 					var newName:String = newBranchName.text;
-					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",[pathNode,oldName,newName]);
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",[node.nodeUri,oldName,newName]);
 					FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 				}
 			}	
