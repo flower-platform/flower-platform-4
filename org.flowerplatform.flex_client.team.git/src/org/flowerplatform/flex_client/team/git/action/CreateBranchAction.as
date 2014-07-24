@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.CreateBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -34,21 +35,18 @@ package org.flowerplatform.flex_client.team.git.action {
 			super();
 			
 			label = Resources.getMessage("flex_client.team.git.action.createBranch");
+			icon = Resources.createBranchIcon;
+			orderIndex = -1000;
 		}
 				
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				
-				/* TO DELETE */
-				if (node.type == CoreConstants.FILE_SYSTEM_NODE_TYPE) {
+
+				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || 
+					node.type == GitConstants.GIT_TAG_TYPE) {
 					return true;
 				}
-				
-				/* UNCOMMENT */
-//				if (node.properties.isLocalBranch || node.properties.isRemoteBranch || node.properties.isTag) {
-//					return true;
-//				}
 			}
 			return false;
 		}
@@ -56,11 +54,13 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var view:CreateBranchView = new CreateBranchView();
-			var index:int = node.nodeUri.indexOf("|");
-			if (index < 0) {
-				index = node.nodeUri.length;
-			}
-			view.nodePath = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+//			var index:int = node.nodeUri.indexOf("|");
+//			if (index < 0) {
+//				index = node.nodeUri.length;
+//			}
+//			view.nodePath = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+			
+			view.node = node;
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(view)

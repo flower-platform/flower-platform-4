@@ -35,6 +35,7 @@ license-end
 			import spark.events.IndexChangeEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.remote.GitBranch;
 						
@@ -42,7 +43,10 @@ license-end
 			public var branches:ArrayCollection;
 			
 			[Bindable]
-			public var nodePath:String;
+			public var node:Node;
+			
+			//[Bindable]
+			//public var nodePath : String;
 						
 			private const CREATE_BRANCH_ERROR:String = "Create Branch Error!";
 			
@@ -57,12 +61,22 @@ license-end
 				
 				checkoutBranchCheckBox.selected = true;
 
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [nodePath], getBranchesHandler); 
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [node.nodeUri], getBranchesHandler); 
 			}
 			
 			protected function getBranchesHandler(serverBranches:ArrayCollection):void {
 				/* populate branches */
 				branches = serverBranches;
+				
+				/* find the selected index */
+				for each (var branch:Object in serverBranches) {
+					if (String(branch.branchName) == node.properties.fullName) {
+						selectBranch.selectedItem = branch;
+						checkState(branch);
+						break;
+					}
+				}
+				
 				selectBranch.dataProvider = branches;
 			}
 			
@@ -97,23 +111,40 @@ license-end
 					/* Checkout new Branch */
 					checkoutBranch = checkoutBranchCheckBox.selected;
 										
-					CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", [nodePath, branchNameTextInput.text, selectBranch.selectedItem.branchName, configureUpstream, track, setUpstream, checkoutBranch]);
+					/* send to server the parent */
+					var parentUri:String;
+					if (node.parent.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE) {
+						parentUri = node.parent.nodeUri;
+					} else {
+						for each (var child:Node in node.parent.parent.children) {
+							if (child.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE) {
+								parentUri = child.nodeUri;
+							}
+						}
+						
+					}
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", [parentUri, branchNameTextInput.text, selectBranch.selectedItem.branchName, configureUpstream, track, setUpstream, checkoutBranch]);
 				}
 			}
 			
 			protected function selectBranchChangeHandler(event:IndexChangeEvent):void {				
 				var selectedItem:Object = branches.getItemAt(selectBranch.selectedIndex);
-				
-				if (selectedItem.branchType == GitConstants.GIT_TAG) {
+			
+				checkState(selectedItem);
+			}
+			
+			/* determine which components will be visible / enabled / selected and which not */
+			protected function checkState(selectedItem:Object):void {
+				if (selectedItem.branchType == GitConstants.GIT_TAG_TYPE) {
 					configureUpstreamGroup.visible = false;
-				} else if (selectedItem.branchType == GitConstants.GIT_LOCAL_BRANCH) {
+				} else if (selectedItem.branchType == GitConstants.GIT_LOCAL_BRANCH_TYPE) {
 					configureUpstreamGroup.visible = true;
 					
 					configureUpstreamCheckBox.selected = false;
 					
 					rebaseCommitsRadioButton.enabled = false;
 					mergeUpstreamRadioButton.enabled = false;
-				} else if (selectedItem.branchType == GitConstants.GIT_REMOTE_BRANCH) {
+				} else if (selectedItem.branchType == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
 					configureUpstreamGroup.visible = true;
 					
 					configureUpstreamCheckBox.selected = true;
@@ -134,7 +165,7 @@ license-end
 							change="selectBranchChangeHandler(event)"
 							labelField="branchName"
 							baseline="15"
-							width="150"/>
+							width="300"/>
 		</s:FormItem>
 		
 		<s:FormItem label="Branch Name:">
