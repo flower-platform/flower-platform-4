@@ -7,17 +7,24 @@
 		<![CDATA[
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			
-	
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+		
 			[Bindable]
-			var repoPath:String;
+			public var node:Node;
 			
+			[Bindable]
+			public var pathNode:String;
+			
+			public var oldName:String;
 			
 			/* creationComplete for RenameBranchView */
 			protected function renameBranchCreationCompleteHandler(event:FlexEvent):void {
-				//validateName.text = "Ref + { } + exists!";
-				newBranchName.text = "the old name of repo";	
+				oldName = node.getPropertyValue(CoreConstants.NAME);
+				newBranchName.text = oldName;
 				okButton.enabled = true;
 			}
 			
@@ -28,28 +35,21 @@
 					Alert.show("You must enter a name!");
 				} else {
 					/* check the new name from branch */
-					var oldName:String = "old name";
 					var newName:String = newBranchName.text;
-					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",
-						[oldName,newName,repoPath]);
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",[pathNode,oldName,newName]);
+					FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 				}
 			}	
 		]]>
 	</fx:Script>
 
-	
-	<s:VGroup>
-		<s:Panel>
-			<s:Label text="Rename branch" />
-		<!--	<s:HGroup>
-				<s:Image />
-				<s:Label id="validateName"  />
-			</s:HGroup> -->
-		</s:Panel>
-		<s:Form height="100">
-			<s:FormItem name="New branch name:" />
-			<s:TextInput id="newBranchName" width="50" />
+
+	<s:HGroup baseline="150">
+		<s:Form>
+			<s:FormItem label="New branch name:"  />
 		</s:Form>
-	</s:VGroup>
+		<s:TextInput id="newBranchName" width="250"/>
+	</s:HGroup>
+
 	
 </ns:BasicViewContent>

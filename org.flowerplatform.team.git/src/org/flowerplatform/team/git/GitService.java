@@ -1,13 +1,15 @@
 package org.flowerplatform.team.git;
 
+import java.util.List;
 import java.io.File;
-import java.util.ArrayList;
+
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.RenameBranchCommand;
+
 
 
 /**
@@ -42,24 +44,15 @@ public class GitService {
 	/**
 	 * @author Tita Andreea
 	 */
-
-	/* get all names of branches from repository */
-	public ArrayList<String> getAllNamesOfBranches(String repoPath){
-		return null;
-	}
-
 	
 	/* rename the branch with the new name */
-	public void renameBranch(String oldName,String newName,String repoPath){
-		try {
-			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-			Git gitInstance = new Git(repo);
-			RenameBranchCommand renameBranch = gitInstance.branchRename();
-			renameBranch.setOldName(oldName);
-			renameBranch.setNewName(newName);
-			renameBranch.call();
-		} catch (Exception e) {	
-			
-		}
+	public void renameBranch(String pathNode,String oldName,String newName) throws Exception{
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(pathNode));
+		Git gitInstance = new Git(repo);
+		/* set the new name */
+		gitInstance.branchRename().setOldName(oldName).setNewName("origin/" + newName).call();
+		/* refresh File System node */ //TODO
+		//CorePlugin.getInstance().getNodeService().setProperty(node,"name",newName,new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
 	}
+	
 }

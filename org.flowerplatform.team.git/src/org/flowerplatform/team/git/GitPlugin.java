@@ -20,6 +20,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 			
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
+		
 	}
 
 	@Override
