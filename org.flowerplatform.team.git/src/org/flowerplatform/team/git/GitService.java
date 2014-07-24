@@ -1,15 +1,17 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.eclipse.jgit.lib.BranchConfig;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
+import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
  * @author Valentina-Camelia Bojan
@@ -38,21 +40,25 @@ public class GitService {
 		return true;		
 	}
 	
-	public void configureBranch(Repository repo, String branchName, String remote, String upstream){
+	public void configureBranch(String branchNodeUri, String remote, String upstream) throws Exception{
 		
-		try {
-			//TODO: repo must be a String; get the Repository using getRepo(node.Uri) from Utils.java
+			Node branchNode = CorePlugin.getInstance().getResourceService().getNode(branchNodeUri);
+			String branchName = (String)branchNode.getPropertyValue(CoreConstants.NAME);
+			//TODO: Get repositoryPath from node;
+			String repositoryPath ="";
+			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
 			
-			Ref branchReference = repo.getRef(branchName); 
-			
+			//get the .git/config file
 			StoredConfig config = repo.getConfig();
 			
+			config.setString("branch", branchName, "remote", remote);
+			config.setString("branch", branchName, "merge", upstream);
 			config.save();
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.GIT_REMOTE, 
+					remote,  new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.GIT_UPSTREAM_BRANCH, 
+					upstream, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
 }

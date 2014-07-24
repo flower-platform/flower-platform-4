@@ -1,6 +1,7 @@
 package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.ConfigureBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -12,14 +13,17 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		public function ConfigureBranchAction() {
 			super();
-			label = Resources.getMessage("flex_client.team.git.action.configureBranch");
+			label = Resources.getMessage('flex_client.team.git.action.configureBranch');
+			icon = Resources.configBrenchIcon;
 
 		}
 		
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				//TODO: If the node type is gitBranch => visibility true (from GitConstants)
+				if(node.type == GitConstants.GIT_BRANCH_TYPE){
+					return true;
+				}
 			}
 			
 			return false;
@@ -27,15 +31,14 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var configBranchView:ConfigureBranchView = new ConfigureBranchView();
-			
-			//TODO: Get the name of the branch and repo from node for View
+			var configBranchView:ConfigureBranchView = new ConfigureBranchView();			
+			configBranchView.node = node;
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(configBranchView)
 				.setWidth(500)
-				.setHeight(300)
+				.setHeight(200)
 				.setTitle(label)
-				//.setIcon(icon)
+				.setIcon(icon)
 				.show();
 		}
 		
