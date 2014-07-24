@@ -48,15 +48,21 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CodeSyncSdiffPlugin INSTANCE;
 	
+	private StructureDiffService sDiffService = new StructureDiffService();
+	
 	public static CodeSyncSdiffPlugin getInstance() {
 		return INSTANCE;
+	}
+	
+	public StructureDiffService getSDiffService() {
+		return sDiffService;
 	}
 	
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		INSTANCE = this;
 		
-		CorePlugin.getInstance().getServiceRegistry().registerService("structureDiffService", new StructureDiffService());
+		CorePlugin.getInstance().getServiceRegistry().registerService("structureDiffService", sDiffService);
 		
 		/* virtual node -> path:legend/legend */
 		CorePlugin.getInstance().getResourceService().addResourceHandler(LEGEND, new BaseResourceHandler(LEGEND));
