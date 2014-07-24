@@ -14,8 +14,13 @@
 		 contentArea.selectRepoPage="{repositorySelectionPage}">
 	<fx:Script>
 		<![CDATA[
-			import org.flowerplatform.flex_client.resources.Resources;
+			import mx.collections.ArrayCollection;
 			
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitPlugin;
+			
+			var selectedBranches:ArrayCollection;
+			var allBranches:ArrayCollection;
 			
 			override protected function creationCompleteHandler():void {
 				src.remoteRepoGroup.visible = false;
@@ -28,6 +33,22 @@
 					return 0;
 				}
 				return 1;
+			}
+			
+			override protected function nextClickHandler():void {
+				var uri:String = src.getURI();
+				// TODO AB: validate URI
+				selectedBranches = new ArrayCollection();
+				allBranches = new ArrayCollection();
+				// TODO AB: fetch branches from repo
+				super.nextClickHandler();
+			}
+			
+			override protected function finishClickHandler():void {
+				if (selectedBranches.length >= 0) {
+					//TODO AB: send array of branches to clone to a clonecommand
+				}
+				super.finishClickHandler();
 			}
 						
 		]]>
