@@ -1,6 +1,10 @@
 package org.flowerplatform.team.git.controller;
 
+<<<<<<< HEAD
 import static org.flowerplatform.core.CoreConstants.ICONS;
+=======
+import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
+>>>>>>> refs/remotes/origin/master_git
 import static org.flowerplatform.core.CoreConstants.NAME;
 
 import org.flowerplatform.core.node.NodeService;
@@ -18,7 +22,11 @@ public class GitRemoteBranchesPropertiesProvider extends AbstractController impl
 	@Override
 	public void populateWithProperties(Node node,ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.remoteBranches"));
+<<<<<<< HEAD
 		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/icons.git/" + "folder.gif"));
+=======
+		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
+>>>>>>> refs/remotes/origin/master_git
 	}
 
 }

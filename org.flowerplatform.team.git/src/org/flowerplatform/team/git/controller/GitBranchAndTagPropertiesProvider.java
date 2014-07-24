@@ -1,6 +1,10 @@
 package org.flowerplatform.team.git.controller;
 
+<<<<<<< HEAD
 import static org.flowerplatform.core.CoreConstants.ICONS;
+=======
+import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
+>>>>>>> refs/remotes/origin/master_git
 import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.FULL_NAME;
 import static org.flowerplatform.team.git.GitConstants.CONFIG_REMOTE;
@@ -61,6 +65,7 @@ public class GitBranchAndTagPropertiesProvider extends AbstractController implem
 		node.getProperties().put(FULL_NAME, ((Ref) node.getRawNodeData()).getName());
 		node.getProperties().put(CONFIG_REMOTE, configRemote);
 		node.getProperties().put(CONFIG_UPSTREAM_BRANCH, configUpstreamBranch);
+<<<<<<< HEAD
 		node.getProperties().put(CONFIG_REBASE, configRebase);
 		node.getProperties().put(ICONS, setIcon(node));
 	}
@@ -79,6 +84,10 @@ public class GitBranchAndTagPropertiesProvider extends AbstractController implem
 		}
 		
 		return icon;
+=======
+		node.getProperties().put(CONFIG_REBASE, configRebase);	
+		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
+>>>>>>> refs/remotes/origin/master_git
 	}
 	
 }
