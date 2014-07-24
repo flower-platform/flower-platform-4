@@ -189,13 +189,17 @@ package org.flowerplatform.flex_client.core.node {
 				nodeRegistry.expand(node, context);
 			} else {
 				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
+				var nodeUri:String;
 				if (subscribableResources != null && subscribableResources.length > 0) {
 					// a subscribable node => subscribe to the first resource
 					var subscribableResource:Pair = Pair(subscribableResources.getItemAt(0));
-					subscribe(String(subscribableResource.a), nodeRegistry, function(rootNode:Node, resourceNode:Node):void {
-						nodeRegistry.expand(node, context);
-					});
+					nodeUri = String(subscribableResource.a);					
+				} else {
+					nodeUri = node.nodeUri;
 				}
+				subscribe(String(nodeUri), nodeRegistry, function(rootNode:Node, resourceNode:Node):void {
+					nodeRegistry.expand(node, context);
+				});
 			}
 		}
 		
