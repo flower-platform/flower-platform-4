@@ -59,9 +59,9 @@ public class GitService {
 			config.setString("branch",branchName, "merge", upstream);
 			config.save();
 			
-			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.GIT_REMOTE, 
+			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.CONFIG_REMOTE, 
 					remote,  new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.GIT_UPSTREAM_BRANCH, 
+			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.CONFIG_UPSTREAM_BRANCH, 
 					upstream, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 

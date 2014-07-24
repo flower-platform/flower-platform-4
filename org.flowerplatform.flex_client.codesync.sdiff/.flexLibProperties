@@ -4,7 +4,6 @@
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.CodeSyncSdiffAction"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.CreateStructureDiffDialog"/>
-    <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.CodeSyncSdiffConstants"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
