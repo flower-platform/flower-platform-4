@@ -14,9 +14,14 @@
  * license-end
  */
 package org.flowerplatform.flex_client.codesync.sdiff {
+	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
+	import org.flowerplatform.flex_client.codesync.sdiff.action.CodeSyncNewConstants;
 	import org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction;
+	import org.flowerplatform.flex_client.codesync.sdiff.controller.PathNodeController;
+	import org.flowerplatform.flex_client.codesync.sdiff.renderer.PathNodeRenderer;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
@@ -40,6 +45,13 @@ package org.flowerplatform.flex_client.codesync.sdiff {
 			CorePlugin.getInstance().serviceLocator.addService("structureDiffService");
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromWorkspaceAndPatchAction);
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncNewConstants.MATCH)
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER,new PathNodeController(PathNodeRenderer));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncNewConstants.LEGEND)
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER,new PathNodeController(PathNodeRenderer));
+			
 		}
 		
 		override protected function registerMessageBundle():void {

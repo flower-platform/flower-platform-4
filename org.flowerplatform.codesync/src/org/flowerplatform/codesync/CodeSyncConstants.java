@@ -41,7 +41,7 @@ public class CodeSyncConstants {
 	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM);
 	
 	public static final String MATCH = "match";
-			
+	
 	private static final String getFileExtension(String extension) {
 		return "." + extension;
 	}
