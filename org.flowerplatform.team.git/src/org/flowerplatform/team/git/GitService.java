@@ -43,7 +43,6 @@ public class GitService {
 	public void configureBranch(String branchNodeUri, String remote, String upstream) throws Exception{
 		
 			Node branchNode = CorePlugin.getInstance().getResourceService().getNode(branchNodeUri);
-			//TODO: make sure that the branchName is correct! ex: origin/etc, not ref/heads/origin/etc
 			String branchName = (String)branchNode.getPropertyValue(CoreConstants.NAME);
 			int index = branchNodeUri.indexOf("|");
 			if (index < 0) {
@@ -55,8 +54,8 @@ public class GitService {
 			//get the .git/config file
 			StoredConfig config = repo.getConfig();
 			
-			config.setString("branch",branchName, "remote", remote);
-			config.setString("branch",branchName, "merge", upstream);
+			config.setString("branch", branchName, "remote", remote);
+			config.setString("branch", branchName, "merge", upstream);
 			config.save();
 			
 			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.CONFIG_REMOTE, 

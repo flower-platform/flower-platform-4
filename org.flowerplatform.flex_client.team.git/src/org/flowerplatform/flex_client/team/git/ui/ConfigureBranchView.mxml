@@ -27,7 +27,7 @@
 				var upstream:String = upstreamTextInput.text;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureBranch",
 					[node.nodeUri,remote,upstream]);
-				PopUpManager.removePopUp(this);
+				cancelHandler();
 			}
 		
 		]]>
