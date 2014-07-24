@@ -10,6 +10,7 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Valentina-Camelia Bojan
@@ -38,16 +39,15 @@ public class GitService {
 		return true;		
 	}
 	
-	public void checkoutBranch(String branchName, String repositoryPath) throws Exception {
+	public void checkoutBranch(String nodeUri) throws Exception {
 				
-		
+		String branchName = GitUtils.getName(nodeUri);
+		String repositoryPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		
-		System.out.println("REpopath is here: "+repositoryPath);
-		
+				
 		Git g = new Git(repo);	
-		List<Ref> l = g.branchList().setListMode(ListMode.ALL).call();
-		System.out.println("Aici");
+		//List<Ref> l = g.branchList().setListMode(ListMode.ALL).call();
+		
 		g.checkout().setName(branchName).call();		
 		
 	}
