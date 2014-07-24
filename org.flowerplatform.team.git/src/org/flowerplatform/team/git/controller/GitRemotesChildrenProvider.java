@@ -1,4 +1,4 @@
-package controller;
+package org.flowerplatform.team.git.controller;
 
 import java.util.List;
 
@@ -8,21 +8,20 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
-public class GitLocalBranchesChildrenProvider extends AbstractController implements IChildrenProvider {
+/**
+ * @author Cojocea Marius Eduard
+ */
+public class GitRemotesChildrenProvider extends AbstractController implements IChildrenProvider {
 
-	/**
-	 * 
-	 */
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		// TODO EC: Returns gitBranch type children
+		// TODO EC: Returns gitRemote type children
 		// must get them from somewhere
 		return null;
 	}
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
