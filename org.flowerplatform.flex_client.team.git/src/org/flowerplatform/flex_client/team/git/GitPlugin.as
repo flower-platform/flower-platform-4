@@ -18,6 +18,8 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.GitStagingAction;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -42,6 +44,9 @@ package org.flowerplatform.flex_client.team.git {
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
+			
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingProperties());
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GitStagingAction);
 		}
 		
 		override protected function registerMessageBundle():void {

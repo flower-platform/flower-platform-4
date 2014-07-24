@@ -4,9 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -43,7 +42,16 @@ public class GitService {
 	 */
 	public void deleteBranch(String repositoryPath, String branchName) throws Exception {
 			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-			Git git = new Git(repo);
+			Git git = new Git(repo); 
+			List<DiffEntry> l = git.diff().setShowNameAndStatusOnly(true).call();
 			git.branchDelete().setForce(true).setBranchNames(branchName).call();
 	}
+	public List<DiffEntry> unstagedList(String repositoryPath) throws Exception{
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Git git = new Git(repo); 
+		List<DiffEntry> l = git.diff().setShowNameAndStatusOnly(false).call();
+		String str = l.get(0).getNewPath();
+		return null;
+	}
+	
 }

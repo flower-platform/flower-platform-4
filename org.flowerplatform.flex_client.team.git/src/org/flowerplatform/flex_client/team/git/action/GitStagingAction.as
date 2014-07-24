@@ -16,28 +16,30 @@
 
 package org.flowerplatform.flex_client.team.git.action
 {
-	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
+	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
+	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexutil.FlexUtilAssets;
+	import org.flowerplatform.flex_client.team.git.GitStagingDialog;
+	import org.flowerplatform.flex_client.team.git.GitStagingProperties;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-	
+
 	/**
 	 * @author Marius Iacob
 	 */
-
-	public class DeleteBranchAction extends ActionBase
-	{		
-		public function DeleteBranchAction()
+	
+	public class GitStagingAction extends ActionBase
+	{
+		public var repoPath:String;
+		public function GitStagingAction()
 		{
 			super();
-			label = Resources.getMessage("team.git.action.DeleteBranchAction");
-			icon = Resources.deleteIcon;
-			orderIndex = 40;
-			
+			label = Resources.getMessage("team.git.action.GitStagingAction");
+			icon = Resources.gitStagingIcon;
 		}
 		
 		override public function get visible():Boolean {
@@ -52,21 +54,28 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
+			var dialog:GitStagingDialog = new GitStagingDialog();
 			var index:int = node.nodeUri.indexOf("|");
 			if (index < 0) {
 				index = node.nodeUri.length;
 			}
-			var repoPath:String = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
-			var branchName:String = "refs/heads/1_3_x_collaboration"; //name branch
-
-			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-				.setText(Resources.getMessage("team.git.action.DeleteBranchDialog"))
-				.setTitle(Resources.getMessage("info"))
-				.setWidth(300)
-				.setHeight(200)
-				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteBranch", [repoPath,branchName]);})
-				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
-				.showMessageBox();
+			repoPath = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+			dialog.repo = repoPath;
+			var unstagedData:ArrayCollection = new ArrayCollection();
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.unstagedList", [repoPath], function(data:ArrayCollection):void {unstagedData = data} );
+			dialog.unstagedData = unstagedData;
+			
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
+				.setViewIdInWorkbench(GitStagingProperties.ID)
+				.setWidth(550)
+				.setHeight(500)
+				.show();
 		}
+		
+//		public function getUnstagedData():ArrayCollection {
+//			var unstagedData:ArrayCollection = new ArrayCollection();
+//			CorePlugin.getInstance().serviceLocator.invoke("GitService.unstagedList", [repoPath], function(data:ArrayCollection):void {unstagedData = data} );
+//			return unstagedData;
+//		}
 	}
 }
