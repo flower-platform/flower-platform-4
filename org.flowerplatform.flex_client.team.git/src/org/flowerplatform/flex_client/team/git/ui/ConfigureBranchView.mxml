@@ -23,13 +23,8 @@
 			override protected function okHandler(event:Event = null):void{
 				var remote:String = remoteTextInput.text;
 				var upstream:String = upstreamTextInput.text;
-				var index:int = node.nodeUri.indexOf("|");
-				if (index < 0) {
-					index = node.nodeUri.length;
-				}
-				
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureBranch",
-					[ node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index),remote,upstream]);
+					[node.nodeUri,remote,upstream]);
 			}
 		
 		]]>
