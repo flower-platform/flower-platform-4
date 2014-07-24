@@ -54,6 +54,22 @@ public class Utils {
 		return uri.substring(0, index);
 	}
 	
+	public static String getRepo(String uri) {
+		int indexStart = uri.indexOf(":");
+		int indexEnd;
+		if(uri.contains("|")){
+			indexEnd = uri.indexOf("|");
+		}
+		else{
+			indexEnd = uri.length();
+		}
+//		int indexEnd = uri.indexOf("|");
+//		if (indexStart < 0 || indexEnd < 0) {
+//			throw new RuntimeException("Invalid URI: " + uri);
+//		}
+		return uri.substring(indexStart + 1, indexEnd);
+	}
+	
 	public static String getSchemeSpecificPart(String uri) {
 		int index = uri.indexOf(":");
 		if (index < 0) {
@@ -86,5 +102,4 @@ public class Utils {
 		}
 		return uri;
 	}
-
 }

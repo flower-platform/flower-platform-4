@@ -33,7 +33,7 @@ public class CoreConstants {
 	public static final String ROOT_TYPE = "root";
 	public static final String REPOSITORY_TYPE = "repository";
 	
-	public final static String DEBUG = "debug";
+	public static final String DEBUG = "debug";
 	
 	public static final String PREFERENCE_TYPE = "preference";
 	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
