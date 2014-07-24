@@ -2,12 +2,30 @@ package org.flowerplatform.team.git;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRefNameException;
+import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
+import org.eclipse.jgit.api.errors.RefNotFoundException;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.team.git.remote.GitBranch;
+
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAG;
+
 
 /**
  * @author Valentina-Camelia Bojan
@@ -44,17 +62,77 @@ public class GitService {
 	 *  Get all branches from a certain repository
 	 *  
 	 */
-	public ArrayList<Node> getBranches(Node repositoryNode) {
-		return null;
+	public ArrayList<GitBranch> getBranches(String nodeUri) {
+		ArrayList<GitBranch> branches = new ArrayList<GitBranch>();
+//		try {
+//			Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(nodeUri));
+//			Map <String, Ref> allRefs = repository.getAllRefs();
+//			
+//			Set<String> keys = allRefs.keySet();
+//			for (String key : keys) {
+//				GitBranch branch;
+//				String branchType = "";
+//				
+//				if (key.startsWith("refs/heads")) {
+//					branchType = GIT_LOCAL_BRANCH;
+//				} else if (key.startsWith("refs/remotes")) {
+//					branchType = GIT_REMOTE_BRANCH;
+//				} else if (key.startsWith("refs/tags")) {
+//					branchType = GIT_TAG;
+//				}
+//				
+//				branch = new GitBranch(key, branchType);
+//				branches.add(branch);
+//			}
+//			
+//		} catch (Exception e) {
+//			return null;
+//		}
+		
+		branches.add(new GitBranch("refs/heads/master", GIT_LOCAL_BRANCH));
+		branches.add(new GitBranch("refs/remotes/origin/1_3_x_collaboration", GIT_REMOTE_BRANCH));
+		branches.add(new GitBranch("refs/tags/beta-1.3.6_01", GIT_TAG));
+		branches.add(new GitBranch("refs/remotes/esiminch_multiparent", GIT_REMOTE_BRANCH));
+		
+		return branches;
 	}
 	
 	/**
 	 * Creates new branch
 	 *  
 	 */
-	public void createBranch(Node repositoryNode, String name, boolean track, boolean setUpstream, boolean checkoutBranch) {
+	public void createBranch(String nodeUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws GitAPIException,
+			RefAlreadyExistsException, RefNotFoundException, InvalidRefNameException, Exception {
+		SetupUpstreamMode upstreamMode;
+
+		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(nodeUri));	
+		Git git = new Git(repository);
+		/* see with what options the branch will be created */
+		if (!configureUpstream) {
+			upstreamMode = null;
+		} else if (!track && !setUpstream) {
+			/* use --no-track */
+			upstreamMode = SetupUpstreamMode.NOTRACK;
+		} else if (track) {
+			/* use --track */
+			upstreamMode = SetupUpstreamMode.TRACK;
+		} else {
+			/* use --set-upstream */
+			upstreamMode = SetupUpstreamMode.SET_UPSTREAM;
+		}
+
+		/* createBranch */
+		Ref createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(startPoint).call();
 		
+		if (checkoutBranch) {
+			/* call checkout Branch method */
+		}
+		
+		/* add child to LocalBranches */
+		//Node child = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		/* get the parent */
+		//Node parent = new Node("","");
+		//CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
-	
 
 }

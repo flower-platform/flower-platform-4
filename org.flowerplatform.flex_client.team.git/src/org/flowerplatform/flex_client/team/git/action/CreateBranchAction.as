@@ -15,45 +15,40 @@
 */
 
 package org.flowerplatform.flex_client.team.git.action {
-	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
+	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.ui.CreateBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	 
+	/**
+	 * @author Cristina Brinza
+	 */
+	
 	public class CreateBranchAction extends ActionBase {
-		
-		protected var view:CreateBranchView;
 		
 		public function CreateBranchAction() {
 			super();
+			
+			label = Resources.getMessage("flex_client.team.git.action.createBranch");
 		}
 				
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
 				
-				/* if local branch */
-				if (node.properties.isLocalBranch) {
-//					view.configureUpstreamCheckBox.selected = false;
-//					view.configureUpstreamCheckBox.
-					return true;		
-				}
-				
-				/* if remote branch */
-				if (node.properties.isRemoteBranch) {
+				/* TO DELETE */
+				if (node.type == CoreConstants.FILE_SYSTEM_NODE_TYPE) {
 					return true;
 				}
 				
-				/* if tag */
-				if (node.properties.isTag) {
-					return true;
-				}
-				
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex("") >= 0;
+				/* UNCOMMENT */
+//				if (node.properties.isLocalBranch || node.properties.isRemoteBranch || node.properties.isTag) {
+//					return true;
+//				}
 			}
 			return false;
 		}
@@ -61,7 +56,11 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var view:CreateBranchView = new CreateBranchView();
-			view.repositoryNode = node;
+			var index:int = node.nodeUri.indexOf("|");
+			if (index < 0) {
+				index = node.nodeUri.length;
+			}
+			view.nodePath = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(view)
