@@ -10,6 +10,9 @@ import org.eclipse.jgit.lib.RepositoryCache.FileKey;
 import org.eclipse.jgit.util.FS;
 import org.flowerplatform.core.CorePlugin;
 
+/**
+ * @author Cojocea Marius Eduard
+ */
 public class GitUtils {
 	
 	public static Repository getRepository(File repoFile) {
@@ -45,5 +48,19 @@ public class GitUtils {
 	public static boolean isRepository(File file) {
 		return getGitDir(file) != null;
 	}
+	
+
+	public static String getType(String nodeUri){
+		int indexStart = nodeUri.indexOf("|");
+		int indexEnd = nodeUri.indexOf("$");
+		return nodeUri.substring(indexStart + 1, indexEnd);
+	}
+	
+	public static String getName(String nodeUri){
+		int indexStart = nodeUri.indexOf("$");
+		int indexEnd = nodeUri.length();
+		return nodeUri.substring(indexStart + 1, indexEnd);
+	}
+
 		
 }
