@@ -1,6 +1,8 @@
 package org.flowerplatform.team.git;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -12,9 +14,13 @@ import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
+import org.flowerplatform.codesync.sdiff.IFileContentProvider;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
@@ -33,7 +39,7 @@ import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
  */
 public class GitService {
 	
-		public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
+	public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
 		IFileContentProvider fileContentProvider = new GitFileContentProvider(newHash, oldHash, repoPath);
 		OutputStream patch = new ByteArrayOutputStream();
 
@@ -155,7 +161,7 @@ public class GitService {
 		}
 	
 		/* create child */
-		Node child = new Node("refs/heads" + name, GIT_LOCAL_BRANCH_TYPE);
+		Node child = new Node("refs/heads/" + name, GIT_LOCAL_BRANCH_TYPE);
 		
 		/* get the parent */
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);

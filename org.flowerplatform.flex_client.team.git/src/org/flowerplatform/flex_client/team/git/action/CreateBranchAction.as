@@ -16,8 +16,6 @@
 
 package org.flowerplatform.flex_client.team.git.action {
 	
-	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
@@ -54,11 +52,6 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var view:CreateBranchView = new CreateBranchView();
-//			var index:int = node.nodeUri.indexOf("|");
-//			if (index < 0) {
-//				index = node.nodeUri.length;
-//			}
-//			view.nodePath = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
 			
 			view.node = node;
 			

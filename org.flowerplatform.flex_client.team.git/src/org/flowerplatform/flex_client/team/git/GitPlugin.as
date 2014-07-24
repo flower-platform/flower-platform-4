@@ -18,6 +18,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
 	import org.flowerplatform.flexutil.Utils;
 

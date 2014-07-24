@@ -44,9 +44,6 @@ license-end
 			
 			[Bindable]
 			public var node:Node;
-			
-			//[Bindable]
-			//public var nodePath : String;
 						
 			private const CREATE_BRANCH_ERROR:String = "Create Branch Error!";
 			
@@ -95,13 +92,7 @@ license-end
 				/* happens on ok */
 				if (branchNameTextInput.text == "") {
 					Alert.show("Please choose a name for the new branch", CREATE_BRANCH_ERROR);
-				} else {
-					/*						
-						- see which options are selected to know how to call createBranch on server 
-						- track = !noTrack
-						- nameValidation done on server
-					*/
-					
+				} else {					
 					/* if the node is a tag, don't configure upstream in createBranch */
 					configureUpstream = configureUpstreamGroup.visible;
 					/* Merge upstream commits into local branch */
