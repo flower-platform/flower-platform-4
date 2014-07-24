@@ -69,6 +69,12 @@ license-end
 				action.parentId = "secondaction";
 				action.icon = MultipleIconItemRendererSample.defaultImage;
 				actionProvider.getActions(null).push(action);
+
+				// create a separator.
+				action = new SampleActionGlobalMenu1();
+				action.label = GlobalMenuBar.MENU_LABEL_SEPARATOR;
+				action.parentId = "secondaction";
+				actionProvider.getActions(null).push(action);
 				
 				action = new SampleActionGlobalMenu1();
 				action.label = "Third SubAction";
