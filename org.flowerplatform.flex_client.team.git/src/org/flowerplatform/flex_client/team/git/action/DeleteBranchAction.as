@@ -64,7 +64,7 @@ package org.flowerplatform.flex_client.team.git.action
 					.setWidth(300)
 					.setHeight(200)
 					.showMessageBox();
-			}
+			} 
 		}
 		
 		override public function run():void {
@@ -75,7 +75,7 @@ package org.flowerplatform.flex_client.team.git.action
 				.setTitle(Resources.getMessage("info"))
 				.setWidth(300)
 				.setHeight(200)
-				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteBranch", [node.parent.nodeUri, node.nodeUri],null,FaultCallBack);})
+				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteBranch", [node.parent.nodeUri, node.nodeUri], null, FaultCallBack);})
 				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
 				.showMessageBox();
 		}
