@@ -7,6 +7,8 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CloneRepoAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.component.SelectRepositoryComponent"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.CloneRepoWizardView"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteBranchAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
