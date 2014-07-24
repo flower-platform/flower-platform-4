@@ -22,7 +22,7 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class BaseResourceHandler implements IResourceHandler {
 
-	private String type;
+	protected String type;
 	
 	public BaseResourceHandler(String type) {
 		this.type = type;

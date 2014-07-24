@@ -33,6 +33,31 @@ import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
  */
 public class GitService {
 	
+		public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
+		IFileContentProvider fileContentProvider = new GitFileContentProvider(newHash, oldHash, repoPath);
+		OutputStream patch = new ByteArrayOutputStream();
+
+		// get the patch for the two commits
+		try {
+			Repository repository = GitUtils.getRepository((File) FileControllerUtils
+											.getFileAccessController()
+											.getFile(repoPath));
+			Git git = new Git(repository);
+			RevWalk revWalk = new RevWalk(repository);
+			ObjectReader reader = repository.newObjectReader();
+			CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
+			oldTreeIter.reset(reader, revWalk.parseCommit(repository.resolve(oldHash)).getTree());
+			CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
+			newTreeIter.reset(reader, revWalk.parseCommit(repository.resolve(newHash)).getTree());
+
+			git.diff().setOutputStream(patch).setNewTree(newTreeIter).setOldTree(oldTreeIter).call();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		return CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(patch.toString(), repoPath, sdiffOutputPath, fileContentProvider);
+	}
+	
 	public boolean validateHash(String hash, String repositoryPath) {				
 		try {
 			//testing if hash is valid
@@ -135,6 +160,15 @@ public class GitService {
 		/* get the parent */
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+	}
+
+	/**
+	 * @author Marius Iacob
+	 */
+	public void deleteBranch(String repositoryPath, String branchName) throws Exception {
+			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+			Git git = new Git(repo);
+			git.branchDelete().setForce(true).setBranchNames(branchName).call();
 	}
 
 }
