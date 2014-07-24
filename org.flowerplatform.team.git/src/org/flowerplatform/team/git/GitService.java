@@ -15,9 +15,11 @@ import org.flowerplatform.codesync.sdiff.IFileContentProvider;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.remote.Node;
 
+
 /**
  * @author Valentina-Camelia Bojan
  */
+
 public class GitService {
 	
 	public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
@@ -65,8 +67,14 @@ public class GitService {
 		} catch (Exception e) {
 			return false;
 		}
-
 		return true;		
 	}
-
+	/**
+	 * @author Marius Iacob
+	 */
+	public void deleteBranch(String repositoryPath, String branchName) throws Exception {
+			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+			Git git = new Git(repo);
+			git.branchDelete().setForce(true).setBranchNames(branchName).call();
+	}
 }

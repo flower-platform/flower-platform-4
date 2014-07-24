@@ -31,6 +31,7 @@ import org.flowerplatform.team.git.controller.GitRemotesChildrenProvider;
 import org.flowerplatform.team.git.controller.GitRemotesPropertiesProvider;
 import org.flowerplatform.team.git.controller.GitResourceHandler;
 import org.flowerplatform.team.git.controller.GitTagsPropertiesProvider;
+import org.flowerplatform.team.git.controller.GitVirtualNodeResourceHandler;
 import org.flowerplatform.team.git.controller.RepoChildrenProvider;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -93,10 +94,10 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		//to be modified later --> usage of only one scheme with multiple handlers
 		//need to modify: ResourceService.java, addResourceHandler method
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new BaseResourceHandler(GIT_REPO_TYPE));
-		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_LOCAL_BRANCHES_SCHEME, new BaseResourceHandler(GIT_LOCAL_BRANCHES_TYPE));
-		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_REMOTE_BRANCHES_SCHEME, new BaseResourceHandler(GIT_REMOTE_BRANCHES_TYPE));
-		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_TAGS_SCHEME, new BaseResourceHandler(GIT_TAGS_TYPE));
-		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_REMOTES_SCHEME, new BaseResourceHandler(GIT_REMOTES_TYPE));
+		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_LOCAL_BRANCHES_SCHEME, new GitVirtualNodeResourceHandler(GIT_LOCAL_BRANCHES_TYPE));
+		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_REMOTE_BRANCHES_SCHEME, new GitVirtualNodeResourceHandler(GIT_REMOTE_BRANCHES_TYPE));
+		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_TAGS_SCHEME, new GitVirtualNodeResourceHandler(GIT_TAGS_TYPE));
+		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_REMOTES_SCHEME, new GitVirtualNodeResourceHandler(GIT_REMOTES_TYPE));
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_BRANCH_SCHEME, new GitResourceHandler());
 		
 	}
