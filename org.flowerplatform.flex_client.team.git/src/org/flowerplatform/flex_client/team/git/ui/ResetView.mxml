@@ -13,6 +13,7 @@
 			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
 			
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
@@ -21,15 +22,20 @@
 			import org.flowerplatform.flexutil.Pair;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
+			import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 			
 			
+			protected var type:int;
+			protected var selectedNodeUri:String;
 			
 			override protected function okHandler(event:Event = null):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.reset",
+					[selectedNodeUri,type]);
 				cancelHandler(event);
 			}
 			
 			public function resetTypeHandler(event:ItemClickEvent):void {
-				
+				type = int(resetType.selectedValue);
 			}
 			
 			protected function resetCreationCompleteHandler(event:FlexEvent):void {		
@@ -45,6 +51,16 @@
 				tree.finalizeTree();
 			}
 			
+			protected function treeClickHandler(event:MouseEvent):void {
+				var selectedNode:Node = Node(HierarchicalModelWrapper(tree.selectedItem).treeNode);
+				if(selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
+				selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ||
+				selectedNode.type == GitConstants.GIT_TAG_TYPE){
+					textInput.text = selectedNode.getPropertyValue(CoreConstants.NAME);
+					selectedNodeUri = selectedNode.nodeUri;
+				}
+			}
+			
 			
 		]]>
 	</fx:Script>
@@ -56,22 +72,28 @@
 	
 	<s:VGroup width="100%">
 		
-		<ntc:NodeTreeComponent id="tree" width="100%" height="200"/>
+		<ntc:NodeTreeComponent id="tree" 
+							   width="100%" height="200"
+							   click="treeClickHandler(event)"/>
 		
 		<s:Form width="100%">
 			<s:FormItem label = "{Resources.getMessage('flex_client.team.git.ui.resetView.reset')}">
 				<s:TextInput width="100%"
-							 />
+							 editable="false"
+							 id="textInput"/>
 			</s:FormItem>
 		</s:Form>
 		
 		<s:VGroup paddingTop="20">
 			<s:Label text="{Resources.getMessage('flex_client.team.git.ui.resetView.resetType')}"/>
 			<s:RadioButton group="{resetType}"
+						   value="0"
 						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.soft')}"/>
 			<s:RadioButton group="{resetType}"
+						   value="1"
 						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.mixed')}"/>
 			<s:RadioButton group="{resetType}"
+						   value="2"
 						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.hard')}"/>
 		</s:VGroup>	
 	</s:VGroup>

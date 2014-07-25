@@ -99,7 +99,7 @@ public class GitService {
 		if(type == 0){
 			resetType = ResetType.SOFT;
 		}
-		else if(type == 2){
+		else if(type == 1){
 			resetType = ResetType.MIXED;
 		}
 		else{
