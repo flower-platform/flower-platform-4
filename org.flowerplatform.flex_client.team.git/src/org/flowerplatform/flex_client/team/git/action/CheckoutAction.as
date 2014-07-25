@@ -27,10 +27,10 @@ package org.flowerplatform.flex_client.team.git.action
 
 	public class CheckoutAction extends ActionBase  {
 		
-		public function CheckoutAction() {
-			label = Resources.getMessage("flex_client.team.git.action.checkoutAction");
-			//icon = Resources.getResourceUrl("/mindmap/icons/checkout.gif");
+		public function CheckoutAction() {						
 			super();				
+			label = Resources.getMessage("flex_client.team.git.action.checkoutAction");
+			icon = Resources.getResourceUrl("/images/mindmap/icons/checkout.gif");
 		}
 		
 		public function createNewBranch():void {
@@ -51,14 +51,10 @@ package org.flowerplatform.flex_client.team.git.action
 				.setHeight(150)
 				.addButton("Commit Changes", function():void {commitChanges();})
 				.addButton("Reset", function():void {reset();})
-				.addButton("Cancel2", function():void {})
+				.addButton("Cancel", function():void {})
 				.showMessageBox();	
 		}	
 		
-		public function callGitServiceCheckout(nodeUri:String):void {			
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkoutBranch",[nodeUri],null,FaultCallback);						
-		}
-
 		public function FaultCallback(event:FaultEvent):void {				
 			if (event != null) {				
 				var index:Number = event.fault.faultString.search("CheckoutConflictException");
@@ -67,23 +63,32 @@ package org.flowerplatform.flex_client.team.git.action
 			}
 		}	
 		
+		public function callGitServiceCheckout(nodeUri:String):void {			
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout",[nodeUri],null,FaultCallback);						
+		}
+		
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||	node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
+				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE) {
 					return true;
 				}
 			}
 			return false;
 		}
-				
+import org.flowerplatform.flex_client.core.editor.remote.Node;
+import org.flowerplatform.flex_client.resources.Resources;
+import org.flowerplatform.flex_client.team.git.GitConstants;
+import org.flowerplatform.flexutil.FlexUtilGlobals;
+
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0))		
-			var branchName:String = node.properties[GitConstants.NAME];
+			var Name:String = node.properties[GitConstants.NAME];
+			//Name is the Branch or Tag name.
 			
 			if (node.type == "gitLocalBranch") {
 				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setText(Resources.getMessage("checkout.popup",[branchName])) //TODO change BranchName
+					.setText(Resources.getMessage("checkout.popup",[Name]))
 					.setTitle(Resources.getMessage("info"))
 					.setWidth(300)
 					.setHeight(125)
@@ -99,9 +104,19 @@ package org.flowerplatform.flex_client.team.git.action
 					.setHeight(200)
 					.addButton("Create new branch", function():void {createNewBranch();})
 					.addButton("Checkout Commit",  function():void {callGitServiceCheckout(node.nodeUri);})
-					.addButton("Cancel3", function():void {})
+					.addButton("Cancel", function():void {})
 					.showMessageBox();			
-			}		
-	}
+			}
+			else if (node.type == "gitTag") {
+				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+					.setText(Resources.getMessage("checkout.popup",[Name]))
+					.setTitle(Resources.getMessage("info"))
+					.setWidth(300)
+					.setHeight(125)
+					.addButton("Yes", function():void {callGitServiceCheckout(node.nodeUri);})
+					.addButton("No")
+					.showMessageBox();	
+			}
+		}
 }
 }

@@ -1,12 +1,9 @@
 package org.flowerplatform.team.git;
 
 import java.io.File;
-import java.util.List;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -38,17 +35,19 @@ public class GitService {
 
 		return true;		
 	}
-	
-	public void checkoutBranch(String nodeUri) throws Exception {
-				
-		String branchName = GitUtils.getName(nodeUri);
+	/** 
+	 * @param nodeUri This is the name of a branch/tag.
+	 * @param createNew If is set to 'true' we create a new local branch. 
+	 * @throws Exception
+	 */
+	public void checkout(String nodeUri) throws Exception {				
+		String Name = GitUtils.getName(nodeUri);
 		String repositoryPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 				
 		Git g = new Git(repo);	
 		//List<Ref> l = g.branchList().setListMode(ListMode.ALL).call();
 		
-		g.checkout().setName(branchName).call();		
-		
+		g.checkout().setName(Name).call();		
 	}
 }
