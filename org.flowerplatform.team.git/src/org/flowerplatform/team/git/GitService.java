@@ -3,6 +3,7 @@ package org.flowerplatform.team.git;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
+import java.lang.reflect.Parameter;
 
 import org.eclipse.egit.core.op.ResetOperation;
 import org.eclipse.jgit.api.Git;
@@ -83,9 +84,9 @@ public class GitService {
 	/**
 	 * @author Diana Balutoiu
 	 * @return true if the reset was successful
-	 * @throws Exception 
+	 * @param nodeUri - the Uri of the selected branch
 	 */
-	public boolean reset(String nodeUri, String refName, int type) throws Exception {
+	public boolean reset(String nodeUri, int type) throws Exception {
 		
 		int index = nodeUri.indexOf("|");
 		if (index < 0) {
@@ -105,7 +106,8 @@ public class GitService {
 			resetType = ResetType.HARD;
 		}
 		
-		//TODO: get the correct refName
+		String refName = nodeUri.substring(nodeUri.indexOf("$") + 1, nodeUri.length());
+
 		new ResetOperation(repo, refName, resetType);
 		//TODO: when and where does it fail?!?
 		return true;
