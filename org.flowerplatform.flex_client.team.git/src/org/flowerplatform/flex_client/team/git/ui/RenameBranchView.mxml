@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 creationComplete="renameBranchCreationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			
+	
+			[Bindable]
+			var repoPath:String;
+			
+			
+			/* creationComplete for RenameBranchView */
+			protected function renameBranchCreationCompleteHandler(event:FlexEvent):void {
+				//validateName.text = "Ref + { } + exists!";
+				newBranchName.text = "the old name of repo";	
+				okButton.enabled = true;
+			}
+			
+			
+			/* okButton handler: save the new name for branch */
+			override protected function okHandler(event:Event = null):void {
+				if(newBranchName.text == " "){
+					Alert.show("You must enter a name!");
+				} else {
+					/* check the new name from branch */
+					var oldName:String = "old name";
+					var newName:String = newBranchName.text;
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",
+						[oldName,newName,repoPath]);
+				}
+			}	
+		]]>
+	</fx:Script>
+
+	
+	<s:VGroup>
+		<s:Panel>
+			<s:Label text="Rename branch" />
+		<!--	<s:HGroup>
+				<s:Image />
+				<s:Label id="validateName"  />
+			</s:HGroup> -->
+		</s:Panel>
+		<s:Form height="100">
+			<s:FormItem name="New branch name:" />
+			<s:TextInput id="newBranchName" width="50" />
+		</s:Form>
+	</s:VGroup>
+	
+</ns:BasicViewContent>

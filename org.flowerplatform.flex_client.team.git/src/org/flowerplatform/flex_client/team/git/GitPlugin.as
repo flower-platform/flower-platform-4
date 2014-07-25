@@ -31,8 +31,7 @@ package org.flowerplatform.flex_client.team.git {
 		public static function getInstance():GitPlugin {
 			return INSTANCE;
 		}
-		
-	
+			
 		override public function start():void {
 			super.start();
 			if (INSTANCE != null) {
@@ -46,6 +45,7 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 		}
 		
 		override protected function registerMessageBundle():void {
