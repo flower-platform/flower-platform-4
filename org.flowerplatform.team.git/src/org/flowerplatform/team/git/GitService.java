@@ -86,8 +86,11 @@ public class GitService {
 	 * @return true if the reset was successful
 	 * @param nodeUri - the Uri of the selected branch
 	 */
-	public boolean reset(String nodeUri, int type) throws Exception {
+	public boolean reset(String nodeUri, String type) throws Exception {
 		
+		if(nodeUri == null){
+			return false;
+		}
 		int index = nodeUri.indexOf("|");
 		if (index < 0) {
 			index = nodeUri.length();
@@ -96,14 +99,17 @@ public class GitService {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
 		
 		ResetType resetType;
-		if(type == 0){
+		if(type == GitConstants.RESET_SOFT){
 			resetType = ResetType.SOFT;
 		}
-		else if(type == 1){
+		else if(type == GitConstants.RESET_MIXED){
 			resetType = ResetType.MIXED;
 		}
-		else{
+		else if(type == GitConstants.RESET_HARD){
 			resetType = ResetType.HARD;
+		}
+		else {
+			return false;
 		}
 		
 		String refName = nodeUri.substring(nodeUri.indexOf("$") + 1, nodeUri.length());

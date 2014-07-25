@@ -21,5 +21,15 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 		
 		public static const FULL_NAME:String = "fullName";
+		
+		
+		/////////////////////////////////////////////////////////////
+		//Reset types
+		/////////////////////////////////////////////////////////////
+		
+		public static const RESET_SOFT:String = "soft";
+		public static const RESET_MIXED:String = "mixed";
+		public static const RESET_HARD:String = "hard";
+			
 	}
 }

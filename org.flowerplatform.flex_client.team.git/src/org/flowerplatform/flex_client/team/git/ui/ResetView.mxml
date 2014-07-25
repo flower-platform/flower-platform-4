@@ -13,6 +13,8 @@
 			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
 			
+			import spark.components.Alert;
+			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -25,25 +27,33 @@
 			import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 			
 			
-			protected var type:int;
+			
+			protected var type:String;
 			protected var selectedNodeUri:String;
 			
+			//TODO: Fail => popup
 			override protected function okHandler(event:Event = null):void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.reset",
-					[selectedNodeUri,type]);
+					[selectedNodeUri,type], 
+					function(result:Boolean):void {
+						if(result == false){
+							Alert.show("Failed to reset!");
+						}
+					});
 				cancelHandler(event);
+				
 			}
 			
 			public function resetTypeHandler(event:ItemClickEvent):void {
-				type = int(resetType.selectedValue);
+				type = String(resetType.selectedValue);
 			}
 			
+			//TODO: get the "remotes" out of the tree
 			protected function resetCreationCompleteHandler(event:FlexEvent):void {		
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
 				node = node.parent;
 				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
-				
 				tree.initializeTree(pair == null ? node.nodeUri : pair.a as String);
 			}
 			
@@ -70,7 +80,7 @@
 							itemClick="resetTypeHandler(event)"/>
 	</fx:Declarations>
 	
-	<s:VGroup width="100%">
+	<s:VGroup width="100%" height="100%">
 		
 		<ntc:NodeTreeComponent id="tree" 
 							   width="100%" height="200"
@@ -87,13 +97,14 @@
 		<s:VGroup paddingTop="20">
 			<s:Label text="{Resources.getMessage('flex_client.team.git.ui.resetView.resetType')}"/>
 			<s:RadioButton group="{resetType}"
-						   value="0"
+						   value="{GitConstants.RESET_SOFT}"
 						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.soft')}"/>
 			<s:RadioButton group="{resetType}"
-						   value="1"
-						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.mixed')}"/>
+						   value="{GitConstants.RESET_MIXED}"
+						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.mixed')}"
+						   selected="true"/>
 			<s:RadioButton group="{resetType}"
-						   value="2"
+						   value="{GitConstants.RESET_HARD}"
 						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.hard')}"/>
 		</s:VGroup>	
 	</s:VGroup>
