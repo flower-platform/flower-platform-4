@@ -4,6 +4,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.RenameBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -26,11 +27,9 @@ package org.flowerplatform.flex_client.team.git.action {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
 				/* you must know the type of nodes */
-				if (node.type == CoreConstants.FILE_SYSTEM_NODE_TYPE) {
+				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
 					return true;
 				}
-				//return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-				//	.categories.getItemIndex(CodeSyncConstants.CATEGORY_CODESYNC) >= 0;
 			}
 			return false;
 		}
@@ -39,12 +38,6 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var view:RenameBranchView = new RenameBranchView();
-			var index:int = node.nodeUri.indexOf("|");
-			
-			if (index < 0) {
-				index = node.nodeUri.length;
-			}
-			view.pathNode = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
 			view.node = node;
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()

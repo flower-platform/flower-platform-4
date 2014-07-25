@@ -5,7 +5,6 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.Set;
 
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.RenameBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
@@ -27,6 +25,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.codesync.sdiff.IFileContentProvider;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
@@ -34,13 +33,6 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.team.git.remote.GitBranch;
 import org.flowerplatform.util.Utils;
-
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.flowerplatform.core.file.FileControllerUtils;
 
 
 /**
@@ -196,13 +188,20 @@ public class GitService {
 	}
 	
 	/* rename the branch with the new name */
-	public void renameBranch(String pathNode,String oldName,String newName) throws Exception{
+	public void renameBranch(String nodeUri,String oldName,String newName) throws Exception {
+		int index = nodeUri.indexOf("|");
+	
+		if (index < 0) {
+			index = nodeUri.length();
+		}
+		String pathNode = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(pathNode));
 		Git gitInstance = new Git(repo);
 		/* set the new name */
 		gitInstance.branchRename().setOldName(oldName).setNewName("origin/" + newName).call();
-		/* refresh File System node */ //TODO
-		//CorePlugin.getInstance().getNodeService().setProperty(node,"name",newName,new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
+		/* refresh File System node */
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		CorePlugin.getInstance().getNodeService().setProperty(node,CoreConstants.NAME,newName,new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
 	}
 
 }
