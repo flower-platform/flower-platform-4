@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@author Diana Balutoiu
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" 
+					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 creationComplete="resetCreationCompleteHandler(event)" 
+					 xmlns:ntc="org.flowerplatform.flex_client.core.node_tree.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Pair;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			import org.flowerplatform.flexutil.selection.ISelectionProvider;
+			
+			
+			
+			override protected function okHandler(event:Event = null):void {
+				cancelHandler(event);
+			}
+			
+			public function resetTypeHandler(event:ItemClickEvent):void {
+				
+			}
+			
+			protected function resetCreationCompleteHandler(event:FlexEvent):void {		
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
+				node = node.parent;
+				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
+				
+				tree.initializeTree(pair == null ? node.nodeUri : pair.a as String);
+			}
+			
+			private function viewRemovedHandler(event:ViewRemovedEvent):void {
+				tree.finalizeTree();
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="resetType" 
+							itemClick="resetTypeHandler(event)"/>
+	</fx:Declarations>
+	
+	<s:VGroup width="100%">
+		
+		<ntc:NodeTreeComponent id="tree" width="100%" height="200"/>
+		
+		<s:Form width="100%">
+			<s:FormItem label = "{Resources.getMessage('flex_client.team.git.ui.resetView.reset')}">
+				<s:TextInput width="100%"
+							 />
+			</s:FormItem>
+		</s:Form>
+		
+		<s:VGroup paddingTop="20">
+			<s:Label text="{Resources.getMessage('flex_client.team.git.ui.resetView.resetType')}"/>
+			<s:RadioButton group="{resetType}"
+						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.soft')}"/>
+			<s:RadioButton group="{resetType}"
+						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.mixed')}"/>
+			<s:RadioButton group="{resetType}"
+						   label="{Resources.getMessage('flex_client.team.git.ui.resetView.hard')}"/>
+		</s:VGroup>	
+	</s:VGroup>
+</ns:BasicViewContent>

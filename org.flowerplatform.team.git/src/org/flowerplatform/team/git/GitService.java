@@ -77,4 +77,11 @@ public class GitService {
 			Git git = new Git(repo);
 			git.branchDelete().setForce(true).setBranchNames(branchName).call();
 	}
+	
+	/**
+	 * @author Diana Balutoiu
+	 */
+	public void reset() {
+		
+	}
 }
