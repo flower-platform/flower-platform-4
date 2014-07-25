@@ -85,7 +85,7 @@ public class GitService {
 	 * @return true if the reset was successful
 	 * @throws Exception 
 	 */
-	public boolean reset(String nodeUri, int type) throws Exception {
+	public boolean reset(String nodeUri, String refName, int type) throws Exception {
 		
 		int index = nodeUri.indexOf("|");
 		if (index < 0) {
@@ -105,8 +105,7 @@ public class GitService {
 			resetType = ResetType.HARD;
 		}
 		
-		//TODO: get the refName
-		String refName="" ;
+		//TODO: get the correct refName
 		new ResetOperation(repo, refName, resetType);
 		//TODO: when and where does it fail?!?
 		return true;
