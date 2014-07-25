@@ -1,4 +1,3 @@
-
 /* license-start
 * 
 * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
@@ -14,6 +13,11 @@
 * 
 * license-end
 */
+/**
+ * 
+ * @author Vlad Bogdan Manica
+ * 
+ */
 package org.flowerplatform.flex_client.team.git.action
 {
 	import mx.rpc.events.FaultEvent;
@@ -22,9 +26,11 @@ package org.flowerplatform.flex_client.team.git.action
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
+	import org.flowerplatform.flex_client.team.git.ui.CreateBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-
+	
+	 
 	public class CheckoutAction extends ActionBase  {
 		
 		public function CheckoutAction() {						
@@ -33,8 +39,17 @@ package org.flowerplatform.flex_client.team.git.action
 			icon = Resources.getResourceUrl("/images/mindmap/icons/checkout.gif");
 		}
 		
-		public function createNewBranch():void {
-			//TODO call createNewBranch and Checkout!
+		public function createNewBranch(node:Node):void {
+			var view:CreateBranchView = new CreateBranchView();			
+			view.node = node;
+			
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+				.setViewContent(view)
+				.setWidth(550)
+				.setHeight(500)
+				.setTitle(Resources.getMessage("flex_client.team.git.action.createBranch"))
+				.setIcon(Resources.createBranchIcon)
+				.show();
 		}	
 		public function commitChanges():void {	
 			//TODO call commit
@@ -71,20 +86,16 @@ package org.flowerplatform.flex_client.team.git.action
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
 				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE) {
-					return true;
+					return true; 
 				}
 			}
 			return false;
+			GitConstants.FULL_NAME;
 		}
-import org.flowerplatform.flex_client.core.editor.remote.Node;
-import org.flowerplatform.flex_client.resources.Resources;
-import org.flowerplatform.flex_client.team.git.GitConstants;
-import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0))		
 			var Name:String = node.properties[GitConstants.NAME];
-			//Name is the Branch or Tag name.
 			
 			if (node.type == "gitLocalBranch") {
 				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
@@ -102,7 +113,7 @@ import org.flowerplatform.flexutil.FlexUtilGlobals;
 					.setTitle(Resources.getMessage("info"))
 					.setWidth(350)
 					.setHeight(200)
-					.addButton("Create new branch", function():void {createNewBranch();})
+					.addButton("Create new branch", function():void {createNewBranch(node);})
 					.addButton("Checkout Commit",  function():void {callGitServiceCheckout(node.nodeUri);})
 					.addButton("Cancel", function():void {})
 					.showMessageBox();			
