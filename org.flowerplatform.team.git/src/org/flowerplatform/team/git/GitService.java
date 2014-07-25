@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 
+import org.eclipse.egit.core.op.ResetOperation;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -80,8 +82,33 @@ public class GitService {
 	
 	/**
 	 * @author Diana Balutoiu
+	 * @return true if the reset was successful
+	 * @throws Exception 
 	 */
-	public void reset() {
+	public boolean reset(String nodeUri, int type) throws Exception {
 		
+		int index = nodeUri.indexOf("|");
+		if (index < 0) {
+			index = nodeUri.length();
+		}
+		String repositoryPath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
+		
+		ResetType resetType;
+		if(type == 0){
+			resetType = ResetType.SOFT;
+		}
+		else if(type == 2){
+			resetType = ResetType.MIXED;
+		}
+		else{
+			resetType = ResetType.HARD;
+		}
+		
+		//TODO: get the refName
+		String refName="" ;
+		new ResetOperation(repo, refName, resetType);
+		//TODO: when and where does it fail?!?
+		return true;
 	}
 }
