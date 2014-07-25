@@ -553,6 +553,9 @@ package org.flowerplatform.flex_client.resources {
 		// Create Branch
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
+
+		[Embed(source="/team.git/editconfig.gif")]
+		public static const renameBranch:Class;
 		
 	}
 }
