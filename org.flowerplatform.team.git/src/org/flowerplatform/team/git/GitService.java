@@ -1,5 +1,9 @@
 package org.flowerplatform.team.git;
 
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
@@ -8,11 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
@@ -28,11 +32,6 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.team.git.remote.GitBranch;
 import org.flowerplatform.util.Utils;
-
-import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-
 
 /**
  * @author Valentina-Camelia Bojan
@@ -171,10 +170,13 @@ public class GitService {
 	/**
 	 * @author Marius Iacob
 	 */
-	public void deleteBranch(String repositoryPath, String branchName) throws Exception {
-			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+	public void deleteBranch(String parentUri, String childUri) throws Exception {
+			Node childNode = CorePlugin.getInstance().getResourceService().getNode(childUri);
+			Node parentNode = CorePlugin.getInstance().getResourceService().getNode(parentUri);
+			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(childUri)));
 			Git git = new Git(repo);
-			git.branchDelete().setForce(true).setBranchNames(branchName).call();
+			git.branchDelete().setForce(true).setBranchNames(childNode.getPropertyValue(GitConstants.NAME).toString()).call();
+			CorePlugin.getInstance().getNodeService().removeChild(parentNode, childNode, new ServiceContext<NodeService>());
 	}
 
 }

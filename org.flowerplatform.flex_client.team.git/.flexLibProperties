@@ -10,6 +10,8 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteBranchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

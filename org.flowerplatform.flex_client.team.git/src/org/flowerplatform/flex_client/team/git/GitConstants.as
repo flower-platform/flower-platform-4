@@ -30,6 +30,16 @@ package org.flowerplatform.flex_client.team.git {
 		public static const GIT_LOCAL_BRANCHES_TYPE:String = "gitLocalBranches";
 		public static const GIT_REMOTE_BRANCHES_TYPE:String = "gitRemoteBranches";
 		public static const GIT_TAGS_TYPE:String = "gitTags";
+			
+		/////////////////////////////////////////////////////////////
+		//Leaf Git Node Properties
+		/////////////////////////////////////////////////////////////
 		
+		public static const NAME:String = "name";
+		public static const FULL_NAME:String = "fullName";
+		public static const CONFIG_REMOTE:String = "configRemote";
+		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
+		public static const CONFIG_REBASE:String = "configRebase";	
 	}
+	
 }
