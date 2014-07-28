@@ -2,4 +2,4 @@
 
 Equinox plugin and Flex Client plugin. 
 
-Contains UI logic specific to git nodes and actions.
+Contains Git views and actions.

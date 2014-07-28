@@ -32,7 +32,7 @@ public interface IFileAccessController {
 	// path is relative
 	Object getFile(String path) throws Exception;
 	
-	File getFileAsFile(Object path) throws Exception;
+	File getFileAsFile(Object file) throws Exception;
 	
 	long getLastModifiedTimestamp(Object file);
 	

@@ -15,8 +15,9 @@ GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 
 license-end
 -->
-
-<!--- @author Valentina-Camelia Bojan -->
+<!--
+	@author Valentina-Camelia Bojan
+-->
 <s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
@@ -28,6 +29,7 @@ license-end
 			import mx.utils.StringUtil;
 			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.Utils;
 			
 			[Bindable]
 			public var labelText:String;
@@ -43,7 +45,8 @@ license-end
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
-				filename.text = FlexUtilAssets.INSTANCE.getMessage('label.untitled');				
+				filename.text = FlexUtilAssets.INSTANCE.getMessage('label.untitled');
+				Utils.makePseudoDisabled(result);
 			}
 			
 		]]>
@@ -52,8 +55,8 @@ license-end
 	<s:Label text="{labelText}"/>
 	<s:TextInput id="filename"
 				 text="{inputText}"
-				 width="100%"/>
-	<s:Label text="{StringUtil.substitute(autoCompletelabelFormat, [filename.text])}"
-			 fontWeight="bold"/>
+				 width="50%"/>
+	<s:TextInput id="result" text="{StringUtil.substitute(autoCompletelabelFormat, [filename.text])}"
+			 fontWeight="bold" width="50%"/>
 
 </s:HGroup>

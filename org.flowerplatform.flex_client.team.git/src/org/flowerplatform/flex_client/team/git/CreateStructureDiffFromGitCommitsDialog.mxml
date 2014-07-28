@@ -15,8 +15,9 @@ GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 
 license-end
 -->
-
-<!--- @author Valentina-Camelia Bojan -->
+<!-- 
+ @author Valentina-Camelia Bojan
+-->
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009"
 					 xmlns:s="library://ns.adobe.com/flex/spark"
 					 xmlns:mx="library://ns.adobe.com/flex/mx"
@@ -33,8 +34,7 @@ license-end
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.Utils;
-			
-			
+						
 			[Bindable]
 			public var repo:String;
 			

@@ -1,5 +1,5 @@
 # Project Description
 
-"Abstract" Equinox plugin. 
+Equinox plugin. 
 
-Git project that holds mainly the API to access and manipulate git.
+Project that holds mainly the API to access and manipulate Git.

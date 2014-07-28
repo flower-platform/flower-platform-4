@@ -56,12 +56,12 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 			}
 			dialog.repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-														     .setViewContent(dialog)
-														     .setWidth(800)
-														     .setHeight(500)
-														     .setTitle(label)
-														     .setIcon(icon)
-														     .show();
+				.setViewContent(dialog)
+				.setWidth(800)
+				.setHeight(500)
+				.setTitle(label)
+				.setIcon(icon)
+				.show();
 		}
 		
 	}

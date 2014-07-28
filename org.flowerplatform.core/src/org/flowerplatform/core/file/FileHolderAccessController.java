@@ -46,7 +46,7 @@ public class FileHolderAccessController implements IFileAccessController {
 	}
 	
 	@Override
-	public File getFileAsFile(Object path) throws Exception {
+	public File getFileAsFile(Object file) throws Exception {
 		throw new UnsupportedOperationException();
 	}
 

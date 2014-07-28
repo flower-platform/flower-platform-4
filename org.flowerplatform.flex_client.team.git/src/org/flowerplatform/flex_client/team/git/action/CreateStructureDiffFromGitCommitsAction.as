@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	/**
 	 * @author Valentina-Camelia Bojan
 	 */ 
-	public class CreateStructureDiffFromGitCommitsAction extends ActionBase  {
+	public class CreateStructureDiffFromGitCommitsAction extends ActionBase {
 		
 		public function CreateStructureDiffFromGitCommitsAction() {
 			super();
@@ -52,17 +52,16 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var dialog:CreateStructureDiffFromGitCommitsDialog = new CreateStructureDiffFromGitCommitsDialog();
-	
+			var dialog:CreateStructureDiffFromGitCommitsDialog = new CreateStructureDiffFromGitCommitsDialog();	
 			dialog.repo = CorePlugin.getInstance().getRepository(node.nodeUri);
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-															 .setViewContent(dialog)
-															 .setWidth(550)
-															 .setHeight(500)
-															 .setTitle(label)
-															 .setIcon(icon)
-															 .show();
+				.setViewContent(dialog)
+				.setWidth(550)
+				.setHeight(500)
+				.setTitle(label)
+				.setIcon(icon)
+				.show();
 		}
 	}
 }
