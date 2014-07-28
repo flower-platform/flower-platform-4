@@ -79,7 +79,6 @@ import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
-import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -253,8 +252,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 				.setTypeProvider(nodeTypeProvider)
 				.addModelAdapter(CATEGORY_CODESYNC, new NodeModelAdapterAncestor()));
 		
-		CorePlugin.getInstance().getResourceService().addResourceHandler(CODESYNC, new BaseResourceHandler(CODESYNC));
-		CorePlugin.getInstance().getResourceService().addResourceHandler(MDA, new BaseResourceHandler(MDA));
+		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(CODESYNC);
+		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(MDA);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new CodeSyncRepositoryChildrenProvider());

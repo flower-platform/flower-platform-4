@@ -51,7 +51,7 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		public var children:ArrayCollection;
 		
 		public function Node(nodeUri:String = null) {
-			nodeUri = nodeUri;
+			this.nodeUri = nodeUri;
 			_properties = new ObjectProxy(new Object());
 		}
 					
