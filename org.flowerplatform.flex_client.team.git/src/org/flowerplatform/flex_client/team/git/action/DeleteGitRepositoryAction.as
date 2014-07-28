@@ -2,6 +2,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.DeleteGitRepositoryView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -15,7 +16,14 @@ package org.flowerplatform.flex_client.team.git.action {
 		}
 		
 		override public function get visible():Boolean {
-			return true;
+			if (selection.length == 1 && selection.getItemAt(0) is Node) {
+				var node:Node = Node(selection.getItemAt(0));
+				var isRepo:Boolean = node.properties[GitConstants.IS_REPO];
+				if (node.type == GitConstants.GIT_REPO_TYPE && isRepo){
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		override public function run():void {

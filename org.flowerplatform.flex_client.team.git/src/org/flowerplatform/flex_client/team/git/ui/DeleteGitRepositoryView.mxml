@@ -6,7 +6,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
@@ -24,6 +23,7 @@
 			
 			override protected function okHandler(event:Event = null):void {			
 				deleteGitRepository();
+				cancelHandler(event);
 			}
 			
 			override protected function creationCompleteHandler(event:FlexEvent):void {

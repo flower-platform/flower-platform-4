@@ -6,6 +6,7 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.DeleteGitRepositoryView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
