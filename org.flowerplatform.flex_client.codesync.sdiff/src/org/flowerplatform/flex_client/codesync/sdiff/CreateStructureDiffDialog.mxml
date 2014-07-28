@@ -79,7 +79,7 @@
 	<s:TextArea id="patch" width="100%" height="100%" change="{okButton.enabled = true}"/>
 	
 	<cs:TextInputWithAutoCompleteLabelComponent id="outputFileComponent"
-												autoCompletelabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText')}"
+												autoCompletelabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
 												labelText="{Resources.getMessage('codesync.sdiff.createSdiff.fileName')}"/>
 	
 </ns:BasicViewContent>

@@ -203,7 +203,7 @@ license-end
 		</s:VGroup>
 		
 		<cs:TextInputWithAutoCompleteLabelComponent id="outputFileComponent"
-													autoCompletelabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText')}"
+													autoCompletelabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
 													labelText="{Resources.getMessage('codesync.sdiff.createSdiff.fileName')}"/>
 	</s:VGroup>	
 	
