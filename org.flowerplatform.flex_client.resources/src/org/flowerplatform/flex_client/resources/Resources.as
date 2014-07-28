@@ -550,5 +550,18 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/codesync.regex/wrench.png")]
 		public static const wrenchIcon:Class;
 		
+		// Git
+		
+		[Embed(source="/team.git/branch_obj.gif")]
+		public static const branchIcon:Class;
+		
+		[Embed(source="/team.git/branches_obj.gif")]
+		public static const branchesIcon:Class;
+		
+		[Embed(source="/team.git/cloneGit.gif")]
+		public static const cloneRepoIcon:Class;
+		
+		[Embed(source="/team.git/gitrepository.gif")]
+		public static const gitRepoIcon:Class;
 	}
 }

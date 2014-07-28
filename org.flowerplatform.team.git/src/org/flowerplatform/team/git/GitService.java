@@ -9,11 +9,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
@@ -31,9 +33,6 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.Utils;
-
-
-import org.flowerplatform.core.CoreConstants.*;
 /**
  * @author Valentina-Camelia Bojan
  */
@@ -90,7 +89,7 @@ public class GitService {
 		return true;		
 	}
 	
-	public int validateRepoURL(String url, String path) {
+	public int validateRepoURL(String url) {
 		try {
 			URIish repoUri = new URIish(url.trim());
 			if (repoUri.getScheme().toLowerCase().startsWith("http") ) {
@@ -112,37 +111,55 @@ public class GitService {
 		return 0;  
 	}
 	
-	public void getBranches() {
-		Repository repository; 
-
+	public ArrayList<String> getBranches(String uri) {
+		
 //        System.out.println("Listing local branches:");
 		try {
-			repository = new FileRepository(new File("/tmp"));
-	        List<Ref> call;
-//	        call = new Git(repository).branchList().call();
-//	        for (Ref ref : call) {
-//	            System.out.println("Branch: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
-//	        }
-
-        	System.out.println("Now including remote branches:");
-        
-			call = new Git(repository).branchList().setListMode(ListMode.ALL).call();
-			for (Ref ref : call) {
-	            System.out.println("Branch: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
+			Repository repository = new FileRepository(new File("/tmp"));		
+			Git git = new Git(repository);
+			LsRemoteCommand rc = git.lsRemote();
+			rc.setRemote(uri.toString()).setTimeout(30);
+			
+	        Collection<Ref> call = rc.call();
+	        ArrayList<String> branches = new ArrayList<String>();
+	        String name;
+	        
+	        for (Ref ref : call) {
+	        	name = ref.getName();
+//	            System.out.println("Branch: " + name);
+	            if (!name.equalsIgnoreCase("HEAD")) {
+	            	String[] words = ref.getName().split("/");
+//		        	System.out.print(words[0] +" " + words[1]);
+		        	if (words[0].equalsIgnoreCase("refs") && words[1].equalsIgnoreCase("heads")) {
+		        		branches.add(words[2]);
+		        	}
+	            }
 	        }
 			repository.close();
+			branches.sort(new Comparator<String>() {
+				@Override
+				public int compare(String s1, String s2) {
+					return s1.compareTo(s2);
+				}
+				 
+			});
+			System.out.println(branches);
+			return branches;
 		} 
 		catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
+		
 	}
 
-	public void cloneRepo(String nodeUri, String repoUri, ArrayList<String> branches, boolean cloneAll, String path) {
+	public int cloneRepo(String nodeUri, String repoUri, Collection<String> branches, boolean cloneAll) {
 		CloneCommand cc = new CloneCommand();
 		try {
 			cc.setCloneAllBranches(cloneAll);
@@ -150,25 +167,30 @@ public class GitService {
 			cc.setURI(repoUri);
 			URIish urish = new URIish(repoUri.trim());
 			String repoName = urish.getHumanishName();
-			File directory = new File(CoreConstants.REPO_ROOT + Utils.getRepo(nodeUri) + repoName);
+			File directory = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
 			cc.setDirectory(directory);
 			cc.call();
+			return 0;
 		} 
 		catch (InvalidRemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return -1;
 		} 
 		catch (TransportException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return -2;
 		} 
 		catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return -3;
 		} 
 		catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return -4;
+		} 
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+			return -5;
 		}
 	}
 

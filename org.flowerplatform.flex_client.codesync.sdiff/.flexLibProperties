@@ -4,12 +4,6 @@
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.CodeSyncSdiffAction"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.CreateStructureDiffDialog"/>
-<<<<<<< HEAD
-    <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.PathRenderer"/>
-=======
-    <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.controller.NodeWithDetailsRendererController"/>
-    <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.constants.CodeSyncSdiffConstants"/>
->>>>>>> refs/remotes/origin/GH368-git-repo-node
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.controller.SDiffNodeWithPathRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.CodeSyncSDiffConstants"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.controller.SDiffNodeRendererController"/>
