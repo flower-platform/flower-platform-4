@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, mx.managers.IFocusManagerComponent" gap="0" xmlns:ns="org.flowerplatform.flex_client.team.git.action.history.ui.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			import org.flowerplatform.flexutil.selection.ISelectionProvider;
+			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			protected var _viewHost:IViewHost;
+								
+			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+				// get selection from active provider to populate properties list with data
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				if (activeSelectionProvider != null) {
+					// create dummy event
+					var event:SelectionChangedEvent = new SelectionChangedEvent();
+					event.selection = activeSelectionProvider.getSelection();
+					
+					selectionChangedHandler(event);
+				}
+				// listen for selection changes				
+				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+			}
+		
+			private function viewRemovedHandler(event:ViewRemovedEvent):void {
+				FlexUtilGlobals.getInstance().selectionManager.removeEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+			}
+						
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
+			
+			private function selectionChangedHandler(event:SelectionChangedEvent):void {
+				var i:int;
+											
+				label.text = "";
+								
+			}
+				
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingLeft="5"  paddingRight="5" paddingBottom="5">
+		<s:ToggleButton id="btnShowRawProps" selected="true"
+						icon="{Resources.tableGear}" toolTip="{Resources.getMessage('show.raw.properties')}"					
+						creationComplete="{if (!FlexUtilGlobals.getInstance().isMobile) {btnShowRawProps.width=22; btnShowRawProps.height=22;}}"/>
+						<!--click="{propertiesForm.refreshForm(PropertiesPlugin.getInstance().currentSelectedNode, btnShowRawProps.selected);}"  -->
+	</s:HGroup>
+
+	<s:HGroup id="iconAndLabel" paddingLeft="5" paddingBottom="10" paddingRight="5">
+		<s:Image id="icon" height="100%"/>
+		<s:Label id="label" height ="100%" verticalAlign="middle"/>	
+	</s:HGroup>
+	
+	<ns:GitHistoryComponent id="propertiesForm" width="100%" height="100%" />
+	
+</s:VGroup>
