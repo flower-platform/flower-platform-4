@@ -27,7 +27,7 @@ package org.flowerplatform.flex_client.team.git.action.history {
 	 */
 	public class GitHistoryViewProvider extends AbstractViewProvider {
 		
-		public static const ID:String = "history";
+		public static const ID:String = "githistory";
 		
 		override public function getId():String {
 			return ID;
@@ -41,8 +41,9 @@ package org.flowerplatform.flex_client.team.git.action.history {
 			return Resources.getMessage("gitHistory.view");
 		}
 		
+		/* TODO
 		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
 			return Resources.propertiesIcon;
-		} 	
+		}*/	
 	}
 }

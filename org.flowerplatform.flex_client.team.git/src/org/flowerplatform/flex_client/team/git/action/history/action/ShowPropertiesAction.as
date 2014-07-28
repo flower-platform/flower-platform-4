@@ -27,8 +27,9 @@ package org.flowerplatform.flex_client.team.git.action.history.action {
 		
 		public function ShowPropertiesAction(){
 			super();
-			label = Resources.getMessage("properties.action.show");
-			icon = Resources.propertiesIcon;
+			label = Resources.getMessage("gitHistory.action.show");
+			/*TODO 
+			icon = Resources.propertiesIcon;*/
 			orderIndex = 1000;
 		}
 			
