@@ -13,13 +13,13 @@
 * 
 * license-end
 */
-
 package org.flowerplatform.flex_client.team.git.action
 {
 	import mx.controls.Alert;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -32,39 +32,27 @@ package org.flowerplatform.flex_client.team.git.action
 	 * @author Marius Iacob
 	 */
 
-	public class DeleteBranchAction extends ActionBase
-	{		
-		public function DeleteBranchAction()
-		{
+	public class DeleteBranchAction extends ActionBase {
+		
+		public function DeleteBranchAction() {
 			super();
-			label = Resources.getMessage("team.git.action.DeleteBranchAction");
 			icon = Resources.deleteIcon;
-			orderIndex = 40;
-			
+			orderIndex = 40;	
 		}
 		
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
+
+				if ((node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) &&  !node.getPropertyValue(GitConstants.CHECKED_OUT)) {
+					label = Resources.getMessage("team.git.action.DeleteBranchAction");
+					return true;
+				} else if (node.type == GitConstants.GIT_TAG_TYPE) {
+					label = Resources.getMessage("team.git.action.DeleteTagAction");
 					return true;
 				}
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(CodeSyncConstants.CATEGORY_CODESYNC) >= 0;
 			}
 			return false;
-		}
-		
-		public function FaultCallBack(event:FaultEvent):void {    
-			if (event != null) {    
-				var index:Number = event.fault.faultString.search(" Branch");
-				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setText(event.fault.faultString.substr(index))
-					.setTitle(Resources.getMessage("info"))
-					.setWidth(300)
-					.setHeight(200)
-					.showMessageBox();
-			} 
 		}
 		
 		override public function run():void {
@@ -75,7 +63,7 @@ package org.flowerplatform.flex_client.team.git.action
 				.setTitle(Resources.getMessage("info"))
 				.setWidth(300)
 				.setHeight(200)
-				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteBranch", [node.parent.nodeUri, node.nodeUri], null, FaultCallBack);})
+				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteBranch", [node.parent.nodeUri, node.nodeUri]);})
 				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
 				.showMessageBox();
 		}

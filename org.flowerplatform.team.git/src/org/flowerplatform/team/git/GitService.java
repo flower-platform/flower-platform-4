@@ -3,6 +3,7 @@ package org.flowerplatform.team.git;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
+import static org.flowerplatform.team.git.GitConstants.CHECKED_OUT;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -200,12 +201,17 @@ public class GitService {
 	 * @author Marius Iacob
 	 */
 	public void deleteBranch(String parentUri, String childUri) throws Exception {
-			Node childNode = CorePlugin.getInstance().getResourceService().getNode(childUri);
-			Node parentNode = CorePlugin.getInstance().getResourceService().getNode(parentUri);
-			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(childUri)));
-			Git git = new Git(repo);
-			git.branchDelete().setForce(true).setBranchNames(childNode.getPropertyValue(GitConstants.NAME).toString()).call();
+		Node childNode = CorePlugin.getInstance().getResourceService().getNode(childUri);
+		Node parentNode = CorePlugin.getInstance().getResourceService().getNode(parentUri);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(childUri)));
+		Git git = new Git(repo);
+		if (childNode.getType().equals(GitConstants.GIT_TAG_TYPE)) {
+			git.tagDelete().setTags((String) childNode.getPropertyValue(GitConstants.NAME)).call();
 			CorePlugin.getInstance().getNodeService().removeChild(parentNode, childNode, new ServiceContext<NodeService>());
+		} else {
+			git.branchDelete().setForce(true).setBranchNames((String) childNode.getPropertyValue(GitConstants.NAME)).call();
+			CorePlugin.getInstance().getNodeService().removeChild(parentNode, childNode, new ServiceContext<NodeService>());
+		}  
 	}
 
 	/* get all names of branches from repository */

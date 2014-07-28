@@ -1,23 +1,27 @@
 package org.flowerplatform.team.git.controller;
 
 import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
-import static org.flowerplatform.team.git.GitConstants.NAME;
-import static org.flowerplatform.team.git.GitConstants.FULL_NAME;
+import static org.flowerplatform.team.git.GitConstants.CHECKED_OUT;
+import static org.flowerplatform.team.git.GitConstants.CONFIG_REBASE;
 import static org.flowerplatform.team.git.GitConstants.CONFIG_REMOTE;
 import static org.flowerplatform.team.git.GitConstants.CONFIG_UPSTREAM_BRANCH;
-import static org.flowerplatform.team.git.GitConstants.CONFIG_REBASE;
+import static org.flowerplatform.team.git.GitConstants.FULL_NAME;
+import static org.flowerplatform.team.git.GitConstants.NAME;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.team.git.GitConstants;
 import org.flowerplatform.team.git.GitUtils;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
@@ -62,6 +66,25 @@ public class GitBranchAndTagPropertiesProvider extends AbstractController implem
 		node.getProperties().put(CONFIG_UPSTREAM_BRANCH, configUpstreamBranch);
 		node.getProperties().put(CONFIG_REBASE, configRebase);	
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
+		
+		// check if selected node is checkout or not
+		Boolean check = false;
+		String checkoutBranch = null;
+		int index = -1;
+		if (node.getType().equals(GitConstants.GIT_LOCAL_BRANCH_TYPE) || node.getType().equals(GitConstants.GIT_REMOTE_BRANCH_TYPE)) {
+			index = ((String) node.getProperties().get(GitConstants.FULL_NAME)).lastIndexOf("/");
+			try {
+				checkoutBranch = repo.getFullBranch();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (((String) node.getProperties().get((GitConstants.FULL_NAME))).substring(index + 1).equals(checkoutBranch.substring(index + 1))) {
+				check = true;
+			}
+		}
+		node.getProperties().put(CHECKED_OUT, check);
 	}
 	
 }

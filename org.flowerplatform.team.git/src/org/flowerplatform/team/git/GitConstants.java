@@ -41,5 +41,6 @@ public class GitConstants {
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";	
+	public static final String CHECKED_OUT = "checkout";	
 
 }
