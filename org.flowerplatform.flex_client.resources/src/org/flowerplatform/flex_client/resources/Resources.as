@@ -560,5 +560,13 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/git/config.png")]
 		public static const configBrenchIcon:Class;
 		
+		// Team Git
+		
+		[Embed(source="/team.git/gitDiffFromCommits.png")]
+		public static const gitDiffFromCommitsIcon:Class;
+		
+		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
+		public static const gitDiffFromWorkspaceAndPatch:Class;
+		
 	}
 }

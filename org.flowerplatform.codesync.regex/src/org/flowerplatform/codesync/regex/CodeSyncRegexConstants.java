@@ -22,8 +22,6 @@ public class CodeSyncRegexConstants {
 	public static final String REGEX_MATCH_TYPE = "regexMatch";
 	public static final String VIRTUAL_REGEX_TYPE = "regexVirtual";
 		
-	public static final String REGEX_SCHEME = "regex";
-		
 	public static final String REGEX_ACTIONS_DESCRIPTOR_TYPE = "RegexActions";
 	
 	//////////////////////////////////

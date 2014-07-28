@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.core.file;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -30,6 +31,8 @@ public interface IFileAccessController {
 	
 	// path is relative
 	Object getFile(String path) throws Exception;
+	
+	File getFileAsFile(Object file) throws Exception;
 	
 	long getLastModifiedTimestamp(Object file);
 	

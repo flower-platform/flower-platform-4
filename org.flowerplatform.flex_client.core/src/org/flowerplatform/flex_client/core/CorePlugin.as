@@ -303,7 +303,7 @@ package org.flowerplatform.flex_client.core {
 				.setIcon(Resources.openIcon)
 				.setParentId(CoreConstants.DEBUG)
 				.setFunctionDelegate(function ():void {
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "root:user/repo");
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
 				})
 			);
 					
@@ -480,6 +480,17 @@ package org.flowerplatform.flex_client.core {
 				}
 			}
 			return editors;
+		}
+		
+		/**
+		 * @author Valentina-Camelia Bojan
+		 */
+		public function getRepository(nodeUri:String):String {
+			var index:int = nodeUri.indexOf("|");
+			if (index < 0) {
+				index = nodeUri.length;
+			}
+			return nodeUri.substring(nodeUri.indexOf(":") + 1, index);
 		}
 		
 		/**
