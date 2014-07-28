@@ -207,27 +207,21 @@ public class GitService {
 			git.branchDelete().setForce(true).setBranchNames(childNode.getPropertyValue(GitConstants.NAME).toString()).call();
 			CorePlugin.getInstance().getNodeService().removeChild(parentNode, childNode, new ServiceContext<NodeService>());
 	}
-
-	/* get all names of branches from repository */
-	public ArrayList<String> getAllNamesOfBranches(String repoPath){
-		return null;
-	}
 	
+	/**
+	 * @author Tita Andreea
+	 */
 	/* rename the branch with the new name */
-	public void renameBranch(String nodeUri,String oldName,String newName) throws Exception {
-		int index = nodeUri.indexOf("|");
-	
-		if (index < 0) {
-			index = nodeUri.length();
-		}
-		String pathNode = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+	public void renameBranch(String nodeUri,String newName) throws Exception {
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		/* path for repository */
+		String pathNode =  Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(pathNode));
 		Git gitInstance = new Git(repo);
 		/* set the new name */
-		gitInstance.branchRename().setOldName(oldName).setNewName("origin/" + newName).call();
+		gitInstance.branchRename().setOldName((String)node.getPropertyValue(CoreConstants.NAME)).setNewName(newName).call();
 		/* refresh File System node */
-		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		CorePlugin.getInstance().getNodeService().setProperty(node,CoreConstants.NAME,newName,new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
+		CorePlugin.getInstance().getNodeService().setProperty(node, CoreConstants.NAME, newName, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
 	}
 
 }
