@@ -40,6 +40,7 @@ public class GitConstants {
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
+
 	public static final String CONFIG_REBASE = "configRebase";
 	
 	/////////////////////////////////////////////////////////////
@@ -49,4 +50,5 @@ public class GitConstants {
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
+
 }
