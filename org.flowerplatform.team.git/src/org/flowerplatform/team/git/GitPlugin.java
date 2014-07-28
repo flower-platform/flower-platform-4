@@ -99,7 +99,6 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_TAGS_SCHEME, new GitVirtualNodeResourceHandler(GIT_TAGS_TYPE));
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_REMOTES_SCHEME, new GitVirtualNodeResourceHandler(GIT_REMOTES_TYPE));
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_BRANCH_SCHEME, new GitResourceHandler());
-		
 	}
 
 	@Override

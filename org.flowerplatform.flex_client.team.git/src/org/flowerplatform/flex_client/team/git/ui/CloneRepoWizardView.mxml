@@ -54,7 +54,7 @@
 						throwError(Resources.getMessage('git.selectRepo.badUri'));
 						break;
 					case 0: // uri ok
-						CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches",[repoUri],getBranchesResultHandler);
+						CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranchesForCloning",[repoUri],getBranchesResultHandler);
 						break;
 					case 1: // repo already here
 						throwError(Resources.getMessage('git.selectRepo.existentRepo'));
@@ -109,6 +109,7 @@
 			private function doneHandler(i:int):void {
 				switch(i) {
 					case 0:
+						
 						break;
 					case -1:
 						throwError(Resources.getMessage('git.error.invalidRemote'));
