@@ -32,6 +32,7 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 			super();
 			
 			label = Resources.getMessage("codesync.sdiff.action.createSdiffFromWorkspaceAndPatch");
+			icon = Resources.gitDiffFromWorkspaceAndPatch;
 		}
 		
 		override public function get visible():Boolean {
@@ -41,7 +42,7 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 					return true;
 				}
 				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(CodeSyncConstants.CATEGORY_CODESYNC) >= 0;
+								 .categories.getItemIndex(CodeSyncConstants.CATEGORY_CODESYNC) >= 0;
 			}
 			return false;
 		}
@@ -55,12 +56,12 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 			}
 			dialog.repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-				.setViewContent(dialog)
-				.setWidth(800)
-				.setHeight(500)
-				.setTitle(label)
-				.setIcon(icon)
-				.show();
+														     .setViewContent(dialog)
+														     .setWidth(800)
+														     .setHeight(500)
+														     .setTitle(label)
+														     .setIcon(icon)
+														     .show();
 		}
 		
 	}
