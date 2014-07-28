@@ -33,7 +33,8 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var resetView:ResetView = new ResetView();	
+			var resetView:ResetView = new ResetView();
+			resetView.node = Node(selection.getItemAt(0));
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(resetView)
 				.setWidth(500)

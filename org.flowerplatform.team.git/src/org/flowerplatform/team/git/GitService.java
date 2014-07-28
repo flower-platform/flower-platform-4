@@ -212,21 +212,10 @@ public class GitService {
 	
 	/**
 	 * @author Diana Balutoiu
-	 * @return true if the reset was successful
-	 * @param nodeUri - the Uri of the selected branch
 	 */
-	public boolean reset(String nodeUri, String type) throws Exception {
-		
-		if(nodeUri == null){
-			return false;
-		}
-		int index = nodeUri.indexOf("|");
-		if (index < 0) {
-			index = nodeUri.length();
-		}
-		String repositoryPath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+	public void reset(String nodeUri, String type, String hash) throws Exception {
+		String repositoryPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
-		
 		ResetType resetType;
 		if(type == GitConstants.RESET_SOFT){
 			resetType = ResetType.SOFT;
@@ -234,18 +223,10 @@ public class GitService {
 		else if(type == GitConstants.RESET_MIXED){
 			resetType = ResetType.MIXED;
 		}
-		else if(type == GitConstants.RESET_HARD){
-			resetType = ResetType.HARD;
-		}
 		else {
-			return false;
-		}
-		
-		String refName = nodeUri.substring(nodeUri.indexOf("$") + 1, nodeUri.length());
-
-		new ResetOperation(repo, refName, resetType);
-		//TODO: when and where does it fail?!?
-		return true;
+			resetType = ResetType.HARD;
+		} 
+		new Git(repo).reset().setMode(resetType).setRef(hash).call();
 	}
 
 	/* get all names of branches from repository */
