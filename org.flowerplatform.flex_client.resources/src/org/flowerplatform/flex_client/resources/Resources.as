@@ -557,8 +557,8 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/editconfig.gif")]
 		public static const renameBranch:Class;
 		
-		[Embed(source="/git/config.png")]
-		public static const configBrenchIcon:Class;
+		[Embed(source="/team.git/config.png")]
+		public static const configBranchIcon:Class;
 		
 	}
 }
