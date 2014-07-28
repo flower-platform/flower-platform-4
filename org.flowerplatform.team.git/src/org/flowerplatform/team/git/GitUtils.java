@@ -25,6 +25,9 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 
+/**
+ * @author Cojocea Marius Eduard
+ */
 public class GitUtils {
 
 	public static Repository getRepository(Object repoFile) {
@@ -69,4 +72,16 @@ public class GitUtils {
 		return getGitDir(file) != null;
 	}
 
+	public static String getType(String nodeUri){
+		int indexStart = nodeUri.indexOf("|");
+		int indexEnd = nodeUri.indexOf("$");
+		return nodeUri.substring(indexStart + 1, indexEnd);
+	}
+	
+	public static String getName(String nodeUri){
+		int indexStart = nodeUri.indexOf("$");
+		int indexEnd = nodeUri.length();
+		return nodeUri.substring(indexStart + 1, indexEnd);
+	}
+		
 }

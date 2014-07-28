@@ -32,7 +32,7 @@ public class CoreConstants {
 	public static final String VIRTUAL_NODE_SCHEME = "virtual";
 	
 	// type for virtual debug node
-	public final static String DEBUG = "debug";
+	public static final String DEBUG = "debug";
 	
 	// type for virtual root node
 	public static final String ROOT_TYPE = "root";
@@ -45,7 +45,6 @@ public class CoreConstants {
 	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
 	
-	// preferences scheme and types
 	public static final String PREFERENCE_TYPE = "preference";
 	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
 		
