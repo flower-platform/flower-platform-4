@@ -90,7 +90,6 @@ package org.flowerplatform.flex_client.team.git.action
 				}
 			}
 			return false;
-			GitConstants.FULL_NAME;
 		}
 
 		override public function run():void {
