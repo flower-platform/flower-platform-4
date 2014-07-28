@@ -483,6 +483,17 @@ package org.flowerplatform.flex_client.core {
 		}
 		
 		/**
+		 * @author Valentina-Camelia Bojan
+		 */
+		public function getRepository(nodeUri:String):String {
+			var index:int = nodeUri.indexOf("|");
+			if (index < 0) {
+				index = nodeUri.length;
+			}
+			return nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+		}
+		
+		/**
 		 * @author Sebastian Solomon
 		 */
 		public function selectNode(diagramShellContext:DiagramShellContext, fullNodeId:String):void {
