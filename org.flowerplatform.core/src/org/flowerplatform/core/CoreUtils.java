@@ -136,4 +136,42 @@ public class CoreUtils {
 		}
 	}
 	
+	/**
+	 * @return <tt>scheme:repo|schemeSpecificPart</tt>
+	 */
+	public static String createNodeUriWithRepo(String scheme, String repo, String schemeSpecificPart) {
+		return scheme + ":" + (repo == null ? "" : repo) + "|" + (schemeSpecificPart == null ? "" : schemeSpecificPart);
+	}
+	
+	/**
+	 * @see #getRepoFromNodeUri(String)
+	 */
+	public static String getRepoFromNode(Node node) {
+		return getRepoFromNodeUri(node.getNodeUri());
+	}
+	
+	/**
+	 * @return <tt>repo</tt> for URI <tt>scheme:repo|schemeSpecificPart</tt>
+	 */
+	public static String getRepoFromNodeUri(String nodeUri) {
+		String ssp = Utils.getSchemeSpecificPart(nodeUri);
+		int index = ssp.indexOf("|");
+		if (index < 0) {
+			return ssp;
+		}
+		return ssp.substring(0, index);
+	}
+	
+	/**
+	 * @return <tt>schemeSpecificPart</tt> for URI <tt>scheme:repo|schemeSpecificPart</tt>
+	 */
+	public static String getSchemeSpecificPartWithoutRepo(String nodeUri) {
+		String ssp = Utils.getSchemeSpecificPart(nodeUri);
+		int index = ssp.indexOf("|");
+		if (index < 0) {
+			return null;
+		}
+		return ssp.substring(index + 1);
+	}
+	
 }

@@ -25,19 +25,19 @@ import java.util.List;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.DebugControllers;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.UtilConstants;
-import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Mariana Gheorghe
  */
-public class ResourceDebugControllers {
+public class ResourceDebugControllers extends DebugControllers {
 
 	private final String RESOURCES_SERVER = DEBUG + "ServerResources";
 	
@@ -64,7 +64,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-			return Collections.singletonList(new Node(Utils.getUri(DEBUG, DEBUG), DEBUG));
+			return Collections.singletonList(createVirtualNode(DEBUG, null));
 		}
 	}
 	
@@ -78,9 +78,9 @@ public class ResourceDebugControllers {
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			return Arrays.asList(
-					new Node(Utils.getUri(RESOURCES_SERVER, DEBUG), RESOURCES_SERVER), 
-					new Node(Utils.getUri(SESSIONS, DEBUG), SESSIONS), 
-					new Node(Utils.getUri(RESOURCES_CLIENT, DEBUG), RESOURCES_CLIENT));
+					createVirtualNode(RESOURCES_SERVER, null),
+					createVirtualNode(SESSIONS, null),
+					createVirtualNode(RESOURCES_CLIENT, null));
 		}
 		
 		@Override
@@ -95,8 +95,7 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
 			for (String sessionId : CorePlugin.getInstance().getSessionService().getSubscribedSessions()) {
-				Node session = new Node(Utils.getUri(SESSION, Utils.getSchemeSpecificPart(node.getNodeUri()), sessionId), SESSION);
-				children.add(session);
+				children.add(createVirtualNode(SESSION, sessionId));
 			}
 			return children;
 		}
@@ -142,8 +141,7 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
 			for (String resourceId : CorePlugin.getInstance().getResourceSetService().getResourceSets()) {
-				Node resource = new Node(Utils.getUri(RESOURCE_SET, Utils.getSchemeSpecificPart(node.getNodeUri()), resourceId), RESOURCE_SET);
-				children.add(resource);
+				children.add(createVirtualNode(RESOURCE_SET, resourceId));
 			}
 			return children;
 		}
@@ -158,7 +156,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			String sessionId = Utils.getFragment(node.getNodeUri());
+			String sessionId = getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
 			node.getProperties().put(CoreConstants.NAME, "Session: " + sessionId);
 			node.getProperties().put("ip", CorePlugin.getInstance().getSessionService().getSessionProperty(sessionId, "ip"));
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
@@ -177,10 +175,9 @@ public class ResourceDebugControllers {
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			List<Node> children = new ArrayList<Node>();
-			String sessionId = Utils.getFragment(node.getNodeUri());
+			String sessionId = getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
 			for (String resourceId : CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId)) {
-				Node resource = new Node(Utils.getUri(RESOURCE2, Utils.getFragment(node.getNodeUri()), resourceId), RESOURCE2);
-				children.add(resource);
+				children.add(createVirtualNode(RESOURCE2, resourceId));
 			}
 			return children;
 		}
@@ -191,9 +188,9 @@ public class ResourceDebugControllers {
 		@Override
 		public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 			List<Node> children = new ArrayList<Node>();
-			String resourceUri = Utils.getFragment(node.getNodeUri());
+			String resourceUri = getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
 			for (String sessionId : CorePlugin.getInstance().getResourceService().getSessionsSubscribedToResource(resourceUri)) {
-				Node session = new Node(Utils.getUri(SESSION2, Utils.getFragment(node.getNodeUri()), sessionId), SESSION2);
+				Node session = createVirtualNode(SESSION2, sessionId + "#" + resourceUri);
 				children.add(session);
 			}
 			return children;
@@ -210,7 +207,7 @@ public class ResourceDebugControllers {
 		
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			String resourceId = Utils.getFragment(node.getNodeUri());
+			String resourceId = getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
 			node.getProperties().put(CoreConstants.NAME, "Resource: " + resourceId);
 			long timestamp = CorePlugin.getInstance().getResourceService().getUpdateRequestedTimestamp(resourceId);
 			node.getProperties().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
@@ -231,35 +228,31 @@ public class ResourceDebugControllers {
 			context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
 			
 			List<Node> children = new ArrayList<Node>();
-			String resourceSet = Utils.getFragment(node.getNodeUri());
+			String resourceSet = getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
 			for (String resourceUri : CorePlugin.getInstance().getResourceSetService().getResourceUris(resourceSet)) {
-				Node resource = new Node(Utils.getUri(RESOURCE, Utils.getSchemeSpecificPart(node.getNodeUri()), resourceUri), RESOURCE);
-				children.add(resource); 
+				children.add(createVirtualNode(RESOURCE, resourceUri));
 			}
 			return children;
 		}
 
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			node.getProperties().put(CoreConstants.NAME, "ResourceSet: " + Utils.getFragment(node.getNodeUri()));
+			node.getProperties().put(CoreConstants.NAME, "ResourceSet: "
+					+ getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri()));
 		}
-	}
-	
-	private void addResourceHandler(String type) {
-		CorePlugin.getInstance().getResourceService().addResourceHandler(type, new BaseResourceHandler(type));
 	}
 	
 	public void registerControllers() {
 		
-		addResourceHandler(DEBUG);
-		addResourceHandler(RESOURCES_SERVER);
-		addResourceHandler(RESOURCES_CLIENT);
-		addResourceHandler(SESSIONS);
-		addResourceHandler(SESSION);
-		addResourceHandler(RESOURCE2);
-		addResourceHandler(RESOURCE_SET);
-		addResourceHandler(RESOURCE);
-		addResourceHandler(SESSION2);
+		addVirtualDebugType(DEBUG);
+		addVirtualDebugType(RESOURCES_SERVER);
+		addVirtualDebugType(RESOURCES_CLIENT);
+		addVirtualDebugType(SESSIONS);
+		addVirtualDebugType(SESSION);
+		addVirtualDebugType(RESOURCE2);
+		addVirtualDebugType(RESOURCE_SET);
+		addVirtualDebugType(RESOURCE);
+		addVirtualDebugType(SESSION2);
 		
 		// add debug node to root
 		
