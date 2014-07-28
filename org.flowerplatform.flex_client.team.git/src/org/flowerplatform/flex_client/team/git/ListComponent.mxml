@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:List xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" 
+		implements="org.flowerplatform.flexutil.selection.ISelectionProvider, org.flowerplatform.flexutil.action.IActionProvider">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			
+			import org.flowerplatform.flex_client.team.git.action.AddToGitIndex;
+			import org.flowerplatform.flex_client.team.git.action.RemoveFromGitIndex;
+			import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			public var gitIndex:Boolean = true;
+			public var host:IViewHost
+			
+			protected var actionStagedProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
+				.addActionClass(RemoveFromGitIndex);
+			protected var actionUnstagedProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
+				.addActionClass(AddToGitIndex);
+			
+			public function getSelection():IList {
+				var result:Array = new Array();
+				
+				if (this.selectedIndices) {
+					var count:int = this.selectedIndices.length;
+					
+					for (var i:int = 0; i < count; i++)
+						result.push(this.dataProvider.getItemAt(this.selectedIndices[i]));  
+				}
+				return new ArrayList(result);
+			}
+			public function getActions(selection:IList):Vector.<IAction> {
+				if(gitIndex) {
+					return actionUnstagedProvider.getActions(selection);
+				} else {
+					return actionStagedProvider.getActions(selection);
+				}
+			}
+		]]>
+	</fx:Script>
+</s:List>

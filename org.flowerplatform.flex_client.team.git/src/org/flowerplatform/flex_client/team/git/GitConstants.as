@@ -16,6 +16,12 @@ package org.flowerplatform.flex_client.team.git
 		public static const GIT_TAG_TYPE:String = "gitTag";
 		public static const GIT_REMOTE_TYPE:String = "gitRemote";
 		
+		////////////////////////////////////////////////////////////
+		//Categories
+		////////////////////////////////////////////////////////////
+		
+		public static const GIT_STAGING_CATEGORY:String = "category.git";
+		
 		/////////////////////////////////////////////////////////////
 		//Schemes
 		/////////////////////////////////////////////////////////////
@@ -38,5 +44,15 @@ package org.flowerplatform.flex_client.team.git
 		public static const CONFIG_REMOTE:String = "configRemote";
 		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
 		public static const CONFIG_REBASE:String = "configRebase";	
+		
+		/////////////////////////////////////////////////////////////
+		//Git Staging Types
+		/////////////////////////////////////////////////////////////
+		
+		public static const FILE_ADDED:String = "ADD";
+		public static const FILE_MODIFIED:String = "MODIFY";
+		public static const FILE_DELETED:String = "DELETE";
+		public static const FILE_RENAMED:String = "RENAME";
+		public static const FILE_COPIED:String = "COPY";
 	}
 }

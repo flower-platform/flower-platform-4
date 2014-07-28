@@ -14,10 +14,11 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
+import static org.flowerplatform.team.git.GitConstants.GIT_STAGING_CATEGORY;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_STAGING_CATEGORY;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 
 import org.eclipse.jgit.lib.Constants;
 import org.flowerplatform.core.CorePlugin;
@@ -61,36 +62,44 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REPO_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new GitChildrenProvider());
+		.addAdditiveController(CHILDREN_PROVIDER, new GitChildrenProvider())
+		.addCategory(GIT_STAGING_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCHES_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitLocalBranchesPropertiesProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_HEADS,GIT_BRANCH_SCHEME,GIT_LOCAL_BRANCH_TYPE));
+				(Constants.R_HEADS,GIT_BRANCH_SCHEME,GIT_LOCAL_BRANCH_TYPE))
+		.addCategory(GIT_STAGING_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_BRANCHES_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitRemoteBranchesPropertiesProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_REMOTES,GIT_BRANCH_SCHEME,GIT_REMOTE_BRANCH_TYPE));
+				(Constants.R_REMOTES,GIT_BRANCH_SCHEME,GIT_REMOTE_BRANCH_TYPE))
+		.addCategory(GIT_STAGING_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAGS_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitTagsPropertiesProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_TAGS,GIT_BRANCH_SCHEME,GIT_TAG_TYPE));
+				(Constants.R_TAGS,GIT_BRANCH_SCHEME,GIT_TAG_TYPE))
+		.addCategory(GIT_STAGING_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTES_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitRemotesPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new GitRemotesChildrenProvider());
+		.addAdditiveController(CHILDREN_PROVIDER, new GitRemotesChildrenProvider())
+		.addCategory(GIT_STAGING_CATEGORY);
 		
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCH_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new GitBranchAndTagPropertiesProvider());
+		.addAdditiveController(PROPERTIES_PROVIDER, new GitBranchAndTagPropertiesProvider())
+		.addCategory(GIT_STAGING_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_BRANCH_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new GitBranchAndTagPropertiesProvider());
+		.addAdditiveController(PROPERTIES_PROVIDER, new GitBranchAndTagPropertiesProvider())
+		.addCategory(GIT_STAGING_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAG_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new GitBranchAndTagPropertiesProvider());		
+		.addAdditiveController(PROPERTIES_PROVIDER, new GitBranchAndTagPropertiesProvider())
+		.addCategory(GIT_STAGING_CATEGORY);		
 		
 		//to be modified later --> usage of only one scheme with multiple handlers
 		//need to modify: ResourceService.java, addResourceHandler method

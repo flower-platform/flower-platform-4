@@ -19,123 +19,242 @@ license-end
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-				width="500"
-				height="600"
-				implements="org.flowerplatform.flexutil.view_content_host.IViewContent">
+				width="600"
+				height="700"
+				paddingTop="5"
+				paddingRight="5"
+				paddingBottom="5"
+				paddingLeft="5"
+				gap="0"
+				creationComplete="creationCompleteHandler(event)"
+				implements="org.flowerplatform.flexutil.view_content_host.IViewContent" 
+				xmlns:ns1="org.flowerplatform.flex_client.team.git.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
 			
+			import mx.controls.Alert;
+			import spark.components.supportClasses.ListBase;
+			import spark.events.IndexChangeEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			import org.flowerplatform.flexutil.selection.ISelectionProvider;
+			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
 			
 			
 			[Bindable]
 			public var repo:String;
-			public var unstagedData:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var unstagedData:ArrayCollection;
+			[Bindable]
+			public var stagedData:ArrayCollection;
 			protected var _viewHost:IViewHost;
-			
+			private var testAmend:Boolean = false;
+						
+			public function creationCompleteHandler(flexvent:FlexEvent):void{
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				if (activeSelectionProvider != null) {
+					// create dummy event
+					var event:SelectionChangedEvent = new SelectionChangedEvent();
+					event.selection = activeSelectionProvider.getSelection();
+					selectionChangedHandler(event);
+				}
+			// listen for selection changes				
+			IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+			FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);	
+			}
+			private function selectionChangedHandler(event:SelectionChangedEvent):void {
+				var i:int;
+				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { 
+					// happens when changing active view
+					return;
+				}
+				// get new selected node
+				var node:Node = Node(event.selection.getItemAt(0));
+				var index:int = node.nodeUri.indexOf("|");
+				if (index < 0) {
+					index = node.nodeUri.length;
+				}
+				repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.authorAndCommiter", [repo], function(data:ArrayCollection):void {author.text = String(data.getItemAt(0)); commiter.text = String(data.getItemAt(0));});
+			}
+			protected function selectionChangeListHandler(event:IndexChangeEvent):void {
+				FlexUtilGlobals.getInstance().selectionManager.selectionChanged(viewHost, this);
+			}
+			private function viewRemovedHandler(event:ViewRemovedEvent):void {
+				FlexUtilGlobals.getInstance().selectionManager.removeEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+			}
 			public function additionalCloseHandler():void {
 				// TODO Auto Generated method stub
-				
 			}
 			public function get viewHost():IViewHost {
 				return _viewHost;
 			}
-			
 			public function set viewHost(value:IViewHost):void {
 				_viewHost = value;
 			}
+			public function formatList(inboundList:ArrayCollection):ArrayCollection {
+				var outboundList:ArrayCollection = new ArrayCollection();
+				for each (var node:Node in inboundList) {
+					var index:int = node.nodeUri.lastIndexOf("/");
+					if (index == -1) {
+						node.nodeUri = node.nodeUri.substring(index + 1);
+					} else {
+						node.nodeUri = node.nodeUri.substring(index + 1) + " - " + node.nodeUri.substring(0,index);
+					}
+					if (node.type.localeCompare(GitConstants.FILE_ADDED) == 0) {
+						node.nodeUri = " + " + node.nodeUri;
+					}
+					else if (node.type.localeCompare(GitConstants.FILE_MODIFIED) == 0) {
+						node.nodeUri = " > " + node.nodeUri;
+					}
+					else if (node.type.localeCompare(GitConstants.FILE_DELETED) == 0) {
+						node.nodeUri = " x " + node.nodeUri;
+					}
+					outboundList.addItem(node);
+				}
+				return outboundList;
+			}
+			private function iconFunction(item:Object):Class {
+				var type:String = item.type;
+				if (type.localeCompare(GitConstants.FILE_ADDED) == 0) {
+					return Resources.fileIcon;
+				} 
+				else if (type.localeCompare(GitConstants.FILE_MODIFIED) == 0) {
+					return Resources.fileIcon;
+				} 
+				else if (type.localeCompare(GitConstants.FILE_DELETED) == 0) {
+					return Resources.fileIcon;
+				} 
+				else if (type.localeCompare(GitConstants.FILE_RENAMED) == 0) {
+					return Resources.fileIcon;
+				} 
+				else { //if (type.localeCompare(GitConstants.FILE_COPIED) == 0)
+					return Resources.fileIcon;
+				} 
+			}
+			private function amendFunction(evt:Event):void {
+				var text:String;
+				if (evt.target.selected){
+					testAmend = true;
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.amendMethod", [repo, testAmend], function(data:String):void {commitMessage.text = data} );
+					
+				} else {
+					testAmend = false;
+					commitMessage.text = "";
+				}
+			}
+			private function commitFunction():void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.commitMethod", [repo, testAmend, commitMessage.text], function(data:String):void {commitMessage.text = data} );
+			}
+			private function addToGitIndex(selectedItem:Node):void {
+				var index:int = selectedItem.nodeUri.indexOf("-");
+				var filePathToAdd:String;
+				if (index != -1) {
+					filePathToAdd = selectedItem.nodeUri.substr(index + 2) + "/" + selectedItem.nodeUri.substring(3, index - 1);
+				} else {
+					filePathToAdd = selectedItem.nodeUri.substring(3);
+				}
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.addToGitIndex", [repo, filePathToAdd]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );	
+			}
+			private function deleteFromGitIndex(selectedItem:Node):void {
+				var index:int = selectedItem.nodeUri.indexOf("-");
+				var filePathToDelete:String;
+				if (index != -1) {
+					filePathToDelete = selectedItem.nodeUri.substr(index + 2) + "/" + selectedItem.nodeUri.substring(3, index - 1);
+				} else {
+					filePathToDelete = selectedItem.nodeUri.substring(3);
+				}
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.removeFromGitIndex", [repo, filePathToDelete]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );
+				
+			}
 		]]>
 	</fx:Script>
-	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:ToggleButton id="amendButton"
+						toolTip="Amend Previous Commit"
+						icon="{Resources.amendIcon}"
+						click="amendFunction(event)"
+						width="22"
+						height="22"/>
+	 </s:HGroup>
 	<s:HGroup width="100%"
 			  height="100%"
-			  paddingTop="10">
+>
 		<s:VGroup width="50%"
 				  height="100%">	
-			<s:Label text="Staged Changes"
-					 width="100%"
-					 height="5%">	
-			</s:Label>
-			<s:List id="stagedChanges"
-					width="100%"
-					height="45%">
-			</s:List>
-			
 			<s:Label text="Unstaged Changes"
 					 width="100%"
-					 height="5%"
-					 paddingTop="5">	
-			</s:Label>
-			<s:List id="unstagedChanges"
+					 verticalAlign="bottom"/>	
+			<ns1:ListComponent id="unstagedChanges"
 					width="100%"
-					height="45%"
-					dataProvider="{unstagedData}">
-			</s:List>
+					height="50%"
+					gitIndex="true"
+					change="selectionChangeListHandler(event)"
+					dataProvider="{formatList(unstagedData)}"/>
+			<s:HGroup width="100%"
+					  horizontalAlign="center">	
+				<s:Button id="addToIndex"
+						  toolTip="Add To Git Index"
+						  enabled="{unstagedChanges.selectedItem != null}"
+						  icon="{Resources.arrowDownIcon}"
+						  click="addToGitIndex(unstagedChanges.selectedItem)"/>
+				<s:Button id="removeFromIndex"
+						  toolTip="Remove From Git Index"
+						  enabled="{stagedChanges.selectedItem != null}"
+						  icon="{Resources.arrowUpIcon}"
+						  click="deleteFromGitIndex(stagedChanges.selectedItem)"/>
+			</s:HGroup>
+			<s:Label text="Staged Changes"
+					 width="100%"
+					 verticalAlign="bottom"/>
+			<ns1:ListComponent id="stagedChanges"
+					width="100%"
+					height="50%"
+					gitIndex="false"
+					change="selectionChangeListHandler(event)"
+					dataProvider="{formatList(stagedData)}"/>
 		</s:VGroup>
 		<s:VGroup width="50%"
 				  height="100%">
-			<s:HGroup width="100%"
-					  height="5%">
-				<s:Label text="Commit Message"
-						 width="90%"
-						 height="100%"
-						 fontSize="10">
-				</s:Label>
-				
-				<mx:Button id="amendButton"
-						   toolTip="Amend Previous Commit"
-						   icon="{Resources.amendIcon}"
-						   width="16"
-						   height="16">
-				</mx:Button>
-			</s:HGroup>
-			
-			<s:HGroup width="100%" 
-					  height="65%"
-					  verticalAlign="middle">
-				<s:TextArea id="commitMessage"
-							width="100%" 
-							height="100%"
-							fontStyle="italic"/>
-			</s:HGroup>
-			<s:HGroup width="100%" 
-					  height="25%"
-					  paddingTop="15">
-				<s:VGroup width="30%" 
-						  height="100%" >
-					<s:Label text="Author"
-							 width="100%" 
-							 height="30%"
-							 verticalAlign="middle">
-					</s:Label>
-					
-					<s:Label text="Commiter"
-							 width="100%" 
-							 height="30%"
-							 verticalAlign="middle">	
-					</s:Label>
-				</s:VGroup>  
-				
-				<s:VGroup width="70%" 
-						  height="100%" >
-					<s:TextInput width="100%" 
-								 height="30%">	
-					</s:TextInput>
-					
-					<s:TextInput width="100%" 
-								 height="30%">
-					</s:TextInput>
-				</s:VGroup>  
-			</s:HGroup> 
+			<s:Label text="Commit Message"
+						 verticalAlign="bottom"/>	
+			<s:TextArea id="commitMessage"
+						width="100%" 
+						height="100%"
+						fontStyle="italic"/>
+			<s:Form width="100%">
+				<s:FormItem label="Author" 
+							width="100%">
+					<s:TextInput id="author"
+								 width="100%"/>
+				</s:FormItem>
+				<s:FormItem label="Commiter" 
+							width="100%">
+					<s:TextInput id="commiter"
+								 width="100%"/>
+				</s:FormItem>
+			</s:Form>
 			<s:HGroup horizontalAlign="center"
 					  verticalAlign="middle"
-					  width="100%" 
-					  height="5%">
-				<mx:Button id="commitAndPush"
-						   label="Commit and Push">
-				</mx:Button>
+					  width="100%">
+				<s:Button id="commitAndPush"
+						   label="Commit and Push"
+						   enabled="{commitMessage.text != ''}"
+						   click="commitFunction()"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:HGroup>

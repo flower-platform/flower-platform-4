@@ -1,5 +1,7 @@
 package org.flowerplatform.team.git;
 
+import org.flowerplatform.util.UtilConstants;
+
 /**
  * @author Cojocea Marius Eduard
  */
@@ -23,7 +25,7 @@ public class GitConstants {
 	//Categories
 	////////////////////////////////////////////////////////////
 	
-	public static final String GIT_STAGING_CATEGORY = "gitStagingCategory";
+	public static final String GIT_STAGING_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 	
 	/////////////////////////////////////////////////////////////
 	//Schemes

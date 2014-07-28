@@ -13,13 +13,8 @@
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.core/public-resources/swc/org.flowerplatform.flex_client.core.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.codesync/public-resources/swc/org.flowerplatform.flex_client.codesync.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
-<<<<<<< HEAD
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.mindmap/public-resources/swc/org.flowerplatform.flex_client.mindmap.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
-=======
-      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.mindmap/public-resources/swc/org.flowerplatform.flex_client.mindmap.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
->>>>>>> refs/remotes/origin/master_git
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

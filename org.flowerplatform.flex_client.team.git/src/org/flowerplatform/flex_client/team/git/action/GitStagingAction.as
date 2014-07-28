@@ -17,24 +17,20 @@
 package org.flowerplatform.flex_client.team.git.action
 {
 	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
 	
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.GitStagingDialog;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.GitStagingProperties;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-
 	/**
 	 * @author Marius Iacob
 	 */
 	
 	public class GitStagingAction extends ActionBase
 	{
-		public var repoPath:String;
 		public function GitStagingAction()
 		{
 			super();
@@ -45,37 +41,18 @@ package org.flowerplatform.flex_client.team.git.action
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == CoreConstants.FILE_SYSTEM_NODE_TYPE) {
-					return true;
-				}
+				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
+					.categories.getItemIndex(GitConstants.GIT_STAGING_CATEGORY) >= 0
 			}
 			return false;
 		}
 		
 		override public function run():void {
-			var node:Node = Node(selection.getItemAt(0));
-			var dialog:GitStagingDialog = new GitStagingDialog();
-			var index:int = node.nodeUri.indexOf("|");
-			if (index < 0) {
-				index = node.nodeUri.length;
-			}
-			repoPath = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
-			dialog.repo = repoPath;
-			var unstagedData:ArrayCollection = new ArrayCollection();
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.unstagedList", [repoPath], function(data:ArrayCollection):void {unstagedData = data} );
-			dialog.unstagedData = unstagedData;
-			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewIdInWorkbench(GitStagingProperties.ID)
 				.setWidth(550)
 				.setHeight(500)
 				.show();
 		}
-		
-//		public function getUnstagedData():ArrayCollection {
-//			var unstagedData:ArrayCollection = new ArrayCollection();
-//			CorePlugin.getInstance().serviceLocator.invoke("GitService.unstagedList", [repoPath], function(data:ArrayCollection):void {unstagedData = data} );
-//			return unstagedData;
-//		}
 	}
 }

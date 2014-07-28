@@ -2,14 +2,25 @@ package org.flowerplatform.team.git;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.errors.AmbiguousObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.RevisionSyntaxException;
+import org.eclipse.jgit.internal.JGitText;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
@@ -79,12 +90,81 @@ public class GitService {
 			List<DiffEntry> l = git.diff().setShowNameAndStatusOnly(true).call();
 			git.branchDelete().setForce(true).setBranchNames(branchName).call();
 	}
-	public List<DiffEntry> unstagedList(String repositoryPath) throws Exception {
+	public List<Node> stagingList(String repositoryPath, String stagingType) throws Exception {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo); 
-		List<DiffEntry> l = git.diff().setShowNameAndStatusOnly(false).call();
-		String str = l.get(0).getNewPath();
+		if(stagingType.equals("unstaged")) {
+			List<DiffEntry> unstagedDiffs = git.diff().setShowNameAndStatusOnly(true).call();
+			List<Node> unstagedNodes = new ArrayList<Node>();
+			for (DiffEntry obj:unstagedDiffs){
+				if(obj.getChangeType().name().equals("DELETE")) {
+					Node node = new Node(obj.getOldPath(), obj.getChangeType().name());
+					unstagedNodes.add(node);
+				} else {
+					Node node = new Node(obj.getNewPath(), obj.getChangeType().name());
+					unstagedNodes.add(node);
+				}
+			}
+			return unstagedNodes;
+		}
+		else
+		{
+			List<DiffEntry> stagedDiffs = git.diff().setCached(true).call();
+			List<Node> stagedNodes = new ArrayList<Node>();
+			for (DiffEntry obj:stagedDiffs){
+				if(obj.getChangeType().name().equals("DELETE")) {
+					Node node = new Node(obj.getOldPath(), obj.getChangeType().name());
+					stagedNodes.add(node);
+				} else {
+					Node node = new Node(obj.getNewPath(), obj.getChangeType().name());
+					stagedNodes.add(node);
+				}
+			}
+			return stagedNodes;
+		}
+	}
+
+	public String amendMethod(String repositoryPath, boolean ok) throws Exception {
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		RevWalk rw = new RevWalk(repo);
+		ObjectId headId = repo.resolve(Constants.HEAD + "^{commit}"); //$NON-NLS-1$
+		if (headId == null && ok)
+			return null;
+		List<ObjectId> parents = new ArrayList<ObjectId>();
+		if (headId != null)
+			if (ok) {
+				RevCommit previousCommit = rw.parseCommit(headId);
+				for (RevCommit p : previousCommit.getParents()) {
+					parents.add(p.getId());
+				}
+				rw.dispose();
+				if (ok) {
+					return previousCommit.getFullMessage();
+				}
+			} else
+				return null;
 		return null;
 	}
-	
+	public void commitMethod(String repositoryPath, boolean ok, String message) throws Exception {
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Git git = new Git(repo);
+		git.commit().setMessage(message).setAmend(ok).call();
+	}
+	public List<String> authorAndCommiter(String repositoryPath) throws Exception {
+		List<String> list = new ArrayList<String>();
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		PersonIdent pi = new PersonIdent(repo);
+		list.add(pi.getName() + " <" + pi.getEmailAddress() + ">");
+		return list;
+	}
+	public void addToGitIndex(String repositoryPath, String filePathToAdd) throws Exception {
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Git git = new Git(repo);
+		git.add().addFilepattern(filePathToAdd).call();
+	}
+	public void removeFromGitIndex(String repositoryPath, String filePathToRemove) throws Exception {
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Git git = new Git(repo);
+		git.reset().addPath(filePathToRemove).call();
+	}
 }
