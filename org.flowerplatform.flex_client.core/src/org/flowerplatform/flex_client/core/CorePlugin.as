@@ -303,7 +303,7 @@ package org.flowerplatform.flex_client.core {
 				.setIcon(Resources.openIcon)
 				.setParentId(CoreConstants.DEBUG)
 				.setFunctionDelegate(function ():void {
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "root:user/repo");
+					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
 				})
 			);
 					
