@@ -21,23 +21,28 @@ import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
@@ -57,7 +62,6 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.team.git.remote.GitBranch;
 import org.flowerplatform.util.Utils;
-
 /**
  * @author Valentina-Camelia Bojan
  */
@@ -216,8 +220,35 @@ public class GitService {
 		}
 		return 0;  
 	}
-	
-	public void getBranches() {		
+
+	public void getBranches() {
+		Repository repository; 
+
+//        System.out.println("Listing local branches:");
+		try {
+			repository = new FileRepository(new File("/tmp"));
+	        List<Ref> call;
+//	        call = new Git(repository).branchList().call();
+//	        for (Ref ref : call) {
+//	            System.out.println("Branch: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
+//	        }
+
+        	System.out.println("Now including remote branches:");
+        
+			call = new Git(repository).branchList().setListMode(ListMode.ALL).call();
+			for (Ref ref : call) {
+	            System.out.println("Branch: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
+	        }
+			repository.close();
+		} 
+		catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
@@ -294,13 +325,15 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().setProperty(node,CoreConstants.NAME,newName,new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
 	}
 
-	public void cloneRepo(String uri, ArrayList<String> branches, boolean cloneAll, String path) {
+	public void cloneRepo(String nodeUri, String repoUri, ArrayList<String> branches, boolean cloneAll, String path) {
 		CloneCommand cc = new CloneCommand();
 		try {
 			cc.setCloneAllBranches(cloneAll);
 			cc.setBranchesToClone(branches);
-			cc.setURI(uri);
-			File directory = new File(path);
+			cc.setURI(repoUri);
+			URIish urish = new URIish(repoUri.trim());
+			String repoName = urish.getHumanishName();
+			File directory = new File(CoreConstants.REPO_ROOT + Utils.getRepo(nodeUri) + repoName);
 			cc.setDirectory(directory);
 			cc.call();
 		} 
@@ -313,6 +346,10 @@ public class GitService {
 			e.printStackTrace();
 		} 
 		catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

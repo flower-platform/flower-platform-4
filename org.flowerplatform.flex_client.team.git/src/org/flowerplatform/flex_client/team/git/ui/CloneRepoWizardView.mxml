@@ -16,11 +16,13 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			
+			import spark.events.TextOperationEvent;
+			
 			import org.flowerplatform.flex_client.resources.Resources;
-			import org.flowerplatform.flex_client.team.git.GitPlugin;
 			
 			var selectedBranches:ArrayCollection;
 			var allBranches:ArrayCollection;
+			var branches:ArrayCollection = new ArrayCollection();
 			
 			override protected function creationCompleteHandler():void {
 				src.remoteRepoGroup.visible = false;
@@ -50,6 +52,21 @@
 				}
 				super.finishClickHandler();
 			}
+			
+			private function filterBranches(event:TextOperationEvent):void {
+				branches.removeAll();
+				for each (var branch:Ref in allBranches) {
+					if (branchesFilter.text.match(branch.name)) {
+						branches.addItem(branch);
+					}
+					else {
+						if (branchesFilter.text.match(Resources.getMessage('git.filter'))) {
+							branches.addItem(branch);
+						}
+					}
+				}
+				
+			}
 						
 		]]>
 	</fx:Script>
@@ -68,8 +85,8 @@
 	
 	
 	<mx:VBox id="branchesSelectionPage" width="100%" paddingLeft="10">
-		<s:TextInput id="branchesFilter" text="{Resources.getMessage('git.filter')}" includeIn="selectBranchesPage"/>
-		<s:List id="branchesList" includeIn="selectBranchesPage">
+		<s:TextInput id="branchesFilter" text="{Resources.getMessage('git.filter')}" includeIn="selectBranchesPage" change="filterBranches(event)"/>
+		<s:List id="branchesList" includeIn="selectBranchesPage" dataProvider="{branches}">
 			
 		</s:List>
 	</mx:VBox>
