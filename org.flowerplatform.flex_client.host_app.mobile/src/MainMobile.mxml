@@ -69,8 +69,8 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
-			import mx.messaging.messages.ErrorMessage;
-			import mx.rpc.events.FaultEvent;
+			
+			import spark.core.ContentCache;
 			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 			import org.flowerplatform.flex_client.core.CoreConstants;
@@ -93,8 +93,6 @@
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
 			import org.flowerplatform.flexutil.spinner.LogoSpinner;
 			import org.flowerplatform.flexutil.spinner.ModalSpinner;
-			
-			import spark.core.ContentCache;
 			
 			// explicitely write the class name; a simple import won't actually compile this class
 			// used from properties

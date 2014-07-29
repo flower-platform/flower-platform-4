@@ -15,13 +15,20 @@
 	
 	license-end
 -->
+
+<!--- @author Mariana Gheorghe -->
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					 xmlns:s="library://ns.adobe.com/flex/spark" 
 					 xmlns:mx="library://ns.adobe.com/flex/mx" 
-					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*">
+					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 xmlns:cs="org.flowerplatform.flexutil.components.*"
+					 creationComplete="sDiffCreationCompleteHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
@@ -33,8 +40,9 @@
 			
 			override protected function okHandler(event:Event=null):void {
 				okButton.enabled = false;
-				CorePlugin.getInstance().serviceLocator.invoke("structureDiffService.createStructureDiff", 
-					[patch.text, repo, 'sdiffs/' + filename.text + '.sdiff'],
+				CorePlugin.getInstance().serviceLocator.invoke("structureDiffService.createStructureDiffFromWorkspaceAndPatch", 
+					[patch.text, repo,
+					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.getTextInput()])],
 					function(node:Node):void {
 						CorePlugin.getInstance().openEditor(node);
 						cancelHandler();
@@ -54,8 +62,12 @@
 			
 			protected function onCompleteHandler(event:Event):void {
 				patch.text = fileReference.data.readUTFBytes(fileReference.data.bytesAvailable);
-				filename.text = fileReference.name;
+				outputFileComponent.inputText = fileReference.name;
 				okButton.enabled = true;
+			}
+			
+			protected function sDiffCreationCompleteHandler(event:FlexEvent):void {
+				okButton.enabled = false;				
 			}
 			
 		]]>
@@ -66,10 +78,8 @@
 	
 	<s:TextArea id="patch" width="100%" height="100%" change="{okButton.enabled = true}"/>
 	
-	<s:HGroup width="100%" verticalAlign="middle" gap="5">
-		<s:Label text="{Resources.getMessage('codesync.sdiff.createSdiff.fileName')}"/>
-		<s:TextInput id="filename" text="Untitled" width="200"/>
-		<s:Label id="path" text="{repo + '|sdiffs/' + filename.text + '.sdiff'}" fontWeight="bold"/>
-	</s:HGroup>
+	<cs:TextInputWithAutoCompleteLabelComponent id="outputFileComponent"
+												autoCompletelabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
+												labelText="{Resources.getMessage('codesync.sdiff.createSdiff.fileName')}"/>
 	
 </ns:BasicViewContent>

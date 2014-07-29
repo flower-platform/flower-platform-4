@@ -27,7 +27,6 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_MODEL_ELEMENT_
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_PATH;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFFS_FOLDER;
-import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
@@ -36,23 +35,19 @@ import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRe
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
 import org.eclipse.compare.internal.core.patch.Hunk;
 import org.eclipse.compare.internal.core.patch.PatchReader;
 import org.eclipse.compare.patch.IFilePatch2;
-import org.eclipse.compare.patch.IFilePatchResult;
 import org.eclipse.compare.patch.IHunk;
-import org.eclipse.compare.patch.PatchConfiguration;
-import org.eclipse.compare.patch.ReaderCreator;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
@@ -80,25 +75,22 @@ import org.flowerplatform.util.file.StringHolder;
  */
 @SuppressWarnings("restriction")
 public class StructureDiffService {
-
-	/**
-	 * 
-	 * @param patch
-	 * @param repo
-	 * @param sdiffPath relative to structure diffs folder
-	 * @return
-	 */
-	public Node createStructureDiff(String patch, String repo, String sdiffPath) {
-		boolean reverse = true;
-		
+	
+	public Node createStructureDiffFromWorkspaceAndPatch(String patch, String repo, String sdiffOutputPath) {
+		return createStructureDiff(patch,
+									repo,
+									sdiffOutputPath,
+									new WorkspaceAndPatchFileContentProvider());
+	}
+	
+	public Node createStructureDiff(String patch, String repo, String sdiffOutputPath, IFileContentProvider fileContentProvider){
 		// create file and subscribe to sdiff root
-		String sdiffFileUri = createSdiffFile(repo, sdiffPath);
+		String sdiffFileUri = createSdiffFile(repo, sdiffOutputPath);
 		String sdiffUri = sdiffFileUri.replace(FILE_SCHEME, "fpp");
 		new ResourceServiceRemote().subscribeToParentResource(sdiffUri);
 		Node sdiffRoot = CorePlugin.getInstance().getResourceService().getNode(sdiffUri);
-		CorePlugin.getInstance().getNodeService().setProperty(sdiffRoot, NAME,
-				sdiffPath,
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		CorePlugin.getInstance().getNodeService().setProperty(sdiffRoot, NAME, sdiffOutputPath,
+					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
 		// prepare to parse patch
 		PatchReader reader = new PatchReader();
@@ -113,25 +105,15 @@ public class StructureDiffService {
 		if (filePatches.length == 0) {
 			throw new RuntimeException(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.error.noFileDiffs"));
 		}
+		
 		for (FilePatch2 filePatch : filePatches) {
-			// get the current file content
-			String filePath = repo + "/" + getFilePath(filePatch.getPath(reverse).toString(), reader.isGitPatch());
-			String currentContent = getFileContent(filePath);
-			
-			// apply patch
-			PatchConfiguration configuration = new PatchConfiguration();
-			configuration.setReversed(reverse);
-			IFilePatchResult result = filePatch.apply(new StringReaderCreator(currentContent), configuration, null);
-			String patchedContent;
-			try {
-				patchedContent = IOUtils.toString(result.getPatchedContents());
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			// get old and new file content
+			String filePath = getFilePath(filePatch.getPath(true).toString(), reader.isGitPatch());
+			FileContent fileContent = fileContentProvider.getFileContent(filePath, repo, filePatch);
 			
 			// start codesync
-			Match match = sync(patchedContent, currentContent, filePath);
-			addToSdiffFile(sdiffRoot, match, filePatch, new Document(currentContent));
+			Match match = sync(fileContent.getOldContent(), fileContent.getNewContent(), filePath);
+			addToSdiffFile(sdiffRoot, match, filePatch, new Document(fileContent.getNewContent()));
 		}
 		
 		// save the structure diff file
@@ -190,7 +172,7 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_MODIFIED_LEFT, match.isDiffsModifiedLeft(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_MODIFIED_RIGHT, match.isDiffsModifiedRight(), context);
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_CONFLICT, match.isDiffsConflict(), context);
-		
+
 		// match to lines from patch
 		if (match.getCodeSyncAlgorithm() == null) {
 			//sets path for a file with unknown extension
@@ -201,7 +183,7 @@ public class StructureDiffService {
 			if (CodeSyncConstants.FILE.equals(modelElementType)) {
 				CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_PATH, getFilePath(patch.getPath(true).toString(),true),context);
 			}
-			if (match.getLeft() != null && match.getRight() != null) {
+			if (match.getRight() != null) {
 				Object model = match.getRight();
 				Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);
 				if (lines != null) {
@@ -212,7 +194,7 @@ public class StructureDiffService {
 						if (isModifiedOrChildrenModified(match)) {
 							modelStartLine++;
 						}
-						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine);
+						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine, child);
 						CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, isBodyModified, context);
 						if (isBodyModified) {
 							propagateBodyModifiedToParents(child);
@@ -250,7 +232,10 @@ public class StructureDiffService {
 		}
 	}
 	
-	private boolean isBodyModified(IFilePatch2 patch, int modelStartLine, int modelEndLine) {
+	private boolean isBodyModified(IFilePatch2 patch, int modelStartLine, int modelEndLine, Node child) {
+		boolean returnValueFlag = false;
+		List<SpecialCommentPrefix> listOfSpecialComments = getSpecialCommentPrefixList();
+
 		for (IHunk iHunk : patch.getHunks()) {
 			Hunk hunk = (Hunk) iHunk;
 			int hunkStartLine = hunk.getStart(true);
@@ -264,13 +249,18 @@ public class StructureDiffService {
 					if (line.startsWith("+")) {
 						// added line
 						if (overlap(index, index, modelStartLine, modelEndLine) == 0) { 
-							return true;
+							// line: does it contain a special comment from the ones mentioned in the list above?
+							String specialComment = getSpecialCommentStringContent(line, listOfSpecialComments); 
+							if(specialComment != null){
+								addChildComment(child, specialComment);
+							}
+							returnValueFlag = true;
 						}
 						index++;
 					} else if (line.startsWith("-")) {
 						// deleted line
 						if (overlap(index, index, modelStartLine, modelEndLine) == 0) { 
-							return true;
+							returnValueFlag = true;
 						}
 					} else {
 						// context line, no change
@@ -284,7 +274,57 @@ public class StructureDiffService {
 				break;
 			}
 		}
-		return false;
+		return 	returnValueFlag;
+	}
+	
+	/**
+	 * @return
+	 * <ul>
+	 * <li>
+	 * the extracted special comment content on this line (if more, the first one on this line);
+	 * </li>
+	 * <li>
+	 * null, if no special comment prefix is encountered on this line
+	 * </li>
+	 * </ul>
+	 * @author Elena Posea
+	 */
+	private String getSpecialCommentStringContent(String line, List<SpecialCommentPrefix> listOfSpecialComments) {
+		// if there is any special comment here, return its content message;
+		// otherwise, return null
+		for (SpecialCommentPrefix pref : listOfSpecialComments) {
+			// if it is regex, try to parse it
+			Pattern pattern = Pattern.compile((pref.isRegex ? pref.specialPrefixText : Pattern.quote(pref.specialPrefixText)) + "(.*)$");
+			Matcher matcher = pattern.matcher(line);
+			if (matcher.find()) {
+				return matcher.group(1);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return a list of all special comments available
+	 * @author Elena Posea
+	 */
+	private List<SpecialCommentPrefix> getSpecialCommentPrefixList() {
+		List<SpecialCommentPrefix> list = new ArrayList<SpecialCommentPrefix>();
+		list.add(new SpecialCommentPrefix("TODO\\s*", true));
+		return list;
+	}
+	/**
+	 * @param parent the node to which new comment child is appended
+	 * @param specialComment the text contained by the new node appended
+	 * @author Elena Posea
+	 */
+	private void addChildComment(Node parent, String specialComment){
+		// create child
+		Node child = new Node(null, CodeSyncSdiffConstants.COMMENT);
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
+		
+		// populate name property
+		CorePlugin.getInstance().getNodeService().setProperty(child, NAME, specialComment, context);
 	}
 	
 	/**
@@ -352,65 +392,11 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
 	}
 	
-	private String getNextAvailableName(String repo, String fileName) {
-		try {
-			Object file = CorePlugin.getInstance().getFileAccessController().getFile(
-					repo + "/" + STRUCTURE_DIFFS_FOLDER + "/" + fileName + STRUCTURE_DIFF_EXTENSION);
-			if (!CorePlugin.getInstance().getFileAccessController().exists(file)) {
-				return fileName;
-			}
-			// first group is name, second group is index
-			Pattern pattern = Pattern.compile("(.*?)(\\d*)$");
-			Matcher matcher = pattern.matcher(fileName);
-			if (matcher.find()) {
-				int index = 1;
-				if (matcher.group(2).length() > 0) {
-					index = Integer.parseInt(matcher.group(2));
-				}
-				index++;
-				return getNextAvailableName(repo, matcher.group(1) + index);
-			}
-			return getNextAvailableName(repo, fileName + "2");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	private String getFilePath(String path, boolean isGitPatch) {
 		if (isGitPatch) {
 			return path.substring(path.indexOf("/") + 1);
 		}
 		return path;
-	}
-	
-	/**
-	 * Return the content of the file, if the file exists. Otherwise, return the empty string.
-	 */
-	private String getFileContent(String path) {
-		Object file;
-		try {
-			file = CorePlugin.getInstance().getFileAccessController().getFile(path);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		if (CorePlugin.getInstance().getFileAccessController().exists(file)) {
-			return CorePlugin.getInstance().getFileAccessController().readFileToString(file);
-		}
-		return "";
-	}
-	
-	class StringReaderCreator extends ReaderCreator {
-
-		private String content;
-		
-		public StringReaderCreator(String content) {
-			this.content = content;
-		}
-		
-		@Override
-		public Reader createReader() {
-			return new StringReader(content);
-		}
 	}
 	
 }
