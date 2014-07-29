@@ -27,6 +27,7 @@ import org.flowerplatform.codesync.regex.action.CodeSyncRegexAction;
 import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.NodeService;
@@ -71,7 +72,7 @@ public class CodeSyncRegexService {
 		// get parent (matches file will be created next to regexConfig File)
 		Object parentFile = fileController.getParentFile(file);
 		String parentFilePath = fileController.getPath(parentFile);		
-		String parentNodeUri = FileControllerUtils.createFileNodeUri(FileControllerUtils.getRepo(resourceNode), parentFilePath);
+		String parentNodeUri = FileControllerUtils.createFileNodeUri(CoreUtils.getRepoFromNode(resourceNode), parentFilePath);
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
 				
 		// create matches file

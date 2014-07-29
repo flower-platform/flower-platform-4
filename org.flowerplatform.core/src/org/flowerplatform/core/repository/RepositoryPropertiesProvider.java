@@ -17,12 +17,12 @@ package org.flowerplatform.core.repository;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -35,7 +35,7 @@ public class RepositoryPropertiesProvider extends AbstractController implements 
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		Object file;
 		try {
-			file = fileAccessController.getFile(Utils.getSchemeSpecificPart(node.getNodeUri()));
+			file = fileAccessController.getFile(CoreUtils.getRepoFromNode(node));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

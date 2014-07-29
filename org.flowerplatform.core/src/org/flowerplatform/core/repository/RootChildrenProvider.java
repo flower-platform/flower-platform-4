@@ -18,9 +18,6 @@ package org.flowerplatform.core.repository;
 import static org.flowerplatform.core.CoreConstants.METADATA;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 
-import static org.flowerplatform.core.CoreConstants.METADATA;
-import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +27,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.util.Utils;
+import org.flowerplatform.core.node.resource.VirtualNodeResourceHandler;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -75,6 +72,7 @@ public class RootChildrenProvider extends AbstractController implements IChildre
 		} catch (Exception e) {
 			throw new RuntimeException("Error accessing the workspace", e);
 		}
+		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		for (Object user : fileAccessController.listFiles(root)) {
 			if (METADATA.equals(fileAccessController.getName(user))) {
 				// skip the .metadata directory from the workspace
@@ -82,7 +80,8 @@ public class RootChildrenProvider extends AbstractController implements IChildre
 			}
 			for (Object repository : fileAccessController.listFiles(user)) {
 				String path = fileAccessController.getPath(repository);
-				children.add(new Node(Utils.getUri(REPOSITORY_TYPE, path), REPOSITORY_TYPE));
+				String repoUri = virtualNodeHandler.createVirtualNodeUri(path, REPOSITORY_TYPE, null);
+				children.add(virtualNodeHandler.createNodeFromRawNodeData(repoUri, null));
 			}
 		}
 		return children;
