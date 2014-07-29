@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.egit.core.op.ResetOperation;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand.ResetType;

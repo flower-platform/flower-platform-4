@@ -1,0 +1,76 @@
+!SESSION 2014-07-24 17:43:16.901 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -console -consoleLog
+
+!ENTRY org.flowerplatform.team.git 4 0 2014-07-24 17:43:16.902
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: The bundle "org.flowerplatform.team.git_1.0.0.qualifier [889]" could not be resolved. Reason: Missing Constraint: Require-Bundle: org.eclipse.egit; bundle-version="3.4.1"
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.getResolverError(AbstractBundle.java:1332)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.getResolutionFailureException(AbstractBundle.java:1316)
+	at org.eclipse.osgi.framework.internal.core.BundleHost.startWorker(BundleHost.java:323)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.resume(AbstractBundle.java:390)
+	at org.eclipse.osgi.framework.internal.core.Framework.resumeBundle(Framework.java:1176)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:559)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:544)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.incFWSL(StartLevelManager.java:457)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.doSetStartLevel(StartLevelManager.java:243)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:438)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:340)
+
+!ENTRY org.eclipse.osgi 4 0 2014-07-24 17:43:16.918
+!MESSAGE Bundle initial@reference:file:../../../../../git/flower-platform-4/org.flowerplatform.team.git/ was not resolved.
+
+!ENTRY org.eclipse.osgi 2 0 2014-07-24 17:43:16.934
+!MESSAGE One or more bundles are not resolved because the following root constraints are not resolved:
+!SUBENTRY 1 org.eclipse.osgi 2 0 2014-07-24 17:43:16.949
+!MESSAGE Bundle initial@reference:file:../../../../../git/flower-platform-4/org.flowerplatform.team.git/ was not resolved.
+!SUBENTRY 2 org.flowerplatform.team.git 2 0 2014-07-24 17:43:16.949
+!MESSAGE Missing required bundle org.eclipse.egit.core_3.4.1.
+!SUBENTRY 2 org.flowerplatform.team.git 2 0 2014-07-24 17:43:16.949
+!MESSAGE Missing required bundle org.eclipse.egit.ui_3.4.1.
+!SUBENTRY 2 org.flowerplatform.team.git 2 0 2014-07-24 17:43:16.949
+!MESSAGE Missing required bundle org.eclipse.egit_3.4.1.
+
+!ENTRY org.eclipse.osgi 2 0 2014-07-24 17:43:16.949
+!MESSAGE The following is a complete list of bundles which are not resolved, see the prior log entry for the root cause if it exists:
+!SUBENTRY 1 org.eclipse.osgi 2 0 2014-07-24 17:43:16.949
+!MESSAGE Bundle org.flowerplatform.team.git_1.0.0.qualifier [889] was not resolved.
+!SUBENTRY 2 org.flowerplatform.team.git 2 0 2014-07-24 17:43:16.949
+!MESSAGE Missing required bundle org.eclipse.egit_3.4.1.
+!SUBENTRY 2 org.flowerplatform.team.git 2 0 2014-07-24 17:43:16.965
+!MESSAGE Missing required bundle org.eclipse.egit.core_3.4.1.
+!SUBENTRY 2 org.flowerplatform.team.git 2 0 2014-07-24 17:43:16.965
+!MESSAGE Missing required bundle org.eclipse.egit.ui_3.4.1.
+!SESSION 2014-07-24 17:44:14.625 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -console -consoleLog
+
+!ENTRY org.flowerplatform.team.git 4 0 2014-07-24 17:44:14.627
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: The bundle "org.flowerplatform.team.git_1.0.0.qualifier [889]" could not be resolved. Reason: Missing Constraint: Require-Bundle: org.eclipse.egit; bundle-version="3.4.1"
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.getResolverError(AbstractBundle.java:1332)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.getResolutionFailureException(AbstractBundle.java:1316)
+	at org.eclipse.osgi.framework.internal.core.BundleHost.startWorker(BundleHost.java:323)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.resume(AbstractBundle.java:390)
+	at org.eclipse.osgi.framework.internal.core.Framework.resumeBundle(Framework.java:1176)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:559)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:544)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.incFWSL(StartLevelManager.java:457)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.doSetStartLevel(StartLevelManager.java:243)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:438)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:340)
+
+!ENTRY org.eclipse.osgi 4 0 2014-07-24 17:44:14.649
+!MESSAGE Bundle initial@reference:file:../../../../../git/flower-platform-4/org.flowerplatform.team.git/ was not resolved.
