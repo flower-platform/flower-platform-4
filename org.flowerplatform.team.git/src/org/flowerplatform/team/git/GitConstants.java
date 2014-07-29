@@ -45,6 +45,9 @@ public class GitConstants {
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 
+	
+
+
 	public static final String CONFIG_REBASE = "configRebase";
 	public static final String CURRENT_BRANCH = "currentBranch";
 	public static final String CURRENT_COMMIT = "currentCommit";
@@ -68,5 +71,6 @@ public class GitConstants {
 	public static final String GIT_ICON = "git.gif";
 	public static final String REMOTES_ICON = "remotes.gif";
 	public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
+
 
 }

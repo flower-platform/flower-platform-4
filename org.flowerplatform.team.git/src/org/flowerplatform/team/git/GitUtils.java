@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
@@ -92,6 +94,49 @@ public class GitUtils {
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
+
+
+	/* Merge operation from fp3 */
+	public static String handleMergeResult(MergeResult mergeResult) {
+		StringBuilder sb = new StringBuilder();		
+		if (mergeResult == null) {
+			return sb.toString();
+		}
+		sb.append("Status: ");
+		sb.append(mergeResult.getMergeStatus());
+		sb.append("\n");
+		
+		if (mergeResult.getMergedCommits() != null) {
+			sb.append("\nMerged commits: ");
+			sb.append("\n");
+			for (ObjectId id : mergeResult.getMergedCommits()) {
+				sb.append(id.getName());
+				sb.append("\n");
+			}
+		}
+		
+		if (mergeResult.getCheckoutConflicts() != null) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for (String conflict : mergeResult.getCheckoutConflicts()) {
+				sb.append(conflict);
+				sb.append("\n");
+			}
+		}
+				
+		if (mergeResult.getFailingPaths() != null) {
+			sb.append("\nFailing paths: ");
+			sb.append("\n");
+			for (String path : mergeResult.getFailingPaths().keySet()) {
+				sb.append(path);
+				sb.append(" -> ");
+				sb.append(mergeResult.getFailingPaths().get(path).toString());
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
+	}
+		
 
 	public static void delete(File f) {	
 		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		

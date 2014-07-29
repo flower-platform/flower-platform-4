@@ -48,6 +48,7 @@ import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
 import org.eclipse.jgit.lib.Constants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.controller.GitBranchAndTagPropertiesProvider;
 import org.flowerplatform.team.git.controller.GitBranchesAndTagsChildrenProvider;
@@ -60,6 +61,7 @@ import org.flowerplatform.team.git.controller.GitRemotesChildrenProvider;
 import org.flowerplatform.team.git.controller.GitRemotesPropertiesProvider;
 import org.flowerplatform.team.git.controller.GitResourceHandler;
 import org.flowerplatform.team.git.controller.GitTagsPropertiesProvider;
+import org.flowerplatform.team.git.controller.GitVirtualNodeResourceHandler;
 import org.flowerplatform.team.git.controller.RepoChildrenProvider;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -82,7 +84,9 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 			
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
 
+
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_CATEGORY);
+
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
 		.addAdditiveController(CHILDREN_PROVIDER, new RepoChildrenProvider());
@@ -155,6 +159,16 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRemote")).setReadOnlyAs(true).setOrderIndexAs(6))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REBASE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRebase")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));	
 		
+
+		//to be modified later --> usage of only one scheme with multiple handlers
+		//need to modify: ResourceService.java, addResourceHandler method
+		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new BaseResourceHandler(GIT_REPO_TYPE));
+//		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_LOCAL_BRANCHES_SCHEME, new GitVirtualNodeResourceHandler(GIT_LOCAL_BRANCHES_TYPE));
+//		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_REMOTE_BRANCHES_SCHEME, new GitVirtualNodeResourceHandler(GIT_REMOTE_BRANCHES_TYPE));
+//		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_TAGS_SCHEME, new GitVirtualNodeResourceHandler(GIT_TAGS_TYPE));
+//		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_REMOTES_SCHEME, new GitVirtualNodeResourceHandler(GIT_REMOTES_TYPE));
+//		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_BRANCH_SCHEME, new GitResourceHandler());
+
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitRemotePropertiesProvider())
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
@@ -168,6 +182,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 //		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new GitVirtualNodeResourceHandler(GIT_TAGS_TYPE));
 //		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new GitVirtualNodeResourceHandler(GIT_REMOTES_TYPE));
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new GitResourceHandler());
+
 
 	}
 
