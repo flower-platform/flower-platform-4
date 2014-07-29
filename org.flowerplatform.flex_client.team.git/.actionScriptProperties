@@ -18,7 +18,6 @@
   </compiler>
   <applications>
     <application path="org.flowerplatform.flex_client.team.git.as"/>
-    <application path="aaaa.mxml"/>
   </applications>
   <modules/>
   <workers/>
