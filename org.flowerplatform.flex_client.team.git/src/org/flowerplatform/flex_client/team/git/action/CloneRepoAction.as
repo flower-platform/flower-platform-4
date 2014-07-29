@@ -2,6 +2,7 @@ package org.flowerplatform.flex_client.team.git.action
 {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.CloneRepoWizardView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -17,24 +18,21 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		override public function get visible():Boolean {
 			
-//			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
-//				var type:String = Node(selection.getItemAt(0)).type;
-//				if (type == CoreConstants.GIT_TYPE) {
-//					
-//					return false;
-//				}
-//				return true;
-//			}
-//			return false;
-			return true;
+			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
+				var type:String = Node(selection.getItemAt(0)).type;
+				if (type == GitConstants.GIT_REPO_TYPE) {
+					return true;
+				}
+				return false;
+			}
+			return false;
 		}
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));	
 			
 			var view:CloneRepoWizardView = new CloneRepoWizardView();
-//			view.uploadLocationNode = node;
-			
+			view.nodeUri = node.nodeUri;
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)
 				.setWidth(500)
