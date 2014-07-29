@@ -550,5 +550,11 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/codesync.regex/wrench.png")]
 		public static const wrenchIcon:Class;
 		
+		[Embed(source="/team.git/remote_entry_tbl.gif")]
+		public static const remoteEntry:Class;
+		
+		[Embed(source="/team.git/remotespec.gif")]
+		public static const configureFetchPush:Class;
+		
 	}
 }
