@@ -58,4 +58,3 @@ package org.flowerplatform.flex_client.team.git {
 		public static const CONFIG_REBASE:String = "configRebase";	
 	}
 }
-

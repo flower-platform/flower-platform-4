@@ -21,8 +21,9 @@ public class RepoChildrenProvider extends AbstractController implements IChildre
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		List<Node> children = new ArrayList<Node>();
+
 		String repo = Utils.getRepo(node.getNodeUri());
-		children.add(new Node(Utils.getUri(GIT_SCHEME, repo), GIT_REPO_TYPE));
+		children.add(new Node(Utils.getUri(GIT_SCHEME, repo + "|" + GIT_REPO_TYPE), GIT_REPO_TYPE));
 		return children;
 	}
 

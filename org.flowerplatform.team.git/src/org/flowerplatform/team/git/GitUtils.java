@@ -81,6 +81,9 @@ public class GitUtils {
 	public static String getType(String nodeUri){
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
+		if(indexEnd < indexStart){
+			indexEnd = nodeUri.length();
+		}
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 	
@@ -107,5 +110,5 @@ public class GitUtils {
 		String nodePath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
 		return nodePath;
 	}
-	
+
 }
