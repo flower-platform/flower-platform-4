@@ -16,6 +16,12 @@
 package org.flowerplatform.team.git;
 
 import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
@@ -83,5 +89,23 @@ public class GitUtils {
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
-		
+
+	public static void delete(File f) {	
+		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
+			for (File c : f.listFiles()) {
+				delete(c);
+			}
+		}
+		f.delete();
+	}
+	
+	public static String getNodePath(String nodeUri){
+		int index = nodeUri.indexOf("|");
+		if (index < 0) {
+			index = nodeUri.length();
+		}
+		String nodePath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+		return nodePath;
+	}
+	
 }

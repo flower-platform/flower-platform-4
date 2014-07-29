@@ -36,6 +36,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
@@ -49,8 +50,6 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.team.git.remote.GitBranch;
 import org.flowerplatform.util.Utils;
-
-
 
 /**
  * @author Valentina-Camelia Bojan
@@ -187,6 +186,23 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
+
+	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
+		String repositoryPath = GitUtils.getNodePath(nodeUri);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		RepositoryCache.close(repo);
+		repo.getAllRefs().clear();	
+		repo.close();
+		
+		if(keepWorkingDirectoryContent){
+			GitUtils.delete(repo.getDirectory());
+		}else{
+			GitUtils.delete(repo.getDirectory().getParentFile());
+		}
+		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_REPO, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+	}
+	
 	public void configureBranch(String branchNodeUri, String remote, String upstream) throws Exception{
 		
 			Node branchNode = CorePlugin.getInstance().getResourceService().getNode(branchNodeUri);

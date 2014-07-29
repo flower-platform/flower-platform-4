@@ -37,6 +37,7 @@ public class GitConstants {
 	/////////////////////////////////////////////////////////////
 	
 	public static final String NAME = "name";
+	public static final String IS_REPO = "isRepo";
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";

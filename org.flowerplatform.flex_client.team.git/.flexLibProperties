@@ -25,6 +25,9 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.RenameBranchView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureBranchView"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.ui.DeleteGitRepositoryView"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

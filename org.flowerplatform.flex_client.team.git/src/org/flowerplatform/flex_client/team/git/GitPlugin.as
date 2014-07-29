@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -45,10 +46,12 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
+
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 		}
 		
 		override protected function registerMessageBundle():void {
