@@ -12,6 +12,8 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
+ * Creates the legend node.
+ * 
  * @author Alexandra Topoloaga
  */
 public class StructureDiffNodeLegendController extends AbstractController implements IChildrenProvider {

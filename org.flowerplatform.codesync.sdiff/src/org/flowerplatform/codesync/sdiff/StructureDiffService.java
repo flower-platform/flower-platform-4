@@ -24,6 +24,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_RIGHT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_FEATURE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_MODEL_ELEMENT_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_PATH;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFFS_FOLDER;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
@@ -191,11 +192,15 @@ public class StructureDiffService {
 		CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_DIFFS_CONFLICT, match.isDiffsConflict(), context);
 		
 		// match to lines from patch
-		if (match.getCodeSyncAlgorithm() != null) {
+		if (match.getCodeSyncAlgorithm() == null) {
+			//sets path for a file with unknown extension
+			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_PATH, getFilePath(patch.getPath(true).toString(),true),context);
+		} else {
 			Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
 			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
-			//TODO AT: add MATCH_PATH if modelElementType == codeSyncFile
-			
+			if (CodeSyncConstants.FILE.equals(modelElementType)) {
+				CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_PATH, getFilePath(patch.getPath(true).toString(),true),context);
+			}
 			if (match.getLeft() != null && match.getRight() != null) {
 				Object model = match.getRight();
 				Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);

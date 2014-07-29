@@ -14,11 +14,13 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
+ * Creates the list of legend's node children and set legend's node properties.
+ * 
  * @author Alexandra Topoloaga
  */
 public class StructureDiffLegendController extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
-	public StructureDiffLegendController(){
+	public StructureDiffLegendController() {
 		setOrderIndex(-1);
 	}
 
@@ -39,5 +41,5 @@ public class StructureDiffLegendController extends AbstractController implements
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(CoreConstants.NAME, "Legend");
-		}
+	}
 }
