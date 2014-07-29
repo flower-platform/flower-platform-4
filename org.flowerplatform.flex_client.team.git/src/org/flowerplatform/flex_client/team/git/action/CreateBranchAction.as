@@ -57,8 +57,8 @@ package org.flowerplatform.flex_client.team.git.action {
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(view)
-				.setWidth(550)
-				.setHeight(500)
+				.setWidth(400)
+				.setHeight(320)
 				.setTitle(label)
 				.setIcon(icon)
 				.show();
