@@ -65,9 +65,6 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	
 	public JavaIconPropertyProvider(String property, Object value) {
 		super(property, value);
-		// invoke after the persistence providers
-		// to override the properties
-		setOrderIndex(10000);
 	}
 
 	@Override

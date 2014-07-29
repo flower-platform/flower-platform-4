@@ -28,12 +28,6 @@ import org.flowerplatform.util.controller.AbstractController;
  * @author Mariana Gheorghe
  */
 public class StructureDiffCommentController extends AbstractController implements IPropertiesProvider {
-
-	public StructureDiffCommentController() {
-		// invoke after the persistence providers
-		// to override the properties
-		setOrderIndex(10000);
-	}
 	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {

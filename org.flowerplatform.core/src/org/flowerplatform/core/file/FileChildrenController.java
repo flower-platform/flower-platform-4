@@ -20,10 +20,10 @@ import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
 import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
-import static org.flowerplatform.core.file.FileControllerUtils.getRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class FileChildrenController extends AbstractController
 		Object[] files = getFileAccessController().listFiles(file);
 		if (files != null) {			
 			for (Object object : files) {
-				Node child = new Node(createFileNodeUri(FileControllerUtils.getRepo(node), getFileAccessController().getPath(object)), FILE_NODE_TYPE);
+				Node child = new Node(createFileNodeUri(getRepoFromNode(node), getFileAccessController().getPath(object)), FILE_NODE_TYPE);
 				children.add(child);
 			}
 		}
@@ -102,9 +102,9 @@ public class FileChildrenController extends AbstractController
 			Node fileParentNode;
 			
 			if (path.length() != 0) { // parent File is not the FileSystem node
-				fileParentNode = new Node(createFileNodeUri(getRepo(parentNode), path), FILE_NODE_TYPE);
+				fileParentNode = new Node(createFileNodeUri(getRepoFromNode(parentNode), path), FILE_NODE_TYPE);
 			} else {
-				fileParentNode = new Node(createFileNodeUri(getRepo(parentNode), null), FILE_SYSTEM_NODE_TYPE);
+				fileParentNode = new Node(createFileNodeUri(getRepoFromNode(parentNode), null), FILE_SYSTEM_NODE_TYPE);
 			}
 			context.getService().addChild(fileParentNode, child, context);
 			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
@@ -113,7 +113,7 @@ public class FileChildrenController extends AbstractController
 		
 		String name = (String) context.get(NAME);
 		Object fileToCreate = getFileAccessController().getFile(parentFile, name);
-		child.setNodeUri(createFileNodeUri(getRepo(parentNode), getFileAccessController().getPath(fileToCreate)));
+		child.setNodeUri(createFileNodeUri(getRepoFromNode(parentNode), getFileAccessController().getPath(fileToCreate)));
 		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
 		
 		if (getFileAccessController().exists(fileToCreate)) {

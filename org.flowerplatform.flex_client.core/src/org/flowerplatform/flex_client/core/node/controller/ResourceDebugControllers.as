@@ -25,7 +25,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class ResourceDebugControllers {
+	public class ResourceDebugControllers extends DebugControllers {
 
 		public const RESOURCES:String = "debugClientResources";
 		public const RESOURCE_SET:String = "debugClientResourceSet";
@@ -40,18 +40,10 @@ package org.flowerplatform.flex_client.core.node.controller {
 			addNodeController(RESOURCE_URI, nodeController);
 		}
 		
-		private function addNodeController(type:String, controller:ResourceNodeController):void {
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(type)
-				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, controller);
-		}
-		
 		public function getResourceSets():ArrayCollection {
 			var resourceSets:ArrayCollection = new ArrayCollection();
 			for each (var resourceSet:String in CorePlugin.getInstance().nodeRegistryManager.getResourceSets()) {
-				var node:Node = new Node(RESOURCE_SET + ":" + resourceSet);
-				node.type = RESOURCE_SET;
-				node.properties[CoreConstants.NAME] = "ResourceSet: " + resourceSet;
-				node.properties[CoreConstants.HAS_CHILDREN] = true;
+				var node:Node = createNode(RESOURCE_SET, resourceSet, null, "ResourceSet: " + resourceSet);
 				resourceSets.addItem(node);
 			}
 			return resourceSets;
@@ -62,10 +54,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			var index:int = 0;
 			for each (var resourceUri:String in 
 				CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForResourceSet(resourceSet)) {
-				var node:Node = new Node(RESOURCE_URI + ":" + resourceUri + "#" + index++);
-				node.type = RESOURCE_URI;
-				node.properties[CoreConstants.NAME] = "ResourceURI: " + resourceUri;
-				node.properties[CoreConstants.HAS_CHILDREN] = false;
+					var node:Node = createNode(RESOURCE_URI, resourceUri, null, "ResourceURI: " + resourceUri, null, false);
 				children.addItem(node);
 			}
 			return children;
