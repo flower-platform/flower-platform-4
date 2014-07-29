@@ -27,10 +27,13 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
+	import org.flowerplatform.flexdiagram.tool.ActionTool;
 	import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
 	import org.flowerplatform.flexdiagram.tool.ScrollTool;
 	import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
+	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
@@ -43,11 +46,15 @@ package org.flowerplatform.flex_client.mindmap {
 		public function MindMapEditorDiagramShell() {
 			super();
 									
-			var tools:Array = [ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool];
 			if (!FlexUtilGlobals.getInstance().isMobile) {
-				tools.push(InplaceEditorTool);
+				registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
 			}
-			registerTools(tools);
+			registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
+			registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
+			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
+			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
+
+			
 		}
 			
 		public function get nodeRegistry():NodeRegistry {

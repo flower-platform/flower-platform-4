@@ -21,7 +21,6 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 		
 		public function wakeUp(eventType:String, initialEvent:MouseEvent):Boolean {
-			context.shellContext = diagramShell.getNewDiagramShellContext();
 			if(eventType == this.eventType){
 				return true;
 			}	
@@ -29,9 +28,10 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 		
 		override public function activateAsMainTool():void {
-			action.selection = IList(FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider);
+			var selection:IList = IList(FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider);
+			action.selection = selection;
 			if(action.visible){
-				action.run();
+				FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, null);
 			}
 			deactivateAsMainTool();
 			
