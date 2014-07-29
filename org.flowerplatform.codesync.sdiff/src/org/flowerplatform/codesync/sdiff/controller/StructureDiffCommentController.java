@@ -15,9 +15,12 @@
  */
 package org.flowerplatform.codesync.sdiff.controller;
 
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.IMG_TYPE_COMMENT;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_COMMENT;
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 
-import org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants;
+import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -31,7 +34,8 @@ public class StructureDiffCommentController extends AbstractController implement
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_COMMENT);
+		node.getProperties().put(COLOR_BACKGROUND, MATCH_COLOR_COMMENT);
+		node.getProperties().put(ICONS, CodeSyncSdiffPlugin.getInstance().getImagePath(IMG_TYPE_COMMENT));
 	}
 
 }
