@@ -49,8 +49,7 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 		
 		public static const NAME:String = "name";
-
-		public static const IS_REPO:String = "isRepo";
+		public static const IS_GIT_REPOSITORY:String = "isGitRepository";
 
 		public static const FULL_NAME:String = "fullName";
 		public static const CONFIG_REMOTE:String = "configRemote";

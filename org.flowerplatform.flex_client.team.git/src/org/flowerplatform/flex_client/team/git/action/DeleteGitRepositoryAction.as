@@ -6,22 +6,24 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.team.git.ui.DeleteGitRepositoryView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
+	
+	/**
+	 * @author Catalin Burcea
+	 */
 
 	public class DeleteGitRepositoryAction extends ActionBase {
 		 
 		public function DeleteGitRepositoryAction() {
 			super();
 			label = Resources.getMessage("flex_client.team.git.action.deleteGitRepository");
-			icon = Resources.getResourceUrl("/images/mindmap/icons/button_cancel.png");
+			icon = Resources.deleteIcon;
 		}
 		
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				var isRepo:Boolean = node.properties[GitConstants.IS_REPO];
-				if (node.type == GitConstants.GIT_REPO_TYPE && isRepo){
-					return true;
-				}
+				var isRepo:Boolean = node.properties[GitConstants.IS_GIT_REPOSITORY];
+				return node.type == GitConstants.GIT_REPO_TYPE && isRepo;
 			}
 			return false;
 		}

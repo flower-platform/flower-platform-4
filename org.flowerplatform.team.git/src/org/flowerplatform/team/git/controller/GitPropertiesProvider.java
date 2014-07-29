@@ -7,7 +7,7 @@ import static org.flowerplatform.team.git.GitConstants.CURRENT_BRANCH;
 import static org.flowerplatform.team.git.GitConstants.CURRENT_COMMIT;
 import static org.flowerplatform.team.git.GitConstants.GIT_ICON;
 import static org.flowerplatform.team.git.GitConstants.ICONS_PATH;
-import static org.flowerplatform.team.git.GitConstants.IS_REPO;
+import static org.flowerplatform.team.git.GitConstants.IS_GIT_REPOSITORY;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,12 +61,11 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 			e.printStackTrace();
 		}
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
-		
-		String repositoryPath = GitUtils.getNodePath(node.getNodeUri());
+
 		File repoFile;
 		try {
-			repoFile = (File) FileControllerUtils.getFileAccessController().getFile(repositoryPath);
-			node.getProperties().put(IS_REPO, GitUtils.isRepository(repoFile));
+			repoFile = (File) FileControllerUtils.getFileAccessController().getFile(repoPath);
+			node.getProperties().put(IS_GIT_REPOSITORY, GitUtils.isRepository(repoFile));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
