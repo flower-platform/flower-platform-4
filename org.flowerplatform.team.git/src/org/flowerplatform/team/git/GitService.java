@@ -64,6 +64,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.team.git.remote.GitBranch;
 import org.flowerplatform.util.Utils;
+
 /**
  * @author Valentina-Camelia Bojan
  */
@@ -378,5 +379,25 @@ public class GitService {
 			return -5;
 		}
 	}
+
+
+	/** 
+	 * @author Vlad Bogdan Manica
+	 * @param nodeUri This is the name of a branch/tag.
+	 * @param createNew If is set to 'true' we create a new local branch. 
+	 * @throws Exception
+	 */
+	public void checkout(String nodeUri) throws Exception {				
+		String Name = GitUtils.getName(nodeUri);
+		String repositoryPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+				
+		Git g = new Git(repo);	
+		
+		g.checkout().setName(Name).call();	
+		g.gc().getRepository().close();
+		g.gc().call();
+	}
+
 }
 

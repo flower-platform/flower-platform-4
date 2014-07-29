@@ -48,7 +48,7 @@ license-end
 			private const CREATE_BRANCH_ERROR:String = "Create Branch Error!";
 			
 			override protected function creationCompleteHandler(event:FlexEvent):void {
-				super.creationCompleteHandler(event);
+				super.creationCompleteHandler(event);				
 				
 				mergeUpstreamRadioButton.selected = true;
 				mergeUpstreamRadioButton.enabled = false;
