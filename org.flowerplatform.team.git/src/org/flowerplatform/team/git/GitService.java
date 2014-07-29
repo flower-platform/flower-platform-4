@@ -21,17 +21,23 @@ import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
@@ -39,6 +45,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.codesync.sdiff.IFileContentProvider;
@@ -81,6 +88,8 @@ public class GitService {
 		
 		return CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(patch.toString(), repoPath, sdiffOutputPath, fileContentProvider);
 	}
+
+	private static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
 	public boolean validateHash(String hash, String repositoryPath) {				
 		try {
@@ -185,7 +194,31 @@ public class GitService {
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
-
+	
+	public int validateRepoURL(String url, String path) {
+		try {
+			URIish repoUri = new URIish(url.trim());
+			if (repoUri.getScheme().toLowerCase().startsWith("http") ) {
+				InputStream ins = null;
+				URLConnection conn = new URL(repoUri.toString()).openConnection();
+			    conn.setReadTimeout(NETWORK_TIMEOUT_MSEC);
+			    ins = conn.getInputStream();
+		    } 
+			String repoName = new URIish(url.trim()).getHumanishName();
+			File gitReposFile = new File(repoName);
+			
+			if (GitUtils.getGitDir(gitReposFile) != null) {
+				return 1;
+			}
+		}
+		catch(Exception ex) {
+			return -1;
+		}
+		return 0;  
+	}
+	
+	public void getBranches() {		
+	}
 
 	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
 		String repositoryPath = GitUtils.getNodePath(nodeUri);
@@ -261,5 +294,28 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().setProperty(node,CoreConstants.NAME,newName,new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
 	}
 
+	public void cloneRepo(String uri, ArrayList<String> branches, boolean cloneAll, String path) {
+		CloneCommand cc = new CloneCommand();
+		try {
+			cc.setCloneAllBranches(cloneAll);
+			cc.setBranchesToClone(branches);
+			cc.setURI(uri);
+			File directory = new File(path);
+			cc.setDirectory(directory);
+			cc.call();
+		} 
+		catch (InvalidRemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (TransportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 
