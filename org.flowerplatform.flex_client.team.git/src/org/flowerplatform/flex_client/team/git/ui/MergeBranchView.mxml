@@ -89,12 +89,21 @@
 										.showMessageBox();
 									});
 					} else {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-							.setText(Resources.getMessage('flex_client.team.git.mergeBranch.alert') + node.getPropertyValue(GitConstants.NAME) + " " + Resources.getMessage('flex_client.team.git.mergeBranch.branch'))
-							.setTitle(Resources.getMessage('flex_client.team.git.mergeBranch.error'))
-							.setWidth(300)
-							.setHeight(150)
-							.showMessageBox();
+						if( node.type == GitConstants.GIT_REPO_TYPE ) {
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+								.setText(Resources.getMessage('flex_client.team.git.mergeBranch.alert') + node.getPropertyValue(GitConstants.CURRENT_BRANCH) + " " + Resources.getMessage('flex_client.team.git.mergeBranch.branch'))
+								.setTitle(Resources.getMessage('flex_client.team.git.mergeBranch.error'))
+								.setWidth(300)
+								.setHeight(150)
+								.showMessageBox();
+						} else {
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+								.setText(Resources.getMessage('flex_client.team.git.mergeBranch.alert') + node.getPropertyValue(GitConstants.NAME) + " " + Resources.getMessage('flex_client.team.git.mergeBranch.branch'))
+								.setTitle(Resources.getMessage('flex_client.team.git.mergeBranch.error'))
+								.setWidth(300)
+								.setHeight(150)
+								.showMessageBox();
+						}
 					}
 					
 					cancelHandler();

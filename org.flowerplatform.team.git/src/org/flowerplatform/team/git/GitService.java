@@ -141,9 +141,11 @@ public class GitService {
 	/* Merge branch */
 	public String mergeBranch(String nodeUri, Boolean setSquash, boolean commit, int fastForwardOptions) throws Exception {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Ref ref = repo.getRef((String)node.getPropertyValue(GitConstants.NAME));
+		
 		Git gitInstance = new Git(repo);
 		FastForwardMode fastForwardMode = FastForwardMode.FF;
 		
