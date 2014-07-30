@@ -11,7 +11,6 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MAC
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCHES_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_SCHEME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_WITH_MACROS;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
@@ -35,7 +34,6 @@ import java.util.Map;
 import org.flowerplatform.codesync.regex.controller.RegexController;
 import org.flowerplatform.codesync.regex.controller.RegexMatchesChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.VirtualRegexChildrenProvider;
-import org.flowerplatform.codesync.regex.controller.VirtualRegexResourceHandler;
 import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -136,7 +134,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(START).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.start")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(30))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(END).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.end")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(40));
 			
-		CorePlugin.getInstance().getResourceService().addResourceHandler(REGEX_SCHEME, new VirtualRegexResourceHandler());
+		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(VIRTUAL_REGEX_TYPE);
 				
 		// TODO: TO DELETE (added only for RegEx tests)
 		addRegexAction(new RegexAction() {

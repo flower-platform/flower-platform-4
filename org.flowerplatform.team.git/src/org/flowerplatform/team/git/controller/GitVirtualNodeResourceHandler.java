@@ -1,7 +1,5 @@
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.core.file.FileControllerUtils.getRepo;
-
 import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.util.Utils;
 
@@ -13,7 +11,7 @@ public class GitVirtualNodeResourceHandler extends BaseResourceHandler {
 
 	@Override
 	public String getResourceUri(String nodeUri) {		
-		return Utils.getUri(type, getRepo(nodeUri), null);
+		return Utils.getUri(type, Utils.getRepo(nodeUri), null);
 	}
 	
 }

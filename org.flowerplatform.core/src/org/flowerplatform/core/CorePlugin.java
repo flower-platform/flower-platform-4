@@ -18,6 +18,9 @@ package org.flowerplatform.core;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
+import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
+import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,11 +39,11 @@ import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
-import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.resource.ResourceUnsubscriber;
+import org.flowerplatform.core.node.resource.VirtualNodeResourceHandler;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceService;
 import org.flowerplatform.core.node.resource.in_memory.InMemoryResourceSetService;
 import org.flowerplatform.core.node.resource.in_memory.InMemorySessionService;
@@ -66,6 +69,7 @@ import org.osgi.framework.BundleContext;
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
  */
+@SuppressWarnings("restriction")
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CorePlugin INSTANCE;
@@ -91,6 +95,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected ResourceService resourceService;
 	protected ResourceSetService resourceSetService;
 	protected SessionService sessionService;
+	
+	protected VirtualNodeResourceHandler virtualNodeResourceHandler = new VirtualNodeResourceHandler();
 		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
@@ -142,6 +148,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return sessionService;
 	}
 	
+	public VirtualNodeResourceHandler getVirtualNodeResourceHandler() {
+		return virtualNodeResourceHandler;
+	}
+	
 	/**
 	 * Setting/removing must be done from a try/finally block to make sure that 
 	 * the request is cleared, i.e.
@@ -183,7 +193,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	 * @return workspace location from OSGI property
 	 * @author Cristina Constantinescu
 	 */
-	@SuppressWarnings("restriction")
 	public String getWorkspaceLocation() {
 		String location = FrameworkProperties.getProperty("osgi.instance.area");
 		
@@ -221,14 +230,14 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		new ResourceUnsubscriber().start();
 		
-		getResourceService().addResourceHandler(CoreConstants.ROOT_TYPE, new BaseResourceHandler(CoreConstants.ROOT_TYPE));
+		getResourceService().addResourceHandler(VIRTUAL_NODE_SCHEME, virtualNodeResourceHandler);
+		virtualNodeResourceHandler.addVirtualNodeType(ROOT_TYPE);
+		virtualNodeResourceHandler.addVirtualNodeType(REPOSITORY_TYPE);
 		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.ROOT_TYPE)
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
 			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootChildrenProvider());
 
-		getResourceService().addResourceHandler(CoreConstants.REPOSITORY_TYPE, new BaseResourceHandler(CoreConstants.REPOSITORY_TYPE));
-		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.REPOSITORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RepositoryPropertiesProvider())
 			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RepositoryChildrenProvider());

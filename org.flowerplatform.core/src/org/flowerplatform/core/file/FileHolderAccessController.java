@@ -16,6 +16,7 @@
 package org.flowerplatform.core.file;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 
 import org.flowerplatform.util.file.FileHolder;
@@ -41,6 +42,11 @@ public class FileHolderAccessController implements IFileAccessController {
 
 	@Override
 	public Object getFile(String path) throws Exception {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public File getFileAsFile(Object file) throws Exception {
 		throw new UnsupportedOperationException();
 	}
 
@@ -156,5 +162,4 @@ public class FileHolderAccessController implements IFileAccessController {
 	public long length(Object file) {
 		return 0;
 	}
-
 }

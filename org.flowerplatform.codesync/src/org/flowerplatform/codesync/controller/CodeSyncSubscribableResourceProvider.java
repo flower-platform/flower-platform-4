@@ -23,14 +23,13 @@ import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.file.FileControllerUtils;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Pair;
-import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -76,8 +75,8 @@ public class CodeSyncSubscribableResourceProvider extends AbstractController imp
 	}
 
 	protected String getResourceUri(Node node) {
-		String repo = FileControllerUtils.getRepo(node);
-		return Utils.getUri("fpp", repo + "|" + resource);
+		String repo = CoreUtils.getRepoFromNode(node);
+		return CoreUtils.createNodeUriWithRepo("fpp", repo, resource);
 	}
 	
 }
