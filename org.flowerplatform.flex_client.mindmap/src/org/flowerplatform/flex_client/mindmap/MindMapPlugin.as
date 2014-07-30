@@ -16,6 +16,7 @@
 package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
@@ -122,10 +123,23 @@ package org.flowerplatform.flex_client.mindmap {
 					}
 			});	
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);
+//			
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNodeDetailsInDialogAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNoteInDialogAction);
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNodeDetailsInDialogAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNoteInDialogAction);
+//			CorePlugin.getInstance().actionRegistry[RefreshAction.ID] = new FactoryWithInitialization(RefreshAction).newInstance();
+//			CorePlugin.getInstance().actionRegistry[EditNodeDetailsInDialogAction.ID] = new FactoryWithInitialization(EditNodeDetailsInDialogAction).newInstance();
+//			CorePlugin.getInstance().actionRegistry[EditNoteInDialogAction.ID] = new FactoryWithInitialization(EditNoteInDialogAction).newInstance();
+			
+			CorePlugin.getInstance().registerAction(RefreshAction);
+			CorePlugin.getInstance().registerAction(EditNodeDetailsInDialogAction);
+			CorePlugin.getInstance().registerAction(EditNoteInDialogAction);
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RefreshAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNodeDetailsInDialogAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNoteInDialogAction.ID));
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);
 			

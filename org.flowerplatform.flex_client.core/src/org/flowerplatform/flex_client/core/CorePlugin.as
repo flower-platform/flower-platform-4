@@ -23,12 +23,16 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
+	import spark.effects.RemoveAction;
+	
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.UpdateTimer;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
+	import org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorComposedAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
@@ -45,13 +49,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -66,6 +70,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
@@ -102,6 +107,10 @@ package org.flowerplatform.flex_client.core {
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
 		public var editorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
+		
+		// actions per type registry: stores for each actionId an action factory 
+		public var actionRegistry:Dictionary = new Dictionary();
+		public var nodeTypeActionProvider:NodeTypeActionProvider = new NodeTypeActionProvider();
 
 		public var updateTimer:UpdateTimer;
 		
@@ -163,20 +172,51 @@ package org.flowerplatform.flex_client.core {
 			
 			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
 			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
-			
+						
  			updateTimer = new UpdateTimer(5000);
 			
-			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
-			editorClassFactoryActionProvider.addActionClass(RenameAction);			
-			editorClassFactoryActionProvider.addActionClass(OpenAction);
-			editorClassFactoryActionProvider.addActionClass(OpenWithEditorComposedAction);
+//			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
+//			editorClassFactoryActionProvider.addActionClass(RenameAction);			
+//			editorClassFactoryActionProvider.addActionClass(OpenAction);
+//			editorClassFactoryActionProvider.addActionClass(OpenWithEditorComposedAction);
+					
+			registerAction(RemoveNodeAction);
+			registerAction(RenameAction);
+			registerAction(OpenAction);
+			registerAction(OpenWithEditorComposedAction);
+			registerAction(DownloadAction);
+			registerAction(UploadAction);
+			
+//			actionRegistry[RemoveNodeAction.ID] = new FactoryWithInitialization(RemoveNodeAction).newInstance();
+//			actionRegistry[RenameAction.ID] = new FactoryWithInitialization(RenameAction).newInstance();
+//			actionRegistry[OpenAction.ID] = new FactoryWithInitialization(OpenAction).newInstance();
+//			actionRegistry[OpenWithEditorComposedAction.ID] = new FactoryWithInitialization(OpenWithEditorComposedAction).newInstance();
+//			actionRegistry[DownloadAction.ID] = new FactoryWithInitialization(DownloadAction).newInstance();
+//			actionRegistry[UploadAction.ID] = new FactoryWithInitialization(UploadAction).newInstance();
+			
+			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenWithEditorComposedAction.ID));
+					
+			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RemoveNodeAction.ID));
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
 			editorClassFactoryActionProvider.addActionClass(NodeTreeAction);
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
-				editorClassFactoryActionProvider.addActionClass(DownloadAction);
-				editorClassFactoryActionProvider.addActionClass(UploadAction);				
+//				editorClassFactoryActionProvider.addActionClass(DownloadAction);
+//				editorClassFactoryActionProvider.addActionClass(UploadAction);		
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
+					
+				
 			}
 			
 			// check version compatibility with server side
@@ -245,6 +285,7 @@ package org.flowerplatform.flex_client.core {
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addSingleController(CoreConstants.NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR))
 				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
+			
 			
 			new TypeDescriptorRegistryDebugControllers().registerControllers();
 			new ResourceDebugControllers().registerControllers();
@@ -492,6 +533,10 @@ package org.flowerplatform.flex_client.core {
 			
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.resetSelection();
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);
+		}
+		
+		public function registerAction(generator:Class):void {
+			actionRegistry[Object(generator).ID] = new FactoryWithInitialization(RemoveNodeAction);
 		}
 			
 	}

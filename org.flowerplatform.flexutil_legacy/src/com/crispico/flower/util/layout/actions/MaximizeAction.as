@@ -25,12 +25,16 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */
 	public class MaximizeAction extends WorkbenchAction {
+		
+		public static const ID:String = "com.crispico.flower.util.layout.actions.MaximizeAction";
+		
 		public function MaximizeAction(bench:Workbench) {
 			super(bench);
 			
 			label = UtilAssets.INSTANCE.getMessage("layout.action.maximize");
 			icon = UtilAssets.INSTANCE._maximizeViewIcon;
 			orderIndex = 40;
+			id = ID;
 		}
 		
 		/**

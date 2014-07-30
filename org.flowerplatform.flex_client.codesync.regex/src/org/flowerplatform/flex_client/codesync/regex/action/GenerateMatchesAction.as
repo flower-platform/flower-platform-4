@@ -18,6 +18,8 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	 * @author Cristina Constantinescu
 	 */
 	public class GenerateMatchesAction extends ActionBase {
+		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction";
 				
 		public function GenerateMatchesAction() {
 			super();

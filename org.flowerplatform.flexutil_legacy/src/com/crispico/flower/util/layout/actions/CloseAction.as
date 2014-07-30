@@ -26,6 +26,9 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */
 	public class CloseAction extends WorkbenchAction {
+		
+		public static const ID:String = "com.crispico.flower.util.layout.actions.CloseAction";
+		
 		public static const CLOSE:int = 0;
 		
 		public static const CLOSE_ALL:int = 1;
@@ -58,6 +61,7 @@ package com.crispico.flower.util.layout.actions {
 					break;
 				}
 			}	
+			id = ID;
 		}
 		
 		/**

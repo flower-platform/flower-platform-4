@@ -26,6 +26,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */
 	public class ForceUpdateAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction";
+		
 		public function ForceUpdateAction() {
 			super();
 			

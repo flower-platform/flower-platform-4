@@ -28,6 +28,8 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 	 */ 
 	public class CreateStructureDiffFromWorkspaceAndPatchAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction";
+		
 		public function CreateStructureDiffFromWorkspaceAndPatchAction() {
 			super();
 			

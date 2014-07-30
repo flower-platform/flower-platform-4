@@ -37,6 +37,8 @@ package com.crispico.flower.util.layout.actions {
 		
 		private var type:int;
 		
+		public static const ID:String = "com.crispico.flower.util.layout.actions.MoveAction";
+		
 		public function MoveAction(bench:Workbench, type:int) {
 			super(bench);
 			
@@ -55,6 +57,7 @@ package com.crispico.flower.util.layout.actions {
 					break;
 				}	
 			}
+			id = ID;
 		}
 		
 		/**

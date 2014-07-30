@@ -26,6 +26,8 @@ package org.flowerplatform.flex_client.core.editor.action
 	 */
 	public class EditorFrontendAwareAction extends ActionBase implements IEditorFrontendAware {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.EditorFrontendAwareAction";
+		
 		private var _editorFrontend:EditorFrontend;
 		
 		public function set editorFrontend(value:EditorFrontend):void {

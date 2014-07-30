@@ -14,15 +14,19 @@
 * license-end
 */
 package org.flowerplatform.flex_client.team.git {
+	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.team.git.action.CloneRepoAction;
-	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
-	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -45,12 +49,56 @@ package org.flowerplatform.flex_client.team.git {
 			
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
+			
+//			CorePlugin.getInstance().actionRegistry[CreateStructureDiffFromGitCommitsAction.ID] = new FactoryWithInitialization(CreateStructureDiffFromGitCommitsAction).newInstance();
+//			CorePlugin.getInstance().actionRegistry[CreateBranchAction.ID] = new FactoryWithInitialization(CreateBranchAction).newInstance();
+//			CorePlugin.getInstance().actionRegistry[CloneRepoAction.ID] = new FactoryWithInitialization(CloneRepoAction).newInstance();
+//			CorePlugin.getInstance().actionRegistry[DeleteBranchAction.ID] = new FactoryWithInitialization(DeleteBranchAction).newInstance();
+//			CorePlugin.getInstance().actionRegistry[RenameBranchAction.ID] = new FactoryWithInitialization(RenameBranchAction).newInstance();
+//			CorePlugin.getInstance().actionRegistry[ConfigureBranchAction.ID] = new FactoryWithInitialization(ConfigureBranchAction).newInstance();
+			
+			CorePlugin.getInstance().registerAction(CreateStructureDiffFromGitCommitsAction);
+			CorePlugin.getInstance().registerAction(CreateBranchAction);
+			CorePlugin.getInstance().registerAction(CloneRepoAction);
+			CorePlugin.getInstance().registerAction(DeleteBranchAction);
+			CorePlugin.getInstance().registerAction(RenameBranchAction);
+			CorePlugin.getInstance().registerAction(ConfigureBranchAction);
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CloneRepoAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_LOCAL_BRANCH_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateBranchAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameBranchAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ConfigureBranchAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DeleteBranchAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REMOTE_BRANCH_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateBranchAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameBranchAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ConfigureBranchAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DeleteBranchAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_TAG_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateBranchAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncConstants.CODESYNC)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateStructureDiffFromGitCommitsAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.CODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateStructureDiffFromGitCommitsAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateStructureDiffFromGitCommitsAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateStructureDiffFromGitCommitsAction.ID));
 		}
 		
 		override protected function registerMessageBundle():void {

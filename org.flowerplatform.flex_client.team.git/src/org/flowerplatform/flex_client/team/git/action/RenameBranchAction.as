@@ -1,10 +1,6 @@
 package org.flowerplatform.flex_client.team.git.action {
-	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
-	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.RenameBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -15,6 +11,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	
 	public class RenameBranchAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.RenameBranchAction";
+		
 		public function RenameBranchAction() {
 			super();
 			icon = Resources.renameBranch;
@@ -23,16 +21,16 @@ package org.flowerplatform.flex_client.team.git.action {
 		}
 		
 		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				/* you must know the type of nodes */
-				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
-					return true;
-				}
-			}
-			return false;
-		}
+//		override public function get visible():Boolean {
+//			if (selection.length == 1 && selection.getItemAt(0) is Node) {
+//				var node:Node = Node(selection.getItemAt(0));
+//				/* you must know the type of nodes */
+//				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
+//					return true;
+//				}
+//			}
+//			return false;
+//		}
 		
 		
 		override public function run():void {

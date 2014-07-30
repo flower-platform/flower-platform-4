@@ -12,6 +12,8 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	 */
 	public class ShowOrderedMatchesAction extends DiagramShellAwareActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowOrderedMatchesAction";
+		
 		public function ShowOrderedMatchesAction() {
 			super();
 			label = Resources.getMessage("regex.action.ordered");

@@ -14,8 +14,6 @@
 * license-end
 */
 package org.flowerplatform.flex_client.team.git.action {
-	import mx.controls.Alert;
-	
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -29,6 +27,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 * @author Valentina-Camelia Bojan
 	 */ 
 	public class CreateStructureDiffFromGitCommitsAction extends ActionBase  {
+		
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction";
 		
 		public function CreateStructureDiffFromGitCommitsAction() {
 			super();

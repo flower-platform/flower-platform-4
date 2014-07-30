@@ -18,10 +18,13 @@ package org.flowerplatform.flex_client.codesync {
 	
 	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
 	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	
@@ -51,7 +54,13 @@ package org.flowerplatform.flex_client.codesync {
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(CodeSyncNodeRenderer, -10000)));
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(SynchronizeAction);
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(SynchronizeAction);
+//			CorePlugin.getInstance().actionRegistry[SynchronizeAction.actionId] = new FactoryWithInitialization(SynchronizeAction).newInstance();
+			
+			CorePlugin.getInstance().registerAction(SynchronizeAction);
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(SynchronizeAction.ID));
 		}
 		
 		override protected function registerMessageBundle():void {

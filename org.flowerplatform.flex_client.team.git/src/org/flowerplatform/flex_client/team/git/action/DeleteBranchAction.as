@@ -16,7 +16,6 @@
 
 package org.flowerplatform.flex_client.team.git.action
 {
-	import mx.controls.Alert;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
@@ -32,8 +31,10 @@ package org.flowerplatform.flex_client.team.git.action
 	 * @author Marius Iacob
 	 */
 
-	public class DeleteBranchAction extends ActionBase
-	{		
+	public class DeleteBranchAction extends ActionBase {
+		
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.DeleteBranchAction";
+		
 		public function DeleteBranchAction()
 		{
 			super();

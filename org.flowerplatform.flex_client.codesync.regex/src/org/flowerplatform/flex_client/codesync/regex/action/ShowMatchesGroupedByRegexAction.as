@@ -7,6 +7,8 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	 */
 	public class ShowMatchesGroupedByRegexAction extends ShowOrderedMatchesAction {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowMatchesGroupedByRegexAction";
+		
 		public function ShowMatchesGroupedByRegexAction() {			
 			label = Resources.getMessage("regex.action.grouped");
 			icon = Resources.bricksIcon;

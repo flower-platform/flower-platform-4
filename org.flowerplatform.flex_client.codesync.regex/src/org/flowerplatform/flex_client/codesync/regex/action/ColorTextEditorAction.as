@@ -17,6 +17,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	public class ColorTextEditorAction extends MultipleSelectionActionBase implements IEditorFrontendAware {
 		
 		private var _editorFrontend:EditorFrontend;
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ColorTextEditorAction";
 				
 		public function ColorTextEditorAction() {
 			super();

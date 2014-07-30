@@ -160,11 +160,8 @@
 	</fx:Script>
 	
 	<popup:states>
-		<mx:State name="selectRepoPage" >
-			
-		</mx:State>
-		<mx:State name="selectBranchesPage">
-		</mx:State>
+		<mx:State name="selectRepoPage"/>
+		<mx:State name="selectBranchesPage"/>
 	</popup:states>
 	
 	<mx:VBox id="repositorySelectionPage" width="100%">
@@ -178,7 +175,7 @@
 			<s:itemRenderer> 
 				
 				<fx:Component> 
-					<s:ItemRenderer creationComplete="creationCompleteHandler(event)">
+					<s:ItemRenderer >
 						<fx:Script>
 							<![CDATA[																			
 								import mx.events.FlexEvent;
@@ -189,23 +186,13 @@
 								
 								public var selectedB:ArrayCollection = new ArrayCollection();
 								
-								protected function creationCompleteHandler(event:FlexEvent):void {
-									
-//									var img:BitmapImage = new BitmapImage();
-//									img.source = FlexUtilGlobals.getInstance().createAbsoluteUrl(Resources.getResourceUrl('images/team.git/branch_obj.gif'));
-//									chkBranch.iconDisplay = img;
-								}
 							]]>
 						</fx:Script>
 						<s:layout>
-							<s:HorizontalLayout paddingLeft="2" gap="2" paddingRight="2" verticalAlign="middle">
-								
-							</s:HorizontalLayout>
+							<s:HorizontalLayout paddingLeft="2" gap="2" paddingRight="2" verticalAlign="middle"/>
 						</s:layout>
 						<s:CheckBox selected="{data.isSelected}" click="{data.isSelected = (!data.isSelected)}"/>
-						<s:BitmapImage source="{FlexUtilGlobals.getInstance().createAbsoluteUrl(Resources.getResourceUrl('images/team.git/branch_obj.gif'))}">
-							
-						</s:BitmapImage>
+						<s:BitmapImage source="{FlexUtilGlobals.getInstance().createAbsoluteUrl(Resources.getResourceUrl('images/team.git/branch_obj.gif'))}"/>
 						<s:Label text="{data.name}" verticalAlign="middle"/>
 						
 					</s:ItemRenderer>

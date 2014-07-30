@@ -25,12 +25,16 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */ 
 	public class MinimizeAction extends WorkbenchAction {
+		
+		public static const ID:String = "com.crispico.flower.util.layout.actions.MinimizeAction";
+		
 		public function MinimizeAction(bench:Workbench) {
 			super(bench);
 			
 			label = UtilAssets.INSTANCE.getMessage("layout.action.minimize");
 			icon = UtilAssets.INSTANCE._minimizeViewIcon;
 			orderIndex = 30;
+			id = ID;
 		}
 		
 		/**

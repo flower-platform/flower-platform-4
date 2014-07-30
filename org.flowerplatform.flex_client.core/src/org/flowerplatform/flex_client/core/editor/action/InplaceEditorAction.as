@@ -34,6 +34,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */ 
 	public class InplaceEditorAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.InplaceEditorAction";
+		
 		public function InplaceEditorAction() {
 			super();
 			

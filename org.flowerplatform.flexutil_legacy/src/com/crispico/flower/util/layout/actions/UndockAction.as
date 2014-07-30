@@ -27,11 +27,15 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */
 	public class UndockAction extends WorkbenchAction {
+		
+		public static const ID:String = "com.crispico.flower.util.layout.actions.UndockAction";
+		
 		public function UndockAction(bench:Workbench) {
 			super(bench);
 			label = UtilAssets.INSTANCE.getMessage("layout.action.undock");
 			icon = UtilAssets.INSTANCE._dockIcon;
 			orderIndex = 15;
+			id = ID;
 		}
 		
 		/**
