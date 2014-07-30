@@ -18,18 +18,15 @@
 		
 			public var node:Node;
 			
-			/* creationComplete for RenameBranchView */
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				newBranchName.text = node.getPropertyValue(CoreConstants.NAME);
 				okButton.enabled = true;
 			}
 			
-			/* okButton handler: save the new name for branch */
 			override protected function okHandler(event:Event = null):void {
 				if(newBranchName.text == " "){
 					Alert.show(Resources.getMessage('flex_client.team.git.ui.renameBranchView.alert'));
 				} else {
-					/* check the new name from branch */
 					var newName:String = newBranchName.text;
 					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",[node.nodeUri, newName]);
 					cancelHandler();

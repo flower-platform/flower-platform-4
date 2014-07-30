@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.team.git;
 
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
@@ -331,23 +332,25 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().removeChild(
 				CorePlugin.getInstance().getResourceService().getNode(parentUri),
 				childNode, 
-				new ServiceContext<NodeService>().add(CoreConstants.EXECUTE_ONLY_FOR_UPDATER, true));
+				new ServiceContext<NodeService>().add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	/**
 	 * @author Tita Andreea
-	 */
-	/* rename the branch with the new name */
-	public void renameBranch(String nodeUri,String newName) throws Exception {
+	 */	
+	public void renameBranch(String nodeUri, String newName) throws Exception {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		/* path for repository */
-		String pathNode =  Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(pathNode));
-		Git gitInstance = new Git(repo);
-		/* set the new name */
-		gitInstance.branchRename().setOldName((String)node.getPropertyValue(CoreConstants.NAME)).setNewName(newName).call();
-		/* refresh File System node */
-		CorePlugin.getInstance().getNodeService().setProperty(node, CoreConstants.NAME, newName, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
+		
+		// path for repository		
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+		Git git = new Git(repo);
+		
+		// set the new name
+		git.branchRename().setOldName((String) node.getPropertyValue(CoreConstants.NAME)).setNewName(newName).call();
+		
+		// register update
+		CorePlugin.getInstance().getNodeService().setProperty(node, CoreConstants.NAME, newName, 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));	
 	}
 
 	public int cloneRepo(String nodeUri, String repoUri, Collection<String> branches, boolean cloneAll) {
