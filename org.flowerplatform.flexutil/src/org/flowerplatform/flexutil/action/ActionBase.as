@@ -18,7 +18,6 @@ package org.flowerplatform.flexutil.action {
 	
 	import mx.collections.IList;
 	
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilAssets;
 
 	/**
@@ -54,7 +53,7 @@ package org.flowerplatform.flexutil.action {
 		/**
 		 * @author Iulian-Catalin Burcea
 		 */
-		public var isToggleAction:Boolean = false;
+		private var _isToggleAction:Boolean = false;
 		
 		public function get id():String {
 			return _id;
@@ -210,7 +209,22 @@ package org.flowerplatform.flexutil.action {
 		 */
 		public function set isToggle(value:Boolean):void {
 			_isToggle = value;
-			icon = (value) ? FlexUtilAssets.checkedIcon : FlexUtilAssets.uncheckedIcon;
+			icon = value ? FlexUtilAssets.checkedIcon : FlexUtilAssets.uncheckedIcon;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function get isToggleAction():Boolean {
+			return _isToggleAction;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function set isToggleAction(value:Boolean):void {
+			_isToggleAction = value;
+			isToggle = false;
 		}
 		
 		/**
@@ -218,11 +232,15 @@ package org.flowerplatform.flexutil.action {
 		 * 
 		 * @author Cristian Spiescu
 		 * @author Mircea Negreanu
+		 * @author Iulian-Catalin Burcea
 		 */
 		public function run():void {
 			// if we have a functionDelegate than execute that
 			if (functionDelegate != null) {
 				functionDelegate();
+			}
+			if (isToggleAction) {
+				isToggle = !isToggle;
 			}
 		}
 		

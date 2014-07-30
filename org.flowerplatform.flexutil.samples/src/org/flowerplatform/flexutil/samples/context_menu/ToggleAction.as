@@ -1,6 +1,5 @@
 package org.flowerplatform.flexutil.samples.context_menu {
 	
-	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.action.ActionBase;
 
 	/**
@@ -11,13 +10,8 @@ package org.flowerplatform.flexutil.samples.context_menu {
 		public function ToggleAction() {
 			super();
 			isToggleAction = true;
-			icon = FlexUtilAssets.uncheckedIcon;
+			label = "Test Toggle Action";
 		}
 
-		override public function run():void {
-			if(isToggleAction){
-				isToggle = !isToggle;
-			}
-		}
 	}
 }
