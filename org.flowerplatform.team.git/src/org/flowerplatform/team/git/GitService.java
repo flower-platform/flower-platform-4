@@ -39,6 +39,9 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LsRemoteCommand;
+import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
@@ -65,6 +68,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.team.git.remote.GitBranch;
 import org.flowerplatform.util.Utils;
+
 
 /**
  * @author Valentina-Camelia Bojan
@@ -120,6 +124,44 @@ public class GitService {
 
 		return true;		
 	}
+
+
+	/**
+	 * @author Tita Andreea
+	 */
+	
+	/* Merge branch */
+	public String mergeBranch(String nodeUri, Boolean setSquash, boolean commit, int fastForwardOptions) throws Exception {
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Ref ref = repo.getRef((String)node.getPropertyValue(GitConstants.NAME));
+		
+		Git gitInstance = new Git(repo);
+		FastForwardMode fastForwardMode = FastForwardMode.FF;
+		
+		/* set the parameters for Fast Forward options */
+		switch(fastForwardOptions){
+			case 0:
+				fastForwardMode = FastForwardMode.FF;
+				break;
+			case 1:
+				fastForwardMode = FastForwardMode.NO_FF;
+				break;
+			case 2:
+				fastForwardMode = FastForwardMode.FF_ONLY;
+				break;
+		}
+		
+		/* call merge operation */
+		MergeCommand mergeCmd = gitInstance.merge().include(ref).setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit);
+		MergeResult mergeResult = mergeCmd.call();
+	   
+		return GitUtils.handleMergeResult(mergeResult);
+		
+	}
+	
 
 	/**
 	 * @author Cristina Brinza
@@ -406,6 +448,7 @@ public class GitService {
 		g.gc().getRepository().close();
 		g.gc().call();
 	}
+
 
 }
 
