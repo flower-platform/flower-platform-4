@@ -33,7 +33,6 @@ package org.flowerplatform.flex_client.team.git.action {
 		public function ConfigureRemoteAction() {
 			super();
 			
-			label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.label");
 			icon = Resources.configureFetchPush;
 			orderIndex = -1;
 		}
@@ -41,7 +40,13 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				return (node.type == GitConstants.GIT_REMOTES_TYPE); 
+				if (node.type == GitConstants.GIT_REMOTES_TYPE) {
+					label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.createRemote");
+					return true;
+				} else if (node.type == GitConstants.GIT_REMOTE_TYPE) {
+					label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.configureRemote")
+					return true;
+				}
 			}
 			return false;
 		}

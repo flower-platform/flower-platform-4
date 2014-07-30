@@ -22,6 +22,7 @@ package org.flowerplatform.flex_client.team.git {
 	
 	public class GitConstants {
 		
-		public static const GIT_REMOTES_TYPE:String = "gitRemotes";	
+		public static const GIT_REMOTES_TYPE:String = "gitRemotes";
+		public static const GIT_REMOTE_TYPE:String = "gitRemote";
 	}
 }

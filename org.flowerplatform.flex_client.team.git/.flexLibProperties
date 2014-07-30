@@ -4,13 +4,10 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.GitPlugin"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.CreateBranchView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteBranchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.EditRefSpecView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureRemoteView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.ConfigureRemoteAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
   </includeClasses>
   <includeResources/>
