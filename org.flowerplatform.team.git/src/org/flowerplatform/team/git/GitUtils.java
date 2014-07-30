@@ -18,7 +18,6 @@ package org.flowerplatform.team.git;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -81,7 +80,7 @@ public class GitUtils {
 	public static String getType(String nodeUri){
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
-		if(indexEnd < indexStart){
+		if (indexEnd < indexStart) {
 			indexEnd = nodeUri.length();
 		}
 		return nodeUri.substring(indexStart + 1, indexEnd);

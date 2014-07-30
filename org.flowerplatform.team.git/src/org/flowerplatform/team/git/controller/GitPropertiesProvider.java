@@ -5,15 +5,13 @@ import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.CURRENT_BRANCH;
 import static org.flowerplatform.team.git.GitConstants.CURRENT_COMMIT;
-import static org.flowerplatform.team.git.GitConstants.GIT_ICON;
-import static org.flowerplatform.team.git.GitConstants.ICONS_PATH;
 import static org.flowerplatform.team.git.GitConstants.IS_REPO;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.RefDatabase;
 import org.eclipse.jgit.lib.Repository;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
@@ -31,44 +29,34 @@ import org.flowerplatform.util.controller.AbstractController;
 public class GitPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-			
-		Repository repo = null;
-		String repoPath = Utils.getRepo(node.getNodeUri());
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) throws RuntimeException {
+		
 		try {
+			Repository repo = null;
+			String repoPath = Utils.getRepo(node.getNodeUri());
 			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.git"));
-		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl(ICONS_PATH + GIT_ICON));
-		try {
-			node.getProperties().put(CURRENT_BRANCH, repo.getBranch());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			Map<String, org.eclipse.jgit.lib.Ref> local = repo.getRefDatabase().getRefs("");
 			
-			for(Entry<String, org.eclipse.jgit.lib.Ref> entry : local.entrySet()){
-				if(entry.getValue().getTarget().getName().equals(repo.getFullBranch())){
-					node.getProperties().put(CURRENT_COMMIT, entry.getValue().getObjectId().name());
-				}
-			}		
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
-		
-		String repositoryPath = GitUtils.getNodePath(node.getNodeUri());
-		File repoFile;
-		try {
-			repoFile = (File) FileControllerUtils.getFileAccessController().getFile(repositoryPath);
-			node.getProperties().put(IS_REPO, GitUtils.isRepository(repoFile));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			if (repo != null) {
+				node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.git"));
+				node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "git.gif"));
+				node.getProperties().put(CURRENT_BRANCH, repo.getBranch());
+				node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
+				
+				Map<String, org.eclipse.jgit.lib.Ref> refs = repo.getRefDatabase().getRefs(RefDatabase.ALL);
+					
+				for (Ref entry : refs.values()) {
+					if (entry.getTarget().getName().equals(repo.getFullBranch())) {
+						node.getProperties().put(CURRENT_COMMIT, entry.getObjectId().name());
+						break;
+					}
+				}		
+	
+				String repositoryPath = GitUtils.getNodePath(node.getNodeUri());
+				File repoFile;
+				repoFile = (File) FileControllerUtils.getFileAccessController().getFile(repositoryPath);
+				node.getProperties().put(IS_REPO, GitUtils.isRepository(repoFile));
+			}
+		} catch (Exception e){
 		}
 		
 	}

@@ -34,17 +34,17 @@ public class GitResourceHandler implements IResourceHandler {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		if(GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE)){
-			return GitUtils.getName(nodeUri);
-		} else{	
-				try {
-					ref = repo.getRef(GitUtils.getName(nodeUri));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 		
-			return ref;
+		if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE)) {
+			return GitUtils.getName(nodeUri);
 		}
+			try {
+				ref = repo.getRef(GitUtils.getName(nodeUri));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+		return ref;
 	}
 
 	@Override

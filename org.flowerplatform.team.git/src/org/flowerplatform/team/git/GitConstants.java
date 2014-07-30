@@ -20,20 +20,14 @@ public class GitConstants {
 	public static final String GIT_REMOTE_BRANCH_TYPE = "gitRemoteBranch";
 	public static final String GIT_TAG_TYPE = "gitTag";
 	public static final String GIT_REMOTE_TYPE = "gitRemote";
-	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
+	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
+	public static final String GIT_STAGING_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 	
 	/////////////////////////////////////////////////////////////
 	//Schemes
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_SCHEME = "git";
-//	public static final String GIT_LOCAL_BRANCHES_SCHEME = "gitLocalBranches";
-//	public static final String GIT_REMOTE_BRANCHES_SCHEME = "gitRemoteBranches";
-//	public static final String GIT_TAGS_SCHEME = "gitTags";
-//	public static final String GIT_REMOTES_SCHEME = "gitRemotes";
-//	public static final String GIT_BRANCH_SCHEME = "gitBranch";
-//	public static final String GIT_TAG_SCHEME = "gitTag";
-//	public static final String GIT_REMOTE_SCHEME = "gitRemote";
 	
 	/////////////////////////////////////////////////////////////
 	//Leaf Git Node Properties
@@ -54,19 +48,5 @@ public class GitConstants {
 	public static final String REMOTE_URIS = "URIs";
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
-	
-	/////////////////////////////////////////////////////////////
-	//Icons paths
-	/////////////////////////////////////////////////////////////
-	
-	public static final String ICONS_PATH = "/images/team.git/";
-	public static final String BRANCH_ICON = "branch.gif";
-	public static final String TAG_ICON = "tag.gif";
-	public static final String TAGS_ICON = "tags.gif";
-	public static final String REMOTE_ICON = "remote.gif";
-	public static final String FOLDER_ICON = "folder.gif";
-	public static final String GIT_ICON = "git.gif";
-	public static final String REMOTES_ICON = "remotes.gif";
-	public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
 
 }

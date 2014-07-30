@@ -8,10 +8,9 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
+
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
-import static org.flowerplatform.team.git.GitConstants.ICONS_PATH;
-import static org.flowerplatform.team.git.GitConstants.FOLDER_ICON;
 
 /**
  * @author Cojocea Marius Eduard
@@ -21,7 +20,7 @@ public class GitRemoteBranchesPropertiesProvider extends AbstractController impl
 	@Override
 	public void populateWithProperties(Node node,ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.remoteBranches"));
-		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl(ICONS_PATH + FOLDER_ICON));
+		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "folder.gif"));
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}
 
