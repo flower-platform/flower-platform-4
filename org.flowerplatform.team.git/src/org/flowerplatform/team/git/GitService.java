@@ -330,22 +330,32 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_REPO, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
-	public void configureBranch(String branchNodeUri, String remote, String upstream) throws Exception{
-		
+	/**
+	 * @author Diana Balutoiu
+	 */
+	public void configureBranch(String branchNodeUri, String remote, String upstream, Boolean rebase) throws Exception{
 			Node branchNode = CorePlugin.getInstance().getResourceService().getNode(branchNodeUri);
 			String branchName = (String)branchNode.getPropertyValue(CoreConstants.NAME);
-			int index = branchNodeUri.indexOf("|");
-			if (index < 0) {
-				index = branchNodeUri.length();
-			}
-			String repositoryPath = branchNodeUri.substring(branchNodeUri.indexOf(":") + 1, index);
+			String repositoryPath = Utils.getRepo(branchNodeUri);
 			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
 			
 			//get the .git/config file
 			StoredConfig config = repo.getConfig();
-			
-			config.setString("branch", branchName, "remote", remote);
-			config.setString("branch", branchName, "merge", upstream);
+			if(remote.length() > 0){
+				config.setString(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REMOTE, remote);
+			} else {
+				config.unset(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REMOTE);
+			}
+			if(upstream.length() > 0){
+				config.setString(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_MERGE, upstream);
+			} else {
+				config.unset(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_MERGE);
+			}
+			if(rebase){
+				config.setBoolean(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REBASE, true);
+			} else {
+				config.unset(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REBASE);
+			}
 			config.save();
 			
 			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.CONFIG_REMOTE, 
