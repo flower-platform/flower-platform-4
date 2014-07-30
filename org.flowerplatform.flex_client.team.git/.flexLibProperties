@@ -20,9 +20,8 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.view.SelectRepository"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoWizardView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.component.SelectableBranches"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

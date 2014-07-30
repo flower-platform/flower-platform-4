@@ -109,5 +109,13 @@ public class GitUtils {
 		String nodePath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
 		return nodePath;
 	}
+	
+	public static String getNodeUri(String repoPath,String type,String name){
+		return repoPath + "|" + type + "$" + name;
+	}
 
+	public static String getNodeUri(String repoPath,String type){
+		return getNodeUri(repoPath, type, null);
+	}
+	
 }
