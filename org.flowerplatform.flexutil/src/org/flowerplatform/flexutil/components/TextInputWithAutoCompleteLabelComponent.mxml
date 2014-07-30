@@ -50,11 +50,10 @@ license-end
 				filename.text = FlexUtilAssets.INSTANCE.getMessage('label.untitled');
 				
 				Utils.makePseudoDisabled(result);
-				result.text = "";
-				result.appendText(StringUtil.substitute(autoCompletelabelFormat, [filename.text]));
+				filenameChangeHandler();
 			}
 			
-			protected function filenameChangeHandler(event:TextOperationEvent):void {			
+			protected function filenameChangeHandler(event:TextOperationEvent = null):void {			
 				result.text = "";
 				result.appendText(StringUtil.substitute(autoCompletelabelFormat, [filename.text]));				
 			}
