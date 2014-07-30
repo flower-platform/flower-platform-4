@@ -95,7 +95,6 @@ public class GitUtils {
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 
-
 	/* Merge operation from fp3 */
 	public static String handleMergeResult(MergeResult mergeResult) {
 		StringBuilder sb = new StringBuilder();		
@@ -137,23 +136,4 @@ public class GitUtils {
 		return sb.toString();
 	}
 		
-
-	public static void delete(File f) {	
-		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
-			for (File c : f.listFiles()) {
-				delete(c);
-			}
-		}
-		f.delete();
-	}
-	
-	public static String getNodePath(String nodeUri){
-		int index = nodeUri.indexOf("|");
-		if (index < 0) {
-			index = nodeUri.length();
-		}
-		String nodePath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
-		return nodePath;
-	}
-
 }

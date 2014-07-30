@@ -74,7 +74,7 @@ import org.flowerplatform.util.Utils;
  */
 
 public class GitService {
-	
+
 	public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
 		IFileContentProvider fileContentProvider = new GitFileContentProvider(newHash, oldHash, repoPath);
 		OutputStream patch = new ByteArrayOutputStream();
@@ -84,6 +84,7 @@ public class GitService {
 			Repository repository = GitUtils.getRepository(FileControllerUtils
 											.getFileAccessController()
 											.getFile(repoPath));
+
 			Git git = new Git(repository);
 			RevWalk revWalk = new RevWalk(repository);
 			ObjectReader reader = repository.newObjectReader();
@@ -96,13 +97,13 @@ public class GitService {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		return CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(patch.toString(), repoPath, sdiffOutputPath, fileContentProvider);
 	}
 
 	private static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
-	public boolean validateHash(String hash, String repositoryPath) {				
+	public boolean validateHash(String hash, String repositoryPath) {
 		try {
 			// testing if hash is valid
 			Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
@@ -110,13 +111,14 @@ public class GitService {
 				return false;
 			}
 			ObjectId resolved = repo.resolve(hash);
-			if(resolved == null)
+			if(resolved == null) {
 				return false;
-			
-			//testing if hash exists in the repository
+			}
+
+			// testing if hash exists in the repository
 			RevWalk rw = new RevWalk(repo);
 			rw.parseCommit(resolved);
-		
+
 		} catch (Exception e) {
 			return false;
 		}
@@ -309,22 +311,6 @@ public class GitService {
 		
 	}
 
-	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
-		String repositoryPath = GitUtils.getNodePath(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		RepositoryCache.close(repo);
-		repo.getAllRefs().clear();	
-		repo.close();
-		
-		if(keepWorkingDirectoryContent){
-			GitUtils.delete(repo.getDirectory());
-		}else{
-			GitUtils.delete(repo.getDirectory().getParentFile());
-		}
-		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_REPO, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-	}
-	
 	/**
 	 * @author Diana Balutoiu
 	 */
@@ -454,6 +440,26 @@ public class GitService {
 		g.gc().call();
 	}
 
-
+	/** 
+	 * @author Catalin Burcea
+	 */	
+	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
+		String repositoryPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		
+		RepositoryCache.close(repo);
+		repo.getAllRefs().clear();
+		repo.close();
+			
+		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(CoreConstants.EXECUTE_ONLY_FOR_UPDATER, true));
+		
+		if (keepWorkingDirectoryContent) {
+			FileControllerUtils.getFileAccessController().delete(repo.getDirectory());
+		} else {
+			FileControllerUtils.getFileAccessController().delete(repo.getDirectory().getParentFile());
+		}
+	}
+	
 }
 
