@@ -48,7 +48,7 @@ public class GitConstants {
 	public static final String CONFIG_REBASE = "configRebase";
 	public static final String CURRENT_BRANCH = "currentBranch";
 	public static final String CURRENT_COMMIT = "currentCommit";
-	public static final String IS_CHECKOUT = "isCheckout";
+	public static final String IS_CHECKEDOUT = "isCheckedOut";
 	public static final String FETCH_REF_SPECS = "fetchRefSpecs";
 	public static final String PUSH_REF_SPECS = "pushRefSpecs";
 	public static final String REMOTE_URIS = "URIs";
