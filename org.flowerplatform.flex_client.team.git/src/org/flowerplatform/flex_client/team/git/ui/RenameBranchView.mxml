@@ -40,7 +40,7 @@
 		]]>
 	</fx:Script>
 
-	<s:Form >
+	<s:Form width="100%">
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.renameBranchView.newBranchName')}" >
 			<s:TextInput id="newBranchName" width="100%" />
 		</s:FormItem>
