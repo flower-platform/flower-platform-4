@@ -16,6 +16,7 @@
 package org.flowerplatform.team.git;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
@@ -32,21 +33,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
-import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectId;
@@ -66,7 +64,8 @@ import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.team.git.remote.GitBranch;
+import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.util.Utils;
 
 
@@ -125,7 +124,6 @@ public class GitService {
 		return true;		
 	}
 
-
 	/**
 	 * @author Tita Andreea
 	 */
@@ -158,45 +156,39 @@ public class GitService {
 		MergeCommand mergeCmd = gitInstance.merge().include(ref).setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit);
 		MergeResult mergeResult = mergeCmd.call();
 	   
-		return GitUtils.handleMergeResult(mergeResult);
-		
+		return GitUtils.handleMergeResult(mergeResult);		
 	}
-	
 
 	/**
 	 * @author Cristina Brinza
+	 * 
+	 * Get all branches from a certain repository
+	 * 
 	 */
-	
-	/**
-	 *  Get all branches from a certain repository
-	 *  
-	 */
-	public ArrayList<GitBranch> getBranches(String nodeUri) {
-		ArrayList<GitBranch> branches = new ArrayList<GitBranch>();
+	public ArrayList<GitRef> getBranches(String nodeUri) {
+		ArrayList<GitRef> branches = new ArrayList<GitRef>();
 		try {
 			String repoPath = Utils.getRepo(nodeUri);
 			Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-			Map <String, Ref> allRefs = repository.getAllRefs();
+			Git git = new Git(repository);
 			
-			Set<String> keys = allRefs.keySet();
-			for (String key : keys) {
-				if (!key.startsWith("HEAD")) {
-					GitBranch branch;
-					String branchType = "";
-					
-					if (key.startsWith("refs/heads")) {
-						branchType = GIT_LOCAL_BRANCH_TYPE;
-					} else if (key.startsWith("refs/remotes")) {
-						branchType = GIT_REMOTE_BRANCH_TYPE;
-					} else if (key.startsWith("refs/tags")) {
-						branchType = GIT_TAG_TYPE;
-					}
-					
-					branch = new GitBranch(key, branchType);
-					branches.add(branch);
-				}
+			List<Ref> localBranches = git.branchList().call();
+			for (Ref ref : localBranches) {
+				GitRef gitRef = new GitRef(ref.getName(), GIT_LOCAL_BRANCH_TYPE);
+				branches.add(gitRef);
 			}
 			
+			List<Ref> remoteBranches = git.branchList().setListMode(ListMode.REMOTE).call();
+			for (Ref ref : remoteBranches) {
+				GitRef gitRef = new GitRef(ref.getName(), GIT_REMOTE_BRANCH_TYPE);
+				branches.add(gitRef);
+			}
+			
+			List<Ref> tags = git.tagList().call();
+			for (Ref tag : tags) {
+				GitRef gitRef = new GitRef(tag.getName(), GIT_TAG_TYPE);
+				branches.add(gitRef);
+			}
 		} catch (Exception e) {
 			return null;
 		}
@@ -205,11 +197,12 @@ public class GitService {
 	}
 	
 	/**
+	 * @author Cristina Brinza
+	 * 
 	 * Creates new branch
-	 *  
+	 * 
 	 */
-	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws GitAPIException,
-			RefAlreadyExistsException, RefNotFoundException, InvalidRefNameException, Exception {
+	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws Exception {
 		SetupUpstreamMode upstreamMode;
 
 		String repoPath = Utils.getRepo(parentUri);
@@ -238,8 +231,10 @@ public class GitService {
 		}
 	
 		/* create child */
-		Node child = new Node("refs/heads/" + name, GIT_LOCAL_BRANCH_TYPE);
-		
+		Node child = CorePlugin.getInstance().getResourceService().getNode(
+				Utils.getUri(GitConstants.GIT_SCHEME, repoPath + "|" + GIT_LOCAL_BRANCH_TYPE + "$" + createdBranch.getName()), 
+				new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
+
 		/* get the parent */
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));

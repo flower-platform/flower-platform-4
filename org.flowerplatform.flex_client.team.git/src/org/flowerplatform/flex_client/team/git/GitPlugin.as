@@ -30,7 +30,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction	
 
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
-	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
+	import org.flowerplatform.flex_client.team.git.remote.GitRef;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
@@ -84,7 +84,7 @@ package org.flowerplatform.flex_client.team.git {
 		 */
 		override protected function registerClassAliases():void {
 			super.registerClassAliases();
-			registerClassAliasFromAnnotation(GitBranch);
+			registerClassAliasFromAnnotation(GitRef);
 		}
 	}
 }
