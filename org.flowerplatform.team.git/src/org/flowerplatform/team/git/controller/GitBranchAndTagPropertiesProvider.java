@@ -10,6 +10,7 @@ import static org.flowerplatform.team.git.GitConstants.CONFIG_REMOTE;
 import static org.flowerplatform.team.git.GitConstants.CONFIG_UPSTREAM_BRANCH;
 import static org.flowerplatform.team.git.GitConstants.FULL_NAME;
 import static org.flowerplatform.team.git.GitConstants.ICONS_PATH;
+import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
 import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_ICON;
 import static org.flowerplatform.team.git.GitConstants.TAG_ICON;
@@ -92,7 +93,7 @@ public class GitBranchAndTagPropertiesProvider extends AbstractController implem
 		node.getProperties().put(ICONS, setIcon(node));
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 		try {
-			node.getProperties().put(IS_CHECKOUT, repo.getBranch().equals(name));
+			node.getProperties().put(IS_CHECKEDOUT, repo.getBranch().equals(name));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

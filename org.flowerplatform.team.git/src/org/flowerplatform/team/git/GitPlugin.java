@@ -40,7 +40,7 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-import static org.flowerplatform.team.git.GitConstants.IS_CHECKOUT;
+import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
 import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
@@ -128,7 +128,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.fullName")).setReadOnlyAs(true).setOrderIndexAs(1))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_ID).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitID")).setReadOnlyAs(true).setOrderIndexAs(2))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_MESSAGE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitMessage")).setReadOnlyAs(true).setOrderIndexAs(3))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKOUT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.isCheckout")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.isCheckout")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_UPSTREAM_BRANCH).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configUpstreamBranch")).setReadOnlyAs(true).setOrderIndexAs(5))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRemote")).setReadOnlyAs(true).setOrderIndexAs(6))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REBASE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRebase")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));
@@ -139,7 +139,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.fullName")).setReadOnlyAs(true).setOrderIndexAs(1))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_ID).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitID")).setReadOnlyAs(true).setOrderIndexAs(2))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_MESSAGE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitMessage")).setReadOnlyAs(true).setOrderIndexAs(3))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKOUT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.isCheckout")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.isCheckout")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_UPSTREAM_BRANCH).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configUpstreamBranch")).setReadOnlyAs(true).setOrderIndexAs(5))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRemote")).setReadOnlyAs(true).setOrderIndexAs(6))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REBASE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRebase")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));
@@ -150,7 +150,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.fullName")).setReadOnlyAs(true).setOrderIndexAs(1))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_ID).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitID")).setReadOnlyAs(true).setOrderIndexAs(2))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_MESSAGE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitMessage")).setReadOnlyAs(true).setOrderIndexAs(3))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKOUT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.isCheckout")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.isCheckout")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_UPSTREAM_BRANCH).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configUpstreamBranch")).setReadOnlyAs(true).setOrderIndexAs(5))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRemote")).setReadOnlyAs(true).setOrderIndexAs(6))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REBASE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRebase")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));	

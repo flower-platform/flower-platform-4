@@ -15,11 +15,6 @@
 */
 package org.flowerplatform.flex_client.team.git.action
 {
-	import mx.controls.Alert;
-	import mx.rpc.events.FaultEvent;
-	
-	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -31,7 +26,6 @@ package org.flowerplatform.flex_client.team.git.action
 	/**
 	 * @author Marius Iacob
 	 */
-
 	public class DeleteBranchAction extends ActionBase {
 		
 		public function DeleteBranchAction() {
@@ -44,11 +38,12 @@ package org.flowerplatform.flex_client.team.git.action
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
 
-				if ((node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) &&  !node.getPropertyValue(GitConstants.CHECKED_OUT)) {
-					label = Resources.getMessage("team.git.action.DeleteBranchAction");
-					return true;
-				} else if (node.type == GitConstants.GIT_TAG_TYPE) {
-					label = Resources.getMessage("team.git.action.DeleteTagAction");
+				if (node.getPropertyValue(GitConstants.IS_CHECKEDOUT)) {
+					return false;
+				}
+					
+				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE) {
+					label = Resources.getMessage(node.type == GitConstants.GIT_TAG_TYPE ? "team.git.action.deleteTag.action" : "team.git.action.deleteBranch.action");
 					return true;
 				}
 			}
@@ -59,11 +54,11 @@ package org.flowerplatform.flex_client.team.git.action
 			var node:Node = Node(selection.getItemAt(0));
 			
 			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-				.setText(Resources.getMessage("team.git.action.DeleteBranchDialog"))
+				.setText(Resources.getMessage("team.git.action.deleteBranch.message", [node.getPropertyValue(GitConstants.FULL_NAME)]))
 				.setTitle(Resources.getMessage("info"))
 				.setWidth(300)
 				.setHeight(200)
-				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteBranch", [node.parent.nodeUri, node.nodeUri]);})
+				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteRef", [node.parent.nodeUri, node.nodeUri]);})
 				.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
 				.showMessageBox();
 		}
