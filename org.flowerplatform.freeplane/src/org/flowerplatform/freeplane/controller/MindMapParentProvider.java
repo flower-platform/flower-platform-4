@@ -39,7 +39,10 @@ public class MindMapParentProvider extends AbstractController implements IParent
 		}
 		String scheme = Utils.getScheme(node.getNodeUri());
 		String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
-		String parentUri = scheme + ":" + ssp + "#" + parentNodeModel.createID();
+		String parentUri = scheme + ":" + ssp;
+		if(!parentNodeModel.getMap().getRootNode().createID().equals(parentNodeModel.createID())){
+			parentUri += "#" + parentNodeModel.createID();
+		}
 		IResourceHandler resourceHandler = CorePlugin.getInstance().getResourceService().getResourceHandler(scheme);
 		return resourceHandler.createNodeFromRawNodeData(parentUri, parentNodeModel);
 	}

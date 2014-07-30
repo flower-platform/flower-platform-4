@@ -13,10 +13,11 @@
  * 
  * license-end
  */
-package org.flowerplatform.codesync;
+package org.flowerplatform.codesync.controller;
 
 import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
 
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;

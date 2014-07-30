@@ -30,7 +30,7 @@ import org.flowerplatform.util.controller.AbstractController;
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncPropertySetter extends AbstractController implements IPropertySetter {
+public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPropertySetter {
 
 	public CodeSyncPropertySetter() {
 		// invoked before the persistence controllers
@@ -43,6 +43,7 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
 			setSyncFalseAndPropagateToParents(node, context.getService());
+			//setDirtyAndPropagateToParents(node, context);
 			return;
 		}
 		
@@ -69,12 +70,14 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 				// trying to set a different value; keep the old value in property.original if it does not exist
 				context.getService().setProperty(node, originalProperty, originalValue, new ServiceContext<NodeService>(context.getService()));
 				setSyncFalseAndPropagateToParents(node, context.getService());
+				//setDirtyAndPropagateToParents(node, context);
 			}
 		} else {
 			if (isOriginalPropertySet) {
 				// trying to set the same value as the original (a revert operation); unset the original value
 				context.getService().unsetProperty(node, originalProperty, new ServiceContext<NodeService>(context.getService()));
 				setSyncTrueAndPropagateToParents(node, context.getService());
+				//unsetDirtyAndPropagateToParents(node, context);
 			}
 		}
 	}

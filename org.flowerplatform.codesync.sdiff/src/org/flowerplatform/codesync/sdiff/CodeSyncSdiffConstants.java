@@ -27,8 +27,8 @@ public class CodeSyncSdiffConstants {
 	public static final String STRUCTURE_DIFF_EXTENSION = ".sdiff";
 	
 	public static final String COMMENT = "sdiffComment";
-	public static final String CAN_CONTAIN_COMMENT = "containsComment";
-	public static final String CATEGORY_CAN_CONTAIN_COMMENT = UtilConstants.CATEGORY_PREFIX + CAN_CONTAIN_COMMENT;
+	public static final String CONTAINS_COMMENT = "containsComment";
+	public static final String CATEGORY_CAN_CONTAIN_COMMENT = UtilConstants.CATEGORY_PREFIX + "canContainComment";
 	
 	// relative to repository
 	public static final String STRUCTURE_DIFFS_FOLDER = "sdiffs";
