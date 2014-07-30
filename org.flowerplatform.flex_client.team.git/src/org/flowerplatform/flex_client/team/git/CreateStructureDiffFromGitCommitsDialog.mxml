@@ -148,7 +148,6 @@ license-end
 			}
 			
 			override protected function okHandler(event:Event=null):void {
-				okButton.enabled = false;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createStructureDiffFromGitCommits", 
 					[startHash.text, endHash.text, repo, 
 					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.getTextInput()])],
