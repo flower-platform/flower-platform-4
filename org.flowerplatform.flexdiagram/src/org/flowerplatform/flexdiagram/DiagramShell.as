@@ -199,7 +199,7 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function registerTool(id:String, tool:FactoryWithInitialization):void {
-			tools[id] = tool.newInstance();
+			tools[id] = tool.newInstance(true, this);
 		}
 				
 		public function addInModelMapIfNecesssary(context:DiagramShellContext, model:Object):Boolean {

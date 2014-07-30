@@ -15,8 +15,11 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import mx.core.UIComponent;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.ui.Mouse;
 	
+	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
@@ -46,15 +49,11 @@ package org.flowerplatform.flex_client.mindmap {
 		public function MindMapEditorDiagramShell() {
 			super();
 									
-			if (!FlexUtilGlobals.getInstance().isMobile) {
-				registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
-			}
 			registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
 			registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
 			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
 			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
-
-			
+			registerTool(ActionTool.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
 		}
 			
 		public function get nodeRegistry():NodeRegistry {

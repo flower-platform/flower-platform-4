@@ -39,10 +39,11 @@ package org.flowerplatform.flexdiagram.tool {
 		public static const MOUSE_DOWN:String = "mouseDown";
 		public static const MOUSE_UP:String = "mouseUp";
 		public static const MOUSE_RIGHT_CLICK:String = "mouseRightClick";
+		public static const DOUBLE_CLICK:String ="doubleClick";
 		
 		public var listeners:ArrayList = new ArrayList();
 			
-		public var myEventType:String;
+		public var myEventType:String; 
 		
 		public function WakeUpTool(diagramShell:DiagramShell) {
 			super(diagramShell);
@@ -57,11 +58,13 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramShell.tools[WakeUpTool].listeners.addItem(listener);
 		}
 		
-		override public function activateAsMainTool():void {			
+		override public function activateAsMainTool():void {
+			diagramRenderer.doubleClickEnabled = true;
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);			
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.addEventListener(MouseEvent.RIGHT_CLICK, rightClickHandler);
+			diagramRenderer.addEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickHandler);
 			super.activateAsMainTool();
 		}
 		
@@ -70,6 +73,7 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);			
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.removeEventListener(MouseEvent.RIGHT_CLICK, rightClickHandler);
+			diagramRenderer.removeEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickHandler);
 			super.deactivateAsMainTool();
 		}
 				
@@ -114,6 +118,11 @@ package org.flowerplatform.flexdiagram.tool {
 				dispatchMyEvent(myEventType, event);
 				reset();
 			}			
+		}
+		
+		private function mouseDoubleClickHandler(event:MouseEvent):void {
+			myEventType = DOUBLE_CLICK;
+			dispatchMyEvent(myEventType, event);
 		}
 		
 		private function dispatchMyEvent(eventType:String, initialEvent:MouseEvent):void {			
