@@ -10,7 +10,6 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
-			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
@@ -28,12 +27,9 @@
 			
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);
-				var index:int = repoNode.nodeUri.indexOf("|");
-				if (index < 0) {
-					index = repoNode.nodeUri.length;
-				}
-				var repoPath:String = repoNode.nodeUri.substring(repoNode.nodeUri.indexOf(":") + 1, index);
-				deleteGitRepoLabel.text = Resources.getMessage('flex_client.team.git.ui.deleteGitRepositoryLabel', new Array(repoPath));			}
+				var repoPath:String = CorePlugin.getInstance().getRepository(repoNode.nodeUri);
+				deleteGitRepoLabel.text = Resources.getMessage('flex_client.team.git.ui.deleteGitRepositoryLabel', new Array(repoPath));
+			}
 		]]>
 	</fx:Script>
 	<s:Label id="deleteGitRepoLabel"/>

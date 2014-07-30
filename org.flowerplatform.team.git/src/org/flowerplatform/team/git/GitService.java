@@ -67,7 +67,6 @@ import org.flowerplatform.util.Utils;
 
 /**
  * @author Valentina-Camelia Bojan
- * @author Catalin Burcea
  */
 
 public class GitService {
@@ -386,20 +385,23 @@ public class GitService {
 		g.gc().call();
 	}
 
+	/** 
+	 * @author Catalin Burcea
+	 */
+	
 	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
 		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		RepositoryCache.close(repo);
 		repo.getAllRefs().clear();
 		repo.close();
+		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		if (keepWorkingDirectoryContent) {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory());
 		} else {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory().getParentFile());
 		}
-		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
-
 }
 

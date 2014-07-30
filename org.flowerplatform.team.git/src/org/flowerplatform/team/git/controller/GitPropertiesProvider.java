@@ -62,9 +62,9 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 		}
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 
-		File repoFile;
+		Object repoFile;
 		try {
-			repoFile = (File) FileControllerUtils.getFileAccessController().getFile(repoPath);
+			repoFile = FileControllerUtils.getFileAccessController().getFile(repoPath);
 			node.getProperties().put(IS_GIT_REPOSITORY, GitUtils.isRepository(repoFile));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
