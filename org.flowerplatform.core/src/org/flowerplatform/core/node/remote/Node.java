@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import java.beans.Transient;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -48,6 +49,9 @@ public class Node implements Externalizable {
 
 	private Object rawNodeData;
 		
+	public Node() {		
+	}
+	
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);

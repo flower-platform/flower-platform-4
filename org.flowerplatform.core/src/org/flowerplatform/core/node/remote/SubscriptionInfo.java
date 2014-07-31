@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.core.node.remote;
 
+
 /**
  * @author Mariana Gheorghe
  */
@@ -25,6 +26,9 @@ public class SubscriptionInfo {
 	private Node resourceNode;
 	
 	private String resourceSet;
+	
+	public SubscriptionInfo() {		
+	}
 	
 	public SubscriptionInfo(Node rootNode) {
 		this(rootNode, null, null);

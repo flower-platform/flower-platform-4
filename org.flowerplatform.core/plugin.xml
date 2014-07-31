@@ -19,6 +19,16 @@
             alias="/servlet/upload"
             class="org.flowerplatform.core.file.upload.UploadServlet">
       </servlet>
+     
+      <servlet
+            alias="/servlet/rest"
+            class="org.flowerplatform.core.FlowerServletContainer">
+         <init-param
+               name="javax.ws.rs.Application"
+               value="org.flowerplatform.core.ServicesConfig">
+         </init-param>
+      </servlet>
+  
    </extension>
 
 </plugin>

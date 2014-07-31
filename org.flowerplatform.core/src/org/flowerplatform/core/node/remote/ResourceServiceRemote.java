@@ -15,18 +15,38 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
+import org.glassfish.jersey.process.internal.RequestScoped;
 
 /**
  * @see ResourceService
  * 
  * @author Mariana Gheorghe
  */
+@Path("/resourceService")
 public class ResourceServiceRemote {
-
+	
+	@GET
+	public String getHello() {
+		return "Hello";
+	}
+	
+	@POST 
+	@Path("/subscribeToParentResource")
+	@Produces(MediaType.APPLICATION_JSON)
 	public SubscriptionInfo subscribeToParentResource(String nodeUri) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		return CorePlugin.getInstance().getResourceService()

@@ -16,7 +16,9 @@ Require-Bundle: org.eclipse.jdt.core,
  org.flowerplatform.codesync.as,
  org.eclipse.equinox.common,
  org.eclipse.osgi,
- org.flowerplatform.codesync
+ org.flowerplatform.codesync,
+ org.flowerplatform.js_client.core,
+ org.flowerplatform.js_client.java
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
