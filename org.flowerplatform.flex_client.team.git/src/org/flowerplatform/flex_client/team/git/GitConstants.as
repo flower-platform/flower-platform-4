@@ -20,9 +20,6 @@ package org.flowerplatform.flex_client.team.git {
 	 */
 	
 	public class GitConstants {
-		
-		public static const GIT_REMOTES_TYPE:String = "gitRemotes";
-		public static const GIT_REMOTE_TYPE:String = "gitRemote";
 
 		/////////////////////////////////////////////////////////////
 		//Node type in Git folder hierarchy
@@ -63,5 +60,8 @@ package org.flowerplatform.flex_client.team.git {
 		public static const CONFIG_REMOTE:String = "configRemote";
 		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
 		public static const CONFIG_REBASE:String = "configRebase";
+		public static const FETCH_REF_SPECS:String = "fetchRefSpecs";
+		public static const PUSH_REF_SPECS:String = "pushRefSpecs";
+		public static const REMOTE_URIS:String = "URIs";
 	}
 }

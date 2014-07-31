@@ -28,11 +28,19 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			import spark.events.TextOperationEvent;
 			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
+			
+			[Bindable]
+			public var node:Node;
 			
 			protected function getIndexForState(stateName:String):int {
 				if (stateName == "selectFetchPushState") {
@@ -46,12 +54,45 @@ license-end
 			override protected function creationCompleteHandler():void {
 				super.creationCompleteHandler();
 				
-				next.enabled = false;
+				/* check if CreateRemote or ConfigureRemote */
+				if (node.type == GitConstants.GIT_REMOTES_TYPE) {
+					next.enabled = false;
+				} else {
+					remoteNameTextInput.text = node.getPropertyValue(GitConstants.NAME);
+					remoteNameTextInput.editable = false;
+					
+					next.enabled = true;
+				}
+			}
+			
+			/* state 2 functions */
+			private function populateRefMappings():void {				
+				if (configurePushRadioButton.selected) {
+					var pushRefSpecsString:String = node.getPropertyValue(GitConstants.PUSH_REF_SPECS);
+					
+					if (pushRefSpecsString != null) {
+						var pushRefSpecs:Array = pushRefSpecsString.split(" ");		
+						pushRefSpecs.pop();
+			
+						configureFetchPushPage.refMappings = new ArrayCollection(pushRefSpecs);
+					}
+				} else {
+					var fetchRefSpecsString:String = node.getPropertyValue(GitConstants.FETCH_REF_SPECS);
+					
+					if (fetchRefSpecsString != null) {
+						var fetchRefSpecs:Array = fetchRefSpecsString.split(" ");
+						fetchRefSpecs.pop();
+						
+						configureFetchPushPage.refMappings = new ArrayCollection(fetchRefSpecs);
+					}
+				}
 			}
 			
 			override protected function nextClickHandler():void {
 				this.currentState = "configureFetchPushState";
+				populateRefMappings();
 				
+				back.enabled = false;
 				super.nextClickHandler();
 			}
 			
@@ -59,6 +100,21 @@ license-end
 				this.currentState = "selectFetchPushState";
 				
 				super.backClickHandler();
+			}
+			
+			override protected function finishClickHandler():void {
+				/* expanded = true if Remotes node was expanded -> needed on server to know if the Remotes node needs to be refreshed */
+				var expanded : Boolean;
+				if (node.children != null) {
+					/* node was expanded */
+					expanded = true;
+				} else {
+					expanded = false;
+				}
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureRemote", 
+					[node.nodeUri, remoteNameTextInput.text, configureFetchPushPage.remoteUri, configurePushRadioButton.selected, configureFetchPushPage.refMappings, expanded]);
+				
+				super.finishClickHandler();
 			}
 			
 		]]>
@@ -88,13 +144,17 @@ license-end
 		</s:HGroup>
 		
 		<s:VGroup paddingTop="10">
-			<s:RadioButton label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configurePush')}"
+			<s:RadioButton id="configurePushRadioButton"
+						   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configurePush')}"
 						   selected="true"/>
-			<s:RadioButton label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configureFetch')}"/>
+			<s:RadioButton id="configureFetchRadioButton"
+						   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configureFetch')}"/>
 		</s:VGroup>
 		
 	</s:Group>
 	
-	<local:ConfigureFetchPushComponent includeIn="configureFetchPushState"/>
+	<local:ConfigureFetchPushComponent id="configureFetchPushPage"
+									   remoteUri="{node.getPropertyValue(GitConstants.REMOTE_URIS)}"
+									   includeIn="configureFetchPushState"/>
 	
 </ns:Wizard>

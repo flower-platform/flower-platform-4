@@ -55,6 +55,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			var node:Node = Node(selection.getItemAt(0));
 			
 			var view:ConfigureRemoteView = new ConfigureRemoteView();
+			view.node = node;
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)
