@@ -32,6 +32,7 @@ license-end
 			import spark.events.IndexChangeEvent;
 			import spark.layouts.VerticalLayout;
 			
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
@@ -60,7 +61,7 @@ license-end
 				
 				/* find the selected index */
 				for each (var branch:Object in branches) {
-					if (branch.name == node.getPropertyValue("fullName")) {
+					if (branch.name == node.getPropertyValue(GitConstants.FULL_NAME)) {
 						selectBranch.selectedItem = branch;
 						checkState(branch);
 						break;
@@ -103,6 +104,8 @@ license-end
 					}
 				}
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", [parentUri, branchNameTextInput.text, selectBranch.selectedItem.name, configureUpstream, track, setUpstream, checkoutBranch]);
+				
+				cancelHandler(event);
 			}
 			
 			protected function selectBranchChangeHandler(event:IndexChangeEvent):void {				
