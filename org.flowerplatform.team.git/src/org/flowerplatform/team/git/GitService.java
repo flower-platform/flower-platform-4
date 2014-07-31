@@ -111,10 +111,9 @@ public class GitService {
 				return false;
 			}
 			ObjectId resolved = repo.resolve(hash);
-			if(resolved == null) {
+			if (resolved == null){
 				return false;
 			}
-
 			// testing if hash exists in the repository
 			RevWalk rw = new RevWalk(repo);
 			rw.parseCommit(resolved);

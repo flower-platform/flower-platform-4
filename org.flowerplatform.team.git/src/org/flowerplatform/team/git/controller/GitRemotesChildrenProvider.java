@@ -4,14 +4,10 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -40,9 +36,8 @@ public class GitRemotesChildrenProvider extends AbstractController implements IC
 		}
 		Set<String> remotes = repo.getRemoteNames();
 		
-		for(String entry : remotes){
-			String path = new String();
-			path = repoPath + "|" + GIT_REMOTE_TYPE + "$" + entry;
+		for (String entry : remotes) {
+			String path = repoPath + "|" + GIT_REMOTE_TYPE + "$" + entry;
 			children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(GIT_SCHEME)
 					.createNodeFromRawNodeData(Utils.getUri(GIT_SCHEME, path), entry));
 		}
@@ -51,7 +46,10 @@ public class GitRemotesChildrenProvider extends AbstractController implements IC
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		return true;
+		if (getChildren(node, context).size() > 0) {
+			return true;
+		}
+		return false;
 	}
 
 }
