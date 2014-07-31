@@ -203,6 +203,11 @@ public class PlainFileAccessController implements IFileAccessController {
 		// path == null -> path to workspace location
 		return new File(CorePlugin.getInstance().getWorkspaceLocation(), path == null ? "" : path);
 	}
+	
+	@Override
+	public File getFileAsFile(Object file) throws Exception {
+		return (File) file;
+	}
 
 	@Override
 	public boolean hasChildren(Object file) {
@@ -216,5 +221,4 @@ public class PlainFileAccessController implements IFileAccessController {
 	public long length(Object file) {
 		return ((File)file).length();
 	}
-
 }

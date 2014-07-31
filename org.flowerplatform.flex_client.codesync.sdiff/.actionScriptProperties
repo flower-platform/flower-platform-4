@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplaform.flex_client.codesync.sdiff.as" projectUUID="d77e879d-e1d3-458e-9a86-7c91d9943bcd" version="10">
-  <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="public-resources/swc" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplaform.flex_client.codesync.sdiff.as" projectUUID="d77e879d-e1d3-458e-9a86-7c91d9943bcd" version="11">
+  <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="public-resources/swc" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -13,6 +13,12 @@
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.core/public-resources/swc/org.flowerplatform.flex_client.core.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.codesync/public-resources/swc/org.flowerplatform.flex_client.codesync.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.mindmap/public-resources/swc/org.flowerplatform.flex_client.mindmap.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.mindmap/public-resources/swc/org.flowerplatform.flex_client.mindmap.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.mindmap/public-resources/swc/org.flowerplatform.flex_client.mindmap.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
@@ -20,6 +26,7 @@
     <application path="org.flowerplaform.flex_client.codesync.sdiff.as"/>
   </applications>
   <modules/>
+  <workers/>
   <buildCSSFiles/>
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
 </actionScriptProperties>

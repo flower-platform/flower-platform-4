@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+@author Diana Balutoiu
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
+			
+			//The selected node(gitBranch)
+			public var node:Node;
+			
+			override protected function okHandler(event:Event = null):void{
+				var remote:String = remoteTextInput.text;
+				var upstream:String = upstreamTextInput.text;
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureBranch",
+					[node.nodeUri,remote,upstream,rebase.selected]);
+				cancelHandler();
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<s:Form width="100%" height="100%">
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.configureBranchView.remote')}">
+			<s:TextInput id="remoteTextInput" width="100%"
+						 text="{node.getPropertyValue(GitConstants.CONFIG_REMOTE)}" /> 
+		</s:FormItem>
+		
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.configureBranchView.upstream')}">
+			<s:TextInput id="upstreamTextInput" width="100%"
+						 text="{node.getPropertyValue(GitConstants.CONFIG_UPSTREAM_BRANCH)}" /> 
+		</s:FormItem>
+		
+		<s:FormItem label ="{Resources.getMessage('flex_client.team.git.ui.configureBranchView.rebase')}">
+			<s:CheckBox id="rebase"/>
+		</s:FormItem>
+	</s:Form>
+	
+	
+</ns:BasicViewContent>

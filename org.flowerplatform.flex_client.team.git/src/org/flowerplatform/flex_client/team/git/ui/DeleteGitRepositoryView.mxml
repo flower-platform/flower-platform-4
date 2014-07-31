@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+@author Catalin Burcea
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			
+			public var repoNode:Node;
+			
+			override protected function okHandler(event:Event = null):void {			
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteGitRepository", [repoNode.nodeUri, keepWorkingDirectoryContent.selected]);
+				cancelHandler(event);
+			}
+			
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				super.creationCompleteHandler(event);
+				
+				deleteGitRepoLabel.text = Resources.getMessage('flex_client.team.git.action.deleteGitRepositoryLabel', [CorePlugin.getInstance().getRepository(repoNode.nodeUri)]);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Label id="deleteGitRepoLabel" />
+	<s:CheckBox id="keepWorkingDirectoryContent">{Resources.getMessage('flex_client.team.git.ui.keepWorkingDirectoryContent')}</s:CheckBox>
+</ns:BasicViewContent>

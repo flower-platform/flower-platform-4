@@ -7,9 +7,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.flowerplatform.core,
  org.flowerplatform.util,
  org.flowerplatform.codesync,
- org.eclipse.compare.core,
  org.flowerplatform.resources,
  org.flowerplatform.mindmap,
- org.eclipse.text
+ org.eclipse.text,
+ org.eclipse.compare.core
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin
+Export-Package: org.flowerplatform.codesync.sdiff
