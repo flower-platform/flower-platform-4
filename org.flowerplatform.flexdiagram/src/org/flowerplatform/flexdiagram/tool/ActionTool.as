@@ -42,6 +42,7 @@ package org.flowerplatform.flexdiagram.tool {
 			if(action.visible){
 				FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, null);
 			}
+			diagramShell.mainToolFinishedItsJob();
 			deactivateAsMainTool();
 		}
 	}
