@@ -25,6 +25,7 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
+import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 
@@ -33,12 +34,12 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class CodeSyncOperationsService {
 
-	public Match synchronize(String fullNodeId) {
-		return synchronize(fullNodeId, new File("D:/temp/sync_test"), "java", true);
+	public Match synchronize(String nodeUri) throws Exception {
+		return synchronize(nodeUri, CorePlugin.getInstance().getFileAccessController().getFile("user1/repo-1/my_files/modified_conflicts"), "java", true);
 	}
 		
-	public Match synchronize(String fullNodeId, Object file, String technology, boolean oneStepSync) {
-		Match match = generateMatch(fullNodeId, file, technology, oneStepSync);
+	public Match synchronize(String nodeUri, Object file, String technology, boolean oneStepSync) {
+		Match match = generateMatch(nodeUri, file, technology, oneStepSync);
 		if (!oneStepSync) {
 			performSync(match);
 		}
@@ -46,9 +47,9 @@ public class CodeSyncOperationsService {
 		return match;
 	}
 	
-	public Match generateMatch(String fullNodeId, Object file, String technology, boolean oneStepSync) {
+	public Match generateMatch(String nodeUri, Object file, String technology, boolean oneStepSync) {
 		// find containing SrcDir
-		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(fullNodeId);
+		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(nodeUri);
 		Node srcDir = null;
 		File parent = (File) file;
 		do {
@@ -70,7 +71,7 @@ public class CodeSyncOperationsService {
 	
 		// right: source code (file system)
 		Object ast = file;
-		match.setRight(ast);
+		match.setRight(new CodeSyncFile(ast));
 		
 		// initialize the algorithm
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();

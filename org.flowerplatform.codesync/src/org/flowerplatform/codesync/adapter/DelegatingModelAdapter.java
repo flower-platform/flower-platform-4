@@ -123,8 +123,7 @@ public abstract class DelegatingModelAdapter extends AbstractModelAdapter {
 	}
 
 	@Override
-	public void allActionsPerformed(Object element,
-			Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 		getDelegate(element, codeSyncAlgorithm).allActionsPerformed(element, correspondingElement, codeSyncAlgorithm);
 	}
 

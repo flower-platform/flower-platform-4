@@ -338,7 +338,7 @@ public class CodeSyncJavaTest {
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
 
-		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, false);
+		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
 		
 		Pair[] typeList = {
 				new Pair(_3MATCH, 0),				// src
@@ -367,33 +367,39 @@ public class CodeSyncJavaTest {
 							new Pair(_3MATCH, 3), 				// private int x
 								new Pair(_3MATCH, 4),				// private
 				};
-		boolean[] conflicts = {
-				false,
-					false,
-						true,			// superClass changed on model and source
-						
-							false,
-							false,
-							false,
+		
+		org.flowerplatform.util.Pair<Boolean, Boolean> conflictChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(true, true);
+		org.flowerplatform.util.Pair<Boolean, Boolean> conflictNoChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(true, false);
+		org.flowerplatform.util.Pair<Boolean, Boolean> noConflictChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(false, true);
+		org.flowerplatform.util.Pair<Boolean, Boolean> noConflictNoChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(false, false);
+		
+		org.flowerplatform.util.Pair<?, ?>[] conflicts = {
+				noConflictChildrenConflict,
+					noConflictChildrenConflict,
+						conflictChildrenConflict, 				// superClass changed on model and source
+								
+							noConflictNoChildrenConflict,
+							noConflictNoChildrenConflict,
+							noConflictNoChildrenConflict,
 							
-							false,
-								false,
-								false,
-									true,	// annotation value changed on model and source
-								false,
+							noConflictChildrenConflict,
+								noConflictNoChildrenConflict,
+								noConflictChildrenConflict,
+									conflictNoChildrenConflict,		// annotation value changed on model and source
+								noConflictNoChildrenConflict,
+								
+							noConflictNoChildrenConflict,
+								noConflictNoChildrenConflict,
+								noConflictNoChildrenConflict,
+									noConflictNoChildrenConflict,
+									noConflictNoChildrenConflict,
 							
-							false,
-								false,
-								false,
-									false,
-								false,
+							conflictNoChildrenConflict,				// type changed on model and source
+								noConflictNoChildrenConflict,
 							
-							true,			// type changed on model and source
-								false,
-							
-							false,			
-								false,
-			};
+							noConflictNoChildrenConflict,			// type changed on model and source, but the type is the same
+								noConflictNoChildrenConflict,
+		};
 		assertTrue("Conflicts expected!", match.isChildrenConflict());
 		testMatchTree(match, typeList, false);
 		testConflicts(match, conflicts);

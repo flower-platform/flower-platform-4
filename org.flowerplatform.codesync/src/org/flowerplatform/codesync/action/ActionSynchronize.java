@@ -45,6 +45,14 @@ public class ActionSynchronize {
 			if (defaultAction != -1) {
 				result[i] = DiffActionRegistry.ActionType.values()[defaultAction].diffAction.execute(match, i);
 //				diffsInConflict = diffsInConflict
+			} else {
+				ActionResult actionResult = new ActionResult(diff.isConflict(), diff.isLeftModified(), diff.isRightModified());
+				if (match.getLeft() != null) {
+					match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft()).actionPerformed(match.getLeft(), diff.getFeature(), actionResult, match);
+				}
+				if (match.getRight() != null) {
+					match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight()).actionPerformed(match.getRight(), diff.getFeature(), actionResult, match);
+				}				
 			}
 			i++;
 		}
