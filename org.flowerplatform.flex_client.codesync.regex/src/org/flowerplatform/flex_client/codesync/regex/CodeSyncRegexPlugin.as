@@ -67,11 +67,11 @@ package org.flowerplatform.flex_client.codesync.regex {
 //			CorePlugin.getInstance().actionRegistry[ShowTextEditorAction.ID] = new FactoryWithInitialization(ShowTextEditorAction).newInstance();
 //			CorePlugin.getInstance().actionRegistry[ColorTextEditorAction.ID] = new FactoryWithInitialization(ColorTextEditorAction).newInstance();
 			
-			CorePlugin.getInstance().registerAction(GenerateMatchesAction);
-			CorePlugin.getInstance().registerAction(ShowOrderedMatchesAction);
-			CorePlugin.getInstance().registerAction(ShowMatchesGroupedByRegexAction);
-			CorePlugin.getInstance().registerAction(ShowTextEditorAction);
-			CorePlugin.getInstance().registerAction(ColorTextEditorAction);
+			FlexUtilGlobals.getInstance().registerAction(GenerateMatchesAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowOrderedMatchesAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowMatchesGroupedByRegexAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowTextEditorAction);
+			FlexUtilGlobals.getInstance().registerAction(ColorTextEditorAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_CONFIG_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesAction.ID));

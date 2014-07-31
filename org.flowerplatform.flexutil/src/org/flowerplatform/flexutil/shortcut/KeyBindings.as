@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.flexutil.shortcut {
 	
-	import adobe.utils.CustomActions;
-	
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
@@ -33,7 +31,6 @@ package org.flowerplatform.flexutil.shortcut {
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
-	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
 	/**
@@ -130,7 +127,7 @@ package org.flowerplatform.flexutil.shortcut {
 				// execute function
 				handler();
 			} else {		
-				var actions:Vector.<IAction> = additionalActionProviders.getActions(null);
+//				var actions:Vector.<IAction> = additionalActionProviders.getActions(null);
 				
 				// search actionId also in active's view list of available actions	
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
@@ -140,18 +137,20 @@ package org.flowerplatform.flexutil.shortcut {
 					if (view is IViewHostAware) {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
-					var viewActions:Vector.<IAction> = IActionProvider(view).getActions(selection);					
-					for (i = 0; i < viewActions.length; i++) {
-						actions.push(viewActions[i]);
-					}
+					
+//					var actions:Vector.<IAction> = IActionProvider(view).getActions(selection);	
+//					trace("in keybindings : "+viewActions);
+//					for (i = 0; i < viewActions.length; i++) {
+//						actions.push(viewActions[i]);
+//					}
 				}
 				
-				if (actions == null) {
-					return;
-				}
-				for (var i:int = 0; i < actions.length; i++) {
-					action = actions[i];
-					if (action.id == handler) {
+//				if (actions == null) {
+//					return;
+//				}
+//				for (var i:int = 0; i < actions.length; i++) {
+					action = FlexUtilGlobals.getInstance().actionRegistry[handler].newInstance();
+//					if (action.id == handler) {
 						try {
 							action.selection = selection;
 							if (action.visible && action.enabled) {								
@@ -160,9 +159,9 @@ package org.flowerplatform.flexutil.shortcut {
 						} finally {
 							action.selection = null;
 						}						
-						break;
-					}
-				}								
+//						break;
+//					}
+//				}								
 			}
 		}
 	

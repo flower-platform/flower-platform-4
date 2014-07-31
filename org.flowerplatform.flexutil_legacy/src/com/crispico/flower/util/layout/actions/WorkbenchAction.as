@@ -26,13 +26,10 @@ package com.crispico.flower.util.layout.actions {
 	public class WorkbenchAction extends ActionBase {
 		private var _workbench:Workbench;
 		
-		public static const ID:String = "com.crispico.flower.util.layout.actions.WorkbenchAction";
-		
 		public function WorkbenchAction(bench:Workbench) {
 			super();
 			
 			this.workbench = bench;
-			id = ID;
 		}
 		
 		public function get workbench():Workbench {

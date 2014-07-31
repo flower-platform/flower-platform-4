@@ -25,7 +25,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */
 	public class ReloadAction extends EditorFrontendAwareAction {
 		
-		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.ReloadAction";
+//		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.ReloadAction";
 		
 		public function ReloadAction() {			
 			label = Resources.getMessage("reload.action.label");

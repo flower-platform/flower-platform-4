@@ -5,6 +5,7 @@ package org.flowerplatform.flex_client.core.editor.action
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 
@@ -35,9 +36,8 @@ package org.flowerplatform.flex_client.core.editor.action
 				
 				// create list of action factories using action descriptors and action registry
 				for each (var a:ActionDescriptor in descriptors) {
-					actionFactories.push(CorePlugin.getInstance().actionRegistry[a.actionId.toString()].newInstance());
+					actionFactories.push(FlexUtilGlobals.getInstance().actionRegistry[a.actionId.toString()].newInstance());
 				}
-				trace(actionFactories);
 				return actionFactories;
 			}
 			return null;

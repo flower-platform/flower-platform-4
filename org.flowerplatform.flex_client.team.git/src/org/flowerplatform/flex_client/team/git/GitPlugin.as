@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -63,12 +63,12 @@ package org.flowerplatform.flex_client.team.git {
 //			CorePlugin.getInstance().actionRegistry[RenameBranchAction.ID] = new FactoryWithInitialization(RenameBranchAction).newInstance();
 //			CorePlugin.getInstance().actionRegistry[ConfigureBranchAction.ID] = new FactoryWithInitialization(ConfigureBranchAction).newInstance();
 			
-			CorePlugin.getInstance().registerAction(CreateStructureDiffFromGitCommitsAction);
-			CorePlugin.getInstance().registerAction(CreateBranchAction);
-			CorePlugin.getInstance().registerAction(CloneRepoAction);
-			CorePlugin.getInstance().registerAction(DeleteBranchAction);
-			CorePlugin.getInstance().registerAction(RenameBranchAction);
-			CorePlugin.getInstance().registerAction(ConfigureBranchAction);
+			FlexUtilGlobals.getInstance().registerAction(CreateStructureDiffFromGitCommitsAction);
+			FlexUtilGlobals.getInstance().registerAction(CreateBranchAction);
+			FlexUtilGlobals.getInstance().registerAction(CloneRepoAction);
+			FlexUtilGlobals.getInstance().registerAction(DeleteBranchAction);
+			FlexUtilGlobals.getInstance().registerAction(RenameBranchAction);
+			FlexUtilGlobals.getInstance().registerAction(ConfigureBranchAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CloneRepoAction.ID));

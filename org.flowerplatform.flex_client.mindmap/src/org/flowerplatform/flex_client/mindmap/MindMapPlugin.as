@@ -132,9 +132,9 @@ package org.flowerplatform.flex_client.mindmap {
 //			CorePlugin.getInstance().actionRegistry[EditNodeDetailsInDialogAction.ID] = new FactoryWithInitialization(EditNodeDetailsInDialogAction).newInstance();
 //			CorePlugin.getInstance().actionRegistry[EditNoteInDialogAction.ID] = new FactoryWithInitialization(EditNoteInDialogAction).newInstance();
 			
-			CorePlugin.getInstance().registerAction(RefreshAction);
-			CorePlugin.getInstance().registerAction(EditNodeDetailsInDialogAction);
-			CorePlugin.getInstance().registerAction(EditNoteInDialogAction);
+			FlexUtilGlobals.getInstance().registerAction(RefreshAction);
+			FlexUtilGlobals.getInstance().registerAction(EditNodeDetailsInDialogAction);
+			FlexUtilGlobals.getInstance().registerAction(EditNoteInDialogAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RefreshAction.ID))

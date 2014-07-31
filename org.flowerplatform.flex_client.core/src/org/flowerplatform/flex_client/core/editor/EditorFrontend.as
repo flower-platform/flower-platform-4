@@ -78,9 +78,9 @@ package org.flowerplatform.flex_client.core.editor {
 		}
 		
 		public function getActions(selection:IList):Vector.<IAction> {
-			return actionProvider.getActions(selection);			
+			return actionProvider.getActions(selection);
 		}
-		
+				
 		public function getSelection():IList {			
 			return null;
 		}

@@ -23,8 +23,6 @@ package org.flowerplatform.flex_client.core {
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
 	
-	import spark.effects.RemoveAction;
-	
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
@@ -70,7 +68,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
@@ -109,7 +106,6 @@ package org.flowerplatform.flex_client.core {
 		public var editorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
 		
 		// actions per type registry: stores for each actionId an action factory 
-		public var actionRegistry:Dictionary = new Dictionary();
 		public var nodeTypeActionProvider:NodeTypeActionProvider = new NodeTypeActionProvider();
 
 		public var updateTimer:UpdateTimer;
@@ -180,12 +176,12 @@ package org.flowerplatform.flex_client.core {
 //			editorClassFactoryActionProvider.addActionClass(OpenAction);
 //			editorClassFactoryActionProvider.addActionClass(OpenWithEditorComposedAction);
 					
-			registerAction(RemoveNodeAction);
-			registerAction(RenameAction);
-			registerAction(OpenAction);
-			registerAction(OpenWithEditorComposedAction);
-			registerAction(DownloadAction);
-			registerAction(UploadAction);
+			FlexUtilGlobals.getInstance().registerAction(RemoveNodeAction);
+			FlexUtilGlobals.getInstance().registerAction(RenameAction);
+			FlexUtilGlobals.getInstance().registerAction(OpenAction);
+			FlexUtilGlobals.getInstance().registerAction(OpenWithEditorComposedAction);
+			FlexUtilGlobals.getInstance().registerAction(DownloadAction);
+			FlexUtilGlobals.getInstance().registerAction(UploadAction);
 			
 //			actionRegistry[RemoveNodeAction.ID] = new FactoryWithInitialization(RemoveNodeAction).newInstance();
 //			actionRegistry[RenameAction.ID] = new FactoryWithInitialization(RenameAction).newInstance();
@@ -535,9 +531,6 @@ package org.flowerplatform.flex_client.core {
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);
 		}
 		
-		public function registerAction(generator:Class):void {
-			actionRegistry[Object(generator).ID] = new FactoryWithInitialization(RemoveNodeAction);
-		}
 			
 	}
 }

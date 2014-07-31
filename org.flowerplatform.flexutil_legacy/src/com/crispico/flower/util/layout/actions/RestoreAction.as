@@ -26,15 +26,12 @@ package com.crispico.flower.util.layout.actions {
 	 */
 	public class RestoreAction extends WorkbenchAction {
 		
-		public static const ID:String = "com.crispico.flower.util.layout.actions.RestoreAction";
-		
 		public function RestoreAction(bench:Workbench) {
 			super(bench);
 			
 			label = UtilAssets.INSTANCE.getMessage("layout.action.restore");
 			icon = UtilAssets.INSTANCE._restoreViewIcon;
 			orderIndex = 10;
-			id = ID;
 		}
 		
 		/**
