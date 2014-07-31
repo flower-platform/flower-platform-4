@@ -18,17 +18,17 @@ public class CodeSyncPropagator extends DirtyPropagatorController {
 
 	@Override
 	public void setDirty(Node node, ServiceContext<NodeService> serviceContext) {
-		serviceContext.getService().setProperty(node, SYNC, true, new ServiceContext<NodeService>(serviceContext.getService()));
+		serviceContext.getService().setProperty(node, SYNC, false, new ServiceContext<NodeService>(serviceContext.getService()));
 	}
 
 	@Override
 	public void unsetDirty(Node node, ServiceContext<NodeService> serviceContext) {
-		// nothing to do
+		serviceContext.getService().setProperty(node, SYNC, true, new ServiceContext<NodeService>(serviceContext.getService()));
 	}
 
 	@Override
 	public void setChildrenDirty(Node node, ServiceContext<NodeService> serviceContext) {
-		// nothing to do
+		serviceContext.getService().setProperty(node, CHILDREN_SYNC, false, new ServiceContext<NodeService>(serviceContext.getService()));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class CodeSyncPropagator extends DirtyPropagatorController {
 
 	@Override
 	public boolean isDirty(Node node, ServiceContext<NodeService> serviceContext) {
-		if (isSync(node)) {
+		if (!isSync(node)) {
 			// already set
 			return true;
 		}
@@ -90,7 +90,5 @@ public class CodeSyncPropagator extends DirtyPropagatorController {
 	public static boolean isOriginalPropertyName(String property) {
 		return property.endsWith(ORIGINAL_SUFFIX);
 	}
-
-
 
 }

@@ -46,7 +46,7 @@ public abstract class DirtyPropagatorController extends AbstractController{
 	 *            the class that contains the implementation for
 	 */
 	public void setDirtyAndPropagateToParents(Node node, ServiceContext<NodeService> serviceContext) {
-		if(isDirty(node, serviceContext)){
+		if (isDirty(node, serviceContext)){
 			return;
 		}
 		setDirty(node, serviceContext);
@@ -57,11 +57,8 @@ public abstract class DirtyPropagatorController extends AbstractController{
 				// the parentSync flag has already been propagated
 				return;
 			}
-			// set childrenDirty (flag2) to default value for is dirty / mark
+			// set childrenDirty to default value for is dirty / mark
 			setChildrenDirty(parent, serviceContext);
-			// mark it as having dirty children true
-			// service.setProperty(parent, flag2, defaultValueForIsDirty, new
-			// ServiceContext<NodeService>(service));
 			node = parent;
 		}
 	}
@@ -71,7 +68,7 @@ public abstract class DirtyPropagatorController extends AbstractController{
 			// already set
 			return;
 		}
-		// set DIRTY false/ it is not dirty
+		// set dirty false/ it is not dirty
 		unsetDirty(node, serviceContext);
 		
 		// propagate childrenDirty flag for parents

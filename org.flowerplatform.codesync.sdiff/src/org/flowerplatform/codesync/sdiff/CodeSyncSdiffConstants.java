@@ -45,7 +45,6 @@ public class CodeSyncSdiffConstants {
 	public static final String MATCH_COLOR_COMMENT = "#FFFF00";
 	
 	// dirty marker for comments
-	public static final String SHOULD_NOT_BE_CONSIDERED_DIRTY = "shouldBeConsideredDirty";
 	public static final String NODE_URI_TO_BE_IGNORED = "nodeURIToBeIgnored";
 	
 	//////////////////////////////////

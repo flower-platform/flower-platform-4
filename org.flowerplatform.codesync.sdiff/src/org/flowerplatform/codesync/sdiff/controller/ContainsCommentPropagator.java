@@ -2,7 +2,6 @@ package org.flowerplatform.codesync.sdiff.controller;
 
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.CONTAINS_COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.NODE_URI_TO_BE_IGNORED;
-import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.SHOULD_NOT_BE_CONSIDERED_DIRTY;
 
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants;
 import org.flowerplatform.core.DirtyPropagatorController;
@@ -42,7 +41,7 @@ public class ContainsCommentPropagator extends DirtyPropagatorController {
 		if (node.getNodeUri().equals(serviceContext.getContext().get(NODE_URI_TO_BE_IGNORED))) {
 			return false;
 		}
-		return node.getType().equals(CodeSyncSdiffConstants.COMMENT) && (!serviceContext.getContext().containsKey(SHOULD_NOT_BE_CONSIDERED_DIRTY));
+		return node.getType().equals(CodeSyncSdiffConstants.COMMENT);
 	}
 
 	@Override

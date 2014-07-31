@@ -290,8 +290,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_MODEL);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
-			.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
-			.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController())
+			.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController().setOrderIndexAs(10000))
+			.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController().setOrderIndexAs(-10000))
 			.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME));
 			

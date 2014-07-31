@@ -16,8 +16,6 @@
 package org.flowerplatform.codesync.controller;
 
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.core.node.NodeService;
@@ -25,7 +23,6 @@ import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Mariana Gheorghe
@@ -42,8 +39,7 @@ public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPrope
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
-			setSyncFalseAndPropagateToParents(node, context.getService());
-			//setDirtyAndPropagateToParents(node, context);
+			setDirtyAndPropagateToParents(node, context);
 			return;
 		}
 		
@@ -56,7 +52,7 @@ public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPrope
 		Object originalValue = null;
 		String originalProperty = getOriginalPropertyName(property);
 		// get the original value from property.original or property
-		if (node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).containsKey(originalProperty)) {
+ 		if (node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).containsKey(originalProperty)) {
 			isOriginalPropertySet = true;
 			originalValue = node.getPropertyValue(originalProperty);
 		} else if (node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).containsKey(property)) {
@@ -67,17 +63,16 @@ public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPrope
 		
 		if (!Utils.safeEquals(originalValue, value)) {
 			if (!isOriginalPropertySet) {
+				setDirtyAndPropagateToParents(node, context);
 				// trying to set a different value; keep the old value in property.original if it does not exist
+				// this line has to be after propagation, otherwise it will see this child as already dirty, and it won't try to propagate the flag
 				context.getService().setProperty(node, originalProperty, originalValue, new ServiceContext<NodeService>(context.getService()));
-				setSyncFalseAndPropagateToParents(node, context.getService());
-				//setDirtyAndPropagateToParents(node, context);
 			}
 		} else {
 			if (isOriginalPropertySet) {
 				// trying to set the same value as the original (a revert operation); unset the original value
 				context.getService().unsetProperty(node, originalProperty, new ServiceContext<NodeService>(context.getService()));
-				setSyncTrueAndPropagateToParents(node, context.getService());
-				//unsetDirtyAndPropagateToParents(node, context);
+				unsetDirtyAndPropagateToParents(node, context);
 			}
 		}
 	}
