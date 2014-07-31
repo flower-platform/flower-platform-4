@@ -96,7 +96,11 @@ public class GitUtils {
 	}
 
 
-	/* Merge operation from fp3 */
+	/**
+	 * @author Cristina Constantienscu
+	 * @author Tita Andreea
+	 */
+	//  handleMergeResult from fp3 
 	public static String handleMergeResult(MergeResult mergeResult) {
 		StringBuilder sb = new StringBuilder();		
 		if (mergeResult == null) {
@@ -134,6 +138,24 @@ public class GitUtils {
 				sb.append("\n");
 			}
 		}
+		
+		if(mergeResult.getConflicts() != null) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for(String path : mergeResult.getConflicts().keySet()) {
+				sb.append(path);
+				int[][] c = mergeResult.getConflicts().get(path);
+				for(int i = 0; i < c.length; i++) {
+					sb.append(" Conflict #" + i);
+					for(int j = 0; j < (c[i].length) - 1; j++) {
+						if(c[i][j] >= 0){
+							sb.append("  Chunk for " + mergeResult.getMergedCommits()[j] + " starts on line " + c[i][j]);
+						}
+					}
+				}
+			}
+		}
+		
 		return sb.toString();
 	}
 		

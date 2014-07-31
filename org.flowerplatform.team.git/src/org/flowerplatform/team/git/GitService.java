@@ -129,20 +129,18 @@ public class GitService {
 	/**
 	 * @author Tita Andreea
 	 */
-	
-	/* Merge branch */
 	public String mergeBranch(String nodeUri, Boolean setSquash, boolean commit, int fastForwardOptions) throws Exception {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
-		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-		Ref ref = repo.getRef((String)node.getPropertyValue(GitConstants.NAME));
-		
+		// path for repository	
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
 		Git gitInstance = new Git(repo);
+		
+		Ref ref = repo.getRef((String)node.getPropertyValue(GitConstants.NAME));
 		FastForwardMode fastForwardMode = FastForwardMode.FF;
 		
-		/* set the parameters for Fast Forward options */
-		switch(fastForwardOptions){
+		// set the parameters for Fast Forward options 
+		switch (fastForwardOptions){
 			case 0:
 				fastForwardMode = FastForwardMode.FF;
 				break;
@@ -154,7 +152,7 @@ public class GitService {
 				break;
 		}
 		
-		/* call merge operation */
+		// call merge operation 
 		MergeCommand mergeCmd = gitInstance.merge().include(ref).setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit);
 		MergeResult mergeResult = mergeCmd.call();
 	   

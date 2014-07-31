@@ -22,20 +22,13 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CloneRepoAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
-
-
 	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
-
-
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction	
-
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
-
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.CheckoutAction;
-
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -61,14 +54,12 @@ package org.flowerplatform.flex_client.team.git {
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
 
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeBranchAction);			
-			
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
-
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeBranchAction);
+			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
