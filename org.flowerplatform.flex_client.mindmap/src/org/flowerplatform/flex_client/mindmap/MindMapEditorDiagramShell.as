@@ -15,12 +15,15 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import flash.events.MouseEvent;
+	
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.mindmap.action.ExpandCollapseAction;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
@@ -48,6 +51,7 @@ package org.flowerplatform.flex_client.mindmap {
 			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
 			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
 			registerTool(ActionTool.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
+			registerTool(ActionTool.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.MOUSE_UP}));
 		}
 			
 		public function get nodeRegistry():NodeRegistry {

@@ -4,6 +4,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 
@@ -40,7 +41,7 @@ package org.flowerplatform.flexdiagram.tool {
 			var selection:IList = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider.getSelection();
 			action.selection = selection;
 			if(action.visible){
-				FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, null);
+				FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, diagramShell.getNewDiagramShellContext());
 			}
 			diagramShell.mainToolFinishedItsJob();
 			deactivateAsMainTool();

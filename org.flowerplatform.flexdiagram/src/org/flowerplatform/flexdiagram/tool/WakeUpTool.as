@@ -125,6 +125,7 @@ package org.flowerplatform.flexdiagram.tool {
 			dispatchMyEvent(myEventType, event);
 		}
 		
+		
 		private function dispatchMyEvent(eventType:String, initialEvent:MouseEvent):void {			
 			var array:Array = filterAndSortListeners(eventType);
 			
