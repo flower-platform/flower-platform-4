@@ -3,52 +3,87 @@
 					 xmlns:s="library://ns.adobe.com/flex/spark"
 					 xmlns:mx="library://ns.adobe.com/flex/mx"
 					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-					 xmlns:ntc="org.flowerplatform.flex_client.core.node_tree.*">
+					 xmlns:ntc="org.flowerplatform.flex_client.core.node_tree.*"
+					 creationComplete="rebaseCreationCompleteHandler(event)">
 	
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
 			import org.flowerplatform.flex_client.core.CoreConstants;
+			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Pair;
+			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
+			
+			
 	
 			[Bindable]
-			public var filterText:String = "type filter text";
+			public var filterText:String = "branch name";
+			
+			[Bindable]
+			public var node:Node;
+			
+			[Bindable]
+			public var color:Number = 0xA0A0A0;
+			
+			protected function rebaseCreationCompleteHandler(event:FlexEvent):void {
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
+				node = node.parent.parent;
+				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
+				tree.initializeTree(pair == null ? node.nodeUri : pair.a as String);
+			}
 			
 			protected function treeClickHandler(event:MouseEvent):void {
 				var selectedNode:Node = Node(HierarchicalModelWrapper(tree.selectedItem).treeNode);
-				if(selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
-					selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ||
-					selectedNode.type == GitConstants.GIT_TAG_TYPE){
-					textInput.text = selectedNode.getPropertyValue(CoreConstants.NAME);
+				if (selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
+					selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
+					//textInput.text = selectedNode.getPropertyValue(CoreConstants.NAME);
+					filterText = selectedNode.getPropertyValue(CoreConstants.NAME);
+					color = 0x000000;
 				}
 			}
 			
-			protected function rebaseClickHandler(event:MouseEvent):void {
-
+			protected function textInputClickHandler(event:MouseEvent):void {
+				event.currentTarget.selectAll();
 			}
 			
-			protected function cancelClickHandler(event:MouseEvent):void {
-				
+			override protected function okHandler(event:Event = null):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.validateHash",
+					[textInput.text, CorePlugin.getInstance().getRepository(node.nodeUri)],
+					function(result:Boolean):void {
+						if(!result){
+							Alert.show(Resources.getMessage('flex_client.team.git.action.rebaseFailed'));
+						} else {
+							CorePlugin.getInstance().serviceLocator.invoke("GitService.rebase",
+								[node.nodeUri]);
+						}
+					});
+				cancelHandler(event);
 			}
 			
 		]]>
 	</fx:Script>
 	
 	<s:Form width="100%">
-			<s:TextInput width="100%"
+			<s:TextInput text="@{filterText}"
+						 width="100%"
 						 editable="true"
-						 id="textInput"/>
+						 id="textInput"
+						 click="textInputClickHandler(event)" 
+						 color="{color}"/>
 	</s:Form>
 				
 	
 	<ntc:NodeTreeComponent id="tree"
 						   width="100%" height="200"
 						   click="treeClickHandler(event)"/>
-	
-	<s:Button label="Rebase" click="rebaseClickHandler(event)" />
-	<s:Button label="Cancel" click="cancelClickHandler(event)" />
 	
 </ns:BasicViewContent>

@@ -89,6 +89,15 @@ public class GitUtils {
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
+	
+	public static String getShortName(String nodeUri){
+		int index = nodeUri.lastIndexOf("/");
+		
+		if (index < 0 || index < nodeUri.indexOf("$")){
+			index = nodeUri.indexOf("$");
+		}
+		return nodeUri.substring(index);
+	}
 
 	public static void delete(File f) {	
 		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		

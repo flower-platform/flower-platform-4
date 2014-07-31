@@ -399,5 +399,12 @@ public class GitService {
 		g.gc().call();
 	}
 
+	public void rebase(String nodeUri) throws Exception {
+		String repositoryPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
+		
+		new Git(repo).rebase().setUpstream(GitUtils.getName(nodeUri)).call();
+	}
+	
 }
 

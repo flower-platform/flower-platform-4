@@ -571,6 +571,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
 		
+		[Embed(source="/team.git/rebase.gif")]
+		public static const rebaseIcon:Class;
+		
 		// Git
 		
 		[Embed(source="/team.git/branch_obj.gif")]
