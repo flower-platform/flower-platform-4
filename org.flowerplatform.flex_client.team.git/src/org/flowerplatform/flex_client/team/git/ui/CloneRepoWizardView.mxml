@@ -11,7 +11,8 @@
 		 wizardDescription.selectBranchesPage="{Resources.getMessage('git.cloneRepo.branches.description')}"
 		 wizardDescription.selectRepoPage="{Resources.getMessage('git.selectRepo.description')}"
 		 contentArea.selectBranchesPage="{branchesSelectionPage}"
-		 contentArea.selectRepoPage="{repositorySelectionPage}">
+		 contentArea.selectRepoPage="{repositorySelectionPage}"
+		 >
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -33,6 +34,7 @@
 			override protected function creationCompleteHandler():void {
 				src.remoteRepoGroup.visible = false;
 				src.remoteRepoGroup.includeInLayout = false;
+				wizardImage.source=Resources.cloneRepoIcon;
 				super.creationCompleteHandler();
 			}
 									

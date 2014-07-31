@@ -12,7 +12,7 @@ package org.flowerplatform.flex_client.team.git.action
 		public function CloneRepoAction() {
 			super();
 			label = Resources.getMessage("git.cloneRepo.title");
-			icon = Resources.uploadIcon;
+			icon = Resources.cloneRepoIcon;
 //			orderIndex = 310;
 		}
 		

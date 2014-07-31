@@ -400,23 +400,26 @@ public class GitService {
 			return 0;
 		} 
 		catch (InvalidRemoteException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getClass() + " : " + e.getMessage());
 			return -1;
 		} 
 		catch (TransportException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getClass() + " : " + e.getMessage());
 			return -2;
 		} 
 		catch (GitAPIException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getClass() + " : " + e.getMessage());
 			return -3;
 		} 
 		catch (URISyntaxException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getClass() + " : " + e.getMessage());
 			return -4;
 		} 
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getClass() + " : " + e.getMessage());
+			if (e.getMessage().equalsIgnoreCase("Destination path \"repo\" already exists and is not an empty directory")) {
+				return -6;
+			}
 			return -5;
 		}
 	}
