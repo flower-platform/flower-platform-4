@@ -17,7 +17,8 @@ package org.flowerplatform.flexutil.action {
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.IList;
-	import mx.messaging.AbstractConsumer;
+	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
 
 	/**
 	 * @author Cristian Spiescu
@@ -43,6 +44,16 @@ package org.flowerplatform.flexutil.action {
 		 * @author Mircea Negreanu
 		 */
 		private var _functionDelegate:Function;
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		private var _isToggle:Boolean = false;
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		private var _isToggleAction:Boolean = false;
 		
 		public function get id():String {
 			return _id;
@@ -187,15 +198,49 @@ package org.flowerplatform.flexutil.action {
 		}
 		
 		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function get isToggle():Boolean {
+			return _isToggle;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function set isToggle(value:Boolean):void {
+			_isToggle = value;
+			icon = value ? FlexUtilAssets.checkedIcon : FlexUtilAssets.uncheckedIcon;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function get isToggleAction():Boolean {
+			return _isToggleAction;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function set isToggleAction(value:Boolean):void {
+			_isToggleAction = value;
+			isToggle = false;
+		}
+		
+		/**
 		 * Use functionDelegate, if any exists.
 		 * 
 		 * @author Cristian Spiescu
 		 * @author Mircea Negreanu
+		 * @author Iulian-Catalin Burcea
 		 */
 		public function run():void {
 			// if we have a functionDelegate than execute that
 			if (functionDelegate != null) {
 				functionDelegate();
+			}
+			if (isToggleAction) {
+				isToggle = !isToggle;
 			}
 		}
 		

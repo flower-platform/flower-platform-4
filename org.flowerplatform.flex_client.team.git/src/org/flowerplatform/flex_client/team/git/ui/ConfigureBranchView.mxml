@@ -16,17 +16,15 @@
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			
 			//The selected node(gitBranch)
-			[Bindable]
 			public var node:Node;
 			
 			override protected function okHandler(event:Event = null):void{
 				var remote:String = remoteTextInput.text;
 				var upstream:String = upstreamTextInput.text;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureBranch",
-					[node.nodeUri,remote,upstream]);
+					[node.nodeUri,remote,upstream,rebase.selected]);
 				cancelHandler();
 			}
-		
 		]]>
 	</fx:Script>
 	
@@ -40,6 +38,10 @@
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.configureBranchView.upstream')}">
 			<s:TextInput id="upstreamTextInput" width="100%"
 						 text="{node.getPropertyValue(GitConstants.CONFIG_UPSTREAM_BRANCH)}" /> 
+		</s:FormItem>
+		
+		<s:FormItem label ="{Resources.getMessage('flex_client.team.git.ui.configureBranchView.rebase')}">
+			<s:CheckBox id="rebase"/>
 		</s:FormItem>
 	</s:Form>
 	
