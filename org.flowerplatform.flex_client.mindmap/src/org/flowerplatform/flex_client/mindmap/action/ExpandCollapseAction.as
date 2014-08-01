@@ -14,10 +14,14 @@ package org.flowerplatform.flex_client.mindmap.action {
 		}
 		
 		override public function run():void {
-			var node:Node = Node(selection.getItemAt(0));
-			context.diagramShell.getModelController(context, node).
-			setExpanded(context, node, !context.diagramShell.getModelController(context, node).getExpanded(context, node));
-			
+			try{
+				var node:Node = Node(selection.getItemAt(0));
+				context.diagramShell.getModelController(context, node).
+				setExpanded(context, node, !context.diagramShell.getModelController(context, node).getExpanded(context, node));
+			} catch (castError:Error){ 
+				//If click outside a node -> do nothing
+				return;
+			}
 		}
 	}
 }
