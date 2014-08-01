@@ -14,16 +14,13 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.ui.Keyboard;
+	import flash.utils.Timer;
 	
 	import mx.collections.ArrayList;
-	import mx.core.mx_internal;
-	import mx.utils.ArrayUtil;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	
@@ -45,6 +42,8 @@ package org.flowerplatform.flexdiagram.tool {
 		public var listeners:ArrayList = new ArrayList();
 			
 		public var myEventType:String; 
+		
+		private var secondClick:Boolean = false;
 		
 		public function WakeUpTool(diagramShell:DiagramShell) {
 			super(diagramShell);
@@ -105,7 +104,7 @@ package org.flowerplatform.flexdiagram.tool {
 		
 		private function mouseDownHandler(event:MouseEvent):void {
 			myEventType = MOUSE_DOWN;			
-			dispatchMyEvent(myEventType, event);			
+			dispatchMyEvent(myEventType, event);	
 		}
 		
 		private function mouseMoveHandler(event:MouseEvent):void {
@@ -121,19 +120,30 @@ package org.flowerplatform.flexdiagram.tool {
 				myEventType = MOUSE_UP;
 				dispatchMyEvent(myEventType, event);
 				reset();
-			}			
+			}
 		}
 		
 		private function mouseDoubleClickHandler(event:MouseEvent):void {
 			myEventType = DOUBLE_CLICK;
 			dispatchMyEvent(myEventType, event);
+			secondClick = true;
 		}
 		
 		private function clickHandler(event:MouseEvent):void {
-			myEventType = CLICK;
-			dispatchMyEvent(myEventType, event);
+			/*A timer is needed so that the clickEvent won`t be dispatched before the doubleClickEvent */
+			secondClick = false;
+			var timer:Timer = new Timer(250,1);
+			timer.addEventListener(TimerEvent.TIMER, onTimer);
+			timer.start();		
 		}
 		
+		private function onTimer(event:TimerEvent):void {
+			if(secondClick == false){
+				myEventType = CLICK;
+				dispatchMyEvent(myEventType, new MouseEvent(CLICK));
+			}
+			secondClick = false;
+		}
 		
 		private function dispatchMyEvent(eventType:String, initialEvent:MouseEvent):void {			
 			var array:Array = filterAndSortListeners(eventType);
