@@ -15,26 +15,25 @@
  */
 package org.flowerplatform.team.git;
 
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
-import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
-import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
@@ -49,6 +48,7 @@ import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
@@ -58,6 +58,13 @@ import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.codesync.sdiff.IFileContentProvider;
+
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
+import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
+
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -65,7 +72,9 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.remote.GitRef;
+import org.flowerplatform.team.git.GitConstants;
 import org.flowerplatform.util.Utils;
 
 
@@ -100,8 +109,6 @@ public class GitService {
 
 		return CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(patch.toString(), repoPath, sdiffOutputPath, fileContentProvider);
 	}
-
-	private static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
 	public boolean validateHash(String hash, String repositoryPath) {
 		try {
@@ -242,14 +249,24 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
+	/**
+	 * 
+	 * @param url Supposed URI of a repository
+	 * @return
+	 * <ul>
+	 * 	<li>0 (success)</li>
+	 * 	<li>-1 (existent repository)</li>
+	 * </ul>
+	 * 
+	 * @author Alina Bratu
+	 */
+	
 	public int validateRepoURL(String url) {
 		try {
 			URIish repoUri = new URIish(url.trim());
 			if (repoUri.getScheme().toLowerCase().startsWith("http") ) {
-				InputStream ins = null;
 				URLConnection conn = new URL(repoUri.toString()).openConnection();
-			    conn.setReadTimeout(NETWORK_TIMEOUT_MSEC);
-			    ins = conn.getInputStream();
+			    conn.setReadTimeout(GitConstants.NETWORK_TIMEOUT_MSEC);
 		    } 
 			String repoName = new URIish(url.trim()).getHumanishName();
 			File gitReposFile = new File(repoName);
@@ -257,58 +274,52 @@ public class GitService {
 			if (GitUtils.getGitDir(gitReposFile) != null) {
 				return 1;
 			}
-		}
-		catch(Exception ex) {
+		} catch(Exception ex) {
+			System.out.println(ex.getMessage());
 			return -1;
 		}
 		return 0;  
 	}
 
-	public ArrayList<String> getRemoteBranches(String uri) {
-//        System.out.println("Listing local branches:");
-		try {
-			Repository repository = new FileRepository(new File("/tmp"));		
-			Git git = new Git(repository);
-			LsRemoteCommand rc = git.lsRemote();
-			rc.setRemote(uri.toString()).setTimeout(30);
-			
-	        Collection<Ref> call = rc.call();
-	        ArrayList<String> branches = new ArrayList<String>();
-	        String name;
-	        
-	        for (Ref ref : call) {
-	        	name = ref.getName();
-//	            System.out.println("Branch: " + name);
-	            if (!name.equalsIgnoreCase("HEAD")) {
-	            	String[] words = ref.getName().split("/");
-//		        	System.out.print(words[0] +" " + words[1]);
-		        	if (words[0].equalsIgnoreCase("refs") && words[1].equalsIgnoreCase("heads")) {
-		        		branches.add(words[2]);
-		        	}
-	            }
-	        }
-			repository.close();
-			Collections.sort(branches, new Comparator<String>() {
-				@Override
-				public int compare(String s1, String s2) {
-					return s1.compareTo(s2);
-				}
-				 
-			});
-			System.out.println(branches);
-			return branches;
-		} 
-		catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		} 
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+	/**
+	 * 
+	 * @param uri Repository URI from where the branches will be listed
+	 * @return list of branches in the given repository
+	 * 
+	 * @author Alina Bratu
+	 * @throws IOException 
+	 * @throws GitAPIException 
+	 * @throws TransportException 
+	 * @throws InvalidRemoteException 
+	 */
+	public List<String> getRemoteBranches(String uri) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
+		Repository repository = new FileRepository(new File("/tmp"));		
+		Git git = new Git(repository);
+		LsRemoteCommand rc = git.lsRemote();
+		rc.setRemote(uri.toString()).setTimeout(30);
 		
+        Collection<Ref> call = rc.call();
+        List<String> branches = new ArrayList<String>();
+        String name;
+        
+        for (Ref ref : call) {
+        	name = ref.getName();
+            if (!name.equalsIgnoreCase("HEAD")) {
+            	String[] words = ref.getName().split("/");
+	        	if (words[0].equalsIgnoreCase("refs") && words[1].equalsIgnoreCase("heads")) {
+	        		branches.add(words[2]);
+	        	}
+            }
+        }
+		repository.close();
+		Collections.sort(branches, new Comparator<String>() {
+			@Override
+			public int compare(String s1, String s2) {
+				return s1.compareTo(s2);
+			}
+			 
+		});
+		return branches;
 	}
 
 	/**
@@ -385,45 +396,92 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().setProperty(node, CoreConstants.NAME, newName, 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));	
 	}
+	
+	/**
+	 * 
+	 * @param nodeUri URI of the parent node of where the repository will be cloned
+	 * @param repoUri URI of the repository to be cloned
+	 * @param branches List of branch names to be cloned
+	 * @param cloneAll Indicates whether to clone all branches or not. If cloneAll is set to true, the list of branches will be ignored. 
+	 *
+	 * @author Alina Bratu
+	 * @throws Exception 
+	 */
 
-	public int cloneRepo(String nodeUri, String repoUri, Collection<String> branches, boolean cloneAll) {
-		CloneCommand cc = new CloneCommand();
-		try {
-			cc.setCloneAllBranches(cloneAll);
-			cc.setBranchesToClone(branches);
-			cc.setURI(repoUri);
-			URIish urish = new URIish(repoUri.trim());
-			String repoName = urish.getHumanishName();
-			File directory = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
-			cc.setDirectory(directory);
-			cc.call();
-			return 0;
-		} 
-		catch (InvalidRemoteException e) {
-			System.out.println(e.getClass() + " : " + e.getMessage());
-			return -1;
-		} 
-		catch (TransportException e) {
-			System.out.println(e.getClass() + " : " + e.getMessage());
-			return -2;
-		} 
-		catch (GitAPIException e) {
-			System.out.println(e.getClass() + " : " + e.getMessage());
-			return -3;
-		} 
-		catch (URISyntaxException e) {
-			System.out.println(e.getClass() + " : " + e.getMessage());
-			return -4;
-		} 
-		catch (Exception e) {
-			System.out.println(e.getClass() + " : " + e.getMessage());
-			if (e.getMessage().equalsIgnoreCase("Destination path \"repo\" already exists and is not an empty directory")) {
-				return -6;
+	public void cloneRepo(final String nodeUri, final String repoUri, final Collection<String> branches, final boolean cloneAll) throws Exception {
+		final URIish uri = new URIish(repoUri.trim());
+		final String remoteName = repoUri.substring(repoUri.lastIndexOf('/')+1, repoUri.length()-4);
+		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
+		
+//		final ProgressMonitor monitor = ProgressMonitor.create(
+//				GitPlugin.getInstance().getMessage("git.cloneRepo.title", uri), context.getCommunicationChannel());		
+//		monitor.beginTask(GitPlugin.getInstance().getMessage("git.cloneRepo.title", uri), 2);
+
+		final String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
+		Job job = new Job(jobName)	{
+			@Override
+			protected IStatus run(IProgressMonitor m) {														
+//				Repository repository = null;
+				try {	
+					CloneCommand cloneRepository = Git.cloneRepository();
+					
+					cloneRepository.setNoCheckout(true);			
+					cloneRepository.setDirectory(mainRepo);
+					cloneRepository.setProgressMonitor(new GitProgressMonitor(m,jobName ));
+					cloneRepository.setRemote(remoteName);
+					cloneRepository.setURI(uri.toString());
+					cloneRepository.setCloneAllBranches(cloneAll);
+//					cloneRepository.setCloneSubmodules(false);	
+					cloneRepository.setBranchesToClone(branches);
+					cloneRepository.call();
+					
+//					Git git = cloneRepository.call();
+//					repository = git.getRepository();
+//					
+//					// notify clients about changes
+//					dispatchContentUpdate(node);
+					
+//					monitor.worked(1);	
+				} catch (Exception e) {			
+//					if (repository != null)
+//						repository.close();
+//					
+					if (m.isCanceled()) {
+						return Status.OK_STATUS;
+					}
+//					if (GitPlugin.getInstance().getUtils().isAuthentificationException(e)) {
+//						openLoginWindow();
+//						return Status.OK_STATUS;
+//					}
+//					logger.debug(GitPlugin.getInstance().getMessage("git.cloneWizard.error", new Object[] {mainRepo.getName()}), e);
+//					context.getCommunicationChannel().appendOrSendCommand(
+//							new DisplaySimpleMessageClientCommand(
+//									CommonPlugin.getInstance().getMessage("error"), 
+//									GitPlugin.getInstance().getMessage("git.cloneWizard.error", new Object[] {mainRepo.getName()}),							
+//									DisplaySimpleMessageClientCommand.ICON_ERROR));	
+//					
+					return Status.CANCEL_STATUS;
+				} finally {
+					m.done();					
+//					if (repository != null) {
+//						repository.close();
+//					}
+				}
+				return Status.OK_STATUS;
 			}
-			return -5;
-		}
+		};
+		job.schedule();
+		return;
+//		CloneCommand cc = new CloneCommand();
+//		cc.setNoCheckout(true);
+//		cc.setCloneAllBranches(cloneAll);
+//		cc.setBranchesToClone(branches);
+//		cc.setURI(repoUri);
+//		cc.setCloneSubmodules(false);
+//		File directory = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
+//		cc.setDirectory(directory);
+//		cc.call();
 	}
-
 
 	/** 
 	 * @author Vlad Bogdan Manica

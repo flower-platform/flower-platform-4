@@ -6,7 +6,10 @@ package org.flowerplatform.flex_client.team.git.action
 	import org.flowerplatform.flex_client.team.git.ui.CloneRepoWizardView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-
+	
+	/**
+	 *@author Alina Bratu
+	 */
 	public class CloneRepoAction extends ActionBase {
 		
 		public function CloneRepoAction() {
@@ -17,13 +20,9 @@ package org.flowerplatform.flex_client.team.git.action
 		}
 		
 		override public function get visible():Boolean {
-			
 			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
 				var type:String = Node(selection.getItemAt(0)).type;
-				if (type == GitConstants.GIT_REPO_TYPE) {
-					return true;
-				}
-				return false;
+				return (type == GitConstants.GIT_REPO_TYPE);
 			}
 			return false;
 		}

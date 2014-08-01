@@ -12,16 +12,20 @@
 		 wizardDescription.selectRepoPage="{Resources.getMessage('git.selectRepo.description')}"
 		 contentArea.selectBranchesPage="{branchesSelectionPage}"
 		 contentArea.selectRepoPage="{repositorySelectionPage}"
-		 >
+		 wizardImage="{new BitmapImage().source(Resources.cloneRepoIcon)}">
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.collections.ArrayList;
+			import mx.core.Container;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.primitives.BitmapImage;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.resources.Resources;
-			import org.flowerplatform.flex_client.team.git.ui.component.SelectableBranches;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.spinner.ModalSpinner;
 			
 			[Bindable]
 			public var selectedBranches:ArrayCollection;
@@ -30,16 +34,9 @@
 			
 			public var nodeUri:String;
 			var repoUri:String;
-			
-			override protected function creationCompleteHandler():void {
-				src.remoteRepoGroup.visible = false;
-				src.remoteRepoGroup.includeInLayout = false;
-				wizardImage.source=Resources.cloneRepoIcon;
-				super.creationCompleteHandler();
-			}
-									
-			 public function getIndexForState(stateName:String):int {
-				 if (stateName == "selectRepoPage") {
+												
+			public function getIndexForState(stateName:String):int {
+				if (stateName == "selectRepoPage") {
 					return 0;
 				}
 				return 1;
@@ -47,7 +44,8 @@
 			
 			override protected function nextClickHandler():void {
 				repoUri = src.getURI();
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.validateRepoURL",[repoUri],validateRepoURLResultHandler);
+				CorePlugin.getInstance().serviceLocator
+					.invoke("GitService.validateRepoURL",[repoUri],validateRepoURLResultHandler);
 			}
 			
 			protected function validateRepoURLResultHandler(i:int):void {
@@ -77,7 +75,7 @@
 					allBranches = new ArrayCollection();
 					selectedBranches = new ArrayCollection();
 					for each (var s:String in all) {
-						var br:SelectableBranches = new SelectableBranches();
+						var br:Object = new Object();
 						br.name = s;
 						br.isSelected = false;
 						selectedBranches.addItem(br);
@@ -95,7 +93,7 @@
 				var cloneAll:Boolean = true;
 				branches = new ArrayCollection();
 				updateSelectedBranches();
-				for each (var branch:SelectableBranches in allBranches) {
+				for each (var branch:Object in allBranches) {
 					if (branch.isSelected) {
 						branches.addItem(branch.name);
 					}
@@ -103,39 +101,22 @@
 				if (branches.length != allBranches.length) {
 					cloneAll = false;
 				}
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.cloneRepo",[nodeUri,repoUri,branches,cloneAll],doneHandler);
+				ModalSpinner.addGlobalModalSpinner(Resources.getMessage("git.spinner.cloneRepo"),new ModalSpinner());
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.cloneRepo",[nodeUri,repoUri,branches,cloneAll],removeSpinner,doneFaultHandler);
 				super.finishClickHandler();
-				
 			}
 			
-			private function doneHandler(i:int):void {
-				switch(i) {
-					case 0:
-						break;
-					case -1:
-						throwError(Resources.getMessage('git.error.invalidRemote'));
-						break;
-					case -2:
-						throwError(Resources.getMessage('git.error.transportOperation'));
-						break;
-					case -3:
-						throwError(Resources.getMessage('git.error'));
-						break;
-					case -4:
-						throwError(Resources.getMessage('git.error.URIParse'));
-						break;
-					case -5:
-						throwError(Resources.getMessage('git.error'));
-						break;
-					default:
-						throwError(Resources.getMessage('git.error'));
-						break;
-					
-				}
+			private function doneFaultHandler(event:FaultEvent):void {
+				throwError(event.fault.message);
+				removeSpinner(event);
+			}
+			
+			private function removeSpinner(event:Event):void {
+				ModalSpinner.removeGlobalModalSpinner();
 			}
 			
 			private function updateSelectedBranches():void {
-				for each (var branch:SelectableBranches in selectedBranches) {
+				for each (var branch:Object in selectedBranches) {
 					allBranches.getItemAt(allBranches.getItemIndex(branch)).isSelected = branch.isSelected;
 				}
 			}
@@ -143,7 +124,7 @@
 			private function filterBranches(event:KeyboardEvent):void {
 				updateSelectedBranches();
 				selectedBranches.removeAll();
-				for each (var branch:SelectableBranches in allBranches) {
+				for each (var branch:Object in allBranches) {
 					if (branch.name.toLowerCase().match(branchesFilter.text.toLowerCase())) {
 						selectedBranches.addItem(branch);
 					}
@@ -169,21 +150,21 @@
 	</popup:states>
 	
 	<mx:VBox id="repositorySelectionPage" width="100%">
-		<component:SelectRepositoryComponent  id="src" width="100%" height="100%" includeIn="selectRepoPage"/>		
+		<component:SelectRepositoryComponent  id="src" width="100%" height="100%" includeIn="selectRepoPage" showRemotesList="false"/>		
 	</mx:VBox>
 	
 	
-	<mx:VBox id="branchesSelectionPage" width="100%" paddingLeft="10" paddingRight="10">
+	<mx:VBox id="branchesSelectionPage" width="100%" height="100%" paddingLeft="10" paddingRight="10">
 		<s:TextInput id="branchesFilter" keyUp="filterBranches(event)" text="{Resources.getMessage('git.filter')}" includeIn="selectBranchesPage" width="100%" />
-		<s:List id="branchesList" includeIn="selectBranchesPage" width="100%" dataProvider="{selectedBranches}">
+		<s:List id="branchesList" includeIn="selectBranchesPage" width="100%" height="100%" dataProvider="{selectedBranches}">
 			<s:itemRenderer> 
 				
 				<fx:Component> 
 					<s:ItemRenderer creationComplete="creationCompleteHandler(event)">
 						<fx:Script>
 							<![CDATA[																			
-								import mx.events.FlexEvent;
 								import mx.collections.ArrayCollection;
+								import mx.events.FlexEvent;
 								
 								import org.flowerplatform.flex_client.resources.Resources;
 								import org.flowerplatform.flexutil.FlexUtilGlobals;

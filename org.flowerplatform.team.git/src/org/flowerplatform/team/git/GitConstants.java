@@ -71,6 +71,11 @@ public class GitConstants {
 	public static final String GIT_ICON = "git.gif";
 	public static final String REMOTES_ICON = "remotes.gif";
 	public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
+	
+	/////////////////////////////////////////////////////////////
+	// Other
+	/////////////////////////////////////////////////////////////
 
-
+	public static final int NETWORK_TIMEOUT_MSEC = 15000;
+	
 }
