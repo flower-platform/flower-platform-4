@@ -15,12 +15,11 @@
  */
 package org.flowerplatform.team.git;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
@@ -29,6 +28,7 @@ import org.eclipse.jgit.util.FS;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
+import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
 /**
  * @author Cojocea Marius Eduard
@@ -111,7 +111,10 @@ public class GitUtils {
 	}
 	
 	public static String getNodeUri(String repoPath,String type,String name){
-		return repoPath + "|" + type + "$" + name;
+		if (name != null){
+			return GIT_SCHEME + ":" + repoPath + "|" + type + "$" + name;
+		}
+		return GIT_SCHEME + ":" + repoPath + "|" + type;
 	}
 
 	public static String getNodeUri(String repoPath,String type){
