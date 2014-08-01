@@ -1,9 +1,6 @@
 package org.flowerplatform.flex_client.team.git.action
 {
-	public class RemoveFromGitIndex
-	{
-		public function RemoveFromGitIndex()
-		{
-		}
+	public class RemoveFromGitIndex {
+		//needs to be implemented for context menu
 	}
 }

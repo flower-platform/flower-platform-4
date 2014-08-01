@@ -34,20 +34,19 @@ license-end
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			
-			import mx.controls.Alert;
-			import spark.components.supportClasses.ListBase;
-			import spark.events.IndexChangeEvent;
-			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-			
+			/**
+			 * @author Marius Iacob
+			 */
 			
 			[Bindable]
 			public var repo:String;
@@ -66,10 +65,11 @@ license-end
 					event.selection = activeSelectionProvider.getSelection();
 					selectionChangedHandler(event);
 				}
-			// listen for selection changes				
-			IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
-			FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);	
+				// listen for selection changes				
+				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);	
 			}
+			
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				var i:int;
 				if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { 
@@ -82,26 +82,29 @@ license-end
 				if (index < 0) {
 					index = node.nodeUri.length;
 				}
-				repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.authorAndCommiter", [repo], function(data:ArrayCollection):void {author.text = String(data.getItemAt(0)); commiter.text = String(data.getItemAt(0));});
+				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
+					.categories.getItemIndex(GitConstants.GIT_STAGING_CATEGORY) >= 0) {
+					repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+					refreshFunction(event);
+				}
 			}
-			protected function selectionChangeListHandler(event:IndexChangeEvent):void {
-				FlexUtilGlobals.getInstance().selectionManager.selectionChanged(viewHost, this);
-			}
+			
 			private function viewRemovedHandler(event:ViewRemovedEvent):void {
 				FlexUtilGlobals.getInstance().selectionManager.removeEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
 			}
+			
 			public function additionalCloseHandler():void {
 				// TODO Auto Generated method stub
 			}
+			
 			public function get viewHost():IViewHost {
 				return _viewHost;
 			}
+			
 			public function set viewHost(value:IViewHost):void {
 				_viewHost = value;
 			}
+			
 			public function formatList(inboundList:ArrayCollection):ArrayCollection {
 				var outboundList:ArrayCollection = new ArrayCollection();
 				for each (var node:Node in inboundList) {
@@ -111,79 +114,92 @@ license-end
 					} else {
 						node.nodeUri = node.nodeUri.substring(index + 1) + " - " + node.nodeUri.substring(0,index);
 					}
-					if (node.type.localeCompare(GitConstants.FILE_ADDED) == 0) {
-						node.nodeUri = " + " + node.nodeUri;
-					}
-					else if (node.type.localeCompare(GitConstants.FILE_MODIFIED) == 0) {
-						node.nodeUri = " > " + node.nodeUri;
-					}
-					else if (node.type.localeCompare(GitConstants.FILE_DELETED) == 0) {
-						node.nodeUri = " x " + node.nodeUri;
+					if (node.type.localeCompare(GitConstants.FILE_MODIFIED) == 0) {
+						node.nodeUri = "> " + node.nodeUri;
 					}
 					outboundList.addItem(node);
 				}
 				return outboundList;
 			}
-			private function iconFunction(item:Object):Class {
-				var type:String = item.type;
-				if (type.localeCompare(GitConstants.FILE_ADDED) == 0) {
-					return Resources.fileIcon;
-				} 
-				else if (type.localeCompare(GitConstants.FILE_MODIFIED) == 0) {
-					return Resources.fileIcon;
-				} 
-				else if (type.localeCompare(GitConstants.FILE_DELETED) == 0) {
-					return Resources.fileIcon;
-				} 
-				else if (type.localeCompare(GitConstants.FILE_RENAMED) == 0) {
-					return Resources.fileIcon;
-				} 
-				else { //if (type.localeCompare(GitConstants.FILE_COPIED) == 0)
-					return Resources.fileIcon;
-				} 
-			}
+			
 			private function amendFunction(evt:Event):void {
-				var text:String;
 				if (evt.target.selected){
 					testAmend = true;
-					CorePlugin.getInstance().serviceLocator.invoke("GitService.amendMethod", [repo, testAmend], function(data:String):void {commitMessage.text = data} );
-					
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.amendAuthorCommiter", [repo, testAmend], function(data:ArrayCollection):void {author.text = String(data.getItemAt(1)); commiter.text = String(data.getItemAt(0)); commitMessage.text = String(data.getItemAt(2));});
 				} else {
 					testAmend = false;
-					commitMessage.text = "";
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.amendAuthorCommiter", [repo, testAmend], function(data:ArrayCollection):void {author.text = String(data.getItemAt(1)); commiter.text = String(data.getItemAt(0)); commitMessage.text = "";});
 				}
 			}
+			
 			private function commitFunction():void {
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.commitMethod", [repo, testAmend, commitMessage.text], function(data:String):void {commitMessage.text = data} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.commitMethod", [repo, testAmend, commitMessage.text] );
+				refreshFunction(null);
 			}
+			
 			private function addToGitIndex(selectedItem:Node):void {
-				var index:int = selectedItem.nodeUri.indexOf("-");
+				var firstIndex:int = selectedItem.nodeUri.indexOf("-");
+				var secondIndex:int = selectedItem.nodeUri.indexOf(">");
 				var filePathToAdd:String;
-				if (index != -1) {
-					filePathToAdd = selectedItem.nodeUri.substr(index + 2) + "/" + selectedItem.nodeUri.substring(3, index - 1);
+				if (firstIndex != -1 && secondIndex != -1) {
+					filePathToAdd = selectedItem.nodeUri.substr(firstIndex + 2) + "/" + selectedItem.nodeUri.substring(2, firstIndex - 1);
+				} else if (firstIndex == -1 && secondIndex != -1) {
+					filePathToAdd = selectedItem.nodeUri.substring(2);
+				} else if (firstIndex == -1 && secondIndex == -1) {
+					filePathToAdd = selectedItem.nodeUri.substring(0);
 				} else {
-					filePathToAdd = selectedItem.nodeUri.substring(3);
+					filePathToAdd = selectedItem.nodeUri.substr(firstIndex + 2) + "/" + selectedItem.nodeUri.substring(0, firstIndex - 1);
 				}
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.addToGitIndex", [repo, filePathToAdd]);
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );	
 			}
+			
 			private function deleteFromGitIndex(selectedItem:Node):void {
-				var index:int = selectedItem.nodeUri.indexOf("-");
+				var firstIndex:int = selectedItem.nodeUri.indexOf("-");
+				var secondIndex:int = selectedItem.nodeUri.indexOf(">");
 				var filePathToDelete:String;
-				if (index != -1) {
-					filePathToDelete = selectedItem.nodeUri.substr(index + 2) + "/" + selectedItem.nodeUri.substring(3, index - 1);
+				if (firstIndex != -1 && secondIndex != -1) {
+					filePathToDelete = selectedItem.nodeUri.substr(firstIndex + 2) + "/" + selectedItem.nodeUri.substring(2, firstIndex - 1);
+				} else if (firstIndex == -1 && secondIndex != -1) {
+					filePathToDelete = selectedItem.nodeUri.substring(2);
+				} else if (firstIndex == -1 && secondIndex == -1) {
+					filePathToDelete = selectedItem.nodeUri.substring(0);
 				} else {
-					filePathToDelete = selectedItem.nodeUri.substring(3);
+					filePathToDelete = selectedItem.nodeUri.substr(firstIndex + 2) + "/" + selectedItem.nodeUri.substring(0, firstIndex - 1);
 				}
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.removeFromGitIndex", [repo, filePathToDelete]);
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );
-				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );	
 			}
+			
+			private function refreshFunction(event:Event):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.amendAuthorCommiter", [repo, testAmend], function(data:ArrayCollection):void {author.text = String(data.getItemAt(1)); commiter.text = String(data.getItemAt(0)); if(testAmend) commitMessage.text = String(data.getItemAt(2));});
+			}
+			
+			protected function textInputCreationCompleteHandler(event:FlexEvent):void {
+				Utils.makePseudoDisabled(repoText);
+			}
+			
 		]]>
 	</fx:Script>
-	<s:HGroup width="100%" horizontalAlign="right">
+	<s:HGroup width="100%" 
+			  horizontalAlign="right">
+		<s:FormItem label="Repository:"
+					width="100%">
+			<s:TextInput id="repoText"
+						 text="{repo}"
+						 width="100%"
+						 creationComplete="textInputCreationCompleteHandler(event)"/>
+		</s:FormItem>
+		<s:Button id="refreshButton"
+				  toolTip="Refresh"
+				  icon="{Resources.refreshIcon}"
+				  click="refreshFunction(event)"
+				  width="22"
+				  height="22"/>
 		<s:ToggleButton id="amendButton"
 						toolTip="Amend Previous Commit"
 						icon="{Resources.amendIcon}"
@@ -193,17 +209,16 @@ license-end
 	 </s:HGroup>
 	<s:HGroup width="100%"
 			  height="100%"
->
+			  paddingTop="7">
 		<s:VGroup width="50%"
 				  height="100%">	
-			<s:Label text="Unstaged Changes"
+			<s:Label text="Unstaged Changes ({unstagedData.length})"
 					 width="100%"
 					 verticalAlign="bottom"/>	
 			<ns1:ListComponent id="unstagedChanges"
 					width="100%"
 					height="50%"
 					gitIndex="true"
-					change="selectionChangeListHandler(event)"
 					dataProvider="{formatList(unstagedData)}"/>
 			<s:HGroup width="100%"
 					  horizontalAlign="center">	
@@ -218,14 +233,13 @@ license-end
 						  icon="{Resources.arrowUpIcon}"
 						  click="deleteFromGitIndex(stagedChanges.selectedItem)"/>
 			</s:HGroup>
-			<s:Label text="Staged Changes"
+			<s:Label text="Staged Changes ({stagedData.length})"
 					 width="100%"
 					 verticalAlign="bottom"/>
 			<ns1:ListComponent id="stagedChanges"
 					width="100%"
 					height="50%"
 					gitIndex="false"
-					change="selectionChangeListHandler(event)"
 					dataProvider="{formatList(stagedData)}"/>
 		</s:VGroup>
 		<s:VGroup width="50%"

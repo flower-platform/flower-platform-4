@@ -18,7 +18,6 @@ import static org.flowerplatform.team.git.GitConstants.GIT_STAGING_CATEGORY;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 
 import org.eclipse.jgit.lib.Constants;
 import org.flowerplatform.core.CorePlugin;

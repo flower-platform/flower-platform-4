@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:List xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 		implements="org.flowerplatform.flexutil.selection.ISelectionProvider, org.flowerplatform.flexutil.action.IActionProvider">
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			
+			import org.apache.flex.collections.ArrayList;
 			import org.flowerplatform.flex_client.team.git.action.AddToGitIndex;
 			import org.flowerplatform.flex_client.team.git.action.RemoveFromGitIndex;
 			import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
@@ -16,7 +16,7 @@
 			
 			public var gitIndex:Boolean = true;
 			public var host:IViewHost
-			
+			protected var icon:Class;
 			protected var actionStagedProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
 				.addActionClass(RemoveFromGitIndex);
 			protected var actionUnstagedProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
@@ -40,6 +40,38 @@
 					return actionStagedProvider.getActions(selection);
 				}
 			}
+			
 		]]>
 	</fx:Script>
+	<s:itemRenderer>
+		<fx:Component>
+			<s:IconItemRenderer width="100%"
+								iconFunction="{myiconfunction}"
+								verticalAlign="middle"
+								paddingLeft="5"
+								creationComplete="item_creationCompleteHandler(event)">
+				<fx:Script>
+					<![CDATA[
+						import mx.events.FlexEvent;
+						
+						import org.flowerplatform.flex_client.core.CoreConstants;
+						import org.flowerplatform.flex_client.core.editor.remote.Node;
+						import org.flowerplatform.flexutil.FlexUtilGlobals;
+						
+						private function myiconfunction(data:Node):Object {
+							return data.getPropertyValue(CoreConstants.ICONS);
+						}
+						
+						protected function item_creationCompleteHandler(event:FlexEvent):void
+						{
+							if (!FlexUtilGlobals.getInstance().isMobile) {
+								// only for web
+								minHeight = 22;	
+							}
+						}	
+					]]>
+				</fx:Script>
+			</s:IconItemRenderer>
+		</fx:Component>
+	</s:itemRenderer> 
 </s:List>

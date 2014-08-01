@@ -1,9 +1,6 @@
 package org.flowerplatform.flex_client.team.git.action
 {
-	public class AddToGitIndex
-	{
-		public function AddToGitIndex()
-		{
-		}
+	public class AddToGitIndex {
+		//needs to be implemented for context menu
 	}
 }
