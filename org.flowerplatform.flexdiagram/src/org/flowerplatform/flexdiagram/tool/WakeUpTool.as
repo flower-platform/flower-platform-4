@@ -40,6 +40,7 @@ package org.flowerplatform.flexdiagram.tool {
 		public static const MOUSE_UP:String = "mouseUp";
 		public static const MOUSE_RIGHT_CLICK:String = "mouseRightClick";
 		public static const DOUBLE_CLICK:String ="doubleClick";
+		public static const CLICK:String ="click";
 		
 		public var listeners:ArrayList = new ArrayList();
 			
@@ -65,6 +66,7 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.addEventListener(MouseEvent.RIGHT_CLICK, rightClickHandler);
 			diagramRenderer.addEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickHandler);
+			diagramRenderer.addEventListener(MouseEvent.CLICK, clickHandler);
 			super.activateAsMainTool();
 		}
 		
@@ -74,6 +76,8 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.removeEventListener(MouseEvent.RIGHT_CLICK, rightClickHandler);
 			diagramRenderer.removeEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickHandler);
+			diagramRenderer.removeEventListener(MouseEvent.CLICK, clickHandler);
+
 			super.deactivateAsMainTool();
 		}
 				
@@ -122,6 +126,11 @@ package org.flowerplatform.flexdiagram.tool {
 		
 		private function mouseDoubleClickHandler(event:MouseEvent):void {
 			myEventType = DOUBLE_CLICK;
+			dispatchMyEvent(myEventType, event);
+		}
+		
+		private function clickHandler(event:MouseEvent):void {
+			myEventType = CLICK;
 			dispatchMyEvent(myEventType, event);
 		}
 		

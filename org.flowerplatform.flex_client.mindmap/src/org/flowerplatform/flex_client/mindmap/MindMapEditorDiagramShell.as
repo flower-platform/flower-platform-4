@@ -50,8 +50,8 @@ package org.flowerplatform.flex_client.mindmap {
 			registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
 			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
 			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
-			registerTool(ActionTool.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
-			registerTool(ActionTool.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.MOUSE_UP}));
+			registerTool(OpenAction.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
+			registerTool(ExpandCollapseAction.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
 		}
 			
 		public function get nodeRegistry():NodeRegistry {

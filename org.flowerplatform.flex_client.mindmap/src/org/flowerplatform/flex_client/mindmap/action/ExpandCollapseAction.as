@@ -7,6 +7,8 @@ package org.flowerplatform.flex_client.mindmap.action {
 	 */
 	public class ExpandCollapseAction extends DiagramShellAwareActionBase {
 		
+		public static const ID:String = "ExpandCollapseAction";
+		
 		public function ExpandCollapseAction() {
 			super();
 		}

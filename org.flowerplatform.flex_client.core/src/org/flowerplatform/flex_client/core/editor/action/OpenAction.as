@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	public class OpenAction extends ActionBase {
 		
 		public var contentType:String;
+		public static const ID:String = "OpenAction";
 		
 		public function OpenAction(contentType:String = null) {
 			super();

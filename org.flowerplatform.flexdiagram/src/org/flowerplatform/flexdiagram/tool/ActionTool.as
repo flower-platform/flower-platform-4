@@ -15,7 +15,6 @@ package org.flowerplatform.flexdiagram.tool {
 		
 		public var action:IAction;
 		private var _eventType:String;
-		public static const ID:String = "ActionTool";
 		
 		public function ActionTool(diagramShell:DiagramShell){
 			super(diagramShell);				
