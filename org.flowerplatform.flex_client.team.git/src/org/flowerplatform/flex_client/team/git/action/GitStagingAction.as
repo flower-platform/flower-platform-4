@@ -42,7 +42,7 @@ package org.flowerplatform.flex_client.team.git.action
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
 				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(GitConstants.GIT_STAGING_CATEGORY) >= 0
+					.categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
 			}
 			return false;
 		}

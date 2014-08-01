@@ -25,7 +25,7 @@ public class GitConstants {
 	//Categories
 	////////////////////////////////////////////////////////////
 	
-	public static final String GIT_STAGING_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
+	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 	
 	/////////////////////////////////////////////////////////////
 	//Schemes
@@ -49,4 +49,26 @@ public class GitConstants {
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";	
+	
+	/////////////////////////////////////////////////////////////
+	//Git Images
+	/////////////////////////////////////////////////////////////
+	
+	public static final String UNTRACKED = "images/team.git/untracked.gif";	
+	public static final String STAGE_REMOVED = "images/team.git/staged_removed.gif";
+	public static final String STAGE_ADDED = "images/team.git/staged_added.gif";
+	public static final String UNSTAGED = "images/team.git/unstaged.gif";
+	public static final String STAGED = "images/team.git/staged.gif";
+	public static final String FILE =  "images/core/file.gif";
+	public static final String CONFLICTED =  "images/team.git/conflict.gif";
+	
+	/////////////////////////////////////////////////////////////
+	//Git File States
+	/////////////////////////////////////////////////////////////
+	
+	public static final String ADD = "ADD";	
+	public static final String DELETE = "DELETE";
+	public static final String MODIFY = "MODIFY";
+	public static final String RENAME = "RENAME";
+	public static final String COPY = "COPY";
 }

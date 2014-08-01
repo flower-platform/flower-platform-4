@@ -25,19 +25,21 @@ package org.flowerplatform.flex_client.team.git
 	 * @author Marius Iacob
 	 */
 	
-	public class GitStagingProperties extends AbstractViewProvider
-	{
+	public class GitStagingProperties extends AbstractViewProvider {
 		public static const ID:String = "gitStaging";
 		
 		override public function getId():String {
 			return ID;
 		}
+		
 		override public function createView(viewLayoutData:ViewLayoutData):UIComponent {			
 			return new GitStagingDialog();
 		}
+		
 		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
 			return Resources.getMessage("team.git.action.GitStagingAction");
 		}
+		
 		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
 			return Resources.gitStagingIcon;
 		}

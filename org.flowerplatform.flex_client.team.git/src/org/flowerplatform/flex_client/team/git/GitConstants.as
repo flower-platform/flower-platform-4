@@ -20,7 +20,7 @@ package org.flowerplatform.flex_client.team.git
 		//Categories
 		////////////////////////////////////////////////////////////
 		
-		public static const GIT_STAGING_CATEGORY:String = "category.git";
+		public static const GIT_CATEGORY:String = "category.git";
 		
 		/////////////////////////////////////////////////////////////
 		//Schemes
