@@ -1,7 +1,8 @@
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.ICONS;
+import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
@@ -18,6 +19,7 @@ public class GitRemotesPropertiesProvider extends AbstractController implements 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.remotes"));
+		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "remotes.gif"));
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}
 
