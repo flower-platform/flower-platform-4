@@ -27,7 +27,11 @@
 				<module>../../org.flowerplatform.flex_client.core/flex</module>
 				<module>../../org.flowerplatform.flex_client.properties/flex</module>
 				<module>../../org.flowerplatform.flex_client.mindmap/flex</module>
+				<module>../../org.flowerplatform.flex_client.text/flex</module>
 				<module>../../org.flowerplatform.flex_client.codesync/flex</module>
+				<module>../../org.flowerplatform.flex_client.codesync.sdiff/flex</module>
+				<module>../../org.flowerplatform.flex_client.codesync.regex/flex</module>
+				<module>../../org.flowerplatform.flex_client.team.git/flex</module>
 				<module>../../org.flowerplatform.flex_client.host_app/flex</module>
 				<module>../../org.flowerplatform.flex_client.web/flex</module>
 			</modules>

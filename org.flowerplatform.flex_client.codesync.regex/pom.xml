@@ -11,6 +11,6 @@
 		<version>0.1.1.qualifier</version>
 	</parent>
 
-	<artifactId>org.flowerplatform.codesync.java</artifactId>
+	<artifactId>org.flowerplatform.flex_client.codesync.regex</artifactId>
 	<packaging>eclipse-plugin</packaging>
 </project>
