@@ -57,7 +57,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 			node.getProperties().put(ICONS, "");
 		}
 
-		String codeSyncIcons = getCodeSyncIcons(node, icons);
+		String codeSyncIcons = getCodeSyncIcons(node);
 		if (codeSyncIcons != null) {
 			node.getProperties().put(CODESYNC_ICONS, codeSyncIcons);
 		}
@@ -65,10 +65,16 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		setBackgroundColor(node);
 	}
 
-	private String getCodeSyncIcons(Node node, String icons) {		
+	private String getCodeSyncIcons(Node node) {
+		String icons = (String) node.getProperties().get(ICONS);
+		
 		String elementType = (String) node.getProperties().get(MATCH_MODEL_ELEMENT_TYPE);
+		if (icons == null) {
+			icons = "";
+		}
+		
 		if (elementType == null) {
-			return icons == null ? "" : icons;
+			return icons;
 		}
 		String icon = null;
 		if (elementType.endsWith("File")) {
@@ -87,10 +93,11 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 			icon = getImagePath("method_obj.gif");
 		}
 
-		if(icon == null)
-			return icons == null ? "" : icons;
-		else
-			return (icons == null || icons.isEmpty()) ? icon : (icons + "," + icon);
+		if (icon == null) {
+			return icons;
+		} else {
+			return (icons.isEmpty()) ? icon : (icons + "," + icon);
+		}
 	}
 
 	private String getImagePath(String img) {
@@ -137,7 +144,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		if (ICONS.equals(property)) {
 			node.getOrPopulateProperties(context);
 			
-			String codeSyncIcons = getCodeSyncIcons(node, (String) value);
+			String codeSyncIcons = getCodeSyncIcons(node);
 			if (codeSyncIcons == null) {
 				codeSyncIcons = "";
 			}
