@@ -17,17 +17,19 @@ package org.flowerplatform.codesync.remote;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
+import static org.flowerplatform.core.CoreConstants.NAME;
 
-import java.io.File;
 import java.util.Collections;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
+import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
  * @author Mariana Gheorghe
@@ -35,7 +37,22 @@ import org.flowerplatform.core.node.remote.Node;
 public class CodeSyncOperationsService {
 
 	public Match synchronize(String nodeUri) throws Exception {
-		return synchronize(nodeUri, CorePlugin.getInstance().getFileAccessController().getFile("user1/repo-1/my_files/modified_conflicts"), "java", true);
+		Node srcDir = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+
+		while (true) {
+			Node parent = CorePlugin.getInstance().getNodeService().getParent(srcDir, context);
+			Node grandParent = CorePlugin.getInstance().getNodeService().getParent(parent, context);
+
+			if (grandParent == null) {
+				break;
+			}
+			srcDir = parent;
+		}
+
+		Object file = CorePlugin.getInstance().getFileAccessController().getFile(CoreUtils.getRepoFromNode(srcDir) + "/" + srcDir.getPropertyValue(NAME));
+
+		return synchronize(srcDir.getNodeUri(), file, "java", true);
 	}
 		
 	public Match synchronize(String nodeUri, Object file, String technology, boolean oneStepSync) {
@@ -48,17 +65,7 @@ public class CodeSyncOperationsService {
 	}
 	
 	public Match generateMatch(String nodeUri, Object file, String technology, boolean oneStepSync) {
-		// find containing SrcDir
-		Node root = CodeSyncPlugin.getInstance().getCodeSyncMappingRoot(nodeUri);
-		Node srcDir = null;
-		File parent = (File) file;
-		do {
-			srcDir = CodeSyncPlugin.getInstance().getSrcDir(root, parent.getName());
-			parent = parent.getParentFile();
-		} while (srcDir == null && (parent != null));
-		if (srcDir == null) {
-			throw new RuntimeException("File " + file + " is not contained in a SrcDir!");
-		}
+		Node srcDir = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
 		// START THE ALGORITHM
 		

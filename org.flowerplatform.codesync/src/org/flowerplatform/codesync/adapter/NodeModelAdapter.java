@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -88,8 +89,10 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object newValue, CodeSyncAlgorithm codeSyncAlgorithm) {		
-		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+	public void setValueFeatureValue(Object element, Object feature, Object newValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);		
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, context);
 	}
 	
 	/**
@@ -124,7 +127,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				String ssp = Utils.getSchemeSpecificPart(parentNode.getNodeUri());
 				String childUri = Utils.getUri(scheme, ssp, null);
 				Node child = new Node(childUri, type);
-				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+				ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+				context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);
+				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, context);
 				return child;
 //		}
 //		
@@ -133,7 +138,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
-		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);
+		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), context);
 	}
 
 	@Override
