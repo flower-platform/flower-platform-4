@@ -130,7 +130,7 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 		
 		private function clickHandler(event:MouseEvent):void {
-			/*A timer is needed so that the clickEvent won`t be dispatched before the doubleClickEvent */
+			/*A timer is needed so that the clickEvent won`t be dispatched along with the doubleClickEvent */
 			secondClick = false;
 			var timer:Timer = new Timer(250,1);
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
@@ -138,7 +138,7 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 		
 		private function onTimer(event:TimerEvent):void {
-			if(secondClick == false){
+			if(secondClick == false && myEventType != MOUSE_DRAG){
 				myEventType = CLICK;
 				dispatchMyEvent(myEventType, new MouseEvent(CLICK));
 			}
