@@ -23,7 +23,7 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 
 	@Override
 	public FileContent getFileContent(String filePath, String repo, Object patch) {
-		String newFileContent, oldFileContent;
+		String newFileContent, oldFileContent; 
 		Object file;
 
 		// get new file content
@@ -39,19 +39,25 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		}
 
 		// get old file content using new file content and patch
-		PatchConfiguration configuration = new PatchConfiguration();
-		configuration.setReversed(true);
-		IFilePatchResult result = ((FilePatch2)patch).apply(new StringReaderCreator(newFileContent),
-															configuration,
-															null);
-		try {
-			oldFileContent = IOUtils.toString(result.getPatchedContents());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		if (oldFileContent.isEmpty()) {
+		FilePatch2 filePatch = (FilePatch2) patch;
+		
+		switch (filePatch.getDiffType(false)){
+		case 1:
 			oldFileContent = null;
+			break;
+		default:
+			PatchConfiguration configuration = new PatchConfiguration();
+			configuration.setReversed(true);
+			IFilePatchResult result = ((FilePatch2)patch).apply(new StringReaderCreator(newFileContent),
+																configuration,
+																null);
+			try {
+				oldFileContent = IOUtils.toString(result.getPatchedContents());
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
+		
 		return new FileContent(oldFileContent, newFileContent);
 	}
 
