@@ -18,6 +18,7 @@ import org.flowerplatform.core.CorePlugin;
  * @author Valentina-Camelia Bojan
  */
 
+@SuppressWarnings("restriction")
 public class WorkspaceAndPatchFileContentProvider implements IFileContentProvider {
 
 	@Override
@@ -34,7 +35,7 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		if (CorePlugin.getInstance().getFileAccessController().exists(file)) {
 			newFileContent = CorePlugin.getInstance().getFileAccessController().readFileToString(file);
 		} else {
-			newFileContent = "";
+			newFileContent = null;
 		}
 
 		// get old file content using new file content and patch
@@ -48,7 +49,9 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
+		if (oldFileContent.isEmpty()) {
+			oldFileContent = null;
+		}
 		return new FileContent(oldFileContent, newFileContent);
 	}
 
@@ -57,6 +60,9 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		private String content;
 
 		public StringReaderCreator(String content) {
+			if (content == null) {
+				content = "";
+			}
 			this.content = content;
 		}
 
