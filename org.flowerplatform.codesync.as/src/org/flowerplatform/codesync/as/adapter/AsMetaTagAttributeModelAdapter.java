@@ -35,7 +35,11 @@ public class AsMetaTagAttributeModelAdapter extends AstModelElementAdapter {
 	
 	@Override
 	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
-		return getMetaTagAttribute(element).getKey();
+		String key = getMetaTagAttribute(element).getKey();
+		if (key == null) {
+			key = "";
+		}
+		return key;
 	}
 
 	@Override

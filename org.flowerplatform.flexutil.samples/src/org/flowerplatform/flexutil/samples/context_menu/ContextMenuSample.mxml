@@ -27,14 +27,14 @@
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
+			import spark.events.IndexChangeEvent;
+			
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.action.IActionProvider;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
-			
-			import spark.events.IndexChangeEvent;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			// static block
 			{
@@ -48,7 +48,8 @@
 			protected var actionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
 				.addActionClass(SampleAction1)
 				.addActionClass(SampleAction2)
-				.addActionClass(SampleAction3);
+				.addActionClass(SampleAction3)
+				.addActionClass(ToggleAction);
 			
 			public function get viewHost():IViewHost {
 				return _viewHost;

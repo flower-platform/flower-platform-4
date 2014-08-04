@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--- 
+@author Tita Andreea
+-->
+
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 creationComplete="creationCompleteHandler(event)" xmlns:tn="org.flowerplatform.flex_client.core.node_tree.*">
+		
+		<fx:Script>
+			<![CDATA[
+				import mx.events.FlexEvent;
+				
+				import org.flowerplatform.flex_client.core.CorePlugin;
+				import org.flowerplatform.flex_client.core.editor.remote.Node;
+				import org.flowerplatform.flex_client.resources.Resources;
+				import org.flowerplatform.flex_client.team.git.GitConstants;
+				import org.flowerplatform.flexutil.FlexUtilGlobals;
+				import org.flowerplatform.flexutil.Pair;
+				import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+				import org.flowerplatform.flexutil.selection.ISelectionProvider;
+				import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
+			
+				public var node:Node;
+				public var commit:Boolean;
+				public var fastForwardOption:int;
+				public var selectedNode:Node;
+				
+				/* creation complete for Merge Branch */
+				override protected function creationCompleteHandler(event:FlexEvent):void {
+					okButton.label = Resources.getMessage('flex_client.team.git.action.mergeBranch');
+					/* commit option is default */
+					commit = true;
+				}
+				
+				/* initialize the tree */
+				protected function treeListCreationCompleteHandler(event:FlexEvent):void {
+					var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+					var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
+					
+					if(node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE) {
+						node = node.parent.parent;
+					}
+					
+					var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
+					treeList.initializeTree(pair == null ? node.nodeUri : pair.a as String);
+				}
+				
+				private function viewRemovedHandler(event:ViewRemovedEvent):void {
+					treeList.finalizeTree();
+				}
+				
+				/* check Fast Forward Params */
+				private function checkFastForwardParams():void {
+					if(fastForwardUpdate.selected) {
+						fastForwardOption = 0;
+					}
+					
+					if(fastForwardCommit.selected) {
+						fastForwardOption = 1;
+					}
+					
+					if(notFastForward.selected) {
+						fastForwardOption = 2;
+					}
+				}
+					
+				/* ok Button handler -> perform merge */
+				override protected function okHandler(event:Event = null):void {
+					/* check fast forward options */
+					checkFastForwardParams();
+					
+					if(noCommit.selected){
+						commit = false;
+					}
+					
+					/* if it's selected an item from tree -> call merge operation */
+					if(treeList.selectedItem){
+						selectedNode = Node(HierarchicalModelWrapper(treeList.selectedItem).treeNode);
+						CorePlugin.getInstance().serviceLocator.invoke("GitService.mergeBranch",[selectedNode.nodeUri, squash.selected,
+									commit, fastForwardOption], function(result:String):void{
+										FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+										.setText(result)
+										.setTitle(Resources.getMessage('flex_client.team.git.mergeBranch.error'))
+										.setWidth(300)
+										.setHeight(200)
+										.showMessageBox();
+									});
+					} else {
+						if( node.type == GitConstants.GIT_REPO_TYPE ) {
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+								.setText(Resources.getMessage('flex_client.team.git.mergeBranch.alert') + node.getPropertyValue(GitConstants.CURRENT_BRANCH) + " " + Resources.getMessage('flex_client.team.git.mergeBranch.branch'))
+								.setTitle(Resources.getMessage('flex_client.team.git.mergeBranch.error'))
+								.setWidth(300)
+								.setHeight(150)
+								.showMessageBox();
+						} else {
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+								.setText(Resources.getMessage('flex_client.team.git.mergeBranch.alert') + node.getPropertyValue(GitConstants.NAME) + " " + Resources.getMessage('flex_client.team.git.mergeBranch.branch'))
+								.setTitle(Resources.getMessage('flex_client.team.git.mergeBranch.error'))
+								.setWidth(300)
+								.setHeight(150)
+								.showMessageBox();
+						}
+					}
+					
+					cancelHandler();
+				}
+						
+			]]>
+		</fx:Script>
+		
+		<s:VGroup id="parentGroup" height="100%">
+			<tn:NodeTreeComponent id="treeList" 
+								  width="{parentGroup.width}" 
+								  height="200%" 
+								  creationComplete="treeListCreationCompleteHandler(event)" />
+			<s:Form id="mergeOptions" >
+				<s:FormItem label="{Resources.getMessage('flex_client.team.git.mergeBranch.mergeOptions')}" />
+					<s:RadioButton label="{Resources.getMessage('flex_client.team.git.mergeBranch.commit')}"
+									selected="true"
+									groupName="{mergeOptions}"/>
+					<s:RadioButton label="{Resources.getMessage('flex_client.team.git.mergeBranch.noCommit')}"
+									id="noCommit" 
+									groupName="{mergeOptions}"/>
+					<s:RadioButton label="{Resources.getMessage('flex_client.team.git.mergeBranch.squash')}"
+									id="squash"
+									groupName="{mergeOptions}"/>	
+			</s:Form>
+			<s:Form id="fastForwardOptions">
+				<s:FormItem label="{Resources.getMessage('flex_client.team.git.mergeBranch.fastForwardOptions')}" />
+					<s:RadioButton label="{Resources.getMessage('flex_client.team.git.mergeBranch.fastForwardUpdate')}"
+								   id="fastForwardUpdate"
+								   selected="true"
+								   groupName="{fastForwardOptions}" />
+					<s:RadioButton label="{Resources.getMessage('flex_client.team.git.mergeBranch.fastForwardCommit')}"
+								   id="fastForwardCommit"
+								   groupName="{fastForwardOptions}" />
+					<s:RadioButton label="{Resources.getMessage('flex_client.team.git.mergeBranch.noFastForward')}"
+								   id="notFastForward"
+								   groupName="{fastForwardOptions}" />
+			</s:Form>
+		</s:VGroup>
+	
+</ns:BasicViewContent>
