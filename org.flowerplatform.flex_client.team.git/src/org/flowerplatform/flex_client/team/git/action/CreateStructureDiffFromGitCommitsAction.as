@@ -19,7 +19,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog;
+	import org.flowerplatform.flex_client.team.git.ui.CreateStructureDiffFromGitCommitsView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -52,7 +52,7 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var dialog:CreateStructureDiffFromGitCommitsDialog = new CreateStructureDiffFromGitCommitsDialog();	
+			var dialog:CreateStructureDiffFromGitCommitsView = new CreateStructureDiffFromGitCommitsView();	
 			dialog.repo = CorePlugin.getInstance().getRepository(node.nodeUri);
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
