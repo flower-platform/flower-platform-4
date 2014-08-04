@@ -176,12 +176,12 @@ public class StructureDiffService {
 		// match to lines from patch
 		if (match.getCodeSyncAlgorithm() == null) {
 			//sets path for a file with unknown extension
-			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_PATH, getFilePath(patch.getPath(true).toString(),true),context);
+			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_PATH, getFilePath(patch.getPath(true).toString(), true), context);
 		} else {
 			Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
 			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
 			if (CodeSyncConstants.FILE.equals(modelElementType)) {
-				CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_PATH, getFilePath(patch.getPath(true).toString(),true),context);
+				CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_PATH, getFilePath(patch.getPath(true).toString(), true), context);
 			}
 			if (match.getRight() != null) {
 				Object model = match.getRight();

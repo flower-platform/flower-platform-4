@@ -55,7 +55,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		setIcon(node);
 		setBackgroundColor(node); 
 		setText(node); 
-		}
+	}
 	
 	private void setIcon(Node node) {
 		String elementType = (String) node.getProperties().get(MATCH_MODEL_ELEMENT_TYPE);
@@ -118,20 +118,18 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	}
 	
 	/**
-	* Sets namePath as the name of the file/class/function and textPath as the path of the file
-	* Adds namePath and textPath if we have a file which has path
-	* Adds only the namePath if we have a class or function 
+	*  Adds the property "TEXT" which contains file's name and file's path (if it has one)
 	* 
 	* @author Alexandra Topoloaga
 	*/
 	
 	private void setText(Node node) {
-		String namePath = (String) node.getProperties().get(CoreConstants.NAME);
+		String name = (String) node.getProperties().get(CoreConstants.NAME);
 		String textPath = (String) node.getProperties().get(CodeSyncConstants.MATCH_PATH);
-		if (node.getProperties().get(CodeSyncConstants.MATCH_PATH) != null ) {
-			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + namePath + "</head><br><body><font size=9>"+ textPath + "</font></body></html>");
+		if (textPath != null ) {
+			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>"+ textPath + "</font></body></html>");
 		} else {
-			node.getProperties().put(MindMapConstants.TEXT, namePath);
+			node.getProperties().put(MindMapConstants.TEXT, name);
 		}
 	} 
 
