@@ -105,9 +105,17 @@ public class CodeSyncAlgorithm {
 		}
 	}
 
+	/**
+	 * @return A pair containing two flags: 
+	 * <ul>
+	 * <li>isConflict - shows if the match has a conflict
+	 * <li>isSync - shows if the match has been syncronized
+	 * </ul>
+	 */
 	public Pair<Boolean, Boolean> generateDiff(Match match, boolean performAction) {
 		boolean isChildrenConflict = false;
 		boolean isConflict = false;
+		boolean isChildrenSync = true;
 		boolean isSync = true;
 
 		logger.debug("Generate diff for {}", match);
@@ -138,7 +146,7 @@ public class CodeSyncAlgorithm {
 		for (Object feature : featureProvider.getContainmentFeatures()) {
 			conflictSyncPair = processContainmentFeature(feature, match, !performLater && performAction);
 			isChildrenConflict = isChildrenConflict || conflictSyncPair.a;
-			isSync = isSync && conflictSyncPair.b;
+			isChildrenSync = isChildrenSync && conflictSyncPair.b;
 		}
 
 		if (performLater && performAction) {
@@ -165,7 +173,7 @@ public class CodeSyncAlgorithm {
 		}
 
 		// propagate childrenSync flag for parents
-		if (isSync) {
+		if (isChildrenSync) {
 			if (match.getLeft() != null) {
 				getLeftModelAdapter(match.getLeft()).setChildrenSync(match.getLeft());
 			}
@@ -179,7 +187,7 @@ public class CodeSyncAlgorithm {
 			save(match, false);
 		}
 
-		return new Pair<Boolean, Boolean>(isConflict || isChildrenConflict, isSync);
+		return new Pair<Boolean, Boolean>(isConflict || isChildrenConflict, isSync && isChildrenSync);
 	}
 	
 	/**
@@ -230,7 +238,7 @@ public class CodeSyncAlgorithm {
 	 */
 	public Pair<Boolean, Boolean> processContainmentFeature(Object feature, Match match, boolean performAction) {
 		boolean isChildrenConflict = false;
-		boolean isSync = true;
+		boolean isChildrenSync = true;
 		Pair<Boolean, Boolean> conflitSyncPair = new Pair<Boolean, Boolean>(false, true);
 		
 		logger.debug("Process containment feature {} for {}", feature, match);
@@ -292,7 +300,7 @@ public class CodeSyncAlgorithm {
 						// recurse
 						conflitSyncPair = generateDiff(childMatch, performAction);
 						isChildrenConflict = isChildrenConflict || conflitSyncPair.a;
-						isSync = isSync && conflitSyncPair.b;
+						isChildrenSync = isChildrenSync && conflitSyncPair.b;
 					}
 				}
 			}
@@ -319,7 +327,7 @@ public class CodeSyncAlgorithm {
 				// recurse
 				conflitSyncPair = generateDiff(childMatch, performAction);
 				isChildrenConflict = isChildrenConflict || conflitSyncPair.a;
-				isSync = isSync && conflitSyncPair.b;
+				isChildrenSync = isChildrenSync && conflitSyncPair.b;
 			}
 		} 
 		
@@ -337,11 +345,11 @@ public class CodeSyncAlgorithm {
 				// recurse
 				conflitSyncPair = generateDiff(childMatch, performAction);
 				isChildrenConflict = isChildrenConflict || conflitSyncPair.a;
-				isSync = isSync && conflitSyncPair.b;
+				isChildrenSync = isChildrenSync && conflitSyncPair.b;
 			}
 		}
 		
-		return new Pair<Boolean, Boolean>(isChildrenConflict, isSync);
+		return new Pair<Boolean, Boolean>(isChildrenConflict, isChildrenSync);
 	}
 	
 	/**
@@ -358,8 +366,7 @@ public class CodeSyncAlgorithm {
 	/**
 	 * @author Cristi
 	 * @author Mariana
-	 * 
-	 * 
+	 * @return true - if the match has a conflict, false - otherwise
 	 */
 	public Boolean processValueFeature(Object feature, Match match) {
 		logger.debug("Process value feature {} for {}", feature, match);
@@ -370,7 +377,7 @@ public class CodeSyncAlgorithm {
 		Object left = match.getLeft();
 		Object right = match.getRight();
 		
-		if (ancestor == null && left == null ||
+		if (ancestor == null && left == null || 
 				ancestor == null && right == null ||
 				left == null && right == null)
 			return false; // for 1-Match, don't do anything
@@ -486,7 +493,6 @@ public class CodeSyncAlgorithm {
 		// update sync flags
 		if (match.getAncestor() != null) {
 			getAncestorModelAdapter(match.getAncestor()).allActionsPerformed(match.getAncestor(), null, this);
-			getAncestorModelAdapter(match.getAncestor()).setSync(match.getAncestor());
 		}
 		if (match.getLeft() != null) {
 			getLeftModelAdapter(match.getLeft()).allActionsPerformed(match.getLeft(), match.getRight(), this);

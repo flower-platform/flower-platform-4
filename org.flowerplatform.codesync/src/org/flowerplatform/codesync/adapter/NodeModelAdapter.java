@@ -155,28 +155,28 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return false;
 	}
 
-	public static String getConflictPropertyName(String property) {
+	public String getConflictPropertyName(String property) {
 		return property + CONFLICT_SUFFIX;
 	}
 
-	public static boolean isConflict(Node node) {
+	public boolean isConflict(Node node) {
 		return hasFlagTrue(node, CONFLICT);
 	}
 
-	public static boolean isConflictPropertyName(String property) {
+	public boolean isConflictPropertyName(String property) {
 		return property.endsWith(CONFLICT_SUFFIX);
 	}
 
-	public static boolean isOriginalPropertyName(String property) {
+	public boolean isOriginalPropertyName(String property) {
 		return property.endsWith(ORIGINAL_SUFFIX);
 	}
 
-	private static boolean hasFlagTrue(Node node, String flag) {
+	private boolean hasFlagTrue(Node node, String flag) {
 		Boolean b = (Boolean) node.getPropertyValue(flag);
 		return b != null && b;
 	}
 
-	public static boolean noChildConflict(Node node, NodeService service) {
+	public boolean noChildConflict(Node node, NodeService service) {
 		for (Node child : service.getChildren(node, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true))) {
 			if (isConflict(child) || isChildrenConflict(child)) {
 				return false;
@@ -185,19 +185,19 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return true;
 	}
 
-	public static boolean isChildrenConflict(Node node) {
+	public boolean isChildrenConflict(Node node) {
 		return hasFlagTrue(node, CHILDREN_CONFLICT);
 	}
 
-	public static boolean isSync(Node node) {
+	public boolean isSync(Node node) {
 		return hasFlagTrue(node, SYNC);
 	}
 
-	public static boolean isAdded(Node node) {
+	public boolean isAdded(Node node) {
 		return hasFlagTrue(node, ADDED);
 	}
 
-	public static boolean isRemoved(Node node) {
+	public boolean isRemoved(Node node) {
 		return hasFlagTrue(node, REMOVED);
 	}
 	

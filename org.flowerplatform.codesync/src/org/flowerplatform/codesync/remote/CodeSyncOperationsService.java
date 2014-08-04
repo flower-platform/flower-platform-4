@@ -54,7 +54,10 @@ public class CodeSyncOperationsService {
 
 		return synchronize(srcDir.getNodeUri(), file, "java", true);
 	}
-		
+	
+	/**
+	 * @param nodeUri The nodeUri corresponding to the given file
+	 */
 	public Match synchronize(String nodeUri, Object file, String technology, boolean oneStepSync) {
 		Match match = generateMatch(nodeUri, file, technology, oneStepSync);
 		if (!oneStepSync) {

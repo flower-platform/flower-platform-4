@@ -42,6 +42,10 @@ public class ActionSynchronize {
 		int i = 0;
 		for (Diff diff : match.getDiffs()) {
 			int defaultAction = DiffActionRegistry.INSTANCE.getActionEntriesForUI(match, diff, true).defaultAction;
+			
+			// If the changes on the LEFT are the same as the ones on the RIGHT, then no action
+			// will be performed. In this case, we must announce the adaptors manually so they can
+			// do their actions (i.e. cleaning, ...).
 			if (defaultAction != -1) {
 				result[i] = DiffActionRegistry.ActionType.values()[defaultAction].diffAction.execute(match, i);
 //				diffsInConflict = diffsInConflict
