@@ -34,11 +34,9 @@ import org.flowerplatform.codesync.sdiff.controller.CanContainCommentRemoveNodeL
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchChildrenProvider;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchPropertiesProvider;
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -72,8 +70,10 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 				.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(STRUCTURE_DIFF_EXTENSION, "fpp", "mindmap", true));
 
+		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesController = new StructureDiffMatchPropertiesProvider();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
-				.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffMatchPropertiesProvider())
+				.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
+			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
 				.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
 				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
 

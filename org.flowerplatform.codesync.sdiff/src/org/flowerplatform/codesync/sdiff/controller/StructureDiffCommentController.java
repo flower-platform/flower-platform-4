@@ -31,7 +31,7 @@ import org.flowerplatform.util.controller.AbstractController;
  * @author Mariana Gheorghe
  */
 public class StructureDiffCommentController extends AbstractController implements IPropertiesProvider {
-
+	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(COLOR_BACKGROUND, MATCH_COLOR_COMMENT);
