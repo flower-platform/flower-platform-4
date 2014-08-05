@@ -60,7 +60,7 @@ public class CodeSyncConstants {
 	//////////////////////////////////
 	// Node properties
 	//////////////////////////////////
-	
+	public static final String NODE_URI_TO_BE_IGNORED = "nodeUriToBeIgnored";
 	public static final String REMOVED = "removed";
 	public static final String ADDED = "added";
 	public static final String SYNC = "sync";

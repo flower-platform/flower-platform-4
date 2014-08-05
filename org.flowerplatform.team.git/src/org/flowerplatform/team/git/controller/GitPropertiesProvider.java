@@ -37,6 +37,9 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 		String repoPath = Utils.getRepo(node.getNodeUri());
 		try {
 			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+			if (repo == null) {
+				return;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -28,6 +28,7 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.as.CodeSyncAsPlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaPlugin;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
+import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -49,7 +50,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	CodeSyncJavaTest.class, 
-	CodeSyncAsTest.class
+	CodeSyncAsTest.class,
+	CodeSyncCommentPropagationTest.class,
+	CodeSyncPropagationTest.class
 //	CodeSyncJavascriptTest.class,
 //	CodeSyncWikiTest.class 
 })
@@ -71,6 +74,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 		startPlugin(new CodeSyncPlugin());
 		startPlugin(new CodeSyncJavaPlugin());
 		startPlugin(new CodeSyncAsPlugin());
+		startPlugin(new CodeSyncSdiffPlugin());
 	}
 	
 	public static File getFile(String path) {

@@ -7,7 +7,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.jdt.core,
  org.junit,
  org.flowerplatform.util,
+ org.flowerplatform.codesync,
  org.flowerplatform.codesync.java,
+ org.flowerplatform.codesync.sdiff,
  org.eclipse.core.resources,
  org.flowerplatform.core,
  org.flowerplatform.freeplane,
@@ -15,8 +17,7 @@ Require-Bundle: org.eclipse.jdt.core,
  org.flowerplatform.resources,
  org.flowerplatform.codesync.as,
  org.eclipse.equinox.common,
- org.eclipse.osgi,
- org.flowerplatform.codesync
+ org.eclipse.osgi
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

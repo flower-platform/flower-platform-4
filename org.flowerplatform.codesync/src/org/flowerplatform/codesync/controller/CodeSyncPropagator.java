@@ -5,6 +5,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_SYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.ORIGINAL_SUFFIX;
 import static org.flowerplatform.codesync.CodeSyncConstants.SYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncConstants.NODE_URI_TO_BE_IGNORED;
 
 import org.flowerplatform.core.DirtyPropagatorController;
 import org.flowerplatform.core.node.NodeService;
@@ -38,6 +39,10 @@ public class CodeSyncPropagator extends DirtyPropagatorController {
 
 	@Override
 	public boolean isDirty(Node node, ServiceContext<NodeService> serviceContext) {
+		if (node.getNodeUri().equals(serviceContext.getContext().get(NODE_URI_TO_BE_IGNORED))) {
+			return false;
+		}
+
 		if (!isSync(node)) {
 			// already set
 			return true;
