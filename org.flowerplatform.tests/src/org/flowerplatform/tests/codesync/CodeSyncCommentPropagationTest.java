@@ -28,6 +28,7 @@ public class CodeSyncCommentPropagationTest {
 	public static final String ONE_DIRTY_NODE_INSIDE = "initial_comments_inside/codesyncSdiffTwoDirtyChildrenPatch.sdiff";
 	public static final String TWO_COMMENTS_INSIDE_REMOVE_COMMENT = "initial_comments_inside/codesyncSdiffTwoCommentsPatch.sdiff";
 	public static final String TWO_COMMENTS_INSIDE_REMOVE_DIRTY_CHILD = "initial_comments_inside/codesyncSdiffTwoCommentsDirtyPatch.sdiff";
+	private static NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 
 	/**
 	 * Initial:
@@ -45,14 +46,12 @@ public class CodeSyncCommentPropagationTest {
 	@Test
 	public void testAddCommentPropagation() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
-		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", CodeSyncTestSuite.PROJECT, NO_COMMENTS_INSIDE);
-		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		Node root = subscribeToSdiffFile(NO_COMMENTS_INSIDE);
 
 		// get the node that we want to use as parent for our new node
-		Node testNode = CodeSyncTestSuite.getChild(root, new String[] {"CodeSyncSdiffConstants.java", "CodeSyncSdiffConstants", "STRUCTURE_DIFFS_FOLDER"});
-		String testNodeFullyQualifiedName = testNode.getNodeUri();;
+		Node testNode = CodeSyncTestSuite.getChild(root, new String[] { "CodeSyncSdiffConstants.java", "CodeSyncSdiffConstants", "STRUCTURE_DIFFS_FOLDER" });
+		String testNodeFullyQualifiedName = testNode.getNodeUri();
+		;
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
 		assertTrue("testNode is supposed to be initially clean", !isComment(testNode) && !isChildrenDirty(testNode));
 
@@ -87,32 +86,31 @@ public class CodeSyncCommentPropagationTest {
 	@Test
 	public void testRemoveCommentButNotTheLastDirtyChild() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
-		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", CodeSyncTestSuite.PROJECT, TWO_COMMENTS_INSIDE_REMOVE_COMMENT);
-		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
-		
+		Node root = subscribeToSdiffFile(TWO_COMMENTS_INSIDE_REMOVE_COMMENT);
+
 		// get the node that we want to remove
-		Node testNode = CodeSyncTestSuite.getChild(root, new String[] {"CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()", "myMessage"});
-		String testNodeFullyQualifiedName = testNode.getNodeUri();;
+		Node testNode = CodeSyncTestSuite.getChild(root, new String[] { "CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()", "myMessage" });
+		String testNodeFullyQualifiedName = testNode.getNodeUri();
+		;
 		assertTrue("testNode is supposed to be a comment", isComment(testNode));
-		
+
 		// get the first two parents of testNode
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
 		serviceContext.setService(CorePlugin.getInstance().getNodeService());
 		Node parent1OfTestNode = serviceContext.getService().getParent(testNode, serviceContext);
 		String parent1OfTestNodeFullyQualifiedName = parent1OfTestNode.getNodeUri();
 		Node parent2OfTestNode = serviceContext.getService().getParent(parent1OfTestNode, serviceContext);
-		
+
 		// remove comment node
 		nodeServiceRemote.removeChild(parent1OfTestNodeFullyQualifiedName, testNodeFullyQualifiedName);
-		
-		// take the first node that should stay dirty (as explained in this method's description)
+
+		// take the first node that should stay dirty (as explained in this
+		// method's description)
 		Node firstDirtyNode = serviceContext.getService().getParent(parent2OfTestNode, serviceContext);
-		
+
 		// after this removal, both parent1 and parent 2 should be clean;
 		assertTrue("all parents without dirty children should be clean", !isChildrenDirty(parent1OfTestNode) && !isChildrenDirty(parent2OfTestNode));
-		
+
 		// everything above should be dirty
 		assertTrue("all the parents are supposed to have the CONTAINS_COMMENT set if there is still any dirty child", isChildrenDirtyForAllParents(firstDirtyNode, serviceContext));
 	}
@@ -135,14 +133,12 @@ public class CodeSyncCommentPropagationTest {
 	@Test
 	public void testRemoveNodeWithCommentButNotTheLastDirtyChild() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
-		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", CodeSyncTestSuite.PROJECT, TWO_COMMENTS_INSIDE_REMOVE_DIRTY_CHILD);
-		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		Node root = subscribeToSdiffFile(TWO_COMMENTS_INSIDE_REMOVE_DIRTY_CHILD);
 
-		// get the node with comment that we want to erase 
-		Node testNode = CodeSyncTestSuite.getChild(root, new String[] {"CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()"});
-		String testNodeFullyQualifiedName = testNode.getNodeUri();;
+		// get the node with comment that we want to erase
+		Node testNode = CodeSyncTestSuite.getChild(root, new String[] { "CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()" });
+		String testNodeFullyQualifiedName = testNode.getNodeUri();
+		;
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
 		serviceContext.setService(CorePlugin.getInstance().getNodeService());
 		assertTrue("testNode is supposed to be a node with a comment", isChildrenDirty(testNode));
@@ -156,7 +152,8 @@ public class CodeSyncCommentPropagationTest {
 		nodeServiceRemote.removeChild(parentOfTestNodeFullyQualifiedName, testNodeFullyQualifiedName);
 		assertTrue("all parents without dirty children should be clean", !isChildrenDirty(parentOfTestNode));
 
-		// everything above should be dirty, since there is another comment child to keep them that way
+		// everything above should be dirty, since there is another comment
+		// child to keep them that way
 		assertTrue("all the parents are supposed to have the CONTAINS_COMMENT set if there is still any dirty child", isChildrenDirtyForAllParents(firstDirtyNode, serviceContext));
 	}
 
@@ -179,17 +176,15 @@ public class CodeSyncCommentPropagationTest {
 	@Test
 	public void testRemoveLastChildWithComment() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
-		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", CodeSyncTestSuite.PROJECT, ONE_DIRTY_NODE_INSIDE);
-		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
-		
+		Node root = subscribeToSdiffFile(ONE_DIRTY_NODE_INSIDE);
+
 		// get testNode
-		Node testNode = CodeSyncTestSuite.getChild(root, new String[] {"CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()"});
-		String testNodeFullyQualifiedName = testNode.getNodeUri();;
+		Node testNode = CodeSyncTestSuite.getChild(root, new String[] { "CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()" });
+		String testNodeFullyQualifiedName = testNode.getNodeUri();
+		;
 
 		assertTrue("testNode is supposed to be a node with comment", isChildrenDirty(testNode));
-		
+
 		// get the parent of testNode
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
 		serviceContext.setService(CorePlugin.getInstance().getNodeService());
@@ -198,10 +193,10 @@ public class CodeSyncCommentPropagationTest {
 
 		// remove node
 		nodeServiceRemote.removeChild(parentOfTestNodeFullyQualifiedName, testNodeFullyQualifiedName);
-		
+
 		// update the values of parentOfTestNode
 		parentOfTestNode = CorePlugin.getInstance().getResourceService().getNode(parentOfTestNodeFullyQualifiedName);
-		
+
 		assertTrue("if no dirty child is left, all parents (that don't have dirty children) should loose the CONTAINS_COMMENT flag",
 				isChildrenNotDirtyForAllParents(parentOfTestNode, serviceContext));
 	}
@@ -221,22 +216,18 @@ public class CodeSyncCommentPropagationTest {
 	 */
 	@Test
 	public void testRemoveLastComment() {
-		// remove testNode; this should make all the parents clean;
-		
 		// subscribe to sdiffile
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
-		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", CodeSyncTestSuite.PROJECT, ONE_COMMENT_INSIDE);
-		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
-		
+		Node root = subscribeToSdiffFile(ONE_COMMENT_INSIDE);
+
 		// get testNode
-		Node testNode = CodeSyncTestSuite.getChild(root, new String[] {"CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()", "myComment"});
-		String testNodeFullyQualifiedName = testNode.getNodeUri();;
+		Node testNode = CodeSyncTestSuite.getChild(root, new String[] { "CodeSyncSdiffPlugin.java", "CodeSyncSdiffPlugin", "registerMessageBundle()", "myComment" });
+		String testNodeFullyQualifiedName = testNode.getNodeUri();
+		;
 		assertTrue("testNode is supposed to be a comment", isComment(testNode));
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
 		serviceContext.setService(CorePlugin.getInstance().getNodeService());
-		
-	    // get the parent of node
+
+		// get the parent of node
 		Node parentOfTestNode = serviceContext.getService().getParent(testNode, serviceContext);
 		String parentOfTestNodeFullyQualifiedName = parentOfTestNode.getNodeUri();
 
@@ -278,4 +269,10 @@ public class CodeSyncCommentPropagationTest {
 
 	}
 
+	private Node subscribeToSdiffFile(String sdiffFileName) {
+		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", CodeSyncTestSuite.PROJECT, sdiffFileName);
+		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		return root;
+	}
 }

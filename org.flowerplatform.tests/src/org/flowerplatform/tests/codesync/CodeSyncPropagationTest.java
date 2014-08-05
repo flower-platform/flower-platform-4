@@ -28,11 +28,11 @@ public class CodeSyncPropagationTest {
 	
 	private static final String INITIAL_ALL_SYNC = "initial_all_sync/";
 	private static final String INITIAL_ONE_NOT_SYNC = "initial_one_not_sync/";
-	private static final String test1 = ".codesync1";
-	private static final String test2 = ".codesync2";
-	private static final String test3 = ".codesync3";
-	private static final String test4 = ".codesync4";
-	private static final String test5 = ".codesync5";
+	private static final String test1 = "AllSyncAddNodeTestCodeSync";
+	private static final String test2 = "AllSyncSimpleRemoveSync";
+	private static final String test3 = "AllSyncChangeOriginalValueCondeSync";
+	private static final String test4 = "NotSyncRevertToOriginalValueCodeSync";
+	private static final String test5 = "ReverToOriginalValueButNotTheLastCodeSync";
 	
 	/**
 	 * Initial:
