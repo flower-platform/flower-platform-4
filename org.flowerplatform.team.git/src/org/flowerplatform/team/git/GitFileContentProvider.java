@@ -66,7 +66,7 @@ public class GitFileContentProvider implements IFileContentProvider {
 				InputStream inStream = repository.open(treeWalk.getObjectId(0)).openStream();
 				oldFileContent = IOUtils.toString(inStream);
 			} else {
-				oldFileContent = "";
+				oldFileContent = null;
 			}
 
 			// get the new file content
@@ -80,7 +80,7 @@ public class GitFileContentProvider implements IFileContentProvider {
 				InputStream inStream = repository.open(treeWalk.getObjectId(0)).openStream();
 				newFileContent = IOUtils.toString(inStream);
 			} else {
-				newFileContent = "";
+				newFileContent = null;
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
