@@ -15,7 +15,6 @@ GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 
 license-end
 -->
-<!--TODO MI: de mutat acest fisier in ui-->
 <!-- 
  @author Valentina-Camelia Bojan
 -->
@@ -148,7 +147,6 @@ license-end
 			}
 			
 			override protected function okHandler(event:Event=null):void {
-				okButton.enabled = false;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createStructureDiffFromGitCommits", 
 					[startHash.text, endHash.text, repo, 
 					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.getTextInput()])],

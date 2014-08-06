@@ -13,7 +13,6 @@
 * 
 * license-end
 */
-
 package org.flowerplatform.flex_client.team.git.action {
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -25,8 +24,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	 
 	/**
 	 * @author Cristina Brinza
-	 */
-	
+	 */	
 	public class CreateBranchAction extends ActionBase {
 		
 		public function CreateBranchAction() {
@@ -57,8 +55,8 @@ package org.flowerplatform.flex_client.team.git.action {
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(view)
-				.setWidth(550)
-				.setHeight(500)
+				.setWidth(450)
+				.setHeight(350)
 				.setTitle(label)
 				.setIcon(icon)
 				.show();

@@ -42,11 +42,14 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.Utils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -64,12 +67,19 @@ public class CodeSyncJavaTest {
 	
 	private static final String resourceNodeId = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
+	@BeforeClass
+	public static void beforeClassMethod() {
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId",  resourceNodeId,  new ServiceContext<ResourceService>());
+	}
+	
 	@Test
 	public void testMatchWhenSync() throws IOException {
 		CodeSyncPlugin.getInstance().addSrcDir(INITIAL);
-		String fullyQualifiedName = PROJECT + "/" + INITIAL /*+ "/" + SOURCE_FILE*/;
-		
-		Match match = codeSyncService.synchronize(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
+		String fullyQualifiedName = PROJECT + "/" + INITIAL /*+ "/" + SOURCE_FILE*/;		
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { INITIAL }).getNodeUri();
+
+		Match match = codeSyncService.synchronize(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
 		
 		assertEquals(1, match.getSubMatches().size());
 		
@@ -110,13 +120,15 @@ public class CodeSyncJavaTest {
 	public void testMatchNoConflicts() {
 		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS);
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS /*+ "/" + SOURCE_FILE*/;
-
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { INITIAL }).getNodeUri();
+		
 		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
 		
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
 		
-		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, false);
+		Match match = codeSyncService.generateMatch(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, false);
 		
 		Pair[] typeList = {
 				new Pair(_3MATCH, 0),					// src
@@ -198,11 +210,11 @@ public class CodeSyncJavaTest {
 
 	@Test
 	public void testMatchNoConflictsAndPerformSync() throws Exception {
-		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
-		
+		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS_PERFORM_SYNC);		
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC /*+ "/" + SOURCE_FILE*/;
-
 		File dir = CodeSyncTestSuite.getFile(fullyQualifiedName);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { MODIFIED_NO_CONFLICTS_PERFORM_SYNC }).getNodeUri();
 		
 		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
 		
@@ -211,9 +223,9 @@ public class CodeSyncJavaTest {
 
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
-		
-		codeSyncService.synchronize(resourceNodeId, dir, CodeSyncJavaConstants.JAVA, true);
-		
+
+		codeSyncService.synchronize(nodeUri, dir, CodeSyncJavaConstants.JAVA, true);
+
 		String expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/" + SOURCE_FILE);
 		String actual = FileUtils.readFileToString(new File(dir, SOURCE_FILE));
 		assertEquals("Source not in sync", expected, actual);
@@ -315,7 +327,9 @@ public class CodeSyncJavaTest {
 	public void testMatchConflicts() {
 		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_CONFLICTS);
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_CONFLICTS /*+ "/" + SOURCE_FILE*/;
-
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { MODIFIED_CONFLICTS }).getNodeUri();
+		
 		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);		
 		
 		// simulate model modifications
@@ -338,7 +352,7 @@ public class CodeSyncJavaTest {
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
 
-		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, false);
+		Match match = codeSyncService.generateMatch(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
 		
 		Pair[] typeList = {
 				new Pair(_3MATCH, 0),				// src
@@ -367,33 +381,39 @@ public class CodeSyncJavaTest {
 							new Pair(_3MATCH, 3), 				// private int x
 								new Pair(_3MATCH, 4),				// private
 				};
-		boolean[] conflicts = {
-				false,
-					false,
-						true,			// superClass changed on model and source
-						
-							false,
-							false,
-							false,
+		
+		org.flowerplatform.util.Pair<Boolean, Boolean> conflictChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(true, true);
+		org.flowerplatform.util.Pair<Boolean, Boolean> conflictNoChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(true, false);
+		org.flowerplatform.util.Pair<Boolean, Boolean> noConflictChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(false, true);
+		org.flowerplatform.util.Pair<Boolean, Boolean> noConflictNoChildrenConflict = new org.flowerplatform.util.Pair<Boolean, Boolean>(false, false);
+		
+		org.flowerplatform.util.Pair<?, ?>[] conflicts = {
+				noConflictChildrenConflict,
+					noConflictChildrenConflict,
+						conflictChildrenConflict, 				// superClass changed on model and source
+								
+							noConflictNoChildrenConflict,
+							noConflictNoChildrenConflict,
+							noConflictNoChildrenConflict,
 							
-							false,
-								false,
-								false,
-									true,	// annotation value changed on model and source
-								false,
+							noConflictChildrenConflict,
+								noConflictNoChildrenConflict,
+								noConflictChildrenConflict,
+									conflictNoChildrenConflict,		// annotation value changed on model and source
+								noConflictNoChildrenConflict,
+								
+							noConflictNoChildrenConflict,
+								noConflictNoChildrenConflict,
+								noConflictNoChildrenConflict,
+									noConflictNoChildrenConflict,
+									noConflictNoChildrenConflict,
 							
-							false,
-								false,
-								false,
-									false,
-								false,
+							conflictNoChildrenConflict,				// type changed on model and source
+								noConflictNoChildrenConflict,
 							
-							true,			// type changed on model and source
-								false,
-							
-							false,			
-								false,
-			};
+							noConflictNoChildrenConflict,			// type changed on model and source, but the type is the same
+								noConflictNoChildrenConflict,
+		};
 		assertTrue("Conflicts expected!", match.isChildrenConflict());
 		testMatchTree(match, typeList, false);
 		testConflicts(match, conflicts);

@@ -36,6 +36,11 @@ public class CodeSyncAddNodeController extends AbstractController implements IAd
 	
 	@Override
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {		
+		// disable the controllers during the execution of sync algorithm
+		if (context.getBooleanValue(CodeSyncConstants.SYNC_IN_PROGRESS)) {
+			return;
+		}
+
 		context.getService().setProperty(child, CodeSyncConstants.ADDED, true, context);
 	}
 

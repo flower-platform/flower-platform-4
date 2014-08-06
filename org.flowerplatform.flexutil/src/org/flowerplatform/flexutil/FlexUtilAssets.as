@@ -72,5 +72,11 @@ package org.flowerplatform.flexutil {
 				
 		[Embed(source="/logo_flower-platform_203x95.png")]
 		public static const logoFlower:Class;
+		
+		[Embed(source="/checked.png")]
+		public static const checkedIcon:Class;
+		
+		[Embed(source="/unchecked.png")]
+		public static const uncheckedIcon:Class;
 	}
 }

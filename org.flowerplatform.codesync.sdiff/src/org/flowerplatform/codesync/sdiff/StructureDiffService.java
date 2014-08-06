@@ -74,7 +74,7 @@ import org.flowerplatform.util.file.StringHolder;
  */
 @SuppressWarnings("restriction")
 public class StructureDiffService {
-	
+
 	public Node createStructureDiffFromWorkspaceAndPatch(String patch, String repo, String sdiffOutputPath) {
 		return createStructureDiff(patch,
 									repo,
@@ -131,11 +131,15 @@ public class StructureDiffService {
 		match.setMatchKey(name);
 		
 		// ancestor + left: original content obtained after applying reverse patch
-		match.setAncestor(new CodeSyncFile(new StringHolder(path, before)));
-		match.setLeft(new CodeSyncFile(new StringHolder(path, before)));
+		if (before != null) {
+			match.setAncestor(new CodeSyncFile(new StringHolder(path, before)));
+			match.setLeft(new CodeSyncFile(new StringHolder(path, before)));
+		}
 	
 		// right: current content for this patch
-		match.setRight(new CodeSyncFile(new StringHolder(path, after)));
+		if (after != null) {
+			match.setRight(new CodeSyncFile(new StringHolder(path, after)));	
+		}
 		
 		// initialize the algorithm
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
