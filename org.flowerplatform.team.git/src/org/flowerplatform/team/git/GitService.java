@@ -221,6 +221,7 @@ public class GitService {
 				list.add(previousCommit.getFullMessage());
 			} else {
 				list.add(pi.getName() + " <" + pi.getEmailAddress() + ">");
+				list.add("");
 			}
 		return list;
 	}

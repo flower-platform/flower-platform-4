@@ -176,7 +176,7 @@ license-end
 			private function refreshFunction(event:Event):void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"unstaged"], function(data:ArrayCollection):void {unstagedData = data} );
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.stagingList", [repo,"staged"], function(data:ArrayCollection):void {stagedData = data} );
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.amendAuthorCommiter", [repo, testAmend], function(data:ArrayCollection):void {author.text = String(data.getItemAt(1)); commiter.text = String(data.getItemAt(0)); if(testAmend) commitMessage.text = String(data.getItemAt(2));});
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.amendAuthorCommiter", [repo, testAmend], function(data:ArrayCollection):void {commiter.text = String(data.getItemAt(0)); author.text = String(data.getItemAt(1)); if(testAmend) commitMessage.text = String(data.getItemAt(2));});
 			}
 			
 			protected function textInputCreationCompleteHandler(event:FlexEvent):void {
