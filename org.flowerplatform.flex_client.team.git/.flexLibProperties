@@ -12,7 +12,6 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.EditRefSpecView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureRemoteView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.RenameBranchView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.RenameBranchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureBranchView"/>
@@ -23,8 +22,6 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.view.SelectRepository"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoWizardView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.component.SelectableBranches"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
   </includeClasses>
   <includeResources/>
