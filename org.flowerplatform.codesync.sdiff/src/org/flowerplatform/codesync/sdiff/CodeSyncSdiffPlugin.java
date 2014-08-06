@@ -29,7 +29,7 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import org.flowerplatform.codesync.sdiff.controller.CanContainCommentAddNodeListener;
-import org.flowerplatform.codesync.sdiff.controller.CanContainCommentPropertyController;
+import org.flowerplatform.codesync.sdiff.controller.CanContainCommentPropertyProvider;
 import org.flowerplatform.codesync.sdiff.controller.CanContainCommentRemoveNodeListener;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchChildrenProvider;
@@ -40,6 +40,7 @@ import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
+import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CAN_HOLD_CUSTOM_ICON;
 
 /**
  * @author Mariana Gheorghe
@@ -78,12 +79,14 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
-				.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController())
-				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
+				.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController().setOrderIndexAs(5000))
+				.addAdditiveController(PROPERTY_SETTER, new StructureDiffCommentController().setOrderIndexAs(5000))
+				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
+				.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_COMMENT)
-				.addAdditiveController(PROPERTIES_PROVIDER, new CanContainCommentPropertyController())
-				.addAdditiveController(PROPERTY_SETTER, new CanContainCommentPropertyController())
+				.addAdditiveController(PROPERTIES_PROVIDER, new CanContainCommentPropertyProvider())
+				.addAdditiveController(PROPERTY_SETTER, new CanContainCommentPropertyProvider())
 				.addAdditiveController(ADD_NODE_CONTROLLER, new CanContainCommentAddNodeListener().setOrderIndexAs(10000))
 				.addAdditiveController(REMOVE_NODE_CONTROLLER, new CanContainCommentRemoveNodeListener().setOrderIndexAs(-10000))
 				.addAdditiveController(ADD_CHILD_DESCRIPTOR,

@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.codesync;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CAN_HOLD_CUSTOM_ICON;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CODESYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
@@ -298,9 +299,13 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController().setOrderIndexAs(-10000))
 			.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME));
-			
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
+	
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_HOLD_CUSTOM_ICON)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ICONS).setTitleAs(getLabel("codesync.match.icons")).setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE))	
+			.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CODESYNC_ICONS).setOrderIndexAs(-1000));
+
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_TYPE).setTitleAs(getLabel("codesync.match.type")).setReadOnlyAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_FEATURE).setTitleAs(getLabel("codesync.match.feature")).setReadOnlyAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_MODEL_ELEMENT_TYPE).setTitleAs(getLabel("codesync.match.modelElementType")).setReadOnlyAs(true))
@@ -311,7 +316,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setTitleAs(getLabel("codesync.match.diffs.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setTitleAs(getLabel("codesync.match.diffs.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setTitleAs(getLabel("codesync.match.body.modified")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CODESYNC_ICONS).setOrderIndexAs(-1000));
+			.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());

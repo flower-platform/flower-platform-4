@@ -50,6 +50,7 @@ public class CodeSyncConstants {
 	public static final String FILE = "codesyncFile";
 	
 	public static final String CATEGORY_MODEL = UtilConstants.CATEGORY_PREFIX + "model";
+	public static final String CATEGORY_CAN_HOLD_CUSTOM_ICON = UtilConstants.CATEGORY_PREFIX + "canHoldCustomIcons";
 	
 	//////////////////////////////////
 	// Controllers
