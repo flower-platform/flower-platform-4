@@ -23,11 +23,13 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.as.CodeSyncAsPlugin;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaPlugin;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
+import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -71,6 +73,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 		startPlugin(new CodeSyncPlugin());
 		startPlugin(new CodeSyncJavaPlugin());
 		startPlugin(new CodeSyncAsPlugin());
+		startPlugin(new CodeSyncSdiffPlugin());
 	}
 	
 	public static File getFile(String path) {
@@ -104,10 +107,10 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	}
 
 	private static Pair[] typeList;
-	private static boolean[] conflicts;
+	private static org.flowerplatform.util.Pair<?, ?>[] conflicts;
 	private static int i;
 
-	public static void testConflicts(Match match, boolean[] _conflicts) {
+	public static void testConflicts(Match match, org.flowerplatform.util.Pair<?, ?>[] _conflicts) {
 		i = 0;
 		conflicts = _conflicts;
 		checkTree_conflict(match);
@@ -138,8 +141,10 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	}
 
 	public static void checkMatch_conflict(Match match) {
-		assertEquals("Wrong conflict state at index " + i, conflicts[i],
-				match.isConflict());
+		assertEquals("Wrong conflict state at index " + i, conflicts[i].a, match.isConflict());
+		assertEquals("Wrong children conflict state at index " + i, conflicts[i].b, match.isChildrenConflict());
+		assertEquals("Wrong sync state at index " + i, !((Boolean)conflicts[i].a), ((Node)match.getLeft()).getPropertyValue(CodeSyncConstants.SYNC));
+		assertEquals("Wrong children sync state at index " + i, !((Boolean)conflicts[i].b), ((Node)match.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
 	}
 
 	public static Match testMatchTree(Match match, Pair[] _typeList, boolean checkNoDiffs) {

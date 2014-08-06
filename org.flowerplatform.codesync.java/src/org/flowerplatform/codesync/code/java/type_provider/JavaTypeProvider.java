@@ -63,7 +63,6 @@ public class JavaTypeProvider implements ITypeProvider {
 	private Map<Class<?>, String> directMap = new HashMap<Class<?>, String>();
 	
 	public JavaTypeProvider() {
-		directMap.put(CodeSyncFile.class, FILE);
 		directMap.put(EnumDeclaration.class, ENUM);
 		directMap.put(AnnotationTypeDeclaration.class, ANNOTATION_TYPE);
 		directMap.put(FieldDeclaration.class, ATTRIBUTE);
@@ -78,9 +77,14 @@ public class JavaTypeProvider implements ITypeProvider {
 	@Override
 	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm) {
 		IFileAccessController fileAccessController = codeSyncAlgorithm.getFileAccessController();
-		if (fileAccessController.isFile(object)) {
-			if (fileAccessController.isDirectory(object)) {
-				return CodeSyncConstants.FOLDER;
+		if (object instanceof CodeSyncFile) {
+			Object file = ((CodeSyncFile) object).getFile();
+			if (fileAccessController.isFile(file)) {
+				if (fileAccessController.isDirectory(file)) {
+					return CodeSyncConstants.FOLDER;
+				} else {
+					return CodeSyncConstants.FILE;
+				}
 			}
 		} else if (object instanceof TypeDeclaration) {
 			if (((TypeDeclaration) object).isInterface()) {

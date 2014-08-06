@@ -22,28 +22,25 @@ package org.flowerplatform.flex_client.team.git.remote {
 	
 	[RemoteClass(alias="org.flowerplatform.team.git.remote")]
 	[Bindable]
-	public class GitBranch {
+	public class GitRef {
 		
-		private var _branchName:String;
-		private var _branchType:String;
+		private var _name:String;
+		private var _type:String;
 		
-		public function GitBranch() {
+		public function set name(value:String):void {
+			_name = value;
 		}
 		
-		public function set branchName(value:String):void {
-			_branchName = value;
+		public function set type(value:String):void {
+			_type = value;
 		}
 		
-		public function set branchType(value:String):void {
-			_branchType = value;
+		public function get name():String {
+			return _name;
 		}
 		
-		public function get branchName():String {
-			return _branchName;
-		}
-		
-		public function get branchType():String {
-			return _branchType;
+		public function get type():String {
+			return _type;
 		}
 	}
 }

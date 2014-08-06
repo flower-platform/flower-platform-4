@@ -14,12 +14,14 @@
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
   <applications>
     <application path="org.flowerplatform.flex_client.team.git.as"/>
-    <application path="aaaa.mxml"/>
   </applications>
   <modules/>
   <workers/>
