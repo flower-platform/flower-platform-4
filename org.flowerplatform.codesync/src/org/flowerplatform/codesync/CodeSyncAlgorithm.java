@@ -35,6 +35,7 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.adapter.file.FileModelAdapter;
 import org.flowerplatform.core.file.IFileAccessController;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,17 +105,29 @@ public class CodeSyncAlgorithm {
 		}
 	}
 
-	public void generateDiff(Match match, boolean performAction) {
+	/**
+	 * @return A pair containing two flags: 
+	 * <ul>
+	 * <li>isConflict - shows if the match has a conflict
+	 * <li>isSync - shows if the match has been syncronized
+	 * </ul>
+	 */
+	public Pair<Boolean, Boolean> generateDiff(Match match, boolean performAction) {
+		boolean isChildrenConflict = false;
+		boolean isConflict = false;
+		boolean isChildrenSync = true;
+		boolean isSync = true;
+
 		logger.debug("Generate diff for {}", match);
-		
+
 		beforeOrAfterFeaturesProcessed(match, true);
 		FeatureProvider featureProvider = getFeatureProvider(match);
-		
+
 		// first iterate over value features
 		for (Object feature : featureProvider.getValueFeatures()) {
-			processValueFeature(feature, match);
+			isConflict = isConflict || processValueFeature(feature, match);
 		}
-		
+
 		// sync
 		boolean performLater = false;
 		DiffAction action = null;
@@ -124,25 +137,57 @@ public class CodeSyncAlgorithm {
 				// remove actions must be performed after the sub-matches are computed
 				performLater = true;
 			} else {
-				synchronize(match, action);
+				isSync = synchronize(match, action);
 			}
 		}
 		
 		// iterate over containment features
+		Pair<Boolean, Boolean> conflictSyncPair;
 		for (Object feature : featureProvider.getContainmentFeatures()) {
-			processContainmentFeature(feature, match, !performLater && performAction);
+			conflictSyncPair = processContainmentFeature(feature, match, !performLater && performAction);
+			isChildrenConflict = isChildrenConflict || conflictSyncPair.a;
+			isChildrenSync = isChildrenSync && conflictSyncPair.b;
 		}
 
 		if (performLater && performAction) {
-			synchronize(match, action);
+			isSync = isSync && synchronize(match, action);
 		}
-		
+
 		beforeOrAfterFeaturesProcessed(match, false);
-		
+
+		// propagate childrenConflict flag for parents
+		if (isChildrenConflict) {
+			if (match.getLeft() != null) {
+				getLeftModelAdapter(match.getLeft()).setChildrenConflict(match.getLeft());
+			}
+			if (match.getRight() != null) {
+				getRightModelAdapter(match.getRight()).setChildrenConflict(match.getRight());
+			}
+		} else {
+			if (match.getLeft() != null) {
+				getLeftModelAdapter(match.getLeft()).unsetChildrenConflict(match.getLeft());
+			}
+			if (match.getRight() != null) {
+				getRightModelAdapter(match.getRight()).unsetChildrenConflict(match.getRight());
+			}
+		}
+
+		// propagate childrenSync flag for parents
+		if (isChildrenSync) {
+			if (match.getLeft() != null) {
+				getLeftModelAdapter(match.getLeft()).setChildrenSync(match.getLeft());
+			}
+			if (match.getRight() != null) {
+				getRightModelAdapter(match.getRight()).setChildrenSync(match.getRight());
+			}
+		}
+
 		// after the sub-matches are processed
 		if (performAction) {
 			save(match, false);
 		}
+
+		return new Pair<Boolean, Boolean>(isConflict || isChildrenConflict, isSync && isChildrenSync);
 	}
 	
 	/**
@@ -191,7 +236,11 @@ public class CodeSyncAlgorithm {
 	 * 
 	 * 
 	 */
-	public void processContainmentFeature(Object feature, Match match, boolean performAction) {
+	public Pair<Boolean, Boolean> processContainmentFeature(Object feature, Match match, boolean performAction) {
+		boolean isChildrenConflict = false;
+		boolean isChildrenSync = true;
+		Pair<Boolean, Boolean> conflitSyncPair = new Pair<Boolean, Boolean>(false, true);
+		
 		logger.debug("Process containment feature {} for {}", feature, match);
 		
 		// cache the model adapters for children to avoid
@@ -247,9 +296,11 @@ public class CodeSyncAlgorithm {
 					
 					if (!childMatch.isEmptyMatch()) {
 						match.addSubMatch(childMatch);
-	
+
 						// recurse
-						generateDiff(childMatch, performAction);
+						conflitSyncPair = generateDiff(childMatch, performAction);
+						isChildrenConflict = isChildrenConflict || conflitSyncPair.a;
+						isChildrenSync = isChildrenSync && conflitSyncPair.b;
 					}
 				}
 			}
@@ -274,7 +325,9 @@ public class CodeSyncAlgorithm {
 				match.addSubMatch(childMatch);
 
 				// recurse
-				generateDiff(childMatch, performAction);
+				conflitSyncPair = generateDiff(childMatch, performAction);
+				isChildrenConflict = isChildrenConflict || conflitSyncPair.a;
+				isChildrenSync = isChildrenSync && conflitSyncPair.b;
 			}
 		} 
 		
@@ -290,9 +343,13 @@ public class CodeSyncAlgorithm {
 				match.addSubMatch(childMatch);
 
 				// recurse
-				generateDiff(childMatch, performAction);
+				conflitSyncPair = generateDiff(childMatch, performAction);
+				isChildrenConflict = isChildrenConflict || conflitSyncPair.a;
+				isChildrenSync = isChildrenSync && conflitSyncPair.b;
 			}
 		}
+		
+		return new Pair<Boolean, Boolean>(isChildrenConflict, isChildrenSync);
 	}
 	
 	/**
@@ -309,10 +366,9 @@ public class CodeSyncAlgorithm {
 	/**
 	 * @author Cristi
 	 * @author Mariana
-	 * 
-	 * 
+	 * @return true - if the match has a conflict, false - otherwise
 	 */
-	public void processValueFeature(Object feature, Match match) {
+	public Boolean processValueFeature(Object feature, Match match) {
 		logger.debug("Process value feature {} for {}", feature, match);
 		
 		Diff diff = null;
@@ -321,10 +377,10 @@ public class CodeSyncAlgorithm {
 		Object left = match.getLeft();
 		Object right = match.getRight();
 		
-		if (ancestor == null && left == null ||
+		if (ancestor == null && left == null || 
 				ancestor == null && right == null ||
 				left == null && right == null)
-			return; // for 1-Match, don't do anything
+			return false; // for 1-Match, don't do anything
 		
 		Object ancestorValue = null;
 		Object leftValue = null;
@@ -385,35 +441,35 @@ public class CodeSyncAlgorithm {
 		if (diff != null) {
 			diff.setFeature(feature);
 			match.addDiff(diff);
-			if (match.getLeft() != null) {
-				getLeftModelAdapter(left).unsetConflict(left, feature, this);
-			}
-			if (match.getRight() != null) {
-				getRightModelAdapter(right).unsetConflict(right, feature, this);
-			}
+			return diff.isConflict();
 		}
+
+		return false;
 	}
 	
-	public void synchronize(Match match) {
-		synchronize(match, null);
+	public boolean synchronize(Match match) {
+		return synchronize(match, null);
 	}
 	
-	public void synchronize(Match match, DiffAction action) {
+	public boolean synchronize(Match match, DiffAction action) {
+		boolean isSync = true;
+
 		if (match.isConflict() || match.isChildrenConflict()) {
 			logger.debug("Conflict for {}", match);
-			return;
+			return false;
 		}
-		
+
 		logger.debug("Perform sync for {}", match);
-		
+
 		// sync match
-		
+
 		if (action == null) {
 			action = getDiffActionToApplyForMatch(match);
 		}
-		
+
 		if (action != null) {
-			action.execute(match, -1);
+			ActionResult actResult = action.execute(match, -1);
+			isSync = !actResult.conflict;
 		}
 		
 		if (action == null) {
@@ -427,30 +483,35 @@ public class CodeSyncAlgorithm {
 			}
 		}
 		
-		ActionSynchronize syncAction = new ActionSynchronize();
-		syncAction.execute(match);
+		ActionResult[] actResult = new ActionSynchronize().execute(match);
+		for (ActionResult actionResult : actResult) {
+			if (actionResult != null) {
+				isSync = isSync && (!actionResult.conflict);
+			}
+		}
 		
 		// update sync flags
-		
 		if (match.getAncestor() != null) {
 			getAncestorModelAdapter(match.getAncestor()).allActionsPerformed(match.getAncestor(), null, this);
 		}
 		if (match.getLeft() != null) {
 			getLeftModelAdapter(match.getLeft()).allActionsPerformed(match.getLeft(), match.getRight(), this);
+			getLeftModelAdapter(match.getLeft()).setSync(match.getLeft());
 		}
 		if (match.getRight() != null) {
 			getRightModelAdapter(match.getRight()).allActionsPerformed(match.getRight(), match.getLeft(), this);
+			getRightModelAdapter(match.getRight()).setSync(match.getRight());
 		}
 		
 		// recurse
-		
 		List<Match> subMatches = new ArrayList<Match>();
 		subMatches.addAll(match.getSubMatches());
-		
+
 		for (Match subMatch : subMatches) {
-			synchronize(subMatch);
+			isSync = isSync && synchronize(subMatch);
 		}
-		
+
+		return isSync;
 	}
 	
 	protected DiffAction getDiffActionToApplyForMatch(Match match) {

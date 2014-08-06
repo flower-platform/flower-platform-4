@@ -13,4 +13,5 @@ Require-Bundle: org.flowerplatform.core,
  org.eclipse.compare.core
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin
-Export-Package: org.flowerplatform.codesync.sdiff
+Export-Package: org.flowerplatform.codesync.sdiff,
+ org.flowerplatform.codesync.sdiff.controller

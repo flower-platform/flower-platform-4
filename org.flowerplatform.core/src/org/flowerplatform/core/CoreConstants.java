@@ -32,7 +32,7 @@ public class CoreConstants {
 	public static final String VIRTUAL_NODE_SCHEME = "virtual";
 	
 	// type for virtual debug node
-	public final static String DEBUG = "debug";
+	public static final String DEBUG = "debug";
 	
 	// type for virtual root node
 	public static final String ROOT_TYPE = "root";
@@ -45,7 +45,6 @@ public class CoreConstants {
 	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
 	
-	// preferences scheme and types
 	public static final String PREFERENCE_TYPE = "preference";
 	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
 		
@@ -58,6 +57,7 @@ public class CoreConstants {
 	
 	public static final String ICONS = "icons";
 	public static final String ICONS_SEPARATOR = ",";
+	public static final String CODESYNC_ICONS = "codeSyncIcons";
 	
 	public static final String IS_DIRTY = "isDirty";
 	public static final String RESOURCE_SET = "resourceSet";
@@ -196,4 +196,5 @@ public class CoreConstants {
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
 		
+	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
 }

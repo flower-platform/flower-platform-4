@@ -86,12 +86,6 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	}
 
 	@Override
-	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
-		Node node = getNode(element);
-		CodeSyncControllerUtils.setSyncTrueAndPropagateToParents(node, CorePlugin.getInstance().getNodeService());
-	}
-
-	@Override
 	public void actionPerformed(Object element, Object feature, ActionResult result, Match match) {
 		if (result == null || result.conflict) {
 			return;
