@@ -147,4 +147,24 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do
 	}
+
+	@Override
+	public void setChildrenConflict(Object element) {
+		// nothing to do
+	}
+
+	@Override
+	public void unsetChildrenConflict(Object element) {
+		// nothing to do
+	}
+
+	@Override
+	public void setSync(Object element) {
+		// nothing to do
+	}
+
+	@Override
+	public void setChildrenSync(Object element) {
+		// nothing to do
+	}
 }

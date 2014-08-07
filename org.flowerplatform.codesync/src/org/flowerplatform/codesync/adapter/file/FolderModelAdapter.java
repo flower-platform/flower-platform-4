@@ -53,7 +53,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	}
 
 	protected String getName(Object element, IFileAccessController fileAccessController) {
-		return fileAccessController.getName(element);
+		return fileAccessController.getName(getFolder(element));
 	}
 	
 	@Override
@@ -103,7 +103,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	}
 
 	protected List<?> getChildren(Object modelElement, IFileAccessController fileAccessController) {
-		Object[] files = fileAccessController.listFiles(modelElement);
+		Object[] files = fileAccessController.listFiles(getFolder(modelElement));
 		if (files == null) {
 			return Collections.emptyList();
 		}
@@ -114,14 +114,15 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	 * @author Sebastian Solomon
 	 */
 	@Override
-	public boolean save(Object file, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		IFileAccessController fileAccessController = codeSyncAlgorithm.getFileAccessController();
-		if (!fileAccessController.exists(file)) {
-			fileAccessController.createFile(file, true);
+		Object folder = getFolder(element);
+		if (!fileAccessController.exists(folder)) {
+			fileAccessController.createFile(folder, true);
 		}
 		
 		// remove children that were mark deleted	
-		Object[] children = fileAccessController.listFiles(file);
+		Object[] children = fileAccessController.listFiles(folder);
 		if (children != null) {
 			for (Object child : children) {
 				if (codeSyncAlgorithm.getFilesToDelete().contains(child)) {
@@ -132,11 +133,11 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		}
 		
 		// move the folder if it was marked renamed
-		String newName = codeSyncAlgorithm.getFilesToRename().get(file);
+		String newName = codeSyncAlgorithm.getFilesToRename().get(folder);
 		if (newName != null) {
-			Object dest = fileAccessController.getFile(fileAccessController.getParentFile(file), newName);
-			fileAccessController.rename(file, dest);
-			codeSyncAlgorithm.getFilesToRename().remove(file);
+			Object dest = fileAccessController.getFile(fileAccessController.getParentFile(folder), newName);
+			fileAccessController.rename(folder, dest);
+			codeSyncAlgorithm.getFilesToRename().remove(folder);
 		}
 		return true;
 	}
@@ -149,6 +150,10 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
 		// folders don't have UUIDs
+	}
+	
+	protected Object getFolder(Object element) {
+		return ((CodeSyncFile) element).getFile();
 	}
 	
 }

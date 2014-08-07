@@ -58,6 +58,13 @@ public class CodeSyncConstants {
 	
 	public static final String FEATURE_PROVIDER = "featureProvider";
 	
+	/**
+	 * The controller used for propagation, should be disabled during the
+	 * execution of codesync algorithm.
+	 */
+	public static final String SYNC_IN_PROGRESS = "syncInProgress";
+	
+	
 	//////////////////////////////////
 	// Node properties
 	//////////////////////////////////
