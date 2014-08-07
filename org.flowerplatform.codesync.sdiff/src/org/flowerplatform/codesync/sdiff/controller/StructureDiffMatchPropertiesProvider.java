@@ -140,6 +140,9 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		return b != null && b;
 	}
 
+	/**
+	 * @author Elena Posea
+	 */
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		if (ICONS.equals(property)) {

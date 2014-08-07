@@ -18,6 +18,11 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
+/**
+ * 
+ * @author Elena Posea
+ *
+ */
 public class CanContainCommentPropertyProvider extends AbstractController implements IPropertySetter, IPropertiesProvider {
 
 	public CanContainCommentPropertyProvider() {
@@ -45,7 +50,7 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 				newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
 				context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);	 
 			 }
-		}	
+		}
 	}
 
 	private String getCodeSyncIcon(Node node, ServiceContext<NodeService> context) {

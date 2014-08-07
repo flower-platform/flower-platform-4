@@ -42,6 +42,9 @@ public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPrope
 		setOrderIndex(-100000);
 	}
 
+	/**
+	 * @author Elena Posea
+	 */
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		// if the node is newly added or marked removed => propagate sync flag

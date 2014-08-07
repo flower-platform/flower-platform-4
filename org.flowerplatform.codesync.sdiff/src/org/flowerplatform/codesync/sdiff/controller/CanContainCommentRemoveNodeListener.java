@@ -6,7 +6,6 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
- * 
  * @author Elena Posea
  */
 public class CanContainCommentRemoveNodeListener extends ContainsCommentPropagator implements IRemoveNodeController {
