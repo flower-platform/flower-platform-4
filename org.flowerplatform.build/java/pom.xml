@@ -21,6 +21,7 @@
 				<module>../../org.flowerplatform.freeplane</module>
 				<module>../../org.flowerplatform.codesync</module>
 				<module>../../org.flowerplatform.codesync.java</module>
+				<module>../../org.flowerplatform.codesync.as</module>
 
 				<!-- not packaged as plugins, only available during compile time -->
 				<module>../../org.flowerplatform.host.servletbridge.base</module>
