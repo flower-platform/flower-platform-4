@@ -41,7 +41,7 @@
 				<module>../../org.flowerplatform.flex_client.web</module>
 				<module>../../org.flowerplatform.flex_client.server</module>
 
-				<module>../../org.flowerplatform.tests</module>
+<!-- 				<module>../../org.flowerplatform.tests</module> -->
 			</modules>
 		</profile>
 

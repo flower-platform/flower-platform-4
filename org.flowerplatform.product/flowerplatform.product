@@ -29,7 +29,6 @@
    <plugins>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.jcraft.jsch"/>
-      <plugin id="javaewah"/>
       <plugin id="javax.xml"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
@@ -52,42 +51,32 @@
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.jdt.core"/>
-      <plugin id="org.eclipse.jgit"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.flowerplatform.codesync"/>
       <plugin id="org.flowerplatform.codesync.as"/>
       <plugin id="org.flowerplatform.codesync.java"/>
-      <plugin id="org.flowerplatform.codesync.regex"/>
-      <plugin id="org.flowerplatform.codesync.sdiff"/>
       <plugin id="org.flowerplatform.core"/>
       <plugin id="org.flowerplatform.flex_client.codesync"/>
-      <plugin id="org.flowerplatform.flex_client.codesync.regex"/>
-      <plugin id="org.flowerplatform.flex_client.codesync.sdiff"/>
       <plugin id="org.flowerplatform.flex_client.core"/>
       <plugin id="org.flowerplatform.flex_client.host_app"/>
       <plugin id="org.flowerplatform.flex_client.host_app.config.web"/>
       <plugin id="org.flowerplatform.flex_client.mindmap"/>
       <plugin id="org.flowerplatform.flex_client.properties"/>
       <plugin id="org.flowerplatform.flex_client.server"/>
-      <plugin id="org.flowerplatform.flex_client.team.git"/>
-      <plugin id="org.flowerplatform.flex_client.text"/>
       <plugin id="org.flowerplatform.flex_client.web"/>
       <plugin id="org.flowerplatform.freeplane"/>
       <plugin id="org.flowerplatform.host.servletbridge.extensionbundle" fragment="true"/>
       <plugin id="org.flowerplatform.host.servletbridge.registry"/>
       <plugin id="org.flowerplatform.mindmap"/>
       <plugin id="org.flowerplatform.resources"/>
-      <plugin id="org.flowerplatform.team.git"/>
-      <plugin id="org.flowerplatform.text"/>
       <plugin id="org.flowerplatform.util"/>
    </plugins>
 
    <configurations>
       <plugin id="com.ibm.icu" autoStart="true" startLevel="0" />
       <plugin id="com.jcraft.jsch" autoStart="true" startLevel="0" />
-      <plugin id="javaewah" autoStart="true" startLevel="0" />
       <plugin id="javax.xml" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
@@ -110,34 +99,25 @@
       <plugin id="org.eclipse.equinox.preferences" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.jdt.core" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.jgit" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.text" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync.as" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.codesync.java" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.codesync.regex" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.codesync.sdiff" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.codesync" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.flex_client.codesync.regex" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.flex_client.codesync.sdiff" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.host_app" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.host_app.config.web" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.mindmap" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.properties" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.server" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.flex_client.team.git" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.flex_client.text" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.flex_client.web" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.freeplane" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.host.servletbridge.registry" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.mindmap" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.resources" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.team.git" autoStart="true" startLevel="0" />
-      <plugin id="org.flowerplatform.text" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.util" autoStart="true" startLevel="0" />
    </configurations>
 
