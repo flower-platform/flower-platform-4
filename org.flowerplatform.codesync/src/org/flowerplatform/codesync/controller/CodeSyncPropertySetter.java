@@ -15,8 +15,14 @@
  */
 package org.flowerplatform.codesync.controller;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_SYNC;
+import static org.flowerplatform.codesync.CodeSyncConstants.CONFLICT;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_URI_TO_BE_IGNORED;
 import static org.flowerplatform.codesync.CodeSyncConstants.ORIGINAL_SUFFIX;
+import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncConstants.SYNC;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.core.node.NodeService;
@@ -84,7 +90,7 @@ public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPrope
 		}
 	}
 
-	public static String getOriginalPropertyName(String property) {
+	public String getOriginalPropertyName(String property) {
 		return property + ORIGINAL_SUFFIX;
 	}
 
@@ -94,7 +100,16 @@ public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPrope
 	}
 
 	private boolean isSyncProperty(Node node, String property) {
-		return !CodeSyncControllerUtils.isCodeSyncFlagConstant(property);
+		return !isCodeSyncFlagConstant(property);
+	}
+
+	public static boolean isCodeSyncFlagConstant(String property) {
+		if (SYNC.equals(property) || CHILDREN_SYNC.equals(property) || 
+				CONFLICT.equals(property) || CHILDREN_CONFLICT.equals(property) ||
+				ADDED.equals(property) || REMOVED.equals(property)) {
+			return true;
+		}
+		return false;
 	}
 
 }
