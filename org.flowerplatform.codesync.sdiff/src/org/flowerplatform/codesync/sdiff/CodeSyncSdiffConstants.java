@@ -46,7 +46,11 @@ public class CodeSyncSdiffConstants {
 	
 	// dirty marker for comments
 	public static final String NODE_URI_TO_BE_IGNORED = "nodeURIToBeIgnored";
+
+	// flag so CanContainCommentPropertyProvider won't loop while trying to set CODESYNC_ICONS property
+	public static final String ALREADY_BEEN_IN_THIS_SETTER = "alreadyBeenInThisSetter";
 	
+
 	//////////////////////////////////
 	// Service context options
 	//////////////////////////////////

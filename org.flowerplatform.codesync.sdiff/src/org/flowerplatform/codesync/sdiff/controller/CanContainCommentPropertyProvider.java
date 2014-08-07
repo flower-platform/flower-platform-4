@@ -1,6 +1,7 @@
 package org.flowerplatform.codesync.sdiff.controller;
 
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.CONTAINS_COMMENT;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.ALREADY_BEEN_IN_THIS_SETTER;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.IMG_TYPE_COMMENTS;
 import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
@@ -30,18 +31,18 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
- 		if(context.get("myHardcodedFlag") != null) return;
+ 		if(context.get(ALREADY_BEEN_IN_THIS_SETTER) != null) return;
 		if ((property.equals(CONTAINS_COMMENT) && (Boolean) value == true)) {
 			ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
 			newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
-			newContext.getContext().put("myHardcodedFlag", true);
+			newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
 			context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
 		} else{
 			 if(property.equals(CODESYNC_ICONS)){
 				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
 				// otherwise, the next controller for MATCH is CanContainCommentPropertyProvider + Updater (we don't want this)
 				context.getContext().put(DONT_PROCESS_OTHER_CONTROLLERS, true);
-				newContext.getContext().put("myHardcodedFlag", true);
+				newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
 				context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);	 
 			 }
 		}	
@@ -77,7 +78,7 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 		if (property.equals(CONTAINS_COMMENT)) {
 			ServiceContext<NodeService> newContext = new ServiceContext<NodeService>();
 			newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
-			newContext.getContext().put("myHardcodedFlag", true);
+			newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
 			context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
 		}
 	}
