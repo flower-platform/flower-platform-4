@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.codesync.type_provider;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -23,7 +24,7 @@ import org.flowerplatform.core.node.remote.Node;
 public class NodeTypeProvider implements ITypeProvider {
 
 	@Override
-	public String getType(Object object) {
+	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (object instanceof Node) {
 			return ((Node) object).getType();
 		}

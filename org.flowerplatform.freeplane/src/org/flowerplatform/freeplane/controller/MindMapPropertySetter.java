@@ -273,7 +273,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		
 		if (addAdditionalSetPropertyUpdatesFor != null) {
 			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {				
-				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
+				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).entrySet()) {
 					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {
@@ -374,7 +374,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				
 		if (addAdditionalUnsetPropertyUpdatesFor != null) {
 			if (addAdditionalUnsetPropertyUpdatesFor.isEmpty()) {
-				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties().entrySet()) {
+				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(serviceContext.getService())).entrySet()) {
 					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 				}	 
 			} else {

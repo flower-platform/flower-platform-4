@@ -14,8 +14,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.editor.resource {
-	
-	
+		
 	/**
 	 * @see SaveResourceNodesView
 	 * @author Cristina Constantinescu

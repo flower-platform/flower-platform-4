@@ -119,15 +119,15 @@ package org.flowerplatform.flexdiagram.renderer {
 		 * @author Mircea Negreanu
 		 * @author Cristina Constantinescu
 		 */
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			
 			if (visualChildrenController != null) {
 				visualChildrenController.refreshVisualChildren(diagramShellContext, data);
 			}
 			
 			// resize/move the grid (depending on the viewport dimensions)
 			sizeGrid();
-			
-			super.updateDisplayList(unscaledWidth, unscaledHeight);
 
 			// draw a border around visible area
 			graphics.clear();

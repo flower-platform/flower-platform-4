@@ -33,7 +33,6 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
@@ -96,7 +95,7 @@
 			
 			protected function noButton_clickHandler(event:MouseEvent = null):void {
 				if (handler == null) { // don't execute the default behavior, let the handler to take the lead
-					CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.removeNodeRegistries(nodeRegistries);
+					CorePlugin.getInstance().nodeRegistryManager.removeNodeRegistries(nodeRegistries);
 				}
 				if (handler != null) { // execute handler before closing view
 					handler();

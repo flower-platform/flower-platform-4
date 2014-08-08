@@ -51,13 +51,19 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		 */ 
 		public var requestDataProviderHandler:Function;
 		
+		/**
+		 *  Signature: function myLabelFunction(item:Object):String
+		 */ 
+		public var labelFunction:Function;
+		
 		public function DropDownListPropertyRenderer() {
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
 		}
 		
 		private function creationCompleteHandler(event:FlexEvent):void {
-			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownEventHandler);		
+			dropDownList.addEventListener(IndexChangeEvent.CHANGE, dropDownEventHandler);	
+			dropDownList.labelFunction = labelFunction;
 		}
 		
 		protected function dropDownEventHandler(e:IndexChangeEvent):void {
@@ -125,7 +131,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}			
 		
 		public function valueChangedHandler():void {
-			if (dropDownList.dataProvider != null) {
+			if (dropDownList.dataProvider != null && _propertyLineRenderer.node != null) {
 				dropDownList.selectedIndex = getItemIndexFromList(_propertyLineRenderer.node.getPropertyValue(_propertyLineRenderer.propertyDescriptor.name), dropDownList.dataProvider);
 			}					
 		}

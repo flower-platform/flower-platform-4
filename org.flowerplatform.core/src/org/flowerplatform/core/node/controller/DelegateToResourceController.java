@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.node.controller;
 
 import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
@@ -64,6 +79,9 @@ public class DelegateToResourceController extends AbstractController implements
 	
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return;
+		}
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
 			((IPropertySetter) controller).setProperty(node, property, value, context);
 		}
@@ -71,6 +89,9 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return;
+		}
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
 			((IPropertySetter) controller).unsetProperty(node, property, context);
 		}
@@ -78,6 +99,9 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return;
+		}
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTIES_PROVIDER)) {
 			((IPropertiesProvider) controller).populateWithProperties(node, context);
 		}
@@ -85,6 +109,9 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return;
+		}
 		for (AbstractController controller : getControllers(node, CoreConstants.REMOVE_NODE_CONTROLLER)) {
 			((IRemoveNodeController) controller).removeNode(node, child, context);
 		}
@@ -92,6 +119,9 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return;
+		}
 		for (AbstractController controller : getControllers(node, CoreConstants.ADD_NODE_CONTROLLER)) {
 			((IAddNodeController) controller).addNode(node, child, context);
 		}
@@ -99,6 +129,9 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public Node getParent(Node node, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return null;
+		}
 		AbstractController controller = getController(node, CoreConstants.PARENT_PROVIDER);
 		if (controller == null) {
 			return null;
@@ -109,6 +142,9 @@ public class DelegateToResourceController extends AbstractController implements
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		List<Node> children = new ArrayList<Node>();
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return children;
+		}		
 		for (AbstractController controller : getControllers(node, CoreConstants.CHILDREN_PROVIDER)) {
 			children.addAll(((IChildrenProvider) controller).getChildren(node, context));
 		}
@@ -117,6 +153,9 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return false;
+		}
 		for (AbstractController controller : getControllers(node, CoreConstants.CHILDREN_PROVIDER)) {
 			if (((IChildrenProvider) controller).hasChildren(node, context)) {
 				return true;
@@ -128,6 +167,9 @@ public class DelegateToResourceController extends AbstractController implements
 	@Override
 	public Object getDefaultValue(Node node, String property, ServiceContext<NodeService> context) {
 		Object value = null;
+		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
+			return value;
+		}
 		for (AbstractController controller : getControllers(node, CoreConstants.DEFAULT_PROPERTY_PROVIDER)) {
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
  				break;

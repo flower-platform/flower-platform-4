@@ -1,20 +1,28 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.properties.property_line_renderer {
 	
 	import flash.events.MouseEvent;
 	
-	import mx.binding.utils.BindingUtils;
-	
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.remote.PreferencePropertyWrapper;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.properties.ui.PropertiesComponent;
-	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.Utils;
-	
 	import spark.components.Button;
 	import spark.components.CheckBox;
+	
+	import org.flowerplatform.flex_client.core.editor.remote.PreferencePropertyWrapper;
+	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -52,16 +60,12 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 			rendererArea.addElement(copyToGlobal);					
 		}		
 	
-		override protected function nodeUpdated():void {
+		override public function nodeUpdated():void {
 			super.nodeUpdated();
 			if (usedCheckBox) {
 				usedCheckBox.selected = PreferencePropertyWrapper(node.getPropertyValueOrWrapper(propertyDescriptor.name)).isUsed;
 			}
 		}
 			
-		override public function commit(callbackHandler:Function = null):void {			
-			super.commit(refreshPreferences);
-		}
-		
 	}
 }

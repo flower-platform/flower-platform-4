@@ -31,6 +31,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
 import org.flowerplatform.core.session.SessionService;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,8 @@ public abstract class ResourceService implements IResourceHolder {
 	public IResourceHandler getResourceHandler(String scheme) {
 		IResourceHandler resourceHandler = resourceHandlers.get(scheme);
 		if (resourceHandler == null) {
-			throw new RuntimeException("No resource handler registered for scheme: " + scheme);
+			throw new RuntimeException(ResourcesPlugin.getInstance().getMessage(
+					"resource.error.invalidScheme", scheme));
 		}
 		return resourceHandler;
 	}
@@ -82,7 +84,7 @@ public abstract class ResourceService implements IResourceHolder {
 		Node node = resourceHandler.createNodeFromRawNodeData(nodeUri, rawNodeData);
 		
 		if (context.getBooleanValue(POPULATE_WITH_PROPERTIES)) {			
-			node.getOrPopulateProperties();
+			node.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
 		
 		return node;

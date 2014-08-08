@@ -18,6 +18,8 @@ package org.flowerplatform.codesync.type_provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
+
 /**
  * @author Mariana Gheorghe
  */
@@ -26,9 +28,9 @@ public class ComposedTypeProvider implements ITypeProvider {
 	private List<ITypeProvider> typeProviders = new ArrayList<ITypeProvider>();
 	
 	@Override
-	public String getType(Object object) {
+	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm) {
 		for (ITypeProvider typeProvider : typeProviders) {
-			String type = typeProvider.getType(object);
+			String type = typeProvider.getType(object, codeSyncAlgorithm);
 			if (type != null) {
 				return type;
 			}

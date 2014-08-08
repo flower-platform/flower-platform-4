@@ -32,6 +32,9 @@ package org.flowerplatform.flex_client.core {
 		public static const REPOSITORY_TYPE:String = "repository";
 		public static const CODE_TYPE:String = "code";
 		
+		// scheme for virtual (non-subscribable) nodes
+		public static const VIRTUAL_NODE_SCHEME:String = "virtual";
+		
 		//////////////////////////////////
 		// Node properties
 		//////////////////////////////////

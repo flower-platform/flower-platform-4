@@ -16,20 +16,11 @@
 package org.flowerplatform.flex_client.mindmap.action {
 	
 	import flash.geom.Point;
-	import flash.net.getClassByAlias;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;
 	
-	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
-	import mx.collections.IList;
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.ControllerUtils;
@@ -62,11 +53,11 @@ package org.flowerplatform.flex_client.mindmap.action {
 			if (parent == null) {
 				return null;
 			}
-			var children:IList = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, parent, side);
+			var children:Array = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, parent, side);
 			if (children != null && children.length > 0) {
 				for (var i:int = 0; i < children.length; i++) {
-					if (children.getItemIndex(node) + (previous ? -1 : 1) == i) {
-						return Node(children.getItemAt(i));
+					if (children.indexOf(node) + (previous ? -1 : 1) == i) {
+						return Node(children[i]);
 					}
 				}
 			}
@@ -86,7 +77,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 						
 		protected function getNodes_navigateUpDown(node:Node, context:DiagramShellContext, page:Boolean, down:Boolean):Array {
 			var sibling:Node = null;
-			var children:IList;
+			var children:Array;
 			
 			var parent:Node = node;
 			var side:int = MindMapDiagramShell(context.diagramShell).getModelController(context, node).getSide(context, node);
@@ -104,7 +95,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 				while (context.diagramShell.getDynamicObject(context, sibling).depth < context.diagramShell.getDynamicObject(context, node).depth) {
 					children = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, sibling, side);
 					if (children.length > 0) {
-						sibling = Node(children.getItemAt(down ? 0 : children.length - 1));
+						sibling = Node(children[down ? 0 : children.length - 1]);
 					} else {
 						break;
 					}
@@ -117,11 +108,11 @@ package org.flowerplatform.flex_client.mindmap.action {
 					// page down/up -> get last/first child from sibling's parent, if append, add also all nodes found in the way
 					children = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, sibling.parent, side);
 					if (appendNodesToCurrentSelection) {
-						for (var i:int = (down ? children.getItemIndex(sibling) : 0); i < (down ? children.length : children.getItemIndex(sibling) + 1); i++) {
+						for (var i:int = (down ? children[sibling] : 0); i < (down ? children.length : children.indexOf(sibling) + 1); i++) {
 							nodes.push(Node(children.getItemAt(i)));
 						}					
 					} else {
-						nodes.push(down ? Node(children.getItemAt(children.length - 1)) : Node(children.getItemAt(0)));
+						nodes.push(down ? Node(children[children.length - 1]) : Node(children[0]));
 					}
 				} else {
 					// down/up -> we found our sibling to select
@@ -154,7 +145,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 			// node is expanded or it doesn't have children
 			
 			// no children -> return
-			var children:IList = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, node, direction);
+			var children:Array = MindMapDiagramShell(context.diagramShell).getChildrenBasedOnSide(context, node, direction);
 			if (children == null || children.length == 0) {
 				return null;
 			}
@@ -178,7 +169,8 @@ package org.flowerplatform.flex_client.mindmap.action {
 								
 			var minDistance:Number = int.MAX_VALUE;
 			for (var i:int = 0; i < children.length; i++) {
-				var child:Node = Node(children.getItemAt(i));
+				var child:Node = Node(children[i]);
+								
 				var childDynamicObject:Object = context.diagramShell.getDynamicObject(context, child);
 				var pointB:Point = new Point(childDynamicObject.x + childDynamicObject.width/2, childDynamicObject.y + childDynamicObject.height/2);
 				
@@ -218,6 +210,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 			var editor:MindMapEditorFrontend = MindMapEditorFrontend(workbench.getEditorFromViewComponent(workbench.getActiveView()));			
 			
+			editor.callLater(function():void {
 			var context:DiagramShellContext = new DiagramShellContext(editor.diagramShell);
 			
 			// get nodes to be selected
@@ -241,7 +234,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 			for (var i:int = 0; i < nodes.length; i++) {
 				editor.diagramShell.selectedItems.addItem(nodes[i]);
 			}
-						
+			});			
 		}
 	}
 }

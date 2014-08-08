@@ -22,7 +22,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	import org.flowerplatform.flexutil.controller.ControllerEntry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
@@ -32,7 +31,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class TypeDescriptorRegistryDebugControllers {
+	public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		
 		public const TYPES:String = "debugFlexTypes";
 		public const TYPE:String = "debugFlexType";
@@ -59,11 +58,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 			addNodeController(CONTROLLER_KEY_ADDITIVE, nodeController);
 			addNodeController(CONTROLLER_SINGLE, nodeController);
 			addNodeController(CONTROLLER_ADDITIVE, nodeController);
-		}
-		
-		private function addNodeController(type:String, controller:FlexTypesNodeController):void {
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(type)
-				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, controller);
 		}
 		
 		public function getFlexTypes():ArrayCollection {
@@ -174,15 +168,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 			return children;
 		}
 		
-		private function createNode(type:String, ssp:String, fragment:String, name:String, icons:String, hasChildren:Boolean = true):Node {
-			var node:Node = new Node(type + ":" + ssp + "#" + fragment);
-			node.type = type;
-			node.properties = new Object();
-			node.properties[CoreConstants.NAME] = name;
-			node.properties[CoreConstants.ICONS] = icons;
-			node.properties[CoreConstants.HAS_CHILDREN] = hasChildren;
-			return node;
-		}
 	}
 }
 import mx.collections.ArrayCollection;

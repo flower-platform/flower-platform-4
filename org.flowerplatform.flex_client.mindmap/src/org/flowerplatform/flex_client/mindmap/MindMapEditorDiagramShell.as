@@ -15,7 +15,10 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import mx.core.UIComponent;
+	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
@@ -33,9 +36,9 @@ package org.flowerplatform.flex_client.mindmap {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapEditorDiagramShell extends MindMapDiagramShell {
+	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
-		public var nodeRegistry:NodeRegistry;
+		private var _nodeRegistry:NodeRegistry;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
@@ -44,9 +47,36 @@ package org.flowerplatform.flex_client.mindmap {
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				tools.push(InplaceEditorTool);
 			}
-			registerTools(tools);				
+			registerTools(tools);
+		}
+			
+		public function get nodeRegistry():NodeRegistry {
+			return _nodeRegistry;
+		}
+
+		public function set nodeRegistry(value:NodeRegistry):void {
+			_nodeRegistry = value;
+			_nodeRegistry.addNodeChangeListener(this);
 		}
 		
+		public function nodeAdded(node:Node):void {
+			if (rootModel != null) {
+				refreshRootModelChildren(getNewDiagramShellContext());
+			}
+		}
+		
+		public function nodeRemoved(node:Node):void {
+			unassociateModelFromRenderer(getNewDiagramShellContext(), node, getRendererForModel(getNewDiagramShellContext(), node), true);	
+			
+			if (rootModel != null) {
+				refreshRootModelChildren(getNewDiagramShellContext());				
+			}
+		}
+		
+		public function nodeUpdated(node:Node, property:String, oldValue:Object, newValue:Object):void {
+			// do nothing
+		}
+						
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
 			var rootModel:Node = Node(MindMapRootModelWrapper(rootModel).model);
 			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getValueProvider(

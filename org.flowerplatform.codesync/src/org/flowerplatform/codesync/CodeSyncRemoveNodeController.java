@@ -35,6 +35,11 @@ public class CodeSyncRemoveNodeController extends AbstractController implements 
 
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
+		// disable the controllers during the execution of sync algorithm
+		if (context.getBooleanValue(CodeSyncConstants.SYNC_IN_PROGRESS)) {
+			return;
+		}
+		
 		context.getService().setProperty(child, CodeSyncConstants.REMOVED, true, new ServiceContext<NodeService>(context.getService()));
 		context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
 	}

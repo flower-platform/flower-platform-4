@@ -35,13 +35,14 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Match parentMatch = match.getParentMatch();
-		IModelAdapter modelAdapter = getModelAdapter(match.getParentMatch() != null ? match.getParentMatch() : match);
+		IModelAdapter modelAdapter = getModelAdapter(match);
 		Object child = getThis(match);
 		IModelAdapter childModelAdapter = getModelAdapter(match);
 		modelAdapter.removeChildrenOnContainmentFeature(
-				match.getParentMatch() != null ? getThis(match.getParentMatch()) : null, 
+				parentMatch != null ? getThis(parentMatch) : null, 
 				match.getFeature(), 
-				child);
+				child, 
+				match.getCodeSyncAlgorithm());
 		
 		ActionResult result = null;
 		
@@ -55,13 +56,14 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 				// 0-match => remove the match
 				match.getParentMatch().getSubMatches().remove(match);
 				match.setParentMatch(null);
-				result = new ActionResult(false, false, false, childModelAdapter.getMatchKey(child), false);
+				result = new ActionResult(false, false, false, childModelAdapter.getMatchKey(child, match.getCodeSyncAlgorithm()), false);
 			}
 		} else {
 			// submatches (and possible diffs) still exist; they need to be updated
 			recurseUpdateFieldsAndFlags(match);
-			result = new ActionResult(false, true, true, childModelAdapter.getMatchKey(child), false);
+			result = new ActionResult(false, true, true, childModelAdapter.getMatchKey(child, null), false);
 		}
+		
 		
 		actionPerformed(parentMatch, getModelAdapter(parentMatch), getThis(parentMatch), getOppositeModelAdapter(parentMatch), getOpposite(parentMatch), match.getFeature(), result);
 		return result;

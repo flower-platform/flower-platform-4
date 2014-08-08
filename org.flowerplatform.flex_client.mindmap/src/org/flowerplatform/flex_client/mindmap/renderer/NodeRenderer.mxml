@@ -17,31 +17,32 @@
 -->
 <mindmap:AbstractMindMapModelRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 									  xmlns:s="library://ns.adobe.com/flex/spark" 
-									  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
+									  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*" xmlns:focus="org.flowerplatform.flexutil.focusable_component.*">
 	<fx:Script>
 		<![CDATA[
-			import flashx.textLayout.conversion.TextConverter;
-			
 			import mx.core.DPIClassification;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.events.ResizeEvent;
+			import mx.utils.ObjectUtil;
+			
+			import spark.core.SpriteVisualElement;
+			
+			import flashx.textLayout.conversion.TextConverter;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-			import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.FlowerArrayList;
 			import org.flowerplatform.flexutil.Utils;
-			
-			import spark.core.SpriteVisualElement;
 			
 			[Bindable]
 			public var circleRadius:int = 10;
@@ -97,9 +98,12 @@
 			
 			override protected function assignData():void {
 				x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");	
-				y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");		
+				y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");
 				
-				nodeUpdatedHandler();
+				var classInfoProperties:Array = ObjectUtil.getClassInfo(node.properties).properties as Array;
+				for each (var property:String in classInfoProperties) {
+					modelChangedHandler(PropertyChangeEvent.createUpdateEvent(node, property, NaN, node.properties[property]));
+				}				
 			}
 			
 			override protected function unassignData():void {
@@ -110,6 +114,7 @@
 				getMainComponent().measuredWidth = 0;
 				getMainComponent().measuredHeight = 0;
 			}
+			
 			
 			override protected function resizeHandler(event:ResizeEvent):void {
 				if (height == 0 || width == 0) {
@@ -126,17 +131,36 @@
 					refresh = true;
 				}
 				
-				if (refresh) {				
-					var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, data).getParent(diagramShellContext, data);
-					mindMapDiagramShell.refreshModelPositions(diagramShellContext, parent != null ? parent : data);
-					
-					// this call will update the diagram's contentRect 
-					mindMapDiagramShell.shouldRefreshVisualChildren(diagramShellContext, mindMapDiagramShell.rootModel);					
+				if (refresh) {					
+					mindMapDiagramShell.shouldRefreshModelPositions(diagramShellContext, mindMapDiagramShell.rootModel);
+					mindMapDiagramShell.shouldRefreshVisualChildren(diagramShellContext, mindMapDiagramShell.rootModel);
 				}
 			}						
 			
 			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
+				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(mindMapDiagramShell.registry, node);
+				var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(node);
+				
+				var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(mindMapDiagramShell.registry, node);
+				var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
+				
 				switch (event.property) {
+					case titleProperty:
+						var title:String = String(titleProvider.getValue(node));
+						title = Utils.getCompatibleHTMLText(title);
+						// if text contains html tag, display it as html, otherwise plain text
+						labelDisplay.textFlow = TextConverter.importToFlow(title , Utils.isHTMLText(title) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
+						invalidateSize();
+						invalidateDisplayList();
+						break;
+					case iconsProperty:
+						var iconsValue:String = iconsProvider.getValue(node) as String;
+						if (iconsValue != null) {
+							icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
+						} else {
+							icons = null;
+						}
+						break
 					case "x":
 						x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");	
 						break;
@@ -146,17 +170,16 @@
 					case "depth":
 						depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");				
 						break;
-					case "hasChildren":
+					case CoreConstants.HAS_CHILDREN:
 						invalidateSize();
 					case "children":
 						invalidateDisplayList();
 				}
 			}	
-			
-			
+						
 			override public function set data(value:Object):void {
-				if (data != null) {		
-					data.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+				if (node != null) {		
+					node.properties.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 					if (circle.parent != null) {
 						DiagramRenderer(mindMapDiagramShell.diagramRenderer).removeElement(circle);					
 					}
@@ -164,8 +187,8 @@
 				
 				super.data = value;
 				
-				if (data != null) {
-					data.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);				
+				if (node != null) {
+					node.properties.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);				
 				}
 			}
 			
@@ -176,45 +199,10 @@
 				rendererHitArea.mouseEnabled = false;
 				addElementAt(rendererHitArea, 0);				
 			}
-			
-			protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
-				var invalidateDisplayListFlag:Boolean = false;
-				
-				var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(mindMapDiagramShell.registry, node);
-				var titleProperty:String = titleProvider.getPropertyNameFromGenericDescriptor(node);
-				var titleChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, titleProperty, event);
-				if (titleChanged) {
-					var title:String = String(titleProvider.getValue(node));
-					title = Utils.getCompatibleHTMLText(title);
-					// if text contains html tag, display it as html, otherwise plain text
-					labelDisplay.textFlow = TextConverter.importToFlow(title , Utils.isHTMLText(title) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
-					invalidateSize();
-					invalidateDisplayListFlag = true;
-				}
-				
-				var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(mindMapDiagramShell.registry, node);
-				var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
-				var iconsChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, iconsProperty, event);
-				if (iconsChanged) {
-					var iconsValue:String = iconsProvider.getValue(node) as String;
-					if (iconsValue != null) {
-						icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
-					} else {
-						icons = null;
-					}
-				}
-				if (NodeControllerUtils.hasPropertyChanged(node, CoreConstants.HAS_CHILDREN)) {
-					// hasChildren changed -> update display
-					invalidateDisplayListFlag = true;					
-				}
-				if (invalidateDisplayListFlag) {
-					invalidateDisplayList();
-				}
-			}
-			
-			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
+						
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
-				setHitArea(unscaledWidth, unscaledHeight);
+				setHitArea(unscaledWidth, unscaledHeight);				
 			}	
 			
 			/**
@@ -250,7 +238,7 @@
 						
 			override protected function canDrawCircle():Boolean {			
 				return node != null 
-					&& NodeControllerUtils.hasPropertyChanged(node, CoreConstants.HAS_CHILDREN)
+					&& node.properties.hasOwnProperty(CoreConstants.HAS_CHILDREN)
 					&& Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() 
 					&& !mindMapDiagramShell.getModelController(diagramShellContext, node).getExpanded(diagramShellContext, node);
 			}
@@ -294,7 +282,7 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:Group id="circle" 				
+		<s:Group id="circle"				
 				 mouseOver="mouseOverHandler(event)" mouseOut="mouseOutHandler(event)"
 				 mouseDown="circle_mouseDownUpHandler(event)" mouseUp="circle_mouseDownUpHandler(event)"
 				 width="{circleRadius * 2}" height="{circleRadius * 2}" depth="{int.MAX_VALUE}">		

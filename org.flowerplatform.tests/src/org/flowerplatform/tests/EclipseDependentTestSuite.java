@@ -15,13 +15,15 @@
  */
 package org.flowerplatform.tests;
 
+import org.flowerplatform.tests.codesync.CodeSyncSdiffTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	EclipseDependentTest.class
+	EclipseDependentTest.class,
+	CodeSyncSdiffTest.class
 //	SecurityPermissionsTests.class,
 //	ListenerTestSuite.class,
 //	ChangesProcessorTest.class

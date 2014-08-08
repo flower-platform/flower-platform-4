@@ -18,8 +18,8 @@ package org.flowerplatform.freeplane;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CATEGORY_RESOURCE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
-import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
@@ -31,7 +31,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.controller.DefaultPropertiesProvider;
@@ -53,6 +52,7 @@ import org.flowerplatform.freeplane.style.controller.MindMapStyleResourceHandler
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.freeplane.features.url.UrlManager;
 import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
 import org.osgi.framework.BundleContext;
 
@@ -84,10 +84,17 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		FreeplanePersistenceResourceHandler fppResourceHandler = new FreeplanePersistenceResourceHandler();
 		FreeplaneMindmapResourceHandler fpmResourceHandler = new FreeplaneMindmapResourceHandler();
 		
+		MindMapFileAddNodeController mindMapFileAddNodeController = new MindMapFileAddNodeController(UrlManager.FREEPLANE_FILE_EXTENSION);
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
+			.addAdditiveController(ADD_NODE_CONTROLLER, mindMapFileAddNodeController);
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(FREEPLANE_FILE_EXTENSION, 
 					FREEPLANE_MINDMAP_RESOURCE_KEY, MINDMAP_CONTENT_TYPE, true))
-			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController());
+			.addAdditiveController(ADD_NODE_CONTROLLER, mindMapFileAddNodeController)
+			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".regexMatches", "regexMatches"))  // TODO delete
+			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".regex", "regexConfig"))  // TODO delete
+			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".sdiff", "structureDiff")); // TODO delete
 		
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_PERSISTENCE_RESOURCE_KEY, fppResourceHandler);
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_MINDMAP_RESOURCE_KEY, fpmResourceHandler);
@@ -117,8 +124,8 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_RESOURCE_PREFIX + MIND_MAP_STYLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider());
-
-		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());
+		
+		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());	
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

@@ -18,7 +18,6 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.OpenInNewEditorDialog;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
@@ -26,7 +25,6 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	
 	/**
@@ -73,12 +71,12 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			}		
 		}
 		
-		private function expand(context:DiagramShellContext, node:Node):void {
-			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.expand(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context[CoreConstants.HANDLER]);
+		private function expand(context:DiagramShellContext, node:Node):void {			
+			CorePlugin.getInstance().nodeRegistryManager.expand(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context);
 		}
 		
 		private function collapse(context:DiagramShellContext, node:Node):void {
-			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node);
+			CorePlugin.getInstance().nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context);
 		}
 		
 		override public function getSide(context:DiagramShellContext, model:Object):int {			

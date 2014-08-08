@@ -20,9 +20,11 @@ package org.flowerplatform.flex_client.core.editor {
 	import mx.managers.IFocusManagerComponent;
 	import mx.rpc.events.FaultEvent;
 	
+	import spark.components.VGroup;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.resource.event.NodeRegistryRemovedEvent;
+	import org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
@@ -35,12 +37,10 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
-	import spark.components.VGroup;
-	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator, IActionProvider {
+	public class EditorFrontend extends VGroup implements IViewContent, IFocusManagerComponent, ISelectionProvider, IViewHostAware, ITitleDecorator, IActionProvider, INodeRegistryManagerListener {
 		
 		private var _editorInput:String;
 				
@@ -52,9 +52,9 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function EditorFrontend() {
 			super();
-			nodeRegistry = new NodeRegistry();
-			
-			nodeRegistry.addEventListener(NodeRegistryRemovedEvent.REMOVED, nodeRegistryRemovedHandler);				
+			nodeRegistry = CorePlugin.getInstance().nodeRegistryManager.createNodeRegistry();
+			CorePlugin.getInstance().nodeRegistryManager.addListener(this);
+			actionProvider.composedActionProviderProcessors.push(new EditorFrontendAwareProcessor(this));
 		}
 					
 		public function get editorInput():String {
@@ -63,7 +63,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		public function set editorInput(editorInput:String):void {
 			_editorInput = editorInput;
-			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.subscribe(editorInput, nodeRegistry, subscribeResultCallback, subscribeFaultCallback);
+			CorePlugin.getInstance().nodeRegistryManager.subscribe(editorInput, nodeRegistry, subscribeResultCallback, subscribeFaultCallback);
 		}
 
 		protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
@@ -95,8 +95,8 @@ package org.flowerplatform.flex_client.core.editor {
 		 * @author Cristina Constantinescu
 		 */
 		public function isDirty():Boolean {	
-			for each (var resourceNodeId:Object in CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForNodeRegistry(nodeRegistry)) {
-				if (CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.isResourceNodeDirty(String(resourceNodeId), nodeRegistry)) {
+			for each (var resourceNodeId:Object in CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForNodeRegistry(nodeRegistry)) {
+				if (CorePlugin.getInstance().nodeRegistryManager.isResourceNodeDirty(String(resourceNodeId), nodeRegistry)) {
 					return true;
 				}
 			}
@@ -112,15 +112,21 @@ package org.flowerplatform.flex_client.core.editor {
 			}
 			return title;
 		}
-		
-		protected function nodeRegistryRemovedHandler(event:NodeRegistryRemovedEvent):void {
-			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
-			workbench.closeView(workbench.getViewComponentForEditor(this), true, false);		
-		}
-		
+				
 		public function additionalCloseHandler():void {	
 			// nothing to do
 		}
-
+		
+		public function nodeRegistryRemoved(nodeRegistry:NodeRegistry):void {
+			if (this.nodeRegistry == nodeRegistry) {
+				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
+				workbench.closeView(workbench.getViewComponentForEditor(this), true, false);
+			}
+		}
+		
+		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:NodeRegistry):void {
+			// do nothing			
+		}		
+		
 	}
 }

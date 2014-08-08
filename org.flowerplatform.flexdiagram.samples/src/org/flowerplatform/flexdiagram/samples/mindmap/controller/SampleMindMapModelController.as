@@ -52,6 +52,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		
 		override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
 			SampleMindMapModel(model).expanded = value;
+			MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(context);
 			if (value) {
 				updateModelHandler(context, model);
 			} else {
@@ -74,14 +75,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 			return SampleMindMapModel(model).parent == null;
 		}
 				
-		public function updateModelHandler(context:DiagramShellContext, model:Object):void {
-			MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(context);
-			if (ControllerUtils.getModelChildrenController(context, model).getParent(context, model) != null) {
-				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, model);
-			} else {
-				var rootModel:Object = MindMapDiagramShell(context.diagramShell).getRoot(context);
-				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, rootModel);
-			}
+		public function updateModelHandler(context:DiagramShellContext, model:Object):void {	
+			MindMapDiagramShell(context.diagramShell).shouldRefreshModelPositions(context, context.diagramShell.rootModel);
 			MindMapDiagramShell(context.diagramShell).shouldRefreshVisualChildren(context, context.diagramShell.rootModel);
 		}
 		
@@ -99,15 +94,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		private function disposeModelHandler(context:DiagramShellContext, model:Object):void {			
 			context.diagramShell.unassociateModelFromRenderer(context, model, context.diagramShell.getRendererForModel(context, model), true);
 			
-			MindMapDiagramShell(context.diagramShell).refreshRootModelChildren(context);
-			
-			if (ControllerUtils.getModelChildrenController(context, model).getParent(context, model) is SampleMindMapModel) {
-				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, ControllerUtils.getModelChildrenController(context, model).getParent(context, model));
-			} else {
-				var rootModel:Object = ControllerUtils.getModelChildrenController(context, context.diagramShell.rootModel).getChildren(context, context.diagramShell.rootModel).getItemAt(0);
-				MindMapDiagramShell(context.diagramShell).refreshModelPositions(context, rootModel);
-			}
-			
+			MindMapDiagramShell(context.diagramShell).shouldRefreshModelPositions(context, context.diagramShell.rootModel);
 			MindMapDiagramShell(context.diagramShell).shouldRefreshVisualChildren(context, context.diagramShell.rootModel);
 		}
 		

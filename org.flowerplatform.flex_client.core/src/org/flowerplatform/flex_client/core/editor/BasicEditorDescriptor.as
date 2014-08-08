@@ -62,7 +62,7 @@ package  org.flowerplatform.flex_client.core.editor {
 		 */
 		public function openEditor(editableResourcePath:String, preferNewEditor:Boolean=false,
 								   forceNewEditor:Boolean=false, openForcedByServer:Boolean=false, 
-								   handleAsClientSubscription:Boolean=false):UIComponent {
+								   handleAsClientSubscription:Boolean=false, addViewInOtherStack:Boolean = false):UIComponent {
 			throw new Error("This method should be implemented");
 		}
 		

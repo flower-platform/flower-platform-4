@@ -37,7 +37,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 				
 		override public function run():void {
 			trace("*** "+CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager);
-			var resourceSets:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceSetsFromNodeRegistries([editorFrontend.nodeRegistry]);
+			var resourceSets:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceSetsForResourceUris([editorFrontend.nodeRegistry.getRootNodeUri()]);
 			var node:Node = new Node(CoreConstants.COMMAND_STACK+":"+resourceSets[0]);
 			CorePlugin.getInstance().openEditor(node);
 			

@@ -39,8 +39,8 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
@@ -73,7 +73,7 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
-				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new AbsoluteLayoutVisualChildrenController(-10))
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new MindMapAbsoluteLayoutVisualChildrenController(-10))
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NullController(-10))
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new NullController(-10))
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NullController(-10))

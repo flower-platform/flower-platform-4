@@ -96,6 +96,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		// MindMap
 		
+		[Embed(source="/mindmap/icons/checkout.gif")]
+		public static const mindmap_button_checkout:Class;
+		
 		[Embed(source="/mindmap/refresh.gif")]
 		public static const refreshIcon:Class;
 		
@@ -533,5 +536,59 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/properties/preferences.png")]
 		public static const preferencesIcon:Class;
 		
+		// CodeSync Regex
+		
+		[Embed(source="/codesync.regex/brick.png")]
+		public static const brickIcon:Class;
+		
+		[Embed(source="/codesync.regex/bricks.png")]
+		public static const bricksIcon:Class;
+		
+		[Embed(source="/codesync.regex/bullet_star.png")]
+		public static const bulletIcon:Class;
+		
+		[Embed(source="/codesync.regex/percent.png")]
+		public static const percentIcon:Class;
+		
+		[Embed(source="/codesync.regex/wrench.png")]
+		public static const wrenchIcon:Class;
+		
+		// Create Branch
+		[Embed(source="/team.git/new_branch_obj.gif")]
+		public static const createBranchIcon:Class;
+
+		[Embed(source="/team.git/editconfig.gif")]
+		public static const renameBranch:Class;
+		
+		[Embed(source="/team.git/config.png")]
+		public static const configBranchIcon:Class;
+		
+		// Team Git
+		
+
+		[Embed(source="/team.git/merge.gif")]
+		public static const mergeBranch:Class;
+		
+
+		[Embed(source="/team.git/gitDiffFromCommits.png")]
+		public static const gitDiffFromCommitsIcon:Class;
+		
+		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
+		public static const gitDiffFromWorkspaceAndPatch:Class;
+		
+		// Git
+		
+		[Embed(source="/team.git/branch_obj.gif")]
+		public static const branchIcon:Class;
+		
+		[Embed(source="/team.git/branches_obj.gif")]
+		public static const branchesIcon:Class;
+		
+		[Embed(source="/team.git/cloneGit.gif")]
+		public static const cloneRepoIcon:Class;
+		
+		[Embed(source="/team.git/gitrepository.gif")]
+		public static const gitRepoIcon:Class;
+
 	}
 }

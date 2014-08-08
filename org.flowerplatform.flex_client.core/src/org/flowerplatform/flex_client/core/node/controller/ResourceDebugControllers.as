@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.core.node.controller {
 	import mx.collections.ArrayCollection;
 	
@@ -10,7 +25,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class ResourceDebugControllers {
+	public class ResourceDebugControllers extends DebugControllers {
 
 		public const RESOURCES:String = "debugClientResources";
 		public const RESOURCE_SET:String = "debugClientResourceSet";
@@ -25,19 +40,10 @@ package org.flowerplatform.flex_client.core.node.controller {
 			addNodeController(RESOURCE_URI, nodeController);
 		}
 		
-		private function addNodeController(type:String, controller:ResourceNodeController):void {
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(type)
-				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, controller);
-		}
-		
 		public function getResourceSets():ArrayCollection {
 			var resourceSets:ArrayCollection = new ArrayCollection();
-			for each (var resourceSet:String in CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceSets()) {
-				var node:Node = new Node(RESOURCE_SET + ":" + resourceSet);
-				node.type = RESOURCE_SET;
-				node.properties = new Object();
-				node.properties[CoreConstants.NAME] = "ResourceSet: " + resourceSet;
-				node.properties[CoreConstants.HAS_CHILDREN] = true;
+			for each (var resourceSet:String in CorePlugin.getInstance().nodeRegistryManager.getResourceSets()) {
+				var node:Node = createNode(RESOURCE_SET, resourceSet, null, "ResourceSet: " + resourceSet);
 				resourceSets.addItem(node);
 			}
 			return resourceSets;
@@ -47,12 +53,8 @@ package org.flowerplatform.flex_client.core.node.controller {
 			var children:ArrayCollection = new ArrayCollection();
 			var index:int = 0;
 			for each (var resourceUri:String in 
-				CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getResourceUrisForResourceSet(resourceSet)) {
-				var node:Node = new Node(RESOURCE_URI + ":" + resourceUri + "#" + index++);
-				node.type = RESOURCE_URI;
-				node.properties = new Object();
-				node.properties[CoreConstants.NAME] = "ResourceURI: " + resourceUri;
-				node.properties[CoreConstants.HAS_CHILDREN] = false;
+				CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForResourceSet(resourceSet)) {
+					var node:Node = createNode(RESOURCE_URI, resourceUri, null, "ResourceURI: " + resourceUri, null, false);
 				children.addItem(node);
 			}
 			return children;

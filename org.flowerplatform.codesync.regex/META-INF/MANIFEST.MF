@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Regex
+Bundle-SymbolicName: org.flowerplatform.codesync.regex;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.osgi,
+ org.flowerplatform.core,
+ org.flowerplatform.resources,
+ org.flowerplatform.util
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.flowerplatform.codesync.regex.CodeSyncRegexPlugin

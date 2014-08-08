@@ -30,9 +30,10 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		
 		public var mindMapConnectorClass:Class;
 		
-		public function MindMapModelRendererController(rendererClass:Class, orderIndex:int = 0) {
+		public function MindMapModelRendererController(rendererClass:Class, mindMapConnectorClass:Class, orderIndex:int = 0) {
 			super(rendererClass, orderIndex);
 			removeRendererIfModelIsDisposed = true;
+			this.mindMapConnectorClass = mindMapConnectorClass;
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {			

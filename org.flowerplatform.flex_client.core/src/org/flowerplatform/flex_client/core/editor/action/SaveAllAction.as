@@ -41,10 +41,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 				
 		override public function run():void {
-			CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getAllDirtyResourceSets(false, function(dirtyResourceNodeId:String):void {
-				// for each dirty resourceNode found -> save it
-				CorePlugin.getInstance().serviceLocator.invoke("resourceService.save", [dirtyResourceNodeId]);
-			});
+			CorePlugin.getInstance().nodeRegistryManager.resourceOperationsManager.saveAll();
 		}
 				
 	}

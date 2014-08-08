@@ -96,7 +96,7 @@ public class NodeService {
 				for (Node currentChild : childrenFromCurrentProvider) {
 					if (context.getBooleanValue(POPULATE_WITH_PROPERTIES)) {
 						// ... and then populate them
-						currentChild.getOrPopulateProperties();
+						currentChild.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 					}
 					
 					// and add them to the result list
@@ -199,8 +199,8 @@ public class NodeService {
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 		
 		// Save value before the change
-		if (node.getOrPopulateProperties().containsKey(property)) {
-			Object oldValue = node.getOrPopulateProperties().get(property);
+		if (node.getOrPopulateProperties(context).containsKey(property)) {
+			Object oldValue = node.getOrPopulateProperties(context).get(property);
 			context.add(CoreConstants.OLD_VALUE, oldValue);
 		}
 		
@@ -235,7 +235,7 @@ public class NodeService {
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 
 		// Save value before the change
-		Object oldValue = node.getOrPopulateProperties().get(property);
+		Object oldValue = node.getOrPopulateProperties(context).get(property);
 		context.add(CoreConstants.OLD_VALUE, oldValue);
 		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
@@ -300,7 +300,7 @@ public class NodeService {
 
 		// Save full child in context; used for undo
 		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
-		removedNode.getOrPopulateProperties();
+		removedNode.getOrPopulateProperties(context);
 		context.add("removedNode", removedNode);
 
 		// Find next sibbling and save it for undo of position

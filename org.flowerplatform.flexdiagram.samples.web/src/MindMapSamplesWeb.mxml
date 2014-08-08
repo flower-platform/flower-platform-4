@@ -34,28 +34,27 @@
 			import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
-			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 			
-			private var _rootModel:ParentAwareArrayList;
+			private var _rootModel:Object;
 			
 			[Bindable]
-			public function get rootModel():ParentAwareArrayList {
+			public function get rootModel():Object {
 				return _rootModel;
 			}
 			
-			public function set rootModel(value:ParentAwareArrayList):void {
+			public function set rootModel(value:Object):void {
 				_rootModel = value;				
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				MindMapPopulator.populateRootModel(this);
 				
+				diagramShell.rootModel = rootModel;
 				diagramShell.registerTools([
 					ScrollTool, SelectOnClickTool, ZoomTool, InplaceEditorTool, DragTool]);
 				
 				var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
-				diagramShell.addModelInRootModelChildrenList(context, rootModel.getItemAt(0));
-				DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, rootModel.getItemAt(0)).setExpanded(context, rootModel.getItemAt(0), true)});
+				MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, diagramShell.getRoot(context)).setExpanded(context, diagramShell.getRoot(context), true)});
 			}
 			
 		
@@ -63,7 +62,7 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<mindmap:SampleMindMapDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}" rootModel="{rootModel}"/>
+		<mindmap:SampleMindMapDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}" />
 		
 	</fx:Declarations>
 	
@@ -71,9 +70,7 @@
 		<s:HorizontalLayout />
 	</s:layout>	
 	<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%" >
-		<renderer:DiagramRenderer id="diagramRenderer" viewPortRectOffsetTowardOutside="0" width="100%" height="100%">
-			
-		</renderer:DiagramRenderer>				
+		<mindmap1:MindMapDiagramRenderer id="diagramRenderer" viewPortRectOffsetTowardOutside="0" width="100%" height="100%" />
 	</infinitegroup:InfiniteScroller>			
 	
 </s:Application>

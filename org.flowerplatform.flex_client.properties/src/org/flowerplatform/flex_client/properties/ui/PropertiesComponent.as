@@ -1,22 +1,36 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.properties.ui {
 	
 	import flash.utils.Dictionary;
 	
 	import mx.core.IVisualElement;
+	import mx.events.PropertyChangeEvent;
+	
+	import spark.components.Form;
+	import spark.components.Group;
+	import spark.components.Scroller;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.properties.PropertiesConstants;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.IPropertyLineRenderer;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
 	import org.flowerplatform.flex_client.properties.remote.IPropertyDescriptor;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
-	
-	import spark.components.Form;
-	import spark.components.Group;
-	import spark.components.Scroller;
 	
 	/**
 	 * Component can be used to display a node's properties.
@@ -36,10 +50,10 @@ package org.flowerplatform.flex_client.properties.ui {
 			super();
 		}
 	
-		public function refreshForm(node:Node, includeRawProperties:Boolean = false):void {			
+		public function refreshForm(node:Node, includeRawProperties:Boolean = false):void {
 			// remove listeners from previous node				
 			if (currentNode != null) {
-				currentNode.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
+				currentNode.properties.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, nodeUpdatedHandler);
 			}
 			
 			currentNode = node;
@@ -47,7 +61,7 @@ package org.flowerplatform.flex_client.properties.ui {
 			
 			// add listeners to current node				
 			if (currentNode != null) {					
-				currentNode.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);					
+				currentNode.properties.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, nodeUpdatedHandler);					
 			}
 		}
 		
@@ -170,19 +184,15 @@ package org.flowerplatform.flex_client.properties.ui {
 			}
 		}
 		
-		private function nodeUpdatedHandler(event:NodeUpdatedEvent):void {
-			var node:Node = event.node;
-			
+		private function nodeUpdatedHandler(event:PropertyChangeEvent):void {
 			for (var i:int = 0; i < propertiesForm.numElements; i++) {
 				var obj:Object = propertiesForm.getElementAt(i);
 				if (!(obj is PropertyLineRenderer)) {
 					continue;
+				}				
+				if (PropertyLineRenderer(obj).propertyDescriptor.name == event.property) {
+					PropertyLineRenderer(obj).nodeUpdated();
 				}
-				var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(obj);
-				if (node.properties == null || !NodeControllerUtils.hasPropertyChanged(node, propertyItemRenderer.propertyDescriptor.name, event)) {
-					continue;
-				}
-				propertyItemRenderer.node = node;																		
 			}
 		}		
 		

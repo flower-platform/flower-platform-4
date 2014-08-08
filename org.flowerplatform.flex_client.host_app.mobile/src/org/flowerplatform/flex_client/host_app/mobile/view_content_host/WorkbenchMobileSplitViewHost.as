@@ -72,7 +72,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			// TODO
 		}
 		
-		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean=false, existingComponent:UIComponent=null):UIComponent {
+		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean=false, existingComponent:UIComponent=null, addViewInOtherStack:Boolean = false):UIComponent {
 			var comp:UIComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(viewLayoutData);
 			rightActiveComponent = comp;
 			rightComponents.addItem(comp);

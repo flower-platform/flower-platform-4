@@ -89,6 +89,9 @@ public class NodeServiceRemote {
 		rss.startCommand(rss.getResourceSet(parentNodeUri), ResourcesPlugin.getInstance().getMessage("commandStack.command.addChild", childType));
 		
 		getNodeService().addChild(parent, child, context);
+		
+		child.getOrPopulateProperties(new ServiceContext<NodeService>(getNodeService()));
+		
 		return child.getNodeUri();
 	}
 	

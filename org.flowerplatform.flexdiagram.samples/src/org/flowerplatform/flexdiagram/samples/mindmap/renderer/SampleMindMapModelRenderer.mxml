@@ -125,10 +125,9 @@
 				if (data != null) {
 					getDynamicObject(node).width = this.width;
 					getDynamicObject(node).height = this.height;
-					var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, node).getParent(diagramShellContext, node);
-					if (parent is SampleMindMapModel) {						
-						MindMapDiagramShell(diagramShellContext.diagramShell).refreshModelPositions(diagramShellContext, parent);	
-					}
+				
+					MindMapDiagramShell(diagramShellContext.diagramShell).shouldRefreshModelPositions(diagramShellContext, diagramShellContext.diagramShell.rootModel);
+					MindMapDiagramShell(diagramShellContext.diagramShell).shouldRefreshVisualChildren(diagramShellContext, diagramShellContext.diagramShell.rootModel);
 				}
 			}
 							

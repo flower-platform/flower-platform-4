@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.node.resource;
 
 import java.util.ArrayList;
@@ -99,7 +114,8 @@ public abstract class ResourceSetService {
 	 */
 	public String getResourceSet(String nodeUri) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(nodeUri);
-		String resourceSet = (String)resourceNode.getOrPopulateProperties().get(CoreConstants.RESOURCE_SET);
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		String resourceSet = (String)resourceNode.getOrPopulateProperties(context).get(CoreConstants.RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceNode.getNodeUri();
 		}
@@ -137,7 +153,7 @@ public abstract class ResourceSetService {
 		String commandToUndoId = getCommandToUndoId(command.getResourceSet());
 
 		List<Command> removedCommands = deleteCommandsAfter(command.getResourceSet(), commandToUndoId);
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		for (Command cmd : removedCommands) {
 			Node node = new Node(Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, command.getResourceSet(), cmd.getId()), CoreConstants.COMMAND_TYPE);
 			CorePlugin.getInstance().getNodeService().removeChild(commandStackNode, node, context);
@@ -230,7 +246,7 @@ public abstract class ResourceSetService {
 	 */
 	private void undoPropertyUpdate(PropertyUpdate update) {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		if (update.getHasOldValue()) {
 			CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getOldValue(), context);
 		}
@@ -311,7 +327,7 @@ public abstract class ResourceSetService {
 	 */
 	private void redoPropertyUpdate(PropertyUpdate update) {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		if (update.getIsUnset()) {
 			CorePlugin.getInstance().getNodeService().unsetProperty(node, update.getKey(), context); 
 		}
@@ -325,7 +341,7 @@ public abstract class ResourceSetService {
 	 */
 	private void redoChildrenUpdate(ChildrenUpdate update) {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
-		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		switch (update.getType()) {
 		case CoreConstants.UPDATE_CHILD_ADDED:
 			CorePlugin.getInstance().getNodeService().addChild(node, update.getTargetNode(), context);

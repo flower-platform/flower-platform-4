@@ -24,12 +24,17 @@ import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.tests.core.CommandStackTest;
+import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
+import org.flowerplatform.tests.core.CoreTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -55,6 +60,8 @@ public class EclipseIndependentTestSuite {
 	
 	public static NodeService nodeService;
 	
+	public static String sessionId = "mockSessionId";
+	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		// populate from web.xml in the servlet container
@@ -63,6 +70,12 @@ public class EclipseIndependentTestSuite {
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
 		nodeService = CorePlugin.getInstance().getNodeService();
+		
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		HttpSession session = mock(HttpSession.class);
+		when(req.getSession()).thenReturn(session);
+		when(session.getId()).thenReturn(sessionId);
+		CorePlugin.getInstance().getRequestThreadLocal().set(req);
 	}
 	
 	/**

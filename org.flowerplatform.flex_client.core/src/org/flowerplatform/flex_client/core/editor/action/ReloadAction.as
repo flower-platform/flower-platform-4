@@ -15,13 +15,9 @@
  */
 package org.flowerplatform.flex_client.core.editor.action {
 	
-	import mx.collections.ArrayCollection;
-	import mx.collections.ArrayList;
-	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -38,15 +34,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 				
 		override public function run():void {
-			var resourceSets:Array = CorePlugin.getInstance().resourceNodesManager.nodeRegistryManager.getDirtyResourceSetsFromNodeRegistries([editorFrontend.nodeRegistry]);
-			if (resourceSets.length == 1) {
-				// single resourceNode to reload -> reload without asking
-				CorePlugin.getInstance().serviceLocator.invoke("resourceService.reload", [resourceSets[0]]);
-			} else {
-				// multiple resourceNodes -> show dialog
-				CorePlugin.getInstance().resourceNodesManager.showReloadDialog([editorFrontend.nodeRegistry], resourceSets);
-			}
-		}			
+			CorePlugin.getInstance().nodeRegistryManager.resourceOperationsManager.reload(editorFrontend.nodeRegistry);			
+		}
 		
 	}
 }

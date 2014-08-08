@@ -80,7 +80,7 @@ public class CommandStackTest {
 
 	@Before
 	public void setUp() {
-		context = new ServiceContext<NodeService>();
+		context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		remoteMethodInvocationInfo = spy(new RemoteMethodInvocationInfo());
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
@@ -143,20 +143,20 @@ public class CommandStackTest {
 	public void testUndoCommand_SetProperty() {
 		String property = "text";
 		Node node = nodeService.getChildren(rootNode, context).get(0);
-		String oldValue = node.getOrPopulateProperties().get(property).toString();
+		String oldValue = node.getOrPopulateProperties(context).get(property).toString();
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 		nodeServiceRemote.setProperty(node.getNodeUri(), property, "Changed");
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		node = nodeService.getChildren(rootNode, context).get(0);
-		assertEquals("Changed", node.getOrPopulateProperties().get(property));
+		assertEquals("Changed", node.getOrPopulateProperties(context).get(property));
 
 		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
 		resourceSetService.undo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
 		node = nodeService.getChildren(rootNode, context).get(0);
-		assertEquals(oldValue, node.getOrPopulateProperties().get(property));
+		assertEquals(oldValue, node.getOrPopulateProperties(context).get(property));
 	}
 
 	@Test
@@ -183,7 +183,7 @@ public class CommandStackTest {
 	public void testUndoCommand_RemoveChild() {
 		Node node = nodeService.getChildren(rootNode, context).get(5);
 
-		Map<String, Object> nodeProperties = node.getOrPopulateProperties();
+		Map<String, Object> nodeProperties = node.getOrPopulateProperties(context);
 		List<Node> nodeChildren = nodeService.getChildren(node, context);
 		
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
@@ -201,7 +201,7 @@ public class CommandStackTest {
 		rootChildren = nodeService.getChildren(rootNode, context);
 		assertTrue("Child node is added", rootChildren.contains(node));
 
-		Map<String, Object> properties = node.getOrPopulateProperties();
+		Map<String, Object> properties = node.getOrPopulateProperties(context);
 		assertTrue("Properties are repopulated.", nodeProperties.keySet().equals(properties.keySet()));
 		
 		List<Node> nodeChildrenUndo = nodeService.getChildren(node, context);
@@ -225,7 +225,7 @@ public class CommandStackTest {
 		resourceSetService.redo(resourceNodeUri, commands.get(commands.size() - 1).getId());
 
 		node = nodeService.getChildren(rootNode, context).get(0);
-		assertEquals(newValue, node.getOrPopulateProperties().get(property));
+		assertEquals(newValue, node.getOrPopulateProperties(context).get(property));
 	}
 
 	@Test
@@ -247,7 +247,7 @@ public class CommandStackTest {
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		node = nodeService.getChildren(rootNode, context).get(0);
-		assertEquals(newValue, node.getOrPopulateProperties().get(property));
+		assertEquals(newValue, node.getOrPopulateProperties(context).get(property));
 	}
 
 	@Test

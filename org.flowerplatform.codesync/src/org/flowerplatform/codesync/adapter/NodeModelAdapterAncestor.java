@@ -17,6 +17,7 @@ package org.flowerplatform.codesync.adapter;
 
 import java.util.Iterator;
 
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
@@ -34,9 +35,9 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// first get the children from the FeatureChange, if it exists
-		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
 				Boolean isAdded = (Boolean) getNode(candidate).getPropertyValue(CodeSyncConstants.ADDED);
@@ -52,10 +53,10 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 	 * Returns the original value for <code>feature</code>.
 	 */
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue) {
-		Object originalValue = super.getValueFeatureValue(element, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), correspondingValue);
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Object originalValue = super.getValueFeatureValue(element, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), correspondingValue, codeSyncAlgorithm);
 		if (originalValue == null) {
-			originalValue = super.getValueFeatureValue(element, feature, correspondingValue);
+			originalValue = super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 		}
 		return originalValue;
 	}

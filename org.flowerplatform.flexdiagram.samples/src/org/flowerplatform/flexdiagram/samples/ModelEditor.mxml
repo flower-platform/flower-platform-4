@@ -26,6 +26,8 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.IList;
+			
 			import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 			import org.flowerplatform.flexdiagram.tool.SelectOrDragToCreateElementTool;
 		]]>
@@ -134,7 +136,7 @@
 							</s:click>
 						</s:Button>
 					</s:HGroup>
-					<s:List id="list" allowMultipleSelection="true" dataProvider="{modelHolder.rootModel}" width="100%" height="200"/>			
+					<s:List id="list" allowMultipleSelection="true" dataProvider="{IList(modelHolder.rootModel)}" width="100%" height="200"/>			
 				</s:VGroup>
 				<s:VGroup id="vg2" width="50%" height="100%">
 					<s:Label text="SubModels"/>

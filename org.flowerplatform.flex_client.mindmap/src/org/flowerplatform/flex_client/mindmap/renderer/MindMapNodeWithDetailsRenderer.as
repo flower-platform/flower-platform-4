@@ -16,17 +16,8 @@
 package org.flowerplatform.flex_client.mindmap.renderer {
 	import flash.events.MouseEvent;
 	
-	import flashx.textLayout.conversion.TextConverter;
-	
+	import mx.events.PropertyChangeEvent;
 	import mx.graphics.SolidColorStroke;
-	
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
-	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexutil.Utils;
 	
 	import spark.components.Group;
 	import spark.components.Image;
@@ -34,6 +25,15 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import spark.layouts.HorizontalLayout;
 	import spark.layouts.VerticalLayout;
 	import spark.primitives.Line;
+	
+	import flashx.textLayout.conversion.TextConverter;
+	
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
+	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
+	import org.flowerplatform.flexutil.Utils;
 	
 	/**
 	 * @author Sebastian Solomon
@@ -138,22 +138,26 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			return nodeGroup;
 		}
 		
-		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
-			super.nodeUpdatedHandler(event);
-			if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
-				setDetailsGroupVisibile(true);
-				if (detailsText.includeInLayout) {
-					detailsIcon.source = Resources.arrowUpIcon;
-				} else {
-					detailsIcon.source = Resources.arrowDownIcon;
-				}
-				
-				var text:String = node.properties[MindMapConstants.NODE_DETAILS] as String;
-				text = Utils.getCompatibleHTMLText(text);
-				detailsText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
-			} else {
-				setDetailsGroupVisibile(false);
-			}
+		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
+			super.modelChangedHandler(event);
+//			switch (event.property) {
+//				case MindMapConstants.NODE_DETAILS:
+					if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
+						setDetailsGroupVisibile(true);
+						if (detailsText.includeInLayout) {
+							detailsIcon.source = Resources.arrowUpIcon;
+						} else {
+							detailsIcon.source = Resources.arrowDownIcon;
+						}
+						
+						var text:String = node.properties[MindMapConstants.NODE_DETAILS] as String;
+						text = Utils.getCompatibleHTMLText(text);
+						detailsText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
+					} else {
+						setDetailsGroupVisibile(false);
+					}
+//					break;
+//			}			
 		}
 		
 		private function setDetailsGroupVisibile(value:Boolean):void {

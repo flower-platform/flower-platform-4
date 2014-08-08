@@ -39,8 +39,8 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(final Object element, Object feature, Iterable<?> correspondingIterable) {
-		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable);
+	public Iterable<?> getContainmentFeatureIterable(final Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Iterable<?> children = super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 		// filter out deleted elements
 		return new FilteredIterable<Object, Object>((Iterator<Object>) children.iterator()) {
 			protected boolean isAccepted(Object candidate) {
@@ -61,7 +61,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	 * processed feature.
 	 */
 	@Override
-	public void beforeFeaturesProcessed(Object element, Object correspondingElement) {
+	public void beforeFeaturesProcessed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
 //		CodeSyncElement cse = getCodeSyncElement(element);
 //		if (cse != null) {
 //			if (cse.getAstCacheElement() == null || cse.getAstCacheElement().eResource() == null) {
@@ -75,7 +75,7 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 	 * Adds the {@link AstCacheElement} to the AST cache resource.
 	 */
 	@Override
-	public void featuresProcessed(Object element) {
+	public void featuresProcessed(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 //		CodeSyncElement cse = getCodeSyncElement(element);
 //		if (cse != null) {
 //			AstCacheElement ace = cse.getAstCacheElement();
@@ -83,12 +83,6 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 //				addToResource(ace);
 //			}
 //		}
-	}
-
-	@Override
-	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm) {
-		Node node = getNode(element);
-		CodeSyncControllerUtils.setSyncTrueAndPropagateToParents(node, CorePlugin.getInstance().getNodeService());
 	}
 
 	@Override

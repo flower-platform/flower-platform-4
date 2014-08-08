@@ -14,26 +14,34 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.editor.remote {
-	import mx.collections.ArrayCollection;
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
 	
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
-	import org.flowerplatform.flexutil.Utils;
+	import mx.collections.ArrayCollection;
+	import mx.utils.ObjectProxy;
+	import mx.utils.object_proxy;
+	
+	use namespace object_proxy;
 	
 	/**
 	 * Server -> client only. On the server side, the nodes are note linked together
 	 * (parent/children). But here, on the client, these links are recalculated and 
 	 * maintained by <code>NodeUpdateProcessor</code>.
 	 * 
+	 * <p>
+	 * Implements IExternalizable to wrap properties in an ObjectProxy 
+	 * (this way events will be dispatched individually for each property changed).
+	 * 
 	 * @author Cristina Constantinescu
 	 */
 	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.core.node.remote.Node")]
-	public class Node {
+	public class Node implements IExternalizable {
 		
-		private var _type:String;		
+		public var type:String;				
+		public var nodeUri:String;
 		
-		private var _nodeUri:String;
-
 		private var _properties:Object;
 		
 		[Transient]
@@ -43,50 +51,28 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		public var children:ArrayCollection;
 		
 		public function Node(nodeUri:String = null) {
-			_nodeUri = nodeUri;
-			properties = new Object();
+			this.nodeUri = nodeUri;
+			_properties = new ObjectProxy(new Object());
 		}
-		
-		public function get type():String {
-			return _type;
-		}
-
-		public function set type(value:String):void {
-			_type = value;
-		}
-
-		public function get properties():Object	{
+					
+		public function get properties():Object {
 			return _properties;
 		}
 		
-		public function set properties(value:Object):void {			
-			_properties = value;
-			
-			this.dispatchEvent(new NodeUpdatedEvent(this, null, null, true));			
-		}
-		
-		public function get nodeUri():String {
-			return _nodeUri;
-		}
-		
-		public function set nodeUri(value:String):void {
-			_nodeUri = value;
-		}
-		
 		public function get fragment():String {
-			var index:int = _nodeUri.lastIndexOf("#");
+			var index:int = nodeUri.lastIndexOf("#");
 			if (index < 0) {
 				return null;
 			}
-			return _nodeUri.substring(index + 1);
+			return nodeUri.substring(index + 1);
 		}
 		
 		public function get schemeSpecificPart():String {
-			var index:int = _nodeUri.indexOf(":");
+			var index:int = nodeUri.indexOf(":");
 			if (index < 0) {
-				throw new Error("Invalid URI: " + _nodeUri);
+				throw new Error("Invalid URI: " + nodeUri);
 			}
-			var ssp:String = _nodeUri.substring(index + 1);
+			var ssp:String = nodeUri.substring(index + 1);
 			index = ssp.lastIndexOf("#");
 			if (index < 0) {
 				return ssp;
@@ -105,6 +91,18 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		public function getPropertyValueOrWrapper(property:String):* {
 			return properties[property];		
 		}
+		
+		public function readExternal(input:IDataInput):void { 
+			type = input.readObject() as String; 
+			nodeUri = input.readObject() as String;
+			_properties = new ObjectProxy(input.readObject());
+		} 
+		
+		public function writeExternal(output:IDataOutput):void { 
+			output.writeObject(type); 
+			output.writeObject(nodeUri); 
+			output.writeObject(ObjectProxy(properties).object); 
+		} 
 		
 		public function toString():String {
 			return nodeUri;

@@ -15,11 +15,12 @@
  */
 package org.flowerplatform.flex_client.codesync.node.renderer {
 	
+	import mx.events.PropertyChangeEvent;
+	
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.core.node.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeRenderer;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	
@@ -28,13 +29,15 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 	 */
 	public class CodeSyncNodeRenderer extends NodeRenderer {
 		
-		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
-			super.nodeUpdatedHandler(event);
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		private static const SYNC_PROPERTIES:Array = [CodeSyncConstants.SYNC, CodeSyncConstants.CHILDREN_SYNC, CodeSyncConstants.CONFLICT, CodeSyncConstants.CHILDREN_CONFLICT];
+		
+		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
+			super.modelChangedHandler(event);
 			
-			if (NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.SYNC, event) ||
-				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CHILDREN_SYNC, event) ||
-				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CONFLICT, event) ||
-				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CHILDREN_CONFLICT, event)) {
+			if (SYNC_PROPERTIES.indexOf(event.property)) {
 				// a sync property has changed, redecorate the original icon
 				composeIconWithSyncMarkers();
 			}
