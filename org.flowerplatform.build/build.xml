@@ -122,7 +122,6 @@
 			<!-- <arg value="-X" /> -->
 
 			<arg value="-P${buildProfiles}" />
-
 			<arg value="-Doutput.flex=${output.flex}" />
 			<arg value="-Doutput.java=${output.java}" />
 			
