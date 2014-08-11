@@ -5,10 +5,7 @@ import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.CURRENT_BRANCH;
 import static org.flowerplatform.team.git.GitConstants.CURRENT_COMMIT;
-import static org.flowerplatform.team.git.GitConstants.IS_GIT_REPOSITORY;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.jgit.lib.Ref;

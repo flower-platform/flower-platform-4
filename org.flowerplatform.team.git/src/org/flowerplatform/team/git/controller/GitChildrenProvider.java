@@ -3,7 +3,6 @@ package org.flowerplatform.team.git.controller;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
 
 import java.util.ArrayList;

@@ -1,13 +1,12 @@
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.team.git.GitConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.team.git.GitConstants.FETCH_REF_SPECS;
+import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
-import static org.flowerplatform.core.CoreConstants.ICONS;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 

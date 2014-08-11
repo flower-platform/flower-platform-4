@@ -5,7 +5,6 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
@@ -24,13 +23,6 @@ public class RepoChildrenProvider extends AbstractController implements IChildre
 		List<Node> children = new ArrayList<Node>();
 
 		String repo = Utils.getRepo(node.getNodeUri());
-		try {
-			if (!GitUtils.isRepository(FileControllerUtils.getFileAccessController().getFile(repo))) {
-				return children;
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 		children.add(new Node(GitUtils.getNodeUri(repo,GIT_REPO_TYPE), GIT_REPO_TYPE));
 		return children;
 	}

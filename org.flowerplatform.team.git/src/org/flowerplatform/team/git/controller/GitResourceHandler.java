@@ -1,10 +1,9 @@
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
