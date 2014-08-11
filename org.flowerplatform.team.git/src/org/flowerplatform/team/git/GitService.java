@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -46,6 +47,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.NullProgressMonitor;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.ProgressMonitor;
@@ -411,76 +413,58 @@ public class GitService {
 	public void cloneRepo(final String nodeUri, final String repoUri, final Collection<String> branches, final boolean cloneAll) throws Exception {
 		final URIish uri = new URIish(repoUri.trim());
 		final String remoteName = repoUri.substring(repoUri.lastIndexOf('/')+1, repoUri.length()-4);
-		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
+		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri) + "\\" + remoteName);
 		
 //		final ProgressMonitor monitor = ProgressMonitor.create(
 //				GitPlugin.getInstance().getMessage("git.cloneRepo.title", uri), context.getCommunicationChannel());		
 //		monitor.beginTask(GitPlugin.getInstance().getMessage("git.cloneRepo.title", uri), 2);
 
-		final String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
+		String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
 		Job job = new Job(jobName)	{
 			@Override
 			protected IStatus run(IProgressMonitor m) {														
-//				Repository repository = null;
+				Repository repository = null;
 				try {	
+					
+//					ProgressMonitor pm = new GitProgressMonitor(m,jobName );
+//					pm.start(1000);
 					CloneCommand cloneRepository = Git.cloneRepository();
 					
-					cloneRepository.setNoCheckout(true);			
+//					cloneRepository.setNoCheckout(true);			
 					cloneRepository.setDirectory(mainRepo);
-					cloneRepository.setProgressMonitor(new GitProgressMonitor(m,jobName ));
-					cloneRepository.setRemote(remoteName);
+//					cloneRepository.setProgressMonitor(NullProgressMonitor.INSTANCE);
+//					cloneRepository.setRemote(remoteName);
 					cloneRepository.setURI(uri.toString());
 					cloneRepository.setCloneAllBranches(cloneAll);
-//					cloneRepository.setCloneSubmodules(false);	
+					cloneRepository.setCloneSubmodules(false);	
 					cloneRepository.setBranchesToClone(branches);
-					cloneRepository.call();
 					
-//					Git git = cloneRepository.call();
-//					repository = git.getRepository();
-//					
-//					// notify clients about changes
-//					dispatchContentUpdate(node);
+					Git git = cloneRepository.call();
+					repository = git.getRepository();
+					
+//					pm.endTask();
 					
 //					monitor.worked(1);	
 				} catch (Exception e) {			
-//					if (repository != null)
-//						repository.close();
+					if (repository != null)
+						repository.close();
 //					
 					if (m.isCanceled()) {
 						return Status.OK_STATUS;
 					}
-//					if (GitPlugin.getInstance().getUtils().isAuthentificationException(e)) {
-//						openLoginWindow();
-//						return Status.OK_STATUS;
-//					}
-//					logger.debug(GitPlugin.getInstance().getMessage("git.cloneWizard.error", new Object[] {mainRepo.getName()}), e);
-//					context.getCommunicationChannel().appendOrSendCommand(
-//							new DisplaySimpleMessageClientCommand(
-//									CommonPlugin.getInstance().getMessage("error"), 
-//									GitPlugin.getInstance().getMessage("git.cloneWizard.error", new Object[] {mainRepo.getName()}),							
-//									DisplaySimpleMessageClientCommand.ICON_ERROR));	
-//					
+					
 					return Status.CANCEL_STATUS;
 				} finally {
 					m.done();					
-//					if (repository != null) {
-//						repository.close();
-//					}
+					if (repository != null) {
+						repository.close();
+					}
 				}
 				return Status.OK_STATUS;
 			}
 		};
 		job.schedule();
-		return;
-//		CloneCommand cc = new CloneCommand();
-//		cc.setNoCheckout(true);
-//		cc.setCloneAllBranches(cloneAll);
-//		cc.setBranchesToClone(branches);
-//		cc.setURI(repoUri);
-//		cc.setCloneSubmodules(false);
-//		File directory = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
-//		cc.setDirectory(directory);
-//		cc.call();
+		
 	}
 
 	/** 
