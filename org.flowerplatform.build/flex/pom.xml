@@ -48,12 +48,11 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
-		<output.flex.prefix>..</output.flex.prefix>
-	
 		<!-- modules may override -->
-		<sourceDirectory>src</sourceDirectory>
-		<messagesDirectory>messages</messagesDirectory>
-		<iconsDirectory>icons</iconsDirectory>
+		<sourceDirectory>../src</sourceDirectory>
+		<messagesDirectory>../messages</messagesDirectory>
+		<iconsDirectory>../icons</iconsDirectory>
+		<output.flex.prefix>../..</output.flex.prefix>
 		<finalName>${project.artifactId}</finalName>
 
 		<flexmojos.version>7.0.0</flexmojos.version>

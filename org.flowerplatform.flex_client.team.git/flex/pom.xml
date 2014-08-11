@@ -13,13 +13,6 @@
 	<artifactId>org.flowerplatform.flex_client.team.git</artifactId>
 	<packaging>swc</packaging>
 
-	<properties>
-		<sourceDirectory>../src</sourceDirectory>
-		<messagesDirectory>../messages</messagesDirectory>
-		<iconsDirectory>../icons</iconsDirectory>
-		<output.flex.prefix>../..</output.flex.prefix>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.flex.framework</groupId>
