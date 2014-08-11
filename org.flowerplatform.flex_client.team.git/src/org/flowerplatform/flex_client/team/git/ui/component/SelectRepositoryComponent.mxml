@@ -21,7 +21,8 @@
 	</s:layout>
 	
 	<s:VGroup id="remoteRepoGroup"  height="40%" width="100%" paddingLeft="5">
-		<s:RadioButton selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" />
+		<s:RadioButton id="remoteRadioButton"
+					   selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" />
 		<s:DropDownList id="repositoriesList" >
 			
 		</s:DropDownList>
@@ -29,7 +30,8 @@
 	
 	<s:VGroup height="40%" width="100%" paddingLeft="5">
 		<s:HGroup>
-			<s:RadioButton selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" />
+			<s:RadioButton id="uriRadioButton"
+						   selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" />
 		</s:HGroup>
 		
 		<s:TextInput id="uriTextInput" />

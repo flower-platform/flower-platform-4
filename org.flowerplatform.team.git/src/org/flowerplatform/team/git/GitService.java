@@ -36,14 +36,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Map;
 import java.util.Set;
-=======
->>>>>>> refs/remotes/origin/master
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.LsRemoteCommand;
@@ -61,6 +59,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
@@ -77,7 +76,7 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.team.git.remote.GitRef;
-
+import org.flowerplatform.team.git.remote.RemoteConfiguration;
 import org.flowerplatform.util.Utils;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
@@ -566,6 +565,93 @@ public class GitService {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory());
 		} else {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory().getParentFile());
+		}
+	}
+	
+	 /**
+	  * @author Cristina Constantinescu
+	  * @author Cristina Brinza
+	  * @author Andreea Tita 
+	  */
+	public List<RemoteConfiguration> getFetchPushConfigData(String nodeUri, boolean selectFetchPush) throws Exception {
+		List<RemoteConfiguration> remoteConfigurationList = new ArrayList<RemoteConfiguration>();
+
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+
+		List<RemoteConfig> remotes = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
+		for (RemoteConfig remote : remotes) {
+			RemoteConfiguration remoteConfiguration = new RemoteConfiguration();
+			remoteConfiguration.setName(remote.getName());
+			remoteConfiguration.setUri(remote.getURIs().get(0).toString());
+
+			if (selectFetchPush) {
+				List<String> fetchRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getFetchRefSpecs()) {
+					fetchRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setFetchMappings(fetchRefSpecs);
+			} else {
+				List<String> pushRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getPushRefSpecs()) {
+					pushRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setPushMappings(pushRefSpecs);
+			}
+
+			remoteConfigurationList.add(remoteConfiguration);
+		}
+		
+		return remoteConfigurationList;
+	}
+	
+	/**
+	 * @author Cristina Brinza
+	 */
+	public void fetch(String nodeUri, RemoteConfiguration fetchConfig, String remoteBranchesUri) throws Exception {	
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Git git = new Git(repository);
+		
+		FetchResult fetchResult;
+		
+		if (fetchConfig == null) {
+			fetchResult = git.fetch().setRemote(GitUtils.getName(nodeUri)).call();
+			
+			/* refresh Remote Branches node */
+			//if (!fetchResult.getMessages().equals("")) {
+				updateRemoteBranchesNodeOnFetch(CorePlugin.getInstance().getResourceService().getNode(remoteBranchesUri), new RemoteConfig(repository.getConfig(), GitUtils.getName(nodeUri)).getFetchRefSpecs(), repoPath);
+			//}
+		} else {
+			/* use fetchConfig */
+			List<RefSpec> fetchRefSpecs = new ArrayList<RefSpec>();
+			if (fetchConfig.getFetchMappings() != null) {
+				for (String fetchRefSpecString : fetchConfig.getFetchMappings()) {
+					fetchRefSpecs.add(new RefSpec(fetchRefSpecString));
+				}
+			}
+		
+			fetchResult = git.fetch().setRemote(new URIish(fetchConfig.getUri()).toPrivateString()).setRefSpecs(fetchRefSpecs).call();
+			if (remoteBranchesUri != null) {
+				updateRemoteBranchesNodeOnFetch(CorePlugin.getInstance().getResourceService().getNode(remoteBranchesUri), fetchRefSpecs, repoPath);
+			}
+		}
+	}
+	
+	/**
+	 * @author Cristina Brinza
+	 */
+	public void updateRemoteBranchesNodeOnFetch(Node parent, List<RefSpec> fetchRefSpecs, String repoPath) {
+		Node child;
+		
+		for (RefSpec refSpec: fetchRefSpecs) {
+			/* create child */
+			child = CorePlugin.getInstance().getResourceService().getNode(
+				    Utils.getUri(GitConstants.GIT_SCHEME, repoPath + "|" + GIT_REMOTE_BRANCH_TYPE + "$" + refSpec.getDestination()), 
+				    new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
+			 
+			/* add to parent */
+			CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
 	}
 }

@@ -38,10 +38,7 @@ public class GitConstants {
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
-
 	
-
-
 	public static final String CONFIG_REBASE = "configRebase";
 	public static final String CURRENT_BRANCH = "currentBranch";
 	public static final String CURRENT_COMMIT = "currentCommit";
@@ -52,5 +49,17 @@ public class GitConstants {
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
-
+	 /////////////////////////////////////////////////////////////
+	 //Icons paths
+	 /////////////////////////////////////////////////////////////
+	 
+	 public static final String ICONS_PATH = "/images/team.git/";
+	 public static final String BRANCH_ICON = "branch.gif";
+	 public static final String TAG_ICON = "tag.gif";
+	 public static final String TAGS_ICON = "tags.gif";
+	 public static final String REMOTE_ICON = "remote.gif";
+	 public static final String FOLDER_ICON = "folder.gif";
+	 public static final String GIT_ICON = "git.gif";
+	 public static final String REMOTES_ICON = "remotes.gif";
+	 public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
 }

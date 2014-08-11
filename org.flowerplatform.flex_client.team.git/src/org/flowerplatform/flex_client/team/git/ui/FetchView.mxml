@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
+-->
+<!--
+@author Cristina Brinza 
+-->
+
+<ns:Wizard xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx"	
+					 xmlns:ns="org.flowerplatform.flexutil.popup.*"
+					 xmlns:local="org.flowerplatform.flex_client.team.git.ui.component.*"
+					 getIndexForStateFunction="getIndexForState">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
+			import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			public var node:Node;
+			private var remoteConfigsList:ArrayCollection;
+			
+			protected function getIndexForState(stateName:String):int {
+				if (stateName == "selectDestinationRepositoryState") {
+					return 0;
+				} else if (stateName == "configureFetchPushState") {
+					return 1;
+				}
+				return -1;
+			}
+			
+			protected function selectRepositoryComponentCreationCompleteHandler(event:FlexEvent):void {
+				selectDestinationRepositoryPage.remoteRadioButton.selected = true;
+				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getFetchPushConfigData", [node.nodeUri, true] , 
+					function(result:ArrayCollection):void {
+						selectDestinationRepositoryPage.repositoriesList.dataProvider = result;
+						selectDestinationRepositoryPage.repositoriesList.labelFunction = getLabelFunction;
+						selectDestinationRepositoryPage.repositoriesList.requireSelection = true;
+					});
+			}
+			
+			private function getLabelFunction(item:Object):String {
+				return RemoteConfiguration(item).name + ":" + RemoteConfiguration(item).uri;
+			}
+			
+			private function chooseUri():String {
+				if (selectDestinationRepositoryPage.remoteRadioButton.selected) {
+					return RemoteConfiguration(selectDestinationRepositoryPage.repositoriesList.selectedItem).uri; 
+				} else {
+					return selectDestinationRepositoryPage.uriTextInput.text;
+				}
+			}
+			
+			private function chooseRefMappings():ArrayCollection {
+				if (selectDestinationRepositoryPage.remoteRadioButton.selected) {
+					return RemoteConfiguration(selectDestinationRepositoryPage.repositoriesList.selectedItem).fetchMappings;
+				} else {
+					return new ArrayCollection();
+				}
+			}
+			
+			override protected function nextClickHandler():void {
+				this.currentState = "configureFetchPushState";
+				back.enabled = false;
+				
+				super.nextClickHandler();
+			}
+			
+			override protected function finishClickHandler():void {
+				var fetchConfig:RemoteConfiguration = new RemoteConfiguration();
+
+				if (selectDestinationRepositoryPage.remoteRadioButton.selected) {
+					fetchConfig = RemoteConfiguration(selectDestinationRepositoryPage.repositoriesList.selectedItem);
+					fetchConfig.fetchMappings = configureFetchPushPage.getRefSpecs();
+				} else {
+					fetchConfig.uri = selectDestinationRepositoryPage.uriTextInput.text;
+					fetchConfig.fetchMappings = configureFetchPushPage.getRefSpecs();	
+				}
+			
+				if (configureFetchPushPage.getRefSpecs().length == 0) {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setTitle('error')
+						.setText(Resources.getMessage('flex_client.team.git.FetchPush.error'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					
+					return;
+				}
+				
+				var remoteBranchesUri:String;
+				var parent:Node;
+				
+				if (node.type == GitConstants.GIT_REPO_TYPE) {
+					parent = node;
+				} else {
+					parent = node.parent;
+				}
+				
+				if (parent.children != null) {
+					/* get the URI for Remote Branches node */
+					for each (var child:Node in parent.children) {
+						if (child.type == GitConstants.GIT_REMOTE_BRANCHES_TYPE) {
+							if (child.children != null) {
+								remoteBranchesUri = child.nodeUri;
+							}
+							
+							break;
+						}
+					}
+				}
+				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch",[node.nodeUri, fetchConfig, remoteBranchesUri]);
+				
+				super.finishClickHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<ns:states>
+		<s:State name="selectDestinationRepositoryState"/>
+		<s:State name="configureFetchPushState"/>
+	</ns:states>
+	
+	<local:SelectRepositoryComponent id="selectDestinationRepositoryPage"
+									 creationComplete="selectRepositoryComponentCreationCompleteHandler(event)"
+									 includeIn="selectDestinationRepositoryState"/>
+	<local:ConfigureFetchPushComponent id="configureFetchPushPage"
+									   remoteUri="{chooseUri()}"
+									   refMappings="{chooseRefMappings()}"
+									   includeIn="configureFetchPushState"/>
+
+</ns:Wizard>
