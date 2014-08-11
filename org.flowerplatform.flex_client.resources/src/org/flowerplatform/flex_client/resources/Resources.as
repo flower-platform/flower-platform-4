@@ -560,8 +560,14 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/editconfig.gif")]
 		public static const renameBranch:Class;
 		
+		[Embed(source="/team.git/remote_entry_tbl.gif")]
+		public static const remoteEntry:Class;
+
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
+
+		[Embed(source="/team.git/remotespec.gif")]
+		public static const configureFetchPush:Class;
 		
 		// Team Git
 		
@@ -588,7 +594,11 @@ package org.flowerplatform.flex_client.resources {
 		public static const cloneRepoIcon:Class;
 		
 		[Embed(source="/team.git/gitrepository.gif")]
+<<<<<<< HEAD
 		public static const gitRepoIcon:Class;
 
+=======
+		public static const gitRepoIcon:Class;
+>>>>>>> refs/remotes/origin/GH372-configure-remote
 	}
 }
