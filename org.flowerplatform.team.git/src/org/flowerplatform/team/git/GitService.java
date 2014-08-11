@@ -413,27 +413,18 @@ public class GitService {
 	public void cloneRepo(final String nodeUri, final String repoUri, final Collection<String> branches, final boolean cloneAll) throws Exception {
 		final URIish uri = new URIish(repoUri.trim());
 		final String remoteName = repoUri.substring(repoUri.lastIndexOf('/')+1, repoUri.length()-4);
-		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri) + "\\" + remoteName);
+		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
 		
-//		final ProgressMonitor monitor = ProgressMonitor.create(
-//				GitPlugin.getInstance().getMessage("git.cloneRepo.title", uri), context.getCommunicationChannel());		
-//		monitor.beginTask(GitPlugin.getInstance().getMessage("git.cloneRepo.title", uri), 2);
-
-		String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
+		final String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
 		Job job = new Job(jobName)	{
 			@Override
 			protected IStatus run(IProgressMonitor m) {														
 				Repository repository = null;
 				try {	
-					
-//					ProgressMonitor pm = new GitProgressMonitor(m,jobName );
-//					pm.start(1000);
 					CloneCommand cloneRepository = Git.cloneRepository();
-					
-//					cloneRepository.setNoCheckout(true);			
+							
 					cloneRepository.setDirectory(mainRepo);
-//					cloneRepository.setProgressMonitor(NullProgressMonitor.INSTANCE);
-//					cloneRepository.setRemote(remoteName);
+					cloneRepository.setRemote(remoteName);
 					cloneRepository.setURI(uri.toString());
 					cloneRepository.setCloneAllBranches(cloneAll);
 					cloneRepository.setCloneSubmodules(false);	
@@ -442,9 +433,6 @@ public class GitService {
 					Git git = cloneRepository.call();
 					repository = git.getRepository();
 					
-//					pm.endTask();
-					
-//					monitor.worked(1);	
 				} catch (Exception e) {			
 					if (repository != null)
 						repository.close();
