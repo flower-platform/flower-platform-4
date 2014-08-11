@@ -47,6 +47,7 @@ import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
@@ -58,9 +59,11 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.codesync.sdiff.IFileContentProvider;
@@ -74,6 +77,7 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.team.git.remote.GitRef;
+import org.flowerplatform.team.git.remote.RemoteConfiguration;
 import org.flowerplatform.util.Utils;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
@@ -449,7 +453,6 @@ public class GitService {
 		g.gc().getRepository().close();
 		g.gc().call();
 	}
-<<<<<<< HEAD
 	
 	/**
 	 * @author Cristina Brinza
@@ -544,8 +547,6 @@ public class GitService {
 					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
-}
-=======
 
 	/** 
 	 * @author Catalin Burcea
@@ -568,5 +569,70 @@ public class GitService {
 		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristina Brinza
+	 * @author Andreea Tita 
+	 */
+	public List<RemoteConfiguration> getFetchPushConfigData (String nodeUri, boolean selectFetchPush) throws Exception {
+		List<RemoteConfiguration> remoteConfigurationList = new ArrayList<RemoteConfiguration>();
+		
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+
+		List<RemoteConfig> remotes = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
+		for (RemoteConfig remote : remotes) {
+			RemoteConfiguration remoteConfiguration = new RemoteConfiguration();
+			remoteConfiguration.setName(remote.getName());
+			remoteConfiguration.setUri(remote.getURIs().get(0).toString());
+		
+			if (selectFetchPush) {
+				List<String> fetchRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getFetchRefSpecs()) {
+					fetchRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setFetchMappings(fetchRefSpecs);
+			} else {
+				List<String> pushRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getPushRefSpecs()) {
+					pushRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setPushMappings(pushRefSpecs);
+			}
+			
+			remoteConfigurationList.add(remoteConfiguration);
+		}
+		
+		return remoteConfigurationList;
+	}
+	
+	/**
+	 * @author Andreea Tita
+	 */
+	public String push (String nodeUri, RemoteConfiguration pushConfig) throws Exception {
+		String repoPath =  Utils.getRepo(nodeUri);
+		Repository  repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		
+		PushCommand pushCommand;
+
+		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
+			pushCommand = new Git(repository).push().setRemote(GitUtils.getName(nodeUri));
+		} else {
+			List<RefSpec> specsList = new ArrayList<RefSpec>();
+			if(pushConfig.getPushMappings() != null)  {
+				for (String refMapping : pushConfig.getPushMappings()) {
+					specsList.add(new RefSpec(refMapping));
+				}
+			}
+			pushCommand = new Git(repository).push().setRemote(new URIish(pushConfig.getUri()).toPrivateString()).setRefSpecs(specsList);
+		}
+		
+		// provide credentials for use in connecting to repositories 
+		pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider("",""));
+		Iterable<PushResult> resultIterable = pushCommand.call();
+	
+		return GitUtils.handlePushResult(resultIterable.iterator().next());
+	}
 }
 

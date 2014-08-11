@@ -12,4 +12,5 @@ Require-Bundle: org.eclipse.jgit,
  org.eclipse.compare.core
 Bundle-Activator: org.flowerplatform.team.git.GitPlugin
 Bundle-ActivationPolicy: lazy
-Export-Package: org.flowerplatform.team.git
+Export-Package: org.flowerplatform.team.git,
+ org.flowerplatform.team.git.remote

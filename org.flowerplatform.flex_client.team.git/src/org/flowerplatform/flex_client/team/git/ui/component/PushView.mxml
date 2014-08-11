@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Andreea Tita -->
+<ns:Wizard xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.popup.*" xmlns:src="org.flowerplatform.flex_client.team.git.ui.component.*"
+			  getIndexForStateFunction="getIndexForState" >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			public var node:Node;
+			
+			protected function getIndexForState(stateName:String):int {
+				if (stateName == "pushBranchToRemote") {
+					return 0;
+				} else if (stateName == "pushConfirmation") {
+					return 1;
+				}
+				return -1;
+			}
+			
+			private function getLabelFunction(item:Object):String {
+				return RemoteConfiguration(item).name + ":" + RemoteConfiguration(item).uri;
+			}
+				
+			protected function selectRepositoryComponentCreationCompleteHandler(event:FlexEvent):void {
+				selectRepositoryComponent.remoteRadioButton.selected = true;
+				selectRepositoryComponent.repositoriesList.labelFunction = getLabelFunction;
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getFetchPushConfigData", [node.nodeUri, false] ,	
+					function(result:ArrayCollection):void {
+						selectRepositoryComponent.repositoriesList.dataProvider = result;
+						selectRepositoryComponent.repositoriesList.requireSelection = true;
+					});
+			}
+			
+			override protected function nextClickHandler():void {
+				if (currentState == "pushBranchToRemote") {
+					if (selectRepositoryComponent.uriRadioButton.selected) { 
+						if (selectRepositoryComponent.getURI().length == 0) {
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+								.setTitle(Resources.getMessage('error'))
+								.setText(Resources.getMessage('flex_client.team.git.ui.Push.errorMessage'))
+								.setWidth(200)
+								.setHeight(150)
+								.showMessageBox();
+							return;
+						}
+					}
+				}
+				
+				this.currentState = "pushConfirmation";
+				back.enabled = false;
+				super.nextClickHandler();
+			
+				if (selectRepositoryComponent.remoteRadioButton.selected) {
+					configureFetchPushComponent.remoteUri = RemoteConfiguration(selectRepositoryComponent.repositoriesList.selectedItem).uri;
+					configureFetchPushComponent.refMappings = RemoteConfiguration(selectRepositoryComponent.repositoriesList.selectedItem).pushMappings;
+				} else {
+					configureFetchPushComponent.remoteUri = selectRepositoryComponent.uriTextInput.text;
+				}
+			}
+			
+			protected override function finishClickHandler():void {
+				var pushConfig:RemoteConfiguration;
+				
+				if (selectRepositoryComponent.remoteRadioButton.selected){
+						pushConfig = RemoteConfiguration(selectRepositoryComponent.repositoriesList.selectedItem);
+						pushConfig.pushMappings = configureFetchPushComponent.getRefSpecs();
+				} else if (selectRepositoryComponent.uriRadioButton.selected) {
+					pushConfig = new RemoteConfiguration();
+					pushConfig.uri = selectRepositoryComponent.uriTextInput.text;
+				}
+				
+				if (pushConfig.pushMappings.length == 0) {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage('flex_client.team.git.FetchPush.error'))
+						.setTitle(Resources.getMessage('error'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					return;
+				}
+				
+				// invoke push from server - nodeUri,pushConfig
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.push", [node.nodeUri, pushConfig], 
+					function(result:String):void {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(result)
+						.setTitle(Resources.getMessage('flex_client.team.git.ui.Push.pushResult'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					});
+				super.finishClickHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<ns:states>
+		<s:State  name="pushBranchToRemote" />
+		<s:State  name="pushConfirmation" />
+	</ns:states>
+	
+	<src:SelectRepositoryComponent id="selectRepositoryComponent" width="100%" height="100%"
+								   includeIn="pushBranchToRemote"
+								   creationComplete="selectRepositoryComponentCreationCompleteHandler(event)"/>
+	<src:ConfigureFetchPushComponent id="configureFetchPushComponent" width="100%" height="100%"
+									 includeIn="pushConfirmation" />		
+	
+</ns:Wizard>

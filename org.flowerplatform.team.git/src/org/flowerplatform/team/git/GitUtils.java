@@ -27,6 +27,8 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.util.FS;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -135,6 +137,26 @@ public class GitUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public static String handlePushResult(PushResult pushResult) {
+		StringBuilder sb = new StringBuilder();		
+		
+		sb.append(pushResult.getMessages());
+		sb.append("\n");
+		
+		for (RemoteRefUpdate rru : pushResult.getRemoteUpdates()) {
+			String rm = rru.getRemoteName();
+			RemoteRefUpdate.Status status = rru.getStatus();
+			sb.append(rm);
+			sb.append(" -> ");
+			sb.append(status.name());
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+	
 	public static String getNodeUri(String repoPath,String type,String name){
 		return repoPath + "|" + type + "$" + name;
 	}
