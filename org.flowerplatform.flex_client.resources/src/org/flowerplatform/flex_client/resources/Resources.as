@@ -553,7 +553,8 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/codesync.regex/wrench.png")]
 		public static const wrenchIcon:Class;
 		
-		// Create Branch
+		// Team Git
+		
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
 
@@ -569,9 +570,6 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/remotespec.gif")]
 		public static const configureFetchPush:Class;
 		
-		// Team Git
-		
-
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
 		
@@ -581,8 +579,6 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
-		
-		// Git
 		
 		[Embed(source="/team.git/branch_obj.gif")]
 		public static const branchIcon:Class;
@@ -594,11 +590,7 @@ package org.flowerplatform.flex_client.resources {
 		public static const cloneRepoIcon:Class;
 		
 		[Embed(source="/team.git/gitrepository.gif")]
-<<<<<<< HEAD
 		public static const gitRepoIcon:Class;
 
-=======
-		public static const gitRepoIcon:Class;
->>>>>>> refs/remotes/origin/GH372-configure-remote
 	}
 }
