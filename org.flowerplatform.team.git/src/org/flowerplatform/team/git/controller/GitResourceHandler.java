@@ -26,25 +26,23 @@ public class GitResourceHandler implements IResourceHandler {
 
 	@Override
 	public Object getRawNodeDataFromResource(String nodeUri, Object resourceData) {
-		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = null;
-		Ref ref = null;
 		try {
+			String repositoryPath = Utils.getRepo(nodeUri);
+			Repository repo = null;
+			Ref ref = null;
 			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-		if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE)) {
-			return GitUtils.getName(nodeUri);
-		}
-			try {
-				ref = repo.getRef(GitUtils.getName(nodeUri));
-			} catch (IOException e) {
-				e.printStackTrace();
+			
+			
+			if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE)) {
+				return GitUtils.getName(nodeUri);
 			}
-		
-		return ref;
+			
+			ref = repo.getRef(GitUtils.getName(nodeUri));	
+			
+			return ref;
+		} catch (Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

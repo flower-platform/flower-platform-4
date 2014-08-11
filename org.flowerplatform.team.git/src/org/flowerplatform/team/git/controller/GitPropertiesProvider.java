@@ -31,7 +31,7 @@ import org.flowerplatform.util.controller.AbstractController;
 public class GitPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node, ServiceContext<NodeService> context) throws RuntimeException {		
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		try {
 			Repository repo;
 			String repoPath = Utils.getRepo(node.getNodeUri());
@@ -55,7 +55,7 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 			node.getProperties().put(GitConstants.IS_GIT_REPOSITORY, repo != null);
 		} catch (Exception e){
 			throw new RuntimeException(e);
-		}		
+		}
 	}
 	
 }

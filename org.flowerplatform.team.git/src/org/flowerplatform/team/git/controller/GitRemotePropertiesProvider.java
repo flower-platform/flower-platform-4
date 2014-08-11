@@ -68,6 +68,7 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			node.getProperties().put(REMOTE_URIS, uris);
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "remoteSpec.gif"));
 		} catch (Exception e){
+			throw new RuntimeException(e);
 		}
 	}
 

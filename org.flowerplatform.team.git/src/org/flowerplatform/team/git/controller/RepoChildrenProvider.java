@@ -1,7 +1,6 @@
 package org.flowerplatform.team.git.controller;
 
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +31,7 @@ public class RepoChildrenProvider extends AbstractController implements IChildre
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
-		children.add(new Node(Utils.getUri(GIT_SCHEME, repo + "|" + GIT_REPO_TYPE), GIT_REPO_TYPE));
+		children.add(new Node(GitUtils.getNodeUri(repo,GIT_REPO_TYPE), GIT_REPO_TYPE));
 		return children;
 	}
 
