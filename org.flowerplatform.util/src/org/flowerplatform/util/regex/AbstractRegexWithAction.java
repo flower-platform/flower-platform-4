@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.util.regex;
 
+import java.util.List;
+
 /**
  * @author Cristina Constantinescu
  */
@@ -27,7 +29,7 @@ public abstract class AbstractRegexWithAction {
 	
 	public abstract String getName();
 
-	public abstract RegexAction getRegexAction();
+	public abstract List<RegexAction> getRegexActions();
 	
 	public abstract int getNumberOfCaptureGroups();
 	

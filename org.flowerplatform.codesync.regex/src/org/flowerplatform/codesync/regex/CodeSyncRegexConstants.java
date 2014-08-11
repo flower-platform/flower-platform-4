@@ -23,7 +23,10 @@ public class CodeSyncRegexConstants {
 	public static final String VIRTUAL_REGEX_TYPE = "regexVirtual";
 		
 	public static final String REGEX_ACTIONS_DESCRIPTOR_TYPE = "RegexActions";
-	
+	public static final String ACTION_TYPE_KEEP_SPECIFIC_INFO = "KeepSpecificInfoAction";
+	public static final String ACTION_TYPE_CREATE_NODE = "CreateNodeAction";
+	public static final String ACTION_TYPE_ATTACH_SPECIFIC_INFO = "AttachSpecificInfoAction";
+
 	//////////////////////////////////
 	// File Extensions
 	//////////////////////////////////
@@ -37,7 +40,7 @@ public class CodeSyncRegexConstants {
 	
 	public static final String REGEX_WITH_MACROS = "regex";
 	public static final String FULL_REGEX = "fullRegex";
-	public static final String ACTION = "action";
+//	public static final String ACTION = "action";
 	
 	public static final String START = "start";
 	public static final String START_L = "startLine";

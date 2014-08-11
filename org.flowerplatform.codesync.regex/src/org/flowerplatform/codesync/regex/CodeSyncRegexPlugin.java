@@ -1,10 +1,11 @@
 package org.flowerplatform.codesync.regex;
 
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_CREATE_NODE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_KEEP_SPECIFIC_INFO;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.CATEGORY_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_ACTIONS_DESCRIPTOR_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIG_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXTENSION;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MACRO_TYPE;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.codesync.regex.controller.RegexActionController;
 import org.flowerplatform.codesync.regex.controller.RegexController;
 import org.flowerplatform.codesync.regex.controller.RegexMatchesChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.VirtualRegexChildrenProvider;
@@ -65,7 +67,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 	
 	private Map<String, RegexAction> actions = new HashMap<String, RegexAction>();
 		
-	public Map<String, RegexAction> getActions() {
+	public Map<String, RegexAction> getAction() {
 		return actions;
 	}
 	
@@ -99,8 +101,17 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TYPE)
 			.addCategory(CATEGORY_REGEX)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.action")).setTypeAs(REGEX_ACTIONS_DESCRIPTOR_TYPE).setContributesToCreationAs(true).setMandatoryAs(true).setOrderIndexAs(40));
-				
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ACTION_TYPE_CREATE_NODE).setLabelAs(ResourcesPlugin.getInstance().getMessage("regex.createNodeAction")))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ACTION_TYPE_ATTACH_SPECIFIC_INFO).setLabelAs(ResourcesPlugin.getInstance().getMessage("regex.attachSpecificInfoAction")))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ACTION_TYPE_KEEP_SPECIFIC_INFO).setLabelAs(ResourcesPlugin.getInstance().getMessage("regex.keepSpecificInfoAction")));
+			//.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.action")).setTypeAs(REGEX_ACTIONS_DESCRIPTOR_TYPE).setContributesToCreationAs(true).setMandatoryAs(true).setOrderIndexAs(40));
+
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_KEEP_SPECIFIC_INFO);
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CREATE_NODE)
+			.addAdditiveController(PROPERTIES_PROVIDER, new RegexActionController());
+		;
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ATTACH_SPECIFIC_INFO);
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_REGEX)
 			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(NAME))			
 			.addAdditiveController(PROPERTIES_PROVIDER, new RegexController())

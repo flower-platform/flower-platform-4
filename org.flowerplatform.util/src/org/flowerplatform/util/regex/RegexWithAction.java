@@ -18,6 +18,7 @@
  */
 package org.flowerplatform.util.regex;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -40,7 +41,7 @@ public abstract class RegexWithAction extends AbstractRegexWithAction {
 	}	
 	
 	@Override
-	public RegexAction getRegexAction() {
+	public List<RegexAction> getRegexActions() {
 		// isn't used
 		return null;
 	}

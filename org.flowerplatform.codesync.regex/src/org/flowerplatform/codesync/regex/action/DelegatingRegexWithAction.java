@@ -18,12 +18,15 @@
  */
 package org.flowerplatform.codesync.regex.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
-import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.regex.AbstractRegexWithAction;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
@@ -35,7 +38,8 @@ public class DelegatingRegexWithAction extends AbstractRegexWithAction {
 	
 	protected Node node;
 	
-	protected RegexAction action;
+	// protected RegexAction actions;
+	// protected List<RegexAction> actions = new ArrayList<RegexAction>();
 	
 	protected String regex;
 		
@@ -67,15 +71,29 @@ public class DelegatingRegexWithAction extends AbstractRegexWithAction {
 	}
 	
 	@Override
-	public RegexAction getRegexAction() {
-		if (action == null) {
-			action = CodeSyncRegexPlugin.getInstance().getActions().get((String) node.getPropertyValue(CodeSyncRegexConstants.ACTION));
+	public List<RegexAction> getRegexActions() {
+		ServiceContext<NodeService>context = new ServiceContext<NodeService>();
+		List<Node> actionNodes = context.getService().getChildren(node, context);
+		List<RegexAction> actions = new ArrayList<RegexAction>();
+
+			for (Node actionNode : actionNodes) {
+				switch (actionNode.getType()) {
+				case CodeSyncRegexConstants.ACTION_TYPE_CREATE_NODE:
+					String type = (String) actionNode.getPropertyValue("name");
+					List<String> properties = (List<String>) actionNode.getPropertyValue("properties");
+
+					// props
+					actions.add(new CreateNodeAction(type, properties));
+					break;
+//				case ACTION_KEEP_SPECIFIC_INFO:
+//					break;
+			}
 		}
-		return action;
+		return actions;
 	}
 	
 	public DelegatingRegexWithAction setRegexAction(RegexAction action) {
-		this.action = action;
+		// this.actions = action; ? // set childrens accordingly to the list of RegexActions?
 		return this;
 	}
 
@@ -86,7 +104,10 @@ public class DelegatingRegexWithAction extends AbstractRegexWithAction {
 
 	@Override
 	public void executeAction(RegexProcessingSession session) {
-		getRegexAction().executeAction(session);
+		List<RegexAction> listOfRegexActionsAvailable = getRegexActions();
+		for(RegexAction listItem : listOfRegexActionsAvailable){
+			listItem.executeAction(session);
+		}
 	}
 	
 }
