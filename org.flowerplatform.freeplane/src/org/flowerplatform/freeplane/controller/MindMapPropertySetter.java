@@ -91,6 +91,10 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		
 		Object propertyValue = value instanceof PropertyWrapper ? ((PropertyWrapper) value).getValue() : value;
 		switch (property) {
+			case MindMapConstants.SIDE:
+				rawNodeData.setLeft(((Integer)propertyValue).intValue()==MindMapConstants.POSITION_LEFT);
+				isPropertySet = true;
+				break;
 			case TEXT:
 				rawNodeData.setText((String) propertyValue);
 				isPropertySet = true;
@@ -116,7 +120,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 					newMaxValue = (Integer) propertyValue;
 					NodeSizeModel.createNodeSizeModel(rawNodeData).setMaxNodeWidth(newMaxValue);	
 					isPropertySet = true;
-				}				
+				}
 				break;
 			case CoreConstants.ICONS:
 				String icons = (String) propertyValue;
@@ -154,7 +158,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				isPropertySet = true;
 				break;
 			case FONT_SIZE:	
-				Integer fontSize = Integer.valueOf((String) propertyValue);				
+				Integer fontSize = (Integer) propertyValue;				
 				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontSize(fontSize);				
 				isPropertySet = true;
 				break;

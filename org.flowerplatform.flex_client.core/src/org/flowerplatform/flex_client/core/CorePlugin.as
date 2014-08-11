@@ -31,8 +31,10 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorComposedAction;
+	import org.flowerplatform.flex_client.core.editor.action.RedoAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
+	import org.flowerplatform.flex_client.core.editor.action.UndoAction;
 	import org.flowerplatform.flex_client.core.editor.action.UploadAction;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
@@ -123,7 +125,7 @@ package org.flowerplatform.flex_client.core {
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
-				
+
 		/**
 		 * key = command name as String (e.g. "openResources")
 		 * value = parameters as String (e.g. text://file1,file2,file3)
@@ -164,7 +166,9 @@ package org.flowerplatform.flex_client.core {
 			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
 			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
 			
- 			updateTimer = new UpdateTimer(5000);
+			// use 0 to disable it
+			updateTimer = new UpdateTimer(0);
+// 			updateTimer = new UpdateTimer(5000);
 			
 			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 			editorClassFactoryActionProvider.addActionClass(RenameAction);			
@@ -173,6 +177,9 @@ package org.flowerplatform.flex_client.core {
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
 			editorClassFactoryActionProvider.addActionClass(NodeTreeAction);
+			
+			editorClassFactoryActionProvider.addActionClass(UndoAction);
+			editorClassFactoryActionProvider.addActionClass(RedoAction);
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				editorClassFactoryActionProvider.addActionClass(DownloadAction);
@@ -307,6 +314,8 @@ package org.flowerplatform.flex_client.core {
 				})
 			);
 					
+			globalMenuActionProvider.addAction(resourceNodesManager.showCommandStackAction);
+			
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
 			globalMenuActionProvider.addAction(new AssignHotKeyAction());
 			

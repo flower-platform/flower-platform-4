@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +36,17 @@ import ch.qos.logback.core.Context;
  * @author Sebastian Solomon
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
+ * @author Claudiu Matei 
  */
 public class RemoteMethodInvocationListener {
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
 	
 	private final static Context loggerContext = (Context) LoggerFactory.getILoggerFactory();
+
+	public String getSessionId() {
+		return CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
+	}
 
 	/**
 	 * Compares the list of resources the client has with the list of resources that the client is subscribed to. For any
@@ -51,10 +57,14 @@ public class RemoteMethodInvocationListener {
 	 * so the client can react (e.g. close the obsolete editors).
 	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
+//		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
-		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
+		String sessionId = getSessionId();
 		List<String> clientResources = remoteMethodInvocationInfo.getResourceUris(); // list is sorted on client
+		
+		//temporar
+		CorePlugin.getInstance().getContextThreadLocal().set(new ContextThreadLocal());
 		
 		if (clientResources != null) {
 			List<String> serverResources = CorePlugin.getInstance().getSessionService().getResourcesSubscribedBySession(sessionId);
@@ -91,24 +101,31 @@ public class RemoteMethodInvocationListener {
 	 * 
 	 */
 	public void postInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-		if (logger.isDebugEnabled()) {
-			long endTime = new Date().getTime();
-			long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
-			String serviceId = remoteMethodInvocationInfo.getServiceId();
-			String methodName = remoteMethodInvocationInfo.getMethodName();
-			boolean log = true;
-			if (methodName.equals("ping")) {
-				String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
-				log = logPing == null ? false : Boolean.parseBoolean(logPing);
+		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
+		try {
+			if (logger.isDebugEnabled()) {
+				long endTime = new Date().getTime();
+				long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
+				String serviceId = remoteMethodInvocationInfo.getServiceId();
+				String methodName = remoteMethodInvocationInfo.getMethodName();
+				boolean log = true;
+				if (methodName.equals("ping")) {
+					String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
+					log = logPing == null ? false : Boolean.parseBoolean(logPing);
+				}
+				if (log) {
+					logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
+				}
 			}
-			if (log) {
-				logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
-			}
-		}
-		
-		// prepare result
-		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-				
+	
+			Command command = context.getCommand();
+			if (command != null) {
+				CorePlugin.getInstance().getResourceSetService().addCommand(command);
+			}	
+			
+			// prepare result
+			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
+			
 		Long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
 		long timestamp = new Date().getTime();		
 		
@@ -151,6 +168,15 @@ public class RemoteMethodInvocationListener {
 		}
 
 		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
+		} finally {
+			Command command = context.getCommand();
+			if (command != null) {
+				CorePlugin.getInstance().getLockManager().unlock(command.getResourceSet());
+			}
+			// temporar
+			CorePlugin.getInstance().getContextThreadLocal().remove();
+		}
+		
 	}
 	
 }
