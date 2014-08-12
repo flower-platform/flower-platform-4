@@ -32,12 +32,19 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
@@ -78,12 +85,15 @@ import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.team.git.remote.RemoteConfiguration;
+import org.flowerplatform.team.git.remote.GitRef;
+import org.flowerplatform.team.git.remote.GitCredentials;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 
-
 /**
+ * 
  * @author Valentina-Camelia Bojan
  */
 
@@ -634,5 +644,36 @@ public class GitService {
 	
 		return GitUtils.handlePushResult(resultIterable.iterator().next());
 	}
+	
+	/** 
+	 * @author Andreea Tita
+	 */
+	public GitCredentials getCredentials(String remote) throws Exception {
+		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
+		
+		if ((GitCredentials)session.getAttribute(remote) != null ) {
+			return  (GitCredentials)session.getAttribute(remote);
+		}
+		
+		return null;
+	}
+	
+	/** 
+	 * @author Andreea Tita
+	 */
+	public void setCredentials(String remote, GitCredentials credentials) {
+		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
+			
+			if (credentials == null) {
+				if ((GitCredentials)session.getAttribute(remote) != null) {
+					return;
+				} else {
+					session.setAttribute(remote, null);
+				}
+			} else {
+				session.setAttribute(remote, credentials);
+			}
+	}
 }
+
 

@@ -18,6 +18,7 @@ package org.flowerplatform.flex_client.team.git {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.team.git.action.LoginAction;
 	import org.flowerplatform.flex_client.team.git.action.CheckoutAction;
 	import org.flowerplatform.flex_client.team.git.action.CloneRepoAction;
 	import org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction;
@@ -31,6 +32,14 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
 	import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
+	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
+	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.remote.GitRef;
+	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -65,6 +74,7 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(PushAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(LoginAction);
 
 		}
 		
@@ -79,6 +89,8 @@ package org.flowerplatform.flex_client.team.git {
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(GitRef);
 			registerClassAliasFromAnnotation(RemoteConfiguration);
-		} 
+			registerClassAliasFromAnnotation(GitCredentials);
+		}
+
 	}
 }

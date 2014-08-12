@@ -14,3 +14,5 @@ Bundle-Activator: org.flowerplatform.team.git.GitPlugin
 Bundle-ActivationPolicy: lazy
 Export-Package: org.flowerplatform.team.git,
  org.flowerplatform.team.git.remote
+Import-Package: javax.servlet,
+ javax.servlet.http

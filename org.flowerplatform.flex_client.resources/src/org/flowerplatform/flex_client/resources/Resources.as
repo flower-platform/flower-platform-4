@@ -573,14 +573,16 @@ package org.flowerplatform.flex_client.resources {
 		public static const mergeBranch:Class;
 		
 		[Embed(source="/team.git/push.gif")]
-		public static const push:Class;
-		
+		public static const push:Class;	
 
 		[Embed(source="/team.git/gitDiffFromCommits.png")]
 		public static const gitDiffFromCommitsIcon:Class;
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
+		
+		[Embed(source="/team.git/permission.png")]
+		public static const permission:Class;
 		
 		// Git
 		
