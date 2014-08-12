@@ -21,8 +21,7 @@ license-end
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-		 creationComplete="creationCompleteHandler(event)">
+		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*">
 		
 	<fx:Script>
 		<![CDATA[			
@@ -32,26 +31,20 @@ license-end
 			import spark.events.IndexChangeEvent;
 			import spark.layouts.VerticalLayout;
 			
-			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
-			import org.flowerplatform.flex_client.team.git.remote.GitRef;
 						
 			[Bindable]
 			public var branches:ArrayCollection;
 			
 			public var node:Node;
 			
-			override protected function initializeHandler(event:FlexEvent):void {
-				super.initializeHandler(event);
-				(layout as VerticalLayout).gap = 15;
-			}
-			
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);				
 				
+				VerticalLayout(layout).gap = 15;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [node.nodeUri], getBranchesHandler); 
 			}
 			
@@ -77,21 +70,7 @@ license-end
 				rebaseCommitsRadioButton.enabled = !rebaseCommitsRadioButton.enabled;
 			}
 					
-			override protected function okHandler(event:Event = null):void {	
-				var track:Boolean;
-				var setUpstream:Boolean;
-				var checkoutBranch:Boolean;
-				var configureUpstream:Boolean;
-				
-				/* if the node is a tag, don't configure upstream in createBranch */
-				configureUpstream = configureUpstreamGroup.visible;
-				/* Merge upstream commits into local branch */
-				track = configureUpstreamCheckBox.selected && mergeUpstreamRadioButton.selected;
-				/* Rebase commits of local branch onto upstream */
-				setUpstream = configureUpstreamCheckBox.selected && rebaseCommitsRadioButton.selected;
-				/* Checkout new Branch */
-				checkoutBranch = checkoutBranchCheckBox.selected;
-									
+			override protected function okHandler(event:Event = null):void {									
 				/* send to server the parent */
 				var parentUri:String;
 				if (node.parent.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE) {
@@ -103,7 +82,14 @@ license-end
 						}
 					}
 				}
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", [parentUri, branchNameTextInput.text, selectBranch.selectedItem.name, configureUpstream, track, setUpstream, checkoutBranch]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", 
+					[parentUri, 
+					branchNameTextInput.text, 
+					selectBranch.selectedItem.name, 
+					configureUpstreamGroup.visible, // if the node is a tag, don't configure upstream in createBranch
+					configureUpstreamCheckBox.selected && mergeUpstreamRadioButton.selected, // Merge upstream commits into local branch
+					configureUpstreamCheckBox.selected && rebaseCommitsRadioButton.selected, // Rebase commits of local branch onto upstream
+					checkoutBranchCheckBox.selected]); // Checkout new Branch
 				
 				cancelHandler(event);
 			}
@@ -115,24 +101,12 @@ license-end
 			}
 			
 			/* determine which components will be visible / enabled / selected and which not */
-			protected function checkState(selectedItem:Object):void {
-				if (selectedItem.type == GitConstants.GIT_TAG_TYPE) {
-					configureUpstreamGroup.visible = false;
-				} else if (selectedItem.type == GitConstants.GIT_LOCAL_BRANCH_TYPE) {
-					configureUpstreamGroup.visible = true;
-					
-					configureUpstreamCheckBox.selected = false;
-					
-					rebaseCommitsRadioButton.enabled = false;
-					mergeUpstreamRadioButton.enabled = false;
-				} else if (selectedItem.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
-					configureUpstreamGroup.visible = true;
-					
-					configureUpstreamCheckBox.selected = true;
-					
-					rebaseCommitsRadioButton.enabled = true;
-					mergeUpstreamRadioButton.enabled = true;
-				}
+			protected function checkState(selectedItem:Object):void {				
+				configureUpstreamGroup.visible = configureUpstreamGroup.includeInLayout = (selectedItem.type != GitConstants.GIT_TAG_TYPE);
+				
+				if (selectedItem.type != GitConstants.GIT_TAG_TYPE) {					
+					configureUpstreamCheckBox.selected = rebaseCommitsRadioButton.enabled = mergeUpstreamRadioButton.enabled = (selectedItem.type == GitConstants.GIT_REMOTE_BRANCH_TYPE);					
+				}				
 			}
 			
 		]]>

@@ -172,7 +172,7 @@ public class GitService {
 		ArrayList<GitRef> branches = new ArrayList<GitRef>();
 
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Git git = new Git(repository);
 
 		List<Ref> localBranches = git.branchList().call();
@@ -202,13 +202,13 @@ public class GitService {
 	 * Creates new branch
 	 * 
 	 */
-	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws Exception {
-		SetupUpstreamMode upstreamMode;
-
+	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws Exception {	
 		String repoPath = Utils.getRepo(parentUri);
-		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
 		Git git = new Git(repository);
+		
+		SetupUpstreamMode upstreamMode;
 		/* see with what options the branch will be created */
 		if (!configureUpstream) {
 			upstreamMode = null;
@@ -227,10 +227,10 @@ public class GitService {
 		Ref createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(startPoint).call();
 
 		/* uri for the child to be created */
-		String childUri = Utils.getUri(GitConstants.GIT_SCHEME, repoPath + "|" + GIT_LOCAL_BRANCH_TYPE + "$" + createdBranch.getName());
+		String childUri = GitUtils.getNodeUri(repoPath, GIT_LOCAL_BRANCH_TYPE, createdBranch.getName());
 		
 		if (checkoutBranch) {
-			/* call checkout Branch method */
+			/* call checkout branch method */
 			checkout(childUri);
 		}
 		
@@ -239,8 +239,7 @@ public class GitService {
 		
 		/* get the parent */
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
-		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-	
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
 	}
 	
 	public int validateRepoURL(String url) {

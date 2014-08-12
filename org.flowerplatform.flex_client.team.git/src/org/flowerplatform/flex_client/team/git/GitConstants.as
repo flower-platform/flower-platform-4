@@ -14,6 +14,7 @@
 * license-end
 */
 package org.flowerplatform.flex_client.team.git {
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	/**
 	 * @author Cristina Brinza
@@ -21,6 +22,9 @@ package org.flowerplatform.flex_client.team.git {
 	
 	public class GitConstants {
 
+		public static const GIT_CATEGORY:String = FlexUtilConstants.CATEGORY_PREFIX + "git";
+		public static const GIT_REF_CATEGORY:String = FlexUtilConstants.CATEGORY_PREFIX + "gitRef";
+				
 		/////////////////////////////////////////////////////////////
 		//Node type in Git folder hierarchy
 		/////////////////////////////////////////////////////////////
