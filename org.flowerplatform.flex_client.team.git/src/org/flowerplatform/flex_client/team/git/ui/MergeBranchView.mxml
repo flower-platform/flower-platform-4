@@ -4,12 +4,14 @@
 -->
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					 xmlns:s="library://ns.adobe.com/flex/spark" 
-					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-					 creationComplete="creationCompleteHandler(event)" xmlns:tn="org.flowerplatform.flex_client.core.node_tree.*">
+					 xmlns:mx="library://ns.adobe.com/flex/mx"
+					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 xmlns:tn="org.flowerplatform.flex_client.core.node_tree.*">
 		
 		<fx:Script>
 			<![CDATA[
 				import mx.events.FlexEvent;
+				
 				import org.flowerplatform.flex_client.core.CorePlugin;
 				import org.flowerplatform.flex_client.core.editor.remote.Node;
 				import org.flowerplatform.flex_client.resources.Resources;
@@ -21,7 +23,6 @@
 				import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 			
 				public var node:Node;
-				public var selectedNode:Node;
 				
 				override protected function creationCompleteHandler(event:FlexEvent):void {
 					okButton.label = Resources.getMessage('flex_client.team.git.action.mergeBranch');
@@ -43,43 +44,43 @@
 					treeList.finalizeTree();
 				}
 				
-				override protected function okHandler(event:Event = null):void {
-					var nodeName:String;
-					var fastForwardOption:int;
-					var commit:Boolean = true;
-					
-					// set merge options  
-					fastForwardOption = fastForwardOptions.selectedIndex;
-					if (noCommit.selected){
-						commit = false;
-					}
-					
-					// if it's selected an item from tree -> call merge operation 
+				override protected function okHandler(event:Event = null):void {					
+					// if it's selected an item from tree -> call merge operation					
+					var selectedNode:Node;					
 					if (treeList.selectedItem){
 						selectedNode = Node(HierarchicalModelWrapper(treeList.selectedItem).treeNode);
-						CorePlugin.getInstance().serviceLocator.invoke("GitService.mergeBranch",[selectedNode.nodeUri, squash.selected,
-									commit, fastForwardOption], function(result:String):void {
-										FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-										.setText(result)
-										.setTitle(Resources.getMessage('info'))
-										.setWidth(300)
-										.setHeight(200)
-										.showMessageBox();
-									});
+					}
+					
+					if (selectedNode && CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(selectedNode.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0) {
+						CorePlugin.getInstance().serviceLocator.invoke("GitService.mergeBranch", 
+							[selectedNode.nodeUri, 
+							squash.selected,
+							!noCommit.selected, 
+							fastForwardOptions.selectedIndex],							
+							function(result:String):void {
+								FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+								.setText(result)
+								.setTitle(Resources.getMessage('info'))
+								.setWidth(300)
+								.setHeight(200)
+								.showMessageBox();
+							});
+						cancelHandler();						
 					} else {
-						if (node.type == GitConstants.GIT_REPO_TYPE ) {
-							nodeName =  node.getPropertyValue(GitConstants.CURRENT_BRANCH);
+						var nodeName:String;
+						if (node.type == GitConstants.GIT_REPO_TYPE) {
+							nodeName = node.getPropertyValue(GitConstants.CURRENT_BRANCH);
 						} else {
 							nodeName = node.getPropertyValue(GitConstants.NAME);
 						}	
 						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-							.setText(Resources.getMessage('flex_client.team.git.mergeBranch.alert', new Array(nodeName)))
+							.setText(Resources.getMessage('flex_client.team.git.mergeBranch.alert', [nodeName]))
 							.setTitle(Resources.getMessage('error'))
 							.setWidth(300)
 							.setHeight(150)
 							.showMessageBox();
 					}	
-					cancelHandler();
+					
 				}
 			]]>
 		</fx:Script>

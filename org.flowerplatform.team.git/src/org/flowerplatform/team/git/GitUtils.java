@@ -17,6 +17,10 @@ package org.flowerplatform.team.git;
 
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.lib.Constants;
@@ -132,20 +136,20 @@ public class GitUtils {
 			}
 		}
 		
-		if(mergeResult.getConflicts() != null) {
+		List<String> conflicts = new ArrayList<>();  
+		if(mergeResult.getConflicts() != null) {			
+			for(String path : mergeResult.getConflicts().keySet()) {
+				if (!conflicts.contains(path)) {
+					conflicts.add(path);
+				}
+			}
+		}		
+		if(!conflicts.isEmpty()) {
 			sb.append("\nConflicts: ");
 			sb.append("\n");
-			for(String path : mergeResult.getConflicts().keySet()) {
+			for(String path : conflicts) {
 				sb.append(path);
-				int[][] c = mergeResult.getConflicts().get(path);
-				for(int i = 0; i < c.length; i++) {
-					sb.append(" Conflict #" + i);
-					for(int j = 0; j < (c[i].length) - 1; j++) {
-						if(c[i][j] >= 0){
-							sb.append("  Chunk for " + mergeResult.getMergedCommits()[j] + " starts on line " + c[i][j]);
-						}
-					}
-				}
+				sb.append("\n");				
 			}
 		}
 		

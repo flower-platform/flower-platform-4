@@ -18,22 +18,25 @@ package org.flowerplatform.flex_client.team.git.action{
 		}
 		
 		override public function  get visible():Boolean {
-			if(selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
+			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				if (node.getPropertyValue(GitConstants.IS_CHECKEDOUT) || node.type == GitConstants.GIT_REPO_TYPE) {
-					label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");
+				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0 
+					|| node.type == GitConstants.GIT_REPO_TYPE) {
+					
+					if (node.getPropertyValue(GitConstants.IS_CHECKEDOUT) || node.type == GitConstants.GIT_REPO_TYPE) {
+						label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");
+					} else {
+						label = Resources.getMessage("flex_client.team.git.action.mergeBranch");
+					}
 					return true;
-				} else if (!node.getPropertyValue(GitConstants.IS_CHECKEDOUT) && (node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE)) {
-					label = Resources.getMessage("flex_client.team.git.action.mergeBranch");
-				}
-				return true;
+				}				
 			}
 			return false;
 		}
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			if ((node.getPropertyValue(GitConstants.IS_CHECKEDOUT) && node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE) || node.type == GitConstants.GIT_REPO_TYPE ) {
+			if (node.getPropertyValue(GitConstants.IS_CHECKEDOUT) || node.type == GitConstants.GIT_REPO_TYPE) {
 				var viewMerge:MergeBranchView = new MergeBranchView();
 				viewMerge.node = node;
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()			
