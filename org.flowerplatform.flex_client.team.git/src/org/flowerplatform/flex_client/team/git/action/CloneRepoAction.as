@@ -20,8 +20,8 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		override public function get visible():Boolean {
 			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
-				var type:String = Node(selection.getItemAt(0)).type;
-				return (type == GitConstants.GIT_REPO_TYPE && !(type == GitConstants.IS_GIT_REPOSITORY));
+				var node:Node = Node(selection.getItemAt(0));
+				return (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY));
 			}
 			return false;
 		}

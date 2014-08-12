@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<popup:Wizard xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<!--
+@author Alina Bratu
+-->
+<popup:Wizard xmlns:fx="http://www.adobe.com/2006/mxml"
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:popup="org.flowerplatform.flexutil.popup.*"
 		 xmlns:component="org.flowerplatform.flex_client.team.git.ui.component.*"
 		 getIndexForStateFunction="getIndexForState"
 		 creationComplete="creationCompleteHandler()"
-		 wizardTitle.selectBranchesPage="{Resources.getMessage('git.cloneRepo.branches.title')}"
-		 wizardTitle.selectRepoPage="{Resources.getMessage('git.selectRepo.title')}"
-		 wizardDescription.selectBranchesPage="{Resources.getMessage('git.cloneRepo.branches.description')}"
-		 wizardDescription.selectRepoPage="{Resources.getMessage('git.selectRepo.description')}"
-		 contentArea.selectBranchesPage="{branchesSelectionPage}"
-		 contentArea.selectRepoPage="{repositorySelectionPage}"
 		 wizardImage="{new BitmapImage().source(Resources.cloneRepoIcon)}">
 	<fx:Script>
 		<![CDATA[
@@ -119,42 +116,51 @@
 		]]>
 	</fx:Script>
 	
-	<popup:states>
-		<s:State name="selectRepoPage"/>
-		<s:State name="selectBranchesPage"/>
+	<popup:states>		
+		<mx:State name="selectRepoPage">
+			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('git.selectRepo.title')}"/>					
+			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('git.selectRepo.description')}"/>
+			
+			<mx:AddChild relativeTo="{contentArea}">
+				<component:SelectRepositoryComponent  id="src" width="100%" height="100%" showRemotesList="false"/>	
+			</mx:AddChild>
+		
+		</mx:State>
+			
+		<mx:State name="selectBranchesPage">
+			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('git.cloneRepo.branches.title')}"/>					
+			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('git.cloneRepo.branches.description')}"/>
+			
+			<mx:AddChild relativeTo="{contentArea}">
+				<s:VGroup id="branchesSelectionPage" width="100%" height="100%" >
+					<s:TextInput id="branchesFilter" keyUp="filterBranches(event)" text="{Resources.getMessage('git.filter')}" width="100%" />
+					<s:List id="branchesList" width="100%" height="100%" dataProvider="{selectedBranches}">
+						<s:itemRenderer> 
+							
+							<fx:Component> 
+								<s:ItemRenderer>
+									<fx:Script>
+										<![CDATA[																			
+											import org.flowerplatform.flex_client.resources.Resources;
+											import org.flowerplatform.flexutil.FlexUtilGlobals;
+											
+										]]>
+									</fx:Script>
+									<s:layout>
+										<s:HorizontalLayout paddingLeft="2" gap="2" paddingRight="2" verticalAlign="middle"/>
+									</s:layout>
+									
+									<s:CheckBox selected="{data.isSelected}" click="{data.isSelected = (!data.isSelected)}"/>
+									<s:BitmapImage source="{FlexUtilGlobals.getInstance().createAbsoluteUrl(Resources.getResourceUrl('images/team.git/branch_obj.gif'))}"/>
+									<s:Label text="{data.name}" verticalAlign="middle"/>
+									
+								</s:ItemRenderer>
+							</fx:Component> 
+						</s:itemRenderer>
+					</s:List>
+				</s:VGroup>	
+			</mx:AddChild>
+		</mx:State>
 	</popup:states>
 	
-	<mx:VBox id="repositorySelectionPage" width="100%">
-		<component:SelectRepositoryComponent  id="src" width="100%" height="100%" includeIn="selectRepoPage" showRemotesList="false"/>		
-	</mx:VBox>
-	
-	
-	<mx:VBox id="branchesSelectionPage" width="100%" height="100%">
-		<s:TextInput id="branchesFilter" keyUp="filterBranches(event)" text="{Resources.getMessage('git.filter')}" includeIn="selectBranchesPage" width="100%" />
-		<s:List id="branchesList" includeIn="selectBranchesPage" width="100%" height="100%" dataProvider="{selectedBranches}">
-			<s:itemRenderer> 
-				
-				<fx:Component> 
-					<s:ItemRenderer>
-						<fx:Script>
-							<![CDATA[																			
-								import org.flowerplatform.flex_client.resources.Resources;
-								import org.flowerplatform.flexutil.FlexUtilGlobals;
-								
-							]]>
-						</fx:Script>
-						<s:layout>
-							<s:HorizontalLayout paddingLeft="2" gap="2" paddingRight="2" verticalAlign="middle"/>
-						</s:layout>
-						
-						<s:CheckBox selected="{data.isSelected}" click="{data.isSelected = (!data.isSelected)}"/>
-						<s:BitmapImage source="{FlexUtilGlobals.getInstance().createAbsoluteUrl(Resources.getResourceUrl('images/team.git/branch_obj.gif'))}"/>
-						<s:Label text="{data.name}" verticalAlign="middle"/>
-						
-					</s:ItemRenderer>
-				</fx:Component> 
-			</s:itemRenderer>
-		</s:List>
-	</mx:VBox>
-		
 </popup:Wizard>
