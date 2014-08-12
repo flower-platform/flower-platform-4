@@ -168,34 +168,31 @@ public class GitService {
 	 * Get all branches from a certain repository
 	 * 
 	 */
-	public ArrayList<GitRef> getBranches(String nodeUri) {
+	public ArrayList<GitRef> getBranches(String nodeUri) throws Exception {
 		ArrayList<GitRef> branches = new ArrayList<GitRef>();
-		try {
-			String repoPath = Utils.getRepo(nodeUri);
-			Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-			Git git = new Git(repository);
-			
-			List<Ref> localBranches = git.branchList().call();
-			for (Ref ref : localBranches) {
-				GitRef gitRef = new GitRef(ref.getName(), GIT_LOCAL_BRANCH_TYPE);
-				branches.add(gitRef);
-			}
-			
-			List<Ref> remoteBranches = git.branchList().setListMode(ListMode.REMOTE).call();
-			for (Ref ref : remoteBranches) {
-				GitRef gitRef = new GitRef(ref.getName(), GIT_REMOTE_BRANCH_TYPE);
-				branches.add(gitRef);
-			}
-			
-			List<Ref> tags = git.tagList().call();
-			for (Ref tag : tags) {
-				GitRef gitRef = new GitRef(tag.getName(), GIT_TAG_TYPE);
-				branches.add(gitRef);
-			}
-		} catch (Exception e) {
-			return null;
+
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Git git = new Git(repository);
+
+		List<Ref> localBranches = git.branchList().call();
+		for (Ref ref : localBranches) {
+			GitRef gitRef = new GitRef(ref.getName(), GIT_LOCAL_BRANCH_TYPE);
+			branches.add(gitRef);
 		}
-		
+
+		List<Ref> remoteBranches = git.branchList().setListMode(ListMode.REMOTE).call();
+		for (Ref ref : remoteBranches) {
+			GitRef gitRef = new GitRef(ref.getName(), GIT_REMOTE_BRANCH_TYPE);
+			branches.add(gitRef);
+		}
+
+		List<Ref> tags = git.tagList().call();
+		for (Ref tag : tags) {
+			GitRef gitRef = new GitRef(tag.getName(), GIT_TAG_TYPE);
+			branches.add(gitRef);
+		}
+
 		return branches;
 	}
 	
@@ -225,19 +222,21 @@ public class GitService {
 			/* use --set-upstream */
 			upstreamMode = SetupUpstreamMode.SET_UPSTREAM;
 		}
-
+		
 		/* createBranch */
 		Ref createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(startPoint).call();
+
+		/* uri for the child to be created */
+		String childUri = Utils.getUri(GitConstants.GIT_SCHEME, repoPath + "|" + GIT_LOCAL_BRANCH_TYPE + "$" + createdBranch.getName());
 		
 		if (checkoutBranch) {
 			/* call checkout Branch method */
+			checkout(childUri);
 		}
-	
+		
 		/* create child */
-		Node child = CorePlugin.getInstance().getResourceService().getNode(
-				Utils.getUri(GitConstants.GIT_SCHEME, repoPath + "|" + GIT_LOCAL_BRANCH_TYPE + "$" + createdBranch.getName()), 
-				new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
-
+		Node child = CorePlugin.getInstance().getResourceService().getNode(childUri, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
+		
 		/* get the parent */
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
@@ -438,8 +437,8 @@ public class GitService {
 		Git g = new Git(repo);	
 		
 		g.checkout().setName(Name).call();	
-		g.gc().getRepository().close();
-		g.gc().call();
+//		g.gc().getRepository().close();
+//		g.gc().call();
 	}
 
 	/** 
