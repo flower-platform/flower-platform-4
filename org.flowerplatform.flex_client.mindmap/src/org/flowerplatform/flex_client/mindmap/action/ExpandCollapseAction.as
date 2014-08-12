@@ -23,6 +23,9 @@ package org.flowerplatform.flex_client.mindmap.action {
 		}
 		
 		override public function get visible():Boolean{
+			if(!(selection.getItemAt(0) is Node)){
+				return false;
+			}
 			return Node(selection.getItemAt(0)).getPropertyValue(CoreConstants.HAS_CHILDREN);
 		}
 	}
