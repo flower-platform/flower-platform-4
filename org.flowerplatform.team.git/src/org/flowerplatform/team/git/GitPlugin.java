@@ -136,13 +136,16 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(GIT_CATEGORY);
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCH_TYPE)
-			.addCategory(GIT_REF);
+			.addCategory(GIT_REF)
+			.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_BRANCH_TYPE)
-			.addCategory(GIT_REF);
+			.addCategory(GIT_REF)
+			.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAG_TYPE)
-			.addCategory(GIT_REF);
+			.addCategory(GIT_REF)
+			.addCategory(GIT_CATEGORY);
 
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new BaseResourceHandler(GIT_REPO_TYPE));
 
