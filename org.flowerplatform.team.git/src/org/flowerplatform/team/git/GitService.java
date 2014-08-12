@@ -30,10 +30,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
@@ -66,10 +72,13 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.team.git.remote.GitRef;
+import org.flowerplatform.team.git.remote.SetGitCredentials;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
-
+ 
 
 /**
+ * 
  * @author Valentina-Camelia Bojan
  */
 
@@ -460,5 +469,23 @@ public class GitService {
 		}
 	}
 	
+	public SetGitCredentials getCredentials(String repo) throws Exception {
+		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
+		if ((SetGitCredentials)session.getAttribute(repo) != null ) {
+			return  (SetGitCredentials)session.getAttribute(repo);
+		}
+		return null;
+	}
+	
+	public String setCredentials(String repo, SetGitCredentials credentials) {
+		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
+		if (credentials != null) {
+			session.setAttribute(repo, credentials);
+		} else {
+			session.setAttribute(repo, null);
+		}
+		
+		return "";
+	}
 }
 

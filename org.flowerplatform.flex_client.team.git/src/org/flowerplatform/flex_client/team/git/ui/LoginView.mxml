@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Andreea Tita
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 creationComplete="creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.remote.SetGitCredentials;
+		
+			public var repo:String;
+			
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				repository.text = repo;
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getCredentials",[repo],
+					function(result:SetGitCredentials):void {
+						if (result != null) {
+							username.text = result.username
+							password.text = result.password;
+						}
+					});
+			}
+			
+			override protected function okHandler(event:Event = null):void {
+				var credentials:SetGitCredentials = new SetGitCredentials();
+				credentials.username = username.text;
+				credentials.password = password.text;
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.setCredentials",[repository.text, credentials],
+					function(result:String):void {
+					});
+				cancelHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:StringValidator id="usernameValidator" property="text" minLength="1"/>
+	</fx:Declarations>
+	
+	<s:Form id="form" width="100%" height="100%">
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.repository')}" width="100%">
+			<s:TextInput id="repository" editable="false" width="100%" />
+		</s:FormItem>	
+		
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.username')}" width="100%">
+			<s:TextInput id="username" width="100%"/>
+		</s:FormItem>	
+		
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.password')}" width="100%">
+			<s:TextInput id="password" displayAsPassword="true" width="100%"/>
+		</s:FormItem>	
+	</s:Form>
+	
+</ns:BasicViewContent>
