@@ -1,6 +1,6 @@
 package org.flowerplatform.team.git.remote;
 
-public class SetGitCredentials {
+public class GitCredentials {
 	
 	private String username;
 	
@@ -22,7 +22,11 @@ public class SetGitCredentials {
 		this.password = password;
 	}
 	
-	public SetGitCredentials(String username, String password) {
+	public GitCredentials() {
+		
+	}
+	
+	public GitCredentials(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}

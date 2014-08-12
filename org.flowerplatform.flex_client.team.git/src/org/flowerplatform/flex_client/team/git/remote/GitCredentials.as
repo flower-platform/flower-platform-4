@@ -1,8 +1,12 @@
 package org.flowerplatform.flex_client.team.git.remote{
 	
-	[RemoteClass(alias="org.flowerplatform.team.git.remote.SetGitCredentials")]
+	/**
+	 * @author Andreea Tita
+	 */
+	
+	[RemoteClass(alias="org.flowerplatform.team.git.remote.GitCredentials")]
 	[Bindable]
-	public class SetGitCredentials{
+	public class GitCredentials{
 		
 		private var _username:String;
 		

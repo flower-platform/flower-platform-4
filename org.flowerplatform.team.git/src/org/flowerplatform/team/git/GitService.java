@@ -72,7 +72,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.team.git.remote.GitRef;
-import org.flowerplatform.team.git.remote.SetGitCredentials;
+import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
  
@@ -469,23 +469,34 @@ public class GitService {
 		}
 	}
 	
-	public SetGitCredentials getCredentials(String repo) throws Exception {
+	/** 
+	 * @author Andreea Tita
+	 */
+	public GitCredentials getCredentials(String repo) throws Exception {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
-		if ((SetGitCredentials)session.getAttribute(repo) != null ) {
-			return  (SetGitCredentials)session.getAttribute(repo);
+		
+		if ((GitCredentials)session.getAttribute(repo) != null ) {
+			return  (GitCredentials)session.getAttribute(repo);
 		}
+		
 		return null;
 	}
 	
-	public String setCredentials(String repo, SetGitCredentials credentials) {
+	/** 
+	 * @author Andreea Tita
+	 */
+	public void setCredentials(String repo, GitCredentials credentials) {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
-		if (credentials != null) {
-			session.setAttribute(repo, credentials);
-		} else {
-			session.setAttribute(repo, null);
-		}
-		
-		return "";
+			
+			if (credentials == null) {
+				if ((GitCredentials)session.getAttribute(repo) != null) {
+					return;
+				} else {
+					session.setAttribute(repo, null);
+				}
+			} else {
+				session.setAttribute(repo, credentials);
+			}
 	}
 }
 

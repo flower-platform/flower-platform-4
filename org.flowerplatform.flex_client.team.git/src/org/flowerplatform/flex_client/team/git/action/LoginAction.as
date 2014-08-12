@@ -6,9 +6,13 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.team.git.ui.LoginView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-
-	public class ChangeCredentialsAction extends ActionBase {
-		public function ChangeCredentialsAction() {
+	
+	/**
+	 * @author Andreea Tita
+	 */
+	
+	public class LoginAction extends ActionBase {
+		public function LoginAction() {
 			super();
 			label = Resources.getMessage('flex_client.team.git.action.changeCredentials.label');
 			icon = Resources.permission;
@@ -35,6 +39,5 @@ package org.flowerplatform.flex_client.team.git.action {
 				.setIcon(icon)
 				.show();
 		}
-		
 	}
 }
