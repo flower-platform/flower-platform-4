@@ -472,11 +472,11 @@ public class GitService {
 	/** 
 	 * @author Andreea Tita
 	 */
-	public GitCredentials getCredentials(String repo) throws Exception {
+	public GitCredentials getCredentials(String remote) throws Exception {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
 		
-		if ((GitCredentials)session.getAttribute(repo) != null ) {
-			return  (GitCredentials)session.getAttribute(repo);
+		if ((GitCredentials)session.getAttribute(remote) != null ) {
+			return  (GitCredentials)session.getAttribute(remote);
 		}
 		
 		return null;
@@ -485,17 +485,17 @@ public class GitService {
 	/** 
 	 * @author Andreea Tita
 	 */
-	public void setCredentials(String repo, GitCredentials credentials) {
+	public void setCredentials(String remote, GitCredentials credentials) {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
 			
 			if (credentials == null) {
-				if ((GitCredentials)session.getAttribute(repo) != null) {
+				if ((GitCredentials)session.getAttribute(remote) != null) {
 					return;
 				} else {
-					session.setAttribute(repo, null);
+					session.setAttribute(remote, null);
 				}
 			} else {
-				session.setAttribute(repo, credentials);
+				session.setAttribute(remote, credentials);
 			}
 	}
 }
