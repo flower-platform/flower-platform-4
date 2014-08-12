@@ -7,15 +7,20 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.IList;
+			
 			import org.flowerplatform.flex_client.resources.Resources;
 			[Bindable]
 			public var showRemotesList:Boolean = true;
+			
+			[Bindable]
+			public var remotes:IList;
 			
 			public function getURI():String {
 				if (uriRepo.selected) {
 					return uriTextInput.text;	
 				}
-				return String(repositoriesList.selectedItem)
+				return repositoriesList.selectedItem;
 			}
 		]]>
 	</fx:Script>
@@ -26,7 +31,7 @@
 	
 	<s:VGroup height="40%" width="100%" paddingLeft="5" visible="@{showRemotesList}" includeInLayout="@{showRemotesList}">
 		<s:RadioButton id="remoteRepo" width="100%" selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" />
-		<s:DropDownList id="repositoriesList" width="100%"/>
+		<s:DropDownList id="repositoriesList" width="100%" dataProvider="@{remotes}"/>
 	</s:VGroup>
 	
 	<s:VGroup height="40%" width="100%" paddingLeft="5">

@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
@@ -261,25 +263,23 @@ public class GitService {
 	 * </ul>
 	 * 
 	 * @author Alina Bratu
+	 * @throws URISyntaxException 
+	 * @throws IOException 
+	 * @throws MalformedURLException 
 	 */
 	
-	public int validateRepoURL(String url) {
-		try {
-			URIish repoUri = new URIish(url.trim());
-			if (repoUri.getScheme().toLowerCase().startsWith("http") ) {
-				URLConnection conn = new URL(repoUri.toString()).openConnection();
-			    conn.setReadTimeout(GitConstants.NETWORK_TIMEOUT_MSEC);
-		    } 
-			String repoName = new URIish(url.trim()).getHumanishName();
-			File gitReposFile = new File(repoName);
-			
-			if (GitUtils.getGitDir(gitReposFile) != null) {
-				return 1;
-			}
-		} catch(Exception ex) {
-			System.out.println(ex.getMessage());
-			return -1;
-		}
+	public int validateRepoURL(String url) throws URISyntaxException, MalformedURLException, IOException {
+		URIish repoUri = new URIish(url.trim());
+		if (repoUri.getScheme().toLowerCase().startsWith("http") ) {
+			URLConnection conn = new URL(repoUri.toString()).openConnection();
+		    conn.setReadTimeout(GitConstants.NETWORK_TIMEOUT_MSEC);
+	    } 
+		String repoName = new URIish(url.trim()).getHumanishName();
+		File gitReposFile = new File(repoName);
+		
+		if (GitUtils.getGitDir(gitReposFile) != null) {
+			return 1;
+		}	
 		return 0;  
 	}
 
@@ -412,7 +412,6 @@ public class GitService {
 
 	public void cloneRepo(final String nodeUri, final String repoUri, final Collection<String> branches, final boolean cloneAll) throws Exception {
 		final URIish uri = new URIish(repoUri.trim());
-		final String remoteName = repoUri.substring(repoUri.lastIndexOf('/')+1, repoUri.length()-4);
 		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
 		
 		final String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
@@ -424,7 +423,6 @@ public class GitService {
 					CloneCommand cloneRepository = Git.cloneRepository();
 							
 					cloneRepository.setDirectory(mainRepo);
-					cloneRepository.setRemote(remoteName);
 					cloneRepository.setURI(uri.toString());
 					cloneRepository.setCloneAllBranches(cloneAll);
 					cloneRepository.setCloneSubmodules(false);	
@@ -436,7 +434,7 @@ public class GitService {
 				} catch (Exception e) {			
 					if (repository != null)
 						repository.close();
-//					
+					
 					if (m.isCanceled()) {
 						return Status.OK_STATUS;
 					}
