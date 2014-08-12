@@ -40,9 +40,9 @@ import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
-import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
@@ -54,8 +54,6 @@ import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,8 +96,6 @@ import org.slf4j.LoggerFactory;
 public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
-	
-	protected List<String> srcDirs = null;
 	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncPlugin.class);
 
@@ -619,26 +615,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			}
 		}
 		return null;
-	}
-	
-	/**
-	 * @author Mariana
-	 */
-	public List<String> getSrcDirs() {
-		if (srcDirs == null) {
-			// TODO Mariana : get user input
-			return Collections.singletonList("src");
-		} 
-		return srcDirs;
-	}
-	
-	public void addSrcDir(String srcDir) {
-		if (srcDirs == null) {
-			srcDirs = new ArrayList<String>();
-		}
-		if (!srcDirs.contains(srcDir)) {
-			srcDirs.add(srcDir);
-		}
 	}
 	
 	/**

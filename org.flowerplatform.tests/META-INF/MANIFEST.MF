@@ -26,4 +26,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
  .
 Export-Package: org.flowerplatform.tests
-Import-Package: javax.servlet.http
+Import-Package: javax.servlet,
+ javax.servlet.http

@@ -73,38 +73,38 @@
 			</plugin>
 
 			<!-- Eclipse independent tests -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-surefire-plugin</artifactId> -->
-<!-- 				<version>2.17</version> -->
-<!-- 				<dependencies> -->
-<!-- 					<dependency> -->
-<!-- 						<groupId>org.apache.maven.surefire</groupId> -->
-<!-- 						<artifactId>surefire-junit47</artifactId> -->
-<!-- 						<version>2.17</version> -->
-<!-- 					</dependency> -->
-<!-- 				</dependencies> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>2.17</version>
+					</dependency>
+				</dependencies>
 				
-<!-- 				<configuration> -->
-<!-- 					<additionalClasspathElements> -->
-<!-- 						<additionalClasspathElement>${basedir}\lib\mockito-all-${mockito.version}.jar</additionalClasspathElement> -->
-<!-- 					</additionalClasspathElements> -->
-<!-- 				</configuration> -->
+				<configuration>
+					<additionalClasspathElements>
+						<additionalClasspathElement>${basedir}\lib\mockito-all-${mockito.version}.jar</additionalClasspathElement>
+					</additionalClasspathElements>
+				</configuration>
 				
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>test</id> -->
-<!-- 						<phase>test</phase> -->
-<!-- 						<configuration> -->
-<!-- 							<testClassesDirectory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</testClassesDirectory> -->
-<!-- 							<test>EclipseIndependentTestSuite</test> -->
-<!-- 						</configuration> -->
-<!-- 						<goals> -->
-<!-- 							<goal>test</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<configuration>
+							<testClassesDirectory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</testClassesDirectory>
+							<test>EclipseIndependentTestSuite</test>
+						</configuration>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
