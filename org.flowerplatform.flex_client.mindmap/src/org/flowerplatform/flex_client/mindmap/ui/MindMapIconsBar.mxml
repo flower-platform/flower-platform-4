@@ -49,6 +49,7 @@
 				var icons:Array = MindMapConstants.ICONS_LIST.split(';');
 				var iconsDataProvider:Array = new Array();
 				
+				iconsDataProvider.push("customIconsIcon");
 				iconsDataProvider.push("removeFirstIconIcon");
 				iconsDataProvider.push("removeLastIconIcon");
 				iconsDataProvider.push("removeAllIconsIcon");
@@ -83,6 +84,9 @@
 							break;
 						case "removeAllIconsIcon" :
 							result.type = Utils.REMOVE_ALL;
+							break;
+						case "customIconsIcon":
+							result.type = Utils.CUSTOM;
 							break;
 						default:
 							result.type = Utils.ADD;
