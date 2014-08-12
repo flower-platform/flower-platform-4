@@ -31,5 +31,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		
 		public var expanded:Boolean;
 		
+		public var fontFamily:String;
+		public var fontSize:Number;
+		public var fontWeight:Boolean;
+		public var fontStyle:Boolean;
+		
 	}	
 }
