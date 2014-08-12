@@ -85,6 +85,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		FreeplaneMindmapResourceHandler fpmResourceHandler = new FreeplaneMindmapResourceHandler();
 		
 		MindMapFileAddNodeController mindMapFileAddNodeController = new MindMapFileAddNodeController(UrlManager.FREEPLANE_FILE_EXTENSION);
+		mindMapFileAddNodeController.setSharedControllerAllowed(true);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 			.addAdditiveController(ADD_NODE_CONTROLLER, mindMapFileAddNodeController);
 		

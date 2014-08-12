@@ -30,6 +30,7 @@ public class MemberOfChildCategoryDescriptor extends AbstractController {
 
 	public MemberOfChildCategoryDescriptor(String childCategory) {
 		setChildCategory(childCategory);
+		setSharedControllerAllowed(true);
 	}
 	
 	public String getChildCategory() {

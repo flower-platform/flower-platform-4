@@ -197,6 +197,7 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new single controller to a non-configurable registry");
 		}
+		controller.setTypeDescriptor(this);
 		ControllerEntry<IController> entry = getSingleControllerEntry(type);
 		entry.setSelfValue(controller);
 		return this;
@@ -295,6 +296,7 @@ public class TypeDescriptor {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new additive controller to a non-configurable registry");
 		}
+		controller.setTypeDescriptor(this);
 		ControllerEntry<List<? extends IController>> entry = getAdditiveControllersEntry(type);
 		((List<IController>) entry.getSelfValue()).add(controller);
 		return this;

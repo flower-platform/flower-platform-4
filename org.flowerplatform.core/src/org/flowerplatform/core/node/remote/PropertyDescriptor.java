@@ -21,8 +21,10 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_
 
 import java.util.List;
 
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Cristina Constantinescu
@@ -176,6 +178,17 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.propertyLineRenderer = propertyLineRenderer;
 		return this;
 	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
+		super.setTypeDescriptor(typeDescriptor);
+		if (title == null) {
+			title = ResourcesPlugin.getInstance().getTitleForProperty(typeDescriptor.getType()+"."+name);
+		}
+	}
 
 	@Override
 	public String toString() {
@@ -187,5 +200,5 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 				+ ", possibleValues=" + possibleValues + ", defaultValue="
 				+ defaultValue + "]";
 	}	
-	
+
 }

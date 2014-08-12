@@ -145,7 +145,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 				.addModelAdapter(SUPER_INTERFACE, expressionModelAdapter));
 		
 		MemberOfChildCategoryDescriptor childrenDescriptor = new MemberOfChildCategoryDescriptor(CodeSyncConstants.CHILDREN);
-	
+		
 		createNodeTypeDescriptor(FOLDER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, childrenDescriptor)
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FOLDER).setLabelAs(getLabel("codesync.java.package"))
@@ -160,6 +160,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_FILE)));
 		
 		PropertyDescriptor returnType = new PropertyDescriptor().setNameAs(TYPED_ELEMENT_TYPE);
+		returnType.setSharedControllerAllowed(true);
 		
 		MemberOfChildCategoryDescriptor typeMembersDescriptor = new MemberOfChildCategoryDescriptor(TYPE_MEMBERS);
 		
