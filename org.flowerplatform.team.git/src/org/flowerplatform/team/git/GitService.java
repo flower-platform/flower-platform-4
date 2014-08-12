@@ -43,6 +43,7 @@ import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
@@ -366,6 +367,26 @@ public class GitService {
 				CorePlugin.getInstance().getResourceService().getNode(parentUri),
 				childNode, 
 				new ServiceContext<NodeService>().add(EXECUTE_ONLY_FOR_UPDATER, true));
+	}
+	
+	/**
+	 * @author Diana Balutoiu
+	 */
+	public void reset(String nodeUri, String type, String hash) throws Exception {		
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+		
+		ResetType resetType;
+		if(type == GitConstants.RESET_SOFT){
+			resetType = ResetType.SOFT;
+		}
+		else if(type == GitConstants.RESET_MIXED){
+			resetType = ResetType.MIXED;
+		}
+		else {
+			resetType = ResetType.HARD;
+		} 
+		
+		new Git(repo).reset().setMode(resetType).setRef(hash).call();
 	}
 	
 	/**
