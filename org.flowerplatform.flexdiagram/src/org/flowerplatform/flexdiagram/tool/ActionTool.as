@@ -4,7 +4,6 @@ package org.flowerplatform.flexdiagram.tool {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 
@@ -28,7 +27,7 @@ package org.flowerplatform.flexdiagram.tool {
 			_eventType = value;
 			WakeUpTool.wakeMeUpIfEventOccurs(diagramShell, this, eventType);
 		}
-
+		
 		public function wakeUp(eventType:String, initialEvent:MouseEvent):Boolean {
 			if(eventType == this.eventType){
 				return true;
@@ -43,7 +42,6 @@ package org.flowerplatform.flexdiagram.tool {
 				FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, diagramShell.getNewDiagramShellContext());
 			}
 			diagramShell.mainToolFinishedItsJob();
-			deactivateAsMainTool();
 		}
 	}
 }

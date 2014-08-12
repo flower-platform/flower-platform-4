@@ -198,6 +198,9 @@ package org.flowerplatform.flexdiagram {
 			Multitouch.inputMode = MultitouchInputMode.GESTURE;
 		}
 		
+		/**
+		 *@author Diana Balutoiu
+		 */
 		public function registerTool(id:String, tool:FactoryWithInitialization):void {
 			tools[id] = tool.newInstance(true, this);
 		}
