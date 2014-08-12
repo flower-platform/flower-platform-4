@@ -23,8 +23,16 @@ public class CodeSyncSdiffConstants {
 	
 	public static final String STRUCTURE_DIFF = "structureDiff";
 	public static final String STRUCTURE_DIFF_EXTENSION = ".sdiff";
-	
 	public static final String COMMENT = "sdiffComment";
+	public static final String STRUCTURE_DIFF_LEGEND = "structureDiffLegend";
+	public static final String STRUCTURE_DIFF_LEGEND_CHILD = "structureDiffLegendChild";
+	
+	public static final String ADDED = "added";
+	public static final String REMOVED = "removed";
+	public static final String MODIFIED = "modified";
+	public static final String MODIFIED_BODY = "bodyModified";
+	public static final String MODIFIED_CHILDREN = "childrenModified";
+	public static final String ADDED_COMMENT = "comment";
 	
 	// relative to repository
 	public static final String STRUCTURE_DIFFS_FOLDER = "sdiffs";
@@ -39,7 +47,7 @@ public class CodeSyncSdiffConstants {
 	public static final String MATCH_COLOR_BODY_MODIFIED = "#FF00FF";
 	public static final String MATCH_COLOR_CHILDREN_MODIFIED = "#FFCC00";
 	public static final String MATCH_COLOR_COMMENT = "#FFFF00";
-	
+		
 	//////////////////////////////////
 	// Service context options
 	//////////////////////////////////
