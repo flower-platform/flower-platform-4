@@ -560,7 +560,7 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/editconfig.gif")]
 		public static const renameBranch:Class;
-		
+
 		[Embed(source="/team.git/remote_entry_tbl.gif")]
 		public static const remoteEntry:Class;
 
@@ -569,11 +569,10 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/remotespec.gif")]
 		public static const configureFetchPush:Class;
-		
+
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
 		
-
 		[Embed(source="/team.git/gitDiffFromCommits.png")]
 		public static const gitDiffFromCommitsIcon:Class;
 		
