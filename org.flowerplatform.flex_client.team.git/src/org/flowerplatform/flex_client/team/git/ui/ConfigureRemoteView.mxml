@@ -28,14 +28,11 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
-			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
-			
-			[Bindable]
+
 			public var node:Node;
 			
 			protected function getIndexForState(stateName:String):int {
@@ -64,51 +61,22 @@ license-end
 			/* state 2 functions */
 			private function populateRefMappings():void {				
 				if (configurePushRadioButton.selected) {
-					var pushRefSpecsString:String = node.getPropertyValue(GitConstants.PUSH_REF_SPECS);
-					
-					if (pushRefSpecsString != null) {
-						var pushRefSpecs:Array = pushRefSpecsString.split(" ");		
-						pushRefSpecs.pop();
-			
-						configureFetchPushPage.refMappings = new ArrayCollection(pushRefSpecs);
-					}
+					configureFetchPushPage.refMappings = node.getPropertyValue(GitConstants.PUSH_REF_SPECS);
 				} else {
-					var fetchRefSpecsString:String = node.getPropertyValue(GitConstants.FETCH_REF_SPECS);
-					
-					if (fetchRefSpecsString != null) {
-						var fetchRefSpecs:Array = fetchRefSpecsString.split(" ");
-						fetchRefSpecs.pop();
-						
-						configureFetchPushPage.refMappings = new ArrayCollection(fetchRefSpecs);
-					}
+					configureFetchPushPage.refMappings = node.getPropertyValue(GitConstants.FETCH_REF_SPECS);
 				}
 			}
 			
 			override protected function nextClickHandler():void {
-				this.currentState = "configureFetchPushState";
+				super.nextClickHandler();
 				populateRefMappings();
 				
 				back.enabled = false;
-				super.nextClickHandler();
-			}
-			
-			override protected function backClickHandler():void {
-				this.currentState = "selectFetchPushState";
-				
-				super.backClickHandler();
 			}
 			
 			override protected function finishClickHandler():void {
-				/* expanded = true if Remotes node was expanded -> needed on server to know if the Remotes node needs to be refreshed */
-				var expanded : Boolean;
-				if (node.children != null) {
-					/* node was expanded */
-					expanded = true;
-				} else {
-					expanded = false;
-				}
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureRemote", 
-					[node.nodeUri, remoteNameTextInput.text, configureFetchPushPage.remoteUri, configurePushRadioButton.selected, configureFetchPushPage.refMappings, expanded]);
+					[node.nodeUri, remoteNameTextInput.text, configureFetchPushPage.remoteUri, configurePushRadioButton.selected, configureFetchPushPage.refMappings]);
 				
 				super.finishClickHandler();
 			}
@@ -122,34 +90,28 @@ license-end
 		<s:State name="configureFetchPushState"/>
 	</ns:states>
 	
-	<s:Group width="100%" height="100%"
+	<s:Form width="100%" height="100%"
 			 includeIn="selectFetchPushState">
-		
-		<s:layout>
-			<s:VerticalLayout paddingTop="10" paddingLeft="15"/>
-		</s:layout>
-		
-		<s:HGroup width="100%" 
-				  verticalAlign="middle">
-			<s:Label text="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.remoteName')}"
-					 fontWeight="bold"/>
-			<s:TextInput id="remoteNameTextInput"
-						 creationComplete="{callLater(remoteNameTextInput.setFocus)}"
-						 change="{next.enabled=(remoteNameTextInput.text!='')}"
-						 width="70%"/>
-		</s:HGroup>
-		
-		<s:VGroup paddingTop="10">
-			<s:RadioButton id="configurePushRadioButton"
-						   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configurePush')}"
-						   selected="true"/>
-			<s:RadioButton id="configureFetchRadioButton"
-						   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configureFetch')}"/>
-		</s:VGroup>
-		
-	</s:Group>
+			
+		<s:FormItem width="100%"
+						label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.remoteName')}">
+				<s:TextInput id="remoteNameTextInput"
+							 creationComplete="{callLater(remoteNameTextInput.setFocus)}"
+							 change="{next.enabled=(remoteNameTextInput.text!='')}"
+							 width="80%"/>
+		</s:FormItem>
+
+		<s:RadioButton id="configurePushRadioButton"
+					   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configurePush')}"
+					   selected="true"/>
+
+		<s:RadioButton id="configureFetchRadioButton"
+					   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configureFetch')}"/>	
+	</s:Form>
 	
 	<local:ConfigureFetchPushComponent id="configureFetchPushPage"
+									   height="100%"
+									   width="100%"
 									   remoteUri="{node.getPropertyValue(GitConstants.REMOTE_URIS)}"
 									   includeIn="configureFetchPushState"/>
 	
