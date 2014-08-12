@@ -15,12 +15,9 @@
  */
 package org.flowerplatform.team.git;
 
+import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
+
 import org.apache.commons.io.FilenameUtils;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -136,7 +133,10 @@ public class GitUtils {
 	}
 
 	public static String getNodeUri(String repoPath,String type,String name){
-		return repoPath + "|" + type + "$" + name;
+		if (name != null){
+			return GIT_SCHEME + ":" + repoPath + "|" + type + "$" + name;
+		}
+		return GIT_SCHEME + ":" + repoPath + "|" + type;
 	}
 
 	public static String getNodeUri(String repoPath,String type){
