@@ -53,14 +53,14 @@ public class CodeSyncAsTest {
 		
 		TestMatch testAs = expected.addChild("Test.as", _2MATCH_LEFT_RIGHT).addChild("Test", _2MATCH_LEFT_RIGHT);
 		testAs.addChild("ITest", _2MATCH_LEFT_RIGHT);
-		testAs.addChild("Test", _2MATCH_LEFT_RIGHT).addChild("orderIndex", _2MATCH_LEFT_RIGHT);
-		testAs.addChild("set orderIndex", _2MATCH_LEFT_RIGHT).addChild("value", _2MATCH_LEFT_RIGHT);
-		testAs.addChild("get orderIndex", _2MATCH_LEFT_RIGHT);
+		testAs.addChild("Test(orderIndex:int)", _2MATCH_LEFT_RIGHT).addChild("orderIndex", _2MATCH_LEFT_RIGHT);
+		testAs.addChild("set orderIndex(value:int):void", _2MATCH_LEFT_RIGHT).addChild("value", _2MATCH_LEFT_RIGHT);
+		testAs.addChild("get orderIndex():int", _2MATCH_LEFT_RIGHT);
 		testAs.addChild("test", _2MATCH_LEFT_RIGHT).addChild("Bindable", _2MATCH_LEFT_RIGHT);
 			
 		TestMatch testMxml = expected.addChild("Test.mxml", _2MATCH_LEFT_RIGHT).addChild("Test", _2MATCH_LEFT_RIGHT);	
 		testMxml.addChild("hasSubActions", _2MATCH_LEFT_RIGHT).addChild("Bindable", _2MATCH_LEFT_RIGHT);
-		testMxml.addChild("clickHandler", _2MATCH_LEFT_RIGHT).addChild("event", _2MATCH_LEFT_RIGHT);
+		testMxml.addChild("clickHandler(event:MouseEvent):void", _2MATCH_LEFT_RIGHT).addChild("event", _2MATCH_LEFT_RIGHT);
 		testMxml.addChild("HEIGHT", _2MATCH_LEFT_RIGHT).addChild("static", _2MATCH_LEFT_RIGHT);
 		
 		CodeSyncTestSuite.testMatchTree(match, expected, true, false);
