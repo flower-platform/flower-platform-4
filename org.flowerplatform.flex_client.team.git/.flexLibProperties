@@ -21,9 +21,7 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoWizardView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.component.SelectableBranches"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.PushView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.LoginView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.ChangeCredentialsAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
