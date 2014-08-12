@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: As
-Bundle-SymbolicName: org.flowerplatform.codesync.as
+Bundle-SymbolicName: org.flowerplatform.codesync.as;singleton:=true
 Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .,
+Bundle-ClassPath: lib-from-maven/guava-17.0.jar,
+ lib-from-maven/antlr-complete-3.5.2.jar,
  lib/compiler.jar,
  lib/falcon-asc.jar,
  lib/falcon-compc.jar,
@@ -13,8 +14,7 @@ Bundle-ClassPath: .,
  lib/falcon-optimizer.jar,
  lib/falcon-swfdump.jar,
  lib/flex-compiler-oem.jar,
- lib/guava-17.0.jar,
- lib/antlr-3.5.2-complete.jar
+ .
 Require-Bundle: org.flowerplatform.core,
  org.flowerplatform.codesync,
  org.flowerplatform.util,
