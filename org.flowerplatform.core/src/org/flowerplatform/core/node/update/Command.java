@@ -15,6 +15,7 @@ public class Command {
 	
 	private String lastUpdateIdBeforeCommandExecution;
 	
+	// TODO CS: nu mi-e clar: ce face asta?
 	private String lastUpdateId;
 
 	public String getId() {

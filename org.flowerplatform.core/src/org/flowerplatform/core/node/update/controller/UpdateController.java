@@ -81,6 +81,7 @@ public class UpdateController extends AbstractController
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_REMOVED)
+							// TODO CS: nu prea inteleg
 							.setTargetNodeAs((Node)context.get("removedNode"))
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
 							.setFullNodeIdAs(node.getNodeUri()));		
@@ -120,6 +121,7 @@ public class UpdateController extends AbstractController
 			resourceSet = resourceNode.getNodeUri();
 		}
 		ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+		// TODO CS: idem
 		PropertyUpdate update = new PropertyUpdate();
 		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri());
 		

@@ -200,6 +200,8 @@ public class NodeService {
 		
 		// Save value before the change
 		if (node.getOrPopulateProperties(context).containsKey(property)) {
+			// TODO CS: daca in comanda se opereaza mai multe setari de propr, nu avem pb?
+			// adica avem o singura valoare in acest context; corect?
 			Object oldValue = node.getOrPopulateProperties(context).get(property);
 			context.add(CoreConstants.OLD_VALUE, oldValue);
 		}
@@ -301,6 +303,7 @@ public class NodeService {
 		// Save full child in context; used for undo
 		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
 		removedNode.getOrPopulateProperties(context);
+		// TODO CS: ar trebui sa fie constante; sa trecem prin modif metodei astea; la o privire rapida nu inteleg
 		context.add("removedNode", removedNode);
 
 		// Find next sibbling and save it for undo of position

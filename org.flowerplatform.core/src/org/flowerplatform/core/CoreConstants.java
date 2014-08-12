@@ -46,7 +46,7 @@ public class CoreConstants {
 	public static final String FILE_NODE_TYPE = "fileNode";
 	public static final String COMMAND_TYPE = "command";
 	public static final String COMMAND_STACK_TYPE = "commandStack";
-	public static final String COMMAND_STACK_SCHEME = "commandStack";
+	public static final String COMMAND_STACK_SCHEME = COMMAND_STACK_TYPE;
 	
 	public static final String PREFERENCE_TYPE = "preference";
 	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
@@ -169,7 +169,6 @@ public class CoreConstants {
 	// Resource
 	//////////////////////////////////
 	
-	public static final String SELF_RESOURCE = "self";
 	public static final String CATEGORY_RESOURCE_PREFIX = UtilConstants.CATEGORY_PREFIX + "resource.";
 	
 	//////////////////////////////////
@@ -206,5 +205,4 @@ public class CoreConstants {
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
 	
-	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
 }

@@ -57,7 +57,6 @@ public class RemoteMethodInvocationListener {
 	 * so the client can react (e.g. close the obsolete editors).
 	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-//		TempDeleteAfterGH279AndCo.INSTANCE.addNewNode();
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = getSessionId();
@@ -126,48 +125,48 @@ public class RemoteMethodInvocationListener {
 			// prepare result
 			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
 			
-		Long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
-		long timestamp = new Date().getTime();		
-		
-		// update timestamp
-		remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
-					
-		// get info from header
-		List<String> resourceSets = remoteMethodInvocationInfo.getResourceSets();				
-		if (resourceSets != null) {		
-			// only request updates if the client is subscribed to some resource
-			Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
-			for (String resourceSet : resourceSets) {
-				List<Update> updates = CorePlugin.getInstance().getResourceSetService().getUpdates(resourceSet, timestampOfLastRequest);
-				if (updates == null || updates.size() > 0) {
-					// updates == null -> client must perform a refresh to get all necessary data
-					// updates.size == 0 -> ignore, no need to add it in map
-					
-					resourceNodeIdToUpdates.put(resourceSet, updates);
-					
-					if (logger.isDebugEnabled()) {
-						int size = -1;
-						if (updates != null) {
-							size = updates.size();
+			Long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
+			long timestamp = new Date().getTime();		
+			
+			// update timestamp
+			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.LAST_UPDATE_TIMESTAMP, timestamp);
+						
+			// get info from header
+			List<String> resourceSets = remoteMethodInvocationInfo.getResourceSets();				
+			if (resourceSets != null) {		
+				// only request updates if the client is subscribed to some resource
+				Map<String, List<Update>> resourceNodeIdToUpdates = new HashMap<String, List<Update>>();
+				for (String resourceSet : resourceSets) {
+					List<Update> updates = CorePlugin.getInstance().getResourceSetService().getUpdates(resourceSet, timestampOfLastRequest);
+					if (updates == null || updates.size() > 0) {
+						// updates == null -> client must perform a refresh to get all necessary data
+						// updates.size == 0 -> ignore, no need to add it in map
+						
+						resourceNodeIdToUpdates.put(resourceSet, updates);
+						
+						if (logger.isDebugEnabled()) {
+							int size = -1;
+							if (updates != null) {
+								size = updates.size();
+							}
+							logger.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
 						}
-						logger.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
-					}
-				}				
+					}				
+				}
+				if (resourceNodeIdToUpdates.size() > 0) {
+					remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);
+				}
 			}
-			if (resourceNodeIdToUpdates.size() > 0) {
-				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);
+			
+			// update timestamps for server resources
+			List<String> resources = remoteMethodInvocationInfo.getResourceUris();
+			if (resources != null) {
+				for (String resource : resources) {
+					CorePlugin.getInstance().getResourceService().setUpdateRequestedTimestamp(resource, timestamp);
+				}
 			}
-		}
-		
-		// update timestamps for server resources
-		List<String> resources = remoteMethodInvocationInfo.getResourceUris();
-		if (resources != null) {
-			for (String resource : resources) {
-				CorePlugin.getInstance().getResourceService().setUpdateRequestedTimestamp(resource, timestamp);
-			}
-		}
-
-		remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
+	
+			remoteMethodInvocationInfo.setReturnValue(remoteMethodInvocationInfo.getEnrichedReturnValue());
 		} finally {
 			Command command = context.getCommand();
 			if (command != null) {

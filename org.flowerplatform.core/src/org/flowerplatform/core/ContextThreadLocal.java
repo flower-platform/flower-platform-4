@@ -6,8 +6,8 @@ import org.flowerplatform.core.node.update.Command;
 
 /**
  * @author Claudiu Matei
- *
  */
+// TODO CS: de zicem ca e temporar? request nu pare a fi folosit
 public class ContextThreadLocal {
 	
 	private HttpServletRequest request;

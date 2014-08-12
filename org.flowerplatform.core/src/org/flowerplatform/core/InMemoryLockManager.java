@@ -8,7 +8,7 @@ import org.flowerplatform.util.NamedLockPool;
  */
 public class InMemoryLockManager implements ILockManager {
 	
-	private NamedLockPool lockPool=new NamedLockPool();
+	private NamedLockPool lockPool = new NamedLockPool();
 	
 	@Override
 	public void lock(String key) {
