@@ -47,6 +47,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
@@ -314,35 +315,36 @@ public class GitService {
 	/**
 	 * @author Diana Balutoiu
 	 */
-	public void configureBranch(String branchNodeUri, String remote, String upstream, Boolean rebase) throws Exception{
+	public void configureBranch(String branchNodeUri, String remote, String upstream, Boolean rebase) throws Exception {
 			Node branchNode = CorePlugin.getInstance().getResourceService().getNode(branchNodeUri);
-			String branchName = (String)branchNode.getPropertyValue(CoreConstants.NAME);
-			String repositoryPath = Utils.getRepo(branchNodeUri);
-			Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
+			String branchName = (String) branchNode.getPropertyValue(CoreConstants.NAME);		
+			Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(branchNodeUri)));
 			
 			//get the .git/config file
 			StoredConfig config = repo.getConfig();
-			if(remote.length() > 0){
-				config.setString(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REMOTE, remote);
+			if (!remote.isEmpty()) {
+				config.setString(ConfigConstants.CONFIG_BRANCH_SECTION, branchName, ConfigConstants.CONFIG_KEY_REMOTE, remote);
 			} else {
-				config.unset(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REMOTE);
+				config.unset(ConfigConstants.CONFIG_BRANCH_SECTION, branchName, ConfigConstants.CONFIG_KEY_REMOTE);
 			}
-			if(upstream.length() > 0){
-				config.setString(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_MERGE, upstream);
+			if (!upstream.isEmpty()) {
+				config.setString(ConfigConstants.CONFIG_BRANCH_SECTION, branchName, ConfigConstants.CONFIG_KEY_MERGE, upstream);
 			} else {
-				config.unset(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_MERGE);
+				config.unset(ConfigConstants.CONFIG_BRANCH_SECTION, branchName, ConfigConstants.CONFIG_KEY_MERGE);
 			}
-			if(rebase){
-				config.setBoolean(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REBASE, true);
+			if (rebase) {
+				config.setBoolean(ConfigConstants.CONFIG_BRANCH_SECTION, branchName, ConfigConstants.CONFIG_KEY_REBASE, true);
 			} else {
-				config.unset(ConfigConstants.CONFIG_SECTION_BRANCH, branchName, ConfigConstants.CONFIG_SUBSECTION_REBASE);
+				config.unset(ConfigConstants.CONFIG_BRANCH_SECTION, branchName, ConfigConstants.CONFIG_KEY_REBASE);
 			}
 			config.save();
 			
 			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.CONFIG_REMOTE, 
-					remote,  new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+					remote, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.CONFIG_UPSTREAM_BRANCH, 
 					upstream, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+			CorePlugin.getInstance().getNodeService().setProperty(branchNode, GitConstants.CONFIG_REBASE, 
+					rebase, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
 	/**
