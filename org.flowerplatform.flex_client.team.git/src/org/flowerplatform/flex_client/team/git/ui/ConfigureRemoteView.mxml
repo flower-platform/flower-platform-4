@@ -76,7 +76,7 @@ license-end
 			
 			override protected function finishClickHandler():void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureRemote", 
-					[node.nodeUri, remoteNameTextInput.text, configureFetchPushPage.remoteUri, configurePushRadioButton.selected, configureFetchPushPage.refMappings]);
+					[node.nodeUri, remoteNameTextInput.text, configureFetchPushPage.remoteUri, configurePushRadioButton.selected, configureFetchPushPage.getRefSpecs()]);
 				
 				super.finishClickHandler();
 			}

@@ -532,6 +532,13 @@ public class GitService {
 
 		config.update(repository.getConfig());
 		repository.getConfig().save();
+		
+		/* refresh node */
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				node, 
+				new Update().setFullNodeIdAs(nodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/**
