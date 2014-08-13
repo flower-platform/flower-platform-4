@@ -569,7 +569,10 @@ package org.flowerplatform.flex_client.resources {
 		// Git History 
 		[Embed(source="/git/history.gif")]
 		public static const gitHistoryIcon:Class;
-	
+		
+		[Embed(source="/team.git/copy.gif")]
+		public static const copy:Class;
+		
 		// Team Git
 
 		[Embed(source="/team.git/remotespec.gif")]

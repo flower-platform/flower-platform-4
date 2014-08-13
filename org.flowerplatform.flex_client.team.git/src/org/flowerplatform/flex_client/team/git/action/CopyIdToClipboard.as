@@ -7,11 +7,16 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
+	/**
+	 * @author Andreea Tita
+	 */
+	
 	public class CopyIdToClipboard extends ActionBase {
 		
 		public function CopyIdToClipboard() {
 			super();
 			label = Resources.getMessage("gitHistory.action.CopyId");
+			icon = Resources.copy;
 		}
 		
 		override public function  get visible():Boolean {
