@@ -6,17 +6,18 @@ import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_BRANCH_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_CATEGORY;
 
 import org.eclipse.jgit.lib.Constants;
 import org.flowerplatform.core.CorePlugin;
@@ -53,6 +54,9 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 			
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
+		CorePlugin.getInstance().getServiceRegistry().registerService("HistoryService", new HistoryService());
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
 		.addAdditiveController(CHILDREN_PROVIDER, new RepoChildrenProvider());
@@ -60,26 +64,31 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REPO_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new GitChildrenProvider());
+		.addAdditiveController(CHILDREN_PROVIDER, new GitChildrenProvider())
+		.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCHES_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitLocalBranchesPropertiesProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_HEADS,GIT_BRANCH_SCHEME,GIT_LOCAL_BRANCH_TYPE));
+				(Constants.R_HEADS,GIT_BRANCH_SCHEME,GIT_LOCAL_BRANCH_TYPE))
+		.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_BRANCHES_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitRemoteBranchesPropertiesProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_REMOTES,GIT_BRANCH_SCHEME,GIT_REMOTE_BRANCH_TYPE));
+				(Constants.R_REMOTES,GIT_BRANCH_SCHEME,GIT_REMOTE_BRANCH_TYPE))
+		.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAGS_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitTagsPropertiesProvider())
 		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_TAGS,GIT_BRANCH_SCHEME,GIT_TAG_TYPE));
+				(Constants.R_TAGS,GIT_BRANCH_SCHEME,GIT_TAG_TYPE))
+		.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTES_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new GitRemotesPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new GitRemotesChildrenProvider());
+		.addAdditiveController(CHILDREN_PROVIDER, new GitRemotesChildrenProvider())
+		.addCategory(GIT_CATEGORY);
 		
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCH_TYPE)

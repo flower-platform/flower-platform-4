@@ -1,5 +1,7 @@
 package org.flowerplatform.team.git;
 
+import org.flowerplatform.util.UtilConstants;
+
 /**
  * @author Cojocea Marius Eduard
  */
@@ -40,6 +42,13 @@ public class GitConstants {
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
-	public static final String CONFIG_REBASE = "configRebase";	
+	public static final String CONFIG_REBASE = "configRebase";
+	
+	 
+	 ////////////////////////////////////////////////////////////
+	 //Categories
+	 ////////////////////////////////////////////////////////////
+	 
+	 public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 
 }

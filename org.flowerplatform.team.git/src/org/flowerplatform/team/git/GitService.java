@@ -35,8 +35,6 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.team.git.remote.GitBranch;
 import org.flowerplatform.util.Utils;
 
-
-
 /**
  * @author Valentina-Camelia Bojan
  */
@@ -208,10 +206,6 @@ public class GitService {
 			CorePlugin.getInstance().getNodeService().removeChild(parentNode, childNode, new ServiceContext<NodeService>());
 	}
 
-	/* get all names of branches from repository */
-	public ArrayList<String> getAllNamesOfBranches(String repoPath){
-		return null;
-	}
 	
 	/* rename the branch with the new name */
 	public void renameBranch(String nodeUri,String oldName,String newName) throws Exception {
@@ -229,6 +223,6 @@ public class GitService {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		CorePlugin.getInstance().getNodeService().setProperty(node,CoreConstants.NAME,newName,new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));	
 	}
-
+	
 }
 

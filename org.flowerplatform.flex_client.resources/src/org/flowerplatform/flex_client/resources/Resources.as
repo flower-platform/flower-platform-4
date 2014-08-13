@@ -1,18 +1,18 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package org.flowerplatform.flex_client.resources {
 	import mx.resources.ResourceManager;
 	
@@ -41,13 +41,13 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/core/disk.png")]
 		public static const saveIcon:Class;
-
+		
 		[Embed(source="/core/disk_multiple.png")]
 		public static const saveAllIcon:Class;
 		
 		[Embed(source="/core/refresh_blue.png")]
 		public static const reloadIcon:Class;
-	
+		
 		[Embed(source="/core/external_link.png")]
 		public static const externalLinkIcon:Class;
 		
@@ -553,12 +553,16 @@ package org.flowerplatform.flex_client.resources {
 		// Create Branch
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
-
+		
 		[Embed(source="/team.git/editconfig.gif")]
 		public static const renameBranch:Class;
 		
 		[Embed(source="/git/config.png")]
 		public static const configBrenchIcon:Class;
+		
+		// Git History 
+		[Embed(source="/git/history.gif")]
+		public static const gitHistoryIcon:Class;
 		
 	}
 }
