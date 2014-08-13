@@ -23,7 +23,7 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
-			import org.flowerplatform.flex_client.team.git.action.CopyIdToClipboard;
+			import org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
