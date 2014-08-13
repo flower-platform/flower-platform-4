@@ -415,11 +415,6 @@ public class GitService {
 		
 		// set the new name
 		git.branchRename().setOldName((String) node.getPropertyValue(CoreConstants.NAME)).setNewName(newName).call();
-		
-		// register update
-		CorePlugin.getInstance().getNodeService().setProperty(node, CoreConstants.NAME, newName, 
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));	
-	}
 
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				node, 

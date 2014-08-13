@@ -41,7 +41,6 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_CATEGORY;
 import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
 import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
@@ -110,22 +109,9 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CURRENT_COMMIT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.currentCommit")).setReadOnlyAs(true).setOrderIndexAs(2))
 		.addAdditiveController(CHILDREN_PROVIDER, new GitChildrenProvider())
 		.addCategory(GIT_CATEGORY);
-			.addAdditiveController(PROPERTIES_PROVIDER, new GitPropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CURRENT_BRANCH).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.currentBranch")).setReadOnlyAs(true).setOrderIndexAs(1))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CURRENT_COMMIT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.currentCommit")).setReadOnlyAs(true).setOrderIndexAs(2))
-			.addAdditiveController(CHILDREN_PROVIDER, new GitChildrenProvider())
-			.addCategory(GIT_CATEGORY);
+	
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCHES_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new GitLocalBranchesPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_HEADS,GIT_BRANCH_SCHEME,GIT_LOCAL_BRANCH_TYPE))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
-		.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider
-				(Constants.R_HEADS,GIT_SCHEME,GIT_LOCAL_BRANCH_TYPE))
-		.addCategory(GIT_CATEGORY);
-		
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitLocalBranchesPropertiesProvider())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider
@@ -134,30 +120,12 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_BRANCHES_TYPE)
-		.addAdditiveController(PROPERTIES_PROVIDER, new GitRemoteBranchesPropertiesProvider())
-		.addAdditiveController(CHILDREN_PROVIDER, new GitBranchesAndTagsChildrenProvider
-				(Constants.R_REMOTES,GIT_BRANCH_SCHEME,GIT_REMOTE_BRANCH_TYPE))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
-		.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider
-				(Constants.R_REMOTES,GIT_SCHEME,GIT_REMOTE_BRANCH_TYPE))
-		.addCategory(GIT_CATEGORY);
-
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitRemoteBranchesPropertiesProvider())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider
 					(Constants.R_REMOTES,GIT_SCHEME,GIT_REMOTE_BRANCH_TYPE))
 			.addCategory(GIT_CATEGORY);
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAGS_TYPE)
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
-		.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider
-				(Constants.R_TAGS,GIT_SCHEME,GIT_TAG_TYPE))
-		.addCategory(GIT_CATEGORY);
-		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTES_TYPE)
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
-		.addAdditiveController(CHILDREN_PROVIDER, new GitRemotesChildrenProvider())
-		.addCategory(GIT_CATEGORY);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAGS_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitTagsPropertiesProvider())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
