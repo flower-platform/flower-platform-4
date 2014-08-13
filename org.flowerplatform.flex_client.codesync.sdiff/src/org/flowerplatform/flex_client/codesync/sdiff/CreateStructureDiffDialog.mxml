@@ -26,12 +26,15 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.utils.StringUtil;
 			
+			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.Pair;
 			
 			[Bindable]
 			public var repo:String;
@@ -44,7 +47,7 @@
 					[patch.text, repo,
 					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.getTextInput()])],
 					function(node:Node):void {
-						CorePlugin.getInstance().openEditor(node);
+						CorePlugin.getInstance().openEditor(node.nodeUri);
 						cancelHandler();
 					});
 			}

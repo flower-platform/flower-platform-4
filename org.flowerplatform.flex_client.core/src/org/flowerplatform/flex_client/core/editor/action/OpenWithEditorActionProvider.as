@@ -40,9 +40,9 @@ package org.flowerplatform.flex_client.core.editor.action {
 			var subscribableResources:ArrayCollection = ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
 			if (subscribableResources != null && subscribableResources.length > 1) {
 				for each (var pair:Pair in subscribableResources) {
-					result.push(new OpenAction(pair.b as String));				
+					result.push(new OpenAction(pair.a as String, pair.b as String));				
 				}
-			}			
+			}
 			return result;
 		}
 	}

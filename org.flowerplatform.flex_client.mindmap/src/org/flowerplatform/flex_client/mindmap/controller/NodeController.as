@@ -14,6 +14,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap.controller {
+	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -26,6 +27,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
+	import org.flowerplatform.flexutil.Pair;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -61,7 +63,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 //						}
 //					}));
 //					dialog.show();
-					CorePlugin.getInstance().openEditor(node);
+					CorePlugin.getInstance().openEditor(node.nodeUri);
 					collapse(context, node);
 				} else {
 					expand(context, node);
