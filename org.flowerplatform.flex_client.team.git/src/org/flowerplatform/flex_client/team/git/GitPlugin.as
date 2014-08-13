@@ -16,24 +16,11 @@
 package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.CloneRepoAction;
-	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
-	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction	
-	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
-	import org.flowerplatform.flex_client.team.git.remote.GitRef;
-	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
-	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
-	import org.flowerplatform.flex_client.team.git.remote.GitBranch;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.CheckoutAction;
 	import org.flowerplatform.flex_client.team.git.action.CloneRepoAction;
 	import org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ConfigureRemoteAction;
+	import org.flowerplatform.flex_client.team.git.action.CopyIdToClipboard;
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
@@ -41,7 +28,10 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
+	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
+	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
