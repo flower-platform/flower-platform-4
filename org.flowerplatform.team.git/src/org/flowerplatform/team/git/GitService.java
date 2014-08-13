@@ -619,27 +619,39 @@ public class GitService {
 	/**
 	 * @author Andreea Tita
 	 */
+	@SuppressWarnings("unchecked")
 	public String push (String nodeUri, RemoteConfiguration pushConfig) throws Exception {
 		String repoPath =  Utils.getRepo(nodeUri);
 		Repository  repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
 		PushCommand pushCommand;
+		GitCredentials credentials = new GitCredentials();
 
 		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
 			pushCommand = new Git(repository).push().setRemote(GitUtils.getName(nodeUri));
+			
+			//check if credentials for remote are set
+			if ((credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0))) == null) {
+				return "You must set credentials!";
+			}
 		} else {
 			List<RefSpec> specsList = new ArrayList<RefSpec>();
-			if(pushConfig.getPushMappings() != null)  {
+			if (pushConfig.getPushMappings() != null)  {
 				for (String refMapping : pushConfig.getPushMappings()) {
 					specsList.add(new RefSpec(refMapping));
 				}
 			}
 			pushCommand = new Git(repository).push().setRemote(new URIish(pushConfig.getUri()).toPrivateString()).setRefSpecs(specsList);
+			
+			//check if credentials for pushConfig are set
+			if ((credentials = getCredentials("git|" + pushConfig.getUri())) == null ){
+				return "You must set credentials!";
+			}
 		}
 		
 		// provide credentials for use in connecting to repositories 
-		pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider("",""));
+		pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(),credentials.getPassword()));
 		Iterable<PushResult> resultIterable = pushCommand.call();
 	
 		return GitUtils.handlePushResult(resultIterable.iterator().next());

@@ -1,6 +1,7 @@
 package org.flowerplatform.team.git.controller;
 
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
 
 import java.io.File;
@@ -35,7 +36,7 @@ public class GitResourceHandler implements IResourceHandler {
 			e1.printStackTrace();
 		}
 		
-		if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE)) {
+		if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE) || GitUtils.getType(nodeUri).equals(GIT_REMOTE_TYPE)) {
 			return GitUtils.getName(nodeUri);
 		}
 			try {

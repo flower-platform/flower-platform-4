@@ -21,11 +21,12 @@ package org.flowerplatform.flex_client.team.git.action {
 				var node:Node = Node(selection.getItemAt(0));
 				if (node.type == GitConstants.GIT_REPO_TYPE) {
 					label = Resources.getMessage("flex_client.team.git.action.Push.pushOnGit");
+					return true;
 				}
 				if (node.type == GitConstants.GIT_REMOTE_TYPE) {
 					label = Resources.getMessage("flex_client.team.git.action.Push.pushOnRemote");
+					return true;
 				}
-				return true;
 			}
 			return false;
 		}
