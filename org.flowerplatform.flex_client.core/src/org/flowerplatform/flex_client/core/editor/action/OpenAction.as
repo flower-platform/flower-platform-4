@@ -14,10 +14,14 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.editor.action {
+	import mx.collections.ArrayCollection;
+	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
@@ -28,10 +32,14 @@ package org.flowerplatform.flex_client.core.editor.action {
 		
 		public var contentType:String;
 		
-		public function OpenAction(contentType:String = null) {
+		public var resourceUri:String;
+		
+		public function OpenAction(resourceUri:String = null, contentType:String = null) {
 			super();
 						
 			this.contentType = contentType;
+			this.resourceUri = resourceUri;
+			
 			if (contentType != null) {
 				var editorDescriptor:BasicEditorDescriptor = CorePlugin.getInstance().contentTypeRegistry[contentType];
 				label = editorDescriptor.getEditorName();
@@ -49,8 +57,16 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		override public function run():void {
-			var node:Node = Node(selection.getItemAt(0));									
-			CorePlugin.getInstance().openEditor(node, contentType);
+			var node:Node = Node(selection.getItemAt(0));
+			var subscribableResources:ArrayCollection = ArrayCollection(node.getPropertyValue(CoreConstants.SUBSCRIBABLE_RESOURCES));
+			
+			if (resourceUri == null && subscribableResources != null && subscribableResources.length > 0) {
+				resourceUri = Pair(subscribableResources.getItemAt(0)).a as String;
+			} else if (resourceUri == null) {
+				resourceUri = node.nodeUri;
+			}
+			
+			CorePlugin.getInstance().openEditor(resourceUri, contentType);
 		}
 		
 	}

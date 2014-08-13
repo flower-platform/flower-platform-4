@@ -45,13 +45,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -391,15 +391,12 @@ package org.flowerplatform.flex_client.core {
 		 * @author Claudiu Matei
 		 * @author Cristina Constantinescu
 		 */
-		public function openEditor(node:Node, ct:String = null, addEditorInRight:Boolean = false):UIComponent {
-			var sr:Pair = getSubscribableResource(node, ct);
-			var resourceUri:String = sr == null ? node.nodeUri : sr.a as String;
-			var contentType:String = sr == null ? (ct == null ? contentTypeRegistry.defaultContentType : ct) : sr.b as String;
-			if (contentType == null) {
-				contentType = contentTypeRegistry.defaultContentType;
+		public function openEditor(resourceUri:String, ct:String = null, addEditorInRight:Boolean = false):UIComponent {
+			if (ct == null) {
+				ct = contentTypeRegistry.defaultContentType;
 			}
 			
-			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[contentType];
+			var editorDescriptor:BasicEditorDescriptor = contentTypeRegistry[ct];
 			return editorDescriptor.openEditor(resourceUri, true, false, false, false, addEditorInRight);
 		}
 

@@ -73,7 +73,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			view.resultHandler = function(resourceUri:String):void {
 				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", 
 					[Node(obj).nodeUri, resourceUri], 
-					function(matchUri:String):void {CorePlugin.getInstance().openEditor(new Node(matchUri), null, true)});
+					function(matchUri:String):void {CorePlugin.getInstance().openEditor(matchUri, null, true)});
 			};
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
