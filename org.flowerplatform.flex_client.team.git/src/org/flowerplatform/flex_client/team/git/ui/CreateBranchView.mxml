@@ -70,20 +70,9 @@ license-end
 				rebaseCommitsRadioButton.enabled = !rebaseCommitsRadioButton.enabled;
 			}
 					
-			override protected function okHandler(event:Event = null):void {									
-				/* send to server the parent */
-				var parentUri:String;
-				if (node.parent.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE) {
-					parentUri = node.parent.nodeUri;
-				} else {
-					for each (var child:Node in node.parent.parent.children) {
-						if (child.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE) {
-							parentUri = child.nodeUri;
-						}
-					}
-				}
+			override protected function okHandler(event:Event = null):void {				
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", 
-					[parentUri, 
+					[node.nodeUri, 
 					branchNameTextInput.text, 
 					selectBranch.selectedItem.name, 
 					configureUpstreamGroup.visible, // if the node is a tag, don't configure upstream in createBranch
