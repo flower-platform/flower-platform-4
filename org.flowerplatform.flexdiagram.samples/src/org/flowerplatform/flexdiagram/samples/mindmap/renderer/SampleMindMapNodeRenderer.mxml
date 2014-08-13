@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
+-->
+<!---
+@author Alexandra Topoloaga
+-->
+<mindmap:AbstractMindMapNodeRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.PropertyChangeEvent;
+			
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+			
+						
+			public function get dataConverted():SampleMindMapModel {
+				return SampleMindMapModel(data);
+			}
+			
+			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
+				var mindMapDiagramShell:MindMapDiagramShell = this.mindMapDiagramShell;
+				if (mindMapDiagramShell != null) {
+					// i.e. used as a renderer in a mind map diagram
+					if (event == null || event.property == "x") {
+						x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");	
+					}
+					if (event == null || event.property == "y") {
+						y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");	
+					}
+				}
+				// else used as a renderer in a plain Flex component
+				
+				if (event == null || event.property == "fontFamily") {
+					fontFamily = dataConverted.fontFamily;
+				} 
+				if (event == null || event.property == "fontSize") {
+					fontSize = dataConverted.fontSize;
+				} 
+				if (event == null || event.property == "fontWeight") {
+					fontWeight = dataConverted.fontWeight;
+				} 
+				if (event == null || event.property == "fontStyle") {
+					fontStyle = dataConverted.fontStyle;
+				}
+				if (event == null || event.property == "text") {
+					text = dataConverted.text;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+</mindmap:AbstractMindMapNodeRenderer>

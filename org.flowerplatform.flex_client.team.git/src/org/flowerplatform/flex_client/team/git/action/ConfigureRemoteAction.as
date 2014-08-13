@@ -14,50 +14,54 @@
 * license-end
 */
 package org.flowerplatform.flex_client.team.git.action {
+	import mx.controls.Alert;
 	
-	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
-	import org.flowerplatform.flex_client.team.git.ui.CreateBranchView;
+	import org.flowerplatform.flex_client.team.git.ui.ConfigureRemoteView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-	 
+	
 	/**
 	 * @author Cristina Brinza
-	 */	
-	public class CreateBranchAction extends ActionBase {
+	 */
+	
+	public class ConfigureRemoteAction extends ActionBase {
 		
-		public function CreateBranchAction() {
+		public function ConfigureRemoteAction() {
 			super();
 			
-			label = Resources.getMessage("flex_client.team.git.action.createBranch");
-			icon = Resources.createBranchIcon;
-			orderIndex = 300;
+			icon = Resources.configureFetchPush;
+			orderIndex = -1;
 		}
-				
+		
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0;
+				if (node.type == GitConstants.GIT_REMOTES_TYPE) {
+					label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.createRemote");
+					return true;
+				} else if (node.type == GitConstants.GIT_REMOTE_TYPE) {
+					label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.configureRemote");
+					return true;
+				}
 			}
 			return false;
 		}
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var view:CreateBranchView = new CreateBranchView();
 			
+			var view:ConfigureRemoteView = new ConfigureRemoteView();
 			view.node = node;
 			
-			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)
-				.setWidth(450)
-				.setHeight(350)
-				.setTitle(label)
+				.setWidth(500)
+				.setHeight(400)
+				.setTitle(label)	
 				.setIcon(icon)
 				.show();
 		}

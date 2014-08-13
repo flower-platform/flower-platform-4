@@ -8,7 +8,13 @@ import org.flowerplatform.util.UtilConstants;
 public class GitConstants {
 
 	/////////////////////////////////////////////////////////////
-	//Node type in Git folder hierarchy
+	// Scheme
+	/////////////////////////////////////////////////////////////
+	
+	public static final String GIT_SCHEME = "git";
+
+	/////////////////////////////////////////////////////////////
+	// Node types
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_REPO_TYPE = "gitRepo";
@@ -20,17 +26,12 @@ public class GitConstants {
 	public static final String GIT_REMOTE_BRANCH_TYPE = "gitRemoteBranch";
 	public static final String GIT_TAG_TYPE = "gitTag";
 	public static final String GIT_REMOTE_TYPE = "gitRemote";
-	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
+		
 	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
-	
+	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
+		
 	/////////////////////////////////////////////////////////////
-	//Schemes
-	/////////////////////////////////////////////////////////////
-	
-	public static final String GIT_SCHEME = "git";
-	
-	/////////////////////////////////////////////////////////////
-	//Leaf Git Node Properties
+	// Node Properties
 	/////////////////////////////////////////////////////////////
 	
 	public static final String NAME = "name";
@@ -39,12 +40,11 @@ public class GitConstants {
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";
-	
 	 
 	 ////////////////////////////////////////////////////////////
 	 //Categories
 	 ////////////////////////////////////////////////////////////
-	 
+
 	public static final String CURRENT_BRANCH = "currentBranch";
 	public static final String CURRENT_COMMIT = "currentCommit";
 	public static final String IS_CHECKEDOUT = "isCheckedOut";
@@ -54,4 +54,11 @@ public class GitConstants {
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
+	/////////////////////////////////////////////////////////////
+	//Reset types
+	/////////////////////////////////////////////////////////////
+	
+	public static final String RESET_SOFT = "soft";
+	public static final String RESET_MIXED = "mixed";
+	public static final String RESET_HARD = "hard";
 }

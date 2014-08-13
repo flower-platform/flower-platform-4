@@ -1,7 +1,6 @@
 package org.flowerplatform.team.git.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,27 +35,25 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 	
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		List<Node> children = new ArrayList<Node>();
-		Repository repo = null;
-		String repoPath = Utils.getRepo(node.getNodeUri());
 		try {
-			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			Map<String, org.eclipse.jgit.lib.Ref> local = repo.getRefDatabase().getRefs(refType);
+			List<Node> children = new ArrayList<Node>();
+			Repository repo = null;
+			String repoPath = Utils.getRepo(node.getNodeUri());
 			
+			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		
+			
+			Map<String, org.eclipse.jgit.lib.Ref> local = repo.getRefDatabase().getRefs(refType);
+				
 			for (Entry<String, org.eclipse.jgit.lib.Ref> entry : local.entrySet()) {
-				String path = new String();
-				path = repoPath + "|" + type + "$" + entry.getValue().getName();
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(scheme)
-						.createNodeFromRawNodeData(Utils.getUri(scheme, path), entry.getValue()));
+						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath,type,entry.getValue().getName()), entry.getValue()));
 			}		
-		} catch (IOException e) {
-			e.printStackTrace();
+			
+			return children;
+		} catch(Exception e){
+			throw new RuntimeException(e);
 		}
-		return children;
 	}
 
 	@Override
