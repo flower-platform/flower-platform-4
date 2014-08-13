@@ -391,6 +391,10 @@ public class GitService {
 		} 
 		
 		new Git(repo).reset().setMode(resetType).setRef(hash).call();
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new Update().setFullNodeIdAs(nodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/**

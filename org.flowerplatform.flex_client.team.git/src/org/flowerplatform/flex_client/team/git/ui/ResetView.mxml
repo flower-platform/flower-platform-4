@@ -9,9 +9,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
-			import mx.states.OverrideBase;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
@@ -20,7 +18,6 @@
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.Pair;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
@@ -53,8 +50,7 @@
 				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
 				var gitNodeUri:String = CorePlugin.getInstance()
 					.createNodeUriWithRepo(GitConstants.GIT_SCHEME, node.nodeUri, GitConstants.GIT_REPO_TYPE);
-				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
-				tree.initializeTree(pair == null ? gitNodeUri : pair.a as String);
+				tree.initializeTree(gitNodeUri);
 			}
 			
 			private function viewRemovedHandler(event:ViewRemovedEvent):void {
