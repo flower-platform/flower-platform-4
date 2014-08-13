@@ -21,6 +21,7 @@ public class GitConstants {
 	public static final String GIT_TAG_TYPE = "gitTag";
 	public static final String GIT_REMOTE_TYPE = "gitRemote";
 	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
+	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
 	
 	/////////////////////////////////////////////////////////////
 	//Schemes
@@ -44,11 +45,8 @@ public class GitConstants {
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
-
-	
-
-
 	public static final String CONFIG_REBASE = "configRebase";
+
 	public static final String CURRENT_BRANCH = "currentBranch";
 	public static final String CURRENT_COMMIT = "currentCommit";
 	public static final String IS_CHECKEDOUT = "isCheckedOut";
@@ -57,7 +55,7 @@ public class GitConstants {
 	public static final String REMOTE_URIS = "URIs";
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
-	
+
 	/////////////////////////////////////////////////////////////
 	//Icons paths
 	/////////////////////////////////////////////////////////////
@@ -78,4 +76,8 @@ public class GitConstants {
 
 	public static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
+	public static final String RESET_SOFT = "soft";
+	public static final String RESET_MIXED = "mixed";
+	public static final String RESET_HARD = "hard";
+
 }

@@ -553,30 +553,35 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/codesync.regex/wrench.png")]
 		public static const wrenchIcon:Class;
 		
-		// Create Branch
+		// Team Git
+		
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
 
 		[Embed(source="/team.git/editconfig.gif")]
 		public static const renameBranch:Class;
-		
+
+		[Embed(source="/team.git/remote_entry_tbl.gif")]
+		public static const remoteEntry:Class;
+
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
-		
-		// Team Git
-		
+
+		[Embed(source="/team.git/remotespec.gif")]
+		public static const configureFetchPush:Class;
 
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
-		
+
+		[Embed(source="/git/reset.gif")]
+		public static const resetIcon:Class;
 
 		[Embed(source="/team.git/gitDiffFromCommits.png")]
 		public static const gitDiffFromCommitsIcon:Class;
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
-		
-		// Git
+
 		
 		[Embed(source="/team.git/branch_obj.gif")]
 		public static const branchIcon:Class;

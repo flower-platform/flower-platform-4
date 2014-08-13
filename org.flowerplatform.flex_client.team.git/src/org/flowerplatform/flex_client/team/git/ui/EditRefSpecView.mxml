@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
+-->
+<!--
+@author Cristina Brinza
+-->
+
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark"
+					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 xmlns:mx="library://ns.adobe.com/flex/mx"
+					 implements="org.flowerplatform.flexutil.dialog.IDialog">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.validators.Validator;
+			
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.dialog.IDialog;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+			
+			[Bindable]
+			public var currentRefSpec:String;
+			
+			private var resultHandler:IDialogResultHandler;
+			
+			public function setResultHandler(resultHandler:IDialogResultHandler):void {
+				this.resultHandler = resultHandler;
+			}
+			
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				viewHost.setIcon(Resources.remoteEntry);
+				viewHost.setLabel(Resources.getMessage("flex_client.team.git.ui.EditRefSpec.title"));
+			}
+			
+			override protected function okHandler(event:Event = null):void {
+				if (Validator.validateAll(validators).length > 0) {
+					return;
+				}
+				
+				resultHandler.handleDialogResult(refSpecTextInput.text);
+				cancelHandler();
+			}
+									
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<fx:Array id="validators">
+			<mx:RegExpValidator source="{refSpecTextInput}" property="text" expression="^\+?(.*):(.*)$"
+								noMatchError="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.hint')}" />
+		</fx:Array>	
+	</fx:Declarations>
+	
+	<s:Form width="100%">
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.refSpec')}"
+					 width="100%" >			
+			<s:TextInput id="refSpecTextInput"
+						 text="{currentRefSpec}"
+						 width="100%"
+						 creationComplete="{callLater(refSpecTextInput.setFocus)}" />				
+		</s:FormItem>
+	</s:Form>
+	
+</ns:BasicViewContent>

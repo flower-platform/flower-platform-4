@@ -23,7 +23,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapPopulator {
-		
+			
 		public static function populateRootModel(modelHolder:IModelHolder):void {
 //			var rootModel:ParentAwareArrayList = modelHolder.rootModel;
 //			if (rootModel == null) {
@@ -85,14 +85,27 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			modelHolder.rootModel = rootModel;
 		}
 		
+		/**
+		 * @author Alexandra Topoloaga
+		 */
+		private static var currentModel:int;
+		
+	 	/**
+		 * @author Cristina Constantinescu
+	     * @author Alexandra Topoloaga
+		 */
 		private static function getMindMapModel(parent:Object):SampleMindMapModel {
 			var model:SampleMindMapModel;
 			
 			model = new SampleMindMapModel();
-			model.text = "MindMap" + (new Date()).time;
+			model.text = "MindMap" + currentModel++;
 //			model.width = 151;
 //			model.height = 22;
 			model.hasChildren = false;
+			model.fontFamily = "Times New Roman";
+			model.fontSize = 28;
+			model.fontStyle = true;
+			model.fontWeight = true;
 			if (parent is SampleMindMapModel && parent != null && parent.side != 0) {
 				model.side = parent.side;
 			} else if (parent is SampleMindMapModel && parent != null) {
