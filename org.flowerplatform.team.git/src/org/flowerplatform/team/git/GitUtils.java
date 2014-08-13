@@ -17,6 +17,10 @@ package org.flowerplatform.team.git;
 
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.lib.Constants;
@@ -90,8 +94,10 @@ public class GitUtils {
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
-
-	/* Merge operation from fp3 */
+	/**
+	 * @author Cristina Constantienscu
+	 * @author Tita Andreea
+	 */
 	public static String handleMergeResult(MergeResult mergeResult) {
 		StringBuilder sb = new StringBuilder();		
 		if (mergeResult == null) {
@@ -129,6 +135,24 @@ public class GitUtils {
 				sb.append("\n");
 			}
 		}
+		
+		List<String> conflicts = new ArrayList<>();  
+		if(mergeResult.getConflicts() != null) {			
+			for(String path : mergeResult.getConflicts().keySet()) {
+				if (!conflicts.contains(path)) {
+					conflicts.add(path);
+				}
+			}
+		}		
+		if(!conflicts.isEmpty()) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for(String path : conflicts) {
+				sb.append(path);
+				sb.append("\n");				
+			}
+		}
+		
 		return sb.toString();
 	}
 
