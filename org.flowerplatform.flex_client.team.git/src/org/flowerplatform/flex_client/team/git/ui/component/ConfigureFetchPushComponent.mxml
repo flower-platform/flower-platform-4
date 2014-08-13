@@ -43,7 +43,7 @@ license-end
 			public var refMappings:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
-			public var remoteUri:String="";
+			public var remoteUri:String = "";
 			
 			private var lastBtnPressed:Button;
 			

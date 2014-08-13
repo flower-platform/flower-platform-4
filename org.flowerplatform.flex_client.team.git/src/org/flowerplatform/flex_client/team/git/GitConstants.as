@@ -14,13 +14,14 @@
 * license-end
 */
 package org.flowerplatform.flex_client.team.git {
-	
-	/**
-	 * @author Cristina Brinza
-	 */
+
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	public class GitConstants {
 
+		public static const GIT_CATEGORY:String = FlexUtilConstants.CATEGORY_PREFIX + "git";
+		public static const GIT_REF_CATEGORY:String = FlexUtilConstants.CATEGORY_PREFIX + "gitRef";
+				
 		/////////////////////////////////////////////////////////////
 		//Node type in Git folder hierarchy
 		/////////////////////////////////////////////////////////////
@@ -46,13 +47,6 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 		
 		public static const GIT_SCHEME:String = "git";
-		public static const GIT_LOCAL_BRANCHES_SCHEME:String = "gitLocalBranches";
-		public static const GIT_REMOTE_BRANCHES_SCHEME:String = "gitRemoteBranches";
-		public static const GIT_TAGS_SCHEME:String = "gitTags";
-		public static const GIT_REMOTES_SCHEME:String = "gitRemotes";
-		public static const GIT_BRANCH_SCHEME:String = "gitBranch";
-		public static const GIT_TAG_SCHEME:String = "gitTag";
-		public static const GIT_REMOTE_SCHEME:String = "gitRemote";
 		
 		/////////////////////////////////////////////////////////////
 		//Leaf Git Node Properties
@@ -62,9 +56,15 @@ package org.flowerplatform.flex_client.team.git {
 		public static const IS_GIT_REPOSITORY:String = "isGitRepository";
 
 		public static const FULL_NAME:String = "fullName";
+		
 		public static const CONFIG_REMOTE:String = "configRemote";
 		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
 		public static const CONFIG_REBASE:String = "configRebase";
+
+		public static const CURRENT_BRANCH:String = "currentBranch";		
+		
+		public static const IS_CHECKEDOUT:String = "isCheckedOut";
+		
 		public static const FETCH_REF_SPECS:String = "fetchRefSpecs";
 		public static const PUSH_REF_SPECS:String = "pushRefSpecs";
 		public static const REMOTE_URIS:String = "URIs";
@@ -75,4 +75,15 @@ package org.flowerplatform.flex_client.team.git {
 		public static const IS_REPO:String = "isRepo";
 
 	}
+}
+
+		/////////////////////////////////////////////////////////////
+		//Reset types
+		/////////////////////////////////////////////////////////////
+		
+		public static const RESET_SOFT:String = "soft";
+		public static const RESET_MIXED:String = "mixed";
+		public static const RESET_HARD:String = "hard";	
+	}
+
 }

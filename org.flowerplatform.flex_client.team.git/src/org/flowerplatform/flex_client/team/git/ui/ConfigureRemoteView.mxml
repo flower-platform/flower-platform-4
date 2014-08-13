@@ -29,10 +29,6 @@ license-end
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
-			import mx.events.FlexEvent;
-			
-			import spark.events.TextOperationEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;

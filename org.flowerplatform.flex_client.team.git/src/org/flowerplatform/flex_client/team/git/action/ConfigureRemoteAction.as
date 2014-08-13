@@ -44,7 +44,7 @@ package org.flowerplatform.flex_client.team.git.action {
 					label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.createRemote");
 					return true;
 				} else if (node.type == GitConstants.GIT_REMOTE_TYPE) {
-					label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.configureRemote")
+					label = Resources.getMessage("flex_client.team.git.ui.ConfigureRemoteAction.configureRemote");
 					return true;
 				}
 			}
