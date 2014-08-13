@@ -139,50 +139,56 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 		if (nodeFromRegistry == null) { // node not registered, probably it isn't visible for this client
 			continue;
 		}
-		if (update.type == "PROPERTY_UPDATED") { // property update
-			var propertyUpdate = update;
+		
+		switch (update.type) {
+			case "UPDATED":
+				var propertyUpdate = update;
+				
+				if (propertyUpdate.isUnset) {
+					delete this.nodeFromRegistry.properties[propertyUpdate.key];						
+				} else {
+					this.setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);						
+				}	
+				break;
+			case "ADDED":
+				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
+				
+				if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
+					var index = -1; // -> add it last
+					if (update.fullTargetNodeAddedBeforeId != null) {
+						// get targetNodeAddedBefore from registry 
+						var targetNodeAddedBeforeInRegistry = this.getNodeById(update.fullTargetNodeAddedBeforeId);
+						if (targetNodeAddedBeforeInRegistry != null) { // exists, get its index in children list
+							index = nodeFromRegistry.children.getItemIndex(targetNodeAddedBeforeInRegistry);	
+						}
+					}								
+					this.registerNode(update.targetNode, nodeFromRegistry, index);								
+				} else {
+					// child already added, probably after refresh
+					// e.g. I add a children, I expand => I get the list with the new children; when the
+					// client polls for data, this children will be received as well, and thus duplicated.
+					// NOTE: since the instant notifications for the client that executed => this doesn't apply
+					// for him; but for other clients yes
 							
-			if (propertyUpdate.isUnset) {
-				delete this.nodeFromRegistry.properties[propertyUpdate.key];						
-			} else {
-				this.setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);						
-			}					
-		} else { // children update
-			var childrenUpdate = update;
-			var targetNodeInRegistry = this.getNodeById(childrenUpdate.targetNode.nodeUri);	
-			
-			switch (childrenUpdate.type) {
-				case "ADDED":	
-					if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
-						var index = -1; // -> add it last
-						if (childrenUpdate.fullTargetNodeAddedBeforeId != null) {
-							// get targetNodeAddedBefore from registry 
-							var targetNodeAddedBeforeInRegistry = this.getNodeById(childrenUpdate.fullTargetNodeAddedBeforeId);
-							if (targetNodeAddedBeforeInRegistry != null) { // exists, get its index in children list
-								index = nodeFromRegistry.children.getItemIndex(targetNodeAddedBeforeInRegistry);	
-							}
-						}								
-						this.registerNode(childrenUpdate.targetNode, nodeFromRegistry, index);								
-					} else {
-						// child already added, probably after refresh
-						// e.g. I add a children, I expand => I get the list with the new children; when the
-						// client polls for data, this children will be received as well, and thus duplicated.
-						// NOTE: since the instant notifications for the client that executed => this doesn't apply
-						// for him; but for other clients yes
-								
-						// Nothing to do								
-					}			
-					break;
-				case "REMOVED":	
-					if (targetNodeInRegistry != null) {
-						this.unregisterNode(targetNodeInRegistry, nodeFromRegistry);								
-					} else {
-						// node not registered, probably it isn't visible for this client
-						// Nothing to do
-					}
-					break;
-			}					
-		}				
+					// Nothing to do								
+				}		
+				break;
+			case "REMOVED":
+				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
+				
+				if (targetNodeInRegistry != null) {
+					this.unregisterNode(targetNodeInRegistry, nodeFromRegistry);								
+				} else {
+					// node not registered, probably it isn't visible for this client
+					// Nothing to do
+				}
+				break;
+			case "REQUEST_REFRESH":
+				this.refresh(nodeFromRegistry);
+				break;
+			default:
+				update.apply(this, nodeFromRegistry);		
+		}						
 	}			
 };
 
@@ -200,11 +206,12 @@ NodeRegistry.prototype.refresh = function(node) {
 	if (!(node.nodeUri in this.registry)) {
 		return;
 	}
+	var self = this;
 	this.nodeRegistryManager.serviceInvocator.invoke(
 		"nodeService.refresh", 
 		[this.getFullNodeIdWithChildren(node)], 
 		function (result) {
-			this.refreshHandler(node, result);
+			self.refreshHandler(node, result);
 		});
 };
 
