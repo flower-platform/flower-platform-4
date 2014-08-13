@@ -35,6 +35,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			
 			icon = Resources.deleteRemote;
 			label = Resources.getMessage("flex_client.team.git.action.DeleteRemoteAction.deleteRemote");
+			orderIndex = 355;
 		}
 		
 		override public function get visible():Boolean {

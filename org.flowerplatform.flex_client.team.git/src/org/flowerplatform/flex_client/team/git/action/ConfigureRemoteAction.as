@@ -31,7 +31,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			super();
 			
 			icon = Resources.configureFetchPush;
-			orderIndex = -1;
+			orderIndex = 350;
 		}
 		
 		override public function get visible():Boolean {
@@ -57,7 +57,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)
 				.setWidth(500)
-				.setHeight(400)
+				.setHeight(350)
 				.setTitle(label)	
 				.setIcon(icon)
 				.show();
