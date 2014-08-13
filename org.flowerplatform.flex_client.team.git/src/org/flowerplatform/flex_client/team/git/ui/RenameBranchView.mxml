@@ -33,7 +33,7 @@
 						.showMessageBox(true);
 				} else {
 					var newName:String = newBranchName.text;
-					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",[node.nodeUri, newName]);
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch", [node.parent.nodeUri, node.nodeUri, newName]);
 					cancelHandler();
 				}
 			}	
