@@ -17,7 +17,7 @@ public class GitLocalBranchesPropertiesProvider extends AbstractController imple
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.localBranches"));
+		node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.localBranches"));
 		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "folder.gif"));
 	}
 

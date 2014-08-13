@@ -95,7 +95,8 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(match).getFeatureType(feature);
 		switch (featureType) {
 		case CodeSyncConstants.FEATURE_TYPE_VALUE:
-			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils
+					.getOriginalPropertyName(feature.toString()), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 			break;
 		case CodeSyncConstants.FEATURE_TYPE_CONTAINMENT:
 			processContainmentFeatureAfterActionPerformed(node, feature, result, match);

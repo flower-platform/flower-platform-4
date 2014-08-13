@@ -22,6 +22,6 @@ import org.flowerplatform.codesync.adapter.AbstractModelAdapter;
  */
 public abstract class AstModelElementAdapter extends AbstractModelAdapter {
 
-	abstract protected void updateUID(Object element, Object correspondingElement);
+	protected abstract void updateUID(Object element, Object correspondingElement);
 	
 }

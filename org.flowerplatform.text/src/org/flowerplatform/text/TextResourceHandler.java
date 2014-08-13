@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TextResourceHandler extends AbstractController implements IResourceHandler {
 
-	protected final static Logger logger = LoggerFactory.getLogger(TextResourceHandler.class);
+	protected static final Logger logger = LoggerFactory.getLogger(TextResourceHandler.class);
 	
 	@Override
 	public String getResourceUri(String nodeUri) {

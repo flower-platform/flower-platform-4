@@ -20,7 +20,7 @@ public class GitTagsPropertiesProvider extends AbstractController implements IPr
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.tags"));
 		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "tags.gif"));
-		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND,true);
+		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}
 
 }

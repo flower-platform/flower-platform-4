@@ -38,7 +38,7 @@ public class MindMapServiceRemote {
 			return null;
 		}
 		List<String> children = new ArrayList<String>();
-		for(IStyle style : styles) {
+		for (IStyle style : styles) {
 			children.add(style.toString());
 		}		
 		return children;		

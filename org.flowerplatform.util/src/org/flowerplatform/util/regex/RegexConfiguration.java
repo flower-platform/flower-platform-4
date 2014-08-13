@@ -99,7 +99,8 @@ public class RegexConfiguration {
 			AbstractRegexWithAction regex = regexes.get(i);
 			
 			if (logger.isTraceEnabled()) {
-				logger.trace("Adding to capture group = {} regex = {} having {} capture groups", new Object[] { nextCaptureGroupIndex, regex.getRegex(), regex.getNumberOfCaptureGroups()});
+				logger.trace("Adding to capture group = {} regex = {} having {} capture groups",
+				new Object[] { nextCaptureGroupIndex, regex.getRegex(), regex.getNumberOfCaptureGroups()});
 			}
 			
 			composedRegex.append(regex.getRegex());

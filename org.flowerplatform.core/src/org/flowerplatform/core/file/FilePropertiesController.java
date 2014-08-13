@@ -71,11 +71,13 @@ public class FilePropertiesController extends AbstractController implements IPro
 				case CoreConstants.FILE_LAST_ACCESS_TIME:
 				case CoreConstants.FILE_LAST_MODIFIED_TIME:
 				case CoreConstants.FILE_CREATION_TIME:
-					node.getProperties().put(entry.getKey().toString(), new Date(((FileTime)entry.getValue()).toMillis()));
+					node.getProperties().put(entry.getKey().toString(), new Date(((FileTime) entry.getValue()).toMillis()));
 					break;
 				case CoreConstants.FILE_IS_DIRECTORY: 
 					node.getProperties().put(FILE_IS_DIRECTORY, entry.getValue());
 					break;
+			default:
+				break;
 			}
 		}
 
@@ -95,10 +97,11 @@ public class FilePropertiesController extends AbstractController implements IPro
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		long length = 0;
 	    for (Object child : fileAccessController.listFiles(folder)) {
-	        if (fileAccessController.isFile(folder))
-	            length += fileAccessController.length(child);
-	        else
-	            length += getFolderSize(child);
+	        if (fileAccessController.isFile(folder)) {
+				length += fileAccessController.length(child);
+			} else {
+				length += getFolderSize(child);
+			}
 	    }
 	    return length;
 	}

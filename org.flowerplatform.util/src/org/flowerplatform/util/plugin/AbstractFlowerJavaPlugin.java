@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 
-	private final static Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
 	
 	private BundleContext bundleContext;
 	
@@ -61,7 +61,8 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			inputStream = messagesFileUrl.openStream();
 			resourceBundle = new PropertyResourceBundle(inputStream);
 		} catch (IOException e) {
-			logger.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s", getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
+			logger.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s",
+					getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
@@ -96,9 +97,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	}
 
 	public String getResourceUrl(String resource) {
-		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + 
-				getBundleContext().getBundle().getSymbolicName() + "/" +
-				resource;
+		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/"
+				+ getBundleContext().getBundle().getSymbolicName() + "/"
+				+ resource;
 	}
 	
 	/**

@@ -34,13 +34,14 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ResourceSetService {
 
-	protected final static Logger logger = LoggerFactory.getLogger(ResourceSetService.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(ResourceSetService.class);
 	
 	static final String PROP_RESOURCE_UPDATES_MARGIN = "resourceUpdatesMargin"; 
 	static final String PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN = "0"; 
 	
 	public ResourceSetService() {
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(PROP_RESOURCE_UPDATES_MARGIN, PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties
+				.AddIntegerProperty(PROP_RESOURCE_UPDATES_MARGIN, PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
 	}
 	
 	public abstract String addToResourceSet(String resourceSet, String resourceUri);
@@ -48,7 +49,7 @@ public abstract class ResourceSetService {
 	public abstract void removeFromResourceSet(String resourceSet, String resourceUri);
 	
 	public void save(String resourceSet, ServiceContext<ResourceSetService> context) {
-		logger.debug("Save resource set {}", resourceSet);
+		LOGGER.debug("Save resource set {}", resourceSet);
 		ServiceContext<ResourceService> resourceServiceContext = new ServiceContext<ResourceService>();
 		resourceServiceContext.setContext(context.getContext());
 		for (String resourceUri : getResourceUris(resourceSet)) {
@@ -57,7 +58,7 @@ public abstract class ResourceSetService {
 	}
 	
 	public void reload(String resourceSet, ServiceContext<ResourceSetService> context) {
-		logger.debug("Reload resource set {}", resourceSet);
+		LOGGER.debug("Reload resource set {}", resourceSet);
 		doReload(resourceSet);
 		ServiceContext<ResourceService> resourceServiceContext = new ServiceContext<ResourceService>();
 		resourceServiceContext.setContext(context.getContext());
@@ -99,8 +100,9 @@ public abstract class ResourceSetService {
 			return updatesAddedAfterLastRequest;
 		}
 		
-		if (timestampOfLastRequest > 0 && 
-			getLoadedTimestamp(resourceSet) > timestampOfLastRequest + Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UPDATES_MARGIN))) {
+		if (timestampOfLastRequest > 0
+			&& getLoadedTimestamp(resourceSet) > timestampOfLastRequest + Integer.valueOf(CorePlugin.getInstance()
+			.getFlowerProperties().getProperty(PROP_RESOURCE_UPDATES_MARGIN))) {
 			// if resource was reloaded after -> tell client to perform full refresh
 			return null;
 		}

@@ -25,7 +25,6 @@ import java.util.Map;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.util.Utils;
 
 /**

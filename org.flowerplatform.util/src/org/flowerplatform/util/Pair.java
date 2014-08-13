@@ -51,8 +51,8 @@ public class Pair<A, B> {
 		}
 		Pair<?, ?> otherObj = (Pair<?, ?>) obj;
 		return 
-			((a == null && otherObj.a == null) || (a != null && a.equals(otherObj.a))) &&
-			((b == null && otherObj.b == null) || (b != null && b.equals(otherObj.b)));
+			((a == null && otherObj.a == null) || (a != null && a.equals(otherObj.a)))
+			&& ((b == null && otherObj.b == null) || (b != null && b.equals(otherObj.b)));
 	}
 	
 }

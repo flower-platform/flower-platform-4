@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TypeDescriptorRegistry {
 
-	private final static Logger logger = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
+	private static final Logger logger = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
 	
 	/**
 	 * Package visibility, so that {@link TypeDescriptor} can change it.

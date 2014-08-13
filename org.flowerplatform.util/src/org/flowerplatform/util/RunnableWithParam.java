@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.util;
 
-import java.util.concurrent.Callable;
-
 /**
  * Callback similar to {@link Runnable} or {@link Callable}, 
  * that takes a param and returns a value.
@@ -27,6 +25,6 @@ import java.util.concurrent.Callable;
  */
 public interface RunnableWithParam<R, P> {
 	
-	public R run(P param);
+	R run(P param);
 
 }

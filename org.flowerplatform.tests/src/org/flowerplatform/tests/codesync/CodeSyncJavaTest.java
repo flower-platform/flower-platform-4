@@ -243,7 +243,8 @@ public class CodeSyncJavaTest {
 		// change superCls, superInterfaces
 		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext<NodeService>(nodeService));
-		Node superInterface = new Node(Utils.getUri(CodeSyncJavaConstants.SUPER_INTERFACE, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.SUPER_INTERFACE);
+		Node superInterface = new Node(Utils.getUri(CodeSyncJavaConstants.SUPER_INTERFACE, Utils.getSchemeSpecificPart(root.getNodeUri()), null),
+				CodeSyncJavaConstants.SUPER_INTERFACE);
 		nodeService.addChild(cls, superInterface, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(superInterface, CoreConstants.NAME, "IFromModel", new ServiceContext<NodeService>(nodeService));
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
@@ -272,7 +273,8 @@ public class CodeSyncJavaTest {
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
-		Node orphanRemoval = new Node(Utils.getUri(CodeSyncJavaConstants.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.MEMBER_VALUE_PAIR);
+		Node orphanRemoval = new Node(Utils.getUri(CodeSyncJavaConstants.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null),
+				CodeSyncJavaConstants.MEMBER_VALUE_PAIR);
 		nodeService.addChild(a, orphanRemoval, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, CoreConstants.NAME, "orphanRemoval", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true", new ServiceContext<NodeService>(nodeService));

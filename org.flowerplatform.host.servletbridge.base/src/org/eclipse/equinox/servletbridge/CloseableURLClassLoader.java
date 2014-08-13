@@ -70,7 +70,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.eclipse.equinox.servletbridge.flower.FlowerFrameworkLauncher;
 
 //MODIF_FROM_ORIGINAL begin
 /**
@@ -113,11 +112,13 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		}
 
 		private synchronized JarEntry internalGetEntry() throws IOException {
-			if (entry != null)
+			if (entry != null) {
 				return entry;
+			}
 			entry = jarFile.getJarEntry(getEntryName());
-			if (entry == null)
+			if (entry == null) {
 				throw new FileNotFoundException(getEntryName());
+			}
 			return entry;
 		}
 
@@ -168,12 +169,13 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		}
 
 		public URL getURL(String name) {
-			if (jarFile.getEntry(name) != null)
+			if (jarFile.getEntry(name) != null) {
 				try {
 					return new URL(JAR, null, -1, jarFileURLPrefixString + name, jarURLStreamHandler);
 				} catch (MalformedURLException e) {
 					// ignore
 				}
+			}
 			return null;
 		}
 
@@ -252,9 +254,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		//URL behaves differently across platforms so for file: URLs we parse from string form
 		String pathString = url.toExternalForm().substring(5);
 		//ensure there is a leading slash to handle common malformed URLs such as file:c:/tmp
-		if (pathString.indexOf('/') != 0)
+		if (pathString.indexOf('/') != 0) {
 			pathString = '/' + pathString;
-		else if (pathString.startsWith(UNC_PREFIX) && !pathString.startsWith(UNC_PREFIX, 2)) {
+		} else if (pathString.startsWith(UNC_PREFIX) && !pathString.startsWith(UNC_PREFIX, 2)) {
 			//URL encodes UNC path with two slashes, but URI uses four (see bug 207103)
 			pathString = ensureUNCPath(pathString);
 		}
@@ -269,8 +271,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		StringBuffer result = new StringBuffer(len);
 		for (int i = 0; i < 4; i++) {
 			//	if we have hit the first non-slash character, add another leading slash
-			if (i >= len || result.length() > 0 || path.charAt(i) != '/')
+			if (i >= len || result.length() > 0 || path.charAt(i) != '/') {
 				result.append('/');
+			}
 		}
 		result.append(path);
 		return result.toString();
@@ -279,19 +282,22 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	private static URL[] excludeFileJarURLS(URL[] urls) {
 		ArrayList urlList = new ArrayList();
 		for (int i = 0; i < urls.length; i++) {
-			if (!isFileJarURL(urls[i]))
+			if (!isFileJarURL(urls[i])) {
 				urlList.add(urls[i]);
+			}
 		}
 		return (URL[]) urlList.toArray(new URL[urlList.size()]);
 	}
 
 	private static boolean isFileJarURL(URL url) {
-		if (!url.getProtocol().equals("file")) //$NON-NLS-1$
+		if (!url.getProtocol().equals("file")) {
 			return false;
+		}
 
 		String path = url.getPath();
-		if (path != null && path.endsWith("/")) //$NON-NLS-1$
+		if (path != null && path.endsWith("/")) {
 			return false;
+		}
 
 		return true;
 	}
@@ -307,13 +313,15 @@ public class CloseableURLClassLoader extends URLClassLoader {
 					CloseableJarFileLoader loader = null;
 					URL resourceURL = null;
 					synchronized (loaders) {
-						if (closed)
+						if (closed) {
 							return null;
+						}
 						for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
 							loader = (CloseableJarFileLoader) iterator.next();
 							resourceURL = loader.getURL(resourcePath);
-							if (resourceURL != null)
+							if (resourceURL != null) {
 								break;
+							}
 						}
 					}
 					if (resourceURL != null) {
@@ -326,8 +334,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 					return null;
 				}
 			}, context);
-			if (clazz != null)
+			if (clazz != null) {
 				return clazz;
+			}
 		} catch (PrivilegedActionException e) {
 			throw (ClassNotFoundException) e.getException();
 		}
@@ -356,12 +365,13 @@ public class CloseableURLClassLoader extends URLClassLoader {
 			CodeSource cs = new CodeSource(connection.getJarFileURL(), entry.getCertificates());
 			return defineClass(name, bytes, 0, bytes.length, cs);
 		} finally {
-			if (is != null)
+			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
 					// ignore
 				}
+			}
 		}
 	}
 
@@ -377,13 +387,15 @@ public class CloseableURLClassLoader extends URLClassLoader {
 			String entryPath = packageName.replace('.', '/') + "/"; //$NON-NLS-1$
 			Attributes entryAttributes = manifest.getAttributes(entryPath);
 			String sealed = null;
-			if (entryAttributes != null)
+			if (entryAttributes != null) {
 				sealed = entryAttributes.getValue(Name.SEALED);
+			}
 
 			if (sealed == null) {
 				Attributes mainAttributes = manifest.getMainAttributes();
-				if (mainAttributes != null)
+				if (mainAttributes != null) {
 					sealed = mainAttributes.getValue(Name.SEALED);
+				}
 			}
 			if (Boolean.valueOf(sealed).booleanValue()) {
 				// this manifest attempts to seal when package defined previously unsealed; ERROR
@@ -399,20 +411,23 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		URL url = (URL) AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
 				synchronized (loaders) {
-					if (closed)
+					if (closed) {
 						return null;
+					}
 					for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
 						CloseableJarFileLoader loader = (CloseableJarFileLoader) iterator.next();
 						URL resourceURL = loader.getURL(name);
-						if (resourceURL != null)
+						if (resourceURL != null) {
 							return resourceURL;
+						}
 					}
 				}
 				return null;
 			}
 		}, context);
-		if (url != null)
+		if (url != null) {
 			return url;
+		}
 		return super.findResource(name);
 	}
 
@@ -424,21 +439,24 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
 				synchronized (loaders) {
-					if (closed)
+					if (closed) {
 						return null;
+					}
 					for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
 						CloseableJarFileLoader loader = (CloseableJarFileLoader) iterator.next();
 						URL resourceURL = loader.getURL(name);
-						if (resourceURL != null)
+						if (resourceURL != null) {
 							resources.add(resourceURL);
+						}
 					}
 				}
 				return null;
 			}
 		}, context);
 		Enumeration e = super.findResources(name);
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			resources.add(e.nextElement());
+		}
 
 		return Collections.enumeration(resources);
 	}
@@ -449,8 +467,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	 */
 	public void close() {
 		synchronized (loaders) {
-			if (closed)
+			if (closed) {
 				return;
+			}
 			for (Iterator iterator = loaders.iterator(); iterator.hasNext();) {
 				CloseableJarFileLoader loader = (CloseableJarFileLoader) iterator.next();
 				loader.close();
@@ -465,11 +484,13 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	protected void addURL(URL url) {
 		synchronized (loaders) {
 			if (isFileJarURL(url)) {
-				if (closed)
+				if (closed) {
 					throw new IllegalStateException("Cannot add url. CloseableURLClassLoader is closed."); //$NON-NLS-1$
+				}
 				loaderURLs.add(url);
-				if (safeAddLoader(url))
+				if (safeAddLoader(url)) {
 					return;
+				}
 			}
 		}
 		super.addURL(url);

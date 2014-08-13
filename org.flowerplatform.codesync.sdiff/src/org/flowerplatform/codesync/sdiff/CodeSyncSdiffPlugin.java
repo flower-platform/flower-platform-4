@@ -48,12 +48,12 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CodeSyncSdiffPlugin INSTANCE;
+	protected static CodeSyncSdiffPlugin instance;
 	
 	private StructureDiffService sDiffService = new StructureDiffService();
 	
 	public static CodeSyncSdiffPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	public StructureDiffService getSDiffService() {
@@ -62,7 +62,7 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 	
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesController = new StructureDiffMatchPropertiesProvider();
 		
 		
@@ -88,7 +88,8 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
 			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
 			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT).setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.newlyAddedElement")))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT)
+			.setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.newlyAddedElement")))
 			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
@@ -97,7 +98,7 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 	
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

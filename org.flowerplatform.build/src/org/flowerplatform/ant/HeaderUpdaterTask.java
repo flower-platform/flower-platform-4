@@ -1,16 +1,16 @@
 /* license-start
- * 
+ *
  * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation version 3.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
+ *
  * license-end
  */
 package org.flowerplatform.ant;
@@ -26,7 +26,7 @@ import org.flowerplatform.ant.utils.FileIterator;
 import org.flowerplatform.ant.utils.FileUtil;
 
 /**
- * 
+ *
  * @author Florin
  */
 public class HeaderUpdaterTask extends Task {
@@ -34,15 +34,15 @@ public class HeaderUpdaterTask extends Task {
 	private File workspaceFolder;
 
 	private String projectFilterRegex;
-	
+
 	private String fileExtension;
 
 	private File headerFile;
 
 	private String startToken;
-	
+
 	private String endToken;
-	
+
 	@Override
 	public void execute() throws BuildException {
 
@@ -61,48 +61,48 @@ public class HeaderUpdaterTask extends Task {
 		if (endToken == null) {
 			throw new BuildException("endToken is null");
 		}
-		
-		Pattern pattern;		
+
+		Pattern pattern;
 		if (fileExtension.equals("mxml")) {
 			pattern = Pattern.compile("<!--[\\s\\S]*?" + startToken + "[\\s\\S]*?" + endToken + "[\\s\\S]*?-->");
 		} else {
-			pattern = Pattern.compile("/\\*[\\s\\S]*?" + startToken + "[\\s\\S]*?" + endToken + "[\\s\\S]*?\\*/"); 
+			pattern = Pattern.compile("/\\*[\\s\\S]*?" + startToken + "[\\s\\S]*?" + endToken + "[\\s\\S]*?\\*/");
 		}
-		 
+
 		Pattern xmlVersionPattern = Pattern.compile("<\\?xml version.*?encoding.*?\\?>"); // <?xml version="1.0" encoding="utf-8"?>
-		
-		String newHeaderText = FileUtil.readFile(headerFile); 		
-		
+
+		String newHeaderText = FileUtil.readFile(headerFile);
+
 		for (FileIterator it = new FileIterator(workspaceFolder, new ProjectFileFilter()); it.hasNext();) {
 			File file = it.next();
 			if (file.isFile() && file.getName().endsWith(fileExtension)) {
 
 				String fileText = FileUtil.readFile(file);
 	            Matcher matcher = pattern.matcher(fileText);
-	            if (matcher.find()) { 
+	            if (matcher.find()) {
 	            	if (!fileText.contains(newHeaderText)) {
 	            		// remove old header and add new one
 	            		fileText = matcher.replaceFirst(newHeaderText);
 	            		FileUtil.writeFile(file, fileText);
 	            	}
-	            } else { 
+	            } else {
 	            	// header must be added
 	            	if (fileExtension.equals("mxml")) {
 	            		int indexToInsert = 0;
-	            			            	
+
 	            		Matcher xmlMatcher = xmlVersionPattern.matcher(fileText);
-	            		if (xmlMatcher.find()) { 
+	            		if (xmlMatcher.find()) {
 	            			indexToInsert = xmlMatcher.end();
 	            		}
 	            		fileText = fileText.substring(0, indexToInsert) + System.getProperty("line.separator") + newHeaderText + fileText.substring(indexToInsert);
-	            		
+
 	            	} else {
-		            	fileText  = newHeaderText + System.getProperty("line.separator") + fileText;		            	
+		            	fileText  = newHeaderText + System.getProperty("line.separator") + fileText;
 	            	}
 	            	FileUtil.writeFile(file, fileText);
 	            }
 			}
-		}				
+		}
 	}
 
 	class ProjectFileFilter implements FileFilter {
@@ -114,9 +114,9 @@ public class HeaderUpdaterTask extends Task {
 			}
 			return false;
 		}
-		
+
 	}
-	
+
 	public String getFileExtension() {
 		return fileExtension;
 	}

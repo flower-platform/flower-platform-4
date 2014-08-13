@@ -46,7 +46,8 @@ public class UpdateController extends AbstractController
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				node, 
-				new ChildrenUpdate().setTargetNodeAs(child).setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId).setTypeAs(UPDATE_CHILD_ADDED).setFullNodeIdAs(node.getNodeUri()), 
+				new ChildrenUpdate().setTargetNodeAs(child).setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
+				.setTypeAs(UPDATE_CHILD_ADDED).setFullNodeIdAs(node.getNodeUri()), 
 				context);	
 	}
 	

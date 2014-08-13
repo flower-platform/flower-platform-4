@@ -28,12 +28,12 @@ public class Test extends SuperClassFromModel implements IFromSource, IFromModel
 	
 	private int z = 3;
 	
-	@OneToMany(mappedBy="modified_by_model", orphanRemoval = true)
-	static private int test(final String st) {
+	@OneToMany(mappedBy = "modified_by_model", orphanRemoval = true)
+	private static int test(final String st) {
 		return x;
 	}
 
-	@OverrideAnnotationOf(x+y)
+	@OverrideAnnotationOf(x + y)
 	public Test getTest(int a) {
 		return x;
 	}

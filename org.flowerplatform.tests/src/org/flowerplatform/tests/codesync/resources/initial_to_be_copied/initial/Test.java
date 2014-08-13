@@ -24,12 +24,12 @@ public class Test extends Test2 implements ITest {
 	
 	private int y;
 	
-	@OneToMany(mappedBy="test")
+	@OneToMany(mappedBy = "test")
 	public int test(String st) {
 		return x;
 	}
 
-	@OverrideAnnotationOf(x+y)
+	@OverrideAnnotationOf(x + y)
 	public static Test getTest() {
 		return x;
 	}

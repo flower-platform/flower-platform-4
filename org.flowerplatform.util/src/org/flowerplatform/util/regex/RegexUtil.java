@@ -40,7 +40,9 @@ public class RegexUtil {
 	public static final String DONT_CAPTURE = "?:";
 	public static final String EXCLUDE = "^";
 	public static final String MULTIPLE_TIMES = "*"; // It will try to stop as late as the next regex part can be matched , e.g "/* abc */ def*/" stops at the last "*/"
-	public static final String MULTIPLE_TIMES_END_AS_SOON_AS_POSSIBLE = "*?"; // It will try to stop as soon as the next regex part can be matched, e.g "/* abc */ def*/" stops at the first "*/"
+	
+	// It will try to stop as soon as the next regex part can be matched, e.g "/* abc */ def*/" stops at the first "*/"
+	public static final String MULTIPLE_TIMES_END_AS_SOON_AS_POSSIBLE = "*?";
 	public static final String NOT_MORE_THAN_ONCE = "?"; // by default greedy, (if it can parse it then take it)
 	public static final String AT_LEAST_ONCE_END_AS_SOON_AS_POSSIBLE = "+?";
 
@@ -68,7 +70,8 @@ public class RegexUtil {
 	
 	public static final String STOP_BEFORE_OPEN_BRACKET_CHAR = "(" + STOP_BEFORE + OPEN_BRACKET + ")"; // matcher will stop before open bracket
 	
-	public static final String IDENTIFIER = IDENTIFIER_BEGGINING_CHAR + IDENTIFIER_AFTER_BEGGINING_CHAR  + MULTIPLE_TIMES; // longest sequence of identifier characters, with at least a character
+	public static final String IDENTIFIER = IDENTIFIER_BEGGINING_CHAR 
+			+ IDENTIFIER_AFTER_BEGGINING_CHAR  + MULTIPLE_TIMES; // longest sequence of identifier characters, with at least a character
 	public static final String CAPTURE_IDENTIFIER = "(" + IDENTIFIER + ")";   
 	
 	public static final String CLASS_KEYWORD 						= "\\bclass\\b"; // word that starts and ends with class
@@ -94,12 +97,12 @@ public class RegexUtil {
 				SLASH_R + NOT_MORE_THAN_ONCE + SLASH_N + NOT_MORE_THAN_ONCE; 			// \r or \n or \r\n
 	
 	public static final String SPACE_OR_COMMENT = 
-			"(" + DONT_CAPTURE +
-				WHITESPACE + "|" + MULTI_LINE_COMMENT + "|" + SINGLE_LINE_COMMENT + 
-			")" + AT_LEAST_ONCE_END_AS_SOON_AS_POSSIBLE;
+			"(" + DONT_CAPTURE
+				+ WHITESPACE + "|" + MULTI_LINE_COMMENT + "|" + SINGLE_LINE_COMMENT
+				+ ")" + AT_LEAST_ONCE_END_AS_SOON_AS_POSSIBLE;
 
 	public static final String SPACES_OR_COMMENTS_OPTIONAL = // tries to pass over all whitespaces or comments if there are any 
-			"(" + DONT_CAPTURE + 
-				WHITESPACE + "|" + 	MULTI_LINE_COMMENT + "|" + SINGLE_LINE_COMMENT + 
-			")" + MULTIPLE_TIMES;
+			"(" + DONT_CAPTURE
+				+ WHITESPACE + "|" + 	MULTI_LINE_COMMENT + "|" + SINGLE_LINE_COMMENT
+				+ ")" + MULTIPLE_TIMES;
 }

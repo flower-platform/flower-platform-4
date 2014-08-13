@@ -82,7 +82,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 						logger.debug("File {} found to be missing from temp",  mapValue);
 					}
 				} else {
-					synchronized(this) {
+					synchronized (this) {
 						counter++;
 						mapValue = counter + "";
 						tempFilesMap.put(requestedFile, mapValue);

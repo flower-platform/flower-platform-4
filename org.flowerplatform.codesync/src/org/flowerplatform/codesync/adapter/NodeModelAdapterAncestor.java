@@ -23,7 +23,6 @@ import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
-import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Mariana

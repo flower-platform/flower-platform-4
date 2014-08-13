@@ -17,7 +17,6 @@ package org.flowerplatform.codesync.code.java.adapter;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
@@ -66,7 +65,8 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild,
+			IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
 			MethodDeclaration method = (MethodDeclaration) parent;
 			AST ast = method.getAST();

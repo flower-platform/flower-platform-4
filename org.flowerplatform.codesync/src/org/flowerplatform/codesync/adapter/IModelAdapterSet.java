@@ -24,14 +24,14 @@ import org.flowerplatform.util.Pair;
  */
 public interface IModelAdapterSet {
 
-	public abstract String getType(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
+	String getType(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
 
-	public abstract IModelAdapter getModelAdapter(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
+	IModelAdapter getModelAdapter(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
 
-	public abstract IModelAdapter getModelAdapterForType(String type);
+	IModelAdapter getModelAdapterForType(String type);
 
-	public abstract IModelAdapter getFileModelAdapterDelegate();
+	IModelAdapter getFileModelAdapterDelegate();
 	
-	public abstract Pair<Integer, Integer> getStartEndLine(Object model, IDocument document);
+	Pair<Integer, Integer> getStartEndLine(Object model, IDocument document);
 	
 }

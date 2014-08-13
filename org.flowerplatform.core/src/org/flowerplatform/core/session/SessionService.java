@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class SessionService implements ISessionListener {
 
-	protected final static Logger logger = LoggerFactory.getLogger(SessionService.class);
+	protected static final Logger logger = LoggerFactory.getLogger(SessionService.class);
 	
 	public SessionService() {
 		CorePlugin.getInstance().addSessionListener(this);

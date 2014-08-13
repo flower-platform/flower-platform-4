@@ -78,7 +78,8 @@ public class CodeSyncRegexService {
 		// create matches file
 		Node matchFile = new Node(null, CoreConstants.FILE_NODE_TYPE);			
 		context = new ServiceContext<NodeService>(nodeService);
-		context.getContext().put(NAME, FileControllerUtils.getNextAvailableName(String.format("%s/matches_%s.regexMatches", parentFilePath, FilenameUtils.removeExtension(fileController.getName(textFile)))));
+		context.getContext().put(NAME, FileControllerUtils
+				.getNextAvailableName(String.format("%s/matches_%s.regexMatches", parentFilePath, FilenameUtils.removeExtension(fileController.getName(textFile)))));
 		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, false);
 		nodeService.addChild(parent, matchFile, context);
 		

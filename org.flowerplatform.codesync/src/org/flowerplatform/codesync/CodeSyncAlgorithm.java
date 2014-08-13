@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class CodeSyncAlgorithm {
 	
-	private final static Logger logger = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
 	
 	protected IModelAdapterSet modelAdapterSetLeft;
 	protected IModelAdapterSet modelAdapterSetRight;
@@ -118,7 +118,7 @@ public class CodeSyncAlgorithm {
 		boolean isChildrenSync = true;
 		boolean isSync = true;
 
-		logger.debug("Generate diff for {}", match);
+		LOGGER.debug("Generate diff for {}", match);
 
 		beforeOrAfterFeaturesProcessed(match, true);
 		FeatureProvider featureProvider = getFeatureProvider(match);
@@ -214,19 +214,25 @@ public class CodeSyncAlgorithm {
 		}
 		
 		if (before) {
-			if (ancestorAdapter != null)
+			if (ancestorAdapter != null) {
 				ancestorAdapter.beforeFeaturesProcessed(ancestor, right, this);
-			if (leftAdapter != null)
+			}
+			if (leftAdapter != null) {
 				leftAdapter.beforeFeaturesProcessed(left, right, this);
-			if (rightAdapter != null)
+			}
+			if (rightAdapter != null) {
 				rightAdapter.beforeFeaturesProcessed(right, null, this);
+			}
 		} else {
-			if (ancestorAdapter != null)
+			if (ancestorAdapter != null) {
 				ancestorAdapter.featuresProcessed(ancestor, this);
-			if (leftAdapter != null)
+			}
+			if (leftAdapter != null) {
 				leftAdapter.featuresProcessed(left, this);
-			if (rightAdapter != null)
+			}
+			if (rightAdapter != null) {
 				rightAdapter.featuresProcessed(right, this);
+			}
 		}
 	}
 	
@@ -241,7 +247,7 @@ public class CodeSyncAlgorithm {
 		boolean isChildrenSync = true;
 		Pair<Boolean, Boolean> conflitSyncPair = new Pair<Boolean, Boolean>(false, true);
 		
-		logger.debug("Process containment feature {} for {}", feature, match);
+		LOGGER.debug("Process containment feature {} for {}", feature, match);
 		
 		// cache the model adapters for children to avoid
 		// a lot of calls to the model adapter factory; we are
@@ -369,7 +375,7 @@ public class CodeSyncAlgorithm {
 	 * @return true - if the match has a conflict, false - otherwise
 	 */
 	public Boolean processValueFeature(Object feature, Match match) {
-		logger.debug("Process value feature {} for {}", feature, match);
+		LOGGER.debug("Process value feature {} for {}", feature, match);
 		
 		Diff diff = null;
 		
@@ -377,10 +383,11 @@ public class CodeSyncAlgorithm {
 		Object left = match.getLeft();
 		Object right = match.getRight();
 		
-		if (ancestor == null && left == null || 
-				ancestor == null && right == null ||
-				left == null && right == null)
+		if (ancestor == null && left == null 
+			|| ancestor == null && right == null
+			|| left == null && right == null) {
 			return false; // for 1-Match, don't do anything
+		}
 		
 		Object ancestorValue = null;
 		Object leftValue = null;
@@ -455,11 +462,11 @@ public class CodeSyncAlgorithm {
 		boolean isSync = true;
 
 		if (match.isConflict() || match.isChildrenConflict()) {
-			logger.debug("Conflict for {}", match);
+			LOGGER.debug("Conflict for {}", match);
 			return false;
 		}
 
-		logger.debug("Perform sync for {}", match);
+		LOGGER.debug("Perform sync for {}", match);
 
 		// sync match
 
@@ -597,6 +604,8 @@ public class CodeSyncAlgorithm {
 			model = match.getAncestor();
 			modelAdapter = modelAdapterSetAncestor.getModelAdapterForType(type);
 			break;
+		default:
+			break;
 		}
 		
 		FeatureProvider featureProvider = new FeatureProvider(modelAdapter, this); 
@@ -608,11 +617,10 @@ public class CodeSyncAlgorithm {
 				delegateSide = featureProviderSide;
 			}
 			switch (delegateSide) {
-			case LEFT: {
+			case LEFT: 
 				name = (String) getModelAdapterSetLeft().getModelAdapterForType(type)
 						.getValueFeatureValue(match.getLeft(), NAME, null, this);
 				break;
-			}
 			case RIGHT:
 				name = (String) getModelAdapterSetRight().getModelAdapterForType(type)
 						.getValueFeatureValue(match.getRight(), NAME, null, this);
@@ -620,6 +628,8 @@ public class CodeSyncAlgorithm {
 			case ANCESTOR:
 				name = (String) getModelAdapterSetAncestor().getModelAdapterForType(type)
 						.getValueFeatureValue(match.getAncestor(), NAME, null, this);
+				break;
+			default:
 				break;
 			}
 			int index = name.lastIndexOf(".");

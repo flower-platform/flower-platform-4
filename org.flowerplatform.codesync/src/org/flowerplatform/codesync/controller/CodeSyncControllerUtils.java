@@ -49,9 +49,9 @@ public class CodeSyncControllerUtils {
 //	}
 	
 	public static boolean isCodeSyncFlagConstant(String property) {
-		if (SYNC.equals(property) || CHILDREN_SYNC.equals(property) || 
-				CONFLICT.equals(property) || CHILDREN_CONFLICT.equals(property) ||
-				ADDED.equals(property) || REMOVED.equals(property)) {
+		if (SYNC.equals(property) || CHILDREN_SYNC.equals(property)
+				|| CONFLICT.equals(property) || CHILDREN_CONFLICT.equals(property)
+				|| ADDED.equals(property) || REMOVED.equals(property)) {
 			return true;
 		}
 		return false;

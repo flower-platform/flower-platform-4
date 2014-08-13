@@ -54,9 +54,9 @@ public class StructureDiffMatchChildrenProvider extends AbstractController imple
 		for (Iterator<Node> iterator = children.iterator(); iterator.hasNext();) {
 			Node child = iterator.next();
 			Object feature = child.getProperties().get(MATCH_FEATURE);
-			if ("operationParameters".equals(feature) ||
-					"modifiers".equals(feature) ||
-					"superInterfaces".equals(feature)) {
+			if ("operationParameters".equals(feature)
+					|| "modifiers".equals(feature)
+					|| "superInterfaces".equals(feature)) {
 				iterator.remove();
 			}
 		}

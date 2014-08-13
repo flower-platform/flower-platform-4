@@ -18,7 +18,7 @@ public class GitRemotesPropertiesProvider extends AbstractController implements 
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.remotes"));
+		node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.remotes"));
 		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "remotes.gif"));
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}

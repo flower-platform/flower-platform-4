@@ -53,6 +53,8 @@ public class StructureDiffLegendChildrenPropertiesProvider extends AbstractContr
 			node.getProperties().put(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codesync.sdiff.commentAdded"));
 			node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_COMMENT);
 			break;
+		default:
+			break;
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 			repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 			
 			if (repo != null) {				
-				node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.git"));
+				node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.git"));
 				node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "git.gif"));
 				node.getProperties().put(CURRENT_BRANCH, repo.getBranch());
 				node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
@@ -50,7 +50,7 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 				}				
 			}
 			node.getProperties().put(GitConstants.IS_GIT_REPOSITORY, repo != null);
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

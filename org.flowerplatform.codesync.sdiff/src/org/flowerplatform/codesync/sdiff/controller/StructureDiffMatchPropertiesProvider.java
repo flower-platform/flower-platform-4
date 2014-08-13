@@ -130,6 +130,8 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 				color = MATCH_COLOR_BODY_MODIFIED;
 			}
 			break;
+		default:
+			break;
 		}
 
 		// set color
@@ -147,8 +149,8 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	private void setText(Node node) {
 		String name = (String) node.getProperties().get(CoreConstants.NAME);
 		String textPath = (String) node.getProperties().get(CodeSyncConstants.MATCH_PATH);
-		if (textPath != null ) {
-			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>"+ textPath + "</font></body></html>");
+		if (textPath != null) {
+			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>" + textPath + "</font></body></html>");
 		} else {
 			node.getProperties().put(MindMapConstants.TEXT, name);
 		}

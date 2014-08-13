@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
@@ -60,7 +59,7 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 		@SuppressWarnings("rawtypes")
 		List paramList = Arrays.asList(getFunction(element).getParameters());
 		String formatedparamList = paramList.toString().replace("[", "(").replace("]", ")"); 
-		return name + formatedparamList + getFunction(element).getReturnTypeAsDisplayString() ;
+		return name + formatedparamList + getFunction(element).getReturnTypeAsDisplayString();
 		}
 	
 	@Override

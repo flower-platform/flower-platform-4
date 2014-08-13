@@ -62,7 +62,8 @@ public class FileControllerUtils {
 	private static String getNextAvailableName(String initialFilePath, int startingIndexSuffix) throws Exception {		
 		String fileNameWithoutExtension = FilenameUtils.removeExtension(FilenameUtils.getName(initialFilePath));
 		
-		String newFileName = String.format("%s%s.%s", fileNameWithoutExtension, startingIndexSuffix == 0 ? "" : String.valueOf(startingIndexSuffix), FilenameUtils.getExtension(initialFilePath));
+		String newFileName = String.format("%s%s.%s", fileNameWithoutExtension,
+				startingIndexSuffix == 0 ? "" : String.valueOf(startingIndexSuffix), FilenameUtils.getExtension(initialFilePath));
 		String newFilePath = String.format("%s%s", FilenameUtils.getFullPath(initialFilePath), newFileName);
 		
 		if (!CorePlugin.getInstance().getFileAccessController().exists(CorePlugin.getInstance().getFileAccessController().getFile(newFilePath))) {

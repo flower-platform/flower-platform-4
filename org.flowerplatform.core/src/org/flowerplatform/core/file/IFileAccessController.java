@@ -52,9 +52,9 @@ public interface IFileAccessController {
 	
 	String getPathRelativeToFile(Object file, Object relativeTo);
 	
-	String getAbsolutePath (Object file);
+	String getAbsolutePath(Object file);
 	
-	String getFileExtension (Object file);
+	String getFileExtension(Object file);
 	
 	boolean isFile(Object file);
 	

@@ -16,7 +16,6 @@
 package org.flowerplatform.core.preference.remote;
 
 import org.flowerplatform.core.node.remote.PropertyWrapper;
-import org.flowerplatform.core.preference.PreferencePropertiesProvider;
 
 /**
  * @see PreferencePropertiesProvider

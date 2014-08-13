@@ -179,11 +179,11 @@ public class PublicResourcesServlet extends ResourcesServlet {
 							logger.debug("File {} found to be missing from temp",  mapValue);
 						}
 					} else {
-						synchronized(this) {
+						synchronized (this) {
 							counter++;
 							mapValue = counter + "";
 							tempFilesMap.put(mapKey, mapValue);
-							logger.debug("mapValue '{}' added", mapValue );
+							logger.debug("mapValue '{}' added", mapValue);
 						}
 					}
 				}

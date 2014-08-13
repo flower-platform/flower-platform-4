@@ -30,12 +30,13 @@ public class Utils {
 	}
 	
 	public static boolean safeEquals(Object a, Object b) {
-		if (a == null && b == null)
+		if (a == null && b == null) {
 			return true;
-		else if (a == null || b == null)
+		} else if (a == null || b == null) {
 			return false;
-		else
+		} else {
 			return a.equals(b);
+		}
 	}
 	
 	public static String defaultIfNull(String str) {
@@ -57,10 +58,9 @@ public class Utils {
 	public static String getRepo(String uri) {
 		int indexStart = uri.indexOf(":");
 		int indexEnd;
-		if(uri.contains("|")){
+		if (uri.contains("|")) {
 			indexEnd = uri.indexOf("|");
-		}
-		else{
+		} else {
 			indexEnd = uri.length();
 		}
 //		int indexEnd = uri.indexOf("|");

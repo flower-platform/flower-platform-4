@@ -30,7 +30,7 @@ import org.flowerplatform.util.controller.AbstractController;
 public class GitRemotePropertiesProvider extends AbstractController implements IPropertiesProvider  {
 
 	@Override
-	public void populateWithProperties(Node node,ServiceContext<NodeService> context) {
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		try {
 			Repository repo = null;
 			String repoPath = Utils.getRepo(node.getNodeUri());
@@ -46,7 +46,7 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			List<RefSpec> pushRefSpecs = new ArrayList<RefSpec>();
 			List<URIish> URIs = new ArrayList<URIish>();
 			
-			RemoteConfig config = new RemoteConfig(repo.getConfig(),name);
+			RemoteConfig config = new RemoteConfig(repo.getConfig(), name);
 			fetchRefSpecs = config.getFetchRefSpecs();
 			pushRefSpecs = config.getPushRefSpecs();
 			URIs = config.getURIs();
@@ -66,7 +66,7 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			node.getProperties().put(PUSH_REF_SPECS, push);
 			node.getProperties().put(REMOTE_URIS, uris);
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "remoteSpec.gif"));
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

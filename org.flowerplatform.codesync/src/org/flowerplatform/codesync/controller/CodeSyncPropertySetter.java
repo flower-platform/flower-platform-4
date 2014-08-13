@@ -20,7 +20,6 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.set
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;

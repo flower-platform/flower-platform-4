@@ -28,7 +28,6 @@ import java.security.Policy;
 import java.util.Map;
 import java.util.Properties;
 
-import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
 import org.eclipse.equinox.servletbridge.FrameworkLauncher;
 
 /**
@@ -142,9 +141,8 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		Properties properties = new Properties();
 		String configFileLocation;
 		
-		String developmentLaunchConfigurationProperty = "developmentLaunchConfiguration" + 
-															(System.getProperty("os.name").startsWith("Windows") ? 
-																"Windows" : "Linux");
+		String developmentLaunchConfigurationProperty = "developmentLaunchConfiguration"
+					+ (System.getProperty("os.name").startsWith("Windows") ? "Windows" : "Linux");
 		
 		// if in development mode, generate some properties + config file path
 		String developmentLaunchConfiguration = config.getInitParameter(developmentLaunchConfigurationProperty);
@@ -156,8 +154,12 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			
 			// osgi.configuration.area a.k.a. -configuration 
 			osgiConfigurationArea = String.format("%s/.metadata/.plugins/org.eclipse.pde.core/%s", developmentWorkspaceRoot, developmentLaunchConfiguration);
-			if (!(new File(osgiConfigurationArea).exists()))
-				throw new RuntimeException(osgiConfigurationArea + " file not found. Either the '" + developmentLaunchConfigurationProperty + "' is not correctly set or the Eclipse configuration was not generated (=> you need to launch the target launch config " + developmentLaunchConfiguration + " at least once directly from Eclipse).");
+			if (!(new File(osgiConfigurationArea).exists())) {
+				throw new RuntimeException(osgiConfigurationArea + " file not found. Either the '" 
+						+ developmentLaunchConfigurationProperty 
+						+ "' is not correctly set or the Eclipse configuration was not generated (=> you need to launch the target launch config " 
+						+ developmentLaunchConfiguration + " at least once directly from Eclipse).");
+			}
 		} else {
 			// prod mode
 			String relativeOsgiConfigurationArea = config.getInitParameter("eclipseConfigurationLocation");
@@ -183,7 +185,10 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		if (!(new File(osgiDev).exists())) {
 			if (developmentLaunchConfiguration != null) {
 				// for dev, this is mandatory; for production = optional
-				throw new RuntimeException(osgiDev + " file not found. Either the 'developmentLaunchConfiguration' is not correctly set or the Eclipse configuration was not generated (=> you need to launch the target launch config " + developmentLaunchConfiguration + " at least once directly from Eclipse).");
+				throw new RuntimeException(osgiDev 
+				+ " file not found. Either the 'developmentLaunchConfiguration' is not correctly set or the Eclipse configuration was not generated "
+				+ "(=> you need to launch the target launch config " 
+				+ developmentLaunchConfiguration + " at least once directly from Eclipse).");
 			}
 		} else {
 			properties.put("osgi.dev", "file:" + osgiDev);
@@ -201,18 +206,20 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		} catch (Exception e) {
 			throw new RuntimeException("'configFileLocation' error; it points towards an unaccesible file or there was another error!", e);
 		} finally {
-			if (is != null)
+			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
 					// ignore
 				}
+			}
 		}
 		
 		// generate osgi.instance.area a.k.a. -data a.k.a. workspace location
 		String workspaceLocation = config.getInitParameter("workspaceLocation");
-		if (workspaceLocation == null)
+		if (workspaceLocation == null) {
 			throw new RuntimeException("'workspaceLocation' must be specified.");
+		}
 		String osgiInstanceArea;
 		// if in dev mode, the ws location is relative to the eclipse project/WebContent
 		if (developmentWorkspaceRoot != null) {
@@ -224,7 +231,8 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			try {
 				encoded = Files.readAllBytes(path);
 			} catch (IOException e) {
-				throw new IllegalStateException("Dev flow step forgotten? The file 'absolute-path-helper.txt' was not found. Try to clean & CTRL + B, so that the external builder generates this file.", e);
+				throw new IllegalStateException("Dev flow step forgotten? The file 'absolute-path-helper.txt' was not found. "
+						+ "Try to clean & CTRL + B, so that the external builder generates this file.", e);
 			}
 			String hostWebAppAbsolutePath = Charset.defaultCharset().decode(ByteBuffer.wrap(encoded)).toString();
 			osgiInstanceArea = hostWebAppAbsolutePath + "/" + workspaceLocation;
@@ -238,7 +246,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			if (!osgiInstanceAreaFile.exists()) {
 				osgiInstanceAreaFile.mkdirs();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(osgiInstanceArea + " workspace location not found", e);
 		}
 		properties.put("osgi.instance.area", "file:" + osgiInstanceArea);

@@ -20,15 +20,16 @@ import org.flowerplatform.codesync.Match;
 
 public class ActionSynchronize {
 
-	public static ActionSynchronize INSTANCE = new ActionSynchronize();
+	public static ActionSynchronize instance = new ActionSynchronize();
 	
 	/**
 	 * @author Cristi
 	 * @author Mariana
 	 */
 	public ActionResult[] execute(Match match) {
-		if (match.isConflict() || match.isChildrenConflict())
+		if (match.isConflict() || match.isChildrenConflict()) {
 			throw new IllegalArgumentException("The match (or one of its children) are conflicted.");
+		}
 		boolean childrenConflict = false;
 		boolean childrenModifiedLeft = false;
 		boolean childrenModifiedRight = false;

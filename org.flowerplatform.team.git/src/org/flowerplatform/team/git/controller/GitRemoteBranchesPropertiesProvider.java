@@ -18,8 +18,8 @@ import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 public class GitRemoteBranchesPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
 	@Override
-	public void populateWithProperties(Node node,ServiceContext<NodeService> context) {
-		node.getProperties().put(NAME,ResourcesPlugin.getInstance().getMessage("git.remoteBranches"));
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
+		node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.remoteBranches"));
 		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "folder.gif"));
 		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}

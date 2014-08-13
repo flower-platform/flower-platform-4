@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.type_provider;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.ANNOTATION;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.ANNOTATION_MEMBER;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.ANNOTATION_TYPE;
@@ -97,9 +96,9 @@ public class JavaTypeProvider implements ITypeProvider {
 		} else if (object instanceof Expression || object instanceof Type) {
 			ASTNode node = (ASTNode) object;
 			StructuralPropertyDescriptor descriptor = node.getLocationInParent();
-			if (descriptor.equals(TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY) ||
-					descriptor.equals(EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY)) {
-				return SUPER_INTERFACE;
+			if (descriptor.equals(TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY)
+				|| descriptor.equals(EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY)) {
+					return SUPER_INTERFACE;
 			} else if (descriptor.equals(EnumConstantDeclaration.ARGUMENTS_PROPERTY)) {
 				return ENUM_CONSTANT_ARGUMENT;
 			}

@@ -97,11 +97,11 @@ import org.slf4j.LoggerFactory;
  */
 public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
-	protected static CodeSyncPlugin INSTANCE;
+	protected static CodeSyncPlugin instance;
 	
 	protected List<String> srcDirs = null;
 	
-	private final static Logger logger = LoggerFactory.getLogger(CodeSyncPlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeSyncPlugin.class);
 
 //	protected List<DependentFeature> dependentFeatures;
 //	
@@ -137,7 +137,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	protected boolean useUIDs = true;
 
 	public static CodeSyncPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 //	public CodeSyncTypeCriterionDispatcherProcessor getCodeSyncTypeCriterionDispatcherProcessor() {
@@ -244,7 +244,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		INSTANCE = this;
+		instance = this;
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncOperationsService", new CodeSyncOperationsService());
 		
@@ -299,17 +299,26 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME));
 			
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ICONS).setTitleAs(getLabel("codesync.match.icons")).setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE))	
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ICONS)
+					.setTitleAs(getLabel("codesync.match.icons")).setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE))	
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_TYPE).setTitleAs(getLabel("codesync.match.type")).setReadOnlyAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_FEATURE).setTitleAs(getLabel("codesync.match.feature")).setReadOnlyAs(true))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_MODEL_ELEMENT_TYPE).setTitleAs(getLabel("codesync.match.modelElementType")).setReadOnlyAs(true))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_LEFT).setTitleAs(getLabel("codesync.match.children.modifiedLeft")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_RIGHT).setTitleAs(getLabel("codesync.match.children.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT).setTitleAs(getLabel("codesync.match.children.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT).setTitleAs(getLabel("codesync.match.diffs.modifiedLeft")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setTitleAs(getLabel("codesync.match.diffs.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setTitleAs(getLabel("codesync.match.diffs.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setTitleAs(getLabel("codesync.match.body.modified")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_MODEL_ELEMENT_TYPE)
+					.setTitleAs(getLabel("codesync.match.modelElementType")).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_LEFT)
+					.setTitleAs(getLabel("codesync.match.children.modifiedLeft")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_RIGHT)
+					.setTitleAs(getLabel("codesync.match.children.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT)
+					.setTitleAs(getLabel("codesync.match.children.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT)
+					.setTitleAs(getLabel("codesync.match.diffs.modifiedLeft")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_RIGHT)
+					.setTitleAs(getLabel("codesync.match.diffs.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT)
+					.setTitleAs(getLabel("codesync.match.diffs.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED)
+					.setTitleAs(getLabel("codesync.match.body.modified")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CODESYNC_ICONS).setOrderIndexAs(-1000));
 		
 		// TODO test
@@ -397,10 +406,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //				
 //				// processors
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("edge", new RelationDiagramProcessor());
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement", new ChildrenUpdaterDiagramProcessor());				
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement.wizardAttribute", new TopLevelElementChildProcessor());
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement.wizardAttribute", new RelationsChangesDiagramProcessor());
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement", new RelationsChangesDiagramProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//					.addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement", new ChildrenUpdaterDiagramProcessor());				
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//					.addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement.wizardAttribute", new TopLevelElementChildProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//					.addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement.wizardAttribute", new RelationsChangesDiagramProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//					.addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement", new RelationsChangesDiagramProcessor());
 //							
 //				getCodeSyncTypeCriterionDispatcherProcessor().addProcessor(WIZARD_ATTRIBUTE, new WizardChildrenPropagatorProcessor());
 //				getCodeSyncTypeCriterionDispatcherProcessor().addProcessor(WIZARD_ATTRIBUTE, new WizardElementKeyFeatureChangedProcessor());

@@ -22,6 +22,6 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
  */
 public interface ITypeProvider {
 
-	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm);
+	String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 }

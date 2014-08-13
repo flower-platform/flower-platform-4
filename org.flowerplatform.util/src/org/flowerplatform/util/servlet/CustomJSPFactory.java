@@ -41,7 +41,7 @@ public class CustomJSPFactory extends JSPFactory {
 			
 			Field jspAlias = jspServlet.getClass().getDeclaredField("alias");
 			jspAlias.setAccessible(true);
-			Object alias= jspAlias.get(jspServlet);
+			Object alias = jspAlias.get(jspServlet);
 			
 			Field jspBundleResourcePath = jspServlet.getClass().getDeclaredField("bundleResourcePath");
 			jspBundleResourcePath.setAccessible(true);

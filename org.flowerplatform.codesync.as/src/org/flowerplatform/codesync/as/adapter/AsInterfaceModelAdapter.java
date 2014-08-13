@@ -24,7 +24,6 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import java.util.Arrays;
 
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 

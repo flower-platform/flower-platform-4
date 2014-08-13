@@ -55,7 +55,8 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
-		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, true));
+		List<Node> children = CorePlugin.getInstance().getNodeService()
+				.getChildren(getNode(element), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, true));
 		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
 
 			@Override
@@ -100,7 +101,8 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild,
+			IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// first check if the child already exists
 //		Iterable<?> children = super.getContainmentFeatureIterable(eObject, feature, null);
 //		IModelAdapter adapter = codeSyncElementConverter.getModelAdapter(correspondingChild);

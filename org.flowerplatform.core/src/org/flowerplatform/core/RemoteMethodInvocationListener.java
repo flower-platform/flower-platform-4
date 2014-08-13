@@ -38,9 +38,9 @@ import ch.qos.logback.core.Context;
  */
 public class RemoteMethodInvocationListener {
 
-	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
 	
-	private final static Context loggerContext = (Context) LoggerFactory.getILoggerFactory();
+	private static final Context LOGGER_CONTEXT = (Context) LoggerFactory.getILoggerFactory();
 
 	/**
 	 * Compares the list of resources the client has with the list of resources that the client is subscribed to. For any
@@ -68,7 +68,8 @@ public class RemoteMethodInvocationListener {
 				// the client is not subscribed to this resource anymore, maybe he went offline?
 				// subscribe the client to this resource
 				try {
-					CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, clientResource, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+					CorePlugin.getInstance().getResourceService()
+					.subscribeToParentResource(sessionId, clientResource, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 				} catch (Exception e) {
 					// the resource could not be loaded; inform the client
 					notFoundResources.add(clientResource);
@@ -91,18 +92,18 @@ public class RemoteMethodInvocationListener {
 	 * 
 	 */
 	public void postInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-		if (logger.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			long endTime = new Date().getTime();
 			long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
 			String serviceId = remoteMethodInvocationInfo.getServiceId();
 			String methodName = remoteMethodInvocationInfo.getMethodName();
 			boolean log = true;
 			if (methodName.equals("ping")) {
-				String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
+				String logPing = LOGGER_CONTEXT.getProperty("logNodeServicePingInvocation");
 				log = logPing == null ? false : Boolean.parseBoolean(logPing);
 			}
 			if (log) {
-				logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
+				LOGGER.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 			}
 		}
 		
@@ -128,12 +129,12 @@ public class RemoteMethodInvocationListener {
 					
 					resourceNodeIdToUpdates.put(resourceSet, updates);
 					
-					if (logger.isDebugEnabled()) {
+					if (LOGGER.isDebugEnabled()) {
 						int size = -1;
 						if (updates != null) {
 							size = updates.size();
 						}
-						logger.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
+						LOGGER.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
 					}
 				}				
 			}

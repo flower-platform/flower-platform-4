@@ -46,7 +46,8 @@ public class RegexController extends AbstractController implements IPropertiesPr
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		if (property.equals(REGEX_WITH_MACROS)) {
 			node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService()));
-			context.getService().setProperty(node, FULL_REGEX, node.getPropertyValue(FULL_REGEX), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			context.getService().setProperty(node, FULL_REGEX, node.getPropertyValue(FULL_REGEX), new ServiceContext<NodeService>(context.getService())
+			.add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
 

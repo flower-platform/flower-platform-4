@@ -65,7 +65,7 @@ public class ProjectAccessController implements IProjectAccessController {
 	 */
 	@Override
 	public Object getFolder(Object project, String path) {
-		return getFile( project, path);
+		return getFile(project, path);
 	}
 	
 }

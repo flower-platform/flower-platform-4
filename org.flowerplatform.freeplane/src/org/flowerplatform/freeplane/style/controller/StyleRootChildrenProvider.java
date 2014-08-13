@@ -50,7 +50,7 @@ public class StyleRootChildrenProvider extends AbstractController implements ICh
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		return ((NodeModel)node.getRawNodeData()).getMap().getRootNode().equals(node.getRawNodeData());
+		return ((NodeModel) node.getRawNodeData()).getMap().getRootNode().equals(node.getRawNodeData());
 	}
 
 }

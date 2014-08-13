@@ -39,7 +39,7 @@ public class GitResourceHandler implements IResourceHandler {
 			ref = repo.getRef(GitUtils.getName(nodeUri));	
 			
 			return ref;
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

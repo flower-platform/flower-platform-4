@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-
-import org.flowerplatform.util.RunnableWithParam;
 
 /**
  * Stores additional attributes that must be added to a {@link HttpServlet} context.

@@ -30,7 +30,6 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
-import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ResourceService implements IResourceHolder {
 
-	protected final static Logger logger = LoggerFactory.getLogger(ResourceService.class);
+	protected static final Logger logger = LoggerFactory.getLogger(ResourceService.class);
 	
 	private Map<String, IResourceHandler> resourceHandlers = new HashMap<String, IResourceHandler>();
 	

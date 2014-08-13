@@ -76,7 +76,7 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncAsPlugin extends AbstractFlowerJavaPlugin {
 
-protected static CodeSyncAsPlugin INSTANCE;
+	protected static CodeSyncAsPlugin INSTANCE;
 	
 	public static CodeSyncAsPlugin getInstance() {
 		return INSTANCE;

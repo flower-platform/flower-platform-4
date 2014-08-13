@@ -56,7 +56,8 @@ public class Activator implements BundleActivator {
 		 */
 		String instanceManagerClass = "org.apache.tomcat.InstanceManager";
 		if (Class.forName(instanceManagerClass) == null) {
-			throw new RuntimeException("The application is not running in a Tomcat servlet container! Please contact the Flower team if you need support for other servlet containers.");
+			throw new RuntimeException("The application is not running in a Tomcat servlet container! "
+					+ "Please contact the Flower team if you need support for other servlet containers.");
 		}
 		ServletUtils.addServletContextAdditionalAttributes(instanceManagerClass, httpServiceServlet.getServletContext().getAttribute(instanceManagerClass));
 		

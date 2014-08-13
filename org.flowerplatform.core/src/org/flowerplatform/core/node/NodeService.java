@@ -43,7 +43,6 @@ import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.controller.AbstractController;
@@ -65,7 +64,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeService {
 		
-	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NodeService.class);
 	
 	protected TypeDescriptorRegistry registry;
 	
@@ -205,7 +204,8 @@ public class NodeService {
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
 	
@@ -235,7 +235,8 @@ public class NodeService {
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
 	
@@ -262,9 +263,11 @@ public class NodeService {
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())),
+				new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
@@ -290,9 +293,11 @@ public class NodeService {
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService())
+				.add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	/**

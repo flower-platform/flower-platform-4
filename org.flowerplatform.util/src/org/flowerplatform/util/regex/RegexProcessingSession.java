@@ -116,22 +116,26 @@ public class RegexProcessingSession {
 		// find the current regex
 		if (currentMatchGroupIndex > matcher.groupCount()) {
 			// i.e. there was not at least one not null group;  
-//			logger.error("currentMatchGroupIndex > matcher.groupCount. This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
+//			logger.error("currentMatchGroupIndex > matcher.groupCount. 
+//			This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
 			log.append("\nERROR: currentMatchGroupIndex > matcher.groupCount. This shouldn't happen.");
 			throw new RegexException(log.toString());
 		}
 		
 		if (configuration.captureGroupToRegexMapping[currentMatchGroupIndex] == null) {
 			// i.e. the captured group corresponds to a sub-match of a regex; not to the original match itself
-//			logger.error("Captured group corresponds to a sub-match, and not with the top-level group. This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
+//			logger.error("Captured group corresponds to a sub-match, 
+//			and not with the top-level group. This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
 			log.append("\nERROR: Captured group corresponds to a sub-match, and not with the top-level group. This shouldn't happen.");
 			throw new RegexException(log.toString());
 		} 
 
 		currentRegex = configuration.captureGroupToRegexMapping[currentMatchGroupIndex];
 //		if (logger.isTraceEnabled()) {
-			log.append(String.format("\n[%s:%s] corresponds to group #%s. Invoking Action...", new Object[] { currentRegex.getName(), currentRegex.getClass().getSimpleName(), currentMatchGroupIndex}));
-//			logger.trace("[{}:{}] corresponds to group #{}. Invoking Action...", new Object[] { currentRegex.getName(), currentRegex.getClass().getSimpleName(), currentMatchGroupIndex});
+			log.append(String.format("\n[%s:%s] corresponds to group #%s. Invoking Action...", 
+					new Object[] { currentRegex.getName(), currentRegex.getClass().getSimpleName(), currentMatchGroupIndex}));
+//			logger.trace("[{}:{}] corresponds to group #{}. 
+//			Invoking Action...", new Object[] { currentRegex.getName(), currentRegex.getClass().getSimpleName(), currentMatchGroupIndex});
 //		}
 	
 		// for the the current regex, populate the submatches
@@ -141,7 +145,9 @@ public class RegexProcessingSession {
 			currentSubMatchesForCurrentRegex = new String[currentRegex.getNumberOfCaptureGroups()];
 			for (int i = 0; i < currentRegex.getNumberOfCaptureGroups(); i++) {
 				if (currentMatchGroupIndex + i + 1 > matcher.groupCount()) {
-//					logger.error("Not enough match groups left, to fully populate the expected submatches. This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
+//					logger.error("Not enough match groups left, to fully populate the expected 
+//					submatches. This shouldn't happen. Please see the audit logs to try to reproduce the input, 
+//					while enabling trace for this package.");
 					log.append("\nERROR: Not enough match groups left, to fully populate the expected submatches. This shouldn't happen.");
 					throw new RegexException(log.toString());
 				}				

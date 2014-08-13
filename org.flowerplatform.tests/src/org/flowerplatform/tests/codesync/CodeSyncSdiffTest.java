@@ -73,7 +73,8 @@ public class CodeSyncSdiffTest {
 		String patchName = PROJECT + "/" + filePatch;
 		File patch = CodeSyncTestSuite.getFile(patchName);
 		String sdiffOutputPath = "sdiffs/test.sdiff";
-		Node node = CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(TestUtil.readFile(patch.toString()), PROJECT, sdiffOutputPath, new WorkspaceAndPatchFileContentProvider());
+		Node node = CodeSyncSdiffPlugin.getInstance().getSDiffService()
+				.createStructureDiff(TestUtil.readFile(patch.toString()), PROJECT, sdiffOutputPath, new WorkspaceAndPatchFileContentProvider());
 		i = -1;
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
@@ -87,7 +88,7 @@ public class CodeSyncSdiffTest {
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._1MATCH_RIGHT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 3; i++) {		
+		for (int i = 1; i <= 3; i++) {
 			properties.add(propertiesMap);
 		}
 		test(PATCH_FILE_ADDED);
@@ -99,7 +100,7 @@ public class CodeSyncSdiffTest {
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._2MATCH_ANCESTOR_LEFT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 3; i++) {		
+		for (int i = 1; i <= 3; i++) {
 			properties.add(propertiesMap);
 		}
 		test(PATCH_FILE_REMOVED);

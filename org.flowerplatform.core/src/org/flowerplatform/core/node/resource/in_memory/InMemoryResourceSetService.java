@@ -63,7 +63,7 @@ public class InMemoryResourceSetService extends ResourceSetService {
 
 	@Override
 	public void addUpdate(String resourceSet, Update update) {
-		logger.debug("Adding update {} for resource set {}", update, resourceSet);
+		LOGGER.debug("Adding update {} for resource set {}", update, resourceSet);
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
 		info.getUpdates().add(update);
 	}

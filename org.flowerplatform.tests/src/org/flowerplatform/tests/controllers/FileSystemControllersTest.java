@@ -73,20 +73,24 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void testGetChildren() {
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), FILE_NODE_TYPE), 
+				new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "B"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE), 
+				new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/file1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE), 
+				new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1/oneFile"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), 
+				new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2/oneFolder"), FILE_NODE_TYPE)));
 	}
 	
@@ -140,8 +144,8 @@ public class FileSystemControllersTest {
 		nodeService.removeChild(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), 
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "/A/Folder2/oneFolder"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), 
-								Arrays.asList());
+		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), 
+				new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList());
 		Object newFolder;
 		try {
 			newFolder = fileAccessController.getFile(FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder2/oneFolder");
@@ -156,7 +160,7 @@ public class FileSystemControllersTest {
 			if (!dstPath.exists()) {
 				dstPath.mkdirs();
 			}
-			String files[] = srcPath.list();
+			String[] files = srcPath.list();
 			for (int i = 0; i < files.length; i++) {
 				File src = new File(srcPath, files[i]);
 				File dest = new File(dstPath, files[i]);

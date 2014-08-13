@@ -121,8 +121,9 @@ public class TestUtil {
 			int bytesRead; 
 			do {
 				bytesRead = fileEditorInputReader.read(buffer);
-				if (bytesRead > 0) 
-					loadedContent.append(buffer, 0, bytesRead);				
+				if (bytesRead > 0) {
+					loadedContent.append(buffer, 0, bytesRead);
+				}				
 			} while (bytesRead > 0);
 			fileEditorInputReader.close();
 		} catch (Exception e) {
@@ -133,7 +134,8 @@ public class TestUtil {
 
 //	public static Object getRecordedCommandAtIndex(IRecordingTestWebCommunicationChannelProvider context, int commandIndex) {
 //		if (context.getRecordingTestWebCommunicationChannel().getRecordedCommands().size() <= commandIndex) {
-//			Assert.fail("We are trying to access command #" + commandIndex + " but there are only " + context.getRecordingTestWebCommunicationChannel().getRecordedCommands().size() + " recorded commands");
+//			Assert.fail("We are trying to access command #" + commandIndex + " but there are only "
+//	+ context.getRecordingTestWebCommunicationChannel().getRecordedCommands().size() + " recorded commands");
 //		}
 //		return context.getRecordingTestWebCommunicationChannel().getRecordedCommands().get(commandIndex);
 //	}
@@ -193,7 +195,8 @@ public class TestUtil {
 //	/**
 //	 * Be careful not to have commands from previous test in channel (make a new one!)
 //	 */
-//	public static void assertExist_CreateEditorStatefulClientCommand(IRecordingTestWebCommunicationChannelProvider recordingChannelProvider, String editor, String editableResourcePath) {
+//	public static void assertExist_CreateEditorStatefulClientCommand(IRecordingTestWebCommunicationChannelProvider recordingChannelProvider,
+//	String editor, String editableResourcePath) {
 //		CreateEditorStatefulClientCommand foundCommand = null;
 //		for (Object obj : recordingChannelProvider.getRecordingTestWebCommunicationChannel().getRecordedCommands()) {
 //			if (obj instanceof CreateEditorStatefulClientCommand) {
@@ -217,7 +220,8 @@ public class TestUtil {
 //	 * @param details optional
 //	 * @param useContainsMatch whether to use contain match on message and on details (if present) 
 //	 */
-//	public static void assertExist_DisplaySimpleMessageCommand(IRecordingTestWebCommunicationChannelProvider recordingChannelProvider, String message, String details, boolean useContainsMatch) {
+//	public static void assertExist_DisplaySimpleMessageCommand(IRecordingTestWebCommunicationChannelProvider recordingChannelProvider, String message,
+//	String details, boolean useContainsMatch) {
 //		DisplaySimpleMessageClientCommand foundCommand = null;
 //		for (Object obj : recordingChannelProvider.getRecordingTestWebCommunicationChannel().getRecordedCommands()) {
 //			if (obj instanceof DisplaySimpleMessageClientCommand) {
@@ -236,7 +240,9 @@ public class TestUtil {
 //	/**
 //	 * Be careful not to have commands from previous test in channel (make a new one!)
 //	 */
-//	public static InvokeStatefulClientMethodClientCommand assertExist_InvokeStatefulClientMethodClientCommand(IRecordingTestWebCommunicationChannelProvider recordingChannelProvider, String statefulClientId, String methodName) {
+//	public static InvokeStatefulClientMethodClientCommand assertExist_InvokeStatefulClientMethodClientCommand(IRecordingTestWebCommunicationChannelProvider 
+//	recordingChannelProvider,
+//	String statefulClientId, String methodName) {
 //		InvokeStatefulClientMethodClientCommand foundCommand = null;
 //		for (Object obj : recordingChannelProvider.getRecordingTestWebCommunicationChannel().getRecordedCommands()) {
 //			if (obj instanceof InvokeStatefulClientMethodClientCommand) {

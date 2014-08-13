@@ -36,10 +36,10 @@ public class GitRemotesChildrenProvider extends AbstractController implements IC
 			
 			for (String entry : remotes) {
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(GIT_SCHEME)
-						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath,GIT_REMOTE_TYPE,entry), entry));
+						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath, GIT_REMOTE_TYPE, entry), entry));
 			}
 			return children; 
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

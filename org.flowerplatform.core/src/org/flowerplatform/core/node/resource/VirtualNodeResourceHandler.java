@@ -6,7 +6,6 @@ import static org.flowerplatform.core.CoreUtils.createNodeUriWithRepo;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.resources.ResourcesPlugin;

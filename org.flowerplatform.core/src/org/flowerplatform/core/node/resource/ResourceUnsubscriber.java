@@ -40,7 +40,8 @@ public class ResourceUnsubscriber extends TimerTask {
 		
 	public ResourceUnsubscriber() {
 		super();
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY, PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY));
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties
+				.AddIntegerProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY, PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY));
 	}
 
 	@Override

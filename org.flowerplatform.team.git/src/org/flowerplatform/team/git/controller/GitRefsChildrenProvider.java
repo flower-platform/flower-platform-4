@@ -27,7 +27,7 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 	private String type;
 	
 	
-	public GitRefsChildrenProvider(String refType, String scheme, String type){
+	public GitRefsChildrenProvider(String refType, String scheme, String type) {
 		this.refType = refType;
 		this.scheme = scheme;
 		this.type = type;
@@ -47,11 +47,11 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 				
 			for (Entry<String, org.eclipse.jgit.lib.Ref> entry : local.entrySet()) {
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(scheme)
-						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath,type,entry.getValue().getName()), entry.getValue()));
+						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath, type, entry.getValue().getName()), entry.getValue()));
 			}		
 			
 			return children;
-		} catch(Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

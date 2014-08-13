@@ -6,18 +6,18 @@ public class Test {
 		
 	}
 	
-	public void testAddedMethod(){
+	public void testAddedMethod() {
 		
 	}
 	
 	/**
 	 * param modified
 	 */
-	public void testDocWillBeChangedMethod(){
+	public void testDocWillBeChangedMethod() {
 		
 	}
 	
-	public void testBodyWillBeChangedMethod(){
+	public void testBodyWillBeChangedMethod() {
 		//modified body
 		String modifiedBody = "Body Modified";
 	}

@@ -116,7 +116,7 @@ public class GitService {
 				return false;
 			}
 			ObjectId resolved = repo.resolve(hash);
-			if (resolved == null){
+			if (resolved == null) {
 				return false;
 			}
 			// testing if hash exists in the repository
@@ -145,7 +145,7 @@ public class GitService {
 		FastForwardMode fastForwardMode = FastForwardMode.FF;
 		
 		// set the parameters for Fast Forward options 
-		switch (fastForwardOptions){
+		switch (fastForwardOptions) {
 			case 0:
 				fastForwardMode = FastForwardMode.FF;
 				break;
@@ -155,6 +155,8 @@ public class GitService {
 			case 2:
 				fastForwardMode = FastForwardMode.FF_ONLY;
 				break;
+		default:
+			break;
 		}
 		
 		// call merge operation 
@@ -209,7 +211,8 @@ public class GitService {
 	 * Creates new branch
 	 * 
 	 */
-	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws Exception {	
+	public void createBranch(String parentUri, String name, String startPoint, 
+			boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws Exception {	
 		String repoPath = Utils.getRepo(parentUri);
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
@@ -251,7 +254,7 @@ public class GitService {
 	public int validateRepoURL(String url) {
 		try {
 			URIish repoUri = new URIish(url.trim());
-			if (repoUri.getScheme().toLowerCase().startsWith("http") ) {
+			if (repoUri.getScheme().toLowerCase().startsWith("http")) {
 				InputStream ins = null;
 				URLConnection conn = new URL(repoUri.toString()).openConnection();
 			    conn.setReadTimeout(NETWORK_TIMEOUT_MSEC);
@@ -263,8 +266,7 @@ public class GitService {
 			if (GitUtils.getGitDir(gitReposFile) != null) {
 				return 1;
 			}
-		}
-		catch(Exception ex) {
+		} catch (Exception ex) {
 			return -1;
 		}
 		return 0;  
@@ -303,13 +305,11 @@ public class GitService {
 			});
 			System.out.println(branches);
 			return branches;
-		} 
-		catch (GitAPIException e) {
+		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		} 
-		catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
@@ -380,13 +380,11 @@ public class GitService {
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
 		
 		ResetType resetType;
-		if(type == GitConstants.RESET_SOFT){
+		if (type == GitConstants.RESET_SOFT) {
 			resetType = ResetType.SOFT;
-		}
-		else if(type == GitConstants.RESET_MIXED){
+		} else if (type == GitConstants.RESET_MIXED) {
 			resetType = ResetType.MIXED;
-		}
-		else {
+		} else {
 			resetType = ResetType.HARD;
 		} 
 		
@@ -424,24 +422,19 @@ public class GitService {
 			cc.setDirectory(directory);
 			cc.call();
 			return 0;
-		} 
-		catch (InvalidRemoteException e) {
+		} catch (InvalidRemoteException e) {
 			System.out.println(e.getMessage());
 			return -1;
-		} 
-		catch (TransportException e) {
+		} catch (TransportException e) {
 			System.out.println(e.getMessage());
 			return -2;
-		} 
-		catch (GitAPIException e) {
+		} catch (GitAPIException e) {
 			System.out.println(e.getMessage());
 			return -3;
-		} 
-		catch (URISyntaxException e) {
+		} catch (URISyntaxException e) {
 			System.out.println(e.getMessage());
 			return -4;
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return -5;
 		}
@@ -455,13 +448,13 @@ public class GitService {
 	 * @throws Exception
 	 */
 	public void checkout(String nodeUri) throws Exception {				
-		String Name = GitUtils.getName(nodeUri);
+		String name = GitUtils.getName(nodeUri);
 		String repositoryPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 				
 		Git g = new Git(repo);	
 		
-		g.checkout().setName(Name).call();	
+		g.checkout().setName(name).call();	
 //		g.gc().getRepository().close();
 //		g.gc().call();
 	}
@@ -478,7 +471,8 @@ public class GitService {
 		repo.close();
 			
 		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(CoreConstants.EXECUTE_ONLY_FOR_UPDATER, true));
+		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance()
+				.getNodeService()).add(CoreConstants.EXECUTE_ONLY_FOR_UPDATER, true));
 		
 		if (keepWorkingDirectoryContent) {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory());

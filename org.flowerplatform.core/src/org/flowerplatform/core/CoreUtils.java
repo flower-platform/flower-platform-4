@@ -69,7 +69,7 @@ public class CoreUtils {
 
 	private static void addFileToZip(String path, String srcFile, ZipOutputStream zip, boolean flag) throws Exception {		
 		File folder = new File(srcFile);
-		if (flag == true) {
+		if (flag) {
 			zip.putNextEntry(new ZipEntry(path + "/" + folder.getName() + "/"));
 		} else { 
 			if (folder.isDirectory()) {				

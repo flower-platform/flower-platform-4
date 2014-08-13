@@ -18,7 +18,6 @@ package org.flowerplatform.team.git;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -80,7 +79,7 @@ public class GitUtils {
 		return getGitDir(file) != null;
 	}
 
-	public static String getType(String nodeUri){
+	public static String getType(String nodeUri) {
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
 		if (indexEnd < indexStart) {
@@ -89,7 +88,7 @@ public class GitUtils {
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 	
-	public static String getName(String nodeUri){
+	public static String getName(String nodeUri) {
 		int indexStart = nodeUri.indexOf("$");
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
@@ -137,17 +136,17 @@ public class GitUtils {
 		}
 		
 		List<String> conflicts = new ArrayList<>();  
-		if(mergeResult.getConflicts() != null) {			
-			for(String path : mergeResult.getConflicts().keySet()) {
+		if (mergeResult.getConflicts() != null) {			
+			for (String path : mergeResult.getConflicts().keySet()) {
 				if (!conflicts.contains(path)) {
 					conflicts.add(path);
 				}
 			}
 		}		
-		if(!conflicts.isEmpty()) {
+		if (!conflicts.isEmpty()) {
 			sb.append("\nConflicts: ");
 			sb.append("\n");
-			for(String path : conflicts) {
+			for (String path : conflicts) {
 				sb.append(path);
 				sb.append("\n");				
 			}
@@ -156,14 +155,14 @@ public class GitUtils {
 		return sb.toString();
 	}
 
-	public static String getNodeUri(String repoPath,String type,String name){
-		if (name != null){
+	public static String getNodeUri(String repoPath, String type, String name) {
+		if (name != null) {
 			return GIT_SCHEME + ":" + repoPath + "|" + type + "$" + name;
 		}
 		return GIT_SCHEME + ":" + repoPath + "|" + type;
 	}
 
-	public static String getNodeUri(String repoPath,String type){
+	public static String getNodeUri(String repoPath, String type) {
 		return getNodeUri(repoPath, type, null);
 	}
 	

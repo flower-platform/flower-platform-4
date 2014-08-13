@@ -104,12 +104,12 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CodeSyncJavaPlugin INSTANCE;
+	protected static CodeSyncJavaPlugin instance;
 	
 	private FolderModelAdapter folderModelAdapter;
 	
 	public static CodeSyncJavaPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		
 		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_JAVA, JAVA);
 		
@@ -212,7 +212,8 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 		createNodeTypeDescriptor(ENUM_CONSTANT)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM_CONSTANT_ARGUMENT).setLabelAs(getLabel("codesync.java.enum.constant.argument")).setOrderIndexAs(10))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM_CONSTANT_ARGUMENT)
+					.setLabelAs(getLabel("codesync.java.enum.constant.argument")).setOrderIndexAs(10))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ANNOTATION).setLabelAs(getLabel("codesync.java.annotation"))
 					.setIconAs(getImagePathFromPublicResources(IMG_ANNOTATION)).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_FIELD)));
@@ -237,7 +238,8 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 		createNodeTypeDescriptor(MODIFIER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME)
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
 					"public",
 					"protected",
 					"private",
@@ -276,7 +278,8 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 					.setIconAs(getImagePathFromPublicResources(IMG_METHOD)).setLabelAs(getLabel("codesync.java.method")).setOrderIndexAs(200));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_HAS_SUPER_INTERFACES)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(SUPER_INTERFACE).setLabelAs(getLabel("codesync.java.super.interface")).setOrderIndexAs(250));
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(SUPER_INTERFACE)
+					.setLabelAs(getLabel("codesync.java.super.interface")).setOrderIndexAs(250));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_MODIFIABLE)
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MODIFIER).setLabelAs(getLabel("codesync.java.modifier")).setOrderIndexAs(1000))
@@ -335,11 +338,16 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 //				
 //				CodeSyncPlugin.getInstance().getFeatureAccessExtensions().add(new JavaFeatureAccessExtension());
 				
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass", new JavaClassProcessor());
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.title", new JavaClassTitleProcessor());
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaAttribute", new JavaClassAttributeProcessor());
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaOperation", new JavaClassOperationProcessor());
-//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("scenarioInterraction", new JavaScenarioElementProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//		.addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass", new JavaClassProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//		.addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.title", new JavaClassTitleProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//		.addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaAttribute", new JavaClassAttributeProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//		.addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaOperation", new JavaClassOperationProcessor());
+//				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor()
+//		.addDiagrammableElementFeatureChangeProcessor("scenarioInterraction", new JavaScenarioElementProcessor());
 //				
 //				AbstractFeatureChangesProcessor processor = new AbstractFeatureChangesProcessor();
 //				// if model element removed => remove view
@@ -377,7 +385,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 	
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

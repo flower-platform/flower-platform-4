@@ -87,7 +87,7 @@ public class FlowerProperties extends Properties {
 			if (validationErrorMessage != null) {
 				// validation failed; 
 				logger.error("Property Validation Error! Failed to set property = {} to value = {}; reverting to default = {}. Reason: {}", 
-						new Object[] {p.propertyName, userValue, p.propertyDefaultValue, validationErrorMessage} );
+						new Object[] {p.propertyName, userValue, p.propertyDefaultValue, validationErrorMessage});
 				remove(p.propertyName);
 			}
 		} else {
@@ -103,7 +103,7 @@ public class FlowerProperties extends Properties {
 		return defaults;
 	}
 	
-	public static abstract class AddProperty {
+	public abstract static class AddProperty {
 		
 		protected String propertyName;
 		
@@ -178,8 +178,9 @@ public class FlowerProperties extends Properties {
 
 		@Override
 		protected String validateProperty(String input) {
-			if (input == null || input.trim().length() == 0)
+			if (input == null || input.trim().length() == 0) {
 				return "Value is null or empty";
+			}
 			return null;
 		}
 	}

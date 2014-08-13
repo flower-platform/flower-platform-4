@@ -67,7 +67,7 @@ public class CodeSyncJavaConstants {
 	public static final String OPERATION_HAS_BODY = "hasBody";
 	public static final String ANNOTATION_VALUE_VALUE = "annotationValueValue";
 	public static final String ANNOTATION_MEMBER_DEFAULT_VALUE = "annotationMemberDefaultValue";
-	public final static String SINGLE_MEMBER_ANNOTATION_VALUE_NAME = "_";
+	public static final String SINGLE_MEMBER_ANNOTATION_VALUE_NAME = "_";
 	
 	// Containment features
 	

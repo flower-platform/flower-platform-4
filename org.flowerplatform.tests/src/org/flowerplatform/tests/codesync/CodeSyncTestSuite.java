@@ -143,8 +143,10 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	public static void checkMatch_conflict(Match match) {
 		assertEquals("Wrong conflict state at index " + i, conflicts[i].a, match.isConflict());
 		assertEquals("Wrong children conflict state at index " + i, conflicts[i].b, match.isChildrenConflict());
-		assertEquals("Wrong sync state at index " + i, !((Boolean)conflicts[i].a), ((Node)match.getLeft()).getPropertyValue(CodeSyncConstants.SYNC));
-		assertEquals("Wrong children sync state at index " + i, !((Boolean)conflicts[i].b), ((Node)match.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
+		assertEquals("Wrong sync state at index " + i, !((Boolean) conflicts[i].a),
+				((Node) match.getLeft()).getPropertyValue(CodeSyncConstants.SYNC));
+		assertEquals("Wrong children sync state at index " + i, !((Boolean) conflicts[i].b),
+				((Node) match.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
 	}
 
 	public static Match testMatchTree(Match match, Pair[] _typeList, boolean checkNoDiffs) {

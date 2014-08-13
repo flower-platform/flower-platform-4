@@ -81,7 +81,8 @@ public class DownloadService implements ISessionListener {
 		@Override
 		public void run() {
 			for (Map.Entry<String, DownloadInfo> entry : downloadIdToDownloadInfo.entrySet()) {	
-				if (entry.getValue().getTimestamp()/100 < System.currentTimeMillis()/100 - Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER))) {
+				if (entry.getValue().getTimestamp() / 100 < System.currentTimeMillis() / 100 - Integer.valueOf(CorePlugin.getInstance()
+						.getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER))) {
 					removeDownloadInfo(entry.getKey());
 				}
 			}
@@ -91,12 +92,14 @@ public class DownloadService implements ISessionListener {
 	
 	public DownloadService() {
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddIntegerProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER));
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
+		CorePlugin.getInstance().getFlowerProperties()
+			.addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
 				
 		CorePlugin.getInstance().addSessionListener(this);
 		
 		deleteTemporaryDownloadFolder();
-		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
+		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), Integer
+				.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
 	}
 	
 	public DownloadInfo getDownloadInfo(String downloadId) {
