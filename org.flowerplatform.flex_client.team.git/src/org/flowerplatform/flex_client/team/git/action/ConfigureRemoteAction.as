@@ -13,10 +13,7 @@
 * 
 * license-end
 */
-package org.flowerplatform.flex_client.team.git.action {
-	import mx.controls.Alert;
-	
-	import org.flowerplatform.flex_client.core.CoreConstants;
+package org.flowerplatform.flex_client.team.git.action {	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;

@@ -25,6 +25,11 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.MergeAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
+	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
@@ -54,19 +59,16 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
 
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureRemoteAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ResetAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeAction);
-			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteRemoteAction);
 		}
 		
 		override protected function registerMessageBundle():void {

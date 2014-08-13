@@ -1,6 +1,7 @@
 package org.flowerplatform.team.git.controller;
 
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 
 import java.io.File;
@@ -26,16 +27,14 @@ public class GitResourceHandler implements IResourceHandler {
 	@Override
 	public Object getRawNodeDataFromResource(String nodeUri, Object resourceData) {
 		try {
+			if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE) || GitUtils.getType(nodeUri).equals(GIT_REMOTE_TYPE)) {
+				return GitUtils.getName(nodeUri);
+			}
+			
 			String repositoryPath = Utils.getRepo(nodeUri);
 			Repository repo = null;
 			Ref ref = null;
 			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-			
-			
-			if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE)) {
-				return GitUtils.getName(nodeUri);
-			}
-			
 			ref = repo.getRef(GitUtils.getName(nodeUri));	
 			
 			return ref;
