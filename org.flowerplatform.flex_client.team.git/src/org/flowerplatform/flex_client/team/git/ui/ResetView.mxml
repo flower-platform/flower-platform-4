@@ -51,14 +51,10 @@
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
-				node = node.parent;
-				if(node.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE || 
-				node.type == GitConstants.GIT_REMOTE_BRANCHES_TYPE ||
-				node.type == GitConstants.GIT_TAGS_TYPE){
-					node = node.parent;
-				}
+				var gitNodeUri:String = CorePlugin.getInstance()
+					.createNodeUriWithRepo(GitConstants.GIT_SCHEME, node.nodeUri, GitConstants.GIT_REPO_TYPE);
 				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
-				tree.initializeTree(pair == null ? node.nodeUri : pair.a as String);
+				tree.initializeTree(pair == null ? gitNodeUri : pair.a as String);
 			}
 			
 			private function viewRemovedHandler(event:ViewRemovedEvent):void {
