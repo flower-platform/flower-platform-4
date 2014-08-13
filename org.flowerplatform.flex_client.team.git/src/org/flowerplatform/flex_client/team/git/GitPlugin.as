@@ -24,7 +24,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
-	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.MergeAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
@@ -62,7 +62,7 @@ package org.flowerplatform.flex_client.team.git {
 
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeBranchAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeAction);
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);

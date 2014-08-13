@@ -508,8 +508,8 @@ package org.flowerplatform.flex_client.core {
 		/**
 		 * @author Diana Balutoiu
 		 */
-		public function createNodeUriWithRepo(scheme:String, nodeUri:String, schemeSpecificPart:String):String{
-			return scheme + ":"+ getRepository(nodeUri) + "|" + schemeSpecificPart;
+		public function createNodeUriWithRepo(scheme:String, repoPath:String, schemeSpecificPart:String):String{
+			return scheme + ":"+ repoPath + "|" + schemeSpecificPart;
 		}
 			
 	}

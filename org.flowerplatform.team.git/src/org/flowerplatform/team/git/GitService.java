@@ -161,9 +161,10 @@ public class GitService {
 		MergeCommand mergeCmd = gitInstance.merge().include(ref).setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit);
 		MergeResult mergeResult = mergeCmd.call();
 	   
+		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				node, 
-				new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, repoPath)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
+				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
 		return GitUtils.handleMergeResult(mergeResult);		
@@ -376,24 +377,28 @@ public class GitService {
 	/**
 	 * @author Diana Balutoiu
 	 */
-	public void reset(String nodeUri, String type, String hash) throws Exception {		
-		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+	public void reset(String nodeUri, String type, String hash) throws Exception {
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
 		ResetType resetType;
-		if(type == GitConstants.RESET_SOFT){
-			resetType = ResetType.SOFT;
+		switch (type) {
+			case GitConstants.RESET_SOFT:
+				resetType = ResetType.SOFT;
+				break;
+			case GitConstants.RESET_MIXED:
+				resetType = ResetType.MIXED;
+				break;
+			default:
+				resetType = ResetType.HARD;
 		}
-		else if(type == GitConstants.RESET_MIXED){
-			resetType = ResetType.MIXED;
-		}
-		else {
-			resetType = ResetType.HARD;
-		} 
-		
+				
 		new Git(repo).reset().setMode(resetType).setRef(hash).call();
+		
+		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
-				new Update().setFullNodeIdAs(nodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
+				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
