@@ -572,12 +572,16 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
-		
+
+		[Embed(source="/git/reset.gif")]
+		public static const resetIcon:Class;
+
 		[Embed(source="/team.git/gitDiffFromCommits.png")]
 		public static const gitDiffFromCommitsIcon:Class;
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
+
 		
 		[Embed(source="/team.git/branch_obj.gif")]
 		public static const branchIcon:Class;

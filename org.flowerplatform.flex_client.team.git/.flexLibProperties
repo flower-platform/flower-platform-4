@@ -5,7 +5,6 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.CreateBranchView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateBranchAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.remote.GitBranch"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteBranchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
@@ -14,12 +13,11 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureBranchView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.DeleteGitRepositoryView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.CloneRepoAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.view.SelectRepository"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoWizardView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.component.SelectableBranches"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
