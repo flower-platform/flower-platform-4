@@ -26,7 +26,6 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_FEATURE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_MODEL_ELEMENT_TYPE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFFS_FOLDER;
-import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
@@ -36,6 +35,7 @@ import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRe
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -74,7 +74,7 @@ import org.flowerplatform.util.file.StringHolder;
  */
 @SuppressWarnings("restriction")
 public class StructureDiffService {
-	
+
 	public Node createStructureDiffFromWorkspaceAndPatch(String patch, String repo, String sdiffOutputPath) {
 		return createStructureDiff(patch,
 									repo,
@@ -131,11 +131,15 @@ public class StructureDiffService {
 		match.setMatchKey(name);
 		
 		// ancestor + left: original content obtained after applying reverse patch
-		match.setAncestor(new CodeSyncFile(new StringHolder(path, before)));
-		match.setLeft(new CodeSyncFile(new StringHolder(path, before)));
+		if (before != null) {
+			match.setAncestor(new CodeSyncFile(new StringHolder(path, before)));
+			match.setLeft(new CodeSyncFile(new StringHolder(path, before)));
+		}
 	
 		// right: current content for this patch
-		match.setRight(new CodeSyncFile(new StringHolder(path, after)));
+		if (after != null) {
+			match.setRight(new CodeSyncFile(new StringHolder(path, after)));	
+		}
 		
 		// initialize the algorithm
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
@@ -176,7 +180,7 @@ public class StructureDiffService {
 		if (match.getCodeSyncAlgorithm() != null) {
 			Object modelElementType = match.getCodeSyncAlgorithm().getElementTypeForMatch(match);
 			CorePlugin.getInstance().getNodeService().setProperty(child, MATCH_MODEL_ELEMENT_TYPE, modelElementType, context);
-			if (match.getLeft() != null && match.getRight() != null) {
+			if (match.getRight() != null) {
 				Object model = match.getRight();
 				Pair<Integer, Integer> lines = match.getCodeSyncAlgorithm().getModelAdapterSetRight().getStartEndLine(model, document);
 				if (lines != null) {
@@ -187,7 +191,7 @@ public class StructureDiffService {
 						if (isModifiedOrChildrenModified(match)) {
 							modelStartLine++;
 						}
-						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine);
+						boolean isBodyModified = isBodyModified(patch, modelStartLine, modelEndLine, child);
 						CorePlugin.getInstance().getNodeService().setProperty(child, CodeSyncConstants.MATCH_BODY_MODIFIED, isBodyModified, context);
 						if (isBodyModified) {
 							propagateBodyModifiedToParents(child);
@@ -225,7 +229,10 @@ public class StructureDiffService {
 		}
 	}
 	
-	private boolean isBodyModified(IFilePatch2 patch, int modelStartLine, int modelEndLine) {
+	private boolean isBodyModified(IFilePatch2 patch, int modelStartLine, int modelEndLine, Node child) {
+		boolean returnValueFlag = false;
+		List<SpecialCommentPrefix> listOfSpecialComments = getSpecialCommentPrefixList();
+
 		for (IHunk iHunk : patch.getHunks()) {
 			Hunk hunk = (Hunk) iHunk;
 			int hunkStartLine = hunk.getStart(true);
@@ -239,13 +246,18 @@ public class StructureDiffService {
 					if (line.startsWith("+")) {
 						// added line
 						if (overlap(index, index, modelStartLine, modelEndLine) == 0) { 
-							return true;
+							// line: does it contain a special comment from the ones mentioned in the list above?
+							String specialComment = getSpecialCommentStringContent(line, listOfSpecialComments); 
+							if(specialComment != null){
+								addChildComment(child, specialComment);
+							}
+							returnValueFlag = true;
 						}
 						index++;
 					} else if (line.startsWith("-")) {
 						// deleted line
 						if (overlap(index, index, modelStartLine, modelEndLine) == 0) { 
-							return true;
+							returnValueFlag = true;
 						}
 					} else {
 						// context line, no change
@@ -259,7 +271,57 @@ public class StructureDiffService {
 				break;
 			}
 		}
-		return false;
+		return 	returnValueFlag;
+	}
+	
+	/**
+	 * @return
+	 * <ul>
+	 * <li>
+	 * the extracted special comment content on this line (if more, the first one on this line);
+	 * </li>
+	 * <li>
+	 * null, if no special comment prefix is encountered on this line
+	 * </li>
+	 * </ul>
+	 * @author Elena Posea
+	 */
+	private String getSpecialCommentStringContent(String line, List<SpecialCommentPrefix> listOfSpecialComments) {
+		// if there is any special comment here, return its content message;
+		// otherwise, return null
+		for (SpecialCommentPrefix pref : listOfSpecialComments) {
+			// if it is regex, try to parse it
+			Pattern pattern = Pattern.compile((pref.isRegex ? pref.specialPrefixText : Pattern.quote(pref.specialPrefixText)) + "(.*)$");
+			Matcher matcher = pattern.matcher(line);
+			if (matcher.find()) {
+				return matcher.group(1);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return a list of all special comments available
+	 * @author Elena Posea
+	 */
+	private List<SpecialCommentPrefix> getSpecialCommentPrefixList() {
+		List<SpecialCommentPrefix> list = new ArrayList<SpecialCommentPrefix>();
+		list.add(new SpecialCommentPrefix("TODO\\s*", true));
+		return list;
+	}
+	/**
+	 * @param parent the node to which new comment child is appended
+	 * @param specialComment the text contained by the new node appended
+	 * @author Elena Posea
+	 */
+	private void addChildComment(Node parent, String specialComment){
+		// create child
+		Node child = new Node(null, CodeSyncSdiffConstants.COMMENT);
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
+		
+		// populate name property
+		CorePlugin.getInstance().getNodeService().setProperty(child, NAME, specialComment, context);
 	}
 	
 	/**
@@ -325,30 +387,6 @@ public class StructureDiffService {
 		context.getContext().put(NAME, STRUCTURE_DIFFS_FOLDER);
 		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, true);
 		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
-	}
-	
-	private String getNextAvailableName(String repo, String fileName) {
-		try {
-			Object file = CorePlugin.getInstance().getFileAccessController().getFile(
-					repo + "/" + STRUCTURE_DIFFS_FOLDER + "/" + fileName + STRUCTURE_DIFF_EXTENSION);
-			if (!CorePlugin.getInstance().getFileAccessController().exists(file)) {
-				return fileName;
-			}
-			// first group is name, second group is index
-			Pattern pattern = Pattern.compile("(.*?)(\\d*)$");
-			Matcher matcher = pattern.matcher(fileName);
-			if (matcher.find()) {
-				int index = 1;
-				if (matcher.group(2).length() > 0) {
-					index = Integer.parseInt(matcher.group(2));
-				}
-				index++;
-				return getNextAvailableName(repo, matcher.group(1) + index);
-			}
-			return getNextAvailableName(repo, fileName + "2");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	private String getFilePath(String path, boolean isGitPatch) {

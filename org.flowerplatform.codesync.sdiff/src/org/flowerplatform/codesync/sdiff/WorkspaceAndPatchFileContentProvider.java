@@ -18,11 +18,12 @@ import org.flowerplatform.core.CorePlugin;
  * @author Valentina-Camelia Bojan
  */
 
+@SuppressWarnings("restriction")
 public class WorkspaceAndPatchFileContentProvider implements IFileContentProvider {
 
 	@Override
 	public FileContent getFileContent(String filePath, String repo, Object patch) {
-		String newFileContent, oldFileContent;
+		String newFileContent, oldFileContent; 
 		Object file;
 
 		// get new file content
@@ -34,21 +35,29 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		if (CorePlugin.getInstance().getFileAccessController().exists(file)) {
 			newFileContent = CorePlugin.getInstance().getFileAccessController().readFileToString(file);
 		} else {
-			newFileContent = "";
+			newFileContent = null;
 		}
 
 		// get old file content using new file content and patch
-		PatchConfiguration configuration = new PatchConfiguration();
-		configuration.setReversed(true);
-		IFilePatchResult result = ((FilePatch2)patch).apply(new StringReaderCreator(newFileContent),
-															configuration,
-															null);
-		try {
-			oldFileContent = IOUtils.toString(result.getPatchedContents());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		FilePatch2 filePatch = (FilePatch2) patch;
+		
+		switch (filePatch.getDiffType(false)){
+		case 1:
+			oldFileContent = null;
+			break;
+		default:
+			PatchConfiguration configuration = new PatchConfiguration();
+			configuration.setReversed(true);
+			IFilePatchResult result = ((FilePatch2)patch).apply(new StringReaderCreator(newFileContent),
+																configuration,
+																null);
+			try {
+				oldFileContent = IOUtils.toString(result.getPatchedContents());
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
-
+		
 		return new FileContent(oldFileContent, newFileContent);
 	}
 
@@ -57,6 +66,9 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		private String content;
 
 		public StringReaderCreator(String content) {
+			if (content == null) {
+				content = "";
+			}
 			this.content = content;
 		}
 

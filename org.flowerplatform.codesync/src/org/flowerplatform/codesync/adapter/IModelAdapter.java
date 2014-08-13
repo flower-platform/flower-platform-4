@@ -108,7 +108,15 @@ public interface IModelAdapter {
 	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	public void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm);
-	
+
 	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
+
+	public void setChildrenConflict(Object element);
+
+	public void unsetChildrenConflict(Object element);
+
+	public void setSync(Object element);
+
+	public void setChildrenSync(Object element);
 	
 }

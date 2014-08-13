@@ -1,0 +1,15 @@
+diff --git a/removed/Test.java b/removed/Test.java
+deleted file mode 100644
+index 9a911d3..0000000
+--- a/removed/Test.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-package org.flowerplatform.tests.codesync;
+-
+-public class Test {
+-
+-	public void testMethod() {
+-		
+-	}
+-	
+-}

@@ -21,14 +21,14 @@ import org.flowerplatform.util.controller.AbstractController;
 /**
  * @author Cojocea Marius Eduard
  */
-public class GitBranchesAndTagsChildrenProvider extends AbstractController implements IChildrenProvider {
+public class GitRefsChildrenProvider extends AbstractController implements IChildrenProvider {
 
 	private String refType;
 	private String scheme;
 	private String type;
 	
 	
-	public GitBranchesAndTagsChildrenProvider(String refType, String scheme, String type){
+	public GitRefsChildrenProvider(String refType, String scheme, String type){
 		this.refType = refType;
 		this.scheme = scheme;
 		this.type = type;
@@ -47,7 +47,7 @@ public class GitBranchesAndTagsChildrenProvider extends AbstractController imple
 		try {
 			Map<String, org.eclipse.jgit.lib.Ref> local = repo.getRefDatabase().getRefs(refType);
 			
-			for(Entry<String, org.eclipse.jgit.lib.Ref> entry : local.entrySet()){
+			for (Entry<String, org.eclipse.jgit.lib.Ref> entry : local.entrySet()) {
 				String path = new String();
 				path = repoPath + "|" + type + "$" + entry.getValue().getName();
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(scheme)
@@ -61,7 +61,10 @@ public class GitBranchesAndTagsChildrenProvider extends AbstractController imple
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		return true;
+		if (getChildren(node, context).size() > 0) {
+			return true;
+		}
+		return false;
 	}
 
 }

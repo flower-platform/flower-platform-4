@@ -20,6 +20,7 @@ import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.set
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
@@ -40,6 +41,11 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 	
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+		// disable the controllers during the execution of sync algorithm
+		if (context.getBooleanValue(CodeSyncConstants.SYNC_IN_PROGRESS)) {
+			return;
+		}
+
 		// if the node is newly added or marked removed => propagate sync flag false
 		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
 			setSyncFalseAndPropagateToParents(node, context.getService());

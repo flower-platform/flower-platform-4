@@ -1,57 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Tita Andreea -->
+
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					 xmlns:s="library://ns.adobe.com/flex/spark" 
 					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-					 creationComplete="renameBranchCreationCompleteHandler(event)">
+					 creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 		
-			[Bindable]
 			public var node:Node;
 			
-			[Bindable]
-			public var pathNode:String;
-			
-			public var oldName:String;
-			
-			/* creationComplete for RenameBranchView */
-			protected function renameBranchCreationCompleteHandler(event:FlexEvent):void {
-				oldName = node.getPropertyValue(CoreConstants.NAME);
-				newBranchName.text = oldName;
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				newBranchName.text = node.getPropertyValue(CoreConstants.NAME);
 				okButton.enabled = true;
 			}
 			
-			
-			/* okButton handler: save the new name for branch */
 			override protected function okHandler(event:Event = null):void {
-				if(newBranchName.text == " "){
-					Alert.show("You must enter a name!");
+				if(newBranchName.text == "") {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setTitle(Resources.getMessage('flex_client.team.git.ui.renameBranchView.error'))
+						.setText(Resources.getMessage('flex_client.team.git.ui.renameBranchView.alert'))
+						.setHeight(150)
+						.setWidth(250)
+						.showMessageBox(true);
 				} else {
-					/* check the new name from branch */
 					var newName:String = newBranchName.text;
-					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",[node.nodeUri,oldName,newName]);
-					FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.renameBranch",[node.nodeUri, newName]);
+					cancelHandler();
 				}
 			}	
 		]]>
 	</fx:Script>
 
-
-	<s:HGroup verticalAlign="baseline">
-		<s:Form>
-			<s:FormItem label="New branch name:" >
-				<s:TextInput id="newBranchName" baseline="15" width="200" />
-			</s:FormItem>
-		</s:Form>
-		
-	</s:HGroup>
-
+	<s:Form width="100%">
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.renameBranchView.newBranchName')}" >
+			<s:TextInput id="newBranchName" width="100%" />
+		</s:FormItem>
+	</s:Form>
 	
 </ns:BasicViewContent>
