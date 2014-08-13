@@ -34,7 +34,6 @@ license-end
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
-			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
@@ -110,29 +109,7 @@ license-end
 					return;
 				}
 				
-				var remoteBranchesUri:String;
-				var parent:Node;
-				
-				if (node.type == GitConstants.GIT_REPO_TYPE) {
-					parent = node;
-				} else {
-					parent = node.parent;
-				}
-				
-				if (parent.children != null) {
-					/* get the URI for Remote Branches node */
-					for each (var child:Node in parent.children) {
-						if (child.type == GitConstants.GIT_REMOTE_BRANCHES_TYPE) {
-							if (child.children != null) {
-								remoteBranchesUri = child.nodeUri;
-							}
-							
-							break;
-						}
-					}
-				}
-				
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch",[node.nodeUri, fetchConfig, remoteBranchesUri]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch",[node.nodeUri, fetchConfig]);
 				
 				super.finishClickHandler();
 			}

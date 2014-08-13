@@ -15,7 +15,6 @@
 */
 
 package org.flowerplatform.flex_client.team.git.action {
-	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -58,7 +57,6 @@ package org.flowerplatform.flex_client.team.git.action {
 			if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
 				&& node.type != GitConstants.GIT_REMOTE_TYPE) {
 				/* show wizard */
-			
 				var fetchView:FetchView = new FetchView();
 				
 				fetchView.node = node;
@@ -70,18 +68,9 @@ package org.flowerplatform.flex_client.team.git.action {
 					.setTitle(label)	
 					.setIcon(icon)
 					.show();
-			} else {
-				/* get the URI for Remote Branches node */
-				var remoteBranchesUri:String;
-				for each (var child:Node in node.parent.parent.children) {
-					if (child.type == GitConstants.GIT_REMOTE_BRANCHES_TYPE) {
-						remoteBranchesUri = child.nodeUri;
-						break;
-					}
-				}
-				
+			} else {				
 				/* call action */
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch", [node.nodeUri, null, remoteBranchesUri]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch", [node.nodeUri, null]);
 			}
 		}
 	}

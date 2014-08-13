@@ -55,26 +55,18 @@ package org.flowerplatform.flex_client.team.git {
 			
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
 			
-			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureRemoteAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ResetAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeBranchAction);
-			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(FetchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
 		}
 		
 		override protected function registerMessageBundle():void {
