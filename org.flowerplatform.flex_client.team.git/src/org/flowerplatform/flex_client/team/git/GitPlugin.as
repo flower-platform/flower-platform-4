@@ -20,7 +20,6 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CloneRepoAction;
 	import org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ConfigureRemoteAction;
-	import org.flowerplatform.flex_client.team.git.action.CopyIdToClipboard;
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;

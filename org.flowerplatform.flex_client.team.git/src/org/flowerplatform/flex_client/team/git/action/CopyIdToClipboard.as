@@ -30,6 +30,5 @@ package org.flowerplatform.flex_client.team.git.action {
 			var node:Node = Node(selection.getItemAt(0));
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, node.getPropertyValue(GitHistoryConstants.ID));	
 		}
-		
 	}
 }
