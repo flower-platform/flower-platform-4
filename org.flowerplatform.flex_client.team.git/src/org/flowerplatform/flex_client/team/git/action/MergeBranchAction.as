@@ -1,4 +1,5 @@
-package org.flowerplatform.flex_client.team.git.action{
+package org.flowerplatform.flex_client.team.git.action {
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -10,9 +11,9 @@ package org.flowerplatform.flex_client.team.git.action{
 	/**
 	 * @author Tita Andreea
 	 */
-	public class MergeBranchAction extends ActionBase{
+	public class MergeBranchAction extends ActionBase {
 		
-		public function MergeBranchAction(){
+		public function MergeBranchAction() {
 			super();
 			icon = Resources.mergeBranch;
 		}
@@ -21,7 +22,7 @@ package org.flowerplatform.flex_client.team.git.action{
 			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
 				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0 
-					|| node.type == GitConstants.GIT_REPO_TYPE) {
+					|| (node.type == GitConstants.GIT_REPO_TYPE && node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY))) {
 					
 					if (node.getPropertyValue(GitConstants.IS_CHECKEDOUT) || node.type == GitConstants.GIT_REPO_TYPE) {
 						label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");

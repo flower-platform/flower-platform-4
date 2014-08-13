@@ -34,7 +34,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			
 			label = Resources.getMessage("flex_client.team.git.action.createBranch");
 			icon = Resources.createBranchIcon;
-			orderIndex = -1000;
+			orderIndex = 300;
 		}
 				
 		override public function get visible():Boolean {
