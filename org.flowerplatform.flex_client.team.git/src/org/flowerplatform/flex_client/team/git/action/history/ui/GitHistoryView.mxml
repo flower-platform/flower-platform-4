@@ -39,6 +39,9 @@
 			[Bindable]
 			public var files:ArrayCollection = new ArrayCollection;
 			
+			[Bindable]
+			public var branchNames:ArrayCollection = new ArrayCollection;
+			
 			[Bindable] 
 			public var content:String = new String;
 			
@@ -188,7 +191,7 @@
 			}
 		
 			private function updateWindows(event:GridSelectionEvent):void {
-				textAreaHandler(event);
+				CorePlugin.getInstance().serviceLocator.invoke("HistoryService.getCommitBranches", [Node(grid.selectedItem).nodeUri, String(Node(grid.selectedItem).getPropertyValue(GitHistoryConstants.ID))],function(data:ArrayCollection):void {branchNames = data; textAreaHandler(event);})
 				CorePlugin.getInstance().serviceLocator.invoke("HistoryService.getCommitedData", [Node(grid.selectedItem).nodeUri, String(Node(grid.selectedItem).getPropertyValue(GitHistoryConstants.ID))],function(data2:ArrayCollection):void {commitedFiles = data2; listHandler(event);})
 			}		
 			
@@ -234,13 +237,13 @@
 						ArrayCollection(Node(Node(grid.selectedItem)).getPropertyValue(GitHistoryConstants.CHILD)).getItemAt(i+1)
 					]);	
 				}
-				var  branchesLen:Number = Node(Node(grid.selectedItem)).getPropertyValue(GitHistoryConstants.BRANCHES).length;
+				var  branchesLen:Number = branchNames.length;
 				
 				content += "Branches:";
 				for (i = 0; i < branchesLen-1; i++) {
-					content += ArrayCollection(Node(Node(grid.selectedItem)).getPropertyValue(GitHistoryConstants.BRANCHES)).getItemAt(i)+", ";	
+					content += branchNames.getItemAt(i)+", ";	
 				}
-				content += ArrayCollection(Node(Node(grid.selectedItem)).getPropertyValue(GitHistoryConstants.BRANCHES)).getItemAt(branchesLen-1);
+				content += branchNames.getItemAt(branchesLen-1);
 
 				content += "\n<b>"+String(Node(Node(grid.selectedItem)).getPropertyValue(GitHistoryConstants.LONG_MESSAGE))+"</b>";
 	

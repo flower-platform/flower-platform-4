@@ -90,6 +90,21 @@ public class HistoryService {
 			revWalk.dispose();
 		}
 	}
+	
+	public List<String> getCommitBranches(String nodeUri, String commitId) throws Exception {
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		WebWalk walk = getWebWalk(nodeUri);
+		RevCommit commit = walk.parseCommit(repo.resolve(commitId));
+		List<Ref> branches = getBranches((WebCommit)commit, getAllBranches(repo), repo);
+
+		List<String> branchesNames = new ArrayList<String>();;
+		for (int i = 0; i < branches.size(); i++) {
+			branchesNames.add( branches.get(i).getName().substring((branches.get(i).getName()).indexOf('/', 5)+1));
+		}
+						
+		return branchesNames;
+	}
 
 	/**
 	 * @author Cristina Constantinescu
@@ -100,7 +115,6 @@ public class HistoryService {
 		
 			String repoPath = Utils.getRepo(nodeUri);
 			Repository repo = GitUtils.getRepository((File)FileControllerUtils.getFileAccessController().getFile(repoPath));
-			List<Ref> allBranches = getAllBranches(repo);
 			WebWalk walk = getWebWalk(nodeUri);
 		
 			WebCommitList loadedCommits = new WebCommitList();
@@ -161,15 +175,7 @@ public class HistoryService {
 					childs.add(p.getShortMessage());
 				}			
 				
-				entry.getProperties().put(GitHistoryConstants.CHILD, childs);				
-								
-				List<Ref> branches = getBranches(commit, allBranches, repo);
-				List<String> branchesNames = new ArrayList<String>();;
-				for (int i = 0; i < branches.size(); i++) {
-					branchesNames.add( branches.get(i).getName().substring((branches.get(i).getName()).indexOf('/', 5)+1));
-				}
-								
-				entry.getProperties().put(GitHistoryConstants.BRANCHES, branchesNames);				
+				entry.getProperties().put(GitHistoryConstants.CHILD, childs);												
 				
 				result.add(entry);
 			}			
