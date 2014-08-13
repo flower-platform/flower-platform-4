@@ -12,6 +12,8 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			[Bindable]
 			public var showRemotesList:Boolean = true;
+			[Bindable]
+			public var showURIArea:Boolean = true;
 			
 			[Bindable]
 			public var remotes:IList;
@@ -30,12 +32,14 @@
 	</s:layout>
 	
 	<s:VGroup height="40%" width="100%" paddingLeft="5" visible="@{showRemotesList}" includeInLayout="@{showRemotesList}">
-		<s:RadioButton id="remoteRepo" width="100%" selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" />
+		<s:RadioButton id="remoteRepo" width="100%" selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" 
+					   visible="@{showURIArea}" includeInLayout="@{showURIArea}"/>
 		<s:DropDownList id="repositoriesList" width="100%" dataProvider="@{remotes}"/>
 	</s:VGroup>
 	
-	<s:VGroup height="40%" width="100%" paddingLeft="5">
-		<s:RadioButton id="uriRepo" width="100%" selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" />
+	<s:VGroup height="40%" width="100%" paddingLeft="5" visible="@{showURIArea}" includeInLayout="@{showURIArea}">
+		<s:RadioButton id="uriRepo" width="100%" selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" 
+					   visible="@{showRemotesList}" includeInLayout="@{showRemotesList}"/>
 		<s:TextInput id="uriTextInput" width="100%"/>
 		
 	</s:VGroup>

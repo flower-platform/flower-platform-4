@@ -21,7 +21,11 @@ import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.UPDATE_REQUEST_REFRESH;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
+import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -448,45 +452,79 @@ public class GitService {
 
 	public void cloneRepo(final String nodeUri, final String repoUri, final Collection<String> branches, final boolean cloneAll) throws Exception {
 		final URIish uri = new URIish(repoUri.trim());
-		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri));
+		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(
+				Utils.getRepo(nodeUri));
 		
-		final String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
-		Job job = new Job(jobName)	{
-			@Override
-			protected IStatus run(IProgressMonitor m) {														
-				Repository repository = null;
-				try {	
-					CloneCommand cloneRepository = Git.cloneRepository();
-							
-					cloneRepository.setDirectory(mainRepo);
-					cloneRepository.setURI(uri.toString());
-					cloneRepository.setCloneAllBranches(cloneAll);
-					cloneRepository.setCloneSubmodules(false);	
-					cloneRepository.setBranchesToClone(branches);
-					
-					Git git = cloneRepository.call();
-					repository = git.getRepository();
-					
-				} catch (Exception e) {			
-					if (repository != null)
-						repository.close();
-					
-					if (m.isCanceled()) {
-						return Status.OK_STATUS;
-					}
-					
-					return Status.CANCEL_STATUS;
-				} finally {
-					m.done();					
-					if (repository != null) {
-						repository.close();
-					}
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
+//		final String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
+//		Job job = new Job(jobName)	{
+//			@Override
+//			protected IStatus run(IProgressMonitor m) {														
+//				Repository repository = null;
+////				Node node = CorePlugin.getInstance().getResourceService().getNode(FILE_SCHEME + ":" + Utils.getRepo(nodeUri));
+////				Node gitNode = CorePlugin.getInstance().getResourceService().getNode(VIRTUAL_NODE_SCHEME + ":" + Utils.getRepo(nodeUri) + "|" + REPOSITORY_TYPE);
+//				try {	
+//					CloneCommand cloneRepository = Git.cloneRepository();
+//							
+//					cloneRepository.setDirectory(mainRepo);
+//					cloneRepository.setURI(uri.toString());
+//					cloneRepository.setCloneAllBranches(cloneAll);
+//					cloneRepository.setCloneSubmodules(false);	
+//					cloneRepository.setBranchesToClone(branches);
+//					
+//					Git git = cloneRepository.call();
+//					repository = git.getRepository();
+//					
+//				} catch (Exception e) {			
+//					if (repository != null)
+//						repository.close();
+//					
+//					if (m.isCanceled()) {
+//						return Status.OK_STATUS;
+//					}
+//					
+//					return Status.CANCEL_STATUS;
+//				} finally {
+//					m.done();					
+//					if (repository != null) {
+//						repository.close();
+//					}
+//					CorePlugin.getInstance().getResourceSetService().addUpdate(
+//							CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))), 
+//							new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))).setTypeAs(UPDATE_REQUEST_REFRESH), 
+//							new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+//					CorePlugin.getInstance().getResourceSetService().addUpdate(
+//							CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+//							new Update().setFullNodeIdAs(nodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+//							new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+//				}
+//				return Status.OK_STATUS;
+//			}
+//		};
+//		job.schedule();
 		
+		Repository repository = null;
+		CloneCommand cloneRepository = Git.cloneRepository();
+		
+		cloneRepository.setDirectory(mainRepo);
+		cloneRepository.setURI(uri.toString());
+		cloneRepository.setCloneAllBranches(cloneAll);
+		cloneRepository.setCloneSubmodules(false);	
+		cloneRepository.setBranchesToClone(branches);
+		
+		Git git = cloneRepository.call();
+		repository = git.getRepository();
+		if (repository != null) {
+			repository.close();
+		}
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))), 
+				new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new Update().setFullNodeIdAs(GitUtils.getNodeUri(Utils.getRepo(nodeUri), GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
 	/** 
