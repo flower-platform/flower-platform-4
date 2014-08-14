@@ -56,7 +56,7 @@
 							[selectedNode.nodeUri, 
 							squash.selected,
 							!noCommit.selected, 
-							fastForwardOptions.selectedIndex],							
+							fastForwardOptions.selectedIndex, null],							
 							function(result:String):void {
 								FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 								.setText(result)

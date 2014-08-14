@@ -23,6 +23,7 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
+			import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
 			import org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
@@ -162,6 +163,7 @@
 			public function getActions(selection:IList):Vector.<IAction> {
 				var result:Vector.<IAction> = new Vector.<IAction>();
 				result.push(new CopyIdToClipboard());
+				result.push(new MergeBranchAction(true));
 				return result;
 			}
 		

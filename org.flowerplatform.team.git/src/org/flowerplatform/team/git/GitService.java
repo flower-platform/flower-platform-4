@@ -49,6 +49,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
@@ -134,7 +135,7 @@ public class GitService {
 	/**
 	 * @author Tita Andreea
 	 */
-	public String mergeBranch(String nodeUri, boolean setSquash, boolean commit, int fastForwardOptions) throws Exception {
+	public String mergeBranch(String nodeUri, boolean setSquash, boolean commit, int fastForwardOptions, String idCommit) throws Exception {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		String repoPath = Utils.getRepo(nodeUri);
 		
@@ -142,7 +143,7 @@ public class GitService {
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Git gitInstance = new Git(repo);
 		
-		Ref ref = repo.getRef((String) node.getPropertyValue(GitConstants.NAME));
+		MergeCommand mergeCmd;
 		FastForwardMode fastForwardMode = FastForwardMode.FF;
 		
 		// set the parameters for Fast Forward options 
@@ -159,12 +160,18 @@ public class GitService {
 		}
 		
 		// call merge operation 
-		MergeCommand mergeCmd = gitInstance.merge().include(ref).setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit);
-		MergeResult mergeResult = mergeCmd.call();
+		if (idCommit != null) {
+			mergeCmd = gitInstance.merge().include((AnyObjectId) repo.resolve(idCommit));
+		} else {
+			mergeCmd = gitInstance.merge().include(repo.getRef((String) node.getPropertyValue(GitConstants.NAME)));
+		}
+
+		MergeResult mergeResult = mergeCmd.setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit).call();
 	   
+		String uri = Utils.getUri(FILE_SCHEME, repoPath);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				node, 
-				new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, repoPath)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				CorePlugin.getInstance().getResourceService().getNode(uri), 
+				new Update().setFullNodeIdAs(uri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
 		return GitUtils.handleMergeResult(mergeResult);		

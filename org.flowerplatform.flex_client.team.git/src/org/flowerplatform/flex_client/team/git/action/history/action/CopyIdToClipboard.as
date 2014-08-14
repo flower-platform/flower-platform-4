@@ -17,6 +17,7 @@ package org.flowerplatform.flex_client.team.git.action.history.action {
 			super();
 			label = Resources.getMessage("gitHistory.action.CopyId");
 			icon = Resources.copy;
+			setOrderIndex(int(Resources.getMessage('flex_client.team.git.action.history.sortIndex.CopyIdToClipboard')));
 		}
 		
 		override public function  get visible():Boolean {
