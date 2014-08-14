@@ -33,9 +33,9 @@ public abstract class MatchActionAddLateralAbstract extends MatchActionAddAbstra
 	@Override
 	protected void processDiffs(Match match) {
 		for (Diff diff : match.getDiffs()) {
-			diff.setLeftModified(true);
-			diff.setRightModified(true);
-			diff.setConflict(false);
+			diff.setIsLeftModified(true);
+			diff.setIsRightModified(true);
+			diff.setIsConflict(false);
 		}
 		match.setDiffsModifiedLeft(true);
 		match.setDiffsModifiedRight(true);

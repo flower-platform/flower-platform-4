@@ -37,10 +37,12 @@ public class ChildrenUpdate extends Update {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public ChildrenUpdate setTargetNodeAs(Node targetNode) {
 		this.targetNode = targetNode;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public String getFullTargetNodeAddedBeforeId() {
 		return fullTargetNodeAddedBeforeId;
@@ -53,10 +55,12 @@ public class ChildrenUpdate extends Update {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public ChildrenUpdate setFullTargetNodeAddedBeforeIdAs(String fullTargetNodeAddedBeforeId) {
 		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
 		return this;
 	}
+	//CHECKSTYLE:ON
 		
 	@Override
 	public String toString() {

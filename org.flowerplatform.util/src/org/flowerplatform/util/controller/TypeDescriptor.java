@@ -196,20 +196,20 @@ public class TypeDescriptor {
 	 * 
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
-	public TypeDescriptor addSingleController(String type, IController controller) {
+	public TypeDescriptor addSingleController(String typeName, IController controller) {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new single controller to a non-configurable registry");
 		}
-		ControllerEntry<IController> entry = getSingleControllerEntry(type);
+		ControllerEntry<IController> entry = getSingleControllerEntry(typeName);
 		entry.setSelfValue(controller);
 		return this;
 	}
 	
-	private ControllerEntry<IController> getSingleControllerEntry(String type) {
-		ControllerEntry<IController> entry = singleControllers.get(type);
+	private ControllerEntry<IController> getSingleControllerEntry(String typeName) {
+		ControllerEntry<IController> entry = singleControllers.get(typeName);
 		if (entry == null) {
 			entry = new ControllerEntry<IController>();
-			singleControllers.put(type, entry);
+			singleControllers.put(typeName, entry);
 		}
 		return entry;
 	}
@@ -297,21 +297,21 @@ public class TypeDescriptor {
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
 	@SuppressWarnings("unchecked")
-	public TypeDescriptor addAdditiveController(String type, IController controller) {
+	public TypeDescriptor addAdditiveController(String typeName, IController controller) {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new additive controller to a non-configurable registry");
 		}
-		ControllerEntry<List<? extends IController>> entry = getAdditiveControllersEntry(type);
+		ControllerEntry<List<? extends IController>> entry = getAdditiveControllersEntry(typeName);
 		((List<IController>) entry.getSelfValue()).add(controller);
 		return this;
 	}
 	
-	private ControllerEntry<List<? extends IController>> getAdditiveControllersEntry(String type) {
-		ControllerEntry<List<? extends IController>> entry = additiveControllers.get(type);
+	private ControllerEntry<List<? extends IController>> getAdditiveControllersEntry(String typeName) {
+		ControllerEntry<List<? extends IController>> entry = additiveControllers.get(typeName);
 		if (entry == null) {
 			entry = new ControllerEntry<List<? extends IController>>();
 			entry.setSelfValue(new ArrayList<IController>());
-			additiveControllers.put(type, entry);
+			additiveControllers.put(typeName, entry);
 		}
 		return entry;
 	}

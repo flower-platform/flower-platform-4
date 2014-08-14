@@ -34,11 +34,12 @@ public abstract class RegexAction implements Runnable {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public RegexAction setName(String name) {
 		this.name = name;
 		return this;
 	}
-
+	//CHECKSTYLE:ON
 	public String getDescription() {
 		return description;
 	}
@@ -46,10 +47,12 @@ public abstract class RegexAction implements Runnable {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public RegexAction setDescription(String description) {
 		this.description = description;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 * @author see class

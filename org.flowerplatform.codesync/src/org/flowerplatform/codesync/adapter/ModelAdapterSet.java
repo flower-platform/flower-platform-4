@@ -82,25 +82,31 @@ public class ModelAdapterSet implements IModelAdapterSet {
 	/**
 	 *@author Mariana Gheorghe
 	 */
+	//CHECKSTYLE:OFF
 	public ModelAdapterSet setTypeProvider(ITypeProvider typeProvider) {
 		this.typeProvider = typeProvider;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 *@author Mariana Gheorghe 
 	 */
+	//CHECKSTYLE:OFF
 	public ModelAdapterSet setLineProvider(ILineProvider lineProvider) {
 		this.lineProvider = lineProvider;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 *@author Mariana Gheorghe
 	 */
+	//CHECKSTYLE:OFF
 	public ModelAdapterSet setFileModelAdapterDelegate(IModelAdapter fileModelAdapterDelegate) {
 		this.fileModelAdapterDelegate = fileModelAdapterDelegate;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 }

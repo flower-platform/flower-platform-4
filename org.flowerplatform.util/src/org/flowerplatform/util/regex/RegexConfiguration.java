@@ -53,18 +53,22 @@ public class RegexConfiguration {
 	/**
 	 * @author Cristina Constantinescu
 	 */
+	//CHECKSTYLE:OFF
 	public RegexConfiguration setTargetNestingForMatches(int targetNestingForMatches) {
 		this.targetNestingForMatches = targetNestingForMatches;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	/**
 	 * Option needed if the configuration does not need any filtering before returning output 
 	 */
+	//CHECKSTYLE:OFF
 	public RegexConfiguration setUseUntilFoundThisIgnoreAll(boolean useUntilFoundThisIgnoreAll) {
 		this.useUntilFoundThisIgnoreAll = useUntilFoundThisIgnoreAll;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 * @author Cristina Constantinescu

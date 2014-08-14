@@ -58,7 +58,7 @@ public class Diff {
 		return isLeftModified;
 	}
 
-	public void setLeftModified(boolean isLeftModified) {
+	public void setIsLeftModified(boolean isLeftModified) {
 		this.isLeftModified = isLeftModified;
 	}
 
@@ -66,7 +66,7 @@ public class Diff {
 		return isRightModified;
 	}
 
-	public void setRightModified(boolean isRightModified) {
+	public void setIsRightModified(boolean isRightModified) {
 		this.isRightModified = isRightModified;
 	}
 
@@ -74,7 +74,7 @@ public class Diff {
 		return isConflict;
 	}
 
-	public void setConflict(boolean isConflict) {
+	public void setIsConflict(boolean isConflict) {
 		this.isConflict = isConflict;
 	}
 

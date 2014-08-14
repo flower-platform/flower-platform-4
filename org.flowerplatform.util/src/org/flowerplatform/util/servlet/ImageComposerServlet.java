@@ -120,8 +120,10 @@ public class ImageComposerServlet extends ResourcesServlet {
 					if (height < image.getHeight()) {
 						height = image.getHeight();
 					}
+					//CHECKSTYLE:OFF
 				} catch (Exception e) {
 					// one of the images was not found; skip it
+					//CHECKSTYLE:OFF
 				}
 			}
 			

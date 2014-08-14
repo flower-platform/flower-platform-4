@@ -72,10 +72,12 @@ public abstract class AbstractController implements IController {
 	/**
 	 * @author Mariana Gheorghe
 	 */
+	//CHECKSTYLE:OFF
 	public IController setOrderIndexAs(int orderIndex) {
 		setOrderIndex(orderIndex);
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	/**
 	 * Needed to know how to sort the list of controllers. For additive controllers.

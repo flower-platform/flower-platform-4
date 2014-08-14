@@ -328,8 +328,10 @@ public class BridgeServlet extends HttpServlet {
 			while (instance.delegateReferenceCount != 0) {
 				try {
 					instance.wait();
+					//CHECKSTYLE:OFF
 				} catch (InterruptedException e) {
 					// keep waiting for all requests to finish
+					//CHECKSTYLE:ON
 				}
 			}
 			oldProxy.destroy();

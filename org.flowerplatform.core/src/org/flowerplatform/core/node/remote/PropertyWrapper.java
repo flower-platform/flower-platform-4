@@ -33,8 +33,8 @@ public class PropertyWrapper {
 	/**
 	 * @author see class
 	 */
-	public PropertyWrapper setValueAs(Object value) {
-		setValue(value);
+	public PropertyWrapper setValueAs(Object givenValue) {
+		setValue(givenValue);
 		return this;
 	}
 	

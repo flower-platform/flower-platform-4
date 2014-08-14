@@ -39,10 +39,12 @@ public class PropertyUpdate extends Update {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setKeyAs(String key) {
 		this.key = key;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public Object getValue() {
 		return value;
@@ -55,10 +57,12 @@ public class PropertyUpdate extends Update {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setValueAs(Object value) {
 		this.value = value;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public boolean getIsUnset() {
 		return isUnset;
@@ -71,10 +75,12 @@ public class PropertyUpdate extends Update {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setUnsetAs(boolean isUnset) {
 		this.isUnset = isUnset;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	/**
 	 * @author see class

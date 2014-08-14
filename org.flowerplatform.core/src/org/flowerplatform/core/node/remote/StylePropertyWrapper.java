@@ -33,8 +33,8 @@ public class StylePropertyWrapper extends PropertyWrapper {
 	/**
 	 * @author see class
 	 */
-	public StylePropertyWrapper setIsDefaultAs(boolean isDefault) {
-		setIsDefault(isDefault);
+	public StylePropertyWrapper setIsDefaultAs(boolean isDefaultStyle) {
+		setIsDefault(isDefaultStyle);
 		return this;
 	}
 	

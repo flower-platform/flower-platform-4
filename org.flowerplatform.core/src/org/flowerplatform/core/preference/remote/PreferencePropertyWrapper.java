@@ -36,8 +36,8 @@ public class PreferencePropertyWrapper extends PropertyWrapper {
 	/**
 	 * @author see class
 	 */
-	public PreferencePropertyWrapper setIsUsedAs(boolean isUsed) {
-		setIsUsed(isUsed);
+	public PreferencePropertyWrapper setIsUsedAs(boolean isUsedPreferenceProperty) {
+		setIsUsed(isUsedPreferenceProperty);
 		return this;
 	}
 	

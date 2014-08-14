@@ -35,10 +35,12 @@ public class DownloadInfo {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public DownloadInfo setPath(String path) {
 		this.path = path;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	public int getType() {
 		return type;
@@ -47,10 +49,12 @@ public class DownloadInfo {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public DownloadInfo setType(int type) {
 		this.type = type;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	public long getTimestamp() {
 		return timestamp;
@@ -59,10 +63,12 @@ public class DownloadInfo {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public DownloadInfo setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public String getSessionId() {
 		return sessionId;
@@ -71,10 +77,12 @@ public class DownloadInfo {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public DownloadInfo setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 * @author see class

@@ -58,26 +58,32 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public AddChildDescriptor setChildTypeAs(String childType) {
 		this.childType = childType;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public AddChildDescriptor setLabelAs(String label) {
 		this.label = label;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public AddChildDescriptor setIconAs(String icon) {
 		this.icon = icon;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 * @author see class

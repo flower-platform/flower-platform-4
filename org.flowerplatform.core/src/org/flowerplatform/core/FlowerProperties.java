@@ -141,10 +141,12 @@ public class FlowerProperties extends Properties {
 		 * 
 		 * @author Mariana
 		 */
+		//CHECKSTYLE:OFF
 		public AddProperty setInputFromFileMandatory(boolean inputFromFileMandatory) {
 			this.inputFromFileMandatory = inputFromFileMandatory;
 			return this;
 		}
+		//CHECKSTYLE:ON
 	}
 	
 	/**

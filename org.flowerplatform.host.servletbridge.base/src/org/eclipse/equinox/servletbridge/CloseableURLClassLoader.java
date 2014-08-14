@@ -172,8 +172,10 @@ public class CloseableURLClassLoader extends URLClassLoader {
 			if (jarFile.getEntry(name) != null) {
 				try {
 					return new URL(JAR, null, -1, jarFileURLPrefixString + name, jarURLStreamHandler);
+					//CHECKSTYLE:OFF
 				} catch (MalformedURLException e) {
 					// ignore
+					//CHECKSTYLE:ON
 				}
 			}
 			return null;
@@ -186,8 +188,10 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		public void close() {
 			try {
 				jarFile.close();
+				//CHECKSTYLE:OFF
 			} catch (IOException e) {
 				// ignore
+				//CHECKSTYLE:ON
 			}
 		}
 	}
@@ -236,12 +240,16 @@ public class CloseableURLClassLoader extends URLClassLoader {
 				try {
 					loaders.add(new CloseableJarFileLoader(file, verifyJars));
 					return true;
+					//CHECKSTYLE:OFF
 				} catch (IOException e) {
 					// ignore
+					//CHECKSTYLE:ON
 				}
 			}
+			//CHECKSTYLE:OFF
 		} catch (URISyntaxException e1) {
 			// ignore
+			//CHECKSTYLE:ON
 		}
 
 		return false;
@@ -374,8 +382,10 @@ public class CloseableURLClassLoader extends URLClassLoader {
 			if (is != null) {
 				try {
 					is.close();
+					//CHECKSTYLE:OFF
 				} catch (IOException e) {
 					// ignore
+					//CHECKSTYLE:ON
 				}
 			}
 		}

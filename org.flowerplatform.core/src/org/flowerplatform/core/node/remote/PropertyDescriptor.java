@@ -58,10 +58,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setNameAs(String name) {
 		this.name = name;
 		return this;
 	}
+	//CHECKSTYLE:ON
 		
 	public String getTitle() {
 		return title;
@@ -74,10 +76,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setTitleAs(String title) {
 		this.title = title;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public String getType() {
 		return type;
@@ -90,10 +94,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setTypeAs(String type) {
 		this.type = type;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public String getCategory() {
 		return category;
@@ -106,10 +112,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setCategoryAs(String category) {
 		this.category = category;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public boolean getReadOnly() {
 		return readOnly;
@@ -122,10 +130,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setReadOnlyAs(boolean readOnly) {
 		this.readOnly = readOnly;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	public List<?> getPossibleValues() {
 		return possibleValues;
@@ -138,10 +148,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author Mariana Gheorghe
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setPossibleValuesAs(List<?> possibleValues) {
 		this.possibleValues = possibleValues;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public boolean getContributesToCreation() {
 		return contributesToCreation;
@@ -170,10 +182,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setMandatoryAs(boolean mandatory) {
 		this.mandatory = mandatory;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public Object getDefaultValue() {
 		return defaultValue;
@@ -186,10 +200,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setDefaultValueAs(Object defaultValue) {
 		this.defaultValue = defaultValue;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public String getPropertyLineRenderer() {
 		return propertyLineRenderer;
@@ -202,10 +218,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setPropertyLineRendererAs(String propertyLineRenderer) {
 		this.propertyLineRenderer = propertyLineRenderer;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	@Override
 	public String toString() {

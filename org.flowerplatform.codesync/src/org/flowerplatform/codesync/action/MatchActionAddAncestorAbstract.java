@@ -55,7 +55,7 @@ public abstract class MatchActionAddAncestorAbstract extends MatchActionAddAbstr
 	@Override
 	protected void processDiffs(Match match) {
 		for (Diff diff : match.getDiffs()) {
-			diff.setConflict(false);
+			diff.setIsConflict(false);
 		}
 		match.setDiffsConflict(false);
 	}

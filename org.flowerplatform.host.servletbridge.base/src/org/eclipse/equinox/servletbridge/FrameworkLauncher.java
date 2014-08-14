@@ -181,8 +181,10 @@ public class FrameworkLauncher {
 				resourceBase = RESOURCE_BASE + ECLIPSE;
 				return;
 			}
+			//CHECKSTYLE:OFF
 		} catch (MalformedURLException e) {
 			// ignore
+			//CHECKSTYLE:ON
 		}
 		// If things don't work out, use the default resource base
 		resourceBase = RESOURCE_BASE;
@@ -829,8 +831,10 @@ public class FrameworkLauncher {
 				clazz = this.getClass().getClassLoader().loadClass("org.apache.commons.logging.LogFactory"); //$NON-NLS-1$
 				method = clazz.getDeclaredMethod("release", new Class[] {ClassLoader.class}); //$NON-NLS-1$
 				method.invoke(clazz, new Object[] {frameworkContextClassLoader});
+				//CHECKSTYLE:OFF
 			} catch (ClassNotFoundException e) {
 				// ignore, ACL is not being used
+				//CHECKSTYLE:ON
 			}
 
 		} catch (Exception e) {
@@ -946,16 +950,20 @@ public class FrameworkLauncher {
 				in = location.openStream();
 				result.load(in);
 			}
+			//CHECKSTYLE:OFF
 		} catch (MalformedURLException e) {
 			// no url to load from
 		} catch (IOException e) {
 			// its ok if there is no file
+			//CHECKSTYLE:ON
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
+					//CHECKSTYLE:OFF
 				} catch (IOException e) {
 					// ignore
+					//CHECKSTYLE:ON
 				}
 			}
 		}

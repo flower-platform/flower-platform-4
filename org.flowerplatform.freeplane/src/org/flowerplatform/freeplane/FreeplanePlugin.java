@@ -61,7 +61,7 @@ import org.osgi.framework.BundleContext;
  */
 public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 
-	protected static FreeplanePlugin INSTANCE;
+	protected static FreeplanePlugin instance;
 	
 	public static final String STYLE_ROOT_NODE = "styleRootNode";
 	
@@ -74,7 +74,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	}
 	
 	public static FreeplanePlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 	
 		FreeplanePersistenceResourceHandler fppResourceHandler = new FreeplanePersistenceResourceHandler();
 		FreeplaneMindmapResourceHandler fpmResourceHandler = new FreeplaneMindmapResourceHandler();
@@ -136,7 +136,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

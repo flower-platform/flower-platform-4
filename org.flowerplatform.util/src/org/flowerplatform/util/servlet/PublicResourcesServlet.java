@@ -57,8 +57,10 @@ public class PublicResourcesServlet extends ResourcesServlet {
         if (resource != null) {
             try {
                 resource.close();
+              //CHECKSTYLE:OFF
             } catch (IOException e) {
             	// Do nothing.
+            	//CHECKSTYLE:ON
             }
         }
     }

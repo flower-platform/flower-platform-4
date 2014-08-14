@@ -39,10 +39,12 @@ public class Update implements Comparable<Update> {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public Update setFullNodeIdAs(String fullNodeId) {
 		this.fullNodeId = fullNodeId;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public long getTimestamp() {
 		return timestamp;
@@ -63,10 +65,12 @@ public class Update implements Comparable<Update> {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public Update setTypeAs(String type) {
 		this.type = type;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	@Override
 	public int compareTo(Update o) {

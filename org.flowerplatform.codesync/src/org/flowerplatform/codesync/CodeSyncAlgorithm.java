@@ -425,8 +425,8 @@ public class CodeSyncAlgorithm {
 		if (left != null && right != null && safeEquals(leftValue, rightValue)) {
 			if (ancestor != null && !safeEquals(leftValue, ancestorValue)) {
 				diff = new Diff();
-				diff.setLeftModified(true);
-				diff.setRightModified(true);
+				diff.setIsLeftModified(true);
+				diff.setIsRightModified(true);
 				getLeftModelAdapter(left).unsetConflict(left, feature, this);
 				getRightModelAdapter(right).unsetConflict(right, feature, this);
 			}
@@ -435,27 +435,27 @@ public class CodeSyncAlgorithm {
 				// modif on RIGHT
 				if (right != null) {
 					diff = new Diff();
-					diff.setRightModified(true);
+					diff.setIsRightModified(true);
 					getLeftModelAdapter(left).unsetConflict(left, feature, this);
 				}
 			} else if (ancestor != null && right != null && safeEquals(ancestorValue, rightValue)) {
 				// modif on LEFT
 				if (left != null) {
 					diff = new Diff();
-					diff.setLeftModified(true);
+					diff.setIsLeftModified(true);
 					getRightModelAdapter(right).unsetConflict(right, feature, this);
 				}
 			} else {
 				diff = new Diff();
 				if (left != null) {
-					diff.setLeftModified(true);
+					diff.setIsLeftModified(true);
 					getLeftModelAdapter(left).setConflict(left, feature, rightValue, this);
 				}
 				if (right != null) {
-					diff.setRightModified(true);
+					diff.setIsRightModified(true);
 					getRightModelAdapter(right).setConflict(right, feature, leftValue, this);
 				}
-				diff.setConflict(true);
+				diff.setIsConflict(true);
 				
 			}
 		}

@@ -62,8 +62,10 @@ public abstract class ResourcesServlet extends HttpServlet {
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
+			//CHECKSTYLE:OFF
 		} catch (IOException e) {
 			// do nothing
+			//CHECKSTYLE:ON
 		}
 		LOGGER.warn("Resource not found; sending 404: {}", request.getPathInfo());
 	}

@@ -209,8 +209,10 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			if (is != null) {
 				try {
 					is.close();
+					//CHECKSTYLE:OFF
 				} catch (IOException e) {
 					// ignore
+					//CHECKSTYLE:ON
 				}
 			}
 		}

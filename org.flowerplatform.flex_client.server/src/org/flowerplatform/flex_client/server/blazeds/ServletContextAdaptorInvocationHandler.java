@@ -76,7 +76,7 @@ public class ServletContextAdaptorInvocationHandler implements InvocationHandler
 	 * invoked on the context from the servlet container.
 	 */
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public Object invoke(Object givenProxy, Method method, Object[] args) throws Throwable {
 		Object result = method.invoke(this.proxy, args);
 		switch (method.getName()) {
 		case "setAttribute":

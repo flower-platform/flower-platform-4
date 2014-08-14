@@ -6,6 +6,9 @@
 <module name="Checker">
 	<property name="severity" value="warning"/>
 
+	<!-- Filters:  http://checkstyle.sourceforge.net/config.html-->
+	<module name="SuppressionCommentFilter"/>
+    
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
     <module name="NewlineAtEndOfFile">
@@ -39,6 +42,9 @@
     <module name="TreeWalker">
         <property name="tabWidth" value="4"/>
 
+		<!-- Filters : see http://checkstyle.sourceforge.net/config.html -->
+		<module name="FileContentsHolder"/>
+        
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <module name="JavadocType">
@@ -148,7 +154,6 @@
         <module name="HiddenField">
     		<property name="ignoreSetter" value="true"/>
     		<property name="ignoreConstructorParameter" value="true"/>
-    		<property name="tokens" value="VARIABLE_DEF"/>
 		</module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>

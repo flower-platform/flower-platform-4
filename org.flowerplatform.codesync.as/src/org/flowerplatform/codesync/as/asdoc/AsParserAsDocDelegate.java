@@ -45,10 +45,12 @@ public class AsParserAsDocDelegate implements IASParserASDocDelegate {
 		// nothing to do
 	}
 
+	//CHECKSTYLE:OFF
 	@Override
 	public void setCurrentASDocToken(Token asDocToken) {
 		this.asDocToken = asDocToken;
 	}
+	//CHECKSTYLE:ON
 
 	@Override
 	public IASDocComment afterDefinition(IDocumentableDefinitionNode definitionNode) {

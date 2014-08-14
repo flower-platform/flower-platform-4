@@ -51,7 +51,7 @@ public class DiffContextMenuEntry {
 		return isRight;
 	}
 
-	public void setRight(boolean isRight) {
+	public void setIsRight(boolean isRight) {
 		this.isRight = isRight;
 	}
 

@@ -58,8 +58,10 @@ public final class FileUtil {
 				if (br != null) {
 					br.close();
 				}
+				//CHECKSTYLE:OFF
 			} catch (IOException e) {
 				// nothing to do
+				//CHECKSTYLE:ON
 			}
 		}
 
@@ -83,8 +85,10 @@ public final class FileUtil {
 				if (bw != null) {
 					bw.close();
 				}
+				//CHECKSTYLE:OFF
 			} catch (IOException e) {
 				//do nothing
+				//CHECKSTYLE:ON
 			}
 		}
 	}
