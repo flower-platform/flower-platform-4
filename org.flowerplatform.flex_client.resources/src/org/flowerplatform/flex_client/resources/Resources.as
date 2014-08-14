@@ -567,7 +567,7 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
 
-		[Embed(source="/team.git/remotespec.gif")]
+		[Embed(source="/team.git/remoteSpec.gif")]
 		public static const configureFetchPush:Class;
 
 		[Embed(source="/team.git/merge.gif")]
