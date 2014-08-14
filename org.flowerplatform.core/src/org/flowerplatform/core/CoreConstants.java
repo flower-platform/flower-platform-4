@@ -17,8 +17,13 @@ package org.flowerplatform.core;
 
 import org.flowerplatform.util.UtilConstants;
 
-public class CoreConstants {
+/**
+ * @author Mariana Gheorghe
+ */
+public final class CoreConstants {
 
+	private CoreConstants() {
+	}
 	public static final String APP_VERSION = "0.1.1";
 	public static final String API_VERSION = "0.1.0";
 	

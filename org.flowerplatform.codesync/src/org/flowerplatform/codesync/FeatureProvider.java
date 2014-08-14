@@ -28,6 +28,9 @@ public class FeatureProvider {
 	private IModelAdapter modelAdapter;
 	private CodeSyncAlgorithm codeSyncAlgorithm;
 	
+	/**
+	 *@author see class
+	 */
 	public FeatureProvider(IModelAdapter modelAdapter, CodeSyncAlgorithm codeSyncAlgorithm) {
 		this.modelAdapter = modelAdapter;
 		this.codeSyncAlgorithm = codeSyncAlgorithm;
@@ -41,6 +44,9 @@ public class FeatureProvider {
 		return modelAdapter.getContainmentFeatures(extension, codeSyncAlgorithm);
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public int getFeatureType(Object feature) {
 		return modelAdapter.getFeatureType(extension, feature, codeSyncAlgorithm);
 	}

@@ -22,6 +22,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class VirtualRegexChildrenProvider extends AbstractController implements IChildrenProvider {
 
+	/**
+	 * @author see class
+	 */
 	public VirtualRegexChildrenProvider() {
 		// invoked before the persistence providers
 		setOrderIndex(-10000);

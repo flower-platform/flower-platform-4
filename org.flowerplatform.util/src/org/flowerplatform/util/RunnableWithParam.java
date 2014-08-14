@@ -25,6 +25,9 @@ package org.flowerplatform.util;
  */
 public interface RunnableWithParam<R, P> {
 	
+	/**
+	 * @author see class
+	 */
 	R run(P param);
 
 }

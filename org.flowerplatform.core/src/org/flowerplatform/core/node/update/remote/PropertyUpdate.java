@@ -36,6 +36,9 @@ public class PropertyUpdate extends Update {
 		this.key = key;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public PropertyUpdate setKeyAs(String key) {
 		this.key = key;
 		return this;
@@ -49,6 +52,9 @@ public class PropertyUpdate extends Update {
 		this.value = value;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public PropertyUpdate setValueAs(Object value) {
 		this.value = value;
 		return this;
@@ -62,11 +68,17 @@ public class PropertyUpdate extends Update {
 		this.isUnset = isUnset;
 	}
 		
+	/**
+	 * @author see class
+	 */
 	public PropertyUpdate setUnsetAs(boolean isUnset) {
 		this.isUnset = isUnset;
 		return this;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public PropertyUpdate() {
 		super();
 		this.setType(CoreConstants.UPDATE_PROPERTY);

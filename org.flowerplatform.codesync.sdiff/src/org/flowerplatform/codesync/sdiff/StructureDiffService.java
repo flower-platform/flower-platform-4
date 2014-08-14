@@ -76,6 +76,9 @@ import org.flowerplatform.util.file.StringHolder;
 @SuppressWarnings("restriction")
 public class StructureDiffService {
 
+	/**
+	 * @author Valentina Bojan
+	 */
 	public Node createStructureDiffFromWorkspaceAndPatch(String patch, String repo, String sdiffOutputPath) {
 		return createStructureDiff(patch,
 									repo,
@@ -83,6 +86,9 @@ public class StructureDiffService {
 									new WorkspaceAndPatchFileContentProvider());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public Node createStructureDiff(String patch, String repo, String sdiffOutputPath, IFileContentProvider fileContentProvider) {
 		// create file and subscribe to sdiff root
 		String sdiffFileUri = createSdiffFile(repo, sdiffOutputPath);

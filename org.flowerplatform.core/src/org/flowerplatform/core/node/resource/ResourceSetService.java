@@ -39,15 +39,27 @@ public abstract class ResourceSetService {
 	static final String PROP_RESOURCE_UPDATES_MARGIN = "resourceUpdatesMargin"; 
 	static final String PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN = "0"; 
 	
+	/**
+	 * @author see class
+	 */
 	public ResourceSetService() {
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties
 				.AddIntegerProperty(PROP_RESOURCE_UPDATES_MARGIN, PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public abstract String addToResourceSet(String resourceSet, String resourceUri);
 	
+	/**
+	 * @author see class
+	 */
 	public abstract void removeFromResourceSet(String resourceSet, String resourceUri);
 	
+	/**
+	 * @author see class
+	 */
 	public void save(String resourceSet, ServiceContext<ResourceSetService> context) {
 		LOGGER.debug("Save resource set {}", resourceSet);
 		ServiceContext<ResourceService> resourceServiceContext = new ServiceContext<ResourceService>();
@@ -57,6 +69,9 @@ public abstract class ResourceSetService {
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void reload(String resourceSet, ServiceContext<ResourceSetService> context) {
 		LOGGER.debug("Reload resource set {}", resourceSet);
 		doReload(resourceSet);
@@ -67,8 +82,14 @@ public abstract class ResourceSetService {
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected abstract void doReload(String resourceSet);
 	
+	/**
+	 * @author see class
+	 */
 	public abstract void addUpdate(String resourceSet, Update update);
 	
 	/**
@@ -93,6 +114,9 @@ public abstract class ResourceSetService {
 		addUpdate(resourceSet, update);		
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public List<Update> getUpdates(String resourceSet, long timestampOfLastRequest) {
 		List<Update> updates = getUpdates(resourceSet);
 		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
@@ -120,12 +144,24 @@ public abstract class ResourceSetService {
 		return updatesAddedAfterLastRequest;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract List<Update> getUpdates(String resourceSet);
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract long getLoadedTimestamp(String resourceSet);
 	
+	/**
+	 * @author see class
+	 */
 	public abstract List<String> getResourceSets();
 	
+	/**
+	 * @author see class
+	 */
 	public abstract List<String> getResourceUris(String resourceSet);
 	
 }

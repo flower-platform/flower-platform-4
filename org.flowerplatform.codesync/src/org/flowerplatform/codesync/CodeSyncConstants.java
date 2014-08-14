@@ -21,12 +21,19 @@ import org.flowerplatform.util.UtilConstants;
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncConstants {
+public final class CodeSyncConstants {
+	
+	/**
+	 * @author see class
+	 */
+	private CodeSyncConstants() {
+		super();
+	}
 
 	//////////////////////////////////
 	// Node types and categories
 	//////////////////////////////////
-	
+
 	public static final String CODESYNC = "codesync";
 	public static final String CATEGORY_CODESYNC = UtilConstants.CATEGORY_PREFIX + CODESYNC;
 	public static final String CODESYNC_FILE = getFileExtension(CODESYNC);

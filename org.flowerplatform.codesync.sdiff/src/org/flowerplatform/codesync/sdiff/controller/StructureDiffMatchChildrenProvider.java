@@ -34,6 +34,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class StructureDiffMatchChildrenProvider extends AbstractController implements IChildrenProvider {
 
+	/**
+	 * @author see class
+	 */
 	public StructureDiffMatchChildrenProvider() {
 		// invoked before the persistence providers
 		setOrderIndex(-10000);

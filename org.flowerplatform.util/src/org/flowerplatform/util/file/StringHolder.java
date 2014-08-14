@@ -24,6 +24,9 @@ public class StringHolder extends FileHolder {
 	
 	private String path;
 	
+	/**
+	 * @author see class
+	 */
 	public StringHolder(String path, String content) {
 		this.path = path;
 		this.content = content;

@@ -24,31 +24,68 @@ import org.flowerplatform.codesync.action.ActionResult;
 
 /**
  * @see AbstractModelAdapter
+ * @author Mariana Gheorghe
  */
 public interface IModelAdapter {
 	
+	/**
+	 *@author see class
+	 */
 	List<?> getValueFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	List<?> getContainmentFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	int getFeatureType(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	String getFeatureName(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
 
+	/**
+	 *@author see class
+	 */
 	Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm);
 
+	/**
+	 *@author see class
+	 */
 	Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	void addToMap(Object element, Map<Object, Object> map, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author see class
+	 */
 	void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	/**
@@ -106,16 +143,34 @@ public interface IModelAdapter {
 	 */
 	void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
 	
+	/**
+	 *@author Valentina Bojan
+	 */
 	void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm);
 
+	/**
+	 *@author Valentina Bojan
+	 */
 	void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
 
+	/**
+	 *@author Valentina Bojan
+	 */
 	void setChildrenConflict(Object element);
 
+	/**
+	 *@author Valentina Bojan
+	 */
 	void unsetChildrenConflict(Object element);
 
+	/**
+	 *@author Valentina Bojan
+	 */
 	void setSync(Object element);
 
+	/**
+	 *@author Valentina Bojan
+	 */
 	void setChildrenSync(Object element);
 	
 }

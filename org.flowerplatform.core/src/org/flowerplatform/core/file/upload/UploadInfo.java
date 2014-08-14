@@ -39,6 +39,9 @@ public class UploadInfo {
 		return location;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public UploadInfo setLocation(String location) {
 		this.location = location;
 		return this;
@@ -48,15 +51,24 @@ public class UploadInfo {
 		return tmpLocation;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public UploadInfo setTmpLocation(String tmpLocation) {
 		this.tmpLocation = tmpLocation;
 		return this;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public boolean unzipFile() {
 		return unzipFile;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public UploadInfo setUnzipFile(boolean unzipFile) {
 		this.unzipFile = unzipFile;
 		return this;
@@ -66,6 +78,9 @@ public class UploadInfo {
 		return timestamp;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public UploadInfo setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 		return this;
@@ -75,6 +90,9 @@ public class UploadInfo {
 		return sessionId;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public UploadInfo setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		return this;

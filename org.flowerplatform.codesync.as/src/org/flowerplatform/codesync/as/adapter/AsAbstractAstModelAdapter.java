@@ -71,6 +71,9 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected ICompilationUnit getCompilationUnit(IDefinition definition) {
 		IASScope scope = definition.getContainingScope();
 		while (!(scope instanceof ASFileScope)) {
@@ -79,6 +82,9 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 		return ((ASFileScope) scope).getCompilationUnit();
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected IDefinition getDefinition(Object element) {
 		return (IDefinition) element;
 	}

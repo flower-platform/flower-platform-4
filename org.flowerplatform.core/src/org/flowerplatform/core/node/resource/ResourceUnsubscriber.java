@@ -38,6 +38,9 @@ public class ResourceUnsubscriber extends TimerTask {
 	protected static final String PROP_RESOURCE_UNSUBSCRIBER_DELAY = "resourceUnsubscriberDelay"; 
 	protected static final String PROP_DEFAULT_RESOURCE_UNSUBSCRIBER_DELAY = "600000"; 
 		
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public ResourceUnsubscriber() {
 		super();
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties
@@ -64,6 +67,9 @@ public class ResourceUnsubscriber extends TimerTask {
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void start() {
 		new Timer().schedule(this, 0, Long.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UNSUBSCRIBER_DELAY)));
 	}

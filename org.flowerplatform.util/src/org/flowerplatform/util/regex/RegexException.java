@@ -26,6 +26,9 @@ public class RegexException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * @author see class
+	 */
 	public RegexException(String log) {
 		super(log);		
 	}

@@ -60,6 +60,9 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 		return sDiffService;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		instance = this;
@@ -96,6 +99,9 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
 		instance = null;

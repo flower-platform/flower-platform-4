@@ -69,10 +69,16 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		return actions;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void addRegexAction(RegexAction action) {
 		actions.put(action.getName(), action);
 	}
 		
+	/**
+	 * @author see class
+	 */
 	public void clearRegexActionsAndCompiledRegexConfigurations() {
 		actions.clear();
 	}
@@ -81,6 +87,9 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		return regexService;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		instance = this;
@@ -166,6 +175,9 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		} .setName("action2").setDescription("description 2"));
 	}	
 	
+	/**
+	 * @author see class
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
 		instance = null;
@@ -176,6 +188,9 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		// messages come from .resources
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public List<Node> getChildren(Node resourceNode, String type) {		
 		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(resourceNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 		

@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
 	
 	private BundleContext bundleContext;
 	
@@ -51,6 +51,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 		return getBundleContext().getBundle().getSymbolicName() + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + UtilConstants.MESSAGES_FILE;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void registerMessageBundle() throws Exception {
 		String messageFilePath = getMessagesFilePath();
 		URL messagesFileUrl;
@@ -61,7 +64,7 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			inputStream = messagesFileUrl.openStream();
 			resourceBundle = new PropertyResourceBundle(inputStream);
 		} catch (IOException e) {
-			logger.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s",
+			LOGGER.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s",
 					getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
 		} finally {
 			if (inputStream != null) {
@@ -70,6 +73,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected void setupExtensionPointsAndExtensions() throws Exception {
 		// nothing to do here (yet)
 	}
@@ -87,6 +93,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 		this.bundleContext = null;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public String getMessage(String messageKey, Object... substitutions) {
 		String message = resourceBundle.getString(messageKey);
 		if (substitutions.length == 0) {
@@ -96,6 +105,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	public String getResourceUrl(String resource) {
 		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/"
 				+ getBundleContext().getBundle().getSymbolicName() + "/"

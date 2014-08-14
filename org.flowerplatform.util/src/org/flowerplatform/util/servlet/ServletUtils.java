@@ -36,19 +36,28 @@ import javax.servlet.ServletContext;
  * 
  * @author Cristina Constantinescu
  */
-public class ServletUtils {
+public final class ServletUtils {
+	
+	private ServletUtils() {
+	}
 
 	public static final String PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY = "useFilesFromTemporaryDirectory"; 
 	public static final String PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY = "false"; 
 	
 	private static Map<String, Object> servletContextAdditionalAttributes = new HashMap<String, Object>();
 	
+		/**
+		 *@author see class
+		 */
 	/* package */ static void addAllAdditionalAttributesToServletContext(ServletContext context) {
 		for (Map.Entry<String, Object> entry : servletContextAdditionalAttributes.entrySet()) {
 			context.setAttribute(entry.getKey(), entry.getValue());
 		}
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public static void addServletContextAdditionalAttributes(String key, Object value) {
 		servletContextAdditionalAttributes.put(key, value);
 	}

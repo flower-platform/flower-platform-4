@@ -22,10 +22,13 @@ import org.flowerplatform.codesync.Diff;
 import org.flowerplatform.codesync.Match;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class DiffActionRegistry {
 	
+	/**
+	 *@author see class
+	 */
 	public enum ActionType {
 		
 		ACTION_TYPE_COPY_LEFT_RIGHT(new DiffActionCopyLeftToRight()),
@@ -51,10 +54,16 @@ public class DiffActionRegistry {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public class ActionEntries {
 		public List<DiffActionEntry> entries;
 		public int defaultAction;
 		
+		/**
+		 *@author see class 
+		 */
 		public ActionEntries(List<DiffActionEntry> entries, int defaultAction) {
 			super();
 			this.entries = entries;
@@ -64,6 +73,9 @@ public class DiffActionRegistry {
 	
 	public static final DiffActionRegistry INSTANCE = new DiffActionRegistry();
 
+	/**
+	 *@author see class 
+	 */
 	public ActionEntries getActionEntriesForUI(Match match, Diff diff, boolean returnOnlyDefaultActions) {
 		List<DiffActionEntry> result = null;
 		if (!returnOnlyDefaultActions) {

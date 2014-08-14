@@ -13,11 +13,17 @@ public class DebugControllers {
 		return CorePlugin.getInstance().getVirtualNodeResourceHandler();
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected Node createVirtualNode(String type, String typeSpecificPart) {
 		String nodeUri = getVirtualNodeResourceHandler().createVirtualNodeUri(null, type, typeSpecificPart);
 		return getVirtualNodeResourceHandler().createNodeFromRawNodeData(nodeUri, null);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected void addVirtualDebugType(String type) {
 		getVirtualNodeResourceHandler().addVirtualNodeType(type);
 	}

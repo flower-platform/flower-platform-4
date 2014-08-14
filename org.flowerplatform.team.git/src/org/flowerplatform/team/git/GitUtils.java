@@ -35,8 +35,14 @@ import org.flowerplatform.core.file.IFileAccessController;
 /**
  * @author Cojocea Marius Eduard
  */
-public class GitUtils {
+public final class GitUtils {
+	
+	private GitUtils() {
+	}
 
+	/**
+	 * @author Valentina Bojan
+	 */
 	public static Repository getRepository(Object repoFile) {
 		IFileAccessController fac = FileControllerUtils.getFileAccessController();
 
@@ -52,6 +58,9 @@ public class GitUtils {
 		return null;
 	}
 
+	/**
+	 * @author Valentina Bojan
+	 */
 	public static Object getGitDir(Object file) {
 		IFileAccessController fac = FileControllerUtils.getFileAccessController();
 
@@ -75,10 +84,16 @@ public class GitUtils {
 		return null;
 	}
 
+	/**
+	 * @author Valentina Bojan
+	 */
 	public static boolean isRepository(Object file) {
 		return getGitDir(file) != null;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public static String getType(String nodeUri) {
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
@@ -88,6 +103,9 @@ public class GitUtils {
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static String getName(String nodeUri) {
 		int indexStart = nodeUri.indexOf("$");
 		int indexEnd = nodeUri.length();
@@ -155,6 +173,9 @@ public class GitUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * @author see class
+	 */
 	public static String getNodeUri(String repoPath, String type, String name) {
 		if (name != null) {
 			return GIT_SCHEME + ":" + repoPath + "|" + type + "$" + name;
@@ -162,6 +183,9 @@ public class GitUtils {
 		return GIT_SCHEME + ":" + repoPath + "|" + type;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public static String getNodeUri(String repoPath, String type) {
 		return getNodeUri(repoPath, type, null);
 	}

@@ -26,6 +26,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IPropertiesProvider extends IController {
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	void populateWithProperties(Node node, ServiceContext<NodeService> context);
 	
 }

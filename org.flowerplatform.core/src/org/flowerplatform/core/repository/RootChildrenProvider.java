@@ -55,6 +55,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class RootChildrenProvider extends AbstractController implements IChildrenProvider {
 
+	/**
+	 * @author see class
+	 */
 	public RootChildrenProvider() {
 		setOrderIndex(200);
 	}

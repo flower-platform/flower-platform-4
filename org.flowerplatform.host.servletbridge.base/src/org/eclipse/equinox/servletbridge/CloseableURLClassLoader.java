@@ -305,6 +305,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	/* (non-Javadoc)
 	 * @see java.net.URLClassLoader#findClass(java.lang.String)
 	 */
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	protected Class findClass(final String name) throws ClassNotFoundException {
 		try {
 			Class clazz = (Class) AccessController.doPrivileged(new PrivilegedExceptionAction() {
@@ -343,6 +346,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 		return super.findClass(name);
 	}
 
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	// package private to avoid synthetic access.
 	Class defineClass(String name, URL resourceURL, Manifest manifest) throws IOException {
 		JarURLConnection connection = (JarURLConnection) resourceURL.openConnection();
@@ -407,6 +413,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	/* (non-Javadoc)
 	 * @see java.net.URLClassLoader#findResource(java.lang.String)
 	 */
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public URL findResource(final String name) {
 		URL url = (URL) AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
@@ -433,6 +442,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 
 	/* (non-Javadoc)
 	 * @see java.net.URLClassLoader#findResources(java.lang.String)
+	 */
+	/**
+	 * @author Mariana Gheorghe
 	 */
 	public Enumeration findResources(final String name) throws IOException {
 		final List resources = new ArrayList();
@@ -481,6 +493,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 	/* (non-Javadoc)
 	 * @see java.net.URLClassLoader#addURL(java.net.URL)
 	 */
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	protected void addURL(URL url) {
 		synchronized (loaders) {
 			if (isFileJarURL(url)) {
@@ -498,6 +513,9 @@ public class CloseableURLClassLoader extends URLClassLoader {
 
 	/* (non-Javadoc)
 	 * @see java.net.URLClassLoader#getURLs()
+	 */
+	/**
+	 * @author Mariana Gheorghe
 	 */
 	public URL[] getURLs() {
 		List result = new ArrayList();

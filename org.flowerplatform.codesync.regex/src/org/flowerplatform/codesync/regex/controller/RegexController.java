@@ -28,6 +28,9 @@ public class RegexController extends AbstractController implements IPropertiesPr
 
 	private final Pattern macroPattern = Pattern.compile("%(.*?)%");
 	
+	/**
+	 * @author see class
+	 */
 	public RegexController() {
 		super();
 		// invoked after the persistence providers

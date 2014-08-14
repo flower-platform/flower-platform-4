@@ -27,6 +27,9 @@ import org.flowerplatform.core.node.remote.ServiceContext;
  */
 public class TextFileSubscribableProvider extends FileSubscribableProvider {
 
+	/**
+	 * @author see class
+	 */
 	public TextFileSubscribableProvider(String extension, String scheme, String contentType, boolean insertAtBeginning) {
 		super(extension, scheme, contentType, insertAtBeginning);
 	}

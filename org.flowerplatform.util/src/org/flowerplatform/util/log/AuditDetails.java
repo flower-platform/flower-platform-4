@@ -31,6 +31,9 @@ public class AuditDetails {
 	private Object param1;
 	private Object param2;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public AuditDetails(Logger logger, String auditCategory, Object... params) {
 		time = System.currentTimeMillis();
 		this.auditCategory = auditCategory;
@@ -50,6 +53,9 @@ public class AuditDetails {
 		}
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void measureDuration() {
 		duration = System.currentTimeMillis() - time;
 	}

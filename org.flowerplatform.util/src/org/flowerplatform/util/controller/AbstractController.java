@@ -69,6 +69,9 @@ public abstract class AbstractController implements IController {
 		this.orderIndex = orderIndex;
 	}
 
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public IController setOrderIndexAs(int orderIndex) {
 		setOrderIndex(orderIndex);
 		return this;

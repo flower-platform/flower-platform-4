@@ -36,6 +36,9 @@ import org.flowerplatform.util.controller.AbstractController;
 public class UpdateController extends AbstractController
 		implements IAddNodeController, IRemoveNodeController, IPropertySetter {
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public UpdateController() {
 		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);

@@ -23,25 +23,60 @@ import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public abstract class MatchActionAddAbstract extends DiffAction {
 
 	protected boolean processDiffs;
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract Object getThis(Match match); 
+	
+	/**
+	 * @author see class
+	 */
 	protected abstract Object getOpposite(Match match);
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract IModelAdapter getThisModelAdapter(Match match);
+	
+	/**
+	 * @author see class
+	 */
 	protected abstract IModelAdapter getOppositeModelAdapter(Match match);
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract IModelAdapterSet getThisModelAdapterSet(Match match);
+	
+	/**
+	 * @author see class
+	 */
 	protected abstract IModelAdapterSet getOppositeModelAdapterSet(Match match);
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract void setOpposite(Match match, Object elment);
+	
+	/**
+	 * @author see class
+	 */
 	protected abstract void processDiffs(Match match);
+	
+	/**
+	 * @author see class
+	 */
 	protected abstract void setChildrenModified(Match match);
 
+	/**
+	 *@author Mariana Gheorghe 
+	 */
 	public MatchActionAddAbstract(boolean processDiffs) {
 		super();
 		this.processDiffs = processDiffs;
@@ -54,6 +89,9 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		return new ActionResult(false, true, true, getThisModelAdapter(match).getMatchKey(child, match.getCodeSyncAlgorithm()), true);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected void processMatch(Match parentMatch, Match match, boolean isFirst) {
 		Object thisObject = getThis(match);
 		if (thisObject == null) {

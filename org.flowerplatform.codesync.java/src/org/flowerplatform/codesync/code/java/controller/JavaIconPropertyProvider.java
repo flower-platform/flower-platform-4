@@ -63,6 +63,9 @@ import org.flowerplatform.core.node.remote.ServiceContext;
  */
 public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	
+	/**
+	 * @author see class
+	 */
 	public JavaIconPropertyProvider(String property, Object value) {
 		super(property, value);
 	}
@@ -115,6 +118,9 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		return CodeSyncJavaPlugin.getInstance().getImageComposerUrl(icon, getImagePath(decorator));
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected int getModifiersFlags(Node node, ServiceContext<NodeService> context) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node, context)) {
@@ -131,6 +137,9 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		return flags;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected List<Node> getModifiers(Node node, ServiceContext<NodeService> context) {	
 		List<Node> modifiers = new ArrayList<Node>();
 		for (Node child : context.getService().getChildren(node, new ServiceContext<NodeService>(context.getService()).add(POPULATE_WITH_PROPERTIES, true))) {
@@ -153,6 +162,9 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		return getIconWithVisibility(VISIBILITY_DEFAULT);
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected String getIconWithVisibility(String visibility) { 
 		StringBuilder icon = new StringBuilder((String) getValue());
 		icon.insert(icon.indexOf("_obj"), visibility);

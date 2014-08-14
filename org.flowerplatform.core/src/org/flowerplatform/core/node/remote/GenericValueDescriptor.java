@@ -36,6 +36,9 @@ public class GenericValueDescriptor extends AbstractController implements IDescr
 
 	private Object value;
 	
+	/**
+	 * @author see class
+	 */
 	public GenericValueDescriptor(Object value) {
 		super();
 		this.value = value;

@@ -11,10 +11,16 @@ public class GitRef {
 	private String name;
 	private String type;
 	
+	/**
+	 * @author see class
+	 */
 	public GitRef() {
 		super();
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public GitRef(String name, String type) {
 		super();
 		this.name = name;

@@ -35,13 +35,22 @@ public abstract class FilteredIterable<IN, OUT> implements Iterator<OUT>, Iterab
 
 	private OUT next;
 
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public FilteredIterable(Iterator<IN> masterIterator) {
 		super();
 		this.masterIterator = masterIterator;
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected abstract boolean isAccepted(IN candidate);
 	
+	/**
+	 * @author see class
+	 */
 	@SuppressWarnings("unchecked")
 	protected OUT convert(IN input) {
 		return (OUT) input;

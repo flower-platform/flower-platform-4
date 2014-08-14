@@ -44,12 +44,12 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			
 			List<RefSpec> fetchRefSpecs = new ArrayList<RefSpec>();
 			List<RefSpec> pushRefSpecs = new ArrayList<RefSpec>();
-			List<URIish> URIs = new ArrayList<URIish>();
+			List<URIish> allUris = new ArrayList<URIish>();
 			
 			RemoteConfig config = new RemoteConfig(repo.getConfig(), name);
 			fetchRefSpecs = config.getFetchRefSpecs();
 			pushRefSpecs = config.getPushRefSpecs();
-			URIs = config.getURIs();
+			allUris = config.getURIs();
 				
 			for (RefSpec spec : fetchRefSpecs) {
 				fetch.add(spec.toString());
@@ -57,7 +57,7 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			for (RefSpec spec : pushRefSpecs) {
 				push.add(spec.toString());
 			}
-			for (URIish uri : URIs) {
+			for (URIish uri : allUris) {
 				uris.add(uri.toString());
 			}
 				

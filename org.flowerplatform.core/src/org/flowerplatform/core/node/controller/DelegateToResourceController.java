@@ -37,15 +37,24 @@ public class DelegateToResourceController extends AbstractController implements
 	IChildrenProvider, IParentProvider, IAddNodeController, IRemoveNodeController, 
 	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider {
 
+	/**
+	 * @author see class
+	 */
 	protected String getResource(String scheme) {
 		return CoreConstants.CATEGORY_RESOURCE_PREFIX + scheme;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected TypeDescriptor getDescriptor(Node node) {
 		return CorePlugin.getInstance().getNodeTypeDescriptorRegistry()
 				.getExpectedTypeDescriptor(getResource(node.getScheme()));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected List<AbstractController> getControllers(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {
@@ -64,6 +73,9 @@ public class DelegateToResourceController extends AbstractController implements
 		return controllers;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected AbstractController getController(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {

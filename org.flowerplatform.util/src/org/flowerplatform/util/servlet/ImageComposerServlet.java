@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ImageComposerServlet extends ResourcesServlet {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ImageComposerServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageComposerServlet.class);
 
 	private static final long serialVersionUID = 1L;
 	
@@ -74,19 +74,19 @@ public class ImageComposerServlet extends ResourcesServlet {
 						InputStream result = new FileInputStream(getTempFilePath(mapValue));
 						OutputStream output = response.getOutputStream();
 						IOUtils.copy(result, output);
-						logger.debug("File {} served from temp",  mapValue);
+						LOGGER.debug("File {} served from temp",  mapValue);
 						result.close();
 						output.close();
 						return;
 					} else { // the temporary file was deleted from disk. 
-						logger.debug("File {} found to be missing from temp",  mapValue);
+						LOGGER.debug("File {} found to be missing from temp",  mapValue);
 					}
 				} else {
 					synchronized (this) {
 						counter++;
 						mapValue = counter + "";
 						tempFilesMap.put(requestedFile, mapValue);
-						logger.debug("mapValue {} added",  mapValue);
+						LOGGER.debug("mapValue {} added",  mapValue);
 					}
 				}
 			}
@@ -145,7 +145,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 	    	try { 
 	    		if (tempOutput != null) {
 			    	ImageIO.write(result, "png", tempOutput);
-			    	logger.debug("file {} written in temp",  mapValue);
+			    	LOGGER.debug("file {} written in temp",  mapValue);
 	    		}
 				ImageIO.write(result, "png", output);
 	    	} finally {

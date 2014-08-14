@@ -25,15 +25,24 @@ public class VirtualNodeResourceHandler implements IResourceHandler {
 
 	private Set<String> virtualNodeTypes = new HashSet<String>();
 	
+	/**
+	 * @author see class
+	 */
 	public void addVirtualNodeType(String type) {
 		virtualNodeTypes.add(type);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public String createVirtualNodeUri(String repo, String type, String typeSpecificPart) {
 		return createNodeUriWithRepo(VIRTUAL_NODE_SCHEME, repo, type
 				+ (typeSpecificPart == null ? "" : "@" + typeSpecificPart));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public String getTypeFromNodeUri(String nodeUri) {
 		String ssp = CoreUtils.getSchemeSpecificPartWithoutRepo(nodeUri);
 		int index = ssp.indexOf("@");
@@ -43,6 +52,9 @@ public class VirtualNodeResourceHandler implements IResourceHandler {
 		return ssp.substring(0, index);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public String getTypeSpecificPartFromNodeUri(String nodeUri) {
 		String ssp = CoreUtils.getSchemeSpecificPartWithoutRepo(nodeUri);
 		int index = ssp.indexOf("@");

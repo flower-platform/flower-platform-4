@@ -70,6 +70,9 @@ public class FreeplaneMindmapResourceHandler implements IResourceHandler {
 		return node;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	protected String getType(String nodeUri, NodeModel nodeModel) {
 		return MindMapConstants.MINDMAP_NODE_TYPE;
 	}

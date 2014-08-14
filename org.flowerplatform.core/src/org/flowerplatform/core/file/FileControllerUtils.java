@@ -29,20 +29,32 @@ import org.flowerplatform.util.Utils;
 /**
  * @author Mariana Gheorghe
  */
-public class FileControllerUtils {
+public final class FileControllerUtils {
+	
+	private FileControllerUtils() {
+	}
 
 	public static IFileAccessController getFileAccessController() {
 		return CorePlugin.getInstance().getFileAccessController();
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static String getFilePathWithRepo(Node node) {
 		return getFilePathWithRepo(node.getNodeUri());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static String getFilePathWithRepo(String nodeUri) {
 		return Utils.getSchemeSpecificPart(nodeUri).replace("|", "/");
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static String createFileNodeUri(String repo, String path) {
 		// remove the repo prefix from the file path
 		if (path != null && path.startsWith(repo)) {
@@ -51,6 +63,9 @@ public class FileControllerUtils {
 		return createNodeUriWithRepo(FILE_SCHEME, repo, (path == null ? "" : path));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static String getNextAvailableName(String filePath) {
 		try {
 			return getNextAvailableName(filePath, 0);

@@ -36,6 +36,9 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	
 	protected List<Object> containmentFeatures = new ArrayList<>();
 	
+	/**
+	 * @author see class
+	 */
 	public AbstractModelAdapter() {
 		valueFeatures.add(CoreConstants.NAME);
 	}

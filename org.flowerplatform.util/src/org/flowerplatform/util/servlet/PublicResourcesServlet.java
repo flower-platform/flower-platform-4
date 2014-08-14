@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PublicResourcesServlet extends ResourcesServlet {
 
-	private static final Logger logger = LoggerFactory.getLogger(PublicResourcesServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PublicResourcesServlet.class);
 
 	private static final long serialVersionUID = 1L;
 	
@@ -63,6 +63,9 @@ public class PublicResourcesServlet extends ResourcesServlet {
         }
     }
     
+    /**
+	 * @author see class
+	 */
 	protected Pair<InputStream, Closeable> getInputStreamForFileWithinZip(final InputStream fileInputStream, String fileWithinZip) throws IOException {
 		final BufferedInputStream bis = new BufferedInputStream(fileInputStream, DEFAULT_BUFFER_SIZE);
 		final ZipInputStream zis = new ZipInputStream(bis);
@@ -95,8 +98,8 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestedFile = request.getPathInfo();
-		if (logger.isTraceEnabled()) {
-			logger.trace("Resource requested: {}", requestedFile);
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Resource requested: {}", requestedFile);
 		}
 
 		// Check if file is actually supplied to the request URI.
@@ -173,17 +176,17 @@ public class PublicResourcesServlet extends ResourcesServlet {
 						     IOUtils.copy(input, output);
 						     input.close();
 						     output.close();
-						     logger.debug("File {} served from temp",  mapValue);
+						     LOGGER.debug("File {} served from temp",  mapValue);
 						     return;
 						} else { // temporary file was deleted from disk
-							logger.debug("File {} found to be missing from temp",  mapValue);
+							LOGGER.debug("File {} found to be missing from temp",  mapValue);
 						}
 					} else {
 						synchronized (this) {
 							counter++;
 							mapValue = counter + "";
 							tempFilesMap.put(mapKey, mapValue);
-							logger.debug("mapValue '{}' added", mapValue);
+							LOGGER.debug("mapValue '{}' added", mapValue);
 						}
 					}
 				}
@@ -245,7 +248,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 						}
 						
 						Files.copy(input, getTempFile(mapValue).toPath(), StandardCopyOption.REPLACE_EXISTING);
-						logger.debug("file '{}' was writen in temp", mapValue);
+						LOGGER.debug("file '{}' was writen in temp", mapValue);
 						
 						input.close();
 						input = new FileInputStream(getTempFilePath(mapValue));

@@ -26,6 +26,9 @@ import org.flowerplatform.core.node.resource.ResourceSetService;
  */
 public class ResourceServiceRemote {
 
+	/**
+	 * @author see class
+	 */
 	public SubscriptionInfo subscribeToParentResource(String nodeUri) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		return CorePlugin.getInstance().getResourceService()
@@ -50,6 +53,9 @@ public class ResourceServiceRemote {
 				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void reload(String resourceNodeId) {
 		CorePlugin.getInstance().getResourceSetService().reload(resourceNodeId, 
 				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));

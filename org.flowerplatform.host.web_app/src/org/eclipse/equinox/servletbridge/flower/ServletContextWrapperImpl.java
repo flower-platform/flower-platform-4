@@ -29,6 +29,9 @@ public class ServletContextWrapperImpl implements ServletContextWrapper {
 
 	protected ServletContext servletContext; 
 	
+	/**
+	 * @author see class
+	 */
 	public ServletContextWrapperImpl(ServletContext servletContext) {
 		super();
 		this.servletContext = servletContext;

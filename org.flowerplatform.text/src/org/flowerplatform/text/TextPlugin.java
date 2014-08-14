@@ -30,15 +30,18 @@ import org.osgi.framework.BundleContext;
  */
 public class TextPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static TextPlugin INSTANCE;
+	protected static TextPlugin instance;
 	
 	public static TextPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 		
+	/**
+	 * @author see class
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		
 		CorePlugin.getInstance().getResourceService().addResourceHandler(TEXT_RESOURCE_KEY, new TextResourceHandler());
 				
@@ -46,9 +49,12 @@ public class TextPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new TextFileSubscribableProvider(ALL, TEXT_RESOURCE_KEY, TEXT_CONTENT_TYPE, false));
 	}	
 	
+	/**
+	 * @author see class
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

@@ -32,6 +32,9 @@ public class CustomJSPServlet extends JspServlet  {
 	
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * @author see class
+	 */
 	public CustomJSPServlet(Bundle bundle, String bundleResourcePath, String alias) {
 		super(bundle, bundleResourcePath, alias);		
 	}

@@ -32,6 +32,9 @@ public abstract class CodeSyncRegexAction extends RegexAction {
 		CodeSyncRegexPlugin.getInstance().addRegexAction(this);
 	}
 
+	/**
+	 * @author see class
+	 */
 	public static class IfFindThisSkip extends CodeSyncRegexAction {
 
 		@Override

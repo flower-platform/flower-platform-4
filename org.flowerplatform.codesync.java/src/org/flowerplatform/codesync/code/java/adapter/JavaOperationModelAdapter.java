@@ -33,6 +33,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaOperationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public JavaOperationModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.DOCUMENTATION);
 		valueFeatures.add(CodeSyncJavaConstants.TYPED_ELEMENT_TYPE);

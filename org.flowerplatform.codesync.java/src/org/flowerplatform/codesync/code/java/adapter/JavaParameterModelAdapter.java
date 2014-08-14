@@ -31,6 +31,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public JavaParameterModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.TYPED_ELEMENT_TYPE);
 		containmentFeatures.add(CodeSyncJavaConstants.MODIFIERS);

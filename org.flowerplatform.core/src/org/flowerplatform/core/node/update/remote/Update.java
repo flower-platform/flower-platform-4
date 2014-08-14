@@ -36,6 +36,9 @@ public class Update implements Comparable<Update> {
 		this.fullNodeId = fullNodeId;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public Update setFullNodeIdAs(String fullNodeId) {
 		this.fullNodeId = fullNodeId;
 		return this;
@@ -57,6 +60,9 @@ public class Update implements Comparable<Update> {
 		this.type = type;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public Update setTypeAs(String type) {
 		this.type = type;
 		return this;

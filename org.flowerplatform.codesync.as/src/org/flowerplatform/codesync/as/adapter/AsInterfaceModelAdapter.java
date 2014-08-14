@@ -34,6 +34,9 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
  */
 public class AsInterfaceModelAdapter extends AsTypeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public AsInterfaceModelAdapter() {
 		valueFeatures.add(DOCUMENTATION);
 		valueFeatures.add(VISIBILITY);
@@ -57,6 +60,9 @@ public class AsInterfaceModelAdapter extends AsTypeModelAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected IInterfaceDefinition getInterface(Object element) {
 		return (IInterfaceDefinition) element;
 	}

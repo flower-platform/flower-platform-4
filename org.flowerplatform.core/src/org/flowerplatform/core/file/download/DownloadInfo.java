@@ -32,6 +32,9 @@ public class DownloadInfo {
 		return path;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public DownloadInfo setPath(String path) {
 		this.path = path;
 		return this;
@@ -41,6 +44,9 @@ public class DownloadInfo {
 		return type;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public DownloadInfo setType(int type) {
 		this.type = type;
 		return this;
@@ -50,6 +56,9 @@ public class DownloadInfo {
 		return timestamp;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public DownloadInfo setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 		return this;
@@ -59,11 +68,17 @@ public class DownloadInfo {
 		return sessionId;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public DownloadInfo setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		return this;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public String toString() {
 		return String.format("%s[type=%s; path=%s; timestamp=%s]", getClass().getSimpleName(), getType() == FILE_TYPE ? "file" : "archive", getPath(), getTimestamp());
 	}

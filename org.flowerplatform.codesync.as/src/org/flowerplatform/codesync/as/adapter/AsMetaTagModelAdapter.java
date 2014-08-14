@@ -31,6 +31,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class AsMetaTagModelAdapter extends AstModelElementAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public AsMetaTagModelAdapter() {
 		containmentFeatures.add(META_TAG_ATTRIBUTES);
 	}
@@ -56,6 +59,9 @@ public class AsMetaTagModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected IMetaTag getMetaTag(Object element) {
 		return (IMetaTag) element;
 	}

@@ -37,6 +37,9 @@ import org.flowerplatform.core.file.IFileAccessController;
  */
 public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public JavaFileModelAdapter() {
 		containmentFeatures.add(CodeSyncJavaConstants.TYPE_MEMBERS);
 	}

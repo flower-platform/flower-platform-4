@@ -23,7 +23,9 @@ import javax.servlet.ServletConfig;
 public class ServletConfigWrapperImpl implements ServletConfigWrapper {
 
 	protected ServletConfig servletConfig;
-	
+	/**
+	 * @author see class
+	 */
 	public ServletConfigWrapperImpl(ServletConfig servletConfig) {
 		super();
 		this.servletConfig = servletConfig;

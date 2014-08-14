@@ -30,12 +30,12 @@ public class Test extends Test2 implements IFromSource {
 	
 	private int z = 3;
 	
-	@OneToMany(mappedBy="test")
+	@OneToMany(mappedBy = "test")
 	public static int test(final String st) {
 		return x;
 	}
 
-	@OverrideAnnotationOf(x+y)
+	@OverrideAnnotationOf(x + y)
 	public Test getTest() {
 		return x;
 	}

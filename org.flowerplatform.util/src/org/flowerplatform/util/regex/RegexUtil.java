@@ -21,8 +21,10 @@ package org.flowerplatform.util.regex;
 /**
  * @author Sorin
  */
-public class RegexUtil {
+public final class RegexUtil {
 	
+	private RegexUtil() {
+	}
 	/**
 	 * In regex there are special characters so actually to find a character X, that is considered special, \X must be used.
 	 * But in java to write to \ character in a string you must double it so to write regex in java to find X character "\\X" must be inside a string.

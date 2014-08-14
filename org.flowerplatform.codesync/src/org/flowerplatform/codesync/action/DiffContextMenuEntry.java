@@ -19,7 +19,7 @@ import java.util.List;
 
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class DiffContextMenuEntry {
 

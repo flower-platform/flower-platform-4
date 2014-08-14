@@ -26,10 +26,16 @@ public class SubscriptionInfo {
 	
 	private String resourceSet;
 	
+	/**
+	 * @author see class
+	 */
 	public SubscriptionInfo(Node rootNode) {
 		this(rootNode, null, null);
 	}
 
+	/**
+	 * @author see class
+	 */
 	public SubscriptionInfo(Node rootNode, Node resourceNode, String resourceSet) {
 		super();
 		this.rootNode = rootNode;

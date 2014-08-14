@@ -30,6 +30,9 @@ import org.flowerplatform.util.UtilConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Mariana Gheorghe
+ */
 public abstract class ResourcesServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 5438373882820622871L;
@@ -38,7 +41,7 @@ public abstract class ResourcesServlet extends HttpServlet {
 	
 	protected static int counter = 0;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesServlet.class);
 		
 	protected boolean useFilesFromTemporaryDirectory = false; 
 		
@@ -53,13 +56,16 @@ public abstract class ResourcesServlet extends HttpServlet {
 		useFilesFromTemporaryDirectory = Boolean.valueOf((String) getServletContext().getAttribute(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
 		} catch (IOException e) {
 			// do nothing
 		}
-		logger.warn("Resource not found; sending 404: {}", request.getPathInfo());
+		LOGGER.warn("Resource not found; sending 404: {}", request.getPathInfo());
 	}
 	
 	/**

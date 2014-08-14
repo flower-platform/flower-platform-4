@@ -28,10 +28,16 @@ public class ComposedLineProvider implements ILineProvider {
 
 	private List<ILineProvider> lineProviders = new ArrayList<ILineProvider>();
 	
+	/**
+	 *@author see class
+	 */
 	public void addLineProvider(ILineProvider provider) {
 		lineProviders.add(provider);
 	}
 	
+	/**
+	 *@author see class
+	 */
 	@Override
 	public Pair<Integer, Integer> getStartEndLines(Object model, IDocument document) {
 		for (ILineProvider lineInformationProvider : lineProviders) {
@@ -42,6 +48,9 @@ public class ComposedLineProvider implements ILineProvider {
 		return null;
 	}
 
+	/**
+	 *@author see class
+	 */
 	@Override
 	public boolean canHandle(Object model) {
 		return true;

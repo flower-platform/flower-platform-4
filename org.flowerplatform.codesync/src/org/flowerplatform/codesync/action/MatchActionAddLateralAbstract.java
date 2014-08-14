@@ -19,10 +19,13 @@ import org.flowerplatform.codesync.Diff;
 import org.flowerplatform.codesync.Match;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public abstract class MatchActionAddLateralAbstract extends MatchActionAddAbstract {
 
+	/**
+	 *@author see class
+	 */
 	public MatchActionAddLateralAbstract(boolean processDiffs) {
 		super(processDiffs);
 	}

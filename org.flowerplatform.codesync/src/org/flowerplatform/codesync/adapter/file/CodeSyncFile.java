@@ -24,6 +24,9 @@ public class CodeSyncFile {
 	
 	private Object fileInfo;
 	
+	/**
+	 *@author see class
+	 */
 	public CodeSyncFile(Object file) {
 		this.file = file;
 	}

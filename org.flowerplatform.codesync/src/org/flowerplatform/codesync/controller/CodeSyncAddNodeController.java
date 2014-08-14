@@ -28,6 +28,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class CodeSyncAddNodeController extends AbstractController implements IAddNodeController {
 
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public CodeSyncAddNodeController() {
 		// must be invoked after the persistence controller
 		// because we need the child to be already added to the model before we set the ADDED marker

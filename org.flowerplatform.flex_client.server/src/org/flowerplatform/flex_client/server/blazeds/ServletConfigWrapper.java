@@ -33,6 +33,9 @@ public class ServletConfigWrapper implements ServletConfig {
 
 	protected ServletConfig delegate;
 	
+	/**
+	 * @author see class
+	 */
 	public ServletConfigWrapper(ServletConfig delegate) {
 		super();
 		this.delegate = delegate;

@@ -22,18 +22,27 @@ import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public abstract class MatchActionAddAncestorAbstract extends MatchActionAddAbstract {
 
+	/**
+	 *@author see class 
+	 */
 	public MatchActionAddAncestorAbstract(boolean processDiffs) {
 		super(processDiffs);
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected Object getThis(Match match) {
 		return match.getAncestor();
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected IModelAdapter getThisModelAdapter(Match match) {
 		return match.getCodeSyncAlgorithm().getAncestorModelAdapter(getThis(match));
 	}

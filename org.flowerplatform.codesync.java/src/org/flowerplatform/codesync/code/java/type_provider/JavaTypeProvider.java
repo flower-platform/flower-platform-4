@@ -61,6 +61,9 @@ public class JavaTypeProvider implements ITypeProvider {
 
 	private Map<Class<?>, String> directMap = new HashMap<Class<?>, String>();
 	
+	/**
+	 * @author see class
+	 */
 	public JavaTypeProvider() {
 		directMap.put(EnumDeclaration.class, ENUM);
 		directMap.put(AnnotationTypeDeclaration.class, ANNOTATION_TYPE);

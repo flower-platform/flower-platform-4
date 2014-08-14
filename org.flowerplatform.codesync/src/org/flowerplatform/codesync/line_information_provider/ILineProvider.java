@@ -27,7 +27,13 @@ import org.flowerplatform.util.Pair;
  */
 public interface ILineProvider {
 
+	/**
+	 * @author see class
+	 */
 	Pair<Integer, Integer> getStartEndLines(Object model, IDocument document);
 	
+	/**
+	 * @author see class
+	 */
 	boolean canHandle(Object model);
 }

@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TextResourceHandler extends AbstractController implements IResourceHandler {
 
-	protected static final Logger logger = LoggerFactory.getLogger(TextResourceHandler.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(TextResourceHandler.class);
 	
 	@Override
 	public String getResourceUri(String nodeUri) {
@@ -65,7 +65,7 @@ public class TextResourceHandler extends AbstractController implements IResource
 		try {
 			model.setResourceContent(new StringBuffer(IOUtils.toString(CorePlugin.getInstance().getFileAccessController().getContent(model.getResource()))));
 		} catch (IOException e) {
-			logger.error("Exception thrown while getting content from resource!");
+			LOGGER.error("Exception thrown while getting content from resource!");
 		}						
 		model.setDirty(false);
 		return model;

@@ -36,6 +36,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaMemberValuePairModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public JavaMemberValuePairModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.ANNOTATION_VALUE_VALUE);
 	}

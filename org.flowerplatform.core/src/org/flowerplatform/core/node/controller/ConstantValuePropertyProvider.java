@@ -31,6 +31,9 @@ public class ConstantValuePropertyProvider extends AbstractController implements
 
 	private Object value;
 	
+	/**
+	 * @author see class
+	 */
 	public ConstantValuePropertyProvider(String property, Object value) {
 		this.property = property;
 		this.value = value;

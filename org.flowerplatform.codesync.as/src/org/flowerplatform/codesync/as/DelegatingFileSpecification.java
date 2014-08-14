@@ -34,6 +34,9 @@ public class DelegatingFileSpecification implements IFileSpecification {
 	
 	private Object file;
 	
+	/**
+	 * @author see class
+	 */
 	public DelegatingFileSpecification(Object file, IFileAccessController fileAccessController) {
 		this.file = file;
 		this.fileAccessController = fileAccessController;

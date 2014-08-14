@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TypeDescriptorRegistry {
 
-	private static final Logger logger = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
 	
 	/**
 	 * Package visibility, so that {@link TypeDescriptor} can change it.
@@ -56,6 +56,9 @@ public class TypeDescriptorRegistry {
 
 	private Map<String, TypeDescriptor> typeDescriptors = new HashMap<String, TypeDescriptor>();
 	
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public TypeDescriptor getOrCreateTypeDescriptor(String type) {
 		if (type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Please use getOrCreateCategoryTypeDescriptor()");
@@ -94,7 +97,7 @@ public class TypeDescriptorRegistry {
 	public TypeDescriptor getExpectedTypeDescriptor(String type) {
 		TypeDescriptor result = typeDescriptors.get(type);
 		if (result == null) {
-			logger.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
+			LOGGER.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
 			return null;
 		}
 		return result;
@@ -102,6 +105,9 @@ public class TypeDescriptorRegistry {
 		
 	private List<IDynamicCategoryProvider> dynamicCategoryProviders;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public List<IDynamicCategoryProvider> getDynamicCategoryProviders() {
 		if (dynamicCategoryProviders == null) {
 			dynamicCategoryProviders = new ArrayList<IDynamicCategoryProvider>();			
@@ -109,10 +115,16 @@ public class TypeDescriptorRegistry {
 		return dynamicCategoryProviders;
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void addDynamicCategoryProvider(IDynamicCategoryProvider provider) {
 		getDynamicCategoryProviders().add(provider);
 	}
 
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public TypeDescriptorRegistry() {
 		super();
 		addDynamicCategoryProvider(new AllDynamicCategoryProvider());

@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DownloadServlet extends ResourcesServlet {
 
-	private static final Logger logger = LoggerFactory.getLogger(DownloadServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadServlet.class);
 
 	private static final long serialVersionUID = 1L;
 		   
@@ -63,7 +63,7 @@ public class DownloadServlet extends ResourcesServlet {
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
-		logger.trace("Downloading: {}", file.getAbsolutePath());
+		LOGGER.trace("Downloading: {}", file.getAbsolutePath());
 		
 		resp.setContentType("application/octet-stream");
 		resp.setHeader("Content-Disposition", "attachment");

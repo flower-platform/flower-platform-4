@@ -80,6 +80,10 @@ import org.flowerplatform.util.Utils;
 
 public class GitService {
 
+	/**
+	 * @author see class
+	 * @author Cristina Brinza
+	 */
 	public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
 		IFileContentProvider fileContentProvider = new GitFileContentProvider(newHash, oldHash, repoPath);
 		OutputStream patch = new ByteArrayOutputStream();
@@ -108,6 +112,9 @@ public class GitService {
 
 	private static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
+	/**
+	 * @author see class
+	 */
 	public boolean validateHash(String hash, String repositoryPath) {
 		try {
 			// testing if hash is valid
@@ -251,6 +258,9 @@ public class GitService {
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));		
 	}
 	
+	/**
+	 * @author Alina Bratu
+	 */
 	public int validateRepoURL(String url) {
 		try {
 			URIish repoUri = new URIish(url.trim());
@@ -272,6 +282,9 @@ public class GitService {
 		return 0;  
 	}
 
+	/**
+	 * @author Alina Bratu
+	 */
 	public ArrayList<String> getRemoteBranches(String uri) {
 //        System.out.println("Listing local branches:");
 		try {
@@ -410,6 +423,9 @@ public class GitService {
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
+	/**
+	 * @author Alina Bratu
+	 */
 	public int cloneRepo(String nodeUri, String repoUri, Collection<String> branches, boolean cloneAll) {
 		CloneCommand cc = new CloneCommand();
 		try {
@@ -444,7 +460,6 @@ public class GitService {
 	/** 
 	 * @author Vlad Bogdan Manica
 	 * @param nodeUri This is the name of a branch/tag.
-	 * @param createNew If is set to 'true' we create a new local branch. 
 	 * @throws Exception
 	 */
 	public void checkout(String nodeUri) throws Exception {				
@@ -493,8 +508,8 @@ public class GitService {
 
 		RemoteConfig config = new RemoteConfig(repository.getConfig(), remoteName);
 
-		List<URIish> URIs = config.getURIs();
-		if (URIs.size() == 0) {
+		List<URIish> allUris = config.getURIs();
+		if (allUris.size() == 0) {
 			config.addURI(new URIish(remoteUri));
 		}
 

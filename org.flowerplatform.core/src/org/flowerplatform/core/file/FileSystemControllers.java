@@ -44,6 +44,9 @@ import org.flowerplatform.resources.ResourcesPlugin;
  */
 public class FileSystemControllers {
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public void registerControllers() {
 		FileChildrenController fileChildrenController = new FileChildrenController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.fileContainer")

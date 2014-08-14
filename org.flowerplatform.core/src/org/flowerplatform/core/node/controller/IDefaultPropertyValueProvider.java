@@ -25,6 +25,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IDefaultPropertyValueProvider extends IController {
 	
+	/**
+	 * @author see class
+	 */
 	Object getDefaultValue(Node node, String property, ServiceContext<NodeService> context); 
 
 }

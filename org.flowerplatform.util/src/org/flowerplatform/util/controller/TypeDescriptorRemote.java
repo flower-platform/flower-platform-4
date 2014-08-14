@@ -33,6 +33,9 @@ public class TypeDescriptorRemote {
 	
 	private Map<String, List<IDescriptor>> additiveControllers = new HashMap<String, List<IDescriptor>>();
 
+	/**
+	 * @author see class
+	 */
 	public TypeDescriptorRemote(String type, List<String> categories) {
 		this.type = type;
 		this.categories = categories;

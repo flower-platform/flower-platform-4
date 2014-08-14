@@ -52,6 +52,7 @@ import org.eclipse.equinox.servletbridge.flower.ServletConfigWrapperImpl;
  * 1) Control the lifecycle of the associated FrameworkLauncher in line with its own lifecycle
  * 2) Provide a servlet "hook" that allows all servlet requests to be delegated to the registered servlet
  * 3) Provide means to manually control the framework lifecycle
+ * @author Cristian Spiescu
  */
 public class BridgeServlet extends HttpServlet {
 
@@ -335,8 +336,14 @@ public class BridgeServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	static class ExtensionMappingRequest extends HttpServletRequestWrapper {
 
+		/**
+		 * @author see class
+		 */
 		public ExtensionMappingRequest(HttpServletRequest req) {
 			super(req);
 		}
@@ -350,12 +357,21 @@ public class BridgeServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	static class IncludedExtensionMappingRequest extends HttpServletRequestWrapper {
 
+		/**
+		 * @author see class
+		 */
 		public IncludedExtensionMappingRequest(HttpServletRequest req) {
 			super(req);
 		}
 
+		/**
+		 * @author see class
+		 */
 		public Object getAttribute(String attributeName) {
 			if (attributeName.equals(INCLUDE_SERVLET_PATH_ATTRIBUTE)) {
 				return ""; //$NON-NLS-1$

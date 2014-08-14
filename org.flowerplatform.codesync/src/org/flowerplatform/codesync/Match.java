@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class Match {
 	
@@ -209,6 +209,9 @@ public class Match {
 	// Methods with some logic.
 	// *****************************************************
 
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public Object getDelegate() {
 		if (getAncestor() != null) {
 			return getAncestor();
@@ -350,6 +353,9 @@ public class Match {
 		}
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public boolean refreshDiffFlags(boolean conflict, boolean modifiedLeft, boolean modifiedRight) {
 		boolean modified = false;
 		if (!diffsConflict && conflict) {
@@ -403,6 +409,9 @@ public class Match {
 		return modified;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public List<Match> propagateConflictAndModifiedTrueOrFalse(Match currentMatch, boolean conflict, boolean modifiedLeft, boolean modifiedRight) {
 		List<Match> modifiedMatches = new ArrayList<Match>();
 		while (currentMatch != null 

@@ -24,8 +24,14 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IController;
 
+/**
+ * @author Mariana Gheorghe
+ */
 public class PropertyDescriptorDefaultPropertyValueProvider extends AbstractController implements IDefaultPropertyValueProvider {
 
+	/**
+	 * @author Solomon Sebastian
+	 */
 	@Override
 	public Object getDefaultValue(Node node, String property, ServiceContext<NodeService> context) {
 		List<AbstractController> propertyDescriptorList = context.getService().getPropertyDescriptors(node);

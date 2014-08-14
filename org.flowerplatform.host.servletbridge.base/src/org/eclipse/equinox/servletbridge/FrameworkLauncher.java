@@ -73,6 +73,7 @@ import org.eclipse.equinox.servletbridge.flower.ServletContextWrapper;
  * These 6 methods are provided to help manage the life-cycle and are called from outside this
  * class by the BridgeServlet. To create an extended FrameworkLauncher over-ride these methods to allow
  * custom behavior.  
+ * @author Mariana Gheorghe
  */
 public class FrameworkLauncher {
 
@@ -108,7 +109,7 @@ public class FrameworkLauncher {
 	private static final String CONFIG_EXTENDED_FRAMEWORK_EXPORTS = "extendedFrameworkExports"; //$NON-NLS-1$
 	private static final String CONFIG_OVERRIDE_AND_REPLACE_EXTENSION_BUNDLE = "overrideAndReplaceExtensionBundle"; //$NON-NLS-1$
 
-	static final PermissionCollection allPermissions = new PermissionCollection() {
+	static final PermissionCollection ALL_PERMISIONS = new PermissionCollection() {
 		private static final long serialVersionUID = 482874725021998286L;
 		// The AllPermission permission
 		Permission allPermission = new AllPermission();
@@ -143,7 +144,7 @@ public class FrameworkLauncher {
 
 	static {
 		// We do this to ensure the anonymous Enumeration class in allPermissions is pre-loaded 
-		if (allPermissions.elements() == null) {
+		if (ALL_PERMISIONS.elements() == null) {
 			throw new IllegalStateException();
 		}
 	}
@@ -157,6 +158,9 @@ public class FrameworkLauncher {
 	private ClassLoader frameworkContextClassLoader;
 	private CloseableURLClassLoader frameworkClassLoader;
 
+	/**
+	 * @author see class
+	 */
 	void init(ServletConfigWrapper servletConfig) {
 		config = servletConfig;
 		context = servletConfig.getServletContext();
@@ -994,6 +998,9 @@ public class FrameworkLauncher {
 		return candidates[result].getAbsolutePath().replace(File.separatorChar, '/') + (candidates[result].isDirectory() ? "/" : ""); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected int findMax(String[] candidates) {
 		int result = -1;
 		Object maxVersion = null;
@@ -1089,10 +1096,16 @@ public class FrameworkLauncher {
 	 */
 	protected class ChildFirstURLClassLoader extends CloseableURLClassLoader {
 
+		/**
+		 * @author see class
+		 */
 		public ChildFirstURLClassLoader(URL[] urls, ClassLoader parent) {
 			super(urls, parent, false);
 		}
 
+		/**
+		 * @author see class
+		 */
 		public URL getResource(String name) {
 			URL resource = findResource(name);
 			if (resource == null) {
@@ -1104,6 +1117,9 @@ public class FrameworkLauncher {
 			return resource;
 		}
 
+		/**
+		 * @author see class
+		 */
 		protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
 			Class clazz = findLoadedClass(name);
 			if (clazz == null) {
@@ -1126,9 +1142,12 @@ public class FrameworkLauncher {
 			return clazz;
 		}
 
+		/**
+		 * @author see class
+		 */
 		// we want to ensure that the framework has AllPermissions
 		protected PermissionCollection getPermissions(CodeSource codesource) {
-			return allPermissions;
+			return ALL_PERMISIONS;
 		}
 	}
 

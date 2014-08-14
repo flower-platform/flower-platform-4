@@ -39,6 +39,9 @@ public class CodeSyncSubscribableResourceProvider extends AbstractController imp
 
 	private String resource;
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public CodeSyncSubscribableResourceProvider(String resource) {
 		super();
 		this.resource = resource;
@@ -74,6 +77,9 @@ public class CodeSyncSubscribableResourceProvider extends AbstractController imp
 		return true;
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected String getResourceUri(Node node) {
 		String repo = CoreUtils.getRepoFromNode(node);
 		return CoreUtils.createNodeUriWithRepo("fpp", repo, resource);

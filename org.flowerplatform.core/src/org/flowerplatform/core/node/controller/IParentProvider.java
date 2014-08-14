@@ -25,6 +25,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IParentProvider extends IController {
 
+	/**
+	 * @author see class
+	 */
 	Node getParent(Node node, ServiceContext<NodeService> context);
 	
 }

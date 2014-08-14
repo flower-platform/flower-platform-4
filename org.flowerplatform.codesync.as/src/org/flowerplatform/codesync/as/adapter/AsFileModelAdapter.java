@@ -51,6 +51,9 @@ import org.flowerplatform.util.Pair;
  */
 public class AsFileModelAdapter extends AbstractFileModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public AsFileModelAdapter() {
 		containmentFeatures.add(CodeSyncAsConstants.STATEMENTS);
 	}

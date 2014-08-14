@@ -34,6 +34,9 @@ public class Activator implements BundleActivator {
 		
 	private HttpServiceServlet httpServiceServlet;
 	
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		httpServiceServlet = new HttpServiceServlet();
 		BridgeServlet.registerServletDelegate(httpServiceServlet);
@@ -69,6 +72,9 @@ public class Activator implements BundleActivator {
 		}
 	}
 
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		BridgeServlet.unregisterServletDelegate(httpServiceServlet);
 		httpServiceServlet = null;

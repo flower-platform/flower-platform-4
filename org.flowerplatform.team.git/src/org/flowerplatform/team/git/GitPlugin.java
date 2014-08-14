@@ -72,15 +72,18 @@ import org.osgi.framework.BundleContext;
  */
 public class GitPlugin extends AbstractFlowerJavaPlugin {
 	
-	protected static GitPlugin INSTANCE;
+	protected static GitPlugin instance;
 		
 	public static GitPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
-		
+	
+	/**
+	 * @author Valentina Bojan
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 			
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
 

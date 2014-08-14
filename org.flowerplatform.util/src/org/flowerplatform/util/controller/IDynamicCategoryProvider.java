@@ -49,6 +49,9 @@ import java.util.List;
  */
 public interface IDynamicCategoryProvider {
 
+	/**
+	 * @author see class
+	 */
 	List<String> getDynamicCategories(Object object);
 	
 }

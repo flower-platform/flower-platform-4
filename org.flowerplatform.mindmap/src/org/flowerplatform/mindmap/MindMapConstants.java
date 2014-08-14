@@ -23,8 +23,10 @@ import org.flowerplatform.core.CoreConstants;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapConstants {
+public final class MindMapConstants {
 	
+	private MindMapConstants() {
+	}
 	//////////////////////////////////
 	// Node types
 	//////////////////////////////////

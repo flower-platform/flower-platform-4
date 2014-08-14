@@ -27,6 +27,9 @@ import org.flowerplatform.codesync.action.ActionResult;
  */
 public abstract class DelegatingModelAdapter extends AbstractModelAdapter {
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract IModelAdapter getDelegate(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	@Override

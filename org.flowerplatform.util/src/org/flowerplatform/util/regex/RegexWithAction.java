@@ -50,6 +50,9 @@ public abstract class RegexWithAction extends AbstractRegexWithAction {
 		return numberOfCaptureGroups;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public RegexWithAction(String name, String regex) {
 		super();
 		this.name = name;
@@ -64,8 +67,14 @@ public abstract class RegexWithAction extends AbstractRegexWithAction {
 				+ ", numberOfCaptureGroups=" + numberOfCaptureGroups + "]";
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public static class IfFindThisSkip extends RegexWithAction {
 
+		/**
+		 * @author Cristina Constantinescu
+		 */
 		public IfFindThisSkip(String humanReadableRegexMeaning, String regex) {
 			super(humanReadableRegexMeaning, regex);
 		}
@@ -76,10 +85,16 @@ public abstract class RegexWithAction extends AbstractRegexWithAction {
 		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public static class IfFindThisAnnounceMatchCandidate extends RegexWithAction {
 
 		protected String category;
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
 		public IfFindThisAnnounceMatchCandidate(
 				String humanReadableRegexMeaning, String regex, String category) {
 			super(humanReadableRegexMeaning, regex);
@@ -95,10 +110,16 @@ public abstract class RegexWithAction extends AbstractRegexWithAction {
 		
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public static class IfFindThisModifyNesting extends RegexWithAction {
 
 		protected int increment;
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
 		public IfFindThisModifyNesting(String humanReadableRegexMeaning,
 				String regex, int increment) {
 			super(humanReadableRegexMeaning, regex);
@@ -112,8 +133,14 @@ public abstract class RegexWithAction extends AbstractRegexWithAction {
 				
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public static class UntilFoundThisIgnoreAll extends RegexWithAction {
 
+		/**
+		 * @author Cristina Constantinescu
+		 */
 		public UntilFoundThisIgnoreAll(String humanReadableRegexMeaning, String regex) {
 			super(humanReadableRegexMeaning, regex);
 		}

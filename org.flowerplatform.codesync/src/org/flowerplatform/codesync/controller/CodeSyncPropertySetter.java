@@ -32,6 +32,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class CodeSyncPropertySetter extends AbstractController implements IPropertySetter {
 
+	/**
+	 *@author see class
+	 */
 	public CodeSyncPropertySetter() {
 		// invoked before the persistence controllers
 		// to cache the current value of the property before it is overwritten

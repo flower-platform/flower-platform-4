@@ -29,10 +29,16 @@ import org.flowerplatform.core.file.IFileAccessController;
  */
 public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 
+	/**
+	 * @author see class
+	 */
 	protected CodeSyncFile getCodeSyncFile(Object file) {
 		return (CodeSyncFile) file;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected Object getOrCreateFileInfo(Object element, IFileAccessController fileAccessController) {
 		CodeSyncFile codeSyncFile = getCodeSyncFile(element);
 		if (codeSyncFile.getFileInfo() == null) {
@@ -41,6 +47,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		return codeSyncFile.getFileInfo();
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract Object createFileInfo(Object file, IFileAccessController fileAccessController);
 	
 	@Override
@@ -63,11 +72,15 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		return getName(element, codeSyncAlgorithm.getFileAccessController());
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected String getName(Object element, IFileAccessController fileAccessController) {
 		return fileAccessController.getName(getCodeSyncFile(element).getFile());
 	}
 	
 	/**
+	 * @author Mariana Gheroghe
 	 * Creates the file, if it does not exist, and commits all the modifications recorded by the AST.
 	 */
 	@Override
@@ -106,6 +119,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		return false;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected abstract TextEdit rewrite(Document document, Object fileInfo);
 	
 	/**

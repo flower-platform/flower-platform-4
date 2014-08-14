@@ -17,6 +17,9 @@ package org.flowerplatform.codesync.action;
 
 import org.flowerplatform.codesync.Match;
 
+/**
+ *@author Mariana Gheorghe
+ */
 public class MatchActionRemoveLeftRight extends DiffAction {
 
 	@Override

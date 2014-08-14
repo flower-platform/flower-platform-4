@@ -31,6 +31,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaEnumConstantDeclarationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public JavaEnumConstantDeclarationModelAdapter() {
 		containmentFeatures.add(CodeSyncJavaConstants.ENUM_CONSTANT_ARGUMENTS);
 	}

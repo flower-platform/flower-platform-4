@@ -83,10 +83,16 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected String getName(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return (String) getMatchKey(element, codeSyncAlgorithm);
 	}
 
+	/**
+	 * @author see class
+	 */
 	@SuppressWarnings("unchecked")
 	protected void addModifier(ASTNode parent, IExtendedModifier modifier) {
 		if (parent instanceof BodyDeclaration) {
@@ -96,23 +102,35 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
 		((ASTNode) child).delete();
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Override
 	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do, the changes to the AST will be saved when the file is saved
 		return false;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Override
 	public boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// nothing to do, the changes to the AST will be discarded when the file is discarded
 		return false;
 	}
 
+	/**
+	 * @author see class
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
@@ -143,6 +161,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected String getJavaDoc(Object element) {
 		if (element instanceof BodyDeclaration) {
 			BodyDeclaration node = (BodyDeclaration) element;
@@ -153,6 +174,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return null;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	protected void setJavaDoc(Object element, String docComment) {
 		if (element instanceof BodyDeclaration) {
@@ -188,6 +212,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return (Expression) ASTNode.copySubtree(ast, node);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected String getStringFromExpression(Expression expression) {
 		if (expression == null) {
 			return null;
@@ -216,6 +243,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return (Type) ASTNode.copySubtree(ast, declaration.getType());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected String getStringFromType(Type type) {
 		if (type == null) {
 			return null;

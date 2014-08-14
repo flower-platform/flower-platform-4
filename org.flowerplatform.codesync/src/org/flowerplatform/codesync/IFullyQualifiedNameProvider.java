@@ -19,5 +19,8 @@ package org.flowerplatform.codesync;
  * @author Cristi
  */
 public interface IFullyQualifiedNameProvider {
+	/**
+	 *@author see class
+	 */
 	String getFullyQualifiedName(Object object);
 }

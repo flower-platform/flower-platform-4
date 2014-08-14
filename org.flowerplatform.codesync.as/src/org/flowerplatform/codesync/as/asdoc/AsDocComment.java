@@ -24,6 +24,9 @@ public class AsDocComment implements IASDocComment {
 
 	private String text;
 
+	/**
+	 * @author see class
+	 */
 	public AsDocComment(String text) {
 		this.text = text;
 	}

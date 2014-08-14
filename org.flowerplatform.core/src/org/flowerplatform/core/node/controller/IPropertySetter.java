@@ -25,8 +25,14 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IPropertySetter extends IController {
 	
+	/**
+	 * @author see class
+	 */
 	void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context);
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	void unsetProperty(Node node, String property, ServiceContext<NodeService> context);
 	
 }

@@ -12,6 +12,9 @@ public class FileContent {
 
 	private String oldContent;
 
+	/**
+	 * @author see class
+	 */
 	public FileContent(String oldContent, String newContent) {
 		this.oldContent = oldContent;
 		this.newContent = newContent;

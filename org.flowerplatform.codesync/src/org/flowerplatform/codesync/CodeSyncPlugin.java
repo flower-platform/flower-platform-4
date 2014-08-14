@@ -212,26 +212,41 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		return inplaceEditorExtensions;
 //	}
 
+	/**
+	 *@author Mariana Gheorghe 
+	 */
 	public boolean useUIDs() {
 		return useUIDs;
 	}
 	
 	private Map<String, ModelAdapterSet> modelAdapterSets = new HashMap<String, ModelAdapterSet>();
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public void addModelAdapterSet(String technology, ModelAdapterSet modelAdapterSet) {
 		modelAdapterSets.put(technology, modelAdapterSet);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public ModelAdapterSet getModelAdapterSet(String technology) {
 		return modelAdapterSets.get(technology);
 	}
 	
 	protected Map<String, String> extensionToTechnology = new HashMap<String, String>();
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public void addTechnologyForExtension(String extension, String technology) {
 		extensionToTechnology.put(extension, technology);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public String getTechnologyForExtension(String extension) {
 		return extensionToTechnology.get(extension);
 	}
@@ -569,6 +584,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		}
 //	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public Node getCodeSyncMappingRoot(Object project) {
 		Node root = getResource(project);
 //		if (!EditorPlugin.getInstance().getFileAccessController().exists(codeSyncElementMappingFile)) {
@@ -645,6 +663,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return srcDirs;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public void addSrcDir(String srcDir) {
 		if (srcDirs == null) {
 			srcDirs = new ArrayList<String>();

@@ -43,6 +43,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public JavaTypeDeclarationModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.DOCUMENTATION);
 		valueFeatures.add(CodeSyncJavaConstants.SUPER_CLASS);
@@ -175,6 +178,9 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet, codeSyncAlgorithm);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected ASTNode createCorrespondingModelElement(AST ast, String type) {
 		ASTNode child = null;
 		if (CodeSyncJavaConstants.CLASS.equals(type)) {

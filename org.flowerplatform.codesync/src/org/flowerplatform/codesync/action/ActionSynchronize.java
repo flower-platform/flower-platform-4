@@ -18,6 +18,9 @@ package org.flowerplatform.codesync.action;
 import org.flowerplatform.codesync.Diff;
 import org.flowerplatform.codesync.Match;
 
+/**
+ * @author Mariana Gheorghe
+ */
 public class ActionSynchronize {
 
 	public static ActionSynchronize instance = new ActionSynchronize();

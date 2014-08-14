@@ -33,11 +33,17 @@ public class PreferencePropertyWrapper extends PropertyWrapper {
 		this.isUsed = isUsed;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public PreferencePropertyWrapper setIsUsedAs(boolean isUsed) {
 		setIsUsed(isUsed);
 		return this;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public PreferencePropertyWrapper() {
 		super();
 	}	

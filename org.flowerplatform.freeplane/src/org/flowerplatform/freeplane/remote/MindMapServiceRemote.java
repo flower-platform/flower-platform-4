@@ -30,6 +30,9 @@ import org.freeplane.features.styles.MapStyleModel;
  */
 public class MindMapServiceRemote {
 
+	/**
+	 * @author see class
+	 */
 	public List<String> getStyles(String fullNodeId) {		
 		MapModel mapModel = ((NodeModel) CorePlugin.getInstance().getResourceService().getNode(fullNodeId).getRawNodeData()).getMap();
 			

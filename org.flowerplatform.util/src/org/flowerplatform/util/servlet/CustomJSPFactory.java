@@ -30,7 +30,9 @@ import org.osgi.framework.Bundle;
  * @author Cristina Constantinescu
  */
 public class CustomJSPFactory extends JSPFactory {
-	
+	/**
+	 * @author see class
+	 */
 	public Object create() throws CoreException {
 		JspServlet jspServlet = (JspServlet) super.create();
 		

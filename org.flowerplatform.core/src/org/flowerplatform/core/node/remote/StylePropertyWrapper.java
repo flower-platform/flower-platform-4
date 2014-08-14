@@ -30,6 +30,9 @@ public class StylePropertyWrapper extends PropertyWrapper {
 		this.isDefault = isDefault;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public StylePropertyWrapper setIsDefaultAs(boolean isDefault) {
 		setIsDefault(isDefault);
 		return this;

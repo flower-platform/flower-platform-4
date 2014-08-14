@@ -25,6 +25,9 @@ import org.flowerplatform.codesync.adapter.ModelAdapterSet;
  */
 public class FileModelAdapterSet extends ModelAdapterSet {
 
+	/**
+	 *@author see class
+	 */
 	public FileModelAdapterSet() {
 		addModelAdapter(FOLDER, new FolderModelAdapter());
 		addModelAdapter(FILE, new FileModelAdapter());

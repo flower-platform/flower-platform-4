@@ -34,11 +34,15 @@ public class FileIterator implements Iterator<File> {
 	private FileFilter secondLevelFileFilter;
 
 	private boolean isChildLevel = true;
-
+/**
+ * @author Mariana Gheorghe
+ */
 	public FileIterator(File rootFolder) {
 		queue.add(rootFolder);
 	}
-
+/**
+ * @author Mariana Gheorghe
+ */
 	public FileIterator(File workspaceFolder, FileFilter secondLevelFileFilter) {
 		this.secondLevelFileFilter = secondLevelFileFilter;
 		queue.add(workspaceFolder);

@@ -5,7 +5,10 @@ import org.flowerplatform.util.UtilConstants;
 /**
  * @author Cojocea Marius Eduard
  */
-public class GitConstants {
+public final class GitConstants {
+	
+	private GitConstants() {
+	}
 
 	/////////////////////////////////////////////////////////////
 	// Scheme

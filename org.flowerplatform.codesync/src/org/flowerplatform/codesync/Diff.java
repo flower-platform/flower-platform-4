@@ -16,7 +16,7 @@
 package org.flowerplatform.codesync;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class Diff {
 

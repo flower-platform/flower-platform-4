@@ -33,6 +33,9 @@ import org.flowerplatform.util.controller.TypeDescriptorRemote;
  */
 public class NodeServiceRemote {
 	
+	/**
+	 * @author see class
+	 */
 	public List<Node> getChildren(String nodeUri, ServiceContext<NodeService> context) {
 		if (context == null) {
 			context = new ServiceContext<NodeService>(getNodeService());
@@ -42,10 +45,16 @@ public class NodeServiceRemote {
 		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), context);		
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void setProperty(String fullNodeId, String property, Object value) {
 		getNodeService().setProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
 		
+	/**
+	 * @author see class
+	 */
 	public void unsetProperty(String fullNodeId, String property) {
 		getNodeService().unsetProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, new ServiceContext<NodeService>(getNodeService()));	
 	}
@@ -75,6 +84,9 @@ public class NodeServiceRemote {
 		return child.getNodeUri();
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
 		getNodeService().removeChild(CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId), 
 				CorePlugin.getInstance().getResourceService().getNode(childFullNodeId), new ServiceContext<NodeService>(getNodeService()));
@@ -119,6 +131,9 @@ public class NodeServiceRemote {
 		return response;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public Node getNode(String fullNodeId) {	
 		return CorePlugin.getInstance().getResourceService().getNode(fullNodeId, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
 	}

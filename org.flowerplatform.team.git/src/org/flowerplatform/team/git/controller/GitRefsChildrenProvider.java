@@ -26,7 +26,9 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 	private String scheme;
 	private String type;
 	
-	
+	/**
+	 * @author see class
+	 */
 	public GitRefsChildrenProvider(String refType, String scheme, String type) {
 		this.refType = refType;
 		this.scheme = scheme;

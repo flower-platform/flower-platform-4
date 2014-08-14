@@ -31,6 +31,9 @@ public abstract class RegexAction implements Runnable {
 		return name;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public RegexAction setName(String name) {
 		this.name = name;
 		return this;
@@ -40,11 +43,17 @@ public abstract class RegexAction implements Runnable {
 		return description;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public RegexAction setDescription(String description) {
 		this.description = description;
 		return this;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public abstract void executeAction(RegexProcessingSession param);
 				
 	@Override

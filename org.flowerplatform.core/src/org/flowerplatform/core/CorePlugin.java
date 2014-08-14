@@ -72,7 +72,7 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CorePlugin INSTANCE;
+	protected static CorePlugin instance;
 
 	protected static final String PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP = "deleteTemporaryDirectoryAtServerStartup"; 
 	protected static final String PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP = "true"; 
@@ -102,7 +102,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
 
 	public static CorePlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	@Override
@@ -181,6 +181,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return composedSessionListener;
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void addSessionListener(ISessionListener sessionListener) {
 		composedSessionListener.add(sessionListener);
 	}
@@ -203,6 +206,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return location;
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public CorePlugin() {
 		super();
 			    
@@ -215,7 +221,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		INSTANCE = this;
+		instance = this;
 			
 		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
@@ -282,10 +288,13 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		}
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		scheduledExecutorServiceFactory.dispose();
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 }

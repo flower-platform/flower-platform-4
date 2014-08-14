@@ -38,6 +38,9 @@ public class ComposedTypeProvider implements ITypeProvider {
 		throw new RuntimeException("Cannot provide type for " + object);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public ComposedTypeProvider addTypeProvider(ITypeProvider typeProvider) {
 		typeProviders.add(typeProvider);
 		return this;

@@ -76,7 +76,10 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	public static FreeplanePlugin getInstance() {
 		return INSTANCE;
 	}
-		
+	
+	/**
+	 * @author see class
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		INSTANCE = this;
@@ -128,6 +131,9 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());	
 	}
 
+	/**
+	 * @author see class
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
 		INSTANCE = null;

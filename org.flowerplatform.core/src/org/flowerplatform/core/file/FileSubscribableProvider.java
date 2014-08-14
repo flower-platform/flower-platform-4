@@ -43,6 +43,9 @@ public class FileSubscribableProvider extends AbstractController implements IPro
 	
 	private boolean insertAtBeginning;
 	
+	/**
+	 * @author see class
+	 */
 	public FileSubscribableProvider(String extension, String scheme, String contentType, boolean insertAtBeginning) {
 		super();
 		this.extension = extension;

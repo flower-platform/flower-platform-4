@@ -105,6 +105,9 @@ public class HeaderUpdaterTask extends Task {
 		}
 	}
 
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	class ProjectFileFilter implements FileFilter {
 
 		@Override

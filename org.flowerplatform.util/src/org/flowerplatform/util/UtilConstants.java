@@ -17,7 +17,13 @@ package org.flowerplatform.util;
 
 import java.io.File;
 
-public class UtilConstants {
+/**
+ * @author Mariana Gheorghe
+ */
+public final class UtilConstants {
+	
+	private UtilConstants() {
+	}
 
 	public static final String FLOWER_PLATFORM = "flower-platform";
 	

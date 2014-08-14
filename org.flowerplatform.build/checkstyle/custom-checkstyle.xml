@@ -18,8 +18,8 @@
 
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sf.net/config_sizes.html -->
-    <module name="FileLength"/>
-    
+<!--     <module name="FileLength"/>
+ -->    
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
     <module name="FileTabCharacter">
@@ -43,7 +43,16 @@
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <module name="JavadocType">
    			<property name="authorFormat" value="\S"/>
-   			<property name="scope" value="public"/>
+   			<property name="scope" value="package"/>
+   			<property name="allowMissingParamTags" value="true"/>
+		</module>
+		<module name="JavadocMethod">
+  			<property name="scope" value="package"/>
+  			<property name="allowMissingParamTags" value="true"/>
+  			<property name="allowMissingReturnTag" value="true"/>
+  			<property name="allowMissingThrowsTags" value="true"/>
+  			<!-- <property name="allowThrowsTagsForSubclasse" value="true"/> -->
+  			<property name="allowMissingPropertyJavadoc" value="true"/>
 		</module>
 
         <!-- Checks for Naming Conventions.                  -->
@@ -134,11 +143,11 @@
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="AvoidInlineConditionals"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField">
     		<property name="ignoreSetter" value="true"/>
+    		<property name="ignoreConstructorParameter" value="true"/>
     		<property name="tokens" value="VARIABLE_DEF"/>
 		</module>
         <module name="IllegalInstantiation"/>

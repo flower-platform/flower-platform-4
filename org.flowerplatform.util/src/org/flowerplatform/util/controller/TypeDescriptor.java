@@ -71,6 +71,9 @@ public class TypeDescriptor {
 		return type;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public TypeDescriptor(TypeDescriptorRegistry registry, String type) {
 		super();
 		this.registry = registry;
@@ -145,16 +148,16 @@ public class TypeDescriptor {
 		// else => let's scan now the categories
 		T controller = (T) entry.getSelfValue();
 		
-		List<String> categories =  new ArrayList<String>();
-		categories.addAll(getCategories());
+		List<String> allCategories =  new ArrayList<String>();
+		allCategories.addAll(getCategories());
 		if (includeDynamicCategoryProviders) {
 			for (IDynamicCategoryProvider categoryProvider : getRegistry().getDynamicCategoryProviders()) {
-				categories.addAll(categoryProvider.getDynamicCategories(object));
+				allCategories.addAll(categoryProvider.getDynamicCategories(object));
 			}
 		}
 		
 		// iterate categories to cache the controller
-		for (String category : categories) {
+		for (String category : allCategories) {
 			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
 			if (categoryDescriptor == null) {
 				// semi-error; a WARN is logged
@@ -231,6 +234,9 @@ public class TypeDescriptor {
 	 */
 	protected Map<String, ControllerEntry<List<? extends IController>>> additiveControllers = new HashMap<String, ControllerEntry<List<? extends IController>>>();
 
+	/**
+	 * @author see class
+	 */
 	public <T extends IController> List<T> getAdditiveControllers(String controllerType, Object object) {
 		return getCachedAdditiveControllers(controllerType, object, true, true);
 	}
@@ -254,15 +260,15 @@ public class TypeDescriptor {
 		List<T> controllers = new ArrayList<T>();
 		controllers.addAll((Collection<? extends T>) entry.getSelfValue());
 		
-		List<String> categories =  new ArrayList<String>();
-		categories.addAll(getCategories());
+		List<String> allCategories =  new ArrayList<String>();
+		allCategories.addAll(getCategories());
 		if (includeDynamicCategoryProviders) {
 			for (IDynamicCategoryProvider categoryProvider : getRegistry().getDynamicCategoryProviders()) {
-				categories.addAll(categoryProvider.getDynamicCategories(object));
+				allCategories.addAll(categoryProvider.getDynamicCategories(object));
 			}
 		}
 		// iterate categories to cache the controllers
-		for (String category : categories) {
+		for (String category : allCategories) {
 			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
 			if (categoryDescriptor == null) {
 				// semi-error; a WARN is logged

@@ -34,6 +34,9 @@ public class ChildrenUpdate extends Update {
 		this.targetNode = targetNode;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public ChildrenUpdate setTargetNodeAs(Node targetNode) {
 		this.targetNode = targetNode;
 		return this;
@@ -47,6 +50,9 @@ public class ChildrenUpdate extends Update {
 		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public ChildrenUpdate setFullTargetNodeAddedBeforeIdAs(String fullTargetNodeAddedBeforeId) {
 		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
 		return this;

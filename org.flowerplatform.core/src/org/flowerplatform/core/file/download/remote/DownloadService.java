@@ -70,10 +70,16 @@ public class DownloadService implements ISessionListener {
 	
 	private ScheduledExecutorService scheduler = CorePlugin.getInstance().getScheduledExecutorServiceFactory().createScheduledExecutorService();
 
+	/**
+	 * @author see class
+	 */
 	class ClearDownloadInfoRunnable implements Runnable {
 		
 		private ScheduledExecutorService parentScheduler;
 		
+		/**
+		 * @author see class
+		 */
 		public ClearDownloadInfoRunnable(ScheduledExecutorService parentScheduler) {			
 			this.parentScheduler = parentScheduler;
 		}
@@ -90,6 +96,9 @@ public class DownloadService implements ISessionListener {
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public DownloadService() {
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddIntegerProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER));
 		CorePlugin.getInstance().getFlowerProperties()
@@ -102,6 +111,9 @@ public class DownloadService implements ISessionListener {
 				.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public DownloadInfo getDownloadInfo(String downloadId) {
 		return downloadIdToDownloadInfo.get(downloadId);
 	}

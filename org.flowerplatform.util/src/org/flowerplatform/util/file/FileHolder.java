@@ -20,12 +20,24 @@ package org.flowerplatform.util.file;
  */
 public abstract class FileHolder {
 
+	/**
+	 * @author see class
+	 */
 	public abstract boolean exists();
 	
+	/**
+	 * @author see class
+	 */
 	public abstract String getPath();
 	
+	/**
+	 * @author see class
+	 */
 	public abstract String getName();
 	
+	/**
+	 * @author see class
+	 */
 	public abstract String getContent();
 	
 }

@@ -5,8 +5,10 @@ import org.flowerplatform.util.UtilConstants;
 /**
  * @author Cristina Constantinescu
  */
-public class CodeSyncRegexConstants {
+public final class CodeSyncRegexConstants {
 
+	private CodeSyncRegexConstants() {
+	}
 	//////////////////////////////////
 	// Node types and categories
 	//////////////////////////////////

@@ -47,6 +47,9 @@ import org.flowerplatform.util.controller.AbstractController;
 public class StructureDiffMatchPropertiesProvider extends AbstractController implements IPropertiesProvider,
 		IPropertySetter {
 
+	/**
+	 * @author see class
+	 */
 	public StructureDiffMatchPropertiesProvider() {
 		// invoke after the persistence providers
 		// so the properties are populate

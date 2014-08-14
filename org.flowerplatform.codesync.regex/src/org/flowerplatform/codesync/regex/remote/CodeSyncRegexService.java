@@ -47,6 +47,9 @@ public class CodeSyncRegexService {
 
 	private final Pattern newLinePattern = Pattern.compile("(\r\n)|(\n)|(\r)");
 		
+	/**
+	 * @author see class
+	 */
 	public List<Pair<String, String>> getRegexActions() {	
 		List<Pair<String, String>> list = new ArrayList<Pair<String, String>>();
 		
@@ -56,6 +59,9 @@ public class CodeSyncRegexService {
 		return list;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public String generateMatches(String nodeUri, String textNodeUri) throws Exception {
 		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> context;	

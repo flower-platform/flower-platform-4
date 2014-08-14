@@ -28,6 +28,9 @@ public class Pair<A, B> {
 	public Pair() {
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public Pair(A a, B b) {
 		super();
 		this.a = a;

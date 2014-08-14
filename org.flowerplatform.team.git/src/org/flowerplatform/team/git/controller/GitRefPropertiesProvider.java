@@ -80,6 +80,9 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 		}
 	}
 	
+	/**
+	 * @author Eduard Cojocea
+	 */
 	public String setIcon(Node node) {
 		String icon = null;	
 		String type = GitUtils.getType(node.getNodeUri());

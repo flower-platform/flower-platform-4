@@ -20,7 +20,11 @@ import org.flowerplatform.codesync.CodeSyncConstants;
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncAsConstants {
+public final class CodeSyncAsConstants {
+	
+	private CodeSyncAsConstants() {
+		
+	}
 
 	public static final String ACTIONSCRIPT = "as";
 	
@@ -94,6 +98,9 @@ public class CodeSyncAsConstants {
 	public static final String IMG_VARIABLE = "ActionScriptProperty.gif";
 	public static final String IMG_FUNCTION = "ActionScriptOperation.gif";
 	
+	/**
+	 * @author see class
+	 */
 	public static String getImagePath(String image) {
 		return "org.flowerplatform.resources/images/codesync.as/" + image;
 	}

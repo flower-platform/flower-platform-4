@@ -21,7 +21,7 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class DiffActionRevert extends DiffAction {
 

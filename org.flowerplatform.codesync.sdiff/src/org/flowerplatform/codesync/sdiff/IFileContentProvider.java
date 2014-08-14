@@ -8,6 +8,9 @@ package org.flowerplatform.codesync.sdiff;
  */
 public interface IFileContentProvider {
 
+	/**
+	 * @author see class
+	 */
 	FileContent getFileContent(String filePath, String repo, Object patch);
 
 }

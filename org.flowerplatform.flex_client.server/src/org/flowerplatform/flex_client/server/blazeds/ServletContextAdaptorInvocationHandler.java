@@ -48,6 +48,9 @@ public class ServletContextAdaptorInvocationHandler implements InvocationHandler
 	 */
 	private ServletContext context;
 	
+	/**
+	 * @author see class
+	 */
 	public ServletContextAdaptorInvocationHandler(ServletContext proxy) {
 		super();
 		this.proxy = proxy;

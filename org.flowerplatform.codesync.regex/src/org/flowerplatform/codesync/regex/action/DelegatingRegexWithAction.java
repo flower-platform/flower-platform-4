@@ -74,11 +74,17 @@ public class DelegatingRegexWithAction extends AbstractRegexWithAction {
 		return action;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public DelegatingRegexWithAction setRegexAction(RegexAction action) {
 		this.action = action;
 		return this;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public DelegatingRegexWithAction setNode(Node node) {
 		this.node = node;
 		return this;

@@ -22,12 +22,24 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public interface IResourceHolder {
 
+	/**
+	 * @author see class
+	 */
 	IResourceHandler getResourceHandler(String scheme);
 	
+	/**
+	 * @author see class
+	 */
 	Node getNode(String nodeUri);
 	
+	/**
+	 * @author see class
+	 */
 	Object getResourceData(String resourceUri);
 	
+	/**
+	 * @author see class
+	 */
 	void registerResourceData(String resourceUri, Object resourceData);
 	
 }

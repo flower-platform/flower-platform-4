@@ -27,6 +27,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IChildrenProvider extends IController {
 
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	List<Node> getChildren(Node node, ServiceContext<NodeService> context);
 	
 	/**

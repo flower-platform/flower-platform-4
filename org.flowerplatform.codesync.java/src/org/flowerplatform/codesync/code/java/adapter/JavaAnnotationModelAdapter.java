@@ -42,6 +42,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaAnnotationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public JavaAnnotationModelAdapter() {
 		containmentFeatures.add(CodeSyncJavaConstants.ANNOTATION_VALUES);
 	}

@@ -36,6 +36,9 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
  */
 public class AsClassModelAdapter extends AsTypeModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public AsClassModelAdapter() {
 		valueFeatures.add(SUPER_CLASS);
 		valueFeatures.add(DOCUMENTATION);
@@ -68,6 +71,9 @@ public class AsClassModelAdapter extends AsTypeModelAdapter {
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	protected IClassDefinition getClassDefinition(Object element) {
 		return (IClassDefinition) element;
 	}

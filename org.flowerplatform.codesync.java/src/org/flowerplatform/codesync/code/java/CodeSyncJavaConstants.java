@@ -22,7 +22,10 @@ import org.flowerplatform.resources.ResourcesPlugin;
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncJavaConstants {
+public final class CodeSyncJavaConstants {
+	
+	private CodeSyncJavaConstants() {
+	}
 	
 	public static final String JAVA = "java";
 
@@ -118,10 +121,16 @@ public class CodeSyncJavaConstants {
 	public static final String VISIBILITY_PROTECTED = "_protected";
 	public static final String VISIBILITY_DEFAULT = "_default";
 	
+	/**
+	 * @author see class
+	 */
 	public static String getImagePath(String image) {
 		return "org.flowerplatform.resources/images/codesync.java/" + image;
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static String getImagePathFromPublicResources(String image) {
 		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.java/" + image);
 	}

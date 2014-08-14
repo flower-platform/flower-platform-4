@@ -34,6 +34,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class RepositoryChildrenProvider extends AbstractController implements IChildrenProvider {
 	
+	/**
+	 * @author see class
+	 */
 	public RepositoryChildrenProvider() {
 		setOrderIndex(200);
 	}
@@ -45,6 +48,9 @@ public class RepositoryChildrenProvider extends AbstractController implements IC
 		return children;	
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public Node getFileSystem(Node parentNode) {
 		return new Node(Utils.getUri(FILE_SCHEME, CoreUtils.getRepoFromNode(parentNode)), FILE_SYSTEM_NODE_TYPE);
 	}

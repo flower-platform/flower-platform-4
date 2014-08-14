@@ -18,6 +18,9 @@ package org.flowerplatform.codesync.action;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 
+/**
+ *@author Mariana Gheorghe
+ */
 public class MatchActionRemoveRight extends MatchActionRemoveAbstract {
 
 	@Override

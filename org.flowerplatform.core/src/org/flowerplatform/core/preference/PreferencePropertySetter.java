@@ -17,6 +17,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class PreferencePropertySetter extends AbstractController implements	IPropertySetter {
 
+	/**
+	 * @author see class
+	 */
 	public PreferencePropertySetter() {
 		// execute after persistence setter
 		setOrderIndex(100000);

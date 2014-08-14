@@ -71,15 +71,19 @@ import org.osgi.framework.BundleContext;
  */
 public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static MindMapPlugin INSTANCE;
+	protected static MindMapPlugin instance;
 	
 	public static MindMapPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 		
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Solomon Sebastian
+	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		ResourcesPlugin resourcesPlugin = ResourcesPlugin.getInstance();
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MINDMAP_NODE_TYPE)
@@ -150,9 +154,12 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(SIDE));
 	}	
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RegexProcessingSession {
 
-	private static final Logger logger = LoggerFactory.getLogger(RegexProcessingSession.class); 
+	private static final Logger LOGGER = LoggerFactory.getLogger(RegexProcessingSession.class); 
 	
 	protected Matcher matcher;
 	
@@ -48,7 +48,10 @@ public class RegexProcessingSession {
 	public int currentNestingLevel;
 	
 	protected String lastMatchCategory;
-		
+	
+	/**
+	 * @author see class
+	 */
 	public void reset(boolean resetMatcher) {
 		currentMatchGroupIndex = -1;
 		currentRegex = null;		
@@ -82,6 +85,9 @@ public class RegexProcessingSession {
 		return currentSubMatchesForCurrentRegex;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public boolean find() throws RegexException {
 		boolean result = matcher.find();
 		StringBuilder log = new StringBuilder();
@@ -161,6 +167,9 @@ public class RegexProcessingSession {
 	}
 	
 	
+	/**
+	 * @author see class
+	 */
 	public void find(Runnable runnable) throws RegexException {
 		while (find()) {
 			if (runnable != null) {
@@ -169,8 +178,11 @@ public class RegexProcessingSession {
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void candidateAnnounced(String category) {
-		if (logger.isTraceEnabled()) {
+		if (LOGGER.isTraceEnabled()) {
 			StringBuilder subMatchesAsString = new StringBuilder();
 			if (currentSubMatchesForCurrentRegex != null) {
 				for (String subMatch : currentSubMatchesForCurrentRegex) {
@@ -180,7 +192,7 @@ public class RegexProcessingSession {
 			}
 			
 			// debug to show with other color
-			logger.debug("Match candidate for category = {} and submatches = {}", category, subMatchesAsString);
+			LOGGER.debug("Match candidate for category = {} and submatches = {}", category, subMatchesAsString);
 		}
 		lastMatchCategory = category;
 	}

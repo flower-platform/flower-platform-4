@@ -19,18 +19,21 @@ import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
+/**
+ * @author Mariana Gheorghe
+ */
 public class ResourcesPlugin extends AbstractFlowerJavaPlugin {
 	
-	protected static ResourcesPlugin INSTANCE;
+	protected static ResourcesPlugin instance;
 	
 	public static ResourcesPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		INSTANCE = this;
+		instance = this;
 	}
 
 	@Override

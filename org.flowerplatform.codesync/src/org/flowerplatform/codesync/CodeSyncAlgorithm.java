@@ -40,6 +40,11 @@ import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Mariana Gheorghe
+ *
+ */
 public class CodeSyncAlgorithm {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
@@ -83,16 +88,25 @@ public class CodeSyncAlgorithm {
 		return filesToDelete;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public void initializeModelAdapterSets(List<String> leftTechnologies, List<String> rightTechnologies, List<String> ancestorTechnologies) {
 		modelAdapterSetLeft = getModelAdapterSet(leftTechnologies);
 		modelAdapterSetRight = getModelAdapterSet(rightTechnologies);
 		modelAdapterSetAncestor = getModelAdapterSet(ancestorTechnologies);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public void initializeFeatureProvider(Side side) {
 		featureProviderSide = side;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	private IModelAdapterSet getModelAdapterSet(List<String> technologies) {
 		if (technologies.size() == 1) {
 			return CodeSyncPlugin.getInstance().getModelAdapterSet(technologies.get(0));
@@ -454,10 +468,16 @@ public class CodeSyncAlgorithm {
 		return false;
 	}
 	
+	/**
+	 *@author Valentina Bojan
+	 */
 	public boolean synchronize(Match match) {
 		return synchronize(match, null);
 	}
 	
+	/**
+	 *@author Valentina Bojan
+	 */
 	public boolean synchronize(Match match, DiffAction action) {
 		boolean isSync = true;
 
@@ -521,6 +541,9 @@ public class CodeSyncAlgorithm {
 		return isSync;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	protected DiffAction getDiffActionToApplyForMatch(Match match) {
 		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
 			return new MatchActionAddLeftToRight(false);
@@ -536,6 +559,9 @@ public class CodeSyncAlgorithm {
 		return null;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public void save(Match match, boolean shouldRecurse) {
 		boolean saveSubMatches = false;
 		
@@ -559,6 +585,9 @@ public class CodeSyncAlgorithm {
 		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public String getElementTypeForMatch(Match match) {
 		if (match.getLeft() != null) {
 			return modelAdapterSetLeft.getType(match.getLeft(), this);
@@ -569,6 +598,9 @@ public class CodeSyncAlgorithm {
 		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public FeatureProvider getFeatureProvider(Match match) {
 		if (featureProviderSide == null) {
 			throw new RuntimeException("No feature provider side registered for algorithm");
@@ -641,18 +673,30 @@ public class CodeSyncAlgorithm {
 		return featureProvider;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe 
+	 */
 	public IModelAdapter getRightModelAdapter(Object right) {
 		return modelAdapterSetRight.getModelAdapter(right, this);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public IModelAdapter getAncestorModelAdapter(Object ancestor) {
 		return modelAdapterSetAncestor.getModelAdapter(ancestor, this);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public IModelAdapter getLeftModelAdapter(Object left) {
 		return modelAdapterSetLeft.getModelAdapter(left, this);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public enum Side {
 		LEFT, 
 		RIGHT,

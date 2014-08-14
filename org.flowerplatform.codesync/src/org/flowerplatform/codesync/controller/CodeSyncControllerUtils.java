@@ -30,12 +30,18 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncControllerUtils {
+public final class CodeSyncControllerUtils {
+	
+	private CodeSyncControllerUtils() {
+	}
 
 //	public static boolean isOriginalPropertyName(String property) {
 //		return property.endsWith(ORIGINAL_SUFFIX);
 //	}
 	
+	/**
+	 *@author Cristian Spiescu
+	 */
 	public static String getOriginalPropertyName(String property) {
 		return property + ORIGINAL_SUFFIX;
 	}
@@ -48,6 +54,9 @@ public class CodeSyncControllerUtils {
 //		return property + CONFLICT_SUFFIX;
 //	}
 	
+	/**
+	 *@author Mariana Gheorghe 
+	 */
 	public static boolean isCodeSyncFlagConstant(String property) {
 		if (SYNC.equals(property) || CHILDREN_SYNC.equals(property)
 				|| CONFLICT.equals(property) || CHILDREN_CONFLICT.equals(property)
@@ -57,6 +66,9 @@ public class CodeSyncControllerUtils {
 		return false;
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 */
 	public static void setSyncFalseAndPropagateToParents(Node node, NodeService service) {		
 		// set sync false
 		service.setProperty(node, SYNC, false, new ServiceContext<NodeService>(service));
@@ -74,6 +86,9 @@ public class CodeSyncControllerUtils {
 		}
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 */
 	public static void setSyncTrueAndPropagateToParents(Node node, NodeService service) {		
 //		if (isSync(node)) {
 //			// already set
@@ -103,6 +118,9 @@ public class CodeSyncControllerUtils {
 //		setChildrenSyncTrueAndPropagateToParents(service.getParent(node, new ServiceContext<NodeService>(service)), service);
 	}
 	
+	/**
+	 *@author Valentina Bojan
+	 */
 	public static void setChildrenSyncTrueAndPropagateToParents(Node parent, NodeService service) {	
 //		while (parent != null) {
 //			// if childrenSync is already true for the parent, no need to go up
@@ -192,6 +210,9 @@ public class CodeSyncControllerUtils {
 //		return hasFlagTrue(node, SYNC);
 //	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public static boolean isChildrenSync(Node node) {
 		return hasFlagTrue(node, CHILDREN_SYNC);
 	}
@@ -200,6 +221,9 @@ public class CodeSyncControllerUtils {
 //		return hasFlagTrue(node, ADDED);
 //	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public static boolean isRemoved(Node node) {
 		return hasFlagTrue(node, REMOVED);
 	}
@@ -212,6 +236,10 @@ public class CodeSyncControllerUtils {
 //		return hasFlagTrue(node, CHILDREN_CONFLICT);
 //	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 *@author Cristina Constantinescu 
+	 */
 	private static boolean hasFlagTrue(Node node, String flag) {
 		Boolean b = (Boolean) node.getPropertyValue(flag);
 		return b != null && b;

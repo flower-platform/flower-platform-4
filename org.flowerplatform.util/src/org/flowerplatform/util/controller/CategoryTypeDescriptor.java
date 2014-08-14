@@ -27,6 +27,9 @@ package org.flowerplatform.util.controller;
  */
 public class CategoryTypeDescriptor extends TypeDescriptor {
 
+	/**
+	 * @author see class
+	 */
 	public CategoryTypeDescriptor(TypeDescriptorRegistry registry, String type) {
 		super(registry, type);
 	}

@@ -40,6 +40,9 @@ public class AsModifierModelAdapter extends AstModelElementAdapter {
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected ASModifier getModifier(Object element) {
 		return (ASModifier) element;
 	}

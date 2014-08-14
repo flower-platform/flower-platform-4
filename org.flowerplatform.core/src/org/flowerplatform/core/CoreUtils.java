@@ -36,8 +36,15 @@ import org.flowerplatform.util.Utils;
 /**
  * @author Mariana Gheorghe
  */
-public class CoreUtils {
+public final class CoreUtils {
+	
+	private CoreUtils() {
+		
+	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public static void delete(File f) {	
 		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
 			for (File c : f.listFiles()) {
@@ -47,6 +54,9 @@ public class CoreUtils {
 		f.delete();
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public static void zipFiles(List<String> files, String zipFilePath, String rootFolderName) throws Exception {		
 		ZipOutputStream zip = null;
 		FileOutputStream fileWriter = null;
@@ -104,6 +114,9 @@ public class CoreUtils {
 		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@SuppressWarnings("rawtypes")
 	public static void unzipArchive(File archive, File outputDir) throws IOException {
 		ZipFile zipfile = new ZipFile(archive);

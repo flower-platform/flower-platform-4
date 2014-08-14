@@ -68,15 +68,24 @@ public class NodeService {
 	
 	protected TypeDescriptorRegistry registry;
 	
+	/**
+	 * @author see class
+	 */
 	public NodeService() {
 		super();		
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public NodeService(TypeDescriptorRegistry registry) {
 		super();
 		this.registry = registry;
 	}
 	
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -116,6 +125,9 @@ public class NodeService {
 		}
 	}
 		
+	/**
+	 * @author see class
+	 */
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -181,6 +193,9 @@ public class NodeService {
 	}
 	
 
+	/**
+	 * @author see class
+	 */
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -240,6 +255,9 @@ public class NodeService {
 		}
 	}
 	
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public void addChild(Node node, Node child, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -270,6 +288,9 @@ public class NodeService {
 				new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {

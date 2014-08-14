@@ -30,6 +30,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public class DefaultPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
+	/**
+	 * @author see class
+	 */
 	public DefaultPropertiesProvider() {
 		super();
 		setOrderIndex(10000);

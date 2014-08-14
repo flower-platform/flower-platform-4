@@ -38,6 +38,9 @@ import org.flowerplatform.codesync.as.CodeSyncAsConstants;
  */
 public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 
+	/**
+	 * @author see class
+	 */
 	public AsFunctionModelAdapter() {
 		valueFeatures.add(DOCUMENTATION);
 		valueFeatures.add(TYPED_ELEMENT_TYPE);
@@ -78,6 +81,9 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
+	/**
+	 * @author see class
+	 */
 	protected IFunctionDefinition getFunction(Object element) {
 		return (IFunctionDefinition) element;
 	}

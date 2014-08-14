@@ -61,10 +61,16 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		return new FileContent(oldFileContent, newFileContent);
 	}
 
+	/**
+	 * @author Valentina Bojan
+	 */
 	class StringReaderCreator extends ReaderCreator {
 
 		private String content;
 
+		/**
+		 * @author Alexandra Topoloaga
+		 */
 		public StringReaderCreator(String content) {
 			if (content == null) {
 				content = "";
