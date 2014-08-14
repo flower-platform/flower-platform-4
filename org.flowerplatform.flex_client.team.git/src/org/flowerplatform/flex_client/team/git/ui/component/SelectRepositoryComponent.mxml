@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+@author Alina Bratu
+-->
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
 	<fx:Script>
 		<![CDATA[
-			import mx.managers.PopUpManager;
+			import mx.collections.IList;
 			
 			import org.flowerplatform.flex_client.resources.Resources;
+			[Bindable]
+			public var showRemotesList:Boolean = true;
+			[Bindable]
+			public var showURIArea:Boolean = true;
 			
-			public function getURI():String {	
-				return uriTextInput.text;
+			[Bindable]
+			public var remotes:IList;
+			
+			public function getURI():String {
+				if (uriRepo.selected) {
+					return uriTextInput.text;	
+				}
+				return repositoriesList.selectedItem;
 			}
 		]]>
 	</fx:Script>
 	
 	<s:layout>
-		<s:VerticalLayout  paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
-			
-		</s:VerticalLayout>
+		<s:VerticalLayout  paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5"/>
 	</s:layout>
 	
-	<s:VGroup id="remoteRepoGroup"  height="40%" width="100%" paddingLeft="5">
-		<s:RadioButton selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" />
-		<s:DropDownList id="repositoriesList" >
-			
-		</s:DropDownList>
+	<s:VGroup height="40%" width="100%" paddingLeft="5" visible="@{showRemotesList}" includeInLayout="@{showRemotesList}">
+		<s:RadioButton id="remoteRepo" width="100%" selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" 
+					   visible="@{showURIArea}" includeInLayout="@{showURIArea}"/>
+		<s:DropDownList id="repositoriesList" width="100%" dataProvider="@{remotes}"/>
 	</s:VGroup>
 	
-	<s:VGroup height="40%" width="100%" paddingLeft="5">
-		<s:HGroup>
-			<s:RadioButton selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" />
-		</s:HGroup>
-		
-		<s:TextInput id="uriTextInput" />
+	<s:VGroup height="40%" width="100%" paddingLeft="5" visible="@{showURIArea}" includeInLayout="@{showURIArea}">
+		<s:RadioButton id="uriRepo" width="100%" selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" 
+					   visible="@{showRemotesList}" includeInLayout="@{showRemotesList}"/>
+		<s:TextInput id="uriTextInput" width="100%"/>
 		
 	</s:VGroup>
 	
