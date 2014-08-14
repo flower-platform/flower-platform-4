@@ -6,6 +6,11 @@ Bundle-SymbolicName: org.flowerplatform.util
 Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: ch.qos.logback.core,
+ javax.ws.rs,
+ javax.ws.rs.client,
+ javax.ws.rs.container,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,
@@ -24,6 +29,7 @@ Bundle-ClassPath: lib-from-maven/commons-io-2.4.jar,
  lib-from-maven/logback-classic-1.1.2.jar,
  lib-from-maven/logback-core-1.1.2.jar,
  lib-from-maven/slf4j-api-1.7.6.jar,
+ lib-from-maven/javax.ws.rs-api-2.0.jar,
  .
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime

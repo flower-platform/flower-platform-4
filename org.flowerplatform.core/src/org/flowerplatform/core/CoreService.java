@@ -24,12 +24,6 @@ import javax.ws.rs.Path;
 @Path("/coreService")
 public class CoreService {
 
-	public void helloServer(String clientAppVersion) throws Exception {
-		if (!CoreConstants.VERSION.equals(clientAppVersion)) {
-			throw new Exception(CoreConstants.VERSION);
-		}
-	}
-	
 	public String getSessionId() {
 		return CorePlugin.getInstance().getRequestThreadLocal()
 				.get().getSession().getId();

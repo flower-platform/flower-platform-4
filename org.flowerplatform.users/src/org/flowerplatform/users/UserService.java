@@ -27,7 +27,7 @@ public class UserService {
 	}
 	
 	private Node newTestUser(String login) {
-		Node node = new Node("user", null, login, null);
+		Node node = new Node("user:test|" + login, "user");
 		node.getProperties().put("login", login);
 		node.getProperties().put("name", login + " " + login + "son");
 		node.getProperties().put("email", login + "@domain.com");
@@ -43,7 +43,7 @@ public class UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Node getUser(@PathParam("fullNodeId") String fullNodeId) {
 		for (Node user : users) {
-			if (user.getFullNodeId().equals(fullNodeId)) {
+			if (user.getNodeUri().equals(fullNodeId)) {
 				return user;
 			}
 		}
@@ -53,7 +53,7 @@ public class UserService {
 	@PUT @Path("/saveUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Node saveUser(Node user) {
-		Node mem = getUser(user.getFullNodeId());
+		Node mem = getUser(user.getNodeUri());
 		mem.getProperties().put("name", user.getProperties().get("name"));
 		mem.getProperties().put("email", user.getProperties().get("email"));
 		return mem;
@@ -62,14 +62,14 @@ public class UserService {
 	@POST @Path("/createUser")
 	public Node createUser(Node user) {
 		users.add(user);
-		user.setIdWithinResource((String) user.getProperties().get("login"));
+//		user.setIdWithinResource((String) user.getProperties().get("login"));
 		return user;
 	}
 	
 	@DELETE @Path("/deleteUser/{fullNodeId}")
 	public void deleteUser(@PathParam("fullNodeId") String fullNodeId) {
 		for (Node user : users) {
-			if (user.getFullNodeId().equals(fullNodeId)) {
+			if (user.getNodeUri().equals(fullNodeId)) {
 				users.remove(user);
 				break;
 			}
