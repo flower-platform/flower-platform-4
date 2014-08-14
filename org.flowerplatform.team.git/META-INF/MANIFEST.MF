@@ -9,9 +9,8 @@ Require-Bundle: org.eclipse.jgit,
  org.flowerplatform.util,
  org.flowerplatform.resources,
  org.flowerplatform.codesync.sdiff,
- org.eclipse.compare.core
+ org.eclipse.compare.core,
+ org.eclipse.core.runtime
 Bundle-Activator: org.flowerplatform.team.git.GitPlugin
 Bundle-ActivationPolicy: lazy
 Export-Package: org.flowerplatform.team.git
-Import-Package: org.eclipse.core.runtime;version="3.4.0",
- org.eclipse.core.runtime.jobs

@@ -18,29 +18,24 @@ package org.flowerplatform.flex_client.team.git.remote {
 	
 	/**
 	 * @author Cristina Brinza
-	 */
-	
-	[RemoteClass(alias="org.flowerplatform.team.git.remote")]
+	 */	
+	[RemoteClass(alias="org.flowerplatform.team.git.remote.GitRef")]
 	[Bindable]
 	public class GitRef {
 		
-		private var _name:String;
-		private var _type:String;
+		public var name:String;
+		public var type:String;
+		public var fullName:String;
 		
-		public function set name(value:String):void {
-			_name = value;
+		private var _selected:Boolean = false;
+		
+		public function getSelected():Boolean {
+			return _selected;
 		}
 		
-		public function set type(value:String):void {
-			_type = value;
+		public function setSelected(value:Boolean):void {
+			this._selected = value;
 		}
 		
-		public function get name():String {
-			return _name;
-		}
-		
-		public function get type():String {
-			return _type;
-		}
 	}
 }

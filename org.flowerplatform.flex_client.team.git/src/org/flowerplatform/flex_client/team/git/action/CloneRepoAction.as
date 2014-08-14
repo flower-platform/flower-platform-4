@@ -1,5 +1,5 @@
-package org.flowerplatform.flex_client.team.git.action
-{
+package org.flowerplatform.flex_client.team.git.action {
+	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
@@ -21,8 +21,7 @@ package org.flowerplatform.flex_client.team.git.action
 		override public function get visible():Boolean {
 			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				return (node.type == GitConstants.GIT_REPO_TYPE 
-					&& !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY));
+				return (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY));
 			}
 			return false;
 		}

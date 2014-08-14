@@ -22,35 +22,27 @@ import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
+import static org.flowerplatform.team.git.GitConstants.NETWORK_TIMEOUT_SEC;
+import static org.flowerplatform.team.git.GitConstants.TEPORARY_LOCATION;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
-import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
@@ -58,6 +50,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
@@ -77,7 +70,6 @@ import org.flowerplatform.util.Utils;
 /**
  * @author Valentina-Camelia Bojan
  */
-
 public class GitService {
 
 	public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
@@ -250,33 +242,17 @@ public class GitService {
 	}
 	
 	/**
-	 * 
-	 * @param url Supposed URI of a repository
-	 * @return
-	 * <ul>
-	 * 	<li>0 (success)</li>
-	 * 	<li>-1 (existent repository)</li>
-	 * </ul>
-	 * 
+	 * @param url URL to validate
+	 * @return 0 if no exception thrown 
 	 * @author Alina Bratu
-	 * @throws URISyntaxException 
-	 * @throws IOException 
-	 * @throws MalformedURLException 
-	 */
-	
-	public int validateRepoURL(String url) throws URISyntaxException, MalformedURLException, IOException {
-		URIish repoUri = new URIish(url.trim());
-		if (repoUri.getScheme().toLowerCase().startsWith("http") ) {
-			URLConnection conn = new URL(repoUri.toString()).openConnection();
-		    conn.setReadTimeout(GitConstants.NETWORK_TIMEOUT_MSEC);
-	    } 
-		String repoName = new URIish(url.trim()).getHumanishName();
-		File gitReposFile = new File(repoName);
-		
-		if (GitUtils.getGitDir(gitReposFile) != null) {
-			return 1;
-		}	
-		return 0;  
+	 */	
+	public int validateRepoURL(String url) throws Exception {
+		try {
+			new URIish(url.trim());			
+		} catch (Exception e) {
+			throw e;
+		}
+		return 0;
 	}
 
 	/**
@@ -285,38 +261,32 @@ public class GitService {
 	 * @return list of branches in the given repository
 	 * 
 	 * @author Alina Bratu
-	 * @throws IOException 
-	 * @throws GitAPIException 
-	 * @throws TransportException 
-	 * @throws InvalidRemoteException 
 	 */
-	public List<String> getRemoteBranches(String uri) throws IOException, InvalidRemoteException, TransportException, GitAPIException {
-		Repository repository = new FileRepository(new File("/tmp"));		
-		Git git = new Git(repository);
-		LsRemoteCommand rc = git.lsRemote();
-		rc.setRemote(uri.toString()).setTimeout(30);
-		
-        Collection<Ref> call = rc.call();
-        List<String> branches = new ArrayList<String>();
-        String name;
-        
-        for (Ref ref : call) {
-        	name = ref.getName();
-            if (!name.equalsIgnoreCase("HEAD")) {
-            	String[] words = ref.getName().split("/");
-	        	if (words[0].equalsIgnoreCase("refs") && words[1].equalsIgnoreCase("heads")) {
-	        		branches.add(words[2]);
-	        	}
-            }
-        }
-		repository.close();
-		Collections.sort(branches, new Comparator<String>() {
-			@Override
-			public int compare(String s1, String s2) {
-				return s1.compareTo(s2);
+	public List<GitRef> getRemoteBranches(String uri) throws Exception {			
+		List<GitRef> branches = new ArrayList<>();
+		Repository repository = null;
+		try {
+			repository = new FileRepositoryBuilder()
+				.setGitDir(FileControllerUtils.getFileAccessController().getFileAsFile(FileControllerUtils.getFileAccessController().getFile(TEPORARY_LOCATION)))
+				.build();		
+			
+			Git git = new Git(repository);
+						
+	        Collection<Ref> refs = git.lsRemote().setRemote(uri.toString()).setTimeout(NETWORK_TIMEOUT_SEC).call();	     
+	        
+	        for (Ref ref : refs) {
+	        	String name = ref.getName();
+				if (!name.startsWith(Constants.R_HEADS)) {
+					continue;
+				}
+				branches.add(new GitRef(Repository.shortenRefName(name), GIT_REMOTE_BRANCH_TYPE, name));			
+	        }
+		} finally {
+			if (repository != null) {
+				repository.close();
 			}
-			 
-		});
+		}		
+		Collections.sort(branches);
 		return branches;
 	}
 
@@ -433,82 +403,35 @@ public class GitService {
 	 * @author Alina Bratu
 	 * @throws Exception 
 	 */
-
-	public void cloneRepo(final String nodeUri, final String repoUri, final Collection<String> branches, final boolean cloneAll) throws Exception {
-		final URIish uri = new URIish(repoUri.trim());
-		final File mainRepo = (File) FileControllerUtils.getFileAccessController().getFile(
-				Utils.getRepo(nodeUri));
-		
-//		final String jobName = MessageFormat.format(ResourcesPlugin.getInstance().getMessage("git.cloneRepo.title"), uri);
-//		Job job = new Job(jobName)	{
-//			@Override
-//			protected IStatus run(IProgressMonitor m) {														
-//				Repository repository = null;
-////				Node node = CorePlugin.getInstance().getResourceService().getNode(FILE_SCHEME + ":" + Utils.getRepo(nodeUri));
-////				Node gitNode = CorePlugin.getInstance().getResourceService().getNode(VIRTUAL_NODE_SCHEME + ":" + Utils.getRepo(nodeUri) + "|" + REPOSITORY_TYPE);
-//				try {	
-//					CloneCommand cloneRepository = Git.cloneRepository();
-//							
-//					cloneRepository.setDirectory(mainRepo);
-//					cloneRepository.setURI(uri.toString());
-//					cloneRepository.setCloneAllBranches(cloneAll);
-//					cloneRepository.setCloneSubmodules(false);	
-//					cloneRepository.setBranchesToClone(branches);
-//					
-//					Git git = cloneRepository.call();
-//					repository = git.getRepository();
-//					
-//				} catch (Exception e) {			
-//					if (repository != null)
-//						repository.close();
-//					
-//					if (m.isCanceled()) {
-//						return Status.OK_STATUS;
-//					}
-//					
-//					return Status.CANCEL_STATUS;
-//				} finally {
-//					m.done();					
-//					if (repository != null) {
-//						repository.close();
-//					}
-//					CorePlugin.getInstance().getResourceSetService().addUpdate(
-//							CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))), 
-//							new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))).setTypeAs(UPDATE_REQUEST_REFRESH), 
-//							new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-//					CorePlugin.getInstance().getResourceSetService().addUpdate(
-//							CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
-//							new Update().setFullNodeIdAs(nodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
-//							new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-//				}
-//				return Status.OK_STATUS;
-//			}
-//		};
-//		job.schedule();
-		
+	public void cloneRepository(String nodeUri, String repoUri, List<String> branches, boolean cloneAll) throws Exception {		
+		String repoPath = Utils.getRepo(nodeUri);
 		Repository repository = null;
-		CloneCommand cloneRepository = Git.cloneRepository();
 		
-		cloneRepository.setDirectory(mainRepo);
-		cloneRepository.setURI(uri.toString());
-		cloneRepository.setCloneAllBranches(cloneAll);
-		cloneRepository.setCloneSubmodules(false);	
-		cloneRepository.setBranchesToClone(branches);
-		
-		Git git = cloneRepository.call();
-		repository = git.getRepository();
-		if (repository != null) {
-			repository.close();
-		}
-		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))), 
-				new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, Utils.getRepo(nodeUri))).setTypeAs(UPDATE_REQUEST_REFRESH), 
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-		
-		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
-				new Update().setFullNodeIdAs(GitUtils.getNodeUri(Utils.getRepo(nodeUri), GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		try {			
+			CloneCommand clone = Git.cloneRepository();
+			
+			clone.setDirectory(FileControllerUtils.getFileAccessController().getFileAsFile(FileControllerUtils.getFileAccessController().getFile(repoPath)));
+			clone.setURI(new URIish(repoUri.trim()).toString());
+			clone.setCloneAllBranches(cloneAll);
+			clone.setCloneSubmodules(false);	
+			clone.setBranchesToClone(branches);
+			
+			Git git = clone.call();
+			repository = git.getRepository();
+		} finally {
+			if (repository != null) {
+				repository.close();
+			}
+			CorePlugin.getInstance().getResourceSetService().addUpdate(
+					CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, repoPath)), 
+					new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, repoPath)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+			
+			CorePlugin.getInstance().getResourceSetService().addUpdate(
+					CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+					new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		}		
 	}
 
 	/** 

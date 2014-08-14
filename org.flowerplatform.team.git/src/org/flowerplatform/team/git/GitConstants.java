@@ -74,7 +74,8 @@ public class GitConstants {
 	// Other
 	/////////////////////////////////////////////////////////////
 
-	public static final int NETWORK_TIMEOUT_MSEC = 15000;
+	public static final String TEPORARY_LOCATION = "\tmp";
+	public static final int NETWORK_TIMEOUT_SEC = 30;
 	
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";

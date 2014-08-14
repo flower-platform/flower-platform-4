@@ -5,10 +5,12 @@ package org.flowerplatform.team.git.remote;
  * @author Cristina Brinza
  *
  */
-
-public class GitRef {
+public class GitRef implements Comparable<GitRef> {
 
 	private String name;
+	
+	private String fullName;
+	
 	private String type;
 	
 	public GitRef() {
@@ -16,11 +18,16 @@ public class GitRef {
 	}
 	
 	public GitRef(String name, String type) {
-		super();
+		this();
 		this.name = name;
 		this.type = type;
 	}
 
+	public GitRef(String name, String type, String fullName) {
+		this(name, type);		
+		this.fullName = fullName;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -37,4 +44,20 @@ public class GitRef {
 		this.type = type;
 	}
 
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	@Override
+	public int compareTo(GitRef o) {	
+		if (this == o) {
+			return 0;
+		}
+		return this.name.compareTo(o.name);
+	}
+	
 }
