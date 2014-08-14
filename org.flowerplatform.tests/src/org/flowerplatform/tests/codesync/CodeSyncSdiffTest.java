@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.tests.codesync;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
@@ -42,10 +57,6 @@ public class CodeSyncSdiffTest {
 	
 	public static final String PATCH_FILE_MODIFIED = "modified/file-modified.patch";
 	
-	public static List<Node> children;
-	
-	public static Map<String, Object> propertiesMap;
-		
 	public static ArrayList<Map<String, Object>> properties;
 	
 	public static int i = 0;
@@ -63,7 +74,7 @@ public class CodeSyncSdiffTest {
 			assertEquals("Different " + entry.getKey(), entry.getValue(), node.getPropertyValue(entry.getKey()));
 		}
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
 		for (Node child: children) {
 			assertTest(child);
 		}
@@ -76,7 +87,11 @@ public class CodeSyncSdiffTest {
 		Node node = CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(TestUtil.readFile(patch.toString()), PROJECT, sdiffOutputPath, new WorkspaceAndPatchFileContentProvider());
 		i = -1;
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
+		
+		// remove StructureDiff Legend node
+		children.remove(0);
+		
 		assertTrue("The node has too many descendants! Expected: 1, found:" + children.size(), children.size() == 1);
 		assertTest(children.get(0));	
 	}
@@ -84,7 +99,7 @@ public class CodeSyncSdiffTest {
 	@Test
 	public void testFileShouldBeAdded() {
 		properties = new ArrayList<Map<String, Object>>();
-		propertiesMap = new HashMap<String, Object>();
+		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._1MATCH_RIGHT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
 		for (int i = 1; i <= 3; i++) {		
@@ -96,7 +111,7 @@ public class CodeSyncSdiffTest {
 	@Test
 	public void testFileShouldBeRemoved() {
 		properties = new ArrayList<Map<String, Object>>();
-		propertiesMap = new HashMap<String, Object>();
+		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._2MATCH_ANCESTOR_LEFT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
 		for (int i = 1; i <= 3; i++) {		
@@ -108,14 +123,14 @@ public class CodeSyncSdiffTest {
 	@Test
 	public void testFileShouldBeModified() {
 		properties = new ArrayList<Map<String, Object>>();
-		propertiesMap = new HashMap<String, Object>();
+		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._3MATCH.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
 		for (int i = 1; i <= 2; i++) {		
 			properties.add(propertiesMap);
 		}
 		
-		//no change method
+		// no change method
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._3MATCH.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, false);
@@ -123,7 +138,7 @@ public class CodeSyncSdiffTest {
 		propertiesMap.put(MATCH_BODY_MODIFIED, false);
 		properties.add(propertiesMap);
 		
-		//removed method
+		// removed method
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._2MATCH_ANCESTOR_LEFT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);

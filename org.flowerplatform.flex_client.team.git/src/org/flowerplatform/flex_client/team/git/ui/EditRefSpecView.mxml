@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!--
 @author Cristina Brinza
@@ -23,27 +23,16 @@ license-end
 					 xmlns:s="library://ns.adobe.com/flex/spark"
 					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
 					 xmlns:mx="library://ns.adobe.com/flex/mx"
-					 width="100%" height="100%"
 					 implements="org.flowerplatform.flexutil.dialog.IDialog">
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.ToolTip;
-			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
-			import mx.events.ValidationResultEvent;
-			import mx.managers.ToolTipManager;
 			import mx.validators.Validator;
 			
-			import spark.events.TextOperationEvent;
-			import spark.layouts.VerticalLayout;
-			import spark.skins.mobile.TextAreaSkin;
-			
 			import org.flowerplatform.flex_client.resources.Resources;
-			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.dialog.IDialog;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
-			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			
 			[Bindable]
 			public var currentRefSpec:String;
@@ -57,8 +46,6 @@ license-end
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				viewHost.setIcon(Resources.remoteEntry);
 				viewHost.setLabel(Resources.getMessage("flex_client.team.git.ui.EditRefSpec.title"));
-				
-				this.addEventListener(KeyboardEvent.KEY_DOWN, onEscapeEvent);
 			}
 			
 			override protected function okHandler(event:Event = null):void {
@@ -69,119 +56,25 @@ license-end
 				resultHandler.handleDialogResult(refSpecTextInput.text);
 				cancelHandler();
 			}
-			
-			override protected function cancelHandler(event:Event = null):void {
-				destroyToolTip();
-				super.cancelHandler();
-			}
-			
-			/**
-			 *  Make the validator work 
-			 *	taken from: http://leadingedje.com/blogs/index.php?/archives/2-Flex-Custom-Error-ToolTips.html  
-			 */
-			private static var _errorTipDictionary : Dictionary = new Dictionary();
-			
-			/* when invalid */
-			protected function validationInvalidHandler(event:ValidationResultEvent):void {
-				if(event.target.source != null && event.message != null) {
-					showErrorTip(event.target.source, event.message);
-				}
-			}
-			
-			private function showErrorTip(c:UIComponent, message:String) : void {
-				if(c != null)
-				{
-					if(_errorTipDictionary[c.id] == null)
-					{
-						var pt:Point = new Point(c.x, c.y);
-						pt = (c.parent as UIComponent).contentToGlobal(pt);
-						_errorTipDictionary[c.id] =
-							ToolTipManager.createToolTip("", pt.x + c.width + 4, pt.y - 1, "errorTipRight");
-					}
-					
-					(_errorTipDictionary[c.id] as ToolTip).text = message;
-					(_errorTipDictionary[c.id] as ToolTip).visible = true;
-				}
-			}
-			
-			/* when valid */
-			private function validationValidHandler(e:ValidationResultEvent) : void {
-				if(e.target.source != null) {
-					hideErrorTip(e.target.source);
-				}
-			}
-			
-			private function hideErrorTip(c:UIComponent) : void {
-				if(c != null) {
-					if(_errorTipDictionary[c.id] != null) {
-						(_errorTipDictionary[c.id] as ToolTip).visible = false;
-					}
-				}
-			}
-			
-			private function destroyToolTip():void {
-				for each (var toolTip:ToolTip in _errorTipDictionary) {
-					toolTip.visible = false;
-				}
-				_errorTipDictionary = new Dictionary();
-			}
-			
-			private function onEscapeEvent(event:KeyboardEvent):void {
-				if (event.keyCode == Keyboard.ESCAPE) {
-					destroyToolTip();
-				}
-			}
-			
+									
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<fx:Array id="validators">
-			<mx:StringValidator id="stringValidator"
-								source="{refSpecTextInput}" 
-								property="text"
-								minLength="2"
-								tooShortError="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.stringValidationError')}"
-								triggerEvent="change"
-								invalid="validationInvalidHandler(event)"
-								valid="validationValidHandler(event)"/>		
-			
-			<mx:RegExpValidator id="regExpValidator"
-								source="{refSpecTextInput}"
-								property="text" 
-								expression="^\+?(.*):(.*)$"
-								noMatchError="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.regexpValidationError')}"
-								triggerEvent="change"
-								invalid="validationInvalidHandler(event)"
-								valid="validationValidHandler(event)"/>
+			<mx:RegExpValidator source="{refSpecTextInput}" property="text" expression="^\+?(.*):(.*)$"
+								noMatchError="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.hint')}" />
 		</fx:Array>	
 	</fx:Declarations>
 	
-	<mx:Form width="100%">
-		<mx:FormItem label="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.refSpec')}"
-					 width="100%" 
-					 fontWeight="bold">
-			<s:HGroup width="100%" 
-					  verticalAlign="middle"
-					  horizontalAlign="center">
-				<s:TextInput id="refSpecTextInput"
-							 text="{currentRefSpec}"
-							 width="100%"
-							 creationComplete="{callLater(refSpecTextInput.setFocus)}"/>
-				<s:CalloutButton id="info"
-								 icon="{FlexUtilAssets.iconInfo}"
-								 verticalPosition="after">
-					<s:calloutDestructionPolicy>auto</s:calloutDestructionPolicy>
-					<s:calloutContent>
-						<s:TextArea text="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.hint')}"
-									color="0x000000" 
-									width="100%"
-									editable="false"
-									skinClass="spark.skins.mobile.TextAreaSkin"/>
-					</s:calloutContent>
-				</s:CalloutButton>
-			</s:HGroup>
-		</mx:FormItem>
-	</mx:Form>
+	<s:Form width="100%">
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.EditRefSpec.refSpec')}"
+					 width="100%" >			
+			<s:TextInput id="refSpecTextInput"
+						 text="{currentRefSpec}"
+						 width="100%"
+						 creationComplete="{callLater(refSpecTextInput.setFocus)}" />				
+		</s:FormItem>
+	</s:Form>
 	
 </ns:BasicViewContent>

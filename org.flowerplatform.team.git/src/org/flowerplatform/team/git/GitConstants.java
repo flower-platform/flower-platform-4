@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.team.git;
 
 import org.flowerplatform.util.UtilConstants;
@@ -20,14 +35,21 @@ public class GitConstants {
 	public static final String GIT_REMOTE_BRANCH_TYPE = "gitRemoteBranch";
 	public static final String GIT_TAG_TYPE = "gitTag";
 	public static final String GIT_REMOTE_TYPE = "gitRemote";
-	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
 	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
+	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
 	
 	/////////////////////////////////////////////////////////////
 	//Schemes
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_SCHEME = "git";
+//	public static final String GIT_LOCAL_BRANCHES_SCHEME = "gitLocalBranches";
+//	public static final String GIT_REMOTE_BRANCHES_SCHEME = "gitRemoteBranches";
+//	public static final String GIT_TAGS_SCHEME = "gitTags";
+//	public static final String GIT_REMOTES_SCHEME = "gitRemotes";
+//	public static final String GIT_BRANCH_SCHEME = "gitBranch";
+//	public static final String GIT_TAG_SCHEME = "gitTag";
+//	public static final String GIT_REMOTE_SCHEME = "gitRemote";
 	
 	/////////////////////////////////////////////////////////////
 	//Leaf Git Node Properties
@@ -37,8 +59,10 @@ public class GitConstants {
 	public static final String IS_GIT_REPOSITORY = "isGitRepository";
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
+
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";
+
 	public static final String CURRENT_BRANCH = "currentBranch";
 	public static final String CURRENT_COMMIT = "currentCommit";
 	public static final String IS_CHECKEDOUT = "isCheckedOut";
@@ -47,7 +71,7 @@ public class GitConstants {
 	public static final String REMOTE_URIS = "URIs";
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
-	
+
 	 /////////////////////////////////////////////////////////////
 	 //Icons paths
 	 /////////////////////////////////////////////////////////////
@@ -61,6 +85,17 @@ public class GitConstants {
 	 public static final String GIT_ICON = "git.gif";
 	 public static final String REMOTES_ICON = "remotes.gif";
 	 public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
+
+	/////////////////////////////////////////////////////////////
+	// Other
+	/////////////////////////////////////////////////////////////
+
+	public static final String TEPORARY_LOCATION = "\tmp";
+	public static final int NETWORK_TIMEOUT_SEC = 30;
+	
+	public static final String RESET_SOFT = "soft";
+	public static final String RESET_MIXED = "mixed";
+	public static final String RESET_HARD = "hard";
 
 
 }

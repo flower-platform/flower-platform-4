@@ -1,23 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!--
+ @author Alina Bratu
+-->
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+			   xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
 		<![CDATA[
-			import mx.managers.PopUpManager;
+			import com.flextras.mobile.dropDownList.DropDownList;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.collections.IList;
 			
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
-			public function getURI():String {	
-				return uriTextInput.text;
+			[Bindable]
+			public var showRemotesList:Boolean = true;
+			
+			[Bindable]
+			public var remoteConfigs:IList;
+			
+			public var remotes:spark.components.DropDownList;
+			
+			private function creationCompleteHandler():void {
+				if (!showRemotesList) {
+					callLater(uriTextInput.setFocus);
+				} else {
+					remoteConfig.selected = true;
+					changeSelection();
+				}
 			}
+			
+			override protected function createChildren():void {
+				super.createChildren();
+				
+				if (FlexUtilGlobals.getInstance().isMobile) {
+					remotes = new DropDownList();										
+				} else {
+					remotes = new spark.components.DropDownList();											
+				}				
+				remotes.percentWidth = 100;
+				BindingUtils.bindProperty(remotes, "visible", this, "showRemotesList");
+				BindingUtils.bindProperty(remotes, "includeInLayout", this, "showRemotesList");
+				addElementAt(remotes, 1);
+			}
+			
+			public function getURI():String {
+				if (customUri.selected) {
+					return uriTextInput.text;	
+				}
+				return remotes.selectedItem;
+			}
+			
+			private function changeSelection():void {
+				remotes.enabled = remoteConfig.selected;
+				uriTextInput.enabled = customUri.selected;				
+			}
+						
 		]]>
 	</fx:Script>
 	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="group" change="changeSelection()" />
+	</fx:Declarations>
+	
 	<s:layout>
-		<s:VerticalLayout  paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
-			
-		</s:VerticalLayout>
+		<s:VerticalLayout />
 	</s:layout>
 	
 	<s:VGroup id="remoteRepoGroup"  height="40%" width="100%" paddingLeft="5">
@@ -32,8 +97,11 @@
 			<s:RadioButton id="uriRadioButton" selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" />
 		</s:HGroup>
 		
-		<s:TextInput id="uriTextInput" />
+	<s:RadioButton id="remoteConfig" label="{Resources.getMessage('git.selectRepo.remote')}"
+				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" />
 		
-	</s:VGroup>
+	<s:RadioButton id="customUri" selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" 
+				visible="{showRemotesList}" includeInLayout="{showRemotesList}" />
+	<s:TextInput id="uriTextInput" width="100%" />		
 	
 </s:Group>

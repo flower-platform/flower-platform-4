@@ -1,13 +1,27 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.team.git.GitConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.team.git.GitConstants.FETCH_REF_SPECS;
+import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
-import static org.flowerplatform.core.CoreConstants.ICONS;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +82,7 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			node.getProperties().put(REMOTE_URIS, uris);
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "remoteSpec.gif"));
 		} catch (Exception e){
+			throw new RuntimeException(e);
 		}
 	}
 

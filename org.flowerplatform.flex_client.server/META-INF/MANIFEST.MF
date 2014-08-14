@@ -10,7 +10,7 @@ Require-Bundle: org.flowerplatform.util,
  org.flowerplatform.codesync,
  org.flowerplatform.freeplane,
  org.flowerplatform.host.servletbridge.registry,
- org.flowerplatform.team.git;bundle-version="1.0.0"
+ org.flowerplatform.team.git
 Import-Package: javax.servlet,
  javax.servlet.http
 Bundle-ClassPath: lib/commons-codec-1.3.jar,

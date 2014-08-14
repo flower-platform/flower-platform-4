@@ -19,8 +19,13 @@
 				<module>../../org.flowerplatform.core</module>
 				<module>../../org.flowerplatform.mindmap</module>
 				<module>../../org.flowerplatform.freeplane</module>
+				<module>../../org.flowerplatform.text</module>
 				<module>../../org.flowerplatform.codesync</module>
 				<module>../../org.flowerplatform.codesync.java</module>
+				<module>../../org.flowerplatform.codesync.as</module>
+				<module>../../org.flowerplatform.codesync.sdiff</module>
+				<module>../../org.flowerplatform.codesync.regex</module>
+				<module>../../org.flowerplatform.team.git</module>
 
 				<!-- not packaged as plugins, only available during compile time -->
 				<module>../../org.flowerplatform.host.servletbridge.base</module>
@@ -34,7 +39,11 @@
 				<module>../../org.flowerplatform.flex_client.core</module>
 				<module>../../org.flowerplatform.flex_client.properties</module>
 				<module>../../org.flowerplatform.flex_client.mindmap</module>
+				<module>../../org.flowerplatform.flex_client.text</module>
 				<module>../../org.flowerplatform.flex_client.codesync</module>
+				<module>../../org.flowerplatform.flex_client.codesync.sdiff</module>
+				<module>../../org.flowerplatform.flex_client.codesync.regex</module>
+				<module>../../org.flowerplatform.flex_client.team.git</module>
 				<module>../../org.flowerplatform.flex_client.host_app</module>
 				<module>../../org.flowerplatform.flex_client.host_app.config.web</module>
 				<module>../../org.flowerplatform.flex_client.web</module>
@@ -57,14 +66,21 @@
 	
 		<output.java.prefix>..</output.java.prefix>
 	
-		<tycho.version>0.20.0</tycho.version>
+		<tycho.version>0.21.0</tycho.version>
 		<eclipseRepo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipseRepo.url>
+		<egitRepo.url>http://download.eclipse.org/egit/updates</egitRepo.url>
 	</properties>
 
 	<repositories>
 		<repository>
 			<id>eclipse</id>
 			<url>${eclipseRepo.url}</url>
+			<layout>p2</layout>
+		</repository>
+		
+		<repository>
+			<id>egit</id>
+			<url>${egitRepo.url}</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>

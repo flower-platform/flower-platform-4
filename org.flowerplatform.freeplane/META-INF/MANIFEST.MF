@@ -9,13 +9,13 @@ Require-Bundle: org.flowerplatform.core,
  org.eclipse.osgi,
  org.flowerplatform.mindmap,
  org.flowerplatform.resources
-Bundle-ClassPath: lib/commons-lang-2.6.jar,
- lib/freeplaneeditor.jar,
+Bundle-ClassPath: lib/freeplaneeditor.jar,
  lib/freeplaneviewer.jar,
  lib/flamingo-7.2.1.jar,
  lib/gnu-regexp-1.1.4.jar,
  lib/jortho.jar,
  lib/SimplyHTML.jar,
+ lib-from-maven/commons-lang-2.6.jar,
  .
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.freeplane.FreeplanePlugin
