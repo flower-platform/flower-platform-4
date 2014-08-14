@@ -13,4 +13,13 @@
 
 	<artifactId>org.flowerplatform.team.git</artifactId>
 	<packaging>eclipse-plugin</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+	</dependencies>
+
 </project>

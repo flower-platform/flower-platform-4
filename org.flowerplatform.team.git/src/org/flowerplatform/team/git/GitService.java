@@ -64,10 +64,13 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.Update;
+import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.util.Utils;
+import javax.servlet.http.HttpSession;
 
 /**
+ * 
  * @author Valentina-Camelia Bojan
  */
 public class GitService {
@@ -547,5 +550,37 @@ public class GitService {
 			    child, 
 			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
+
+
+	/** 
+	 * @author Andreea Tita
+	 */
+	public GitCredentials getCredentials(String remote) throws Exception {
+		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
+		
+		if ((GitCredentials)session.getAttribute(remote) != null ) {
+			return  (GitCredentials)session.getAttribute(remote);
+		}
+		
+		return null;
+	}
+	
+	/** 
+	 * @author Andreea Tita
+	 */
+	public void setCredentials(String remote, GitCredentials credentials) {
+		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
+			
+			if (credentials == null) {
+				if ((GitCredentials)session.getAttribute(remote) != null) {
+					return;
+				} else {
+					session.setAttribute(remote, null);
+				}
+			} else {
+				session.setAttribute(remote, credentials);
+			}
+	}
+	
 }
 
