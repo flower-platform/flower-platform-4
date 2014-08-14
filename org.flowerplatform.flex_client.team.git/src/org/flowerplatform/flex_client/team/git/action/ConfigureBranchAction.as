@@ -30,6 +30,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			super();
 			label = Resources.getMessage('flex_client.team.git.action.configureBranch');
 			icon = Resources.configBranchIcon;
+			orderIndex = 320;
 		}
 		
 		override public function get visible():Boolean {

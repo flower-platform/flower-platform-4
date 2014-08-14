@@ -48,6 +48,7 @@ import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.errors.ConfigInvalidException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -161,9 +162,10 @@ public class GitService {
 		MergeCommand mergeCmd = gitInstance.merge().include(ref).setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit);
 		MergeResult mergeResult = mergeCmd.call();
 	   
+		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				node, 
-				new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, repoPath)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
+				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
 		return GitUtils.handleMergeResult(mergeResult);		
@@ -376,21 +378,29 @@ public class GitService {
 	/**
 	 * @author Diana Balutoiu
 	 */
-	public void reset(String nodeUri, String type, String hash) throws Exception {		
-		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+	public void reset(String nodeUri, String type, String hash) throws Exception {
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
 		ResetType resetType;
-		if(type == GitConstants.RESET_SOFT){
-			resetType = ResetType.SOFT;
+		switch (type) {
+			case GitConstants.RESET_SOFT:
+				resetType = ResetType.SOFT;
+				break;
+			case GitConstants.RESET_MIXED:
+				resetType = ResetType.MIXED;
+				break;
+			default:
+				resetType = ResetType.HARD;
 		}
-		else if(type == GitConstants.RESET_MIXED){
-			resetType = ResetType.MIXED;
-		}
-		else {
-			resetType = ResetType.HARD;
-		} 
-		
+				
 		new Git(repo).reset().setMode(resetType).setRef(hash).call();
+		
+		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
+				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/**
@@ -492,10 +502,9 @@ public class GitService {
 	 * 
 	 * Create / Configure Remote
 	 */
-	public void configureRemote(String nodeUri, String remoteName, String remoteUri, boolean toConfigure, List<String> refSpecs, boolean expanded) throws Exception {
-
+	public void configureRemote(String nodeUri, String remoteName, String remoteUri, boolean pushConfig, List<String> refSpecs) throws Exception {
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 
 		RemoteConfig config = new RemoteConfig(repository.getConfig(), remoteName);
 
@@ -504,7 +513,7 @@ public class GitService {
 			config.addURI(new URIish(remoteUri));
 		}
 
-		if (toConfigure) {
+		if (pushConfig) {
 			/* remove all push refspec */
 			List<RefSpec> pushRefSpecs = config.getPushRefSpecs();
 			for (int i = 0; i < pushRefSpecs.size(); i++) {
@@ -518,67 +527,49 @@ public class GitService {
 			}
 		}
 
-		String refSpecsString = "";
 		for (String refSpecString : refSpecs) {
 			RefSpec refSpec = new RefSpec(refSpecString);
-			if (toConfigure) {
+			if (pushConfig) {
 				/* push refspec */
 				config.addPushRefSpec(refSpec);
 			} else {
 				/* fetch refspec */
 				config.addFetchRefSpec(refSpec);
 			}
-
-			refSpecsString += refSpecString + " ";
 		}
 
 		config.update(repository.getConfig());
 		repository.getConfig().save();
-
+		
 		/* refresh node */
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-
-		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
-			if (toConfigure) {
-				CorePlugin.getInstance().getNodeService().setProperty(node, GitConstants.PUSH_REF_SPECS, refSpecsString,
-						new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
-			} else {
-				CorePlugin.getInstance().getNodeService().setProperty(node, GitConstants.FETCH_REF_SPECS, refSpecsString,
-						new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
-			}
-		} else {
-			/* create remote was the option */
-			if (expanded) {
-				Node child = new Node(GitConstants.GIT_SCHEME + ":" + repoPath + "|" + GitConstants.GIT_REMOTE_TYPE + "$" + remoteName, GitConstants.GIT_REMOTE_TYPE);
-				updateRemotesOnCreateRemote(node, child, remoteName, remoteUri, refSpecsString, toConfigure);
-			}
-		}
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				node, 
+				new Update().setFullNodeIdAs(nodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/**
 	 * @author Cristina Brinza
 	 * 
-	 * Update Remotes' children when Remotes node expanded and Create Remote action used
+	 * Delete Remote
 	 */
-	private void updateRemotesOnCreateRemote(Node node, Node child, String remoteName, String remoteUri, String refSpecsString, boolean toConfigure) {
-		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		CorePlugin.getInstance().getNodeService().addChild(node, child, serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
-		CorePlugin.getInstance().getNodeService().setProperty(child, CoreConstants.NAME, remoteName, serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
-		CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.REMOTE_URIS, remoteUri + " ", serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
-		CorePlugin.getInstance().getNodeService().setProperty(child, CoreConstants.ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/remote.gif"), 
-					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+	public void deleteRemote(String childUri, String parentUri) throws Exception {
+		Node child = CorePlugin.getInstance().getResourceService().getNode(childUri);
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
 		
-		if (toConfigure) {
-			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.PUSH_REF_SPECS, refSpecsString, 
-					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
-			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.FETCH_REF_SPECS, "",
-					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
-		} else {
-			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.FETCH_REF_SPECS, refSpecsString, 
-					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
-			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.PUSH_REF_SPECS, "",
-					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
-		}
+		String repoPath = Utils.getRepo(childUri);
+		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+
+		StoredConfig config = repository.getConfig();
+		config.unsetSection("remote", (String)child.getPropertyValue(GitConstants.NAME));
+		config.save();
+		
+		/* refresh parent node */
+		CorePlugin.getInstance().getNodeService().removeChild(
+			    parent,
+			    child, 
+			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 }
 

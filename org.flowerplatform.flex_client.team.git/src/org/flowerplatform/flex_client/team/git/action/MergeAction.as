@@ -13,7 +13,10 @@
  * 
  * license-end
  */
-package org.flowerplatform.flex_client.team.git.action{
+package org.flowerplatform.flex_client.team.git.action {
+	
+	import mx.collections.IList;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -25,23 +28,29 @@ package org.flowerplatform.flex_client.team.git.action{
 	/**
 	 * @author Tita Andreea
 	 */
-	public class MergeBranchAction extends ActionBase{
+	public class MergeAction extends ActionBase {
 		
-		public function MergeBranchAction(){
+		public function MergeAction() {
 			super();
 			icon = Resources.mergeBranch;
+			orderIndex = 360;
 		}
 		
 		override public function  get visible():Boolean {
 			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0 
-					|| node.type == GitConstants.GIT_REPO_TYPE) {
-					
-					if (node.getPropertyValue(GitConstants.IS_CHECKEDOUT) || node.type == GitConstants.GIT_REPO_TYPE) {
-						label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");
-					} else {
+				var categories:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories;
+				if (categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) { // git structure
+					if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
+						// not a git repository
+						return false;
+					}					
+					if (categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0 && !node.getPropertyValue(GitConstants.IS_CHECKEDOUT)) {
+						// Merge...
 						label = Resources.getMessage("flex_client.team.git.action.mergeBranch");
+					} else {	
+						// Merge
+						label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");
 					}
 					return true;
 				}				

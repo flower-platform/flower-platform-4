@@ -13,10 +13,7 @@
  * 
  * license-end
  */
-package org.flowerplatform.flex_client.team.git.action {
-	import mx.controls.Alert;
-	
-	import org.flowerplatform.flex_client.core.CoreConstants;
+package org.flowerplatform.flex_client.team.git.action {	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
@@ -34,7 +31,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			super();
 			
 			icon = Resources.configureFetchPush;
-			orderIndex = -1;
+			orderIndex = 350;
 		}
 		
 		override public function get visible():Boolean {
@@ -60,7 +57,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 				.setViewContent(view)
 				.setWidth(500)
-				.setHeight(400)
+				.setHeight(350)
 				.setTitle(label)	
 				.setIcon(icon)
 				.show();

@@ -22,15 +22,11 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:layout="org.osmf.layout.*"
-		 creationComplete="creationCompleteHandler(event)"
-		 implements="org.flowerplatform.flexutil.dialog.IDialogResultHandler"
-		 width="100%" height="100%">
+		 implements="org.flowerplatform.flexutil.dialog.IDialogResultHandler">
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.events.FlexEvent;
 			
 			import spark.components.Button;
 			
@@ -41,10 +37,7 @@
 			
 			[Bindable]
 			public var refMappings:ArrayCollection = new ArrayCollection();
-			
-			[Bindable]
-			public var remoteUri:String = "";
-			
+						
 			private var lastBtnPressed:Button;
 			
 			public function getRefSpecs():ArrayCollection {
@@ -54,25 +47,16 @@
 				return refMappings;
 			}
 			
-			protected function creationCompleteHandler(event:FlexEvent):void {
-				if (configureTextInput.text != "") {
-					configureTextInput.editable = false;
-				} else {
-					configureTextInput.setFocus();
-				}
-			}
-			
 			protected function addButtonClickHandler(event:MouseEvent):void {
 				lastBtnPressed = addButton;
 				
-				var view:EditRefSpecView = new EditRefSpecView();
-				view.currentRefSpec = null;
+				var view:EditRefSpecView = new EditRefSpecView();				
 				view.setResultHandler(this);
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setViewContent(view)
-					.setWidth(this.width)
-					.setHeight(this.width * 0.4)
+					.setWidth(400)
+					.setHeight(150)
 					.show();
 			}
 			
@@ -85,8 +69,8 @@
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setViewContent(view)
-					.setWidth(550)
-					.setHeight(500)
+					.setWidth(400)
+					.setHeight(150)
 					.show();
 			}
 			
@@ -99,7 +83,10 @@
 					return;
 				}
 				
-				if (lastBtnPressed == addButton) {					
+				if (lastBtnPressed == addButton) {
+					if (refMappings == null) {
+						refMappings = new ArrayCollection();
+					}
 					refMappings.addItem(result);
 				} else if (lastBtnPressed == editButton) {
 					refMappings.setItemAt(result, refMappingsList.selectedIndex);
@@ -110,31 +97,17 @@
 	</fx:Script>
 	
 	<s:layout>
-		<s:VerticalLayout paddingLeft="15" paddingTop="10" 
-						  horizontalAlign="left"
-						  gap="10"/>
+		<s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10" />
 	</s:layout>
+		
+	<s:Label text="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.refMappings')}" fontWeight="bold"/>
 	
-	<s:HGroup width="100%" verticalAlign="middle">
-		<s:Label id="uriLabel"
-				 text="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.URI')}"
-				 fontWeight="bold"/>
-		<s:TextInput id="configureTextInput"
-					 width="{refMappingsList.width - uriLabel.width}"
-					 text="@{remoteUri}"/>
-	</s:HGroup>
+	<s:HGroup width="100%" height="100%" >
+		<s:List id="refMappingsList"
+				width="100%" height="100%"
+				dataProvider="{refMappings}"/>
 	
-	<s:HGroup width="100%" height="100%" paddingTop="10">
-		<s:VGroup width="100%" height="100%">
-			<s:Label text="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.refMappings')}"
-					 fontWeight="bold"/>
-			<s:List id="refMappingsList"
-					width="100%"
-					height="100%"
-					dataProvider="{refMappings}"/>
-		</s:VGroup>
-				
-		<s:VGroup gap="2" paddingTop="15">
+		<s:VGroup gap="2" >
 			<s:Button id="addButton"
 					  label="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.addButton')}"
 					  click="addButtonClickHandler(event)"/>
@@ -148,6 +121,7 @@
 					  label="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.deleteButton')}"
 					  click="deleteButtonClickHandler(event)"
 					  enabled="{refMappingsList.selectedIndex != -1}"/>
-		</s:VGroup>
+		</s:VGroup>		
 	</s:HGroup>
+	
 </s:Group>

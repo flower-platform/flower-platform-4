@@ -33,9 +33,7 @@
 				import org.flowerplatform.flex_client.resources.Resources;
 				import org.flowerplatform.flex_client.team.git.GitConstants;
 				import org.flowerplatform.flexutil.FlexUtilGlobals;
-				import org.flowerplatform.flexutil.Pair;
 				import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
-				import org.flowerplatform.flexutil.selection.ISelectionProvider;
 				import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 			
 				public var node:Node;
@@ -45,15 +43,10 @@
 				}
 				
 				protected function treeListCreationCompleteHandler(event:FlexEvent):void {
-					var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
-					var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
-					
-					if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE) {
-						node = node.parent.parent;
-					}
-					
-					var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
-					treeList.initializeTree(pair == null ? node.nodeUri : pair.a as String);
+					treeList.initializeTree(CorePlugin.getInstance().createNodeUriWithRepo(
+						GitConstants.GIT_SCHEME, 
+						CorePlugin.getInstance().getRepository(node.nodeUri), 
+						GitConstants.GIT_REPO_TYPE));
 				}
 				
 				private function viewRemovedHandler(event:ViewRemovedEvent):void {

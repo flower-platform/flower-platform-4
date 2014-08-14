@@ -313,5 +313,4 @@
 			 horizontalAlign="center" paddingLeft="5" paddingRight="5"
 			 paddingTop="5" >
 	</mx:VBox>		
-	
 </s:Group>
