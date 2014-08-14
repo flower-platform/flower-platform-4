@@ -301,6 +301,7 @@ public class NodeService {
 		}
 
 		// Save full child in context; used for undo
+		// TODO CS: cred ca il putem folosi pe child direct; si cred ca nu mai trebuie pus in cotext
 		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
 		removedNode.getOrPopulateProperties(context);
 		// TODO CS: ar trebui sa fie constante; sa trecem prin modif metodei astea; la o privire rapida nu inteleg
