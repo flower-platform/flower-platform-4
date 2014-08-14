@@ -1,0 +1,80 @@
+<configuration>
+
+	<!--
+	######################################################################################
+		General configuration
+	######################################################################################
+	-->
+	<jmxConfigurator />
+	
+	<!--
+	######################################################################################
+		Appenders
+	######################################################################################
+	-->
+	
+	<include resource="logback_appenders.xml"/>
+
+	<!-- Disable logging the ping() method invocation -->
+	<property scope="context" name="logNodeServicePingInvocation" value="false" />
+
+	<!-- 
+	<define name="tomcatLocation" class="org.flowerplatform.util.log.TomcatLocationPropertyDefiner"/>
+	<define name="applicationServerContext" class="org.flowerplatform.util.log.ApplicationServerContextPropertyDefiner"/>
+	 -->
+
+	<!-- 
+	<appender name="FILE_AUDIT" class="ch.qos.logback.core.FileAppender">
+		<file>testFile.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg	[%mdc]%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+				<marker>AUDIT</marker>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+	 
+	<appender name="FILE_DEBUG" class="ch.qos.logback.core.FileAppender">
+		<file>${tomcatLocation}/logs/${applicationServerContext}_debug.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg	[%mdc]%n</pattern>
+		</encoder>		
+	</appender>
+
+	<appender name="FILE_INFO" class="ch.qos.logback.core.FileAppender">
+		<file>${tomcatLocation}/logs/${applicationServerContext}_info.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg	[%mdc]%n</pattern>
+		</encoder>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	     	<level>INFO</level>
+	    </filter>
+	</appender>
+
+	<appender name="FILE_CSV_INTERNAL" class="ch.qos.logback.core.FileAppender">
+		<file>${tomcatLocation}/logs/${applicationServerContext}_performance.csv</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{HH:mm:ss};%msg%n</pattern>
+		</encoder>		
+	</appender> 
+	-->
+		
+	<!--
+	######################################################################################
+		Loggers
+	######################################################################################
+	-->
+	
+	<root level="all">		
+		<appender-ref ref="STDOUT" />		
+	</root>
+	
+</configuration>

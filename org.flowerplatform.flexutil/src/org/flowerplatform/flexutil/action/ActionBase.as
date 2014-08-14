@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,21 +11,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.action {
+	import flash.utils.getQualifiedClassName;
+	
 	import mx.collections.IList;
-	import mx.messaging.AbstractConsumer;
+	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
 
 	/**
 	 * @author Cristian Spiescu
 	 */
 	public class ActionBase implements IAction {
 
-		private var _id:String;
+		private var _id:String = getQualifiedClassName(this);
 		private var _parentId:String;
 		private var _orderIndex:Number;
 		private var _preferShowOnActionBar:Boolean;
@@ -44,6 +44,16 @@ package org.flowerplatform.flexutil.action {
 		 * @author Mircea Negreanu
 		 */
 		private var _functionDelegate:Function;
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		private var _isToggle:Boolean = false;
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		private var _isToggleAction:Boolean = false;
 		
 		public function get id():String {
 			return _id;
@@ -179,17 +189,58 @@ package org.flowerplatform.flexutil.action {
 		public function set context(value:Object):void {
 			_context = value;
 		}
-				
+			
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function get showInMenu():Boolean {
+			return true;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function get isToggle():Boolean {
+			return _isToggle;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function set isToggle(value:Boolean):void {
+			_isToggle = value;
+			icon = value ? FlexUtilAssets.checkedIcon : FlexUtilAssets.uncheckedIcon;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function get isToggleAction():Boolean {
+			return _isToggleAction;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function set isToggleAction(value:Boolean):void {
+			_isToggleAction = value;
+			isToggle = false;
+		}
+		
 		/**
 		 * Use functionDelegate, if any exists.
 		 * 
 		 * @author Cristian Spiescu
 		 * @author Mircea Negreanu
+		 * @author Iulian-Catalin Burcea
 		 */
 		public function run():void {
 			// if we have a functionDelegate than execute that
 			if (functionDelegate != null) {
 				functionDelegate();
+			}
+			if (isToggleAction) {
+				isToggle = !isToggle;
 			}
 		}
 		

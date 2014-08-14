@@ -39,8 +39,9 @@
         <script type="text/javascript">
             var flashvars = {};  
             flashvars.rootUrl = getURL();
+            flashvars.version = "<%= System.getProperty("flower.version")%>";
         </script>
-        <script type="text/javascript" src="flexHostAppConfig.js"></script> 
+        <script type="text/javascript" src='flexHostAppConfig.js?version=<%= System.getProperty("flower.version")%>'></script> 
             
         <script type="text/javascript" src="swfobject.js"></script>
         <script type="text/javascript">
@@ -58,7 +59,7 @@
             attributes.name = "FlexHostApp";
             attributes.align = "middle";
             
-            var swfLink = 'flex_client.host_app/FlexHostApp.swf?<%= System.getProperty("flower.version")%>' + getQueryString();
+            var swfLink = 'flex_client.host_app/FlexHostApp.swf?version=<%= System.getProperty("flower.version")%>&' + getQueryString();
             
             swfobject.embedSWF(
             	swfLink, "flashContent", 

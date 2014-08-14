@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.visual_children {
@@ -59,6 +56,11 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 
 			var scrollRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).getViewportRect();
 			var noNeedToRefreshRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).noNeedToRefreshRect;
+			
+			if (IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren) {
+				refreshContentRect(context, parentModel);		
+			}
+			
 			if (!IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren
 				&& noNeedToRefreshRect != null && noNeedToRefreshRect.containsRect(scrollRect)) {
 				return;
@@ -69,13 +71,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			var renderersToReuse:Dictionary = new Dictionary();
 			var modelsToAdd:Vector.<Object> = new Vector.<Object>();
 			var visibleModelsCounter:int = 0;
-			
-			// These values are computed based on the dimensions of all children 
-			// (including those that are not displayed, because out of viewable area)
-			var horizontalScrollPositionMin:Number = int.MAX_VALUE;
-			var horizontalScrollPositionMax:Number = int.MIN_VALUE;
-			var verticalScrollPositionMin:Number = int.MAX_VALUE;
-			var verticalScrollPositionMax:Number = int.MIN_VALUE;
 			
 			// These values are computed based on the children that are not visible
 			var horizontalNoNeedToRefreshLeft:int = int.MIN_VALUE;
@@ -102,20 +97,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 					// a child that participates to renderer recycling logic
 					var crtRect:Rectangle = childAbsoluteLayoutRectangleController.getBounds(context, childModel);
 					
-					// updates the new scroll bounds, based on the dimensions of the current child
-					if (crtRect.x + crtRect.width > horizontalScrollPositionMax) {
-						horizontalScrollPositionMax = crtRect.x + crtRect.width;
-					}
-					if (crtRect.x < horizontalScrollPositionMin) {
-						horizontalScrollPositionMin = crtRect.x;
-					}
-					if (crtRect.y + crtRect.height > verticalScrollPositionMax) {
-						verticalScrollPositionMax = crtRect.y + crtRect.height;
-					}
-					if (crtRect.y < verticalScrollPositionMin) {
-						verticalScrollPositionMin = crtRect.y;
-					}
-
 					if (scrollRect.intersects(crtRect)) {
 						// the model should be visible
 						visibleModelsCounter++;
@@ -192,14 +173,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 //					visualIndex ++;
 				}
 			}
-
-			if (children.length == 0) {
-				horizontalScrollPositionMin = 0;
-				horizontalScrollPositionMax = 0;
-				verticalScrollPositionMin = 0;
-				verticalScrollPositionMax = 0;
-			}
-			IAbsoluteLayoutRenderer(parentRenderer).setContentRect(new Rectangle(horizontalScrollPositionMin, verticalScrollPositionMin, horizontalScrollPositionMax - horizontalScrollPositionMin, verticalScrollPositionMax - verticalScrollPositionMin));
 			
 			var logTsModelIterationDone:Number = new Date().time;
 			
@@ -280,6 +253,52 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 				",newModels=" + logNewModels + ",renderersReused=" + logRenderersReused + ",reusableRenderersCreated=" + logReusableRenderersCreated + 
 				",nonReusableRenderersCreated=" + logNonReusableRenderersCreated + ",reusableRenderersRemoved=" + logReusableRenderersRemoved);
 		}
+			
+		public function refreshContentRect(context:DiagramShellContext, parentModel:Object):void {
+			var parentRenderer:IVisualElementContainer = IVisualElementContainer(ControllerUtils.getModelExtraInfoController(context, parentModel).getRenderer(context, context.diagramShell.modelToExtraInfoMap[parentModel]));
+			
+			var scrollRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).getViewportRect();
+			
+			// These values are computed based on the dimensions of all children 
+			// (including those that are not displayed, because out of viewable area)
+			var horizontalScrollPositionMin:Number = int.MAX_VALUE;
+			var horizontalScrollPositionMax:Number = int.MIN_VALUE;
+			var verticalScrollPositionMin:Number = int.MAX_VALUE;
+			var verticalScrollPositionMax:Number = int.MIN_VALUE;
+			
+			var children:IList = ControllerUtils.getModelChildrenController(context, parentModel).getChildren(context, parentModel);
+			
+			for (var i:int = 0; i < children.length; i++) {
+				var childModel:Object = children.getItemAt(i);			
+				var childAbsoluteLayoutRectangleController:AbsoluteLayoutRectangleController = ControllerUtils.getAbsoluteLayoutRectangleController(context, childModel);				
+				if (childAbsoluteLayoutRectangleController != null) {
+					// a child that participates to renderer recycling logic
+					var crtRect:Rectangle = childAbsoluteLayoutRectangleController.getBounds(context, childModel);
+					
+					// updates the new scroll bounds, based on the dimensions of the current child
+					if (crtRect.x + crtRect.width > horizontalScrollPositionMax) {
+						horizontalScrollPositionMax = crtRect.x + crtRect.width;
+					}
+					if (crtRect.x < horizontalScrollPositionMin) {
+						horizontalScrollPositionMin = crtRect.x;
+					}
+					if (crtRect.y + crtRect.height > verticalScrollPositionMax) {
+						verticalScrollPositionMax = crtRect.y + crtRect.height;
+					}
+					if (crtRect.y < verticalScrollPositionMin) {
+						verticalScrollPositionMin = crtRect.y;
+					}				
+				}
+			}
+			
+			if (children.length == 0) {
+				horizontalScrollPositionMin = 0;
+				horizontalScrollPositionMax = 0;
+				verticalScrollPositionMin = 0;
+				verticalScrollPositionMax = 0;
+			}
+			IAbsoluteLayoutRenderer(parentRenderer).setContentRect(new Rectangle(horizontalScrollPositionMin, verticalScrollPositionMin, horizontalScrollPositionMax - horizontalScrollPositionMin, verticalScrollPositionMax - verticalScrollPositionMin));
+		}
+		
 	}
-	
 }

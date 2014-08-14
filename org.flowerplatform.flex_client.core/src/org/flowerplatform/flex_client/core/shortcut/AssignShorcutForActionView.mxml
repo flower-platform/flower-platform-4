@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!--
+ @author Cristina Constantinescu
+-->
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.collections.ISummaryCalculator;
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.shortcut.Shortcut;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			public var actionId:String;
+			
+			protected var shortcut:Shortcut;
+									
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				// add listener with the biggest priority -> NO OTHER listeners must intercept key_down events
+				UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true, int.MAX_VALUE);	
+				
+				Utils.makePseudoDisabled(txtShortcut);
+				
+				okButton.tabFocusEnabled = false;
+				cancelButton.tabFocusEnabled = false;
+			}
+					
+			private function keyDownHandler1(event:KeyboardEvent):void {
+				event.stopImmediatePropagation();
+				event.stopPropagation();
+				
+				event.preventDefault();
+				
+				if (event.keyCode == Keyboard.CONTROL || event.keyCode == Keyboard.COMMAND || event.keyCode == Keyboard.SHIFT || event.keyCode == Keyboard.ALTERNATE) {
+					return;
+				}		
+				
+				// shortcut must start with a key found in filterShortcuts
+				var filterShortcuts:Dictionary = FlexUtilGlobals.getInstance().keyBindings.filterShortcuts;
+				if (!(event.ctrlKey && (filterShortcuts.hasOwnProperty("CONTROL") || filterShortcuts.hasOwnProperty("COMMAND")) ||
+						event.altKey && filterShortcuts.hasOwnProperty("ALTERNATE") ||
+						event.shiftKey && filterShortcuts.hasOwnProperty("SHIFT") ||
+						filterShortcuts.hasOwnProperty(Utils.getKeyNameFromKeyCode(event.keyCode)))) {				
+					return;
+				}
+				
+				shortcut = new Shortcut(event.ctrlKey, event.shiftKey, event.altKey, event.keyCode);
+				var shortcutLabel:String = shortcut.toString();
+				if (shortcutLabel == null) {
+					return;
+				}
+				
+				txtShortcut.text = shortcutLabel;
+			}
+				
+			override protected function okHandler(event:Event = null):void {
+				if (shortcut == null || shortcut.toString() == null) {
+					return;
+				}
+				
+				var handler:Object = FlexUtilGlobals.getInstance().keyBindings.getRegisteredHandler(shortcut);
+				if (handler != null) { // shortcut already assign, ask user
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("shortcut.already.used", [handler.toString()]))
+						.setTitle(Resources.getMessage("info"))
+						.setWidth(400)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {registerBinding(); cancelHandler();})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
+						.showMessageBox();				
+				} else {
+					registerBinding();
+					cancelHandler();
+				}		
+			}
+			
+			protected function registerBinding():void {
+				FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, actionId);				
+			}
+			
+			override public function additionalCloseHandler():void {
+				// important to remove listener after using it -> otherwise BIG problems (no other key_down events will be dispatched)
+				UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true);
+				FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
+			}
+		
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%" verticalAlign="middle" paddingTop="10">
+		<s:TextInput id="txtShortcut" width="100%" tabFocusEnabled="false" />
+		<s:Button label="Clear" click="{txtShortcut.text = ''}" tabFocusEnabled="false" />
+	</s:HGroup>
+		
+</host:BasicViewContent>

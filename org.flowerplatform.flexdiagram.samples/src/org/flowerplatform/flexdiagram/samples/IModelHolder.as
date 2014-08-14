@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,20 +11,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples {
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	
 
 	[Bindable]
 	/**
 	 * @author Cristian Spiescu
 	 */
 	public interface IModelHolder {
-		function get rootModel():ParentAwareArrayList;
-		function set rootModel(value:ParentAwareArrayList):void;
+		function get rootModel():Object;
+		function set rootModel(value:Object):void;
 	}
 }

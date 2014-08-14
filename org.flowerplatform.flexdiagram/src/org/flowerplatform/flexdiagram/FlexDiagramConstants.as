@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexdiagram {
 	
 	public class FlexDiagramConstants {
@@ -23,5 +38,10 @@ package org.flowerplatform.flexdiagram {
 		
 		public static const MINDMAP_MODEL_CONTROLLER:String = "MindMapModelController";
 		
+		// EDGE STYLES
+		public static const EDGE_SMOOTHLY_CURVED:String = "bezier";
+		public static const EDGE_HIDE:String = "hide_edge";
+		public static const EDGE_HORIZONTAL:String = "horizontal";
+		public static const EDGE_LINEAR:String = "linear";
 	}
 }

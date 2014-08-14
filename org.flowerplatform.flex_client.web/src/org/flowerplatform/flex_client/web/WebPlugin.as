@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,37 +11,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.web {
 	import flash.events.EventDispatcher;
 	import flash.external.ExternalInterface;
 	
-	import mx.containers.HBox;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
-	import mx.messaging.messages.ErrorMessage;
-	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
-	import org.flowerplatform.flexutil.iframe.EmbedView;
 	import org.flowerplatform.flexutil.iframe.EmbedViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flexutil.spinner.ModalSpinner;
-	
-	import spark.components.Button;
-	import spark.components.TextInput;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -80,24 +68,8 @@ package org.flowerplatform.flex_client.web {
 						
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			CorePlugin.getInstance().serviceLocator.invoke("coreService.helloServer", [CoreConstants.VERSION], 
-				function (result:Object):void {
-					// handle any commands to open resources from the URL parameters (e.g. ?openResources=dir/file1,dir/file2)
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
-					CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
-					ModalSpinner.removeGlobalModalSpinner();
-					
-				},
-				function (event:FaultEvent):void {					
-					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setTitle(Resources.getMessage('version.error'))
-					.setText(Resources.getMessage('version.error.message', [CoreConstants.VERSION, ErrorMessage(event.message).rootCause.message]))
-					.setWidth(400)
-					.setHeight(300)
-					.showMessageBox();	
-					ModalSpinner.removeGlobalModalSpinner();
-				}
-			);
+			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
+			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 			
 			// test for embedded IFrame
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new EmbedViewProvider());
@@ -113,7 +85,7 @@ package org.flowerplatform.flex_client.web {
 		}	
 		
 		public function invokeSaveResourcesDialog():Boolean {
-			CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors();
+			CorePlugin.getInstance().nodeRegistryManager.resourceOperationsManager.showSaveDialog();
 			return CorePlugin.getInstance().resourceNodesManager.getGlobalDirtyState();
 		}
 		

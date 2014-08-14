@@ -1,13 +1,28 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexutil.renderer {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	
+	import spark.primitives.BitmapImage;
+	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
-	
-	import spark.primitives.BitmapImage;
 	
 	/**
 	 * An extension for components that adds multiple icons as children.
@@ -89,7 +104,7 @@ package org.flowerplatform.flexutil.renderer {
 			iconDisplay.verticalAlign = "middle";
 			iconDisplay.depth = UIComponent(component).depth;
 			
-			IVisualElementContainer(component).addElementAt(iconDisplay, component.newIconIndex());
+			IVisualElementContainer(component.getMainComponent()).addElementAt(iconDisplay, component.newIconIndex());
 			
 			if (iconDisplays == null) {
 				iconDisplays = new ArrayList();
@@ -98,7 +113,7 @@ package org.flowerplatform.flexutil.renderer {
 		}
 		
 		protected function removeIconDisplay(iconDisplay:BitmapImage):void {
-			IVisualElementContainer(component).removeElement(iconDisplay);
+			IVisualElementContainer(component.getMainComponent()).removeElement(iconDisplay);
 			iconDisplays.removeItemAt(iconDisplays.getItemIndex(iconDisplay));
 			
 			UIComponent(component).invalidateSize();

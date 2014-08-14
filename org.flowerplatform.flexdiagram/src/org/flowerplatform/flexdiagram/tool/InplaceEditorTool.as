@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool {
@@ -29,6 +26,7 @@ package org.flowerplatform.flexdiagram.tool {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -71,26 +69,21 @@ package org.flowerplatform.flexdiagram.tool {
 			return false;
 		}
 		
-		override public function activateDozingMode():void {
-			diagramRenderer.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);			
-		}
-		
-		override public function deactivateDozingMode():void {
-			diagramRenderer.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-		}
-		
 		override public function activateAsMainTool():void {
-			context.model = IDataRenderer(getRendererFromDisplayCoordinates()).data;
+			if (context.shellContext == null) {
+				context.shellContext = diagramShell.getNewDiagramShellContext();
+			}
+			
+			context.model = DiagramShellContext(context.shellContext).diagramShell.mainSelectedItem;
 			
 			diagramRenderer.addEventListener(MouseEvent.CLICK, mouseClickHandler);
+			FlexUtilGlobals.getInstance().keyBindings.allowKeyBindingsToProcessEvents = false;
 			
 			var inplaceEditorController:InplaceEditorController = ControllerUtils.getInplaceEditorController(context.shellContext, context.model);
 			if (inplaceEditorController != null) {
 				if (inplaceEditorController.canActivate(context.shellContext, context.model)) {
 					inplaceEditorController.activate(context.shellContext, context.model);
-					if (context.wakedByMouseDownEvent) {
-						diagramRenderer.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);	
-					}
+					diagramRenderer.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);						
 				}
 			}
 			super.activateAsMainTool();
@@ -100,15 +93,16 @@ package org.flowerplatform.flexdiagram.tool {
 			var inplaceEditorController:InplaceEditorController = ControllerUtils.getInplaceEditorController(context.shellContext, context.model);
 			if (inplaceEditorController != null) {
 				inplaceEditorController.deactivate(context.shellContext, context.model);
-				if (context.wakedByMouseDownEvent) {
-					diagramRenderer.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);	
-				}
+				diagramRenderer.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);				
 			}
+						
+			FlexUtilGlobals.getInstance().keyBindings.allowKeyBindingsToProcessEvents = true;
 			
 			delete context.model;		
 			delete context.shellContext;
 			
 			diagramRenderer.removeEventListener(MouseEvent.CLICK, mouseClickHandler);	
+			
 			super.deactivateAsMainTool();
 		}
 		
@@ -118,24 +112,11 @@ package org.flowerplatform.flexdiagram.tool {
 		 */
 		private function keyDownHandler(event:KeyboardEvent):void {
 			switch (event.keyCode) {
-				case Keyboard.F2: // active tool
-					var model:Object = IDataRenderer(getRendererFromDisplayCoordinates()).data;
-					context.shellContext = diagramShell.getNewDiagramShellContext();
-					var inplaceEditorController:InplaceEditorController = ControllerUtils.getInplaceEditorController(context.shellContext, model);
-					if (inplaceEditorController != null) {
-						diagramShell.mainTool = this;
-					}
-					break;
 				case Keyboard.ENTER: // commit value			
 					if (!event.ctrlKey && this == diagramShell.mainTool) {
 						ControllerUtils.getInplaceEditorController(context.shellContext, context.model).commit(context.shellContext, context.model);
 					}					
-					break;
-				case Keyboard.ESCAPE: // abort
-					if (this == diagramShell.mainTool) {
-						ControllerUtils.getInplaceEditorController(context.shellContext, context.model).abort(context.shellContext, context.model);
-					}
-					break;
+					break;				
 			}
 		}
 		
@@ -167,8 +148,8 @@ package org.flowerplatform.flexdiagram.tool {
 			var parent:IVisualElement = IVisualElement(renderer.parent);
 			if (parent is DiagramRenderer) {
 				return false;
-			}	
-			return isSelected(parent);			
+			}
+			return isSelected(parent);
 		}
 		
 	}

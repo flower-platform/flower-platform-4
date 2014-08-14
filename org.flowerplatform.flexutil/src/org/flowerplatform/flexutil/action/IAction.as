@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.action {
@@ -29,6 +26,12 @@ package org.flowerplatform.flexutil.action {
 		function get preferShowOnActionBar():Boolean;
 		function get icon():Object;
 		function get label():String;
+		
+		/**
+		 * If <code>true</code> action will be displayed in menu.
+		 * (e.g. navigation actions -> are used as shortcuts, aren't displayed in menu)
+		 */
+		function get showInMenu():Boolean;
 		
 		/**
 		 * The system sets this before invoking: visible, enabled, run(). After

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../org.flowerplatform.build/flex/pom.xml</relativePath>
+		<groupId>org.flowerplatform</groupId>
+		<artifactId>parent-flex</artifactId>
+		<version>0.1.1_flex</version>
+	</parent>
+
+	<artifactId>org.flowerplatform.flexutil</artifactId>
+	<packaging>swc</packaging>
+
+	<properties>
+		<sourceDirectory>src</sourceDirectory>
+		<messagesDirectory>messages</messagesDirectory>
+		<iconsDirectory>icons</iconsDirectory>
+		<output.flex.prefix>..</output.flex.prefix>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flexVersion}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flex.framework.mobile</groupId>
+			<artifactId>mobilecomponents</artifactId>
+			<version>${flexVersion}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flex.framework.themes</groupId>
+			<artifactId>mobile</artifactId>
+			<version>${flexVersion}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>net.flexmojos.oss</groupId>
+					<artifactId>flexmojos-maven-plugin</artifactId>
+					<version>${flexmojos.version}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<!-- include .properties file -->
+						<localesSourcePath>messages</localesSourcePath>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

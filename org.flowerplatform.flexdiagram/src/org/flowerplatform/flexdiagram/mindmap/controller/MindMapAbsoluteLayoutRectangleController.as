@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap.controller {
@@ -34,11 +31,12 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		
 		override public function getBounds(context:DiagramShellContext, model:Object):Rectangle {
 			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
+			var dynamicObject:Object = diagramShell.getDynamicObject(context, model);
 			return new Rectangle(
-				diagramShell.getPropertyValue(context, model, "x"), 
-				diagramShell.getPropertyValue(context, model, "y"), 
-				diagramShell.getPropertyValue(context, model, "width"), 
-				diagramShell.getPropertyValue(context, model, "height"));
+				diagramShell.getPropertyValue(context, model, "x", dynamicObject), 
+				diagramShell.getPropertyValue(context, model, "y", dynamicObject), 
+				diagramShell.getPropertyValue(context, model, "width", dynamicObject), 
+				diagramShell.getPropertyValue(context, model, "height", dynamicObject));
 		}
 		
 	}

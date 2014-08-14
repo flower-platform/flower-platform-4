@@ -1,27 +1,25 @@
 /* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexutil.text {
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 	
 	import mx.core.mx_internal;
+	import mx.events.FlexEvent;
 	import mx.skins.spark.SparkSkinForHalo;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -41,6 +39,11 @@ package org.flowerplatform.flexutil.text {
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				setStyle("skinClass", AutoGrowSkinnableTextBaseSkin);
 			}
+			addEventListener(Event.REMOVED_FROM_STAGE, function (event:Event):void {
+				if (textDisplay) {
+					textDisplay.removeEventListener(KeyboardEvent.KEY_DOWN, kewDownHandler1, false);
+				}
+			});
 		}
 		
 		protected function kewDownHandler1(event:KeyboardEvent):void {

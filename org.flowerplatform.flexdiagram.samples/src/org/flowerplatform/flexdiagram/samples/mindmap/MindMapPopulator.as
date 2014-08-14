@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples.mindmap {
@@ -26,22 +23,21 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapPopulator {
-		
+			
 		public static function populateRootModel(modelHolder:IModelHolder):void {
-			var rootModel:ParentAwareArrayList = modelHolder.rootModel;
-			if (rootModel == null) {
-				rootModel = new ParentAwareArrayList(null);
-			}
+//			var rootModel:ParentAwareArrayList = modelHolder.rootModel;
+//			if (rootModel == null) {
+//				rootModel = new ParentAwareArrayList(null);
+//			}
+//			
+			var rootModel:SampleMindMapModel = getMindMapModel(rootModel);
+			rootModel.text = "Root";
+			rootModel.children.addItem(getMindMapModel(rootModel));
+			rootModel.children.addItem(getMindMapModel(rootModel));
+			rootModel.children.addItem(getMindMapModel(rootModel));
+			rootModel.expanded = true;
 			
-			var model:SampleMindMapModel = getMindMapModel(rootModel);
-			model.text = "Root";
-			model.children.addItem(getMindMapModel(model));
-			model.children.addItem(getMindMapModel(model));
-			model.children.addItem(getMindMapModel(model));
-			model.expanded = true;
-			rootModel.addItem(model);
-			
-			var child2:SampleMindMapModel = getMindMapModel(model);	
+			var child2:SampleMindMapModel = getMindMapModel(rootModel);	
 			child2.side = MindMapDiagramShell.POSITION_LEFT;
 			for (var i:int = 0; i < 10; i++) {
 				child2.children.addItem(getMindMapModel(child2));
@@ -49,10 +45,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			child2.children.addItem(getMindMapModel(child2));	
 			child2.hasChildren = true;
 			
-			model.children.addItem(child2);
-			model.hasChildren = true;
+			rootModel.children.addItem(child2);
+			rootModel.hasChildren = true;
 			
-			var child:SampleMindMapModel = getMindMapModel(model);
+			var child:SampleMindMapModel = getMindMapModel(rootModel);
 			child.side = MindMapDiagramShell.POSITION_RIGHT;
 			for (var i:int = 0; i < 10; i++) {
 				child.children.addItem(getMindMapModel(child));
@@ -61,16 +57,16 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			child.children.addItem(getMindMapModel(child));
 			child.children.addItem(getMindMapModel(child));
 			child.hasChildren = true;
-			child.parent = model;
+			child.parent = rootModel;
 			
-			model.children.addItem(child);
+			rootModel.children.addItem(child);
 			
-			var child1:SampleMindMapModel = getMindMapModel(model);	
+			var child1:SampleMindMapModel = getMindMapModel(rootModel);	
 			child1.side = MindMapDiagramShell.POSITION_RIGHT;
 			child1.children.addItem(getMindMapModel(child1));
 			child1.hasChildren = true;
-			child1.parent = model;				
-			model.children.addItem(child1);	
+			child1.parent = rootModel;				
+			rootModel.children.addItem(child1);	
 			
 			var child11:SampleMindMapModel = getMindMapModel(child1);
 			for (var i:int = 0; i < 10; i++) {
@@ -89,14 +85,27 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			modelHolder.rootModel = rootModel;
 		}
 		
+		/**
+		 * @author Alexandra Topoloaga
+		 */
+		private static var currentModel:int;
+		
+	 	/**
+		 * @author Cristina Constantinescu
+	     * @author Alexandra Topoloaga
+		 */
 		private static function getMindMapModel(parent:Object):SampleMindMapModel {
 			var model:SampleMindMapModel;
 			
 			model = new SampleMindMapModel();
-			model.text = "MindMap" + (new Date()).time;
+			model.text = "MindMap" + currentModel++;
 //			model.width = 151;
 //			model.height = 22;
 			model.hasChildren = false;
+			model.fontFamily = "Times New Roman";
+			model.fontSize = 28;
+			model.fontStyle = true;
+			model.fontWeight = true;
 			if (parent is SampleMindMapModel && parent != null && parent.side != 0) {
 				model.side = parent.side;
 			} else if (parent is SampleMindMapModel && parent != null) {

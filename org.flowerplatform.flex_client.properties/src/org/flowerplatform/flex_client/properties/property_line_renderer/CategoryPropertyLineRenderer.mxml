@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!---
+@author Sebastian Solomon
+-->
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" implements="org.flowerplatform.flex_client.properties.property_line_renderer.IPropertyLineRenderer"
+			   width="100%" verticalAlign="middle" gap="0">
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.properties.property_renderer.IPropertyRenderer;
+			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+			
+			
+			private var _propertyDescriptor:PropertyDescriptor;			
+			private var _node:Node;
+			
+			public function get propertyDescriptor():PropertyDescriptor {
+				return _propertyDescriptor;
+			}
+			
+			public function set propertyDescriptor(value:PropertyDescriptor):void {				
+				if (_propertyDescriptor == value) {
+					return;
+				}
+				_propertyDescriptor = value;
+				
+				if (_propertyDescriptor == null) {
+					return;
+				}		
+				
+				if (labelDisplay != null) {
+					labelDisplay.text = _propertyDescriptor.title != null ? _propertyDescriptor.title : _propertyDescriptor.name;
+				}
+				labelDisplay.setStyle("paddingRight", (labelDisplay.text == null || labelDisplay.text == "") ? 0 : 15);				
+			}
+			
+			public function get node():Node {
+				return _node;
+			}
+			
+			public function set node(value:Node):void {
+				_node = value;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label id="labelDisplay" fontWeight="bold" />
+	
+	<s:Group width="100%" >
+		<s:Line width="100%" >
+			<s:stroke>
+				<s:SolidColorStroke color="0xC4CCCC" weight="2" caps="square"/>
+			</s:stroke>
+		</s:Line>
+	</s:Group>	
+			
+</s:HGroup>

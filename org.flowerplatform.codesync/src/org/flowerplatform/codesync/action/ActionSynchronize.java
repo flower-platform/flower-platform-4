@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync.action;
@@ -45,9 +42,21 @@ public class ActionSynchronize {
 		int i = 0;
 		for (Diff diff : match.getDiffs()) {
 			int defaultAction = DiffActionRegistry.INSTANCE.getActionEntriesForUI(match, diff, true).defaultAction;
+			
+			// If the changes on the LEFT are the same as the ones on the RIGHT, then no action
+			// will be performed. In this case, we must announce the adaptors manually so they can
+			// do their actions (i.e. cleaning, ...).
 			if (defaultAction != -1) {
 				result[i] = DiffActionRegistry.ActionType.values()[defaultAction].diffAction.execute(match, i);
 //				diffsInConflict = diffsInConflict
+			} else {
+				ActionResult actionResult = new ActionResult(diff.isConflict(), diff.isLeftModified(), diff.isRightModified());
+				if (match.getLeft() != null) {
+					match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft()).actionPerformed(match.getLeft(), diff.getFeature(), actionResult, match);
+				}
+				if (match.getRight() != null) {
+					match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight()).actionPerformed(match.getRight(), diff.getFeature(), actionResult, match);
+				}				
 			}
 			i++;
 		}

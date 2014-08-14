@@ -1,24 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!-- 
  @author Cristina Constantinescu
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="org.flowerplatform.flexutil.view_content_host.IViewContent"
-		 creationComplete="creationCompleteHandler(event)">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"  
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*">
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
-			import mx.controls.Alert;
 			import mx.core.UIComponent;
-			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+			import org.flowerplatform.flex_client.core.node.NodeRegistry;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -29,23 +43,14 @@
 			
 			private static const ZIP_EXTENSION:String = ".zip";
 			
-			public var uploadLocationAsFullNodeId:String;
+			public var uploadLocationNode:Node;
 			
 			protected var fileReference:FileReference;
-						
-			protected var _viewhost:IViewHost;
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewhost = viewHost;
-				_viewhost.setLabel(Resources.getMessage("action.upload"));
-				_viewhost.setIcon(Resources.uploadIcon);
-			}	
-			
-			protected function creationCompleteHandler(event:FlexEvent):void {				
+							
+			override protected function creationCompleteHandler(event:FlexEvent):void {	
+				okButton.label = Resources.getMessage('upload.label');
+				okButton.enabled = false;
+				
 				fileReference = new FileReference();
 				fileReference.addEventListener(Event.SELECT, onSelectHandler);
 				fileReference.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
@@ -57,15 +62,15 @@
 				fileReference.browse();
 			}
 			
-			protected function upload_clickHandler(event:MouseEvent):void {
+			override protected function okHandler(event:Event = null):void {
 				if (Utils.endsWith(fileReference.name, ZIP_EXTENSION)) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setText(Resources.getMessage("upload.make.archive"))
 						.setTitle(Resources.getMessage("info"))
 						.setWidth(300)
 						.setHeight(200)
-						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.ok'), function():void {prepareToUpload(true);})
-						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.cancel'), function():void {prepareToUpload();})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {prepareToUpload(true);})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'), function():void {prepareToUpload();})
 						.showMessageBox();				
 				} else {
 					prepareToUpload();
@@ -73,7 +78,7 @@
 			}
 						
 			protected function prepareToUpload(unzipFile:Boolean=false):void {				
-				CorePlugin.getInstance().serviceLocator.invoke("uploadService.prepareUpload", [uploadLocationAsFullNodeId, fileReference.name, unzipFile], 
+				CorePlugin.getInstance().serviceLocator.invoke("uploadService.prepareUpload", [uploadLocationNode.nodeUri, fileReference.name, unzipFile], 
 					function(result:Object):void {
 						if (result) {
 							var request:URLRequest = new URLRequest();
@@ -84,7 +89,7 @@
 							fileReference.upload(request);
 							
 							progressArea.visible = true;
-							uploadBtn.enabled = false;
+							okButton.enabled = false;
 							browseBtn.enabled = false;		
 						}
 					}
@@ -93,7 +98,7 @@
 			
 			protected function onSelectHandler(event:Event):void {
 				locationTxt.text = fileReference.name;	
-				uploadBtn.enabled = true;
+				okButton.enabled = true;
 			}
 					
 			protected function onIoErrorHandler(event:IOErrorEvent):void {				
@@ -101,7 +106,7 @@
 					.setTitle(Resources.getMessage("error"))
 					.setText(event.text)
 					.showMessageBox();
-				closeView();
+				cancelHandler();
 			}
 			
 			protected function onProgressHandler(event:ProgressEvent):void {
@@ -115,41 +120,31 @@
 				var activeComponent:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
 				
 				if (activeComponent is EditorFrontend) {
-					var nodeUpdateProcessor:NodeUpdateProcessor = EditorFrontend(activeComponent).nodeUpdateProcessor;
-					var node:Node = nodeUpdateProcessor.getNodeById(uploadLocationAsFullNodeId);
-					if (node != null) {
-						nodeUpdateProcessor.refresh(EditorFrontend(activeComponent).nodeUpdateProcessor.context, node);
-					}
+					var nodeRegistry:NodeRegistry = EditorFrontend(activeComponent).nodeRegistry;
+					nodeRegistry.refresh(uploadLocationNode);					
 				}
 				
-				closeView();
+				cancelHandler();
 			}
-			
-			protected function closeView():void {
+						
+			override public function additionalCloseHandler():void {
 				fileReference.cancel();
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			
 		]]>
 	</fx:Script>
-	<s:layout>
-		<s:VerticalLayout />
-	</s:layout>
 	
-	<s:Label text="{Resources.getMessage('upload.file')}" paddingTop="5" />
+	<s:Label text="{Resources.getMessage('upload.file')}"  />
 	<s:HGroup width="100%">			
 		<s:TextInput id="locationTxt" width="100%" editable="false" />
 		<s:Button id="browseBtn" label="{Resources.getMessage('upload.browse')}" click="browse_clickHandler(event)" />					
 	</s:HGroup>		
-	<s:Label text="{Resources.getMessage('upload.limit.max')}" paddingBottom="15" />
+	
+	<s:Label text="{Resources.getMessage('upload.limit.max')}" height="100%"  />
+	
 	<s:HGroup width="100%" id="progressArea" visible="false" verticalAlign="middle">
 		<s:BusyIndicator id="progressSpinner" />
 		<s:Label id="progressLabel" width="100%" />
 	</s:HGroup>
-	
-	<s:HGroup width="100%" horizontalAlign="right" paddingBottom="5">			
-		<s:Button id="uploadBtn" label="{Resources.getMessage('upload.label')}" click="upload_clickHandler(event)" enabled="false"/>
-		<s:Button id="cancelBtn" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="closeView()"/>
-	</s:HGroup> 	
-	
-</s:Group>
+		
+</host:BasicViewContent>

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,14 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.core.plugin {
 	import mx.resources.ResourceManager;
 	
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.plugin.AbstractFlexPlugin;
 	import org.flowerplatform.flexutil.resources.ResourcesUtils;
 	
@@ -38,12 +37,23 @@ package org.flowerplatform.flex_client.core.plugin {
 		
 		protected var _composedImagesUrl:String;
 		
+		protected var _appVersion:String;
+		protected var _apiVersion:String;
+		
 		/**
 		 * Name of the java plugin project.
 		 * If not <code>null</code>, <code>resourceUrl</code> points to this url.
 		 */ 
 		protected var correspondingJavaPlugin:String;
 
+		public function get appVersion():String {
+			return _appVersion;
+		}
+		
+		public function get apiVersion():String {
+			return _apiVersion;
+		}
+		
 		public function get resourcesUrl():String {
 			if (_resourcesUrl == null) {				
 				const regex:RegExp = new RegExp("((.*?\/)+)(.*?\/)swc\/");
@@ -54,6 +64,19 @@ package org.flowerplatform.flex_client.core.plugin {
 				_resourcesUrl = groups[1] + (correspondingJavaPlugin != null ? correspondingJavaPlugin + "/": groups[3]);
 			}
 			return _resourcesUrl;
+		}
+		
+		override public function preStart():void {
+			super.preStart();
+			
+			// _appVersion = "my_app_version";
+			include "appVersion.inc";
+			// _apiVersion = "my_api_version";
+			include "apiVersion.inc";
+			
+			// check if same version as CorePlugin
+			checkAPIVersion();
+			checkAppVersion();
 		}
 		
 		override public function start():void {
@@ -81,7 +104,7 @@ package org.flowerplatform.flex_client.core.plugin {
 		public function getResourceUrl(resource:String):String {
 			return resourcesUrl + resource;
 		}
-
+		
 		/**
 		 * Returns the request string for the image composed from the URLs. 
 		 * E.g. <tt>servlet/image-composer/url1|url2|url3</tt>
@@ -113,5 +136,17 @@ package org.flowerplatform.flex_client.core.plugin {
 			return composedUrl;
 		}
 	
+		protected function checkAppVersion():void {
+			if (CorePlugin.getInstance() != null && appVersion != CorePlugin.getInstance().appVersion) {
+				throw new Error(Resources.getMessage('version.plugin.error', [Resources.getMessage('version.error.details')]));
+			}
+		}
+		
+		protected function checkAPIVersion():void {
+			if (CorePlugin.getInstance() != null && apiVersion != CorePlugin.getInstance().apiVersion) {
+				throw new Error(Resources.getMessage('version.plugin.error', [Resources.getMessage('version.error.details')]));
+			}
+		}
+		
 	}
 }

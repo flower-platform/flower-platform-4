@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram {
@@ -46,6 +43,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
 	import org.flowerplatform.flexdiagram.tool.IWakeUpableTool;
 	import org.flowerplatform.flexdiagram.tool.Tool;
@@ -190,7 +188,7 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function DiagramShell() {
-			selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangeHandler);
+			selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangeHandler, false, int.MAX_VALUE);
 			
 			var wakeUpTool:WakeUpTool = new WakeUpTool(this);
 			_defaultTool = wakeUpTool;
@@ -448,6 +446,24 @@ package org.flowerplatform.flexdiagram {
 		
 		public function getDynamicObject(context:DiagramShellContext, model:Object):Object {
 			return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model)).getDynamicObject(context, model);
+		}
+		
+		public function makeModelRendererVisible(model:Object, context:DiagramShellContext, padding:int = 10):void {
+			var dynamicObject:Object = context.diagramShell.getDynamicObject(context, model);
+			var diagramRenderer:DiagramRenderer = DiagramRenderer(context.diagramShell.diagramRenderer);
+			
+			var scrollRect:Rectangle = diagramRenderer.scrollRect;
+			
+			if (scrollRect.x > dynamicObject.x) {
+				diagramRenderer.horizontalScrollPosition += dynamicObject.x - scrollRect.x - padding;
+			} else if (scrollRect.x + scrollRect.width < dynamicObject.x + dynamicObject.width) {
+				diagramRenderer.horizontalScrollPosition += dynamicObject.x + dynamicObject.width - scrollRect.x - scrollRect.width + padding;
+			}
+			if (scrollRect.y > dynamicObject.y) {
+				diagramRenderer.verticalScrollPosition += dynamicObject.y - scrollRect.y - padding;
+			} else if (scrollRect.y + scrollRect.height < dynamicObject.y + dynamicObject.height) {
+				diagramRenderer.verticalScrollPosition += dynamicObject.y + dynamicObject.height - scrollRect.y - scrollRect.height + padding;
+			}
 		}
 		
 	}

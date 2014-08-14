@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,33 +11,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap.controller {
-	import flash.utils.getDefinitionByName;
-	
 	import mx.collections.IList;
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapConnector;
+	import org.flowerplatform.flexdiagram.mindmap.GenericMindMapConnector;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapModelRendererController extends ClassReferenceRendererController {
-			
-		public function MindMapModelRendererController(rendererClass:Class, orderIndex:int = 0) {
+		
+		public var mindMapConnectorClass:Class;
+		
+		public function MindMapModelRendererController(rendererClass:Class, mindMapConnectorClass:Class, orderIndex:int = 0) {
 			super(rendererClass, orderIndex);
 			removeRendererIfModelIsDisposed = true;
+			this.mindMapConnectorClass = mindMapConnectorClass;
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {			
@@ -52,11 +48,18 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 				
 		private function removeConnector(context:DiagramShellContext, model:Object):void {		
 			var dynamicObject:Object = context.diagramShell.getDynamicObject(context, model);
-			var connector:MindMapConnector = dynamicObject.connector;
+			var connector:GenericMindMapConnector = dynamicObject.connector;
 			if (connector != null) {
 				context.diagramShell.diagramRenderer.removeElement(connector);
 				delete dynamicObject.connector;
 			}
+		}
+		
+		/**
+		 * @author Sebastian Solomon
+		 */
+		protected function createMindMapConnector():GenericMindMapConnector {
+			return new mindMapConnectorClass();
 		}
 		
 		private function addConnector(context:DiagramShellContext, model:Object):void {
@@ -64,7 +67,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			if (modelParent == null) { // root node, no connectors
 				return;
 			}
-			var connector:MindMapConnector = new MindMapConnector().setSource(model).setTarget(modelParent).setContext(context);
+			var connector:GenericMindMapConnector = createMindMapConnector().setSource(model).setTarget(modelParent).setContext(context);
 			context.diagramShell.getDynamicObject(context, model).connector = connector;
 			context.diagramShell.diagramRenderer.addElementAt(connector, 0);		
 		}

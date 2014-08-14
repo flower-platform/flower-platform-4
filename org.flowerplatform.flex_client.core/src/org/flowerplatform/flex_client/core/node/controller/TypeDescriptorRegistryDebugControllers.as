@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.core.node.controller {
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
@@ -7,7 +22,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	import org.flowerplatform.flexutil.controller.ControllerEntry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
@@ -17,17 +31,17 @@ package org.flowerplatform.flex_client.core.node.controller {
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class TypeDescriptorRegistryDebugControllers {
+	public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		
-		public const TYPES:String = "_debugFlexTypes";
-		public const TYPE:String = "_debugFlexType";
+		public const TYPES:String = "debugFlexTypes";
+		public const TYPE:String = "debugFlexType";
 		
-		public const CATEGORY:String = "_debugFlexCategory";
-		public const CONTROLLER_KEY_SINGLE:String = "_debugFlexControllerKeySingle";
-		public const CONTROLLER_KEY_ADDITIVE:String = "_debugFlexControllerKeyAdditive";
+		public const CATEGORY:String = "debugFlexCategory";
+		public const CONTROLLER_KEY_SINGLE:String = "debugFlexControllerKeySingle";
+		public const CONTROLLER_KEY_ADDITIVE:String = "debugFlexControllerKeyAdditive";
 		
-		public const CONTROLLER_SINGLE:String = "_debugFlexControllerSingle";
-		public const CONTROLLER_ADDITIVE:String = "_debugFlexControllerAdditive";
+		public const CONTROLLER_SINGLE:String = "debugFlexControllerSingle";
+		public const CONTROLLER_ADDITIVE:String = "debugFlexControllerAdditive";
 		
 		public function registerControllers():void {
 			
@@ -44,11 +58,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 			addNodeController(CONTROLLER_KEY_ADDITIVE, nodeController);
 			addNodeController(CONTROLLER_SINGLE, nodeController);
 			addNodeController(CONTROLLER_ADDITIVE, nodeController);
-		}
-		
-		private function addNodeController(type:String, controller:FlexTypesNodeController):void {
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(type)
-				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, controller);
 		}
 		
 		public function getFlexTypes():ArrayCollection {
@@ -115,7 +124,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			// add cached controller
 			if (cachedController != null) {
 				var id:String = cachedController.toString();
-				var child:Node = createNode(CONTROLLER_SINGLE, node.fullNodeId, id, id, 
+				var child:Node = createNode(CONTROLLER_SINGLE, node.nodeUri, id, id, 
 					Resources.getResourceUrl("/images/mindmap/icons/executable.png"), false);
 				if (cachedController != selfController) {
 					// override
@@ -128,7 +137,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			// add self controller - only if different from cached
 			if (selfController != null && selfController != cachedController) {
 				var id:String = selfController.toString();
-				children.addItem(createNode(CONTROLLER_SINGLE, node.fullNodeId, id, id,
+				children.addItem(createNode(CONTROLLER_SINGLE, node.nodeUri, id, id,
 					Resources.getResourceUrl("/images/mindmap/icons/button_cancel.png"), false));
 			}
 			
@@ -146,7 +155,7 @@ package org.flowerplatform.flex_client.core.node.controller {
 			// add controllers
 			for each (var cachedController:AbstractController in cachedControllers) {
 				var id:String = cachedController.toString();
-				var child:Node = createNode(CONTROLLER_ADDITIVE, node.fullNodeId, id, id,
+				var child:Node = createNode(CONTROLLER_ADDITIVE, node.nodeUri, id, id,
 					Resources.getResourceUrl("/images/mindmap/icons/executable.png"), false);
 				if (selfControllers.getItemIndex(cachedController) < 0) {
 					// contributed
@@ -159,17 +168,6 @@ package org.flowerplatform.flex_client.core.node.controller {
 			return children;
 		}
 		
-		private function createNode(type:String, resource:String, id:String, name:String, icons:String, hasChildren:Boolean = true):Node {
-			var node:Node = new Node();
-			node.type = type;
-			node.resource = resource;
-			node.idWithinResource = id;
-			node.properties = new Object();
-			node.properties[CoreConstants.NAME] = name;
-			node.properties[CoreConstants.ICONS] = icons;
-			node.properties[CoreConstants.HAS_CHILDREN] = hasChildren;
-			return node;
-		}
 	}
 }
 import mx.collections.ArrayCollection;
@@ -177,7 +175,7 @@ import mx.collections.IList;
 import mx.core.mx_internal;
 
 import org.flowerplatform.flex_client.core.editor.remote.Node;
-import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+import org.flowerplatform.flex_client.core.node.NodeRegistry;
 import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.flexdiagram.DiagramShellContext;
 import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -205,22 +203,22 @@ class FlexTypesNodeController extends MindMapModelController {
 	}
 	
 	override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
-		var nodeUpdateProcessor:NodeUpdateProcessor = Object(context.diagramShell).updateProcessor;
+		var nodeRegistry:NodeRegistry = Object(context.diagramShell).nodeRegistry;
 		var node:Node = Node(model);
 		if (value) {
 			var children:ArrayCollection;
 			if (node.type == debug.TYPES) {
 				children = debug.getFlexTypes();
 			} else if (node.type == debug.TYPE) {
-				children = debug.getCategoriesAndControllerKeys(node.idWithinResource);
+				children = debug.getCategoriesAndControllerKeys(node.fragment);
 			} else if (node.type == debug.CONTROLLER_KEY_SINGLE) {
-				children = debug.getSingleControllers(node, node.resource, node.idWithinResource);
+				children = debug.getSingleControllers(node, node.schemeSpecificPart, node.fragment);
 			} else if (node.type == debug.CONTROLLER_KEY_ADDITIVE) {
-				children = debug.getAdditiveControllers(node, node.resource,node.idWithinResource);
+				children = debug.getAdditiveControllers(node, node.schemeSpecificPart, node.fragment);
 			}
-			nodeUpdateProcessor.requestChildrenHandler(context, node, children);
+			nodeRegistry.expandCallbackHandler(node, children);
 		} else {
-			nodeUpdateProcessor.removeChildren(context, node);
+			nodeRegistry.collapse(node);
 		}
 	}
 	

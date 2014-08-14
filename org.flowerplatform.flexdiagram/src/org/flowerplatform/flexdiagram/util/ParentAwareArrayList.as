@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.util {
@@ -85,5 +82,16 @@ package org.flowerplatform.flexdiagram.util {
 			event.location = location;
 			dispatchEvent(event);
 		}		
+		
+		public function resetSelection():void {
+			try {
+				// Because an addItem is called after, the eventsCanBeIgnored is set to true,
+				// this way listeners can limit the number of unwanted events.
+				eventsCanBeIgnored = true;
+				removeAll();							
+			} finally {
+				eventsCanBeIgnored = false;
+			}
+		}
 	}
 }

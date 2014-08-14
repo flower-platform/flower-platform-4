@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.file.download.remote;
 
 import java.io.File;
@@ -11,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.FlowerProperties.AddBooleanProperty;
-import org.flowerplatform.core.FlowerProperties.AddProperty;
+import org.flowerplatform.core.FlowerProperties.AddIntegerProperty;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.download.DownloadInfo;
 import org.flowerplatform.core.file.download.DownloadServlet;
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.UtilConstants;
 
@@ -75,12 +90,7 @@ public class DownloadService implements ISessionListener {
 	}
 	
 	public DownloadService() {
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER) {			
-			@Override
-			protected String validateProperty(String input) {				
-				return null;
-			}
-		});
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddIntegerProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER));
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
 				
 		CorePlugin.getInstance().addSessionListener(this);
@@ -158,7 +168,8 @@ public class DownloadService implements ISessionListener {
 		boolean isSingle = fullNodeIds.size() == 1; // true if single file, not directory
 		for (String fullNodeId : fullNodeIds) {
 			try {
-				Object file = CorePlugin.getInstance().getFileAccessController().getFile(new Node(fullNodeId).getIdWithinResource());
+				String path = FileControllerUtils.getFilePathWithRepo(fullNodeId);
+				Object file = CorePlugin.getInstance().getFileAccessController().getFile(path);
 				files.add(file);
 				if (CorePlugin.getInstance().getFileAccessController().isDirectory(file)) {
 					isSingle = false;
@@ -177,7 +188,7 @@ public class DownloadService implements ISessionListener {
 		if (isSingle) { // single file -> no need to create ZIP or store it in temporary directory
 			Object file = files.get(0);
 			fileName = CorePlugin.getInstance().getFileAccessController().getName(file);
-			downloadInfo.setPath(CorePlugin.getInstance().getFileAccessController().getPath(file)).setType(DownloadInfo.FILE_TYPE);
+			downloadInfo.setPath(CorePlugin.getInstance().getFileAccessController().getAbsolutePath(file)).setType(DownloadInfo.FILE_TYPE);
 		} else { // directory or multiple files selected	
 			fileName = timestamp + ARCHIVE_EXTENSION;
 			String zipPath = String.format("%s/%s.%s", getTemporaryDownloadFolder(), downloadId, fileName);			

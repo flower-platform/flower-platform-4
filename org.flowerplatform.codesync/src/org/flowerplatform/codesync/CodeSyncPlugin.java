@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,32 +11,61 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_ANCESTOR;
-import static org.flowerplatform.codesync.CodeSyncConstants.MODEL_ADAPTER_LEFT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CODESYNC;
+import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_FILE;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT;
+import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM;
+import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_EXTENSION;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_MODIFIED_LEFT;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_MODIFIED_RIGHT;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_LEFT;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_RIGHT;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_FEATURE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_MODEL_ELEMENT_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MDA;
+import static org.flowerplatform.codesync.CodeSyncConstants.MDA_FILE;
+import static org.flowerplatform.codesync.CodeSyncConstants.MDA_ROOT;
+import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
+import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
+import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
+import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
+import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterLeft;
 import org.flowerplatform.codesync.controller.CodeSyncAddNodeController;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
+import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
+import org.flowerplatform.codesync.controller.CodeSyncSubscribableResourceProvider;
+import org.flowerplatform.codesync.controller.ModelResourceSetProvider;
 import org.flowerplatform.codesync.project.IProjectAccessController;
 import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
@@ -44,9 +73,17 @@ import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
+import org.flowerplatform.core.file.FileSubscribableProvider;
+import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
+import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.remote.SubscriptionInfo;
+import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -60,15 +97,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	protected static CodeSyncPlugin INSTANCE;
 	
-	protected List<String> srcDirs = null;
-	
 	private final static Logger logger = LoggerFactory.getLogger(CodeSyncPlugin.class);
-
-	protected ComposedFullyQualifiedNameProvider fullyQualifiedNameProvider;
-	
-	protected Map<String, ITypeProvider> typeProviders = new HashMap<String, ITypeProvider>();
-
-	protected Map<String, List<String>> dataProvidersForDropDownListProperties = new HashMap<String, List<String>>();
 
 //	protected List<DependentFeature> dependentFeatures;
 //	
@@ -111,18 +140,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		return codeSyncTypeCriterionDispatcherProcessor;
 //	}
 
-	public ComposedFullyQualifiedNameProvider getFullyQualifiedNameProvider() {
-		return fullyQualifiedNameProvider;
-	}
-	
-	public void addTypeProvider(String technology, ITypeProvider typeProvider) {
-		typeProviders.put(technology, typeProvider);
-	}
-	
-	public ITypeProvider getTypeProvider(String technology) {
-		return typeProviders.get(technology);
-	}
-		
 	/**
 	 * Platform-dependent.
 	 * 
@@ -195,6 +212,26 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return useUIDs;
 	}
 	
+	private Map<String, ModelAdapterSet> modelAdapterSets = new HashMap<String, ModelAdapterSet>();
+	
+	public void addModelAdapterSet(String technology, ModelAdapterSet modelAdapterSet) {
+		modelAdapterSets.put(technology, modelAdapterSet);
+	}
+	
+	public ModelAdapterSet getModelAdapterSet(String technology) {
+		return modelAdapterSets.get(technology);
+	}
+	
+	protected Map<String, String> extensionToTechnology = new HashMap<String, String>();
+	
+	public void addTechnologyForExtension(String extension, String technology) {
+		extensionToTechnology.put(extension, technology);
+	}
+	
+	public String getTechnologyForExtension(String extension) {
+		return extensionToTechnology.get(extension);
+	}
+	
 	/**
 	 * @author Mariana Gheorge
 	 * @author Mircea Negreanu
@@ -207,21 +244,69 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncOperationsService", new CodeSyncOperationsService());
 		
-		addTypeProvider("node", new NodeTypeProvider());
+		ITypeProvider nodeTypeProvider = new NodeTypeProvider();
+		addModelAdapterSet(NODE_LEFT, new ModelAdapterSet()
+				.setTypeProvider(nodeTypeProvider)
+				.addModelAdapter(CATEGORY_CODESYNC, new NodeModelAdapterLeft()));
+		
+		addModelAdapterSet(NODE_ANCESTOR, new ModelAdapterSet()
+				.setTypeProvider(nodeTypeProvider)
+				.addModelAdapter(CATEGORY_CODESYNC, new NodeModelAdapterAncestor()));
+		
+		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(CODESYNC);
+		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(MDA);
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
+			.addAdditiveController(CHILDREN_PROVIDER, new CodeSyncRepositoryChildrenProvider());
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_MODEL)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ModelResourceSetProvider());
+		
+		CodeSyncSubscribableResourceProvider modelSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(CODESYNC_FILE);
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC)
+			.addAdditiveController(PROPERTIES_PROVIDER, modelSubscribableResourceProvider)
+			.addAdditiveController(CHILDREN_PROVIDER, modelSubscribableResourceProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "Code Sync"))
+			.addCategory(CATEGORY_MODEL);
+	
+		CodeSyncSubscribableResourceProvider mdaSubscribableResourceProvider = new CodeSyncSubscribableResourceProvider(MDA_FILE);
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA)
+			.addAdditiveController(PROPERTIES_PROVIDER, mdaSubscribableResourceProvider)
+			.addAdditiveController(CHILDREN_PROVIDER, mdaSubscribableResourceProvider)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "MDA"))
+			.addCategory(CATEGORY_MODEL);
+	
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(DIAGRAM_EXTENSION, "fpp", "mindmap", true));
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_ROOT)
+		.addCategory(CATEGORY_MODEL);
+	
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA_ROOT)
+			.addCategory(CATEGORY_MODEL);
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(DIAGRAM)
+			.addCategory(CATEGORY_MODEL);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
-		.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
-		.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController())
-		.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.ADDED).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.REMOVED).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_SYNC).setTypeAs("Boolean").setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CodeSyncConstants.CHILDREN_CONFLICT).setTypeAs("Boolean").setReadOnlyAs(true))
-		.addSingleController(MODEL_ADAPTER_ANCESTOR, new NodeModelAdapterAncestor())
-		.addSingleController(MODEL_ADAPTER_LEFT, new NodeModelAdapterLeft());
+			.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())
+			.addAdditiveController(REMOVE_NODE_CONTROLLER, new CodeSyncRemoveNodeController())
+			.addAdditiveController(PROPERTY_SETTER, new CodeSyncPropertySetter())
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME));
+			
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ICONS).setTitleAs(getLabel("codesync.match.icons")).setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE))	
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_TYPE).setTitleAs(getLabel("codesync.match.type")).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_FEATURE).setTitleAs(getLabel("codesync.match.feature")).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_MODEL_ELEMENT_TYPE).setTitleAs(getLabel("codesync.match.modelElementType")).setReadOnlyAs(true))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_LEFT).setTitleAs(getLabel("codesync.match.children.modifiedLeft")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_RIGHT).setTitleAs(getLabel("codesync.match.children.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT).setTitleAs(getLabel("codesync.match.children.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT).setTitleAs(getLabel("codesync.match.diffs.modifiedLeft")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setTitleAs(getLabel("codesync.match.diffs.modifiedRight")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setTitleAs(getLabel("codesync.match.diffs.conflict")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setTitleAs(getLabel("codesync.match.body.modified")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CODESYNC_ICONS).setOrderIndexAs(-1000));
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());
@@ -240,8 +325,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		inplaceEditorExtensions = new ArrayList<InplaceEditorExtension>();
 //		
 //		featureAccessExtensions = new ArrayList<FeatureAccessExtension>();
-		
-		fullyQualifiedNameProvider = new ComposedFullyQualifiedNameProvider();
 		
 //		dependentFeatures = new ArrayList<DependentFeature>();
 //		dependentFeatures.add(new DependentFeature(NotationPackage.eINSTANCE.getView(), NotationPackage.eINSTANCE.getEdge_Source(), true));
@@ -408,16 +491,23 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		return resourceSet;
 //	}
 //
+
+	/**
+	 * Add the type to {@link CATEGORY_CODESYNC}.
+	 */
+	public TypeDescriptor createCodeSyncTypeDescriptor(String type) {
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
+		descriptor.addCategory(CATEGORY_CODESYNC);
+		return descriptor;
+	}
+	
 	/**
 	 * @author Mariana
 	 * @author Sebastian Solomon
 	 */
 	public Node getResource(Object file) {
-//		URI uri = EditorModelPlugin.getInstance().getModelAccessController().getURIFromFile(file);
-//		boolean fileExists = EditorPlugin.getInstance().getFileAccessController().exists(file);
-//		return getResource(resourceSet, uri, fileExists);
-		Node node = new Node((String) file);
-		return CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true)).get(0);
+		SubscriptionInfo info = new ResourceServiceRemote().subscribeToParentResource((String) file);
+		return info.getResourceNode();
 	}
 	
 //	
@@ -517,33 +607,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	 * @author Mariana
 	 */
 	public Node getSrcDir(Node root, String name) {
-		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(root, new ServiceContext().add(POPULATE_WITH_PROPERTIES, true));
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		List<Node> children = service.getChildren(root, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true));
 		for (Node child : children) {
-			if (name.equals(child.getOrPopulateProperties().get(NAME))) {
+			if (name.equals(child.getPropertyValue(NAME))) {
 				return child;
 			}
 		}
 		return null;
-	}
-	
-	/**
-	 * @author Mariana
-	 */
-	public List<String> getSrcDirs() {
-		if (srcDirs == null) {
-			// TODO Mariana : get user input
-			return Collections.singletonList("src");
-		} 
-		return srcDirs;
-	}
-	
-	public void addSrcDir(String srcDir) {
-		if (srcDirs == null) {
-			srcDirs = new ArrayList<String>();
-		}
-		if (!srcDirs.contains(srcDir)) {
-			srcDirs.add(srcDir);
-		}
 	}
 	
 	/**
@@ -563,6 +634,10 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void registerMessageBundle() throws Exception {
 		// no messages yet
+	}
+	
+	private String getLabel(String key, Object... substitutions) {
+		return ResourcesPlugin.getInstance().getMessage(key, substitutions);
 	}
 	
 //	/**

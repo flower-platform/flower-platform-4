@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
@@ -5,12 +20,10 @@ import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.ServiceContext;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
 /**
@@ -20,47 +33,57 @@ import org.flowerplatform.util.controller.TypeDescriptorRemote;
  */
 public class NodeServiceRemote {
 	
-	public List<Node> getChildren(String fullNodeId, boolean populateProperties) {
-		return CorePlugin.getInstance().getNodeService().getChildren(new Node(fullNodeId), new ServiceContext().add(POPULATE_WITH_PROPERTIES, populateProperties));		
+	public List<Node> getChildren(String nodeUri, ServiceContext<NodeService> context) {
+		if (context == null) {
+			context = new ServiceContext<NodeService>(getNodeService());
+		} else {
+			context.setService(getNodeService());
+		}
+		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), context);		
 	}
 	
 	public void setProperty(String fullNodeId, String property, Object value) {
-		CorePlugin.getInstance().getNodeService().setProperty(new Node(fullNodeId), property, value, new ServiceContext());	
+		getNodeService().setProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
 		
 	public void unsetProperty(String fullNodeId, String property) {
-		CorePlugin.getInstance().getNodeService().unsetProperty(new Node(fullNodeId), property, new ServiceContext());	
+		getNodeService().unsetProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, new ServiceContext<NodeService>(getNodeService()));	
 	}
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Sebastian Solomon
 	 */
-	public String addChild(String parentFullNodeId, Map<String, Object> properties, String insertBeforeFullNodeId) {
-		Node parent = new Node(parentFullNodeId);
-		
-		Node child = new Node((String) properties.get(TYPE_KEY), parent.getType().equals(CoreConstants.FILE_SYSTEM_NODE_TYPE) ? parent.getFullNodeId() : parent.getResource(), null, null);
-		ServiceContext context = new ServiceContext();
-
-		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			context.add(entry.getKey(), entry.getValue());
+	public String addChild(String parentFullNodeId, ServiceContext<NodeService> context) {
+		if (context == null) {
+			context = new ServiceContext<NodeService>(getNodeService());
+		} else {
+			context.setService(getNodeService());
 		}
-		CorePlugin.getInstance().getNodeService().addChild(parent, child, context);
-		return child.getFullNodeId();
+				
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId);
+		String childType = (String) context.get(TYPE_KEY);
+		if (childType == null) {
+			throw new RuntimeException("Type for new child node must be provided in context!");
+		}
+		Node child = new Node(null, childType);
+		
+		getNodeService().addChild(parent, child, context);
+		
+		child.getOrPopulateProperties(new ServiceContext<NodeService>(getNodeService()));
+		
+		return child.getNodeUri();
 	}
 	
 	public void removeChild(String parentFullNodeId, String childFullNodeId) {
-		CorePlugin.getInstance().getNodeService().removeChild(new Node(parentFullNodeId), new Node(childFullNodeId), new ServiceContext());
+		getNodeService().removeChild(CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId), 
+				CorePlugin.getInstance().getResourceService().getNode(childFullNodeId), new ServiceContext<NodeService>(getNodeService()));
 	}
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
 		return CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getTypeDescriptorsRemote();
 	}
-	
-	public void saveResource(String resourceNodeId) {
-		System.out.println("saveResource " + resourceNodeId);
-	}
-	
+		
 	/**
 	 * Sends a subtree to the client, based on the status of the client. Status of the client (i.e. <code>query</code> parameter)
 	 * means the tree that the client is actually seeing (based on what nodes are expanded and collapsed).
@@ -76,16 +99,16 @@ public class NodeServiceRemote {
 			return response;
 		}
 		
-		for (Node child : getChildren(query.getFullNodeId(), false)) { // get new children list
+		for (Node child : getChildren(query.getFullNodeId(), null)) { // get new children list
 			// search corresponding child in query
-			FullNodeIdWithChildren childQuery = getChildQueryFromQuery(query, child.getFullNodeId());
+			FullNodeIdWithChildren childQuery = getChildQueryFromQuery(query, child.getNodeUri());
 			if (childQuery == null) { 
 				// not found, so this node is probably newly added;
 				// create a dummy query and populate it only with the fullNodeId
 				// this way, the recursive algorithm will go only one level deep,
-				// the node's properties will be populated, and the recurssion will stop
+				// the node's properties will be populated, and the recursion will stop
 				childQuery = new FullNodeIdWithChildren();
-				childQuery.setFullNodeId(child.getFullNodeId());
+				childQuery.setFullNodeId(child.getNodeUri());
 			}
 			NodeWithChildren childResponse = refresh(childQuery);
 			if (response.getChildren() == null) {
@@ -96,11 +119,8 @@ public class NodeServiceRemote {
 		return response;
 	}
 	
-	public Node getNode(String fullNodeId) {
-		Node node = new Node(fullNodeId);
-		// forces population of properties
-		node.getOrPopulateProperties();
-		return node;
+	public Node getNode(String fullNodeId) {	
+		return CorePlugin.getInstance().getResourceService().getNode(fullNodeId, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
 	}
 	
 	private FullNodeIdWithChildren getChildQueryFromQuery(FullNodeIdWithChildren query, String fullChildNodeId) {
@@ -110,6 +130,10 @@ public class NodeServiceRemote {
 			}
 		}
 		return null;
+	}
+	
+	private NodeService getNodeService() {
+		return CorePlugin.getInstance().getNodeService();
 	}
 	
 }

@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,10 +13,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 	
-	Contributors:
-	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
- 
 	license-end
+-->
+<!--
+ @author Cristian Spiescu
+ @author Cristina Constantinescu
 -->
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
@@ -24,10 +25,14 @@
 				autoDrawBackground="true" height="{HEIGHT}" click="clickHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.ActionUtil;
 			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.shortcut.AssignShortcutForActionEvent;
+			import org.flowerplatform.flexutil.shortcut.Shortcut;
 			
 			public static const HEIGHT:int = 22;
 			
@@ -42,7 +47,7 @@
 				// I do it here instead of binding, to avoid the runtime warning "cannot bind to..."
 				labelComponent.text = IAction(value).label;
 				iconComponent.source = IAction(value).icon;
-				if (ActionUtil.isComposedAction(IAction(value))) {
+				if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(value))) {
 					if (!hasSubActions.visible) {
 						hasSubActions.visible = true;
 						hasSubActions.includeInLayout = true;
@@ -54,19 +59,37 @@
 						hasSubActions.includeInLayout = false;
 					}
 				}
+				
+				var shortcut:Shortcut = FlexUtilGlobals.getInstance().keyBindings.actionIdsToShortcuts[IAction(value).id];
+				if (shortcut) {
+					if (!shortcutComponent.visible) {
+						shortcutComponent.visible = true;
+						shortcutComponent.includeInLayout = true;
+						shortcutComponent.text = shortcut.toString();
+					}
+				} else {
+					if (shortcutComponent.visible) {
+						shortcutComponent.visible = false;
+						shortcutComponent.includeInLayout = false;
+					}
+				}
 			}
 			
 			protected function clickHandler(event:MouseEvent):void {
-				if (!ActionUtil.isComposedAction(IAction(data))) {
-					var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
-					try {
-						IAction(data).selection = contextMenu.contextMenuManager.selection; 
-						IAction(data).context = contextMenu.contextMenuManager.context; 
-						IAction(data).run();
-					} finally {										
-						IAction(data).selection = null;
-						IAction(data).context = null; 
-						contextMenu.closeContextMenuStack(0);
+				if (!FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(data))) {
+					if (FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation) { // learning state -> just send event to notify listeners
+						try {
+							UIComponent(FlexGlobals.topLevelApplication).stage.dispatchEvent(new AssignShortcutForActionEvent(IAction(data).id));
+						} catch (e:Error) { // something went wrong -> reset state, otherwise actions cannot be executed anymore
+							FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
+						}
+					} else {
+						var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
+						try {
+							FlexUtilGlobals.getInstance().actionHelper.runAction(IAction(data), contextMenu.contextMenuManager.selection, contextMenu.contextMenuManager.context);
+						} finally {						
+							contextMenu.closeContextMenuStack(0);
+						}
 					}
 				}
 			}
@@ -91,7 +114,7 @@
 						executeAftedHoverTimer.repeatCount = 1;
 						executeAftedHoverTimer.addEventListener(TimerEvent.TIMER_COMPLETE, executeAftedHoverTimerHandler);
 					}
-					if (ActionUtil.isComposedAction(IAction(data))) {
+					if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(data))) {
 						executeAftedHoverTimer.delay = HOVER_DELAY_COMPOSED_ACTION;
 					} else {
 						executeAftedHoverTimer.delay = HOVER_DELAY_NORMAL_ACTION;
@@ -110,7 +133,7 @@
 					return;
 				}
 				var contextMenu:org.flowerplatform.flexutil.context_menu.ContextMenu = getContextMenu();
-				if (ActionUtil.isComposedAction(IAction(data))) {
+				if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(data))) {
 					contextMenu.list.setSelectedIndex(contextMenu.actions.getItemIndex(data), true);
 				} else {
 					contextMenu.list.setSelectedIndex(-1, true);
@@ -124,5 +147,6 @@
 	</s:layout>
 	<s:BitmapImage id="iconComponent" width="16" contentLoader="{FlexUtilGlobals.getInstance().imageContentCache}"/>
 	<s:Label id="labelComponent" width="100%"/>
+	<s:Label id="shortcutComponent" visible="false" includeInLayout="false" paddingLeft="5" />
 	<s:BitmapImage id="hasSubActions" visible="false" includeInLayout="false"/>
 </s:ItemRenderer>

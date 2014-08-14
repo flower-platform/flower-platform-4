@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,19 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.plugin {
-	import flash.display.Loader;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.net.URLRequest;
-	import flash.system.ApplicationDomain;
-	import flash.system.LoaderContext;
-	
 	import mx.collections.ArrayCollection;
 
 	/**
@@ -51,6 +41,17 @@ package org.flowerplatform.flexutil.plugin {
 			currentLoadingSession = createLoadingSession();
 			currentLoadingSession.loadPlugins(pluginSwcUrls, callbackFunction, callbackObject);
 		}
-			
+	
+		/**
+		 * Append "version=..." to list of url's parameters.
+		 * @author Cristina Constantinescu
+		 */ 
+		public function appendVersionToUrl(url:String, version:String):String {
+			if (url != null) {
+				url += (url.split('?')[1] ? '&':'?') + "version=" + version;				
+			}
+			return url;
+		}	
+		
 	}
 }

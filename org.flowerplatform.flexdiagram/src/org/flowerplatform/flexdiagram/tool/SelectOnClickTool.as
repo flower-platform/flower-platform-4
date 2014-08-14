@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,28 +11,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool {
 	
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
-	import flash.ui.Keyboard;
 	
-	import mx.charts.renderers.DiamondItemRenderer;
-	import mx.core.Application;
-	import mx.core.FlexGlobals;
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	
-	import spark.components.Application;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -119,14 +109,7 @@ package org.flowerplatform.flexdiagram.tool {
 				// don't add if the selection already has it and its the only one selected
 				return;
 			}
-			try {
-				// Because an addItem is called after, the eventsCanBeIgnored is set to true,
-				// this way listeners can limit the number of unwanted events.
-				diagramShell.selectedItems.eventsCanBeIgnored = true;
-				diagramShell.selectedItems.removeAll();							
-			} finally {
-				diagramShell.selectedItems.eventsCanBeIgnored = false;
-			}
+			diagramShell.selectedItems.resetSelection();
 			diagramShell.selectedItems.addItem(model);
 		}
 		

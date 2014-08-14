@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.file.upload;
 
 import java.io.File;
@@ -16,6 +31,7 @@ import org.apache.commons.fileupload.servlet.FileCleanerCleanup;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +63,9 @@ public class UploadServlet extends HttpServlet {
 		}
 		// entire URL displayed after servlet name ("servlet/upload") -> /uploadId/file_to_upload_name			
 		String uploadId = request.getPathInfo().substring(1, request.getPathInfo().lastIndexOf("/"));
+		UploadService uploadService = ((UploadService) CorePlugin.getInstance().getServiceRegistry().getService("uploadService"));
 		
-		UploadInfo uploadInfo = CorePlugin.getInstance().getUploadService().getUploadInfo(uploadId);
+		UploadInfo uploadInfo = uploadService.getUploadInfo(uploadId);
 		if (uploadInfo.getTmpLocation() == null) {
 			return;
 		}
@@ -64,7 +81,7 @@ public class UploadServlet extends HttpServlet {
 		// Create a factory for disk-based file items
 
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		factory.setRepository(CorePlugin.getInstance().getUploadService().getTemporaryUploadDirectory());
+		factory.setRepository(uploadService.getTemporaryUploadDirectory());
 		factory.setFileCleaningTracker(FileCleanerCleanup.getFileCleaningTracker(request.getServletContext()));
 		
 		// Create a new file upload handler

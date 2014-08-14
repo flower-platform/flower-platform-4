@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.file.download;
 
 import java.io.File;
@@ -12,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.util.servlet.ResourcesServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +48,7 @@ public class DownloadServlet extends ResourcesServlet {
 		String info = req.getPathInfo();
 		String downloadId = info.substring(1, info.lastIndexOf("/"));
 	
-		DownloadInfo downloadInfo = CorePlugin.getInstance().getDownloadService().getDownloadInfo(downloadId);
+		DownloadInfo downloadInfo = ((DownloadService) CorePlugin.getInstance().getServiceRegistry().getService("downloadService")).getDownloadInfo(downloadId);
 		if (downloadInfo == null) {
 			// no data to download
 			return;

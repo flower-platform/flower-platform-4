@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-Contributors:
-Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!---
 @author Cristian Spiescu
@@ -83,6 +80,8 @@ license-end
 			import mx.states.AddChild;
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
+			import mx.validators.RegExpValidator;
+			import mx.validators.StringValidator;
 			
 			import spark.core.ContentCache;
 			import spark.formatters.DateTimeFormatter;
@@ -90,6 +89,7 @@ license-end
 			import spark.utils.DataItem;
 			import spark.validators.NumberValidator;
 			
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
@@ -113,6 +113,8 @@ license-end
 
 			// needed by .properties
 			NumberValidator;
+			RegExpValidator;
+			StringValidator;
 			
 			// needed by .mindmap
 			TileLayout;
@@ -188,10 +190,14 @@ license-end
 				if (pluginUrlsAsString == null) {
 					throw new Error("No pluginUrls have been specified. Flower Platform cannot start.");
 				}
-								
-				ModalSpinner.addGlobalModalSpinner("Initializing ...", new LogoSpinner(FlexUtilAssets.logoFlower));
+				
+				// INITIALIZATION SPINNER START
+				ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
 				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
+				for (var i:int = 0; i < pluginUrls.length; i++) {
+					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
+				}
 				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
 			}
 		]]>

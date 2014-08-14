@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,16 +11,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.selection {
 	
+	import flash.geom.Rectangle;
+	
 	import mx.core.IVisualElement;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.renderer.selection.AbstractSelectionRenderer;
 	
 	/**
@@ -43,6 +43,10 @@ package org.flowerplatform.flexdiagram.controller.selection {
 			}
 			
 			if (renderer == null) {
+				if (isSelected) {
+					// this will trigger renderer to be displayed in diagram
+					context.diagramShell.makeModelRendererVisible(model, context);
+				}
 				return;
 			}
 			

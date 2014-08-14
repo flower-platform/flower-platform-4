@@ -1,35 +1,44 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexdiagram.mindmap
 {
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.geom.Rectangle;
-	
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
-	import mx.core.IVisualElement;
-	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	import mx.managers.IFocusManagerComponent;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flexutil.focusable_component.FocusableRichText;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
 	
 	import spark.components.DataRenderer;
-	import spark.components.Label;
+	import spark.components.Group;
 	import spark.components.RichText;
 	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider {
+	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider, IFocusManagerComponent {
 					
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
 		
@@ -76,6 +85,13 @@ package org.flowerplatform.flexdiagram.mindmap
 			
 			iconsComponentExtension = new IconsComponentExtension(this);
 			
+			setLayout();
+		}
+		
+		override public function drawFocus(isFocused:Boolean):void {			
+		}
+				
+		public function setLayout():void {
 			var hLayout:HorizontalLayout = new HorizontalLayout();
 			hLayout.gap = 2;
 			hLayout.paddingBottom = 2;
@@ -85,6 +101,10 @@ package org.flowerplatform.flexdiagram.mindmap
 			hLayout.verticalAlign = "middle";
 			
 			this.layout = hLayout;
+		}
+		
+		public function getMainComponent():Group {
+			return this;
 		}
 		
 		public function get diagramShellContext():DiagramShellContext {			
@@ -136,11 +156,11 @@ package org.flowerplatform.flexdiagram.mindmap
 		override protected function createChildren():void {			
 			super.createChildren();
 			
-			labelDisplay = new RichText();		
+			labelDisplay = new FocusableRichText();		
 			labelDisplay.percentHeight = 100;
-			labelDisplay.percentWidth = 100;
-			labelDisplay.setStyle("verticalAlign" , "middle");		
-			addElement(labelDisplay);
+			labelDisplay.percentWidth = 100;			
+			labelDisplay.setStyle("verticalAlign" , "middle");	
+			getMainComponent().addElement(labelDisplay);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
@@ -161,15 +181,22 @@ package org.flowerplatform.flexdiagram.mindmap
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);		
 			
 			if (canDrawCircle()) {
-				graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
-				var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
-				if (side == MindMapDiagramShell.POSITION_LEFT) {
-					graphics.drawCircle(-circleRadius, height/2, circleRadius);
-				} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
-					graphics.drawCircle(width + circleRadius, height/2, circleRadius);
-				}
+				drawLittleCircle();
 			}
 			graphics.endFill();
+		}
+		
+		protected function drawLittleCircle(circleY:Number=NaN):void {
+			if (isNaN(circleY)) {
+				circleY = height/2;
+			}
+			graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
+			var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
+			if (side == MindMapDiagramShell.POSITION_LEFT) {
+				graphics.drawCircle(-circleRadius, circleY, circleRadius);
+			} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
+				graphics.drawCircle(width + circleRadius, circleY, circleRadius);
+			}
 		}
 		
 		protected function drawGraphics(unscaledWidth:Number, unscaledHeight:Number):void {	

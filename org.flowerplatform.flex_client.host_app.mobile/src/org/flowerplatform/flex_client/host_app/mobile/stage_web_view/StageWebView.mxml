@@ -38,6 +38,10 @@
 				jsResult.text = "Result: " + data;
 			}
 			
+			public function additionalCloseHandler():void {
+				// nothing to do
+			}
+			
 		]]>
 	</fx:Script>
 	

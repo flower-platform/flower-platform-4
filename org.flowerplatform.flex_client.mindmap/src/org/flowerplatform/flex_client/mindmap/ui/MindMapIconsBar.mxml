@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-Contributors:
-Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!---
 @author Sebastian Solomon
 -->
-<ns:MindMapIconsComponent xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 xmlns:ns="org.flowerplatform.flex_client.mindmap.ui.*"
-		 skinClass = "org.flowerplatform.flex_client.mindmap.ui.VerticalMindMapIconsSkin"
-		 height="100%">
-	
+<s:List xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" 
+		creationComplete="creationCompleteHandler()" 
+		useVirtualLayout="true"
+		minWidth="16" height="100%" 
+		itemRenderer="org.flowerplatform.flex_client.mindmap.renderer.IconRenderer"
+		click="imageList_clickHandler(event)"
+		horizontalScrollPolicy="off">
+
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayList;
@@ -36,30 +36,77 @@ license-end
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+			import org.flowerplatform.flex_client.mindmap.renderer.IconRenderer;
+			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexdiagram.DiagramShell;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			
 			public  var diagramShell:DiagramShell;
 			
-			override protected function handleClick(result:Object):void {
+			protected function creationCompleteHandler():void {
+				var icons:Array = MindMapConstants.ICONS_LIST.split(';');
+				var iconsDataProvider:Array = new Array();
+				
+				iconsDataProvider.push("removeFirstIconIcon");
+				iconsDataProvider.push("removeLastIconIcon");
+				iconsDataProvider.push("removeAllIconsIcon");
+				for (var i:int=0; i < icons.length; i++) {
+					var image:String = icons[i]
+					iconsDataProvider.push(image);
+				}
+				
+				dataProvider = new ArrayList(iconsDataProvider);
+			}
+			
+			protected function imageList_clickHandler(event:MouseEvent):void {
+				var eventTarget:Object;
+				if (event.target is IconRenderer) {
+					eventTarget = event.target;
+				} else 	if (FlexUtilGlobals.getInstance().isMobile) {
+					eventTarget = event.target.parent.parent.parent;
+				} else {					
+					eventTarget = event.target.parent.parent;
+				}
+				
+				if (eventTarget.hasOwnProperty("data")) {
+					var result:Object = new Object();
+					
+					var iconUrl:String = eventTarget.data;
+					switch (iconUrl) {
+						case "removeFirstIconIcon" :
+							result.type = Utils.REMOVE_FIRST;
+							break;
+						case "removeLastIconIcon" :
+							result.type = Utils.REMOVE_LAST;
+							break;
+						case "removeAllIconsIcon" :
+							result.type = Utils.REMOVE_ALL;
+							break;
+						default:
+							result.type = Utils.ADD;
+							result.iconUrl = Resources.getResourceUrl("images/mindmap/icons/" + iconUrl + ".png");
+							break;
+					}
+					handleClick(result);
+				}
+				selectedIndex = -1;
+			}
+			
+			private function handleClick(result:Object):void {
 				var nodeList:ArrayList = diagramShell.selectedItems;
 				var currentValue:String;
 				
-				for (var i:int=0; i < nodeList.length; i++) {
-					var node:Node = Node(nodeList.getItemAt(i));
-					currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
-					if (node.type == MindMapConstants.MINDMAP_NODE_TYPE) {
-						saveIconProperty(node, currentValue);
+				for (var i:int=0; i < nodeList.length; i++) {					
+					var node:Object = nodeList.getItemAt(i);				
+					if (node is Node && PropertiesPlugin.getInstance().getPropertyDescriptor(Node(node), CoreConstants.ICONS, false)) {						
+						currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
+						CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, CoreConstants.ICONS, currentValue]);
 					}
-					
 				}
-			}
-			
-			protected function saveIconProperty(node:Node, currentValue:String):void {			
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, CoreConstants.ICONS, currentValue]);
 			}
 			
 		]]>
 	</fx:Script>
-	
-</ns:MindMapIconsComponent>
+</s:List>
