@@ -36,11 +36,7 @@ flowerControllers.controller('UserFormCtrl', ['$scope', '$routeParams', '$locati
  		$scope.user = $routeParams.id == 'new' ? new User() : User.get({ id: $routeParams.id });
  		
  		$scope.save = function() {
- 			if ($scope.user.password == null) {
- 				// set password for new user
- 				$scope.user.password = 'user';
- 			}
- 			User.save($scope.user).$promise.then(function(result) {
+ 			User.save($scope.user.messageResult).$promise.then(function(result) {
  				$scope.alert = {
  					message: 'User information for ' + result.firstName + ' ' + result.lastName + ' has been successfully updated.',
  					visible: true,
