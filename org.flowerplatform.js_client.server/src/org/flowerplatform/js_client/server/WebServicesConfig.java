@@ -13,9 +13,9 @@ import org.glassfish.jersey.servlet.ServletContainer;
  * 
  * @author Mariana Gheorghe
  */
-public class ServicesConfig extends ResourceConfig {
+public class WebServicesConfig extends ResourceConfig {
 
-	public ServicesConfig() throws ClassNotFoundException {
+	public WebServicesConfig() throws ClassNotFoundException {
 		for (Object service : CorePlugin.getInstance().getServiceRegistry().getMap().values()) {
 			register(service);
 		}

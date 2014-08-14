@@ -12,9 +12,9 @@ import org.glassfish.jersey.servlet.ServletContainer;
 /**
  * @author Mariana Gheorghe
  */
-public class FlowerServletContainer extends ServletContainer {
+public class WebServicesDispatcherServlet extends ServletContainer {
 
-	private static final long serialVersionUID = 1555129714260240256L;
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

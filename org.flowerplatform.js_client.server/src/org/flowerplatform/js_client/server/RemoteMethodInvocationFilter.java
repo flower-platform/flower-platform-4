@@ -28,7 +28,9 @@ public class RemoteMethodInvocationFilter implements ContainerRequestFilter, Con
 		UriInfo uriInfo = context.getUriInfo();
 		RemoteMethodInvocationInfo remoteMethodInvocationInfo =	new RemoteMethodInvocationInfo();
 		remoteMethodInvocationInfo.setServiceId(uriInfo.getPathSegments().get(0).getPath());
-		remoteMethodInvocationInfo.setMethodName(uriInfo.getPathSegments().get(1).getPath());
+		if (uriInfo.getPathSegments().size() > 1) {
+			remoteMethodInvocationInfo.setMethodName(uriInfo.getPathSegments().get(1).getPath());
+		}
 		remoteMethodInvocationInfo.setHeaders(context.getHeaders());
 		infoThreadLocal.set(remoteMethodInvocationInfo);
 		

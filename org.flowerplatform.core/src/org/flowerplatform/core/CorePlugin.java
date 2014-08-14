@@ -58,6 +58,7 @@ import org.flowerplatform.core.repository.RootPropertiesProvider;
 import org.flowerplatform.core.session.ComposedSessionListener;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.core.session.SessionService;
+import org.flowerplatform.core.users.UserService;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -227,6 +228,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("downloadService", new DownloadService());
 		getServiceRegistry().registerService("uploadService", new UploadService());
 		getServiceRegistry().registerService("preferenceService", new PreferencesServiceRemote());
+		getServiceRegistry().registerService("userService", new UserService());
 		
 		new ResourceUnsubscriber().start();
 		

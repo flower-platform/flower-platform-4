@@ -4,11 +4,11 @@
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
-            alias="/servlet/rest"
-            class="org.flowerplatform.js_client.server.FlowerServletContainer">
+            alias="/ws-dispatcher"
+            class="org.flowerplatform.js_client.server.WebServicesDispatcherServlet">
          <init-param
                name="javax.ws.rs.Application"
-               value="org.flowerplatform.js_client.server.ServicesConfig">
+               value="org.flowerplatform.js_client.server.WebServicesConfig">
          </init-param>
       </servlet>
    </extension>
