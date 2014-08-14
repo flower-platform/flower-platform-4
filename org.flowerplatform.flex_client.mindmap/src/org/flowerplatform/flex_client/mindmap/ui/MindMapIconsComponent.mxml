@@ -25,14 +25,21 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Label;
+			import mx.events.FlexEvent;
+			
 			import spark.components.Group;
 			
+			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.Utils;
+			
+			
 						
 			public var icons:String;
+			private var customIcons:Array;
 			
 			[SkinPart(required="true")]
 			[Bindable]  
@@ -41,15 +48,45 @@
 			[SkinPart(required="true")]
 			[Bindable]
 			public var removeGroup:Group;
-					
+			
+			[Bindable]
+			public var iconsSourceFolder:String = MindMapConstants.REPO_ROOT + "/alina/mindmap_icons/";
+			
+			[Bindable]
+			public var _getCustomIcons:Boolean = true;
+			
+			[Bindable]
+			public var getDefaultIcons:Boolean = true;
+			
+			[Bindable]
+			public var showMessageLabel:Boolean = false;
+						
 			/**
 			 * @author Cristina Constantinescu
 			 * @author Sebastian Solomon
 			 */
 			override protected function createChildren():void {
 				super.createChildren();
-				
-
+			}
+			
+			public function set getCustomIcons(b:Boolean):void {
+				_getCustomIcons = b;
+				if (_getCustomIcons) {
+					CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[],getCustomIconsResultHandler);
+				}
+				else {
+					customIcons = null;
+				}
+				invalidateDisplayList();
+			}
+			
+			public function get getCustomIcons():Boolean {
+				return _getCustomIcons;
+			}
+			
+			private function getCustomIconsResultHandler(list:String):void {
+				customIcons = list.split(';');
+				return;
 			}
 			
 			override protected function partAdded(partName:String, instance:Object):void {
@@ -76,15 +113,39 @@
 				}
 				
 				if (partName == "imageGroup") {
-					var icons:Array = MindMapConstants.ICONS_LIST.split(';');
+					var icons:Array;
+					if (getCustomIcons) {
+						if (customIcons != null) {
+							icons = customIcons.slice(0);
+						}
+						else {
+							CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[],getCustomIconsResultHandler);
+						}
+							
+					}
+					if (getDefaultIcons) {
+						if (icons == null) {
+							icons = MindMapConstants.ICONS_LIST.split(';');
+						}
+						else {
+							var ic1:Array = icons = MindMapConstants.ICONS_LIST.split(';'); 
+							icons = icons.concat(ic1);
+						}
+					}
+					
 					for (var i:int=0; i < icons.length; i++) {
 						var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-						btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-						btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
+//						btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+						btnImage.iconUrl = iconsSourceFolder + icons[i] + ".png";
+						btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
 						btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
 						
 						imageGroup.addElement(btnImage);
 					}
+					
+					var message:Label = new Label();
+					message.text = Resources.getMessage("resource.icon.custom");
+					imageGroup.addElement(message);
 				}
 			}
 			
@@ -118,6 +179,12 @@
 			protected function handleClick(result:Object):void {
 			}
 						
+			protected function preinitializeHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
 		]]>
 	</fx:Script>
 	

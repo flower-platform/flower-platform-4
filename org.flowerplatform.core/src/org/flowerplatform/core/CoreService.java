@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core;
 
+import java.io.File;
+
 /**
  * @author Cristina Constantinescu
  */
@@ -24,4 +26,20 @@ public class CoreService {
 		return new String[] {CoreConstants.APP_VERSION, CoreConstants.API_VERSION};
 	}
 	
+	/**
+	 * @author Alina Bratu
+	 * @return a string containing image names from user workspace, separated by semicolons
+	 */
+	
+	public String getCustomIconsPaths() {
+		String results = "";
+		File[] files = new File("D:\\data\\git\\flower-platform-4\\runtime-workspace\\alina\\mindmap_icons\\").listFiles();
+		System.out.println(files.toString());
+		for (File file : files) {
+		    if (file.isFile() && file.getName().endsWith(".png")) {
+		        results += file.getName().substring(0,file.getName().lastIndexOf('.')) + ";";
+		    }
+		}
+		return results;
+	}
 }

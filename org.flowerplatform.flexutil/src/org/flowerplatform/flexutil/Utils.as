@@ -45,7 +45,6 @@ package org.flowerplatform.flexutil {
 		public static const REMOVE_FIRST:int = 1;
 		public static const REMOVE_LAST:int = 2;
 		public static const REMOVE_ALL:int = 3;
-		public static const CUSTOM:int = 4;
 		public static const ICONS_SEPARATOR:String = ",";
 		
 		/**

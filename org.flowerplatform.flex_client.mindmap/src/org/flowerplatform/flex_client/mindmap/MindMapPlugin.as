@@ -70,6 +70,7 @@ package org.flowerplatform.flex_client.mindmap {
 
 			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
 			CorePlugin.getInstance().serviceLocator.addService("mindmapService");
+			CorePlugin.getInstance().serviceLocator.addService("coreService");
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
