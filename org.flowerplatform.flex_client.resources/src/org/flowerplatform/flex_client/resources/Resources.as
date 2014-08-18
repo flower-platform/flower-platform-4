@@ -426,7 +426,7 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/arrowUp.png")]
 		public static const arrowUpIcon:Class;
 		
-		[Embed(source="/mindmap/images.png")]
+		[Embed(source="/mindmap/ExternalImageAddAction.png")]
 		public static const mindmap_customIconsIcon:Class;
 				
 		public static const mindmapIcons:Object = {

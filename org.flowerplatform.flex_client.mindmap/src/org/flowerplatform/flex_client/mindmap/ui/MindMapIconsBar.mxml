@@ -94,7 +94,7 @@
 						case "customIconsIcon":
 							
 							var repo:String = "user/repo";
-							if (diagramShell.selectedItems != null) {
+							if (diagramShell.selectedItems != null && PropertiesPlugin.getInstance().getPropertyDescriptor(Node(diagramShell.selectedItems.getItemAt(0)), CoreConstants.ICONS, false)) {
 								repo = CorePlugin.getInstance().getRepository(diagramShell.selectedItems.getItemAt(0).nodeUri);
 								var customView:MindMapIconsView = new MindMapIconsView();
 								customView.getDefaultIcons = false;
@@ -118,7 +118,6 @@
 							handleClick(result);
 							break;
 					}
-//					handleClick(result);
 				}
 				selectedIndex = -1;
 			}

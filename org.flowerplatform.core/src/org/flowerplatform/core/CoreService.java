@@ -42,9 +42,7 @@ public class CoreService {
 		        results += file.getName().substring(0,file.getName().lastIndexOf('.')) + ";";
 		    }
 		}
-		if (files.length == 1) {
-			results = results.substring(0, results.lastIndexOf(';'));
-		}
+		results = results.substring(0, results.lastIndexOf(';'));
 		return results;
 	}
 }
