@@ -32,6 +32,7 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 			super();
 			
 			label = Resources.getMessage("codesync.sdiff.action.createSdiffFromWorkspaceAndPatch");
+			icon = Resources.gitDiffFromWorkspaceAndPatch;
 		}
 		
 		override public function get visible():Boolean {
@@ -41,7 +42,7 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 					return true;
 				}
 				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(CodeSyncConstants.CATEGORY_CODESYNC) >= 0;
+								 .categories.getItemIndex(CodeSyncConstants.CATEGORY_CODESYNC) >= 0;
 			}
 			return false;
 		}
@@ -49,11 +50,8 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var dialog:CreateStructureDiffDialog = new CreateStructureDiffDialog();
-			var index:int = node.nodeUri.indexOf("|");
-			if (index < 0) {
-				index = node.nodeUri.length;
-			}
-			dialog.repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+			dialog.repo = CorePlugin.getInstance().getRepository(node.nodeUri);
+			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(dialog)
 				.setWidth(800)

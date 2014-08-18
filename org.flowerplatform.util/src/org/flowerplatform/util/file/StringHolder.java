@@ -31,7 +31,7 @@ public class StringHolder extends FileHolder {
 	
 	@Override
 	public boolean exists() {
-		return true;
+		return content != null;
 	}
 
 	@Override

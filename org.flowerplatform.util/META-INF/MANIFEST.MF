@@ -20,10 +20,10 @@ Export-Package: ch.qos.logback.core,
  org.flowerplatform.util.regex,
  org.flowerplatform.util.servlet,
  org.slf4j
-Bundle-ClassPath: lib/logback-core-1.0.7.jar,
- lib/logback-classic-1.0.7.jar,
- lib/slf4j-api-1.6.4.jar,
- lib/commons-io-2.4.jar,
+Bundle-ClassPath: lib-from-maven/commons-io-2.4.jar,
+ lib-from-maven/logback-classic-1.1.2.jar,
+ lib-from-maven/logback-core-1.1.2.jar,
+ lib-from-maven/slf4j-api-1.7.6.jar,
  .
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime

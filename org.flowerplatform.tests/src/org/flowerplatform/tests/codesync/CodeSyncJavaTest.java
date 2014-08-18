@@ -15,7 +15,11 @@
  */
 package org.flowerplatform.tests.codesync;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.codesync.Match.MatchType._1MATCH_ANCESTOR;
+import static org.flowerplatform.codesync.Match.MatchType._1MATCH_LEFT;
+import static org.flowerplatform.codesync.Match.MatchType._1MATCH_RIGHT;
+import static org.flowerplatform.codesync.Match.MatchType._2MATCH_ANCESTOR_LEFT;
+import static org.flowerplatform.codesync.Match.MatchType._2MATCH_ANCESTOR_RIGHT;
 import static org.flowerplatform.codesync.Match.MatchType._3MATCH;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.ANNOTATION_VALUE_VALUE;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.SUPER_CLASS;
@@ -26,7 +30,6 @@ import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.DIR;
 import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.PROJECT;
 import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.codeSyncService;
 import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.getChild;
-import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.testConflicts;
 import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.testMatchTree;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,14 +42,16 @@ import org.apache.commons.io.FileUtils;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.Match;
-import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.Utils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -64,156 +69,120 @@ public class CodeSyncJavaTest {
 	
 	private static final String resourceNodeId = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
+	@BeforeClass
+	public static void beforeClassMethod() {
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId",  resourceNodeId,  new ServiceContext<ResourceService>());
+	}
+	
 	@Test
 	public void testMatchWhenSync() throws IOException {
-		CodeSyncPlugin.getInstance().addSrcDir(INITIAL);
-		String fullyQualifiedName = PROJECT + "/" + INITIAL /*+ "/" + SOURCE_FILE*/;
+		String fullyQualifiedName = PROJECT + "/" + INITIAL;		
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { INITIAL }).getNodeUri();
+
+		Match match = codeSyncService.synchronize(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
 		
-		Match match = codeSyncService.synchronize(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
+		TestMatch expected = new TestMatch(INITIAL, _3MATCH);
+		TestMatch cls = expected.addChild("Test.java", _3MATCH).addChild("Test", _3MATCH);
 		
-		assertEquals(1, match.getSubMatches().size());
+		cls.addChild("Deprecated", _3MATCH).addSibling("public", _3MATCH).addSibling("ITest", _3MATCH);
 		
-		Pair[] typeList = {
-				new Pair(_3MATCH, 0),			// src
-					new Pair(_3MATCH, 1),				// Test.java
-						new Pair(_3MATCH, 2),				// @Deprecated public class Test
-						
-							new Pair(_3MATCH, 3),				// @Deprecated
-							new Pair(_3MATCH, 3),				// public
-							new Pair(_3MATCH, 3),				// ITest
-						
-							new Pair(_3MATCH, 3),				// @OneToMany(mappedBy="test") public int test(String st)
-								new Pair(_3MATCH, 4),				// public
-								new Pair(_3MATCH, 4),				// @OneToMany
-									new Pair(_3MATCH, 5),				// mappedBy = test
-								new Pair(_3MATCH, 4),				// String st
-							
-							new Pair(_3MATCH, 3),				// @OverrideAnnotationOf(mappedBy="test") public static Test getTest()
-								new Pair(_3MATCH, 4),				// static	
-								new Pair(_3MATCH, 4),				// @OverrideAnnotationOf
-									new Pair(_3MATCH, 5),				// x+y
-								new Pair(_3MATCH, 4),				// public
-								
-							new Pair(_3MATCH, 3),				// private int y
-								new Pair(_3MATCH, 4),				// private
-								
-							new Pair(_3MATCH, 3), 			// private int x
-								new Pair(_3MATCH, 4),				// private
-								
-							
-							
-				};
-		testMatchTree(match, typeList, true);
+		cls.addChild("test(String)", _3MATCH)
+				.addChild("st", _3MATCH)
+				.addSibling("public", _3MATCH)
+				.addSibling("OneToMany", _3MATCH)
+					.addChild("mappedBy", _3MATCH);
+				
+		cls.addChild("getTest()", _3MATCH)
+				.addChild("public", _3MATCH)
+				.addSibling("static", _3MATCH)
+				.addSibling("OverrideAnnotationOf", _3MATCH)
+					.addChild("_", _3MATCH);
+
+		cls.addChild("x", _3MATCH).addChild("private", _3MATCH);
+		cls.addChild("y", _3MATCH).addChild("private", _3MATCH);
+		
+		testMatchTree(match, expected, true, false);
 	}
 	
 	@Test
 	public void testMatchNoConflicts() {
-		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS);
-		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS /*+ "/" + SOURCE_FILE*/;
-
+		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS;
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { MODIFIED_NO_CONFLICTS }).getNodeUri();
+		
 		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
 		
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
 		
-		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, false);
+		Match match = codeSyncService.generateMatch(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, false);
 		
-		Pair[] typeList = {
-				new Pair(_3MATCH, 0),					// src
-					new Pair(_3MATCH, 1),					// Test.java
-						new Pair(_3MATCH, 2),					// @Deprecated public class Test
-						
-//							new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 3),		// @Deprecated (removed from model)
-//							new Pair(_3MATCH, 3),						// public
-//							new Pair(MatchType._1MATCH_LEFT, 3),				// @Deprecated(test) (added to model)
-//								new Pair(MatchType._1MATCH_LEFT, 4),				// test
-						
-							new Pair(_3MATCH, 3),						// @Deprecated
-							new Pair(_3MATCH, 3),						// public
-							new Pair(MatchType._2MATCH_ANCESTOR_LEFT, 3),		// ITest
-							new Pair(MatchType._1MATCH_LEFT, 3),				// IFromModel
-							new Pair(MatchType._1MATCH_RIGHT, 3),				// IFromSource
-						
-							new Pair(_3MATCH, 3),					// @OneToMany(mappedBy="test") public int test(String st) {
-								new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 4),		// removed public from model
-								new Pair(_3MATCH, 4),					// @OneToMany
-									new Pair(_3MATCH, 5),					// mappedBy
-									new Pair(MatchType._1MATCH_LEFT, 5),				// orphanRemoval
-								new Pair(MatchType._1MATCH_LEFT, 4),				// added private to model
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// added static to source
-								new Pair(_3MATCH, 4),					// String st
-									new Pair(MatchType._1MATCH_RIGHT, 5),				// final (added to source)
-								
-							new Pair(_3MATCH, 3),					// @OverrideAnnotationOf(x+y) public static Test getTest() {
-								new Pair(MatchType._1MATCH_ANCESTOR, 4),			// removed static from model and source
-								new Pair(_3MATCH, 4),						// @OverrideAnnotationOf
-									new Pair(_3MATCH, 5),						// x+y
-//								new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 4),		// @OverrideAnnotationOf(x+y) (removed from model)
-//									new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 5),		// x+y
-//								new Pair(MatchType._1MATCH_LEFT, 4),				// @overrideAnnotationOf(valu1=true, value2=false) (added to model)
-//									new Pair(MatchType._1MATCH_LEFT, 5),				// value1 (added to model)
-//									new Pair(MatchType._1MATCH_LEFT, 5),				// value2 (added to model)
-								new Pair(_3MATCH, 4),						// public
-								new Pair(MatchType._1MATCH_LEFT, 4),				// added param to model
-								
-							new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 3),		// private int y (removed from model)
-								new Pair(MatchType._2MATCH_ANCESTOR_RIGHT, 4),		// private
-								
-							new Pair(_3MATCH, 3),					// private Test x <> private int x
-								new Pair(_3MATCH, 4),					// private
-								
-							new Pair(MatchType._1MATCH_LEFT, 3),				// public int t (added to model)
-								new Pair(MatchType._1MATCH_LEFT, 4),				// public
-							
-							new Pair(MatchType._1MATCH_LEFT, 3),				// public class InternalClsFromModel
-								
-							new Pair(MatchType._1MATCH_RIGHT, 3),				// public enum ActionType
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// public
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// public Object diffAction
-									new Pair(MatchType._1MATCH_RIGHT, 5), 				// public
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// private ActionType(Object action)
-									new Pair(MatchType._1MATCH_RIGHT, 5),				// Object action
-									new Pair(MatchType._1MATCH_RIGHT, 5), 				// private
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// ACTION_TYPE_COPY_LEFT_RIGHT(new Test())
-									new Pair(MatchType._1MATCH_RIGHT, 5),				// new Test()
-								new Pair(MatchType._1MATCH_RIGHT, 4), 				// ACTION_TYPE_COPY_RIGHT_LEFT(new InternalClsFromSource());
-									new Pair(MatchType._1MATCH_RIGHT, 5),				// new InternalClsFromSource()
-								
-							new Pair(MatchType._1MATCH_RIGHT, 3),				// public class InternalClsFromSource
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// public
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// public int x
-									new Pair(MatchType._1MATCH_RIGHT, 5), 				// public
-								
-							new Pair(MatchType._1MATCH_RIGHT, 3),				// public @interface AnnotationTest
-								new Pair(MatchType._1MATCH_RIGHT, 4), 				// boolean value1() default true
-								new Pair(MatchType._1MATCH_RIGHT, 4), 				// boolean value2() default false
-								new Pair(MatchType._1MATCH_RIGHT, 4),				// public
-								
-							new Pair(MatchType._1MATCH_RIGHT, 3),				// private int z (added to source)
-								new Pair(MatchType._1MATCH_RIGHT, 4), 				// private
-		};
-		testMatchTree(match, typeList, false);
+		TestMatch expected = new TestMatch(MODIFIED_NO_CONFLICTS, _3MATCH);
+		TestMatch cls = expected.addChild("Test.java", _3MATCH).addChild("Test", _3MATCH);
+		
+		cls.addChild("Deprecated", _3MATCH)
+			.addSibling("public", _3MATCH)
+			.addSibling("ITest", _2MATCH_ANCESTOR_LEFT)
+			.addSibling("IFromModel", _1MATCH_LEFT)
+			.addSibling("IFromSource", _1MATCH_RIGHT);
+		
+		TestMatch test = cls.addChild("test(String)", _3MATCH);
+		test.addChild("st", _3MATCH).addChild("final", _1MATCH_RIGHT);
+		test.addChild("public", _2MATCH_ANCESTOR_RIGHT)
+			.addSibling("private", _1MATCH_LEFT)
+			.addSibling("static", _1MATCH_RIGHT)
+			.addSibling("OneToMany", _3MATCH)
+				.addChild("mappedBy", _3MATCH)
+				.addSibling("orphanRemoval", _1MATCH_LEFT);
+		
+		TestMatch getTest = cls.addChild("getTest()", _3MATCH);
+		getTest.addChild("a", _1MATCH_LEFT);
+		getTest.addChild("public", _3MATCH)
+			.addSibling("static", _1MATCH_ANCESTOR)
+			.addSibling("OverrideAnnotationOf", _3MATCH)
+				.addChild("_", _3MATCH);
+
+		cls.addChild("x", _3MATCH).addChild("private", _3MATCH);
+		cls.addChild("y", _2MATCH_ANCESTOR_RIGHT).addChild("private", _2MATCH_ANCESTOR_RIGHT);
+		cls.addChild("t", _1MATCH_LEFT).addChild("public", _1MATCH_LEFT);
+		cls.addChild("z", _1MATCH_RIGHT).addChild("private", _1MATCH_RIGHT);
+		
+		TestMatch actionType = cls.addChild("ActionType", _1MATCH_RIGHT);
+		actionType.addChild("public", _1MATCH_RIGHT);
+		actionType.addChild("ActionType(Object)", _1MATCH_RIGHT).addChild("private", _1MATCH_RIGHT).addSibling("action", _1MATCH_RIGHT);
+		actionType.addChild("diffAction", _1MATCH_RIGHT).addChild("public", _1MATCH_RIGHT);
+		actionType.addChild("ACTION_TYPE_COPY_LEFT_RIGHT", _1MATCH_RIGHT).addChild("new Test()", _1MATCH_RIGHT);
+		actionType.addChild("ACTION_TYPE_COPY_RIGHT_LEFT", _1MATCH_RIGHT).addChild("new InternalClsFromSource()", _1MATCH_RIGHT);
+		
+		cls.addChild("InternalClsFromSource", _1MATCH_RIGHT)
+			.addChild("public", _1MATCH_RIGHT)
+			.addSibling("x", _1MATCH_RIGHT)
+				.addChild("private", _1MATCH_RIGHT);
+		
+		cls.addChild("AnnotationTest", _1MATCH_RIGHT)
+			.addChild("public", _1MATCH_RIGHT)
+			.addSibling("value1", _1MATCH_RIGHT)
+			.addSibling("value2", _1MATCH_RIGHT);
+		
+		testMatchTree(match, expected, false, false);
 		assertFalse("Conflicts not expected!", match.isChildrenConflict());
 	}
 
 	@Test
 	public void testMatchNoConflictsAndPerformSync() throws Exception {
-		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
-		
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC /*+ "/" + SOURCE_FILE*/;
-
 		File dir = CodeSyncTestSuite.getFile(fullyQualifiedName);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { MODIFIED_NO_CONFLICTS_PERFORM_SYNC }).getNodeUri();
 		
 		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
-		
-//		File cseLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().CSE_MAPPING_FILE_LOCATION);
-//		File aceLocation = (File) CodeSyncPlugin.getInstance().getProjectAccessController().getFile(project, CodeSyncPlugin.getInstance().ACE_FILE_LOCATION);
 
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
-		
-		codeSyncService.synchronize(resourceNodeId, dir, CodeSyncJavaConstants.JAVA, true);
-		
+
+		codeSyncService.synchronize(nodeUri, dir, CodeSyncJavaConstants.JAVA, true);
+
 		String expected = TestUtil.readFile(DIR + TestUtil.EXPECTED + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC + "/" + SOURCE_FILE);
 		String actual = FileUtils.readFileToString(new File(dir, SOURCE_FILE));
 		assertEquals("Source not in sync", expected, actual);
@@ -241,11 +210,6 @@ public class CodeSyncJavaTest {
 //		nodeService.setProperty(val, NAME, "_");
 //		nodeService.setProperty(val, ANNOTATION_VALUE_VALUE, "test");
 
-		// add class
-		Node internalCls = new Node(Utils.getUri(CodeSyncJavaConstants.CLASS, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.CLASS);
-		nodeService.addChild(cls, internalCls, new ServiceContext<NodeService>(nodeService));
-		nodeService.setProperty(internalCls, CoreConstants.NAME, "InternalClassFromModel", new ServiceContext<NodeService>(nodeService));
-
 		// change typed element type
 		Node x = getChild(cls, new String[] {"x"});
 		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test", new ServiceContext<NodeService>(nodeService));
@@ -256,7 +220,7 @@ public class CodeSyncJavaTest {
 		nodeService.addChild(test, privateModif, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(privateModif, CoreConstants.NAME, "private", new ServiceContext<NodeService>(nodeService));
 		Node publicModif = getChild(test, new String[] {"public"});
-		nodeService.setProperty(publicModif, REMOVED, true, new ServiceContext<NodeService>(nodeService));
+		nodeService.removeChild(test, publicModif, new ServiceContext<NodeService>(nodeService));
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
@@ -272,7 +236,7 @@ public class CodeSyncJavaTest {
 		nodeService.setProperty(param, CoreConstants.NAME, "a", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int", new ServiceContext<NodeService>(nodeService));
 		Node staticModif = getChild(getTest, new String[] {"static"});
-		nodeService.setProperty(staticModif, REMOVED, true, new ServiceContext<NodeService>(nodeService));
+		nodeService.removeChild(getTest, staticModif, new ServiceContext<NodeService>(nodeService));
 //		nodeService.setProperty(getTest, DOCUMENTATION, "modified from model\n@author test");
 		
 //				featureChange = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createFeatureChange();
@@ -308,95 +272,61 @@ public class CodeSyncJavaTest {
 		
 		// remove element
 		Node y = getChild(cls, new String[] {"y"});
-		nodeService.setProperty(y, REMOVED, true, new ServiceContext<NodeService>(nodeService));
+		nodeService.removeChild(cls, y, new ServiceContext<NodeService>(nodeService));
 	}
 	
 	@Test
 	public void testMatchConflicts() {
-		CodeSyncPlugin.getInstance().addSrcDir(MODIFIED_CONFLICTS);
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_CONFLICTS /*+ "/" + SOURCE_FILE*/;
-
+		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		String nodeUri = getChild(node, new String[] { MODIFIED_CONFLICTS }).getNodeUri();
+		
 		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);		
 		
 		// simulate model modifications
 		
 		// change super class
-		Node cls = getChild(root, new String[] {MODIFIED_CONFLICTS, SOURCE_FILE, "Test"});
-		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext<NodeService>(nodeService));
+		Node test = getChild(root, new String[] {MODIFIED_CONFLICTS, SOURCE_FILE, "Test"});
+		nodeService.setProperty(test, SUPER_CLASS, "SuperClassFromModel", new ServiceContext<NodeService>(nodeService));
 		
-//		// change typed element type
-		Node x = getChild(cls, new String[] {"x"});
+		// change typed element type
+		Node x = getChild(test, new String[] {"x"});
 		nodeService.setProperty(x, TYPED_ELEMENT_TYPE, "Test", new ServiceContext<NodeService>(nodeService));
 		
-//		// change typed element type
-		Node y = getChild(cls, new String[] {"y"});
+		// change typed element type
+		Node y = getChild(test, new String[] {"y"});
 		nodeService.setProperty(y, TYPED_ELEMENT_TYPE, "Test", new ServiceContext<NodeService>(nodeService));
 		
 		// change modifiers + annotations
-		Node test = getChild(cls, new String[] {"test(String)"});
-		Node a = getChild(test, new String[] {"OneToMany"});
+		Node testFunc = getChild(test, new String[] {"test(String)"});
+		Node a = getChild(testFunc, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
 
-		Match match = codeSyncService.generateMatch(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, false);
+		Match match = codeSyncService.generateMatch(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
 		
-		Pair[] typeList = {
-				new Pair(_3MATCH, 0),				// src
-					new Pair(_3MATCH, 1),				// Test.java
-						new Pair(_3MATCH, 2),				// @Deprecated public class Test
-						
-							new Pair(_3MATCH, 3),				// @Deprecated
-							new Pair(_3MATCH, 3),				// public
-							new Pair(_3MATCH, 3),				// ITest
-						
-							new Pair(_3MATCH, 3),				// @OneToMany(mappedBy="test") public int test(String st)
-								new Pair(_3MATCH, 4),				// public
-								new Pair(_3MATCH, 4),				// @OneToMany
-									new Pair(_3MATCH, 5),				// mappedBy = test
-								new Pair(_3MATCH, 4),				// String st
-							
-							new Pair(_3MATCH, 3),				// @OverrideAnnotationOf(mappedBy="test") public static Test getTest()
-								new Pair(_3MATCH, 4),				// public
-								new Pair(_3MATCH, 4),				// @OverrideAnnotationOf
-									new Pair(_3MATCH, 5),				// x+y
-								new Pair(_3MATCH, 4),				// static
-								
-							new Pair(_3MATCH, 3),				// private int y
-								new Pair(_3MATCH, 4),				// private
-								
-							new Pair(_3MATCH, 3), 				// private int x
-								new Pair(_3MATCH, 4),				// private
-				};
-		boolean[] conflicts = {
-				false,
-					false,
-						true,			// superClass changed on model and source
-						
-							false,
-							false,
-							false,
-							
-							false,
-								false,
-								false,
-									true,	// annotation value changed on model and source
-								false,
-							
-							false,
-								false,
-								false,
-									false,
-								false,
-							
-							true,			// type changed on model and source
-								false,
-							
-							false,			
-								false,
-			};
+		TestMatch expected = new TestMatch(INITIAL, _3MATCH, false, true);
+		TestMatch cls = expected.addChild("Test.java", _3MATCH, false, true).addChild("Test", _3MATCH, true, true);
+		
+		cls.addChild("Deprecated", _3MATCH).addSibling("public", _3MATCH).addSibling("ITest", _3MATCH);
+		
+		cls.addChild("test(String)", _3MATCH, false, true)
+				.addChild("st", _3MATCH)
+				.addSibling("public", _3MATCH)
+				.addSibling("OneToMany", _3MATCH, false, true)
+					.addChild("mappedBy", _3MATCH, true, false);
+				
+		cls.addChild("getTest()", _3MATCH)
+				.addChild("public", _3MATCH)
+				.addSibling("static", _3MATCH)
+				.addSibling("OverrideAnnotationOf", _3MATCH)
+					.addChild("_", _3MATCH);
+
+		cls.addChild("x", _3MATCH).addChild("private", _3MATCH);
+		cls.addChild("y", _3MATCH, true, false).addChild("private", _3MATCH);
+		
 		assertTrue("Conflicts expected!", match.isChildrenConflict());
-		testMatchTree(match, typeList, false);
-		testConflicts(match, conflicts);
+		testMatchTree(match, expected, false, true);
 	}
 	
 }

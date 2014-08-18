@@ -32,6 +32,9 @@ package org.flowerplatform.flex_client.core {
 		public static const REPOSITORY_TYPE:String = "repository";
 		public static const CODE_TYPE:String = "code";
 		
+		// scheme for virtual (non-subscribable) nodes
+		public static const VIRTUAL_NODE_SCHEME:String = "virtual";
+		
 		//////////////////////////////////
 		// Node properties
 		//////////////////////////////////
@@ -101,6 +104,8 @@ package org.flowerplatform.flex_client.core {
 		// Resource updates
 		//////////////////////////////////
 	
+		public static const UPDATE_PROPERTY:String = "UPDATED";		
+		public static const UPDATE_REQUEST_REFRESH:String = "REQUEST_REFRESH";		
 		public static const UPDATE_CHILD_ADDED:String = "ADDED";
 		public static const UPDATE_CHILD_REMOVED:String = "REMOVED";
 		

@@ -1,6 +1,6 @@
-<map version="freeplane 1.2.0">
+<map version="freeplane 1.3.0">
 <!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
-<node TEXT="" STYLE_REF="In progress (Yellow)" FOLDED="false" ID="ID_85319927" CREATED="1325603285827" MODIFIED="1389389219415" STYLE="bubble"><hook NAME="MapStyle">
+<node TEXT="" STYLE_REF="In progress (Yellow)" FOLDED="false" ID="ID_1872910550" CREATED="1325603285827" MODIFIED="1389389219415" STYLE="bubble"><hook NAME="MapStyle">
     <properties show_icon_for_attributes="true" show_note_icons="true" show_notes_in_map="false"/>
 
 <map_styles>
@@ -71,6 +71,7 @@
 </map_styles>
 </hook>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <richcontent nodeType="NODE">
     <html>
         <head/>
@@ -84,11 +85,10 @@
         </body>
     </html>
 </richcontent>
-<node TEXT="initial" FOLDED="true" POSITION="right" ID="ID_1494658957" CREATED="1392727571546" MODIFIED="1392727571546">
+<node TEXT="initial" FOLDED="true" POSITION="right" ID="ID_1494658957" CREATED="1392727571546" MODIFIED="1406814414120">
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
-<attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
-<attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="initial"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <node TEXT="Test.java" ID="ID_663546393" CREATED="1392727572118" MODIFIED="1392727572118">
@@ -179,7 +179,7 @@
 <attribute NAME="name" VALUE="static"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="OverrideAnnotationOf" ID="ID_390819032" CREATED="1392727572451" MODIFIED="1392727572451">
+<node TEXT="OverrideAnnotationOf" FOLDED="true" ID="ID_390819032" CREATED="1392727572451" MODIFIED="1392727572451">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572451" OBJECT="java.lang.Long|1392727572451"/>
@@ -202,7 +202,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="y" ID="ID_1338324468" CREATED="1392727572461" MODIFIED="1392727572461">
+<node TEXT="y" FOLDED="true" ID="ID_1338324468" CREATED="1392727572461" MODIFIED="1392727572461">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -217,7 +217,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="x" ID="ID_1370132090" CREATED="1392727572471" MODIFIED="1392727572471">
+<node TEXT="x" FOLDED="true" ID="ID_1370132090" CREATED="1392727572471" MODIFIED="1392727572471">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -235,15 +235,14 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_no_conflicts" FOLDED="true" POSITION="right" ID="ID_1674185911" CREATED="1392727571546" MODIFIED="1392730370672">
+<node TEXT="modified_no_conflicts" FOLDED="true" POSITION="right" ID="ID_1674185911" CREATED="1392727571546" MODIFIED="1406816637943">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
-<attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
-<attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="modified_no_conflicts"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="Test.java" ID="ID_1480055610" CREATED="1392727572118" MODIFIED="1392727572118">
+<node TEXT="Test.java" ID="ID_1480055610" CREATED="1392727572118" MODIFIED="1406816637943">
 <attribute NAME="nodeType" VALUE="codesyncFile"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -278,7 +277,7 @@
 <attribute NAME="name" VALUE="ITest"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="test(String)" ID="ID_939047944" CREATED="1392727572421" MODIFIED="1392727572421">
+<node TEXT="test(String)" FOLDED="true" ID="ID_939047944" CREATED="1392727572421" MODIFIED="1392727572421">
 <attribute NAME="nodeType" VALUE="javaOperation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572441" OBJECT="java.lang.Long|1392727572441"/>
@@ -293,7 +292,7 @@
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="OneToMany" ID="ID_26617720" CREATED="1392727572431" MODIFIED="1392727572431">
+<node TEXT="OneToMany" FOLDED="true" ID="ID_26617720" CREATED="1392727572431" MODIFIED="1392727572431">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572441" OBJECT="java.lang.Long|1392727572441"/>
@@ -318,7 +317,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="getTest()" ID="ID_1474368103" CREATED="1392727572441" MODIFIED="1392727572441">
+<node TEXT="getTest()" FOLDED="true" ID="ID_1474368103" CREATED="1392727572441" MODIFIED="1392727572441">
 <attribute NAME="nodeType" VALUE="javaOperation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572461" OBJECT="java.lang.Long|1392727572461"/>
@@ -333,7 +332,7 @@
 <attribute NAME="name" VALUE="static"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="OverrideAnnotationOf" ID="ID_133914534" CREATED="1392727572451" MODIFIED="1392727572451">
+<node TEXT="OverrideAnnotationOf" FOLDED="true" ID="ID_133914534" CREATED="1392727572451" MODIFIED="1392727572451">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572451" OBJECT="java.lang.Long|1392727572451"/>
@@ -356,7 +355,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="y" ID="ID_452917606" CREATED="1392727572461" MODIFIED="1392727572461">
+<node TEXT="y" FOLDED="true" ID="ID_452917606" CREATED="1392727572461" MODIFIED="1392727572461">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -371,7 +370,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="x" ID="ID_1860743170" CREATED="1392727572471" MODIFIED="1392727572471">
+<node TEXT="x" FOLDED="true" ID="ID_1860743170" CREATED="1392727572471" MODIFIED="1392727572471">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -389,21 +388,20 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_no_conflicts_perform_sync" FOLDED="true" POSITION="right" ID="ID_605803515" CREATED="1392727571546" MODIFIED="1392737861202">
+<node TEXT="modified_no_conflicts_perform_sync" FOLDED="true" POSITION="right" ID="ID_605803515" CREATED="1392727571546" MODIFIED="1406814422842">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="202"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
-<attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
-<attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="modified_no_conflicts_perform_sync"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="Test.java" ID="ID_1207452859" CREATED="1392727572118" MODIFIED="1392727572118">
+<node TEXT="Test.java" FOLDED="true" ID="ID_1207452859" CREATED="1392727572118" MODIFIED="1392727572118">
 <attribute NAME="nodeType" VALUE="codesyncFile"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="Test.java"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="Test" ID="ID_1119321011" CREATED="1392727572411" MODIFIED="1392730501783">
+<node TEXT="Test" FOLDED="true" ID="ID_1119321011" CREATED="1392727572411" MODIFIED="1392730501783">
 <attribute_layout NAME_WIDTH="99" VALUE_WIDTH="119"/>
 <attribute NAME="nodeType" VALUE="javaClass"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
@@ -432,7 +430,7 @@
 <attribute NAME="name" VALUE="ITest"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="test(String)" ID="ID_1281354859" CREATED="1392727572421" MODIFIED="1392727572421">
+<node TEXT="test(String)" FOLDED="true" ID="ID_1281354859" CREATED="1392727572421" MODIFIED="1392727572421">
 <attribute NAME="nodeType" VALUE="javaOperation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572441" OBJECT="java.lang.Long|1392727572441"/>
@@ -447,7 +445,7 @@
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="OneToMany" ID="ID_1535679482" CREATED="1392727572431" MODIFIED="1392727572431">
+<node TEXT="OneToMany" FOLDED="true" ID="ID_1535679482" CREATED="1392727572431" MODIFIED="1392727572431">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572441" OBJECT="java.lang.Long|1392727572441"/>
@@ -472,7 +470,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="getTest()" ID="ID_1464033613" CREATED="1392727572441" MODIFIED="1392727572441">
+<node TEXT="getTest()" FOLDED="true" ID="ID_1464033613" CREATED="1392727572441" MODIFIED="1392727572441">
 <attribute NAME="nodeType" VALUE="javaOperation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572461" OBJECT="java.lang.Long|1392727572461"/>
@@ -487,7 +485,7 @@
 <attribute NAME="name" VALUE="static"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="OverrideAnnotationOf" ID="ID_638014237" CREATED="1392727572451" MODIFIED="1392727572451">
+<node TEXT="OverrideAnnotationOf" FOLDED="true" ID="ID_638014237" CREATED="1392727572451" MODIFIED="1392727572451">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572451" OBJECT="java.lang.Long|1392727572451"/>
@@ -510,7 +508,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="y" ID="ID_463680168" CREATED="1392727572461" MODIFIED="1392727572461">
+<node TEXT="y" FOLDED="true" ID="ID_463680168" CREATED="1392727572461" MODIFIED="1392727572461">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -525,7 +523,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="x" ID="ID_393247477" CREATED="1392727572471" MODIFIED="1392727572471">
+<node TEXT="x" FOLDED="true" ID="ID_393247477" CREATED="1392727572471" MODIFIED="1392727572471">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -543,21 +541,22 @@
 </node>
 </node>
 </node>
-<node TEXT="modified_conflicts" FOLDED="true" POSITION="right" ID="ID_79630243" CREATED="1392727571546" MODIFIED="1392736415327">
+<node TEXT="modified_conflicts" FOLDED="true" POSITION="right" ID="ID_79630243" CREATED="1392727571546" MODIFIED="1406814425409">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="121"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
-<attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
-<attribute NAME="added" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="modified_conflicts"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <node TEXT="Test.java" ID="ID_1272448822" CREATED="1392727572118" MODIFIED="1392727572118">
 <attribute NAME="nodeType" VALUE="codesyncFile"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="Test.java"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="Test" ID="ID_894896233" CREATED="1392727572411" MODIFIED="1392730501783">
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="Test" ID="ID_1620235105" CREATED="1392727572411" MODIFIED="1392730501783">
 <attribute_layout NAME_WIDTH="99" VALUE_WIDTH="119"/>
 <attribute NAME="nodeType" VALUE="javaClass"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
@@ -565,28 +564,28 @@
 <attribute NAME="name" VALUE="Test"/>
 <attribute NAME="superClass" VALUE="Test2"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="Deprecated" ID="ID_1570312404" CREATED="1392727572411" MODIFIED="1392727572411">
+<node TEXT="Deprecated" ID="ID_1601003862" CREATED="1392727572411" MODIFIED="1392727572411">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572411" OBJECT="java.lang.Long|1392727572411"/>
 <attribute NAME="name" VALUE="Deprecated"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="public" ID="ID_231540696" CREATED="1392727572421" MODIFIED="1392727572421">
+<node TEXT="public" ID="ID_914440887" CREATED="1392727572421" MODIFIED="1392727572421">
 <attribute NAME="nodeType" VALUE="javaModifier"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572421" OBJECT="java.lang.Long|1392727572421"/>
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="ITest" ID="ID_672675277" CREATED="1392727572421" MODIFIED="1399565036443">
+<node TEXT="ITest" ID="ID_1396460845" CREATED="1392727572421" MODIFIED="1399565021349">
 <attribute NAME="nodeType" VALUE="javaSuperInterface"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572421" OBJECT="java.lang.Long|1392727572421"/>
 <attribute NAME="name" VALUE="ITest"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="test(String)" ID="ID_1402638418" CREATED="1392727572421" MODIFIED="1392727572421">
+<node TEXT="test(String)" FOLDED="true" ID="ID_305164907" CREATED="1392727572421" MODIFIED="1392727572421">
 <attribute NAME="nodeType" VALUE="javaOperation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572441" OBJECT="java.lang.Long|1392727572441"/>
@@ -594,20 +593,20 @@
 <attribute NAME="typedElementType" VALUE="int"/>
 <attribute NAME="hasBody" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="public" ID="ID_140042987" CREATED="1392727572431" MODIFIED="1392727572431">
+<node TEXT="public" ID="ID_465871933" CREATED="1392727572431" MODIFIED="1392727572431">
 <attribute NAME="nodeType" VALUE="javaModifier"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572431" OBJECT="java.lang.Long|1392727572431"/>
 <attribute NAME="name" VALUE="public"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="OneToMany" ID="ID_1554828337" CREATED="1392727572431" MODIFIED="1392727572431">
+<node TEXT="OneToMany" FOLDED="true" ID="ID_1667893093" CREATED="1392727572431" MODIFIED="1392727572431">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572441" OBJECT="java.lang.Long|1392727572441"/>
 <attribute NAME="name" VALUE="OneToMany"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="mappedBy" ID="ID_618649778" CREATED="1392727572431" MODIFIED="1392732283858">
+<node TEXT="mappedBy" ID="ID_1299028326" CREATED="1392727572431" MODIFIED="1392732283858">
 <attribute_layout NAME_WIDTH="122" VALUE_WIDTH="122"/>
 <attribute NAME="nodeType" VALUE="javaMemberValuePair"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
@@ -617,7 +616,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="st" ID="ID_41052614" CREATED="1392727572441" MODIFIED="1392727572441">
+<node TEXT="st" ID="ID_1027795712" CREATED="1392727572441" MODIFIED="1392727572441">
 <attribute NAME="nodeType" VALUE="javaParameter"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572441" OBJECT="java.lang.Long|1392727572441"/>
@@ -626,7 +625,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="getTest()" ID="ID_496052546" CREATED="1392727572441" MODIFIED="1392727572441">
+<node TEXT="getTest()" FOLDED="true" ID="ID_1898527620" CREATED="1392727572441" MODIFIED="1392727572441">
 <attribute NAME="nodeType" VALUE="javaOperation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572461" OBJECT="java.lang.Long|1392727572461"/>
@@ -634,20 +633,20 @@
 <attribute NAME="typedElementType" VALUE="Test"/>
 <attribute NAME="hasBody" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="static" ID="ID_845721348" CREATED="1392727572441" MODIFIED="1392727572441">
+<node TEXT="static" ID="ID_1183489936" CREATED="1392727572441" MODIFIED="1392727572441">
 <attribute NAME="nodeType" VALUE="javaModifier"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572451" OBJECT="java.lang.Long|1392727572451"/>
 <attribute NAME="name" VALUE="static"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
-<node TEXT="OverrideAnnotationOf" ID="ID_1663450035" CREATED="1392727572451" MODIFIED="1392727572451">
+<node TEXT="OverrideAnnotationOf" FOLDED="true" ID="ID_694482413" CREATED="1392727572451" MODIFIED="1392727572451">
 <attribute NAME="nodeType" VALUE="javaAnnotation"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572451" OBJECT="java.lang.Long|1392727572451"/>
 <attribute NAME="name" VALUE="OverrideAnnotationOf"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="_" ID="ID_56935135" CREATED="1392727572451" MODIFIED="1392727572451">
+<node TEXT="_" ID="ID_1069052028" CREATED="1392727572451" MODIFIED="1392727572451">
 <attribute NAME="nodeType" VALUE="javaMemberValuePair"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572451" OBJECT="java.lang.Long|1392727572451"/>
@@ -656,7 +655,7 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="public" ID="ID_515137650" CREATED="1392727572461" MODIFIED="1392727572461">
+<node TEXT="public" ID="ID_1285095318" CREATED="1392727572461" MODIFIED="1392727572461">
 <attribute NAME="nodeType" VALUE="javaModifier"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572461" OBJECT="java.lang.Long|1392727572461"/>
@@ -664,14 +663,14 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="y" ID="ID_1957415078" CREATED="1392727572461" MODIFIED="1392727572461">
+<node TEXT="y" FOLDED="true" ID="ID_1798656380" CREATED="1392727572461" MODIFIED="1392727572461">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="y"/>
 <attribute NAME="typedElementType" VALUE="int"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="private" ID="ID_585039844" CREATED="1392727572461" MODIFIED="1392727572461">
+<node TEXT="private" ID="ID_1723649617" CREATED="1392727572461" MODIFIED="1392727572461">
 <attribute NAME="nodeType" VALUE="javaModifier"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -679,14 +678,14 @@
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 </node>
 </node>
-<node TEXT="x" ID="ID_46933746" CREATED="1392727572471" MODIFIED="1392727572471">
+<node TEXT="x" FOLDED="true" ID="ID_782456408" CREATED="1392727572471" MODIFIED="1392727572471">
 <attribute NAME="nodeType" VALUE="javaAttribute"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="x"/>
 <attribute NAME="typedElementType" VALUE="int"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
-<node TEXT="private" ID="ID_1499103267" CREATED="1392727572471" MODIFIED="1392727572471">
+<node TEXT="private" ID="ID_841101119" CREATED="1392727572471" MODIFIED="1392727572471">
 <attribute NAME="nodeType" VALUE="javaModifier"/>
 <attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
@@ -697,10 +696,10 @@
 </node>
 </node>
 </node>
-<node TEXT="initial_as" POSITION="left" ID="ID_356645421" CREATED="1392727571546" MODIFIED="1403854710493">
+<node TEXT="initial_as" FOLDED="true" POSITION="left" ID="ID_356645421" CREATED="1392727571546" MODIFIED="1407749269393">
 <attribute_layout NAME_WIDTH="71" VALUE_WIDTH="94"/>
 <attribute NAME="nodeType" VALUE="codesyncFolder"/>
-<attribute NAME="sync" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="sync" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="timestamp" VALUE="1392727572471" OBJECT="java.lang.Long|1392727572471"/>
 <attribute NAME="name" VALUE="initial_as"/>
 <attribute NAME="childrenSync" VALUE="true" OBJECT="java.lang.Boolean|true"/>

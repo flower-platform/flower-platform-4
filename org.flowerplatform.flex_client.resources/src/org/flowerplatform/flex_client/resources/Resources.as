@@ -96,15 +96,10 @@ package org.flowerplatform.flex_client.resources {
 		
 		// MindMap
 		
-		[Embed(source="/mindmap/refresh.gif")]
-		public static const refreshIcon:Class;
+		[Embed(source="/mindmap/icons/checkout.gif")]
+		public static const mindmap_button_checkout:Class;
 		
-		[Embed(source="/mindmap/comments.gif")]
-		public static const commentsIcon:Class;
-		
-		[Embed(source="/mindmap/flatLayout.gif")]
-		public static const flatLayoutIcon:Class;		
-		
+				
 		[Embed(source="/mindmap/images.png")]
 		public static const imagesIcon:Class;
 		
@@ -556,19 +551,71 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/codesync.regex/wrench.png")]
 		public static const wrenchIcon:Class;
 		
-		// Create Branch
+		// Team Git
+		
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
 		
 		[Embed(source="/team.git/editconfig.gif")]
 		public static const renameBranch:Class;
+
+		[Embed(source="/team.git/remote_entry_tbl.gif")]
+		public static const remoteEntry:Class;
+
+		[Embed(source="/team.git/config.png")]
+		public static const configBranchIcon:Class;
+
+		[Embed(source="/team.git/remoteSpec.gif")]
+		public static const configureFetchPush:Class;
+
+		[Embed(source="/team.git/merge.gif")]
+		public static const mergeBranch:Class;
+
+		[Embed(source="/git/reset.gif")]
+		public static const resetIcon:Class;
+
+		[Embed(source="/team.git/gitDiffFromCommits.png")]
+		public static const gitDiffFromCommitsIcon:Class;
 		
-		[Embed(source="/git/config.png")]
-		public static const configBrenchIcon:Class;
+		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
+		public static const gitDiffFromWorkspaceAndPatch:Class;
+
+		[Embed(source="/team.git/permission.png")]
+		public static const permission:Class;
 		
+		[Embed(source="/team.git/branch_obj.gif")]
+		public static const branchIcon:Class;
+		
+		[Embed(source="/team.git/branches_obj.gif")]
+		public static const branchesIcon:Class;
+		
+		[Embed(source="/team.git/cloneGit.gif")]
+		public static const cloneRepoIcon:Class;
+		
+		[Embed(source="/team.git/gitrepository.gif")]
+		public static const gitRepoIcon:Class;
+
+		[Embed(source="/team.git/delete_obj.gif")]
+		public static const deleteRemote:Class;
+
+		[Embed(source="/team.git/commit_amend.gif")]
+		public static const amendIcon:Class;
+				
 		// Git History 
 		[Embed(source="/git/history.gif")]
 		public static const gitHistoryIcon:Class;
 		
+		[Embed(source="/mindmap/refresh.gif")]
+		public static const refreshIcon:Class;
+		
+		[Embed(source="/mindmap/comments.gif")]
+		public static const commentsIcon:Class;
+		
+		[Embed(source="/mindmap/flatLayout.gif")]
+		public static const flatLayoutIcon:Class;			
+
+		[Embed(source="/team.git/staging.png")]
+		public static const gitStagingIcon:Class;
+
 	}
 }

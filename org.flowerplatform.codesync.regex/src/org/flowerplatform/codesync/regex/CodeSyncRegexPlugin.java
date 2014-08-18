@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.regex;
 
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION;
@@ -11,7 +26,6 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MAC
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCHES_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_SCHEME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_WITH_MACROS;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
@@ -35,7 +49,6 @@ import java.util.Map;
 import org.flowerplatform.codesync.regex.controller.RegexController;
 import org.flowerplatform.codesync.regex.controller.RegexMatchesChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.VirtualRegexChildrenProvider;
-import org.flowerplatform.codesync.regex.controller.VirtualRegexResourceHandler;
 import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -136,7 +149,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(START).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.start")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(30))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(END).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.end")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(40));
 			
-		CorePlugin.getInstance().getResourceService().addResourceHandler(REGEX_SCHEME, new VirtualRegexResourceHandler());
+		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(VIRTUAL_REGEX_TYPE);
 				
 		// TODO: TO DELETE (added only for RegEx tests)
 		addRegexAction(new RegexAction() {
