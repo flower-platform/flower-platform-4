@@ -27,8 +27,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
  * @author Cristi
  * @author Sorin
  */
+//CHECKSTYLE:OFF
 public class TestUtil {
-
+//CHECKSTYLE:ON
 	public static final String NORMAL = "normal";
 	
 	public static final String EXPECTED = "expected";

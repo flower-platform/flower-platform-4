@@ -17,6 +17,9 @@ import javax.persistence.OneToMany;
 
 import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
+/**
+ * @author Mariana Gheorghe
+ */
 @Deprecated
 public class Test extends Test2 implements IFromSource {
 
@@ -30,6 +33,9 @@ public class Test extends Test2 implements IFromSource {
 	
 	private int z = 3;
 	
+	/**
+	 * @author see class
+	 */
 	@OneToMany(mappedBy = "test")
 	public static int test(final String st) {
 		return x;
@@ -40,6 +46,9 @@ public class Test extends Test2 implements IFromSource {
 		return x;
 	}
 
+	/**
+	 * @author see class
+	 */
 	public enum ActionType {
 		
 		ACTION_TYPE_COPY_LEFT_RIGHT(new Test()) {
@@ -54,13 +63,24 @@ public class Test extends Test2 implements IFromSource {
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public @interface AnnotationTest {
 		
+		/**
+		 * @author see class
+		 */
 		boolean value1() default true;
+		/**
+		 * @author see class
+		 */
 		boolean value2() default false;
 		
 	}
-	
+	/**
+	 * @author see class
+	 */
 	public class InternalClsFromSource {
 		private int x;
 	}

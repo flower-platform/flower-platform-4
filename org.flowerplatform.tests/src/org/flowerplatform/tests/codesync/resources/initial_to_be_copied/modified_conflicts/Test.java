@@ -17,6 +17,9 @@ import javax.persistence.OneToMany;
 
 import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
+/**
+ * @author Mariana Gheorghe
+ */
 @Deprecated
 public class Test extends TestSource implements ITest {
 
@@ -24,11 +27,17 @@ public class Test extends TestSource implements ITest {
 	
 	private TestSource y;
 	
+	/**
+	 * @author see class
+	 */
 	@OneToMany(mappedBy = "test_source")
 	public int test(String st) {
 		return x;
 	}
 
+	/**
+	 * @author see class
+	 */
 	@OverrideAnnotationOf(x + y)
 	public static Test getTest() {
 		return x;

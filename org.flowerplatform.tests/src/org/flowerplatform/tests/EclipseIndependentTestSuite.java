@@ -45,7 +45,9 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Mariana Gheorghe
  */
+//CHECKSTYLE:OFF
 @SuppressWarnings("restriction")
+//CHECKSTYLE:ON
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	CodeSyncTestSuite.class,

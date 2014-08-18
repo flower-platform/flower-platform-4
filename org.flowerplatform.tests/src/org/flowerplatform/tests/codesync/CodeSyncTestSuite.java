@@ -122,7 +122,9 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public static void testConflicts(Match match, org.flowerplatform.util.Pair<?, ?>[] _conflicts) {
+	//CHECKSTYLE:ON
 		i = 0;
 		conflicts = _conflicts;
 		checkTreeConflict(match);
@@ -131,14 +133,16 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	/**
 	 * @author see class
 	 */
-	public static void checkTreeType(Match parentMatch, boolean checkNoDiffs, int level) {
+	//CHECKSTYLE:OFF
+	public static void checkTree_type(Match parentMatch, boolean checkNoDiffs, int level) {
+	//CHECKSTYLE:ON
 		checkMatchType(parentMatch, level);
 		if (checkNoDiffs) {
 			assertEquals("No diffs expected", 0, parentMatch.getDiffs().size());
 		}
 		for (Match subMatch : parentMatch.getSubMatches()) {
 			i++;
-			checkTreeType(subMatch, checkNoDiffs, level + 1);
+			checkTree_type(subMatch, checkNoDiffs, level + 1);
 		}
 	}
 
@@ -176,11 +180,13 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	/**
 	 * @author see class
 	 */
+	//CHECKSTYLE:OFF
 	public static Match testMatchTree(Match match, Pair[] _typeList, boolean checkNoDiffs) {
+	//CHECKSTYLE:ON
 		assertNotNull("Match was not created", match);
 		i = 0;
 		typeList = _typeList;
-		checkTreeType(match, checkNoDiffs, 0);
+		checkTree_type(match, checkNoDiffs, 0);
 		assertEquals(typeList.length, i + 1);
 		return match;
 	}

@@ -31,9 +31,10 @@ public final class FileUtil {
 	
 	private FileUtil() {
 	}
-/**
- * @author see class
- */
+	
+	/**
+	 * @author see class
+	 */
 	public static String readFile(File file) {
 		StringBuilder sb = new StringBuilder();
 		FileReader fr = null;
@@ -67,9 +68,10 @@ public final class FileUtil {
 
 		return sb.toString();
 	}
-/**
- *@author see class
- */
+	
+	/**
+	 *@author see class
+	 */
 	public static void writeFile(File file, String text) {
 		FileWriter fw = null;
 		BufferedWriter bw = null;

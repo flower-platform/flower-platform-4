@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <fileset-config file-format-version="1.2.0" simple-config="false">
-    <local-check-config name="Flower Platform Checkstyle" location="../org.flowerplatform.build/checkstyle/custom-checkstyle.xml" type="project" description="Project-specific Configuration">
+    <local-check-config name="Flower Platform Checkstyle" location="../org.flowerplatform.build/checkstyle/checkstyle-config.xml" type="project" description="Project-specific Configuration">
     	<additional-data name="protect-config-file" value="false"/>
     </local-check-config>
     <fileset name="all" enabled="true" check-config-name="Flower Platform Checkstyle" local="true">
