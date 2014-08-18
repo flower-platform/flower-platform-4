@@ -186,7 +186,6 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
 		super.setTypeDescriptor(typeDescriptor);
 		if (label == null) {
-			System.out.println("************* SET TYPE: "+typeDescriptor.getType()+"."+name);
 			label = ResourcesPlugin.getInstance().getLabelForProperty(typeDescriptor.getType()+"."+name);
 		}
 	}

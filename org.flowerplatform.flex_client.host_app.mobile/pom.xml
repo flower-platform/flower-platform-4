@@ -191,40 +191,40 @@
 			</plugin>
 
 			<!-- build .apk -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>java</executable>
-							<workingDirectory>${output.flex.prefix}/${output.flex}/distr/${project.artifactId}</workingDirectory>
-							<arguments>
-								<argument>-jar</argument>
-								<argument>${flexHome}/lib/adt.jar</argument>
-								<argument>-package</argument>
-								<argument>-target</argument>
-								<argument>apk</argument>
-								<argument>-storetype</argument>
-								<argument>pkcs12</argument>
-								<argument>-keystore</argument>
-								<argument>${keystore.file}</argument>
-								<argument>-storepass</argument>
-								<argument>${keystore.password}</argument>
-								<argument>flower-platform-mobile.apk</argument>
-								<argument>${finalName}-app.xml</argument>
-								<argument>${finalName}.swf</argument>
-								<argument>assets</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>org.codehaus.mojo</groupId> -->
+			<!-- <artifactId>exec-maven-plugin</artifactId> -->
+			<!-- <version>1.3</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>exec</goal> -->
+			<!-- </goals> -->
+			<!-- <configuration> -->
+			<!-- <executable>java</executable> -->
+			<!-- <workingDirectory>${output.flex.prefix}/${output.flex}/distr/${project.artifactId}</workingDirectory> -->
+			<!-- <arguments> -->
+			<!-- <argument>-jar</argument> -->
+			<!-- <argument>${flexHome}/lib/adt.jar</argument> -->
+			<!-- <argument>-package</argument> -->
+			<!-- <argument>-target</argument> -->
+			<!-- <argument>apk</argument> -->
+			<!-- <argument>-storetype</argument> -->
+			<!-- <argument>pkcs12</argument> -->
+			<!-- <argument>-keystore</argument> -->
+			<!-- <argument>${keystore.file}</argument> -->
+			<!-- <argument>-storepass</argument> -->
+			<!-- <argument>${keystore.password}</argument> -->
+			<!-- <argument>flower-platform-mobile.apk</argument> -->
+			<!-- <argument>${finalName}-app.xml</argument> -->
+			<!-- <argument>${finalName}.swf</argument> -->
+			<!-- <argument>assets</argument> -->
+			<!-- </arguments> -->
+			<!-- </configuration> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 		</plugins>
 
 	</build>

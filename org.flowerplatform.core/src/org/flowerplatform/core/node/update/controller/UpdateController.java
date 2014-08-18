@@ -56,9 +56,9 @@ public class UpdateController extends AbstractController
 			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
-							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setTargetNodeAs(child)
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
+							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setFullNodeIdAs(node.getNodeUri()));
 			
 		}
@@ -83,10 +83,10 @@ public class UpdateController extends AbstractController
 			Node removedNode = (Node) context.get("removedNode");
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
-							.setTypeAs(UPDATE_CHILD_REMOVED)
 							.setTargetNodeAs(removedNode)
-//							.setTargetNodeAs(child)
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
+							.setTypeAs(UPDATE_CHILD_REMOVED)
+//							.setTargetNodeAs(child)
 							.setFullNodeIdAs(node.getNodeUri()));		
 		}
 	}

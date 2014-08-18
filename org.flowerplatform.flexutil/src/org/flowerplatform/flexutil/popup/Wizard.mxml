@@ -309,9 +309,8 @@
 	
 	<mx:HRule width="100%"/>
 
-	<mx:VBox id="contentArea" width="100%" borderVisible="false"
+	<mx:VBox id="contentArea" width="100%" height="100%" borderVisible="false"
 			 horizontalAlign="center" paddingLeft="5" paddingRight="5"
 			 paddingTop="5" >
 	</mx:VBox>		
-	
 </s:Group>

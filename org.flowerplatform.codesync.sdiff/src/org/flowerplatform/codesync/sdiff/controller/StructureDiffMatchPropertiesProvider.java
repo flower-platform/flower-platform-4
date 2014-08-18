@@ -29,12 +29,15 @@ import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match.MatchType;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 
@@ -62,7 +65,8 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 			node.getProperties().put(CODESYNC_ICONS, codeSyncIcons);
 		}
 
-		setBackgroundColor(node);
+		setBackgroundColor(node); 
+		setText(node); 
 	}
 
 	private String getCodeSyncIcons(Node node) {
@@ -133,6 +137,22 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 			node.getProperties().put(COLOR_BACKGROUND, color);
 		}
 	}
+	
+	/**
+	*  Adds the property "TEXT" which contains file's name and file's path (if it has one)
+	* 
+	* @author Alexandra Topoloaga
+	*/
+	
+	private void setText(Node node) {
+		String name = (String) node.getProperties().get(CoreConstants.NAME);
+		String textPath = (String) node.getProperties().get(CodeSyncConstants.MATCH_PATH);
+		if (textPath != null ) {
+			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>"+ textPath + "</font></body></html>");
+		} else {
+			node.getProperties().put(MindMapConstants.TEXT, name);
+		}
+	} 
 
 	private boolean hasFlagTrue(Node node, String flag) {
 		Boolean b = (Boolean) node.getProperties().get(flag);
