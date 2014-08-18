@@ -9,7 +9,9 @@
 		  implements="org.flowerplatform.flexutil.view_content_host.IViewContent" xmlns:ns1="org.flowerplatform.flex_client.resources.*">
 	<fx:Script>
 		<![CDATA[
+			import mx.binding.utils.ChangeWatcher;
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			import spark.components.gridClasses.GridColumn;
@@ -25,7 +27,9 @@
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;			
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			
 			
 			[Bindable]
 			public var repo:String;
@@ -91,6 +95,7 @@
 						historyData = data; 
 						findGraphWidth(data); 
 						grid.selectedItem = historyData.getItemAt(0); 
+						grid.ensureCellIsVisible(grid.selectedIndex);
 						updateWindows(null);
 					});
 			}
@@ -256,11 +261,51 @@
 					files.addItemAt(Node(commitedFiles.getItemAt(i)).getPropertyValue(GitHistoryConstants.FILE), i);
 				}							
 			}			
+			
+			private function refreshHandler():void {
+				creationCompleteHandler(null);			
+			}
+			
+			private function commentsHandler(event:MouseEvent):void {				
+				if (event.target.selected == true) {
+					myTextArea.includeInLayout = true;
+					myTextArea.visible = true;
+					myHGroup.includeInLayout = true;
+				}
+				else {
+					myTextArea.includeInLayout = false;
+					myTextArea.visible = false;
+					if (filesButton.selected == false) {
+						myHGroup.includeInLayout = false;
+					}
+				}		
+			}
+			
+			private function filesButtonHandler(event:MouseEvent):void {				
+				if (event.target.selected == true) {
+					myList.includeInLayout = true;
+					myList.visible = true;
+					myHGroup.includeInLayout = true;
+				}
+				else {
+					myList.includeInLayout = false;
+					myList.visible = false;
+					if (commentsButton.selected == false) {
+						myHGroup.includeInLayout = false;
+					}
+				}		
+			}
 		]]>
 	</fx:Script>
 	
-	<mx:TextInput id="infoRepo" contentBackgroundColor="0xE1E6E8" width="100%" height="25"/>
-	<s:DataGrid id="grid" dataProvider="{historyData}" width="100%" sortableColumns="false"
+	<s:HGroup width="100%">
+		<s:TextInput id="infoRepo" contentBackgroundColor="0xE1E6E8" width="100%" height="25"/>	
+		<s:Button icon="{Resources.refreshIcon}" width="30" height="100%" click="refreshHandler()"/>
+		<s:ToggleButton id="commentsButton" icon="{Resources.commentsIcon}" selected="true" width="30" height="100%" click="commentsHandler(event)"/>
+		<s:ToggleButton id="filesButton" icon="{Resources.flatLayoutIcon}" selected="true" width="30" height="100%" click="filesButtonHandler(event)"/>
+	</s:HGroup>
+	
+	<s:DataGrid id="grid" dataProvider="{historyData}" height="100%" width="100%" sortableColumns="false"
 				selectionChange="updateWindows(event)">
 		<s:columns> 
 			<s:ArrayList>
@@ -280,10 +325,10 @@
 	</s:DataGrid>
 
 	<!-- Am modificat din prop proiectului: Library Path -> Framework Linkage => Merged into code -->
-	<s:HGroup width="100%" height="100%">
-		<mx:TextArea id="myTextArea" width="50%" height="100%" editable="false" htmlText="{content}"/>
+	<s:HGroup id="myHGroup" width="100%" height="100%">
+		<mx:TextArea id="myTextArea" width="100%" height="100%" editable="false" htmlText="{content}"/>
 		<s:List id="myList"
-				width="50%" height="100%" 
+				width="100%" height="100%" 
 				dataProvider="{files}">
 				<s:itemRenderer>
 					<fx:Component>
