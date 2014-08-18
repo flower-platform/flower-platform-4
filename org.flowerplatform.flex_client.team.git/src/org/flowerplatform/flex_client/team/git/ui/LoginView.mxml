@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-Andreea Tita
+@author Andreea Tita
 -->
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					 xmlns:s="library://ns.adobe.com/flex/spark" 
-					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-					 creationComplete="creationCompleteHandler(event)">
+					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.validators.Validator;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
+			import org.flowerplatform.flexutil.Utils;
 		
-			public var repo:String;
+			public var node:Node;
+			
+			[Bindable]
+			public var repoURL:String;
 			
 			override protected function creationCompleteHandler(event:FlexEvent):void {
-				repository.text = repo;
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.getCredentials",["git|" + repo],
+				repoURL = String(ArrayCollection(node.getPropertyValue(GitConstants.REMOTE_URIS)).getItemAt(0));
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getCredentials",[repoURL],
 					function(result:GitCredentials):void {
 						if (result != null) {
 							username.text = result.username;
@@ -31,27 +37,29 @@ Andreea Tita
 				if (Validator.validateAll([usernameValidator]).length > 0) {
 					return;
 				}
+				
 				var credentials:GitCredentials = new GitCredentials();
 				credentials.username = username.text;
 				credentials.password = password.text;
 				
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.setCredentials", ["git|" + repo, credentials]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.setCredentials", [repoURL, credentials]);
 				cancelHandler();
 			}
 			
 		]]>
 	</fx:Script>
+	
 	<fx:Declarations>
 		<mx:StringValidator id="usernameValidator" source="{username}" property="text" minLength="1"/>
 	</fx:Declarations>
 	
 	<s:Form id="form" width="100%" height="100%">
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.repository')}" width="100%">
-			<s:Label id="repository" width="100%" />
+			<s:TextInput id="repository" width="100%" text="{repoURL}" creationComplete="{Utils.makePseudoDisabled(repository)}" />
 		</s:FormItem>	
 		
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.username')}" width="100%">
-			<s:TextInput id="username" width="100%"/>
+			<s:TextInput id="username" width="100%" creationComplete="{callLater(username.setFocus)}" />
 		</s:FormItem>	
 		
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.password')}" width="100%">

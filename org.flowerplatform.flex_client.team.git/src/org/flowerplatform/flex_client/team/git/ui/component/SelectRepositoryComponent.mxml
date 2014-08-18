@@ -23,10 +23,11 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
 		<![CDATA[
-			import com.flextras.mobile.dropDownList.DropDownList;
 			
 			import mx.binding.utils.BindingUtils;
 			import mx.collections.IList;
+			
+			import spark.components.DropDownList;
 			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -52,7 +53,7 @@
 				super.createChildren();
 				
 				if (FlexUtilGlobals.getInstance().isMobile) {
-					remotes = new DropDownList();										
+					remotes = new DropDownList();									
 				} else {
 					remotes = new spark.components.DropDownList();											
 				}				

@@ -1,7 +1,5 @@
 package org.flowerplatform.flex_client.team.git.action {
-	import mx.collections.ArrayCollection;
-	
-	import org.flowerplatform.flex_client.core.CorePlugin;
+
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
@@ -12,7 +10,6 @@ package org.flowerplatform.flex_client.team.git.action {
 	/**
 	 * @author Andreea Tita
 	 */
-	
 	public class LoginAction extends ActionBase {
 		public function LoginAction() {
 			super();
@@ -31,8 +28,7 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var loginView:LoginView = new LoginView();
-			loginView.repo = String(ArrayCollection(node.getPropertyValue(GitConstants.REMOTE_URIS)).getItemAt(0));
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.setCredentials",["git|" + loginView.repo, null]);
+			loginView.node = node;
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(loginView)
 				.setWidth(450)

@@ -97,4 +97,5 @@ public class GitConstants {
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
 
+	public static final String GIT = "git|";
 }
