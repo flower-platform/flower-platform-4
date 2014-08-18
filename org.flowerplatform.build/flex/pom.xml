@@ -44,8 +44,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
-		<output.flex.prefix>..</output.flex.prefix>
-	
 		<!-- modules may override -->
 		<sourceDirectory>src</sourceDirectory>
 		<messagesDirectory>messages</messagesDirectory>

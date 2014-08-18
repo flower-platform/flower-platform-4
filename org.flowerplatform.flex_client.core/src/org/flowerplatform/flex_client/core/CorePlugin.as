@@ -45,13 +45,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -503,6 +503,13 @@ package org.flowerplatform.flex_client.core {
 			
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.resetSelection();
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);
+		}
+		
+		/**
+		 * @author Diana Balutoiu
+		 */
+		public function createNodeUriWithRepo(scheme:String, repoPath:String, schemeSpecificPart:String):String{
+			return scheme + ":"+ repoPath + "|" + schemeSpecificPart;
 		}
 			
 	}

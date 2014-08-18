@@ -1,10 +1,25 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -26,25 +41,21 @@ public class GitResourceHandler implements IResourceHandler {
 
 	@Override
 	public Object getRawNodeDataFromResource(String nodeUri, Object resourceData) {
-		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = null;
-		Ref ref = null;
 		try {
-			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-		if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE)) {
-			return GitUtils.getName(nodeUri);
-		}
-			try {
-				ref = repo.getRef(GitUtils.getName(nodeUri));
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE) || GitUtils.getType(nodeUri).equals(GIT_REMOTE_TYPE)) {
+				return GitUtils.getName(nodeUri);
 			}
-		
-		return ref;
+			
+			String repositoryPath = Utils.getRepo(nodeUri);
+			Repository repo = null;
+			Ref ref = null;
+			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+			ref = repo.getRef(GitUtils.getName(nodeUri));	
+			
+			return ref;
+		} catch (Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
