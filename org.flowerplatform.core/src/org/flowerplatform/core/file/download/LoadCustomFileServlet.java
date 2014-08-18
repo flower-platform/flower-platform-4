@@ -24,7 +24,7 @@ import org.flowerplatform.util.servlet.ResourcesServlet;
  *
  */
 
-public class LoadCustomIconServlet extends ResourcesServlet {
+public class LoadCustomFileServlet extends ResourcesServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class LoadCustomIconServlet extends ResourcesServlet {
 		File file = null;
 		InputStream in;
 
-		String iconPath = req.toString().substring(req.toString().lastIndexOf('/'));
+//		String iconPath = req.toString().substring(req.getPathInfo().lastIndexOf('/'));
 //		for (int i=0; i < iconPaths.size(); i++) {
 //			try {
 //				file = (File) FileControllerUtils.getFileAccessController().getFile(iconPaths.get(i));
@@ -53,7 +53,7 @@ public class LoadCustomIconServlet extends ResourcesServlet {
 //			}
 //		}
 		try {
-			file = (File) FileControllerUtils.getFileAccessController().getFile(iconPath);
+			file = (File) FileControllerUtils.getFileAccessController().getFile(req.getPathInfo());
 		} catch (Exception e) {
 			throw new IOException(e);
 		}	

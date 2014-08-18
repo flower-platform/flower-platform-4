@@ -26,7 +26,6 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Label;
-			import mx.events.FlexEvent;
 			
 			import spark.components.Group;
 			
@@ -35,11 +34,11 @@
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.Utils;
-			
-			
-						
-			public var icons:String;
-			private var customIcons:Array;
+					
+			[Bindable]
+			public var customIcons:Array;
+			[Bindable]
+			public var defaultIcons:Array;
 			
 			[SkinPart(required="true")]
 			[Bindable]  
@@ -50,7 +49,7 @@
 			public var removeGroup:Group;
 			
 			[Bindable]
-			public var iconsSourceFolder:String = MindMapConstants.REPO_ROOT + "/alina/mindmap_icons/";
+			public var repo:String;
 			
 			[Bindable]
 			public var _getCustomIcons:Boolean = true;
@@ -69,24 +68,26 @@
 				super.createChildren();
 			}
 			
+			/**
+			 * @author Alina Bratu
+			 */
 			public function set getCustomIcons(b:Boolean):void {
 				_getCustomIcons = b;
-				if (_getCustomIcons) {
-					CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[],getCustomIconsResultHandler);
-				}
-				else {
-					customIcons = null;
-				}
-				invalidateDisplayList();
 			}
 			
+			/**
+			 * @author Alina Bratu
+			 */
 			public function get getCustomIcons():Boolean {
 				return _getCustomIcons;
 			}
 			
+			/**
+			 * @author Alina Bratu
+			 */
 			private function getCustomIconsResultHandler(list:String):void {
 				customIcons = list.split(';');
-				return;
+				finishDisplay(customIcons,MindMapConstants.LOAD_CUSTOM_ICONS);
 			}
 			
 			override protected function partAdded(partName:String, instance:Object):void {
@@ -113,42 +114,64 @@
 				}
 				
 				if (partName == "imageGroup") {
-					var icons:Array;
-					if (getCustomIcons) {
-						if (customIcons != null) {
-							icons = customIcons.slice(0);
-						}
-						else {
-							CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[],getCustomIconsResultHandler);
-						}
-							
-					}
+					
 					if (getDefaultIcons) {
-						if (icons == null) {
-							icons = MindMapConstants.ICONS_LIST.split(';');
-						}
-						else {
-							var ic1:Array = icons = MindMapConstants.ICONS_LIST.split(';'); 
-							icons = icons.concat(ic1);
+						defaultIcons = MindMapConstants.ICONS_LIST.split(';');
+						finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
+					}
+					if (getCustomIcons) {
+						if (customIcons == null) {
+							CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
 						}
 					}
 					
-					for (var i:int=0; i < icons.length; i++) {
-						var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
+//					for (var i:int=0; i < icons.length; i++) {
+//						var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
 //						btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-						btnImage.iconUrl = iconsSourceFolder + icons[i] + ".png";
-						btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
-						btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
-						
-						imageGroup.addElement(btnImage);
-					}
-					
+//						btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
+//						btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
+//						
+//						imageGroup.addElement(btnImage);
+//					}
+				}
+				
+				if (partName == "contentGroup") {
 					var message:Label = new Label();
 					message.text = Resources.getMessage("resource.icon.custom");
-					imageGroup.addElement(message);
+					message.width = parent.width;
+					contentGroup.addElement(message);
 				}
 			}
 			
+			/**
+			 * @author Alina Bratu
+			 */
+			protected function getCustomImageUrl(name:String):String {
+				return "servlet/load/" + repo + MindMapConstants.CUSTOM_ICONS_DIRECTORY + name;
+			}
+			
+			protected function finishDisplay(icons:Array, type:Number):void {
+				for (var i:int=0; i < icons.length; i++) {
+					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
+					switch (type) {
+						case MindMapConstants.LOAD_CUSTOM_ICONS:
+							btnImage.iconUrl = repo + MindMapConstants.CUSTOM_ICONS_DIRECTORY + icons[i] + ".png";
+							btnImage.setStyle("icon", getCustomImageUrl(icons[i] + ".png"));
+							break;
+						case MindMapConstants.LOAD_DEFAULT_ICONS:
+							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+							btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
+							break;
+						default:
+							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+							btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
+							break;
+					}
+					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
+					
+					imageGroup.addElement(btnImage);
+				}
+			}
 					
 			protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
 				var result:Object = new Object();
@@ -172,19 +195,18 @@
 				var result:Object = new Object();
 				result.type = Utils.ADD;
 				var iconUrl:String = MindMapButtonWithIcon(event.target).iconUrl;
-				result.iconUrl = Resources.getResourceUrl(iconUrl);
+				if (iconUrl.indexOf("mindmap_icons") != -1) {
+					result.iconUrl = "servlet/load/" + iconUrl;
+				}
+				else {
+					result.iconUrl = Resources.getResourceUrl(iconUrl);
+				}
 				handleClick(result);
 			}
 			
 			protected function handleClick(result:Object):void {
 			}
-						
-			protected function preinitializeHandler(event:FlexEvent):void
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
+							
 		]]>
 	</fx:Script>
 	

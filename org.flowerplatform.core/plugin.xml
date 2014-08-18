@@ -21,7 +21,7 @@
       </servlet>
       <servlet
             alias="/servlet/load"
-            class="org.flowerplatform.core.file.download.LoadCustomIconServlet">
+            class="org.flowerplatform.core.file.download.LoadCustomFileServlet">
       </servlet>
    </extension>
 

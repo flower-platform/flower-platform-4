@@ -94,21 +94,21 @@
 						case "customIconsIcon":
 							var customView:MindMapIconsView = new MindMapIconsView();
 							var repo:String = "user/repo";
-							customView.getDefaultIcons = false;
+//							customView.getDefaultIcons = false;
 							if (diagramShell.selectedItems != null) {
 								repo = CorePlugin.getInstance().getRepository(diagramShell.selectedItems.getItemAt(0).nodeUri);
 							}
-							customView.iconsSourceFolder = MindMapConstants.LOAD_CUSTOM_ICONS + "/" + repo + MindMapConstants.CUSTOM_ICONS_DIRECTORY;
+							customView.repo = repo;
 							customView.setResultHandler(new MindMapIconsViewResultHandler(function(res:Object):void {
-								var eventTarget:Object;
-								if (res.target is IconRenderer) {
-									eventTarget = res.target;
-								} else 	if (FlexUtilGlobals.getInstance().isMobile) {
-									eventTarget = res.target.parent.parent.parent;
-								} else {					
-									eventTarget = res.target.parent.parent;
-								}
-								result.iconUrl = eventTarget.data;
+//								var eventTarget:Object;
+//								if (res.target is IconRenderer) {
+//									eventTarget = res.target;
+//								} else 	if (FlexUtilGlobals.getInstance().isMobile) {
+//									eventTarget = res.target.parent.parent.parent;
+//								} else {					
+//									eventTarget = res.target.parent.parent;
+//								}
+								result.iconUrl = res.iconUrl;
 								result.type = Utils.ADD;
 								handleClick(result);
 							}));
