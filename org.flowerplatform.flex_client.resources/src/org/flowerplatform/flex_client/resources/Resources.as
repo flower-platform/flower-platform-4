@@ -599,5 +599,12 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/delete_obj.gif")]
 		public static const deleteRemote:Class;
+
+		[Embed(source="/team.git/commit_amend.gif")]
+		public static const amendIcon:Class;
+		
+		[Embed(source="/team.git/staging.png")]
+		public static const gitStagingIcon:Class;
+
 	}
 }

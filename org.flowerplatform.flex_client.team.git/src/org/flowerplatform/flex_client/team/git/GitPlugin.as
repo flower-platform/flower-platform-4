@@ -31,6 +31,8 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
+	import org.flowerplatform.flex_client.team.git.action.GitStagingAction;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 
 	import org.flowerplatform.flex_client.team.git.action.LoginAction;
@@ -69,6 +71,9 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteRemoteAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(LoginAction);
+
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingProperties());
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GitStagingAction);
 		}
 		
 		override protected function registerMessageBundle():void {

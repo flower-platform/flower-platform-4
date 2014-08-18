@@ -52,7 +52,7 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			
+
 			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 				.setText(Resources.getMessage("team.git.action.deleteBranch.message", [node.getPropertyValue(GitConstants.FULL_NAME)]))
 				.setTitle(Resources.getMessage("info"))

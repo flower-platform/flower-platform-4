@@ -35,6 +35,11 @@ public class GitConstants {
 	public static final String GIT_REMOTE_BRANCH_TYPE = "gitRemoteBranch";
 	public static final String GIT_TAG_TYPE = "gitTag";
 	public static final String GIT_REMOTE_TYPE = "gitRemote";
+		
+	////////////////////////////////////////////////////////////
+	//Categories
+	////////////////////////////////////////////////////////////
+	
 	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
 	
@@ -43,16 +48,9 @@ public class GitConstants {
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_SCHEME = "git";
-//	public static final String GIT_LOCAL_BRANCHES_SCHEME = "gitLocalBranches";
-//	public static final String GIT_REMOTE_BRANCHES_SCHEME = "gitRemoteBranches";
-//	public static final String GIT_TAGS_SCHEME = "gitTags";
-//	public static final String GIT_REMOTES_SCHEME = "gitRemotes";
-//	public static final String GIT_BRANCH_SCHEME = "gitBranch";
-//	public static final String GIT_TAG_SCHEME = "gitTag";
-//	public static final String GIT_REMOTE_SCHEME = "gitRemote";
 	
 	/////////////////////////////////////////////////////////////
-	//Leaf Git Node Properties
+	// Git Node Properties
 	/////////////////////////////////////////////////////////////
 	
 	public static final String NAME = "name";
@@ -73,20 +71,6 @@ public class GitConstants {
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
 	/////////////////////////////////////////////////////////////
-	//Icons paths
-	/////////////////////////////////////////////////////////////
-	
-	public static final String ICONS_PATH = "/images/team.git/";
-	public static final String BRANCH_ICON = "branch.gif";
-	public static final String TAG_ICON = "tag.gif";
-	public static final String TAGS_ICON = "tags.gif";
-	public static final String REMOTE_ICON = "remote.gif";
-	public static final String FOLDER_ICON = "folder.gif";
-	public static final String GIT_ICON = "git.gif";
-	public static final String REMOTES_ICON = "remotes.gif";
-	public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
-	
-	/////////////////////////////////////////////////////////////
 	// Other
 	/////////////////////////////////////////////////////////////
 
@@ -96,5 +80,23 @@ public class GitConstants {
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
+
+	/////////////////////////////////////////////////////////////
+	//Git File States
+	/////////////////////////////////////////////////////////////
+		
+	public static final String UNTRACKED = "images/team.git/untracked.gif";	
+	public static final String STAGE_REMOVED = "images/team.git/staged_removed.gif";
+	public static final String STAGE_ADDED = "images/team.git/staged_added.gif";
+	public static final String UNSTAGED = "images/team.git/unstaged.gif";
+	public static final String STAGED = "images/team.git/staged.gif";
+	public static final String FILE =  "images/core/file.gif";
+	public static final String CONFLICTED =  "images/team.git/conflict.gif";
+	
+	public static final String ADD = "ADD";	
+	public static final String DELETE = "DELETE";
+	public static final String MODIFY = "MODIFY";
+	public static final String RENAME = "RENAME";
+	public static final String COPY = "COPY";
 
 }

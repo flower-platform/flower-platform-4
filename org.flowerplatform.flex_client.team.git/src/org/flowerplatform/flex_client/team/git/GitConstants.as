@@ -25,7 +25,7 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 		//Node type in Git folder hierarchy
 		/////////////////////////////////////////////////////////////
-	
+
 		public static const GIT_REPO_TYPE:String = "gitRepo";
 		public static const GIT_LOCAL_BRANCHES_TYPE:String = "gitLocalBranches";
 		public static const GIT_REMOTE_BRANCHES_TYPE:String = "gitRemoteBranches";
@@ -35,7 +35,7 @@ package org.flowerplatform.flex_client.team.git {
 		public static const GIT_REMOTE_BRANCH_TYPE:String = "gitRemoteBranch";
 		public static const GIT_TAG_TYPE:String = "gitTag";
 		public static const GIT_REMOTE_TYPE:String = "gitRemote";
-		
+
 		/////////////////////////////////////////////////////////////
 		//Schemes
 		/////////////////////////////////////////////////////////////
@@ -43,9 +43,9 @@ package org.flowerplatform.flex_client.team.git {
 		public static const GIT_SCHEME:String = "git";
 		
 		/////////////////////////////////////////////////////////////
-		//Leaf Git Node Properties
+		// Git Node Properties
 		/////////////////////////////////////////////////////////////
-		
+
 		public static const NAME:String = "name";
 
 		public static const IS_GIT_REPOSITORY:String = "isGitRepository";
@@ -72,7 +72,15 @@ package org.flowerplatform.flex_client.team.git {
 		public static const RESET_SOFT:String = "soft";
 		public static const RESET_MIXED:String = "mixed";
 		public static const RESET_HARD:String = "hard";	
+	
+		/////////////////////////////////////////////////////////////
+		//Git Staging Types
+		/////////////////////////////////////////////////////////////
+		
+		public static const FILE_ADDED:String = "ADD";
+		public static const FILE_MODIFIED:String = "MODIFY";
+		public static const FILE_DELETED:String = "DELETE";
+		public static const FILE_RENAMED:String = "RENAME";
+		public static const FILE_COPIED:String = "COPY";
 	}
-
 }
-
