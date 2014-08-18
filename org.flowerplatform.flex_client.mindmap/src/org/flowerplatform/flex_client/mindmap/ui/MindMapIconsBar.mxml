@@ -92,31 +92,25 @@
 							handleClick(result);
 							break;
 						case "customIconsIcon":
-							var customView:MindMapIconsView = new MindMapIconsView();
+							
 							var repo:String = "user/repo";
-//							customView.getDefaultIcons = false;
 							if (diagramShell.selectedItems != null) {
 								repo = CorePlugin.getInstance().getRepository(diagramShell.selectedItems.getItemAt(0).nodeUri);
+								var customView:MindMapIconsView = new MindMapIconsView();
+								customView.getDefaultIcons = false;
+								customView.repo = repo;
+								customView.setResultHandler(new MindMapIconsViewResultHandler(function(res:Object):void {
+									result.iconUrl = res.iconUrl;
+									result.type = Utils.ADD;
+									handleClick(result);
+								}));
+								FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+									.setViewContent(customView)						
+									.setWidth(300)
+									.setHeight(320)
+									.show();
 							}
-							customView.repo = repo;
-							customView.setResultHandler(new MindMapIconsViewResultHandler(function(res:Object):void {
-//								var eventTarget:Object;
-//								if (res.target is IconRenderer) {
-//									eventTarget = res.target;
-//								} else 	if (FlexUtilGlobals.getInstance().isMobile) {
-//									eventTarget = res.target.parent.parent.parent;
-//								} else {					
-//									eventTarget = res.target.parent.parent;
-//								}
-								result.iconUrl = res.iconUrl;
-								result.type = Utils.ADD;
-								handleClick(result);
-							}));
-							FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-							.setViewContent(customView)						
-							.setWidth(300)
-							.setHeight(320)
-							.show();
+							
 							break;
 						default:
 							result.type = Utils.ADD;

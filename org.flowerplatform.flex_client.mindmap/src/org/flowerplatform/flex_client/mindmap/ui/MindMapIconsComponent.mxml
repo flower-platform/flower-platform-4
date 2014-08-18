@@ -28,6 +28,7 @@
 			import mx.controls.Label;
 			
 			import spark.components.Group;
+			import spark.components.supportClasses.StyleableTextField;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
@@ -35,6 +36,7 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.Utils;
 					
+			public var icons:String;
 			[Bindable]
 			public var customIcons:Array;
 			[Bindable]
@@ -88,6 +90,9 @@
 			private function getCustomIconsResultHandler(list:String):void {
 				customIcons = list.split(';');
 				finishDisplay(customIcons,MindMapConstants.LOAD_CUSTOM_ICONS);
+				if (defaultIcons != null) {
+					finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
+				}
 			}
 			
 			override protected function partAdded(partName:String, instance:Object):void {
@@ -117,28 +122,30 @@
 					
 					if (getDefaultIcons) {
 						defaultIcons = MindMapConstants.ICONS_LIST.split(';');
-						finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
+						if (getCustomIcons) {
+							if (customIcons == null) {
+								CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
+							}
+						}
+						else {
+							finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
+						}
 					}
-					if (getCustomIcons) {
-						if (customIcons == null) {
-							CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
+					else {
+						if (getCustomIcons) {
+							if (customIcons == null) {
+								CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
+							}
 						}
 					}
 					
-//					for (var i:int=0; i < icons.length; i++) {
-//						var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-//						btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-//						btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
-//						btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
-//						
-//						imageGroup.addElement(btnImage);
-//					}
 				}
 				
 				if (partName == "contentGroup") {
-					var message:Label = new Label();
+					var message:StyleableTextField = new StyleableTextField();
 					message.text = Resources.getMessage("resource.icon.custom");
 					message.width = parent.width;
+					message.wordWrap = true;
 					contentGroup.addElement(message);
 				}
 			}
@@ -160,11 +167,11 @@
 							break;
 						case MindMapConstants.LOAD_DEFAULT_ICONS:
 							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-							btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
+							btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
 							break;
 						default:
 							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-							btnImage.setStyle("icon", Resources.getResourceUrl(icons[i]));
+							btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
 							break;
 					}
 					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);

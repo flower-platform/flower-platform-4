@@ -37,7 +37,6 @@ public class CoreService {
 	public String getCustomIconsPaths(String repo) throws Exception {
 		String results = "";
 		File[] files = FileControllerUtils.getFileAccessController().getFileAsFile(FileControllerUtils.getFileAccessController().getFile(repo + "/mindmap_icons/")).listFiles();
-		System.out.println(files.toString());
 		for (File file : files) {
 		    if (file.isFile() && file.getName().endsWith(".png")) {
 		        results += file.getName().substring(0,file.getName().lastIndexOf('.')) + ";";
