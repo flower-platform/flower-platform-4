@@ -10,6 +10,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		    <checkstyleDir>${basedir}/resources</checkstyleDir>
 	</properties>
 	
 	<profiles>
@@ -35,6 +36,9 @@
 		</profile>
 	</profiles>
 	
+	<modules>
+		    <module>../../..\workspaces\flower-platform-4\checkstyle-config</module>
+	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.ant</groupId>
@@ -49,4 +53,35 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+	<sourceDirectory>src</sourceDirectory>
+	
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.12.1</version>
+<!--         <dependencies> -->
+<!--           <dependency> -->
+<!--             <groupId>org.flowerplatform</groupId> -->
+<!--             <artifactId>checkstyle-config</artifactId> -->
+<!--             <version>1.0</version> -->
+<!--           </dependency> -->
+<!--         </dependencies> -->
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.12.1</version>
+        <configuration>
+          <configLocation>../../..\workspaces\flower-platform-4\checkstyle-config\src\checkstyle-config.xml</configLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

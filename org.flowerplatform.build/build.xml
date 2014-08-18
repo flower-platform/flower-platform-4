@@ -115,6 +115,8 @@
 			<!-- performs build, without installing into repo (i.e. "install") -->
 			<arg value="verify" />
 
+			<arg value="checkstyle:checkstyle-aggregate" />
+			
 			<!-- shows errors -->
 			<arg value="-e" />
 			

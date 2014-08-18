@@ -21,6 +21,8 @@
 				<module>../../org.flowerplatform.freeplane</module>
 				<module>../../org.flowerplatform.codesync</module>
 				<module>../../org.flowerplatform.codesync.java</module>
+				<module>../../org.flowerplatform.codesync.as</module>
+
 
 				<!-- not packaged as plugins, only available during compile time -->
 				<module>../../org.flowerplatform.host.servletbridge.base</module>
@@ -40,7 +42,7 @@
 				<module>../../org.flowerplatform.flex_client.web</module>
 				<module>../../org.flowerplatform.flex_client.server</module>
 
-				<module>../../org.flowerplatform.tests</module>
+				<!-- <module>../../org.flowerplatform.tests</module> -->
 			</modules>
 		</profile>
 
