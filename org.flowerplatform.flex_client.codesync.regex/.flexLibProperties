@@ -6,6 +6,7 @@
     <classEntry path="org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.regex.action.ShowMatchesGroupedByRegexAction"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorAction"/>
+    <classEntry path="org.flowerplatform.flex_client.codesync.regex.ui.GenerateMatchFileView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

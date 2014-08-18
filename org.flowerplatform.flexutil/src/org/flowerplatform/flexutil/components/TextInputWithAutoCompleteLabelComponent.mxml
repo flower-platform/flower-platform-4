@@ -18,11 +18,12 @@
 <!--
 	@author Valentina-Camelia Bojan
 -->
-<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Form xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  width="100%" verticalAlign="middle" gap="5"
+		  width="100%"
 		  creationComplete="creationCompleteHandler(event)">
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -40,10 +41,18 @@
 			public var inputText:String;
 			
 			[Bindable]
-			public var autoCompletelabelFormat:String;
+			public var autoCompleteLabelFormat:String;
 			
-			public function getTextInput():String {
+			public function get text():String {
 				return filename.text;
+			}
+			
+			public function get override():Boolean {
+				return cbOverride.selected;
+			}
+						
+			public function get fullText():String {
+				return result.text;
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
@@ -53,16 +62,20 @@
 				filenameChangeHandler();
 			}
 			
-			protected function filenameChangeHandler(event:TextOperationEvent = null):void {			
+			protected function filenameChangeHandler():void {			
 				result.text = "";
-				result.appendText(StringUtil.substitute(autoCompletelabelFormat, [filename.text]));				
+				result.appendText(StringUtil.substitute(autoCompleteLabelFormat, [filename.text]));				
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:Label text="{labelText}"/>
-	<s:TextInput id="filename" text="{inputText}" width="50%" change="filenameChangeHandler(event)"/>
-	<s:TextInput id="result" fontWeight="bold" width="50%"/>
-
-</s:HGroup>
+	<s:FormItem label="{labelText}">
+		<s:HGroup width="100%">
+			<s:TextInput id="filename" text="{inputText}" width="50%" valueCommit="filenameChangeHandler()" change="filenameChangeHandler()"/>
+			<s:TextInput id="result" fontWeight="bold" width="50%"/>
+			<s:CheckBox id="cbOverride" label="{FlexUtilAssets.INSTANCE.getMessage('label.override')}" selected="true" />
+		</s:HGroup>		
+	</s:FormItem>
+	
+</s:Form>
