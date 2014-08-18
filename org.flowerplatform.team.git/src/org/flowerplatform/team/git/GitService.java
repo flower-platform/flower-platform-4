@@ -49,6 +49,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
@@ -56,6 +57,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevCommitList;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
@@ -210,7 +213,8 @@ public class GitService {
 	 * Creates new branch
 	 * 
 	 */
-	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws Exception {	
+	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch,
+			String commitId) throws Exception {
 		String repoPath = Utils.getRepo(parentUri);
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
@@ -232,7 +236,13 @@ public class GitService {
 		}
 		
 		/* createBranch */
-		Ref createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(startPoint).call();
+		Ref createdBranch;
+		if (commitId == null) {
+			createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(startPoint).call();
+		} else {
+			AnyObjectId id = repository.resolve(commitId);
+			createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(new RevWalk(repository).parseCommit(id)).call();
+		}
 
 		/* uri for the child to be created */
 		String childUri = GitUtils.getNodeUri(repoPath, GIT_LOCAL_BRANCH_TYPE, createdBranch.getName());
@@ -240,13 +250,13 @@ public class GitService {
 		if (checkoutBranch) {
 			/* call checkout branch method */
 			checkout(childUri);
+		} else {
+			Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
+			CorePlugin.getInstance().getResourceSetService().addUpdate(
+					parent,
+					new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
-		
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
-		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				parent,
-				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));		
 	}
 	
 	public int validateRepoURL(String url) {
@@ -475,6 +485,12 @@ public class GitService {
 		g.checkout().setName(Name).call();	
 //		g.gc().getRepository().close();
 //		g.gc().call();
+		
+		String localBranchesUri = GitUtils.getNodeUri(repositoryPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE);
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(localBranchesUri),
+				new Update().setFullNodeIdAs(localBranchesUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
 	/** 

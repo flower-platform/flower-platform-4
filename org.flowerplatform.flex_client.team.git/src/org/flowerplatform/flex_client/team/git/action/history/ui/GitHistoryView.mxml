@@ -11,8 +11,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
-			import mx.core.FlexGlobals;
-			import mx.core.UIComponent;
+			import mx.controls.TextArea;
 			import mx.events.FlexEvent;
 			
 			import spark.components.gridClasses.GridColumn;
@@ -24,6 +23,7 @@
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
 			import org.flowerplatform.flex_client.team.git.action.CopyIdToClipboard;
+			import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -162,6 +162,7 @@
 			public function getActions(selection:IList):Vector.<IAction> {
 				var result:Vector.<IAction> = new Vector.<IAction>();
 				result.push(new CopyIdToClipboard());
+				result.push(new CreateBranchAction(true));
 				return result;
 			}
 		

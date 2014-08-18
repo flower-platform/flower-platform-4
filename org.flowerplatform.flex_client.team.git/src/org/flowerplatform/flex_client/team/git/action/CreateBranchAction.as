@@ -29,8 +29,12 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */	
 	public class CreateBranchAction extends ActionBase {
 		
-		public function CreateBranchAction() {
+		private var useNodeAsCommitId:Boolean;
+		
+		public function CreateBranchAction(useNodeAsCommitId:Boolean = false) {
 			super();
+			
+			this.useNodeAsCommitId = useNodeAsCommitId;
 			
 			label = Resources.getMessage("flex_client.team.git.action.createBranch");
 			icon = Resources.createBranchIcon;
@@ -38,11 +42,15 @@ package org.flowerplatform.flex_client.team.git.action {
 		}
 				
 		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
+			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
 
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0;
+				if (!useNodeAsCommitId) {
+					return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
+						.categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0;
+				} else {
+					return true;
+				}
 			}
 			return false;
 		}
@@ -52,6 +60,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			var view:CreateBranchView = new CreateBranchView();
 			
 			view.node = node;
+			view.useNodeAsCommitId = useNodeAsCommitId;
 			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(view)
