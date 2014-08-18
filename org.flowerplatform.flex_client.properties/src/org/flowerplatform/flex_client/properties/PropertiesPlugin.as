@@ -46,7 +46,6 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.remote.IPropertyDescriptor;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -79,6 +78,7 @@ package org.flowerplatform.flex_client.properties {
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
+			
 			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PreferencesViewProvider());
