@@ -30,7 +30,6 @@ import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 import org.flowerplatform.core.node.update.remote.Update;
-import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,33 +147,24 @@ public abstract class ResourceSetService {
 			logger.debug("For resource = {} adding command = {}", command.getResourceSet(), command);
 		}
 		
-		String commandStackUri = Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, command.getResourceSet());
-		Node commandStackNode = new Node(commandStackUri, CoreConstants.COMMAND_STACK_TYPE);
-		// TODO CS: as propune creerea unei familii de functii care sa lucreze cu uri-ul specific comand stack.
-		// astea ar sta in ComStResHandl (care in cazul asta ar fi referentat de CorePlugin, precum virtual..., caci 
-		// noi nu folosim functii statice prin conventie).
-		// as propune aici: CSRH.createCommandStackNode(resourceSet)
+		Node commandStackNode = CorePlugin.getInstance().getCommandStackResourceHandler().createCommandStackNode(command.getResourceSet()); 
 		String commandToUndoId = getCommandToUndoId(command.getResourceSet());
 
 		List<Command> removedCommands = deleteCommandsAfter(command.getResourceSet(), commandToUndoId);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		for (Command cmd : removedCommands) {
-			// TODO CS: CSRH.createCommandNode(resourceSet, id)
-			// etc. si in alte locuri; vreau sa centralizam lucrul pe string-urile din URI-uri
-			Node node = new Node(Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, command.getResourceSet(), cmd.getId()), CoreConstants.COMMAND_TYPE);
+			Node node = CorePlugin.getInstance().getCommandStackResourceHandler().createCommandNode(cmd.getResourceSet(), cmd.getId());
 			// doesn't do anything, except adding a notification
 			CorePlugin.getInstance().getNodeService().removeChild(commandStackNode, node, context);
 		}
 		
-		// TODO CS: ar merge oare un .getLastUpdateId()? Pentru uniformitate (si ca sa evitam un DB hit?)
-		command.setLastUpdateId(getLastUpdate(command.getResourceSet()).getId());
+		command.setLastUpdateIdAfterCommandExecution(getLastUpdate(command.getResourceSet()).getId());
 		saveCommand(command);
-		Node newCommandNode = new Node(Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, command.getResourceSet(), command.getId()), CoreConstants.COMMAND_TYPE);
+		Node newCommandNode = CorePlugin.getInstance().getCommandStackResourceHandler().createCommandNode(command.getResourceSet(), command.getId());
 		newCommandNode.getProperties().put(CoreConstants.NAME, command.getTitle());
 		// doesn't do anything, except adding a notification
 		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, newCommandNode, new ServiceContext<NodeService>());
 
-		// TODO CS: de ce avem 2 apeluri? vad si mai jos
 		setCommandToUndoId(command.getResourceSet(), command.getId());
 		setCommandToRedoId(command.getResourceSet(), null);
 	}
@@ -183,23 +173,23 @@ public abstract class ResourceSetService {
 	 * @author Claudiu Matei 
 	 */
 	public List<Update> getCommandUpdates(Command command) {
-		return getUpdates(command.getResourceSet(), command.getLastUpdateIdBeforeCommandExecution(), command.getLastUpdateId());
+		return getUpdates(command.getResourceSet(), command.getLastUpdateIdBeforeCommandExecution(), command.getLastUpdateIdAfterCommandExecution());
 	}
 
 	/**
+	 * Clears command stack pointers and removes all commands from the command stack. 
+	 * Invoked from tests only.
+	 * 
 	 * @author Claudiu Matei 
 	 */
-	// TODO CS: asta este apelata in productie?
-	// TODO CS: ar merge pus la metode o documentatie de vreo linie. Ca sa fie clar ce face, fara sa ma mai uit prin cod.
 	public void resetCommandStack(String resourceSet) {
 		clearCommandStack(resourceSet);
 		setCommandToUndoId(resourceSet, null);
 		setCommandToRedoId(resourceSet, null);
 		NodeService nodeService = CorePlugin.getInstance().getNodeService();
-		ServiceContext<NodeService> context=new ServiceContext<NodeService>();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 		
-		String commandStackUri = Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceSet);
-		Node commandStackNode = CorePlugin.getInstance().getResourceService().getNode(commandStackUri);
+		Node commandStackNode = CorePlugin.getInstance().getCommandStackResourceHandler().createCommandStackNode(resourceSet);
 		List<Node> commandNodes = nodeService.getChildren(commandStackNode, context);
 		for (Node node : commandNodes) {
 			nodeService.removeChild(commandStackNode, node, context);
@@ -225,7 +215,7 @@ public abstract class ResourceSetService {
 				List<Command> commands = getCommands(resourceSet, commandId, commandToUndoId);
 				for (int i = commands.size() - 1; i >= 0; i--) {
 					Command cmd = commands.get(i);
-					List<Update> updates = getUpdates(resourceSet, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
+					List<Update> updates = getUpdates(resourceSet, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateIdAfterCommandExecution());
 					for (int k = updates.size() - 1; k >= (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k--) {
 						Update update = updates.get(k);
 						undoUpdate(update);
@@ -307,7 +297,7 @@ public abstract class ResourceSetService {
 				List<Command> commands = getCommands(resourceSet, commandToRedoId, commandId);
 				for (int i = 0; i < commands.size(); i++) {
 					Command cmd = commands.get(i);
-					List<Update> updates = getUpdates(resourceSet, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateId());
+					List<Update> updates = getUpdates(resourceSet, cmd.getLastUpdateIdBeforeCommandExecution(), cmd.getLastUpdateIdAfterCommandExecution());
 					for (int k = (cmd.getLastUpdateIdBeforeCommandExecution() == null ? 0 : 1); k < updates.size(); k++) {
 						Update update = updates.get(k);
 						redoUpdate(update);
@@ -367,7 +357,6 @@ public abstract class ResourceSetService {
 	/**
 	 * @author Claudiu Matei
 	 */
-	// TODO CS: vezi si remarca de renuntare la timestamp in Update; avem o functie cu ac. logica, apelata din RMIL: ResourceSetService.getUpdates()
 	protected abstract List<Update> getUpdates(String resourceNodeId, String firstUpdateId, String lastUpdateId);
 	
 	/**

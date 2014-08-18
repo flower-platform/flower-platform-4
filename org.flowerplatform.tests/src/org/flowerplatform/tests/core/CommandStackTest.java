@@ -44,7 +44,7 @@ public class CommandStackTest {
 	public static final String PROJECT = "commandstack";
 	public static final String DIR = TestUtil.getResourcesDir(CommandStackTest.class);
 	private static final String resourceNodeUri = Utils.getUri("fpm", PROJECT + "/repository|FAP-FlowerPlatform4.mm");
-	private static final String commandStackNodeUri = Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceNodeUri);
+	private static final String commandStackNodeUri = CorePlugin.getInstance().getCommandStackResourceHandler().createCommandStackNode(resourceNodeUri).getNodeUri();
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

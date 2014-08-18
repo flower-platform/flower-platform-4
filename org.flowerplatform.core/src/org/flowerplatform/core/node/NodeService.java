@@ -200,8 +200,6 @@ public class NodeService {
 		
 		// Save value before the change
 		if (node.getOrPopulateProperties(context).containsKey(property)) {
-			// TODO CS: daca in comanda se opereaza mai multe setari de propr, nu avem pb?
-			// adica avem o singura valoare in acest context; corect?
 			Object oldValue = node.getOrPopulateProperties(context).get(property);
 			context.add(CoreConstants.OLD_VALUE, oldValue);
 		}
@@ -320,6 +318,7 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 
+		child.getOrPopulateProperties(context);
 		List<IRemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (IRemoveNodeController controller : controllers) {
 			controller.removeNode(node, child, context);

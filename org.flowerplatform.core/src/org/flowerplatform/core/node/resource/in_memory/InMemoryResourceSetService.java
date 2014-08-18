@@ -46,7 +46,7 @@ public class InMemoryResourceSetService extends ResourceSetService {
 		}
 		return resourceSet;
 	}
-	
+
 	@Override
 	public void removeFromResourceSet(String resourceSet, String resourceUri) {
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
@@ -102,7 +102,6 @@ public class InMemoryResourceSetService extends ResourceSetService {
 		}
 		return resourceSetInfo.getResourceUris();
 	}
-
 	
 	/**
 	 * @author Claudiu Matei
@@ -405,6 +404,5 @@ public class InMemoryResourceSetService extends ResourceSetService {
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
 		info.getCommandStack().clear();
 	}
-
 	
 }

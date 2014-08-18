@@ -78,12 +78,14 @@ public class UpdateController extends AbstractController
 				resourceSet = resourceNode.getNodeUri();
 			}
 			// otherwise the node will reference probably the whole mindmap file, that would lead to memory leaks
-			// child.setRawNodeData(null);
+			child.setRawNodeData(null);
 			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+			Node removedNode = (Node) context.get("removedNode");
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
 							.setTypeAs(UPDATE_CHILD_REMOVED)
-							.setTargetNodeAs((Node) context.get("removedNode"))
+							.setTargetNodeAs(removedNode)
+//							.setTargetNodeAs(child)
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
 							.setFullNodeIdAs(node.getNodeUri()));		
 		}
@@ -122,7 +124,6 @@ public class UpdateController extends AbstractController
 			resourceSet = resourceNode.getNodeUri();
 		}
 		ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
-		// TODO CS: idem
 		PropertyUpdate update = new PropertyUpdate();
 		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri());
 		

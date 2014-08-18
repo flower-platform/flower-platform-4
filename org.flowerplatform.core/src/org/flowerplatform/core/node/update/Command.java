@@ -15,8 +15,7 @@ public class Command {
 	
 	private String lastUpdateIdBeforeCommandExecution;
 	
-	// TODO CS: nu mi-e clar: ce face asta?
-	private String lastUpdateId;
+	private String lastUpdateIdAfterCommandExecution;
 
 	public String getId() {
 		return id;
@@ -50,12 +49,12 @@ public class Command {
 		this.lastUpdateIdBeforeCommandExecution = lastUpdateIdBeforeCommandExecution;
 	}
 
-	public String getLastUpdateId() {
-		return lastUpdateId;
+	public String getLastUpdateIdAfterCommandExecution() {
+		return lastUpdateIdAfterCommandExecution;
 	}
 	
-	public void setLastUpdateId(String lastUpdateId) {
-		this.lastUpdateId = lastUpdateId;
+	public void setLastUpdateIdAfterCommandExecution(String lastUpdateId) {
+		this.lastUpdateIdAfterCommandExecution = lastUpdateId;
 	}
 
 	@Override

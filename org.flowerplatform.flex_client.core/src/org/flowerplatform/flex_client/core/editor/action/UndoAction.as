@@ -1,14 +1,17 @@
-package org.flowerplatform.flex_client.core.editor.action
-{
+package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	public class UndoAction extends ActionBase {
+
 		public function UndoAction() {
 			super();
 			label = "Undo";
+			icon = Resources.undoIcon;
+			orderIndex = 100;
 			visible = true;
 		}
 		

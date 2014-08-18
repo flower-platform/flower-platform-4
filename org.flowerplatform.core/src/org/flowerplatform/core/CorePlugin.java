@@ -100,6 +100,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected SessionService sessionService;
 	
 	protected VirtualNodeResourceHandler virtualNodeResourceHandler = new VirtualNodeResourceHandler();
+	protected CommandStackResourceHandler commandStackResourceHandler = new CommandStackResourceHandler();
 		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
@@ -165,6 +166,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return virtualNodeResourceHandler;
 	}
 	
+	public CommandStackResourceHandler getCommandStackResourceHandler() {
+		return commandStackResourceHandler;
+	}
+
 	/**
 	 * Setting/removing must be done from a try/finally block to make sure that 
 	 * the request is cleared, i.e.
@@ -319,7 +324,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
 
-		CorePlugin.getInstance().getResourceService().addResourceHandler(CoreConstants.COMMAND_STACK_SCHEME, new CommandStackResourceHandler());
+		CorePlugin.getInstance().getResourceService().addResourceHandler(CoreConstants.COMMAND_STACK_SCHEME, commandStackResourceHandler);
 	
 	}
 

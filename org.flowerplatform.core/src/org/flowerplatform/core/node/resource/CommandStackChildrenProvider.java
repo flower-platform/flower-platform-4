@@ -10,7 +10,6 @@ import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.Command;
-import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 
@@ -18,23 +17,24 @@ public class CommandStackChildrenProvider extends AbstractController implements 
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		String resourceSet = node.getNodeUri().substring(CoreConstants.COMMAND_STACK_SCHEME.length()+1);
+		String resourceSet = CorePlugin.getInstance().getCommandStackResourceHandler().getResourceSetFromCommandStackNode(node);
 		List<Command> commands = CorePlugin.getInstance().getResourceSetService().getCommands(resourceSet);
 		return !commands.isEmpty();
 	}
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		String resourceSet = node.getNodeUri().substring(CoreConstants.COMMAND_STACK_SCHEME.length()+1);
+		String resourceSet = CorePlugin.getInstance().getCommandStackResourceHandler().getResourceSetFromCommandStackNode(node);
 		List<Command> commands = CorePlugin.getInstance().getResourceSetService().getCommands(resourceSet);
 		ArrayList<Node> children = new ArrayList<>();
 		for (Command command : commands) {
-			Node childNode = new Node(Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceSet, command.getId()), CoreConstants.COMMAND_TYPE);
+			Node childNode = CorePlugin.getInstance().getCommandStackResourceHandler().createCommandNode(resourceSet, command.getId());
 			childNode.getProperties().put(CoreConstants.NAME, command.getTitle());
 			childNode.setType(CoreConstants.COMMAND_TYPE);
 			children.add(childNode);
 		}
 		return children;
 	}
+
 	
 }

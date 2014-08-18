@@ -60,9 +60,7 @@ public class FlowerProperties extends Properties {
 			} 
 			
 			is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);
-			// TODO CS temp hack for test to work!!!
-			// TODO CS: acest hack nu mai trebuie, nu? parca mai era si in alte locuri. De cautat.
-//			this.load(is);
+			this.load(is);
 			IOUtils.closeQuietly(is);
 			
 		} catch (IOException e) {
