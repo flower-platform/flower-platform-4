@@ -17,16 +17,10 @@ package org.flowerplatform.tests.codesync;
 
 import org.flowerplatform.codesync.Match.MatchType;
 
-/**
- * @author Mariana
- */
 class Pair {
 	public MatchType type;
 	public int level;
 	
-	/**
-	 * @author see class
-	 */
 	public Pair(MatchType type, int level) {
 		this.type = type;
 		this.level = level;

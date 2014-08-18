@@ -23,12 +23,23 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
-	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
+	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
+	import org.flowerplatform.flex_client.team.git.action.LoginAction;
+	import org.flowerplatform.flex_client.team.git.action.MergeAction;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
+	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
+	import org.flowerplatform.flex_client.team.git.action.GitStagingAction;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+
+	import org.flowerplatform.flex_client.team.git.action.LoginAction;
+	import org.flowerplatform.flex_client.team.git.action.ConfigureRemoteAction;
 
 	/**
 	 * @author Valentina-Camelia Bojan
@@ -49,24 +60,27 @@ package org.flowerplatform.flex_client.team.git {
 			INSTANCE = this;
 			
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
-			
-			
+			CorePlugin.getInstance().serviceLocator.addService("HistoryService");
+						
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
-
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
-
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);		
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureRemoteAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ResetAction);
-
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeBranchAction);
 			
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGitHistoryAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteRemoteAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(LoginAction);
+
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingProperties());
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GitStagingAction);
 		}
 		
 		override protected function registerMessageBundle():void {
@@ -79,6 +93,7 @@ package org.flowerplatform.flex_client.team.git {
 		override protected function registerClassAliases():void {
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(GitRef);
+			registerClassAliasFromAnnotation(GitCredentials);
 		}
 	}
 }

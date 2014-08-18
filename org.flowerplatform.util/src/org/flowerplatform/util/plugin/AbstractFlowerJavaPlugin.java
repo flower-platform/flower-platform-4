@@ -109,9 +109,8 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	 * @author see class
 	 */
 	public String getResourceUrl(String resource) {
-		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/"
-				+ getBundleContext().getBundle().getSymbolicName() + "/"
-				+ resource;
+		return UtilConstants.PUBLIC_RESOURCES_SERVLET + "/" 
+			+ getBundleContext().getBundle().getSymbolicName() + "/" +resource;
 	}
 	
 	/**

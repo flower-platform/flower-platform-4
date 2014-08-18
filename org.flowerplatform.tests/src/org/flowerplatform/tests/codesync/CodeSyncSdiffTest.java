@@ -57,10 +57,6 @@ public class CodeSyncSdiffTest {
 	
 	public static final String PATCH_FILE_MODIFIED = "modified/file-modified.patch";
 	
-	public static List<Node> children;
-	
-	public static Map<String, Object> propertiesMap;
-		
 	public static ArrayList<Map<String, Object>> properties;
 	
 	public static int i = 0;
@@ -84,7 +80,7 @@ public class CodeSyncSdiffTest {
 			assertEquals("Different " + entry.getKey(), entry.getValue(), node.getPropertyValue(entry.getKey()));
 		}
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
 		for (Node child: children) {
 			assertTest(child);
 		}
@@ -98,7 +94,11 @@ public class CodeSyncSdiffTest {
 				.createStructureDiff(TestUtil.readFile(patch.toString()), PROJECT, sdiffOutputPath, new WorkspaceAndPatchFileContentProvider());
 		i = -1;
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
+		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
+		
+		// remove StructureDiff Legend node
+		children.remove(0);
+		
 		assertTrue("The node has too many descendants! Expected: 1, found:" + children.size(), children.size() == 1);
 		assertTest(children.get(0));	
 	}
@@ -109,7 +109,7 @@ public class CodeSyncSdiffTest {
 	@Test
 	public void testFileShouldBeAdded() {
 		properties = new ArrayList<Map<String, Object>>();
-		propertiesMap = new HashMap<String, Object>();
+		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._1MATCH_RIGHT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
 		for (int j = 1; j <= 3; j++) {
@@ -123,7 +123,7 @@ public class CodeSyncSdiffTest {
 	@Test
 	public void testFileShouldBeRemoved() {
 		properties = new ArrayList<Map<String, Object>>();
-		propertiesMap = new HashMap<String, Object>();
+		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._2MATCH_ANCESTOR_LEFT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
 		for (int j = 1; j <= 3; j++) {
@@ -138,14 +138,14 @@ public class CodeSyncSdiffTest {
 	@Test
 	public void testFileShouldBeModified() {
 		properties = new ArrayList<Map<String, Object>>();
-		propertiesMap = new HashMap<String, Object>();
+		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._3MATCH.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
 		for (int j = 1; j <= 2; j++) {		
 			properties.add(propertiesMap);
 		}
 		
-		//no change method
+		// no change method
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._3MATCH.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, false);
@@ -153,7 +153,7 @@ public class CodeSyncSdiffTest {
 		propertiesMap.put(MATCH_BODY_MODIFIED, false);
 		properties.add(propertiesMap);
 		
-		//removed method
+		// removed method
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._2MATCH_ANCESTOR_LEFT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);

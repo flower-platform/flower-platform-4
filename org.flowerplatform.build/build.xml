@@ -97,8 +97,32 @@
 			<arg value="-Dpackaging=swc" />
 			<arg value="-Dfile=../org.flowerplatform.flexutil/lib/MobileComponents45.swc" />
 		</artifact:mvn>
+		
+		<artifact:mvn mavenHome="${mavenHome}" fork="true">
+			<arg value="install:install-file" />
+			<arg value="-N" />
+			<arg value="-DgroupId=com.google.code.stagewebviewbridge" />
+			<arg value="-DartifactId=stagewebviewbridge" />
+			<arg value="-Dversion=1.0" />
+			<arg value="-Dpackaging=swc" />
+			<arg value="-Dfile=../org.flowerplatform.flexutil/lib/StageWebViewBridge.swc" />
+		</artifact:mvn>
 	</target>
 
+	<target name="clean-and-copy-maven-deps" description="Clean and copy Maven dependencies to lib-from-maven">
+		<echo>Clean and copy maven dependencies for ${project_loc}</echo>
+		
+		<!-- Clean dependencies -->
+		<delete dir="${project_loc}/lib-from-maven" />
+		
+		<!-- Copy dependencies -->
+		<artifact:mvn mavenHome="${mavenHome}" fork="true">
+			<arg value="dependency:copy-dependencies" />
+			<arg value="-f${project_loc}/lib-from-maven-pom.xml" />
+			<arg value="-DoutputDirectory=lib-from-maven" />
+		</artifact:mvn>
+	</target>
+	
 	<target name="build" description="Perform and validate build">
 		
 		<!-- the qualifier suffix needs to be wrapped in quotes ONLY if it is not the empty string -->

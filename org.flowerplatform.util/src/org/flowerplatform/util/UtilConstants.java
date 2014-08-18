@@ -31,12 +31,15 @@ public final class UtilConstants {
 	// Resources
 	//////////////////////////////////
 	
+	public static final String SERVLET = "servlet";
+	
 	public static final String PUBLIC_RESOURCES_DIR = "public-resources";
 	public static final String PUBLIC_RESOURCES_PATH_PREFIX = "/public-resources";
+	public static final String PUBLIC_RESOURCES_SERVLET = SERVLET + PUBLIC_RESOURCES_PATH_PREFIX;
 	
 	public static final String MESSAGES_FILE = "messages.properties";
-	
-	public static final String IMAGE_COMPOSER_SERVLET = "servlet/image-composer/";
+		
+	public static final String IMAGE_COMPOSER_SERVLET = SERVLET + "/image-composer/";
 	public static final String IMAGE_COMPOSER_PATH_PREFIX = "/image-composer";
 	
 	public static final File TEMP_FOLDER = new File(System.getProperty("java.io.tmpdir"), FLOWER_PLATFORM);

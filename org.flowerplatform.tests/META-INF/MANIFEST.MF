@@ -6,24 +6,25 @@ Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.jdt.core,
  org.junit,
- org.flowerplatform.util,
- org.flowerplatform.codesync.java,
  org.eclipse.core.resources,
+ org.flowerplatform.util,
  org.flowerplatform.core,
+ org.flowerplatform.resources,
  org.flowerplatform.freeplane,
  org.flowerplatform.mindmap,
- org.flowerplatform.resources,
  org.flowerplatform.codesync,
- org.flowerplatform.codesync.as,
  org.flowerplatform.codesync.sdiff,
  org.eclipse.text,
  org.eclipse.equinox.common,
  org.eclipse.osgi,
  org.eclipse.compare.core,
- com.ibm.icu
+ com.ibm.icu,
+ org.flowerplatform.codesync.java,
+ org.flowerplatform.codesync.as
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
+Bundle-ClassPath: lib-from-maven/mockito-all-1.9.5.jar,
  .
 Export-Package: org.flowerplatform.tests
-Import-Package: javax.servlet.http
+Import-Package: javax.servlet,
+ javax.servlet.http

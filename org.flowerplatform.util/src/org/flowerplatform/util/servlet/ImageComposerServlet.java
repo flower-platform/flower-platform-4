@@ -106,6 +106,11 @@ public class ImageComposerServlet extends ResourcesServlet {
 				if (!path.startsWith("/")) {
 					path = "/" + path;
 				}
+				String prefix = "/" + UtilConstants.PUBLIC_RESOURCES_SERVLET;
+				if (path.startsWith(prefix)) {
+					path = path.substring(path.indexOf(prefix) + prefix.length());
+				}
+				
 				indexOfSecondSlash = path.indexOf('/', 1);
 				String plugin = path.substring(0, indexOfSecondSlash);
 				path = path.substring(indexOfSecondSlash);

@@ -13,8 +13,8 @@
  * 
  * license-end
  */
-package org.flowerplatform.flex_client.team.git.action
-{
+package org.flowerplatform.flex_client.team.git.action {
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -31,7 +31,7 @@ package org.flowerplatform.flex_client.team.git.action
 		public function DeleteBranchAction() {
 			super();
 			icon = Resources.deleteIcon;
-			orderIndex = 40;	
+			orderIndex = 330;	
 		}
 		
 		override public function get visible():Boolean {
@@ -42,7 +42,7 @@ package org.flowerplatform.flex_client.team.git.action
 					return false;
 				}
 					
-				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE) {
+				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0) {
 					label = Resources.getMessage(node.type == GitConstants.GIT_TAG_TYPE ? "team.git.action.deleteTag.action" : "team.git.action.deleteBranch.action");
 					return true;
 				}
@@ -52,7 +52,7 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			
+
 			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 				.setText(Resources.getMessage("team.git.action.deleteBranch.message", [node.getPropertyValue(GitConstants.FULL_NAME)]))
 				.setTitle(Resources.getMessage("info"))

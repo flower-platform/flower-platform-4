@@ -86,10 +86,5 @@ public class Test extends SuperClassFromModel implements IFromSource, IFromModel
 
 	public int t;
 
-	/**
-	 * @author see class
-	 */
-	class InternalClassFromModel {
-	}
 	
 }

@@ -35,6 +35,8 @@ public class HeaderUpdaterTask extends Task {
 
 	private String projectFilterRegex;
 
+	private String ignoreFilterRegex;
+	
 	private String fileExtension;
 
 	private File headerFile;
@@ -75,6 +77,9 @@ public class HeaderUpdaterTask extends Task {
 
 		for (FileIterator it = new FileIterator(workspaceFolder, new ProjectFileFilter()); it.hasNext();) {
 			File file = it.next();
+			if (file.getPath().matches(ignoreFilterRegex)) {
+				continue;
+			}
 			if (file.isFile() && file.getName().endsWith(fileExtension)) {
 
 				String fileText = FileUtil.readFile(file);
@@ -166,5 +171,13 @@ public class HeaderUpdaterTask extends Task {
 
 	public void setProjectFilterRegex(String projectFilterRegex) {
 		this.projectFilterRegex = projectFilterRegex;
+	}
+
+	public String getIgnoreFilterRegex() {
+		return ignoreFilterRegex;
+	}
+
+	public void setIgnoreFilterRegex(String ignoreFilterRegex) {
+		this.ignoreFilterRegex = ignoreFilterRegex;
 	}
 }

@@ -61,8 +61,9 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 		}
 		@SuppressWarnings("rawtypes")
 		List paramList = Arrays.asList(getFunction(element).getParameters());
-		String formatedparamList = paramList.toString().replace("[", "(").replace("]", ")"); 
-		return name + formatedparamList + getFunction(element).getReturnTypeAsDisplayString();
+		String formatedParamList = paramList.toString().replace("[", "(").replace("]", ")");
+		String type = getFunction(element).getReturnTypeAsDisplayString();
+		return name + formatedParamList + (type != null && !type.isEmpty() ? ":" + type : "");
 		}
 	
 	@Override

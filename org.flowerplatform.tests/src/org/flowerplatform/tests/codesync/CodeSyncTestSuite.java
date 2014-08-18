@@ -19,6 +19,7 @@ import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.List;
@@ -115,80 +116,57 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 		return parent;
 	}
 
-	private static Pair[] typeList;
-	private static org.flowerplatform.util.Pair<?, ?>[] conflicts;
-	private static int i;
-
-	/**
-	 * @author see class
-	 */
-	//CHECKSTYLE:OFF
-	public static void testConflicts(Match match, org.flowerplatform.util.Pair<?, ?>[] _conflicts) {
-	//CHECKSTYLE:ON
-		i = 0;
-		conflicts = _conflicts;
-		checkTreeConflict(match);
-	}
-
-	/**
-	 * @author see class
-	 */
-	//CHECKSTYLE:OFF
-	public static void checkTree_type(Match parentMatch, boolean checkNoDiffs, int level) {
-	//CHECKSTYLE:ON
-		checkMatchType(parentMatch, level);
+	public static void checkTree_type(Match actual, TestMatch expected, boolean checkNoDiffs, boolean checkFlags) {
+		// first test current match
+		expected.tested = true;
+		assertEquals("Wrong match type for " + expected.matchKey, expected.matchType, actual.getMatchType());
 		if (checkNoDiffs) {
-			assertEquals("No diffs expected", 0, parentMatch.getDiffs().size());
+			assertEquals("No diffs expected", 0, actual.getDiffs().size());
 		}
-		for (Match subMatch : parentMatch.getSubMatches()) {
-			i++;
-			checkTree_type(subMatch, checkNoDiffs, level + 1);
+		if (checkFlags) {
+			checkMatch_conflict(actual, expected);
+		}
+		
+		// then recurse for children
+		
+		// iterate actual children
+		for (Match subMatch : actual.getSubMatches()) {
+			boolean found = false;
+			Object matchKey = subMatch.getMatchKey();
+			for (TestMatch subTestMatch : expected.children) {
+				if (subTestMatch.matchKey.equals(matchKey)) {
+					checkTree_type(subMatch, subTestMatch, checkNoDiffs, checkFlags);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				fail("Match not expected " + subMatch);
+			}
+		}
+		
+		// iterate remaining expected children
+		for (TestMatch testSubMatch : expected.children) {
+			if (!testSubMatch.tested) {
+				fail("Expected match not found " + testSubMatch);
+			}
 		}
 	}
 
-	/**
-	 * @author see class
-	 */
-	public static void checkMatchType(Match match, int level) {
-		assertEquals("Wrong match at index " + i, typeList[i].type, match.getMatchType());
-		assertEquals("Wrong level at index " + i, typeList[i].level, level);
-	}
-
-	/**
-	 * @author see class
-	 */
-	public static void checkTreeConflict(Match parentMatch) {
-		checkMatchConflict(parentMatch);
-		for (Match subMatch : parentMatch.getSubMatches()) {
-			i++;
-			checkTreeConflict(subMatch);
+	public static void checkMatch_conflict(Match actual, TestMatch expected) {
+		if (expected.isConflict != actual.isConflict()) {
+			fail();
 		}
+		assertEquals("Wrong conflict state", expected.isConflict, actual.isConflict());
+		assertEquals("Wrong children conflict state", expected.isChildrenConflict, actual.isChildrenConflict());
+		assertEquals("Wrong sync state", !expected.isConflict, ((Node)actual.getLeft()).getPropertyValue(CodeSyncConstants.SYNC));
+		assertEquals("Wrong children sync state", !expected.isChildrenConflict, ((Node)actual.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
 	}
 
-	/**
-	 * @author see class
-	 */
-	public static void checkMatchConflict(Match match) {
-		assertEquals("Wrong conflict state at index " + i, conflicts[i].a, match.isConflict());
-		assertEquals("Wrong children conflict state at index " + i, conflicts[i].b, match.isChildrenConflict());
-		assertEquals("Wrong sync state at index " + i, !((Boolean) conflicts[i].a),
-				((Node) match.getLeft()).getPropertyValue(CodeSyncConstants.SYNC));
-		assertEquals("Wrong children sync state at index " + i, !((Boolean) conflicts[i].b),
-				((Node) match.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
-	}
-
-	/**
-	 * @author see class
-	 */
-	//CHECKSTYLE:OFF
-	public static Match testMatchTree(Match match, Pair[] _typeList, boolean checkNoDiffs) {
-	//CHECKSTYLE:ON
-		assertNotNull("Match was not created", match);
-		i = 0;
-		typeList = _typeList;
-		checkTree_type(match, checkNoDiffs, 0);
-		assertEquals(typeList.length, i + 1);
-		return match;
-	}
+	public static Match testMatchTree(Match actual, TestMatch expected, boolean checkNoDiffs, boolean checkFlags) {
+		assertNotNull("Match was not created", actual);
+		checkTree_type(actual, expected, checkNoDiffs, checkFlags);
+		return actual;
+	}	
 
 }
