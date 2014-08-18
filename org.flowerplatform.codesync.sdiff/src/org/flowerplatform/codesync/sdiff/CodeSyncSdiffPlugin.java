@@ -69,7 +69,7 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
 			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
 			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT).setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.comment")));
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
 			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController());

@@ -149,14 +149,14 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	/**
 	 * @author Claudiu Matei 
 	 */
-	public String getTitleForProperty(String propertyName) {
-		String propertyTitle;
+	public String getLabelForProperty(String propertyName) {
+		String propertyLabel;
 		try {
-			propertyTitle = getMessage(propertyName + ".label");
+			propertyLabel = getMessage(propertyName + ".label");
 		} catch (MissingResourceException e) {
-			propertyTitle = propertyName;
+			propertyLabel = propertyName;
 		}
-		return propertyTitle;
+		return propertyLabel;
 	}
 	
 }

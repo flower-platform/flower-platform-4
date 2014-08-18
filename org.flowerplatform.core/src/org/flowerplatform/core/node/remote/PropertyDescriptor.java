@@ -33,7 +33,7 @@ import org.flowerplatform.util.controller.TypeDescriptor;
 public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
 	private String name;
-	private String title;
+	private String label;
 	
 	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
 	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
@@ -62,16 +62,16 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 		
-	public String getTitle() {
-		return title;
+	public String getLabel() {
+		return label;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
-	public PropertyDescriptor setTitleAs(String title) {
-		this.title = title;
+	public PropertyDescriptor setLabelAs(String label) {
+		this.label = label;
 		return this;
 	}
 	
@@ -185,14 +185,15 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	@Override
 	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
 		super.setTypeDescriptor(typeDescriptor);
-		if (title == null) {
-			title = ResourcesPlugin.getInstance().getTitleForProperty(typeDescriptor.getType()+"."+name);
+		if (label == null) {
+			System.out.println("************* SET TYPE: "+typeDescriptor.getType()+"."+name);
+			label = ResourcesPlugin.getInstance().getLabelForProperty(typeDescriptor.getType()+"."+name);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "PropertyDescriptor [name=" + name + ", title=" + title
+		return "PropertyDescriptor [name=" + name + ", title=" + label
 				+ ", type=" + type + ", category=" + category
 				+ ", propertyLineRenderer=" + propertyLineRenderer
 				+ ", contributesToCreation=" + contributesToCreation
