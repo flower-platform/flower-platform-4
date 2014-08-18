@@ -570,9 +570,6 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
 
-		[Embed(source="/team.git/remoteSpec.gif")]
-		public static const configureFetchPush:Class;
-
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
 		
@@ -600,9 +597,6 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/cloneGit.gif")]
 		public static const cloneRepoIcon:Class;
 		
-		[Embed(source="/team.git/gitrepository.gif")]
-		public static const gitRepoIcon:Class;
-
 		[Embed(source="/team.git/gitrepository.gif")]
 		public static const gitRepoIcon:Class;
 

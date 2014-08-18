@@ -60,7 +60,7 @@
 			}	
 			
 			override protected function nextClickHandler():void {
-				repoUri = repositorySelectionPage.getURI();
+				repoUri = repositorySelectionPage.getResult() as String;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.validateRepoURL", [repoUri], validateRepoURLResultHandler);
 			}
 			

@@ -26,9 +26,15 @@
 			import com.flextras.mobile.dropDownList.DropDownList;
 			
 			import mx.binding.utils.BindingUtils;
+			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			
+			import org.flowerplatform.flex_client.core.CoreConstants;
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
 			[Bindable]
@@ -39,6 +45,8 @@
 			
 			public var remotes:spark.components.DropDownList;
 			
+			public var nodeUri:String;
+			
 			private function creationCompleteHandler():void {
 				if (!showRemotesList) {
 					callLater(uriTextInput.setFocus);
@@ -48,6 +56,10 @@
 				}
 			}
 			
+			private function getLabelFunction(item:Object):String {
+				return Node(item).getPropertyValue(GitConstants.NAME) + ":" + Node(item).getPropertyValue(GitConstants.REMOTE_URIS);	
+			}
+			
 			override protected function createChildren():void {
 				super.createChildren();
 				
@@ -55,14 +67,26 @@
 					remotes = new DropDownList();										
 				} else {
 					remotes = new spark.components.DropDownList();											
-				}				
+				}		
+				
+				var serviceContext:ServiceContext = new ServiceContext();
+				serviceContext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+				
+				var remotesNodeUri:String = CorePlugin.getInstance().createNodeUriWithRepo(GitConstants.GIT_SCHEME, CorePlugin.getInstance().getRepository(nodeUri), GitConstants.GIT_REMOTES_TYPE);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [remotesNodeUri, serviceContext] ,
+					function(result:ArrayCollection):void {
+						remotes.dataProvider = result;
+						remotes.labelFunction = getLabelFunction;
+					}); 
+				
 				remotes.percentWidth = 100;
+				remotes.requireSelection = true;
 				BindingUtils.bindProperty(remotes, "visible", this, "showRemotesList");
 				BindingUtils.bindProperty(remotes, "includeInLayout", this, "showRemotesList");
 				addElementAt(remotes, 1);
 			}
 			
-			public function getURI():String {
+			public function getResult():Object {
 				if (customUri.selected) {
 					return uriTextInput.text;	
 				}
@@ -85,23 +109,11 @@
 		<s:VerticalLayout />
 	</s:layout>
 	
-	<s:VGroup id="remoteRepoGroup"  height="40%" width="100%" paddingLeft="5">
-		<s:RadioButton id="remoteRadioButton" selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" />
-		<s:DropDownList id="repositoriesList" >
-			
-		</s:DropDownList>
-	</s:VGroup>
-	
-	<s:VGroup height="40%" width="100%" paddingLeft="5">
-		<s:HGroup>
-			<s:RadioButton id="uriRadioButton" selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" />
-		</s:HGroup>
+	<s:RadioButton id="remoteConfig" selected="true" label="{Resources.getMessage('git.selectRepo.remote')}"
+				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}" />
 		
-	<s:RadioButton id="remoteConfig" label="{Resources.getMessage('git.selectRepo.remote')}"
-				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" />
-		
-	<s:RadioButton id="customUri" selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" 
-				visible="{showRemotesList}" includeInLayout="{showRemotesList}" />
-	<s:TextInput id="uriTextInput" width="100%" />		
+	<s:RadioButton id="customUri" label="{Resources.getMessage('git.selectRepo.uri')}" 
+				visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}"/>
+		<s:TextInput id="uriTextInput" width="100%" enabled="false" />		
 	
 </s:Group>

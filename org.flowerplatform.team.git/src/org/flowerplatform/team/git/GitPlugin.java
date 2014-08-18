@@ -48,6 +48,7 @@ import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
 
 import org.eclipse.jgit.lib.Constants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.resources.ResourcesPlugin;

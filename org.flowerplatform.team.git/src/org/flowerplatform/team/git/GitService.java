@@ -38,8 +38,10 @@ import java.util.Set;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
+
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
@@ -85,12 +87,15 @@ import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
+
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.util.Utils;
+
 import javax.servlet.http.HttpSession;
 
 /**
@@ -572,6 +577,12 @@ public class GitService {
 		StoredConfig config = repository.getConfig();
 		config.unsetSection("remote", (String)child.getPropertyValue(GitConstants.NAME));
 		config.save();
+		
+		/* refresh parent node */
+		CorePlugin.getInstance().getNodeService().removeChild(
+			    parent,
+			    child, 
+			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 	
 	
@@ -616,7 +627,7 @@ public class GitService {
 	 * @author Andreea Tita
 	 */
 	@SuppressWarnings("unchecked")
-	public String push (String nodeUri, RemoteConfiguration pushConfig) throws Exception {
+	public String push (String nodeUri, String pushNodeUri, ArrayList<String> pushRefMappings) throws Exception {
 		String repoPath =  Utils.getRepo(nodeUri);
 		Repository  repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
@@ -626,37 +637,30 @@ public class GitService {
 
 		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
 			pushCommand = new Git(repository).push().setRemote(GitUtils.getName(nodeUri));
-			
+
 			//check if credentials for remote are set
-			if ((credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0))) == null) {
-				return "You must set credentials!";
-			}
+			credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
 		} else {
 			List<RefSpec> specsList = new ArrayList<RefSpec>();
-			if (pushConfig.getPushMappings() != null)  {
-				for (String refMapping : pushConfig.getPushMappings()) {
+			if (pushRefMappings != null)  {
+				for (String refMapping : pushRefMappings) {
 					specsList.add(new RefSpec(refMapping));
 				}
 			}
-			pushCommand = new Git(repository).push().setRemote(new URIish(pushConfig.getUri()).toPrivateString()).setRefSpecs(specsList);
-			
-			//check if credentials for pushConfig are set
-			if ((credentials = getCredentials("git|" + pushConfig.getUri())) == null ){
-				return "You must set credentials!";
-			}
+		
+			pushCommand = new Git(repository).push().setRemote(new URIish(pushNodeUri).toPrivateString()).setRefSpecs(specsList);
+		
+			//check if credentials for pushNode are set
+			credentials = getCredentials("git|" + pushNodeUri);
 		}
 		
 		// provide credentials for use in connecting to repositories 
-		pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(),credentials.getPassword()));
+		if (credentials != null) {
+			pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(),credentials.getPassword()));
+		}
 		Iterable<PushResult> resultIterable = pushCommand.call();
 	
 		return GitUtils.handlePushResult(resultIterable.iterator().next());
-
-//		/* refresh parent node */
-//		CorePlugin.getInstance().getNodeService().removeChild(
-//			    parent,
-//			    child, 
-//			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 
 

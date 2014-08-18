@@ -46,7 +46,7 @@ package org.flowerplatform.flex_client.team.git.action {
 					.show();
 			} else if (node.type == GitConstants.GIT_REMOTE_TYPE) {
 				// remote category
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.push", [node.nodeUri, null], 
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.push", [node.nodeUri, null, null], 
 					function(result:String):void {
 						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 							.setText(result)
