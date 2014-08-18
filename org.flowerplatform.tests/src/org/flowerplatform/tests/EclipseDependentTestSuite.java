@@ -20,6 +20,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+/**
+ * @author Alexandra Topoloaga
+ */
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	EclipseDependentTest.class,

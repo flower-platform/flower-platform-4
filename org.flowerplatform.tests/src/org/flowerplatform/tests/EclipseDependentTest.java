@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.tests;
 
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,8 +27,14 @@ import org.flowerplatform.core.CorePlugin;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author Alexandra Topoloaga
+ */
 public class EclipseDependentTest extends EclipseDependentTestSuiteBase {
 
+	/**
+	 * @author see class
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		HttpServletRequest request = mock(HttpServletRequest.class);
@@ -37,6 +44,9 @@ public class EclipseDependentTest extends EclipseDependentTestSuiteBase {
 		CorePlugin.getInstance().getRequestThreadLocal().set(request);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void test() {
 		Assert.isNotNull(CorePlugin.getInstance(), "CorePlugin not started");

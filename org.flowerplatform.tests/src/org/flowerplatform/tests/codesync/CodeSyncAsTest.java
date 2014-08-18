@@ -19,7 +19,7 @@ import static org.flowerplatform.codesync.Match.MatchType._2MATCH_LEFT_RIGHT;
 import static org.flowerplatform.codesync.Match.MatchType._3MATCH;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.PROJECT;
-import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.codeSyncService;
+import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.CODE_SYNC_SERVICE;
 import static org.junit.Assert.assertEquals;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
@@ -37,14 +37,17 @@ public class CodeSyncAsTest {
 
 	public static final String INITIAL_AS = "initial_as";
 	
-	private static final String resourceNodeId = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
+	private static final String RESOURCE_NODE_ID = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void test() {
 		CodeSyncPlugin.getInstance().addSrcDir(INITIAL_AS);
 		String fullyQualifiedName = PROJECT + "/" + INITIAL_AS;
 		
-		Match match = codeSyncService.synchronize(resourceNodeId, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncAsConstants.ACTIONSCRIPT, true);
+		Match match = CODE_SYNC_SERVICE.synchronize(RESOURCE_NODE_ID, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncAsConstants.ACTIONSCRIPT, true);
 		
 		assertEquals(2, match.getSubMatches().size()); // found 2 files
 		

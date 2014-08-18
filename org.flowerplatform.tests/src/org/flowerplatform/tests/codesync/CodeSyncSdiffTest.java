@@ -50,12 +50,18 @@ public class CodeSyncSdiffTest {
 	
 	public static int i = 0;
 	
+	/**
+	 * @author see class
+	 */
 	@BeforeClass 
 	public static void beforeClass() {
 		 String from = DIR + INITIAL_TO_BE_COPIED + "/" + INITIAL_SDIFF;
 		 TestUtil.copyFilesAndCreateProject(from, PROJECT);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static void assertTest(Node node) {
 		i++;
 		assertTrue("The node has too many descendants! Expected: " + properties.size() + ", found: " + i , i < properties.size());
@@ -81,38 +87,46 @@ public class CodeSyncSdiffTest {
 		assertTrue("The node has too many descendants! Expected: 1, found:" + children.size(), children.size() == 1);
 		assertTest(children.get(0));	
 	}
-		
+	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void testFileShouldBeAdded() {
 		properties = new ArrayList<Map<String, Object>>();
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._1MATCH_RIGHT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 3; i++) {
+		for (int j = 1; j <= 3; j++) {
 			properties.add(propertiesMap);
 		}
 		test(PATCH_FILE_ADDED);
 	}
-	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void testFileShouldBeRemoved() {
 		properties = new ArrayList<Map<String, Object>>();
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._2MATCH_ANCESTOR_LEFT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 3; i++) {
+		for (int j = 1; j <= 3; j++) {
 			properties.add(propertiesMap);
 		}
 		test(PATCH_FILE_REMOVED);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void testFileShouldBeModified() {
 		properties = new ArrayList<Map<String, Object>>();
 		propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._3MATCH.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 2; i++) {		
+		for (int j = 1; j <= 2; j++) {		
 			properties.add(propertiesMap);
 		}
 		

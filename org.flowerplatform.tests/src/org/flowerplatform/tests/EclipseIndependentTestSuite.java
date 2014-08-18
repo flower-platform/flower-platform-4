@@ -56,16 +56,19 @@ import org.osgi.framework.BundleContext;
 })
 public class EclipseIndependentTestSuite {
 	
-	public static String WORKSPACE_LOCATION = "workspace";
+	public static String workspaceLocation = "workspace";
 	
 	public static NodeService nodeService;
 	
 	public static String sessionId = "mockSessionId";
 	
+	/**
+	 * @author see class
+	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		// populate from web.xml in the servlet container
-		FrameworkProperties.getProperties().put("osgi.instance.area", WORKSPACE_LOCATION);
+		FrameworkProperties.getProperties().put("osgi.instance.area", workspaceLocation);
 		
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
@@ -110,8 +113,11 @@ public class EclipseIndependentTestSuite {
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	public static void copyFiles(String from, String dir) {
-		File to = new File(WORKSPACE_LOCATION, dir);
+		File to = new File(workspaceLocation, dir);
 		try {
 			FileUtils.copyDirectory(new File(from), to);
 		} catch (IOException e) {
@@ -119,9 +125,12 @@ public class EclipseIndependentTestSuite {
 		}
 	}
 
+	/**
+	 * @author see class
+	 */
 	public static void deleteFiles(String dir) {
 		try {
-			FileUtils.deleteDirectory(new File(WORKSPACE_LOCATION, dir));
+			FileUtils.deleteDirectory(new File(workspaceLocation, dir));
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot delete files ", e);
 		}

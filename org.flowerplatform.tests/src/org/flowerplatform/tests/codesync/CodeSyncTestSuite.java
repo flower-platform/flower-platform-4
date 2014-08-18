@@ -61,8 +61,11 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	
 	public static final String DIR = TestUtil.getResourcesDir(CodeSyncTestSuite.class);
 	
-	public static final CodeSyncOperationsService codeSyncService = new CodeSyncOperationsService();
+	public static final CodeSyncOperationsService CODE_SYNC_SERVICE = new CodeSyncOperationsService();
 	
+	/**
+	 * @author see class
+	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		EclipseIndependentTestSuite.deleteFiles(PROJECT);
@@ -76,6 +79,9 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 		startPlugin(new CodeSyncSdiffPlugin());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static File getFile(String path) {
 		String absolutePath = /*"/org/ws_trunk/" +*/ path;
 		try {
@@ -89,6 +95,9 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	// Utils
 	// ///////////////////////////
 
+	/**
+	 * @author see class
+	 */
 	public static Node getChild(Node node, String[] names) {
 		Node parent = node;
 		for (String name : names) {
@@ -110,37 +119,52 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 	private static org.flowerplatform.util.Pair<?, ?>[] conflicts;
 	private static int i;
 
+	/**
+	 * @author see class
+	 */
 	public static void testConflicts(Match match, org.flowerplatform.util.Pair<?, ?>[] _conflicts) {
 		i = 0;
 		conflicts = _conflicts;
-		checkTree_conflict(match);
+		checkTreeConflict(match);
 	}
 
-	public static void checkTree_type(Match parentMatch, boolean checkNoDiffs, int level) {
-		checkMatch_type(parentMatch, level);
+	/**
+	 * @author see class
+	 */
+	public static void checkTreeType(Match parentMatch, boolean checkNoDiffs, int level) {
+		checkMatchType(parentMatch, level);
 		if (checkNoDiffs) {
 			assertEquals("No diffs expected", 0, parentMatch.getDiffs().size());
 		}
 		for (Match subMatch : parentMatch.getSubMatches()) {
 			i++;
-			checkTree_type(subMatch, checkNoDiffs, level + 1);
+			checkTreeType(subMatch, checkNoDiffs, level + 1);
 		}
 	}
 
-	public static void checkMatch_type(Match match, int level) {
+	/**
+	 * @author see class
+	 */
+	public static void checkMatchType(Match match, int level) {
 		assertEquals("Wrong match at index " + i, typeList[i].type, match.getMatchType());
 		assertEquals("Wrong level at index " + i, typeList[i].level, level);
 	}
 
-	public static void checkTree_conflict(Match parentMatch) {
-		checkMatch_conflict(parentMatch);
+	/**
+	 * @author see class
+	 */
+	public static void checkTreeConflict(Match parentMatch) {
+		checkMatchConflict(parentMatch);
 		for (Match subMatch : parentMatch.getSubMatches()) {
 			i++;
-			checkTree_conflict(subMatch);
+			checkTreeConflict(subMatch);
 		}
 	}
 
-	public static void checkMatch_conflict(Match match) {
+	/**
+	 * @author see class
+	 */
+	public static void checkMatchConflict(Match match) {
 		assertEquals("Wrong conflict state at index " + i, conflicts[i].a, match.isConflict());
 		assertEquals("Wrong children conflict state at index " + i, conflicts[i].b, match.isChildrenConflict());
 		assertEquals("Wrong sync state at index " + i, !((Boolean) conflicts[i].a),
@@ -149,11 +173,14 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 				((Node) match.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
 	}
 
+	/**
+	 * @author see class
+	 */
 	public static Match testMatchTree(Match match, Pair[] _typeList, boolean checkNoDiffs) {
 		assertNotNull("Match was not created", match);
 		i = 0;
 		typeList = _typeList;
-		checkTree_type(match, checkNoDiffs, 0);
+		checkTreeType(match, checkNoDiffs, 0);
 		assertEquals(typeList.length, i + 1);
 		return match;
 	}

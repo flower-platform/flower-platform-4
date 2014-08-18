@@ -30,7 +30,7 @@ import java.util.Queue;
 public class FileIterator implements Iterator<File> {
 
 	private Queue<File> queue = new LinkedList<File>();
-
+	
 	private FileFilter secondLevelFileFilter;
 
 	private boolean isChildLevel = true;

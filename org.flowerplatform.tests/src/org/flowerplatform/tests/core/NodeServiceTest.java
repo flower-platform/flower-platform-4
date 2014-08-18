@@ -1,4 +1,4 @@
-/* license-start
+ /* license-start
  * 
  * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
@@ -43,10 +43,16 @@ import org.junit.Test;
 public class NodeServiceTest {
 	private static NodeService nodeService;
 
+	/**
+	 * @author Mariana
+	 */
 	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		
+		/**
+		 * @author Mariana
+		 */
 		class MockChildProvider extends AbstractController implements IChildrenProvider {
 			@SuppressWarnings("rawtypes")
 			@Override

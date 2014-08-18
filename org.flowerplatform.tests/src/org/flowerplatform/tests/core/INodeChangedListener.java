@@ -7,6 +7,9 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public interface INodeChangedListener {
 
+	/**
+	 * @author see class
+	 */
 	void nodeChanged(Node node);
 	
 }

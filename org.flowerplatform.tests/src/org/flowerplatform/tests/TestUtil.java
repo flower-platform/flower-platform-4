@@ -42,6 +42,9 @@ public class TestUtil {
 		return "src/" + cls.getPackage().getName().replaceAll("\\.", "/") + "/resources/";
 	}	
 	
+	/**
+	 * @author see class
+	 */
 	public static String getWorkspaceResourceAbsolutePath(String pathWithinWorkspace) {
 		return ResourcesPlugin.getWorkspace().getRoot().findMember(pathWithinWorkspace).getLocation().toString();
 	}
@@ -177,13 +180,18 @@ public class TestUtil {
 //		}
 //	}
 	
-	
+	/**
+	 * @author see class
+	 */
 	public static void createDirectoriesIfNeeded(String path) {
 		if (!new File(path).exists()) {
 			new File(path).mkdirs();
 		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	public static String getCanonicalPath(String path) {
 		try {
 			return new File(path).getCanonicalPath();

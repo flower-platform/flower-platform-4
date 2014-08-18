@@ -55,6 +55,9 @@ public class FileSystemControllersTest {
 	
 	private static IFileAccessController fileAccessController = new PlainFileAccessController();
 	
+	/**
+	 * @author see class
+	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		if (CorePlugin.getInstance() == null) {
@@ -65,12 +68,18 @@ public class FileSystemControllersTest {
 				new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Before
 	public void setUp() {
 		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
 		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void testGetChildren() {
 		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), FILE_NODE_TYPE), 
@@ -94,6 +103,9 @@ public class FileSystemControllersTest {
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2/oneFolder"), FILE_NODE_TYPE)));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void addChild() {
 		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
@@ -137,6 +149,9 @@ public class FileSystemControllersTest {
 		assertEquals(fileAccessController.isDirectory(newFolder), true);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void removeNode() {
 
@@ -155,6 +170,9 @@ public class FileSystemControllersTest {
 		assertEquals(fileAccessController.exists(newFolder), false);
 	}
 
+	/**
+	 * @author see class
+	 */
 	public void copyDirectory(File srcPath, File dstPath) throws IOException {
 		if (srcPath.isDirectory()) {
 			if (!dstPath.exists()) {

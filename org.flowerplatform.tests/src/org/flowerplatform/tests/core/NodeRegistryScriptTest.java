@@ -22,6 +22,9 @@ public class NodeRegistryScriptTest {
 	
 	ScriptEngine engine;
 	
+	/**
+	 * @author see class
+	 */
 	class NodeChangedListener implements INodeChangedListener {
 		
 		@Override
@@ -30,6 +33,9 @@ public class NodeRegistryScriptTest {
 		}		
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void runJavaScriptFunction() {
 		try {

@@ -15,10 +15,16 @@
  */
 package org.flowerplatform.tests;
 
+/**
+ * @author Mariana Gheorgeh
+ */
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+/**
+ * @author see class
+ */
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	EclipseIndependentTestSuite.class,

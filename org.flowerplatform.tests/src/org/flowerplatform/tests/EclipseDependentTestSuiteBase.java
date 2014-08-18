@@ -17,8 +17,14 @@ package org.flowerplatform.tests;
 
 import org.junit.BeforeClass;
 
+/**
+ * @author Mariana Gheorghe
+ */
 public class EclipseDependentTestSuiteBase {
 	
+	/**
+	 * @author see class
+	 */
 	@BeforeClass
 	public static void setUp() {
 	}
