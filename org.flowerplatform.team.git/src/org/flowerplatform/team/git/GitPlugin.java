@@ -63,6 +63,7 @@ import org.flowerplatform.team.git.controller.GitRemotesPropertiesProvider;
 import org.flowerplatform.team.git.controller.GitResourceHandler;
 import org.flowerplatform.team.git.controller.GitTagsPropertiesProvider;
 import org.flowerplatform.team.git.controller.RepoChildrenProvider;
+import org.flowerplatform.team.git.history.internal.GitHistoryConstants;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -86,7 +87,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		instance = this;
 			
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
-		CorePlugin.getInstance().getServiceRegistry().registerService("HistoryService", new GitService());
+		CorePlugin.getInstance().getServiceRegistry().registerService("HistoryService", new HistoryService());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_CATEGORY);
 
