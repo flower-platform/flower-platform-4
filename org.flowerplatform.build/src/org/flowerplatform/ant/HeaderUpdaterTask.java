@@ -17,13 +17,14 @@ package org.flowerplatform.ant;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.flowerplatform.ant.utils.FileIterator;
-import org.flowerplatform.ant.utils.FileUtil;
 
 /**
  *
@@ -73,7 +74,14 @@ public class HeaderUpdaterTask extends Task {
 
 		Pattern xmlVersionPattern = Pattern.compile("<\\?xml version.*?encoding.*?\\?>"); // <?xml version="1.0" encoding="utf-8"?>
 
-		String newHeaderText = FileUtil.readFile(headerFile);
+		String newHeaderText = new String();
+		
+		try {
+			newHeaderText = FileUtils.readFileToString(headerFile);
+			//CHECKSTYLE:OFF
+		} catch (IOException e1) {
+			//CHECKSTYLE:ON
+		}
 
 		for (FileIterator it = new FileIterator(workspaceFolder, new ProjectFileFilter()); it.hasNext();) {
 			File file = it.next();
@@ -82,13 +90,24 @@ public class HeaderUpdaterTask extends Task {
 			}
 			if (file.isFile() && file.getName().endsWith(fileExtension)) {
 
-				String fileText = FileUtil.readFile(file);
+				String fileText = new String();
+				try {
+					fileText = FileUtils.readFileToString(file);
+					//CHECKSTYLE:OFF
+				} catch (IOException e1) {
+					//CHECKSTYLE:ON
+				}
 	            Matcher matcher = pattern.matcher(fileText);
 	            if (matcher.find()) {
 	            	if (!fileText.contains(newHeaderText)) {
 	            		// remove old header and add new one
 	            		fileText = matcher.replaceFirst(newHeaderText);
-	            		FileUtil.writeFile(file, fileText);
+	            		try {
+							FileUtils.writeStringToFile(file, fileText);
+							//CHECKSTYLE:OFF
+						} catch (IOException e) {
+							//CHECKSTYLE:ON
+						}
 	            	}
 	            } else {
 	            	// header must be added
@@ -104,7 +123,13 @@ public class HeaderUpdaterTask extends Task {
 	            	} else {
 		            	fileText  = newHeaderText + System.getProperty("line.separator") + fileText;
 	            	}
-	            	FileUtil.writeFile(file, fileText);
+	            	
+	            	try {
+						FileUtils.writeStringToFile(file, fileText);
+						//CHECKSTYLE:OFF
+					} catch (IOException e) {
+						//CHECKSTYLE:ON
+					}
 	            }
 			}
 		}
