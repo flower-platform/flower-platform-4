@@ -137,5 +137,5 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	protected void updateUID(Object element, Object correspondingElement) {
 		// nothing to do
 	}
-	
+	public void testmethod(){;}
 }
