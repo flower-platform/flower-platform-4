@@ -20,9 +20,9 @@ package org.flowerplatform.flex_client.codesync.regex {
 	
 	import org.flowerplatform.flex_client.codesync.regex.action.ColorTextEditorAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction;
-	import org.flowerplatform.flex_client.codesync.regex.action.ShowMatchesGroupedByRegexAction;
-	import org.flowerplatform.flex_client.codesync.regex.action.ShowOrderedMatchesAction;
+	import org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorAction;
+	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorInRightAction;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -67,9 +67,10 @@ package org.flowerplatform.flex_client.codesync.regex {
 				});	
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GenerateMatchesAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowOrderedMatchesAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowMatchesGroupedByRegexAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGroupByRegexMatchesAction);
+		
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowTextEditorAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowTextEditorInRightAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ColorTextEditorAction);
 		}
 		
@@ -81,7 +82,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 			// messages come from .flex_client.resources
 		}
 		
-		public function getTextEditorFrontend(matchesEditorFrontend:EditorFrontend, showIfNecessary:Boolean = false):TextEditorFrontend {
+		public function getTextEditorFrontend(matchesEditorFrontend:EditorFrontend, showIfNecessary:Boolean = false, showInRight:Boolean = false):TextEditorFrontend {
 			var resourceNodeUri:String = CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForNodeRegistry(matchesEditorFrontend.nodeRegistry)[0];
 			var resourceNode:Node = matchesEditorFrontend.nodeRegistry.getNodeById(resourceNodeUri);
 			
@@ -93,15 +94,17 @@ package org.flowerplatform.flex_client.codesync.regex {
 			var textEditorFrontend:TextEditorFrontend;
 			for each (var component:UIComponent in components) {								
 				if (component is TextEditorFrontend && CorePlugin.getInstance().nodeRegistryManager.getResourceUrisForNodeRegistry(TextEditorFrontend(component).nodeRegistry)[0] == textEditorResourceNodeUri) {
-					if (showIfNecessary) {
+					if (showInRight) {
+						FlexUtilGlobals.getInstance().workbench.moveComponentNearWorkbench(component, 2);
+					} else if (showIfNecessary) {
 						FlexUtilGlobals.getInstance().workbench.setActiveView(UIComponent(TextEditorFrontend(component).viewHost), true);
 					}
 					textEditorFrontend = TextEditorFrontend(component);
 					break;
 				}
 			}
-			if (textEditorFrontend == null && showIfNecessary) {
-				textEditorFrontend = TextEditorFrontend(FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(CorePlugin.getInstance().openEditor(new Node(textEditorResourceNodeUri), TextConstants.TEXT_CONTENT_TYPE)));
+			if (textEditorFrontend == null && (showIfNecessary || showInRight)) {
+				textEditorFrontend = TextEditorFrontend(FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(CorePlugin.getInstance().openEditor(new Node(textEditorResourceNodeUri), TextConstants.TEXT_CONTENT_TYPE, showInRight)));
 			}
 			return textEditorFrontend;
 		}
