@@ -1,5 +1,6 @@
 package org.flowerplatform.codesync.regex.remote;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_C;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_L;
@@ -16,12 +17,14 @@ import static org.flowerplatform.core.CoreConstants.NAME;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
 import org.flowerplatform.codesync.regex.action.CodeSyncRegexAction;
 import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
@@ -39,6 +42,7 @@ import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexProcessingSession;
+import org.flowerplatform.util.regex.State;
 
 /**
  * @author Cristina Constantinescu
@@ -93,13 +97,18 @@ public class CodeSyncRegexService {
 		// create regEx configuration
 		RegexConfiguration regexConfig = new RegexConfiguration();		
 		for (Node regex : CodeSyncRegexPlugin.getInstance().getChildren(resourceNode, REGEX_TYPE)) {
-			regexConfig.add(new DelegatingRegexWithAction().setNode(regex).setRegexAction(new CodeSyncRegexAction.IfFindThisSkip()));
+			regexConfig.add(new DelegatingRegexWithAction().setNode(regex));
 		}
 		regexConfig.compile(Pattern.DOTALL);
 		
 		// start session
 		final RegexProcessingSession session = regexConfig.startSession(textFileContent);
-				
+		
+		session.stateStack = new ArrayList<State>();
+		Node child = new Node(null, FILE);
+		nodeService.addChild(matchRoot, child, context);
+		session.stateStack.add(0, new State(0, child));
+		session.specificInfo = new HashMap<String, Object>(); 
 		// find matches
 		session.find(new Runnable() {
 			int currentIndex = 1;			

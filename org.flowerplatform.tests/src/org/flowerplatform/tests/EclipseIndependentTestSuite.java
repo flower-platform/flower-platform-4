@@ -34,6 +34,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
 import org.flowerplatform.tests.core.CoreTestSuite;
+import org.flowerplatform.tests.regex.RegexTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -50,6 +51,7 @@ import org.osgi.framework.BundleContext;
 @SuiteClasses({ 
 	CodeSyncTestSuite.class,
 	CoreTestSuite.class,
+	RegexTestSuite.class
 //	FileSystemControllersTest.class
 	
 //	RegexTestSuite.class

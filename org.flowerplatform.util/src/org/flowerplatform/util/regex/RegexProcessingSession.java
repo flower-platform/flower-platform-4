@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.util.regex;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
@@ -48,7 +50,12 @@ public class RegexProcessingSession {
 	public int currentNestingLevel;
 	
 	protected String lastMatchCategory;
-		
+	
+	public Object currentNode; // type Node, but util cannot depend on core. 
+	public HashMap<String, Object> specificInfo;
+	public List<State> stateStack;	
+	public boolean DO_NOT_EXECUTE_OTHER_ACTIONS = false;
+	
 	public void reset(boolean resetMatcher) {
 		currentMatchGroupIndex = -1;
 		currentRegex = null;		

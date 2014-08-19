@@ -94,6 +94,7 @@ public class CoreConstants {
 	public static final String PROPERTY_SETTER = "propertySetter";
 	public static final String RAW_NODE_DATA_PROVIDER = "rawNodeDataProvider";
 	public static final String REMOVE_NODE_CONTROLLER = "removeNodeController";
+	public static final String CONFIG_NODE_PROCESSOR = "configNodeProcessor";
 	
 	//////////////////////////////////
 	// Descriptors
