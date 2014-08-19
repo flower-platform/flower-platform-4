@@ -10,8 +10,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		    <checkstyleDir>${basedir}/resources</checkstyleDir>
-	</properties>
+<!-- 		    <checkstyleDir>${basedir}/resources</checkstyleDir>
+ -->	</properties>
 	
 	<profiles>
 		<profile>
@@ -37,7 +37,7 @@
 	</profiles>
 	
 	<modules>
-		    <module>../../..\workspaces\flower-platform-4\checkstyle-config</module>
+		    <module>checkstyle</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -62,6 +62,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.12.1</version>
+        <configuration>
+          <configLocation>checkstyle\checkstyle-config.xml</configLocation>
+        </configuration>
 <!--         <dependencies> -->
 <!--           <dependency> -->
 <!--             <groupId>org.flowerplatform</groupId> -->
@@ -79,7 +82,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.12.1</version>
         <configuration>
-          <configLocation>../../..\workspaces\flower-platform-4\checkstyle-config\src\checkstyle-config.xml</configLocation>
+          <configLocation>checkstyle\checkstyle-config.xml</configLocation>
         </configuration>
       </plugin>
     </plugins>
