@@ -27,7 +27,6 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 
 		public static const GIT_REPO_TYPE:String = "gitRepo";
-		public static const GIT_CATEGORY:String = "category.git";
 		public static const GIT_LOCAL_BRANCHES_TYPE:String = "gitLocalBranches";
 		public static const GIT_REMOTE_BRANCHES_TYPE:String = "gitRemoteBranches";
 		public static const GIT_TAGS_TYPE:String = "gitTags";
@@ -48,6 +47,7 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 
 		public static const NAME:String = "name";
+		public static const COMMIT_ID:String = "commitID";
 
 		public static const IS_GIT_REPOSITORY:String = "isGitRepository";
 

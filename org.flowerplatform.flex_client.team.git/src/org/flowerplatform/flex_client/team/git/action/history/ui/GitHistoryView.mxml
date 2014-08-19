@@ -9,9 +9,7 @@
 		  implements="org.flowerplatform.flexutil.view_content_host.IViewContent" xmlns:ns1="org.flowerplatform.flex_client.resources.*">
 	<fx:Script>
 		<![CDATA[
-			import mx.binding.utils.ChangeWatcher;
 			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			import spark.components.gridClasses.GridColumn;
