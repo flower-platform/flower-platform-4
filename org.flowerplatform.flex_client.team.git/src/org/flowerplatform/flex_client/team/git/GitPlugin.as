@@ -23,11 +23,14 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
+	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
 	import org.flowerplatform.flex_client.team.git.action.LoginAction;
 	import org.flowerplatform.flex_client.team.git.action.MergeAction;
-	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
@@ -57,6 +60,7 @@ package org.flowerplatform.flex_client.team.git {
 			INSTANCE = this;
 			
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
+			CorePlugin.getInstance().serviceLocator.addService("HistoryService");
 						
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);		
@@ -65,6 +69,9 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ResetAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
+			
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGitHistoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);

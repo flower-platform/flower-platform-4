@@ -363,6 +363,8 @@ public class GitService {
 				childNode, 
 				new ServiceContext<NodeService>().add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
+
+
 	
 	/**
 	 * @author Diana Balutoiu
