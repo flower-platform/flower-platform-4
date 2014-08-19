@@ -116,7 +116,10 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 		return parent;
 	}
 
-	public static void checkTree_type(Match actual, TestMatch expected, boolean checkNoDiffs, boolean checkFlags) {
+	/**
+	 *@author Mariana
+	 */
+	public static void checkTreeType(Match actual, TestMatch expected, boolean checkNoDiffs, boolean checkFlags) {
 		// first test current match
 		expected.tested = true;
 		assertEquals("Wrong match type for " + expected.matchKey, expected.matchType, actual.getMatchType());
@@ -124,7 +127,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 			assertEquals("No diffs expected", 0, actual.getDiffs().size());
 		}
 		if (checkFlags) {
-			checkMatch_conflict(actual, expected);
+			checkMatchConflict(actual, expected);
 		}
 		
 		// then recurse for children
@@ -135,7 +138,7 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 			Object matchKey = subMatch.getMatchKey();
 			for (TestMatch subTestMatch : expected.children) {
 				if (subTestMatch.matchKey.equals(matchKey)) {
-					checkTree_type(subMatch, subTestMatch, checkNoDiffs, checkFlags);
+					checkTreeType(subMatch, subTestMatch, checkNoDiffs, checkFlags);
 					found = true;
 					break;
 				}
@@ -153,19 +156,25 @@ public class CodeSyncTestSuite extends EclipseDependentTestSuiteBase {
 		}
 	}
 
-	public static void checkMatch_conflict(Match actual, TestMatch expected) {
+	/**
+	 *@author Mariana
+	 */
+	public static void checkMatchConflict(Match actual, TestMatch expected) {
 		if (expected.isConflict != actual.isConflict()) {
 			fail();
 		}
 		assertEquals("Wrong conflict state", expected.isConflict, actual.isConflict());
 		assertEquals("Wrong children conflict state", expected.isChildrenConflict, actual.isChildrenConflict());
-		assertEquals("Wrong sync state", !expected.isConflict, ((Node)actual.getLeft()).getPropertyValue(CodeSyncConstants.SYNC));
-		assertEquals("Wrong children sync state", !expected.isChildrenConflict, ((Node)actual.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
+		assertEquals("Wrong sync state", !expected.isConflict, ((Node) actual.getLeft()).getPropertyValue(CodeSyncConstants.SYNC));
+		assertEquals("Wrong children sync state", !expected.isChildrenConflict, ((Node) actual.getLeft()).getPropertyValue(CodeSyncConstants.CHILDREN_SYNC));	
 	}
 
+	/**
+	 *@author Mariana
+	 */
 	public static Match testMatchTree(Match actual, TestMatch expected, boolean checkNoDiffs, boolean checkFlags) {
 		assertNotNull("Match was not created", actual);
-		checkTree_type(actual, expected, checkNoDiffs, checkFlags);
+		checkTreeType(actual, expected, checkNoDiffs, checkFlags);
 		return actual;
 	}	
 

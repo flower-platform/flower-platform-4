@@ -1,6 +1,14 @@
 package org.flowerplatform.team.git.history.internal;
 
-public class GitHistoryConstants {
+/**
+ * 
+ * @author Bogdan Manica
+ *
+ */
+public final class GitHistoryConstants {
+	
+	private GitHistoryConstants() {
+	}
 	
 	//////////////////////////////////
 	// Git History Node properties

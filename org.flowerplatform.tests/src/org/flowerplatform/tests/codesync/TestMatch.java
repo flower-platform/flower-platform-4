@@ -36,10 +36,16 @@ public class TestMatch {
 	
 	public boolean tested;
 
+	/**
+	 *@author see class
+	 */
 	public TestMatch(Object matchKey, MatchType matchType) {
 		this(matchKey, matchType, false, false);
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public TestMatch(Object matchKey, MatchType matchType, boolean isConflict, boolean isChildrenConflict) {
 		this.matchKey = matchKey;
 		this.matchType = matchType;
@@ -47,10 +53,17 @@ public class TestMatch {
 		this.isChildrenConflict = isChildrenConflict;
 	}
 	
+	/**
+	 *@author see class
+	 */
+	//CHECKSTYLE:OFF
 	public TestMatch addChild(Object matchKey, MatchType matchType) {
 		return addChild(matchKey, matchType, false, false);
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public TestMatch addChild(Object matchKey, MatchType matchType, boolean isConflict, boolean isChildrenConflict) {
 		TestMatch child = new TestMatch(matchKey, matchType, isConflict, isChildrenConflict);
 		children.add(child);
@@ -58,13 +71,20 @@ public class TestMatch {
 		return child;
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public TestMatch addSibling(Object matchKey, MatchType matchType) {
 		return addSibling(matchKey, matchType, false, false);
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public TestMatch addSibling(Object matchKey, MatchType matchType, boolean isConflict, boolean isChildrenConflict) {
 		return parent.addChild(matchKey, matchType, isConflict, isChildrenConflict);
 	}
+	//CHECKSTYLE:ON
 
 	@Override
 	public String toString() {

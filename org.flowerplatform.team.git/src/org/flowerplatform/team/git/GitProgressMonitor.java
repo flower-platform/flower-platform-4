@@ -14,7 +14,7 @@ public class GitProgressMonitor implements ProgressMonitor {
 
 	IProgressMonitor root;
 	
-	protected String TASK_NAME;
+	protected String taskName;
 	
 	private IProgressMonitor task;
 	
@@ -24,14 +24,17 @@ public class GitProgressMonitor implements ProgressMonitor {
 	
 	private String message;
 	
+	/**
+	 *@author see class
+	 */
 	public GitProgressMonitor(IProgressMonitor ipm, String name) {
 		root = ipm;
-		TASK_NAME = name;
+		taskName = name;
 	}
 	
 	@Override
 	public void start(int totalTasks) {
-		root.beginTask(TASK_NAME, totalTasks * 1000);
+		root.beginTask(taskName, totalTasks * 1000);
 	}
 
 	@Override
@@ -53,9 +56,9 @@ public class GitProgressMonitor implements ProgressMonitor {
 			if (!(totalSteps < 0)) {
 				int completed = nextStep;
 				String total = " completed";
-				if (totalSteps > 0 ) {
+				if (totalSteps > 0) {
 					if (nextStep > 0 && nextStep <= totalSteps) {
-						completed = nextStep%totalSteps;
+						completed = nextStep % totalSteps;
 						total = " of " + String.valueOf(totalSteps) + " completed";
 					}
 				}

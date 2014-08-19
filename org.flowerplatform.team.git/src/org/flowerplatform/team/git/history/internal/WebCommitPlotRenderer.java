@@ -50,12 +50,18 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 		return specialMessage;
 	}
 
+	/**
+	 *@author see class
+	 */
 	public WebCommitPlotRenderer(String nodeUri, WebCommit commit) {		
 		this.commit = commit;
-		drawings = new Node(nodeUri,null);
+		drawings = new Node(nodeUri, null);
 		specialMessage = "";
 	}
 
+	/**
+	 *@author see class
+	 */
 	public void paint() {
 		paintCommit(commit, 23);
 	}
@@ -79,17 +85,16 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 			line.add(y2);		
 			line.add(width);
 			line.add(color);
-			drawings.getProperties().put(GitHistoryConstants.DRAW_LINE_LIST,line);			
-		}
-		else {
-			((ArrayList<Object>)existingLine).add(GitHistoryConstants.DRAW_LINE);
-			((ArrayList<Object>)existingLine).add(x1);
-			((ArrayList<Object>)existingLine).add(y1);
-			((ArrayList<Object>)existingLine).add(x2);
-			((ArrayList<Object>)existingLine).add(y2);	
-			((ArrayList<Object>)existingLine).add(width);
-			((ArrayList<Object>)existingLine).add(color);			
-			drawings.getProperties().put(GitHistoryConstants.DRAW_LINE_LIST,existingLine);
+			drawings.getProperties().put(GitHistoryConstants.DRAW_LINE_LIST, line);			
+		} else {
+			((ArrayList<Object>) existingLine).add(GitHistoryConstants.DRAW_LINE);
+			((ArrayList<Object>) existingLine).add(x1);
+			((ArrayList<Object>) existingLine).add(y1);
+			((ArrayList<Object>) existingLine).add(x2);
+			((ArrayList<Object>) existingLine).add(y2);	
+			((ArrayList<Object>) existingLine).add(width);
+			((ArrayList<Object>) existingLine).add(color);			
+			drawings.getProperties().put(GitHistoryConstants.DRAW_LINE_LIST, existingLine);
 		}				
 	}
 
@@ -103,7 +108,7 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 		line.add(h);		
 		line.add(commitDotOutline);
 		line.add(commitDotFill);
-		drawings.getProperties().put(GitHistoryConstants.DRAW_COMMIT_DOT,line);
+		drawings.getProperties().put(GitHistoryConstants.DRAW_COMMIT_DOT, line);
 	}
 
 	@Override
@@ -116,7 +121,7 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 		line.add(h);		
 		line.add(gray);
 		line.add(white);
-		drawings.getProperties().put(GitHistoryConstants.DRAW_BOUNDARY_DOT,line);		
+		drawings.getProperties().put(GitHistoryConstants.DRAW_BOUNDARY_DOT, line);		
 	}
 
 	@Override

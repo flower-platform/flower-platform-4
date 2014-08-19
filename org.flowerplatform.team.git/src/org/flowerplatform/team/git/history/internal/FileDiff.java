@@ -25,9 +25,6 @@ import java.util.List;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.RawText;
-import org.eclipse.jgit.errors.CorruptObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
@@ -50,8 +47,9 @@ public class FileDiff {
 
 	private static ObjectId[] trees(final RevCommit commit) {
 		final ObjectId[] r = new ObjectId[commit.getParentCount() + 1];
-		for (int i = 0; i < r.length - 1; i++)
+		for (int i = 0; i < r.length - 1; i++) {
 			r[i] = commit.getParent(i).getTree().getId();
+		}
 		r[r.length - 1] = commit.getTree().getId();
 		return r;
 	}
@@ -70,13 +68,12 @@ public class FileDiff {
 	 */
 	public static FileDiff[] compute(final TreeWalk walk,
 			final RevCommit commit, final TreeFilter... markTreeFilters)
-			throws MissingObjectException, IncorrectObjectTypeException,
-			CorruptObjectException, IOException {
+			throws IOException {
 		final ArrayList<FileDiff> r = new ArrayList<FileDiff>();
 
-		if (commit.getParentCount() > 0)
+		if (commit.getParentCount() > 0) {
 			walk.reset(trees(commit));
-		else {
+		} else {
 			walk.reset();
 			walk.addTree(new EmptyTreeIterator());
 			walk.addTree(commit.getTree());
@@ -88,8 +85,7 @@ public class FileDiff {
 				final FileDiff d = new FileDiff(commit, entry);
 				r.add(d);
 			}
-		}
-		else { // DiffEntry does not support walks with more than two trees
+		} else { // DiffEntry does not support walks with more than two trees
 			final int nTree = walk.getTreeCount();
 			final int myTree = nTree - 1;
 
@@ -97,8 +93,9 @@ public class FileDiff {
 					markTreeFilters);
 
 			while (walk.next()) {
-				if (matchAnyParent(walk, myTree))
+				if (matchAnyParent(walk, myTree)) {
 					continue;
+				}
 
 				int treeFilterMarks = treeFilterMarker.getMarks(walk);
 
@@ -106,16 +103,18 @@ public class FileDiff {
 						treeFilterMarks);
 				d.path = walk.getPathString();
 				int m0 = 0;
-				for (int i = 0; i < myTree; i++)
+				for (int i = 0; i < myTree; i++) {
 					m0 |= walk.getRawMode(i);
+				}
 				final int m1 = walk.getRawMode(myTree);
 				d.change = ChangeType.MODIFY;
-				if (m0 == 0 && m1 != 0)
+				if (m0 == 0 && m1 != 0) {
 					d.change = ChangeType.ADD;
-				else if (m0 != 0 && m1 == 0)
+				} else if (m0 != 0 && m1 == 0) {
 					d.change = ChangeType.DELETE;
-				else if (m0 != m1 && walk.idEqual(0, myTree))
+				} else if (m0 != m1 && walk.idEqual(0, myTree)) {
 					d.change = ChangeType.MODIFY; // there is no ChangeType.TypeChanged
+				}
 				d.blobs = new ObjectId[nTree];
 				d.modes = new FileMode[nTree];
 				for (int i = 0; i < nTree; i++) {
@@ -136,16 +135,19 @@ public class FileDiff {
 
 	private static boolean matchAnyParent(final TreeWalk walk, final int myTree) {
 		final int m = walk.getRawMode(myTree);
-		for (int i = 0; i < myTree; i++)
-			if (walk.getRawMode(i) == m && walk.idEqual(i, myTree))
+		for (int i = 0; i < myTree; i++) {
+			if (walk.getRawMode(i) == m && walk.idEqual(i, myTree)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
 	private RawText getRawText(ObjectId id, ObjectReader reader)
 			throws IOException {
-		if (id.equals(ObjectId.zeroId()))
+		if (id.equals(ObjectId.zeroId())) {
 			return new RawText(new byte[] {});
+		}
 		ObjectLoader ldr = reader.open(id, Constants.OBJ_BLOB);
 		return new RawText(ldr.getCachedBytes(Integer.MAX_VALUE));
 	}
@@ -165,8 +167,9 @@ public class FileDiff {
 	 * @return path
 	 */
 	public String getPath() {
-		if (ChangeType.DELETE.equals(diffEntry.getChangeType()))
+		if (ChangeType.DELETE.equals(diffEntry.getChangeType())) {
 			return diffEntry.getOldPath();
+		}
 		return diffEntry.getNewPath();
 	}
 
@@ -186,10 +189,12 @@ public class FileDiff {
 	 */
 	public ObjectId[] getBlobs() {
 		List<ObjectId> objectIds = new ArrayList<ObjectId>();
-		if (diffEntry.getOldId() != null)
+		if (diffEntry.getOldId() != null) {
 			objectIds.add(diffEntry.getOldId().toObjectId());
-		if (diffEntry.getNewId() != null)
+		}
+		if (diffEntry.getNewId() != null) {
 			objectIds.add(diffEntry.getNewId().toObjectId());
+		}
 		return objectIds.toArray(new ObjectId[]{});
 	}
 
@@ -200,10 +205,12 @@ public class FileDiff {
 	 */
 	public FileMode[] getModes() {
 		List<FileMode> modes = new ArrayList<FileMode>();
-		if (diffEntry.getOldMode() != null)
+		if (diffEntry.getOldMode() != null) {
 			modes.add(diffEntry.getOldMode());
-		if (diffEntry.getOldMode() != null)
+		}
+		if (diffEntry.getOldMode() != null) {
 			modes.add(diffEntry.getOldMode());
+		}
 		return modes.toArray(new FileMode[]{});
 	}
 
@@ -236,17 +243,25 @@ public class FileDiff {
 	 * @return true if submodule, false otherwise
 	 */
 	public boolean isSubmodule() {
-		if (diffEntry == null)
+		if (diffEntry == null) {
 			return false;
+		}
 		return diffEntry.getOldMode() == FileMode.GITLINK
 				|| diffEntry.getNewMode() == FileMode.GITLINK;
 	}
-
+	/**
+	 *@author see class
+	 */
 	public String getLabel(Object object) {
 		return getPath();
 	}
 
-	private static class FileDiffForMerges extends FileDiff {
+	/**
+	 * 
+	 * @author see class
+	 *
+	 */
+	private static final class FileDiffForMerges extends FileDiff {
 		private String path;
 
 		private ChangeType change;
@@ -258,7 +273,7 @@ public class FileDiff {
 		private final int treeFilterMarks;
 
 		private FileDiffForMerges(final RevCommit c, int treeFilterMarks) {
-			super (c, null);
+			super(c, null);
 			this.treeFilterMarks = treeFilterMarks;
 		}
 

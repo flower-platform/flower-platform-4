@@ -28,6 +28,9 @@ import org.eclipse.jgit.revwalk.RevCommit;
  */
 public class WebWalk extends PlotWalk {
 
+	/**
+	 *@author see class
+	 */
 	public WebWalk(Repository repo) {
 		super(repo);
 	}

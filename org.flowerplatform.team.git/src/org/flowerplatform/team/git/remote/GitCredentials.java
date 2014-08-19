@@ -1,5 +1,8 @@
 package org.flowerplatform.team.git.remote;
 
+/**
+ *@author Andreea Tita
+ */
 public class GitCredentials {
 	
 	private String username;
@@ -22,10 +25,16 @@ public class GitCredentials {
 		this.password = password;
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public GitCredentials() {
 		
 	}
 	
+	/**
+	 *@author see class
+	 */
 	public GitCredentials(String username, String password) {
 		this.username = username;
 		this.password = password;

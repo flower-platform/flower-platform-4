@@ -37,12 +37,15 @@ public class CodeSyncAsTest {
 
 public static final String INITIAL_AS = "initial_as";
 	
-	private static final String resourceNodeId = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
+	private static final String RESOURCE_NODE_ID = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
+	/**
+	 *@author see class
+	 */
 	@Test
 	public void test() {
 		String fullyQualifiedName = PROJECT + "/" + INITIAL_AS;
-		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(RESOURCE_NODE_ID);
 		String nodeUri = CodeSyncTestSuite.getChild(node, new String[] { INITIAL_AS }).getNodeUri();
 		
 		Match match = CODE_SYNC_SERVICE.synchronize(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncAsConstants.ACTIONSCRIPT, true);

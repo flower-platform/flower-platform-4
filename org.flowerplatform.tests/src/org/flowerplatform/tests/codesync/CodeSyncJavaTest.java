@@ -67,17 +67,23 @@ public class CodeSyncJavaTest {
 	
 	public static final String SOURCE_FILE = "Test.java";
 	
-	private static final String resourceNodeId = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
+	private static final String RESOURCE_NODE_ID = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
 	
+	/**
+	 *@author Valentina Bojan
+	 */
 	@BeforeClass
 	public static void beforeClassMethod() {
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId",  resourceNodeId,  new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId",  RESOURCE_NODE_ID,  new ServiceContext<ResourceService>());
 	}
 	
+	/**
+	 *@author Valentina Bojan
+	 */
 	@Test
 	public void testMatchWhenSync() throws IOException {
 		String fullyQualifiedName = PROJECT + "/" + INITIAL;		
-		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(RESOURCE_NODE_ID);
 		String nodeUri = getChild(node, new String[] { INITIAL }).getNodeUri();
 
 		Match match = CODE_SYNC_SERVICE.synchronize(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncJavaConstants.JAVA, true);
@@ -105,13 +111,16 @@ public class CodeSyncJavaTest {
 		testMatchTree(match, expected, true, false);
 	}
 	
+	/**
+	 *@author see class
+	 */
 	@Test
 	public void testMatchNoConflicts() {
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS;
-		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(RESOURCE_NODE_ID);
 		String nodeUri = getChild(node, new String[] { MODIFIED_NO_CONFLICTS }).getNodeUri();
 		
-		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
+		Node root = CodeSyncPlugin.getInstance().getResource(RESOURCE_NODE_ID);
 		
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS);
@@ -169,14 +178,17 @@ public class CodeSyncJavaTest {
 		assertFalse("Conflicts not expected!", match.isChildrenConflict());
 	}
 
+	/**
+	 *@author see class
+	 */
 	@Test
 	public void testMatchNoConflictsAndPerformSync() throws Exception {
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_NO_CONFLICTS_PERFORM_SYNC /*+ "/" + SOURCE_FILE*/;
 		File dir = CodeSyncTestSuite.getFile(fullyQualifiedName);
-		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(RESOURCE_NODE_ID);
 		String nodeUri = getChild(node, new String[] { MODIFIED_NO_CONFLICTS_PERFORM_SYNC }).getNodeUri();
 		
-		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);
+		Node root = CodeSyncPlugin.getInstance().getResource(RESOURCE_NODE_ID);
 
 		// simulate model modifications
 		simulateNonConflictingChanges(root, MODIFIED_NO_CONFLICTS_PERFORM_SYNC);
@@ -200,7 +212,8 @@ public class CodeSyncJavaTest {
 		// change superCls, superInterfaces
 		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext<NodeService>(nodeService));
-		Node superInterface = new Node(Utils.getUri(CodeSyncJavaConstants.SUPER_INTERFACE, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.SUPER_INTERFACE);
+		Node superInterface = new Node(Utils.getUri(CodeSyncJavaConstants.
+				SUPER_INTERFACE, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.SUPER_INTERFACE);
 		nodeService.addChild(cls, superInterface, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(superInterface, CoreConstants.NAME, "IFromModel", new ServiceContext<NodeService>(nodeService));
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
@@ -224,7 +237,8 @@ public class CodeSyncJavaTest {
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
-		Node orphanRemoval = new Node(Utils.getUri(CodeSyncJavaConstants.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.MEMBER_VALUE_PAIR);
+		Node orphanRemoval = new Node(Utils.getUri(CodeSyncJavaConstants
+				.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.MEMBER_VALUE_PAIR);
 		nodeService.addChild(a, orphanRemoval, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, CoreConstants.NAME, "orphanRemoval", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true", new ServiceContext<NodeService>(nodeService));
@@ -275,13 +289,16 @@ public class CodeSyncJavaTest {
 		nodeService.removeChild(cls, y, new ServiceContext<NodeService>(nodeService));
 	}
 	
+	/**
+	 *@author see class
+	 */
 	@Test
 	public void testMatchConflicts() {
 		String fullyQualifiedName = PROJECT + "/" + MODIFIED_CONFLICTS /*+ "/" + SOURCE_FILE*/;
-		Node node = CorePlugin.getInstance().getResourceService().getNode(resourceNodeId);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(RESOURCE_NODE_ID);
 		String nodeUri = getChild(node, new String[] { MODIFIED_CONFLICTS }).getNodeUri();
 		
-		Node root = CodeSyncPlugin.getInstance().getResource(resourceNodeId);		
+		Node root = CodeSyncPlugin.getInstance().getResource(RESOURCE_NODE_ID);		
 		
 		// simulate model modifications
 		
