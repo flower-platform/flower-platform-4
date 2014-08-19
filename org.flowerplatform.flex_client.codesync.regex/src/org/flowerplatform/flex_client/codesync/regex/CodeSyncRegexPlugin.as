@@ -20,8 +20,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 	
 	import org.flowerplatform.flex_client.codesync.regex.action.ColorTextEditorAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction;
-	import org.flowerplatform.flex_client.codesync.regex.action.ShowMatchesGroupedByRegexAction;
-	import org.flowerplatform.flex_client.codesync.regex.action.ShowOrderedMatchesAction;
+	import org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorInRightAction;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -36,7 +35,6 @@ package org.flowerplatform.flex_client.codesync.regex {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.Utils;
-	import org.flowerplatform.flexutil.layout.WorkbenchLayoutData;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -69,8 +67,8 @@ package org.flowerplatform.flex_client.codesync.regex {
 				});	
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GenerateMatchesAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowOrderedMatchesAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowMatchesGroupedByRegexAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGroupByRegexMatchesAction);
+		
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowTextEditorAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowTextEditorInRightAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ColorTextEditorAction);

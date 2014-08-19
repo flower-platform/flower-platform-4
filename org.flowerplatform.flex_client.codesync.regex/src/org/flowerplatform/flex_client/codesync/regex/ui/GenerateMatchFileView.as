@@ -1,7 +1,6 @@
 package org.flowerplatform.flex_client.codesync.regex.ui {
 	
 	import mx.events.FlexEvent;
-	import mx.states.OverrideBase;
 	
 	import spark.events.IndexChangeEvent;
 	
@@ -12,6 +11,9 @@ package org.flowerplatform.flex_client.codesync.regex.ui {
 	import org.flowerplatform.flexutil.components.TextInputWithAutoCompleteLabelComponent;
 	import org.flowerplatform.flexutil.dialog.SelectObjListPopup;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public class GenerateMatchFileView extends SelectObjListPopup {
 		
 		private var textInput:TextInputWithAutoCompleteLabelComponent;
@@ -41,6 +43,7 @@ package org.flowerplatform.flex_client.codesync.regex.ui {
 			textInput.percentWidth = 100;
 			textInput.labelText = Resources.getMessage("regex.file");			
 			textInput.autoCompleteLabelFormat = CorePlugin.getInstance().getRepository(node.nodeUri) + Resources.getMessage('regex.fileNameLabelText', [Resources.getMessage('regex.location')]);
+			textInput.showOverride = true;
 			
 			addElement(textInput);
 		}

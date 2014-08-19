@@ -29,7 +29,6 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-	import org.flowerplatform.flexutil.dialog.SelectObjListPopup;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -100,7 +99,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 						if (allResourceUris.indexOf(matchUri) != -1) {
 							CorePlugin.getInstance().nodeRegistryManager.serviceInvocator.invoke("resourceService.reload", [CorePlugin.getInstance().nodeRegistryManager.getResourceSetsForResourceUris([matchUri])[0]]);
 						} else {
-							CorePlugin.getInstance().openEditor(new Node(matchUri), null, true);
+							CorePlugin.getInstance().openEditor(new Node(matchUri), null);
 						}
 					});
 			};
@@ -110,7 +109,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 				.setIcon(Resources.reloadIcon)
 				.setViewContent(view)
 				.setHeight(300)
-				.setWidth(300)
+				.setWidth(600)
 				.show();			
 		}
 		

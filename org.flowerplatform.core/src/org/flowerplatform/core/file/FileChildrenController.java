@@ -26,11 +26,9 @@ import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
 import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;

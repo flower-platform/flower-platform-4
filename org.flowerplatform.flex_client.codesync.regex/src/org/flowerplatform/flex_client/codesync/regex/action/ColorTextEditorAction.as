@@ -62,13 +62,6 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			var array:Array = new Array();
 			for (var i:int = 0; i < selection.length; i++) {						
 				var node:Node = Node(selection.getItemAt(i));
-				
-				if (node.type == CodeSyncRegexConstants.VIRTUAL_REGEX_TYPE && node.children == null && Boolean(node.getPropertyValue(CoreConstants.HAS_CHILDREN)).valueOf()) {
-					var context:Object = new Object();
-					context[CoreConstants.HANDLER] = function():void {colorTextEditorFrontend(selection);};
-					CorePlugin.getInstance().nodeRegistryManager.expand(editorFrontend.nodeRegistry, node, context);
-					return;
-				}				
 				computeMatches(node, array);
 			}
 			

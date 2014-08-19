@@ -48,7 +48,7 @@ package org.flowerplatform.flexutil.action {
 		/**
 		 * @author Iulian-Catalin Burcea
 		 */
-		private var _isToggle:Boolean = false;
+		private var _isSelected:Boolean = false;
 		
 		/**
 		 * @author Iulian-Catalin Burcea
@@ -107,6 +107,7 @@ package org.flowerplatform.flexutil.action {
 			return this;
 		}
 		
+		[Bindable]
 		public function get icon():Object {
 			return _icon;
 		}
@@ -200,15 +201,15 @@ package org.flowerplatform.flexutil.action {
 		/**
 		 * @author Iulian-Catalin Burcea
 		 */
-		public function get isToggle():Boolean {
-			return _isToggle;
+		public function get isSelected():Boolean {
+			return _isSelected;
 		}
 		
 		/**
 		 * @author Iulian-Catalin Burcea
 		 */
-		public function set isToggle(value:Boolean):void {
-			_isToggle = value;
+		public function set isSelected(value:Boolean):void {
+			_isSelected = value;
 			icon = value ? FlexUtilAssets.checkedIcon : FlexUtilAssets.uncheckedIcon;
 		}
 		
@@ -224,7 +225,7 @@ package org.flowerplatform.flexutil.action {
 		 */
 		public function set isToggleAction(value:Boolean):void {
 			_isToggleAction = value;
-			isToggle = false;
+			isSelected = false;
 		}
 		
 		/**
@@ -240,7 +241,7 @@ package org.flowerplatform.flexutil.action {
 				functionDelegate();
 			}
 			if (isToggleAction) {
-				isToggle = !isToggle;
+				isSelected = !isSelected;
 			}
 		}
 		

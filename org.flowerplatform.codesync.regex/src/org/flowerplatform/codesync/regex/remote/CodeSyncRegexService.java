@@ -23,6 +23,7 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MAT
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.RESOURCE_URI;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.SHOW_GROUPED_BY_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_C;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_L;
@@ -38,12 +39,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
 import org.flowerplatform.codesync.regex.action.CodeSyncRegexAction;
 import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -119,13 +118,16 @@ public class CodeSyncRegexService {
 		}
 		
 		matchUri = matchUri.replace(FILE_SCHEME, "fpp");
+		// TODO CC: unsubscribe resource if needed (to discuss with MG)
+		
 		// subscribe file using fpp schema	
 		new ResourceServiceRemote().subscribeToParentResource(matchUri);
 		
 		// get matches root node & save the textNodeUri as property
 		final Node matchRoot = CorePlugin.getInstance().getResourceService().getNode(matchUri);
 		nodeService.setProperty(matchRoot, RESOURCE_URI, textNodeUri, new ServiceContext<NodeService>(nodeService));
-		
+		nodeService.setProperty(matchRoot, SHOW_GROUPED_BY_REGEX, false, new ServiceContext<NodeService>(nodeService));
+				
 		// create regEx configuration
 		RegexConfiguration regexConfig = new RegexConfiguration();		
 		for (Node regex : CodeSyncRegexPlugin.getInstance().getChildren(resourceNode, REGEX_TYPE)) {
