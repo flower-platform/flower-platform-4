@@ -36,7 +36,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.jgit.api.CherryPickCommand;
+import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.CherryPickResult.CherryPickStatus;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
@@ -57,6 +60,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.revwalk.DepthWalk.Commit;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
@@ -597,6 +602,35 @@ public class GitService {
 			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.PUSH_REF_SPECS, "",
 					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
+	}
+	
+	public String cherryPickCommit(String nodeUri, String commitId ) throws Exception {
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+		CherryPickCommand command = new Git(repo).cherryPick();
+		RevCommit commit = new RevWalk(repo).parseCommit(repo.resolve(commitId));
+		command.include(commit);
+		
+		CherryPickResult result = command.call();
+		
+		RevCommit newHead = result.getNewHead();
+		if (newHead != null && result.getCherryPickedRefs().isEmpty()) {
+			return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.null");
+		}
+		
+		if (newHead == null) {
+			switch (result.getStatus()) {
+			case CONFLICTING:
+				return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.conflicts");
+				
+			case FAILED:
+				return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.fail");
+				
+			case OK:
+				break;
+			} 
+		}	
+		
+		return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.ok");
 	}
 }
 
