@@ -19,21 +19,14 @@ import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.UPDATE_REQUEST_REFRESH;
 import static org.flowerplatform.team.git.GitConstants.ADD;
-import static org.flowerplatform.team.git.GitConstants.CONFLICTED;
 import static org.flowerplatform.team.git.GitConstants.DELETE;
-import static org.flowerplatform.team.git.GitConstants.FILE;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
 import static org.flowerplatform.team.git.GitConstants.MODIFY;
 import static org.flowerplatform.team.git.GitConstants.NETWORK_TIMEOUT_SEC;
-import static org.flowerplatform.team.git.GitConstants.STAGED;
-import static org.flowerplatform.team.git.GitConstants.STAGE_ADDED;
-import static org.flowerplatform.team.git.GitConstants.STAGE_REMOVED;
 import static org.flowerplatform.team.git.GitConstants.TEPORARY_LOCATION;
-import static org.flowerplatform.team.git.GitConstants.UNSTAGED;
-import static org.flowerplatform.team.git.GitConstants.UNTRACKED;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,6 +37,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.servlet.http.HttpSession;
 
@@ -599,123 +593,156 @@ public class GitService {
 			}
 	}
 
-	public List<Node> stagingList(String repositoryPath, String stagingType) throws Exception {
+	public List<List<Node>> getStageAndUnstageFiles(String repositoryPath) throws Exception {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
+		List<List<Node>> stagingList = new ArrayList<List<Node>>();
 		Set<String> conflictList = git.status().call().getConflicting();
 		boolean ok = false;
 		String type = null;
-
-		if (stagingType.equals("unstaged")) {
-			List<DiffEntry> unstagedDiffs = git.diff().setShowNameAndStatusOnly(true).call();
-			List<Node> unstagedNodes = new ArrayList<Node>();
-			for (String currentConflict : conflictList) {
-				for (DiffEntry obj : unstagedDiffs) {
-					if ((obj.getNewPath().equals(currentConflict) || obj.getOldPath().equals(currentConflict))) {
-						ok = true;
-						type = obj.getChangeType().name();
-					}
-				}
-				if (ok) {
-					Node node = new Node(currentConflict, type);
-					node.getProperties().put(
-							CoreConstants.ICONS,
-							CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl(FILE),
-							ResourcesPlugin.getInstance().getResourceUrl(CONFLICTED)));
-					unstagedNodes.add(node);
-					ok = false;
-				}
-			}
+		
+		List<DiffEntry> unstagedDiffs = git.diff().setShowNameAndStatusOnly(true).call();
+		List<Node> unstagedNodes = new ArrayList<Node>();
+		for (String currentConflict : conflictList) {
 			for (DiffEntry obj : unstagedDiffs) {
+				if ((obj.getNewPath().equals(currentConflict) || obj.getOldPath().equals(currentConflict))) {
+					ok = true;
+					type = obj.getChangeType().name();
+				}
+			}
+			if (ok) {
+				Node node = new Node(currentConflict, type);
+				node.getProperties().put(GitConstants.SERVER_URI, currentConflict);
+				node.getProperties().put(
+						CoreConstants.ICONS,
+						CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"),
+						ResourcesPlugin.getInstance().getResourceUrl("images/team.git/conflict.gif")));
+				unstagedNodes.add(node);
 				ok = false;
-				for (Node currentNode : unstagedNodes) {
-					if ((obj.getNewPath().equals(currentNode.getNodeUri()) || obj.getOldPath().equals(currentNode.getNodeUri()))) {
-						ok = true;
-						break;
-					}
-				}
-				if (!ok) {
-					if (obj.getChangeType().name().equals(DELETE)) {
-						Node node = new Node(obj.getOldPath(), obj.getChangeType().name());
-						node.getProperties().put(
-								CoreConstants.ICONS,
-								CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl(FILE),
-								ResourcesPlugin.getInstance().getResourceUrl(STAGE_REMOVED)));
-						unstagedNodes.add(node);
-
-					} else if (obj.getChangeType().name().equals(ADD)) {
-						Node node = new Node(obj.getNewPath(), obj.getChangeType().name());
-						node.getProperties().put(
-								CoreConstants.ICONS,
-								CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl(FILE),
-								ResourcesPlugin.getInstance().getResourceUrl(UNTRACKED)));
-						unstagedNodes.add(node);
-
-					} else if (obj.getChangeType().name().equals(MODIFY)) {
-						Node node = new Node(obj.getNewPath(), obj.getChangeType().name());
-						node.getProperties().put(
-								CoreConstants.ICONS,
-								CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl(FILE),
-								ResourcesPlugin.getInstance().getResourceUrl(UNSTAGED)));
-						unstagedNodes.add(node);
-					}
-				}
 			}
-			return unstagedNodes;
-		} else {
-			List<DiffEntry> stagedDiffs = git.diff().setCached(true).call();
-			Status s = git.status().call();
-
-			Set<String> totalList = new HashSet<String>();
-			totalList.addAll(s.getAdded());
-			totalList.addAll(s.getChanged());
-			totalList.addAll(s.getRemoved());
-
-			List<Node> stagedNodes = new ArrayList<Node>();
-			for (String stage : totalList) {
-				for (DiffEntry obj : stagedDiffs) {
-					if ((obj.getNewPath().equals(stage) || obj.getOldPath().equals(stage))) {
-						if (obj.getChangeType().name().equals(DELETE)) {
-							Node node = new Node(obj.getOldPath(), obj.getChangeType().name());
-							node.getProperties().put(
-									CoreConstants.ICONS,
-									CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl(FILE),
-									ResourcesPlugin.getInstance().getResourceUrl(STAGE_REMOVED)));
-							stagedNodes.add(node);
-						} else if (obj.getChangeType().name().equals(ADD)) {
-							Node node = new Node(obj.getNewPath(), obj.getChangeType().name());
-							node.getProperties().put(
-									CoreConstants.ICONS,
-									CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl(FILE),
-									ResourcesPlugin.getInstance().getResourceUrl(STAGE_ADDED)));
-							stagedNodes.add(node);
-						} else if (obj.getChangeType().name().equals(MODIFY)) {
-							Node node = new Node(obj.getNewPath(), obj.getChangeType().name());
-							node.getProperties().put(
-									CoreConstants.ICONS,
-									CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl(FILE),
-									ResourcesPlugin.getInstance().getResourceUrl(STAGED)));
-							stagedNodes.add(node);
-						}
-					}
-				}
-			}
-			return stagedNodes;
 		}
+		for (DiffEntry obj : unstagedDiffs) {
+			ok = false;
+			for (Node currentNode : unstagedNodes) {
+				if ((obj.getNewPath().equals(currentNode.getNodeUri()) || obj.getOldPath().equals(currentNode.getNodeUri()))) {
+					ok = true;
+					break;
+				}
+			}
+			if (!ok) {
+				switch (obj.getChangeType().name()) {
+					case DELETE:
+						Node nodeDelete = new Node(obj.getOldPath(), obj.getChangeType().name());
+						nodeDelete.getProperties().put(GitConstants.SERVER_URI, obj.getOldPath());
+						nodeDelete.getProperties().put(
+								CoreConstants.ICONS,
+								CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"),
+								ResourcesPlugin.getInstance().getResourceUrl("images/team.git/staged_removed.gif")));
+						unstagedNodes.add(nodeDelete);
+						break;
+
+					case ADD:  
+						Node nodeAdd = new Node(obj.getNewPath(), obj.getChangeType().name());
+						nodeAdd.getProperties().put(GitConstants.SERVER_URI, obj.getNewPath());
+						nodeAdd.getProperties().put(
+								CoreConstants.ICONS,
+								CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"),
+								ResourcesPlugin.getInstance().getResourceUrl("images/team.git/untracked.gif")));
+						unstagedNodes.add(nodeAdd);
+						break;
+
+					case MODIFY: 
+						Node nodeModify = new Node(obj.getNewPath(), obj.getChangeType().name());
+						nodeModify.getProperties().put(GitConstants.SERVER_URI, obj.getNewPath());
+						nodeModify.getProperties().put(
+								CoreConstants.ICONS,
+								CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"),
+								ResourcesPlugin.getInstance().getResourceUrl("images/team.git/unstaged.gif")));
+						unstagedNodes.add(nodeModify);
+						break;
+				}
+			}
+		}
+		stagingList.add(formatList(unstagedNodes));
+			
+		List<DiffEntry> stagedDiffs = git.diff().setCached(true).call();
+		Status s = git.status().call();
+
+		Set<String> totalList = new HashSet<String>();
+		totalList.addAll(s.getAdded());
+		totalList.addAll(s.getChanged());
+		totalList.addAll(s.getRemoved());
+
+		List<Node> stagedNodes = new ArrayList<Node>();
+		for (String stage : totalList) {
+			for (DiffEntry obj : stagedDiffs) {
+				if ((obj.getNewPath().equals(stage) || obj.getOldPath().equals(stage))) {
+					switch (obj.getChangeType().name()) {
+						case DELETE:
+							Node nodeDelete = new Node(obj.getOldPath(), obj.getChangeType().name());
+							nodeDelete.getProperties().put(GitConstants.SERVER_URI, obj.getOldPath());
+							nodeDelete.getProperties().put(
+									CoreConstants.ICONS,
+									CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"),
+									ResourcesPlugin.getInstance().getResourceUrl("images/team.git/staged_removed.gif")));
+							stagedNodes.add(nodeDelete);
+							break;
+						case ADD:
+							Node nodeAdd = new Node(obj.getNewPath(), obj.getChangeType().name());
+							nodeAdd.getProperties().put(GitConstants.SERVER_URI, obj.getNewPath());
+							nodeAdd.getProperties().put(
+									CoreConstants.ICONS,
+									CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"),
+									ResourcesPlugin.getInstance().getResourceUrl("images/team.git/staged_added.gif")));
+							stagedNodes.add(nodeAdd);
+							break;
+						case MODIFY:
+							Node nodeModify = new Node(obj.getNewPath(), obj.getChangeType().name());
+							nodeModify.getProperties().put(GitConstants.SERVER_URI, obj.getNewPath());
+							nodeModify.getProperties().put(
+									CoreConstants.ICONS,
+									CorePlugin.getInstance().getImageComposerUrl(ResourcesPlugin.getInstance().getResourceUrl("images/core/file.gif"),
+									ResourcesPlugin.getInstance().getResourceUrl("images/team.git/staged.gif")));
+							stagedNodes.add(nodeModify);
+							break;
+					}
+				}
+			}
+		}
+		stagingList.add(formatList(stagedNodes));
+
+		return stagingList;
 	}
 
-	public List<String> amendAuthorCommiter(String repositoryPath, boolean ok) throws Exception {
+	private List<Node> formatList(List<Node> inboundList) {
+		List<Node> outboundList = new ArrayList<>();
+		for (Node node : inboundList) {
+			int index = node.getNodeUri().lastIndexOf("/");
+			if (index == -1) {
+				node.setNodeUri(node.getNodeUri().substring(index + 1));
+			} else {
+				node.setNodeUri(node.getNodeUri().substring(index + 1) + " - " + node.getNodeUri().substring(0, index));
+			}
+			if (node.getType().equals(MODIFY)) {
+				node.setNodeUri(String.format("> %s", node.getNodeUri()));
+			}
+			outboundList.add(node);
+		}
+		return outboundList;
+	}
+	
+	public List<String> getAuthorAndCommiter(String repositoryPath, boolean amend) throws Exception {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		List<String> list = new ArrayList<String>();
 		PersonIdent pi = new PersonIdent(repo);
-		list.add(pi.getName() + " <" + pi.getEmailAddress() + ">");
+		list.add(String.format("%s <%s>", pi.getName(), pi.getEmailAddress()));
 		RevWalk rw = new RevWalk(repo);
 		ObjectId headId = repo.resolve(Constants.HEAD + "^{commit}");
-		if (headId == null && ok)
+		if (headId == null && amend)
 			return null;
 		List<ObjectId> parents = new ArrayList<ObjectId>();
 		if (headId != null)
-			if (ok) {
+			if (amend) {
 				RevCommit previousCommit = rw.parseCommit(headId);
 				for (RevCommit p : previousCommit.getParents()) {
 					parents.add(p.getId());
@@ -724,30 +751,32 @@ public class GitService {
 				list.add(previousCommit.getAuthorIdent().getName() + " <" + previousCommit.getAuthorIdent().getEmailAddress() + ">");
 				list.add(previousCommit.getFullMessage());
 			} else {
-				list.add(pi.getName() + " <" + pi.getEmailAddress() + ">");
+				list.add(String.format("%s <%s>", pi.getName(), pi.getEmailAddress()));
 				list.add("");
 			}
 		return list;
 	}
 
-	public void commitMethod(String repositoryPath, boolean ok, String message) throws Exception {
+	public void commitAndPush(String repositoryPath, boolean amend, String message) throws Exception {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
-		git.commit().setMessage(message).setAmend(ok).call();
+		git.commit().setMessage(message).setAmend(amend).call();
 	}
 
-	public void addToGitIndex(String repositoryPath, String filePathToAdd) throws Exception {
+	public void addToGitIndex(String repositoryPath, List<String> filesToAdd) throws Exception {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
-		git.add().addFilepattern(filePathToAdd).setUpdate(true).call();
-		git.add().addFilepattern(filePathToAdd).setUpdate(false).call();
+		for (String file : filesToAdd) {
+			git.add().addFilepattern(file).setUpdate(true).call();
+			git.add().addFilepattern(file).setUpdate(false).call();
+		}
 	}
 
-	public void removeFromGitIndex(String repositoryPath, String filePathToRemove) throws Exception {
+	public void removeFromGitIndex(String repositoryPath, List<String> filesToRemove) throws Exception {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
-		git.reset().addPath(filePathToRemove).call();
-	}
-	
+		for (String file : filesToRemove) {
+			git.reset().addPath(file).call();
+		}
+	}	
 }
-

@@ -13,25 +13,22 @@
 * 
 * license-end
 */
-
 package org.flowerplatform.flex_client.team.git.action
 {
-	import mx.collections.ArrayCollection;
-	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
-	import org.flowerplatform.flex_client.team.git.GitStagingProperties;
+	import org.flowerplatform.flex_client.team.git.GitStagingViewProvider;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	/**
 	 * @author Marius Iacob
 	 */
 	
-	public class GitStagingAction extends ActionBase
+	public class ShowGitStagingAction extends ActionBase
 	{
-		public function GitStagingAction()
+		public function ShowGitStagingAction()
 		{
 			super();
 			label = Resources.getMessage("team.git.action.GitStagingAction");
@@ -49,7 +46,7 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		override public function run():void {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
-				.setViewIdInWorkbench(GitStagingProperties.ID)
+				.setViewIdInWorkbench(GitStagingViewProvider.ID)
 				.setWidth(550)
 				.setHeight(500)
 				.show();
