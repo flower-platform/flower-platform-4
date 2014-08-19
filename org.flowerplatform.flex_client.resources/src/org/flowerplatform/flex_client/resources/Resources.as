@@ -97,6 +97,9 @@ package org.flowerplatform.flex_client.resources {
 		// MindMap
 		
 		[Embed(source="/mindmap/icons/checkout.gif")]
+		public static const mindmap_button_checkout:Class;
+		
+		[Embed(source="/mindmap/icons/checkout.gif")]
 		public static const checkoutIcon:Class;
 		
 				
@@ -552,7 +555,6 @@ package org.flowerplatform.flex_client.resources {
 		public static const wrenchIcon:Class;
 		
 		// Team Git
-		
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
 		
@@ -565,7 +567,25 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
 
-		[Embed(source="/team.git/remoteSpec.gif")]
+		[Embed(source="/team.git/permission.png")]
+		public static const permission:Class;
+
+		[Embed(source="/team.git/delete_obj.gif")]
+		public static const deleteRemote:Class;
+
+		[Embed(source="/team.git/commit_amend.gif")]
+		public static const amendIcon:Class;
+				
+		// Git History 
+		[Embed(source="/git/history.gif")]
+		public static const gitHistoryIcon:Class;
+		
+		[Embed(source="/team.git/copy.gif")]
+		public static const copy:Class;
+		
+		// Team Git
+
+		[Embed(source="/team.git/remotespec.gif")]
 		public static const configureFetchPush:Class;
 
 		[Embed(source="/team.git/merge.gif")]
@@ -579,9 +599,6 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
-
-		[Embed(source="/team.git/permission.png")]
-		public static const permission:Class;
 		
 		[Embed(source="/team.git/branch_obj.gif")]
 		public static const branchIcon:Class;
@@ -594,16 +611,6 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitrepository.gif")]
 		public static const gitRepoIcon:Class;
-
-		[Embed(source="/team.git/delete_obj.gif")]
-		public static const deleteRemote:Class;
-
-		[Embed(source="/team.git/commit_amend.gif")]
-		public static const amendIcon:Class;
-				
-		// Git History 
-		[Embed(source="/git/history.gif")]
-		public static const gitHistoryIcon:Class;
 		
 		[Embed(source="/mindmap/refresh.gif")]
 		public static const refreshIcon:Class;
@@ -619,3 +626,6 @@ package org.flowerplatform.flex_client.resources {
 
 	}
 }
+		[Embed(source="/mindmap/icons/checkout.gif")]
+		public static const mindmap_button_checkout:Class;
+		

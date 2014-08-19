@@ -37,6 +37,7 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
@@ -84,7 +85,19 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 			
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
 		CorePlugin.getInstance().getServiceRegistry().registerService("HistoryService", new HistoryService());
-		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_CATEGORY);
+
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_REF)
+			.addAdditiveController(PROPERTIES_PROVIDER, new GitRefPropertiesProvider())
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.fullName")).setReadOnlyAs(true).setOrderIndexAs(1))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_ID).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitID")).setReadOnlyAs(true).setOrderIndexAs(2))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_MESSAGE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.commitMessage")).setReadOnlyAs(true).setOrderIndexAs(3))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.isCheckout")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_UPSTREAM_BRANCH).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configUpstreamBranch")).setReadOnlyAs(true).setOrderIndexAs(5))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRemote")).setReadOnlyAs(true).setOrderIndexAs(6))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REBASE).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.configRebase")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));;
+
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_CATEGORY);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_REF)

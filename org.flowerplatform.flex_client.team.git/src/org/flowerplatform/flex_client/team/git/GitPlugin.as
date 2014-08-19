@@ -23,7 +23,10 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
+	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.ResetAction;
 	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
 	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
@@ -69,9 +72,12 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ResetAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
-			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGitHistoryAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeBranchAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);

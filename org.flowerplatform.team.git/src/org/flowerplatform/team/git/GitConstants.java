@@ -23,7 +23,13 @@ import org.flowerplatform.util.UtilConstants;
 public class GitConstants {
 
 	/////////////////////////////////////////////////////////////
-	//Node type in Git folder hierarchy
+	// Scheme
+	/////////////////////////////////////////////////////////////
+	
+	public static final String GIT_SCHEME = "git";
+
+	/////////////////////////////////////////////////////////////
+	// Node types
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_REPO_TYPE = "gitRepo";
@@ -39,7 +45,10 @@ public class GitConstants {
 	////////////////////////////////////////////////////////////
 	//Categories
 	////////////////////////////////////////////////////////////
-	
+		
+	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
+	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
+		
 	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
 	
@@ -99,4 +108,20 @@ public class GitConstants {
 	public static final String RENAME = "RENAME";
 	public static final String COPY = "COPY";
 
+	public static final String CURRENT_BRANCH = "currentBranch";
+	public static final String CURRENT_COMMIT = "currentCommit";
+	public static final String IS_CHECKEDOUT = "isCheckedOut";
+	public static final String FETCH_REF_SPECS = "fetchRefSpecs";
+	public static final String PUSH_REF_SPECS = "pushRefSpecs";
+	public static final String REMOTE_URIS = "URIs";
+	public static final String COMMIT_ID = "commitID";
+	public static final String COMMIT_MESSAGE = "commitMessage";
+
+	/////////////////////////////////////////////////////////////
+	//Reset types
+	/////////////////////////////////////////////////////////////
+	
+	public static final String RESET_SOFT = "soft";
+	public static final String RESET_MIXED = "mixed";
+	public static final String RESET_HARD = "hard";
 }

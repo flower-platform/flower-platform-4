@@ -22,6 +22,9 @@ import static org.flowerplatform.team.git.GitConstants.ADD;
 import static org.flowerplatform.team.git.GitConstants.CONFLICTED;
 import static org.flowerplatform.team.git.GitConstants.DELETE;
 import static org.flowerplatform.team.git.GitConstants.FILE;
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
+import static org.flowerplatform.core.CoreConstants.UPDATE_REQUEST_REFRESH;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
@@ -37,7 +40,12 @@ import static org.flowerplatform.team.git.GitConstants.UNTRACKED;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,6 +67,18 @@ import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.AnyObjectId;
+import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.api.LsRemoteCommand;
+import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
+import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.PersonIdent;
@@ -87,6 +107,10 @@ import org.flowerplatform.team.git.history.internal.GitHistoryConstants;
 import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.util.Utils;
+import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.update.remote.Update;
+import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.team.git.remote.GitRef;
 
 /**
  * 
@@ -103,6 +127,7 @@ public class GitService {
 			Repository repository = GitUtils.getRepository(FileControllerUtils
 											.getFileAccessController()
 											.getFile(repoPath));
+
 			Git git = new Git(repository);
 			RevWalk revWalk = new RevWalk(repository);
 			ObjectReader reader = repository.newObjectReader();
@@ -115,8 +140,11 @@ public class GitService {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
 		return CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(patch.toString(), repoPath, sdiffOutputPath, fileContentProvider);
 	}
+
+	private static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
 	public boolean validateHash(String hash, String repositoryPath) {
 		try {
@@ -129,7 +157,6 @@ public class GitService {
 			if (resolved == null){
 				return false;
 			}
-
 			// testing if hash exists in the repository
 			RevWalk rw = new RevWalk(repo);
 			rw.parseCommit(resolved);
@@ -142,6 +169,54 @@ public class GitService {
 
 	/**
 	 * @author Tita Andreea
+	 */
+	public String mergeBranch(String nodeUri, boolean setSquash, boolean commit, int fastForwardOptions, String idCommit) throws Exception {
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		String repoPath = Utils.getRepo(nodeUri);
+		
+		// path for repository	
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Git gitInstance = new Git(repo);
+		
+		MergeCommand mergeCmd;
+		FastForwardMode fastForwardMode = FastForwardMode.FF;
+		
+		// set the parameters for Fast Forward options 
+		switch (fastForwardOptions){
+			case 0:
+				fastForwardMode = FastForwardMode.FF;
+				break;
+			case 1:
+				fastForwardMode = FastForwardMode.NO_FF;
+				break;
+			case 2:
+				fastForwardMode = FastForwardMode.FF_ONLY;
+				break;
+		}
+		
+		// call merge operation 
+		if (idCommit != null) {
+			mergeCmd = gitInstance.merge().include((AnyObjectId) repo.resolve(idCommit));
+		} else {
+			mergeCmd = gitInstance.merge().include(repo.getRef((String) node.getPropertyValue(GitConstants.NAME)));
+		}
+
+		MergeResult mergeResult = mergeCmd.setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit).call();
+	   
+		String uri = Utils.getUri(FILE_SCHEME, repoPath);
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(uri), 
+				new Update().setFullNodeIdAs(uri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		return GitUtils.handleMergeResult(mergeResult);		
+	}
+
+	/**
+	 * @author Tita Andreea
+	 * 
+	 * Get all branches from a certain repository
+	 * 
 	 */
 	
 	/* Merge branch */
@@ -307,6 +382,12 @@ public class GitService {
 		}		
 		Collections.sort(branches);
 		return branches;
+	}
+
+	/**
+	 * @author Diana Balutoiu
+	 */
+	public void configureBranch(String branchNodeUri, String remote, String upstream, Boolean rebase) throws Exception {
 	}
 
 	/**
@@ -759,5 +840,31 @@ public class GitService {
 		git.reset().addPath(filePathToRemove).call();
 	}
 	
+	/**
+	 * @author Cristina Brinza
+	 * 
+	 * Update Remotes' children when Remotes node expanded and Create Remote action used
+	 */
+	private void updateRemotesOnCreateRemote(Node node, Node child, String remoteName, String remoteUri, String refSpecsString, boolean toConfigure) {
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		CorePlugin.getInstance().getNodeService().addChild(node, child, serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+		CorePlugin.getInstance().getNodeService().setProperty(child, CoreConstants.NAME, remoteName, serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+		CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.REMOTE_URIS, remoteUri + " ", serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+		CorePlugin.getInstance().getNodeService().setProperty(child, CoreConstants.ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/remote.gif"), 
+					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+		
+		if (toConfigure) {
+			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.PUSH_REF_SPECS, refSpecsString, 
+					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.FETCH_REF_SPECS, "",
+					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+		} else {
+			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.FETCH_REF_SPECS, refSpecsString, 
+					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+			CorePlugin.getInstance().getNodeService().setProperty(child, GitConstants.PUSH_REF_SPECS, "",
+					serviceContext.add(EXECUTE_ONLY_FOR_UPDATER, true));
+		}
+	}
 }
+
 
