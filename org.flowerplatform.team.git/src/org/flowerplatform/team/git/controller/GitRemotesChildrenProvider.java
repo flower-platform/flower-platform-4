@@ -45,16 +45,18 @@ public class GitRemotesChildrenProvider extends AbstractController implements IC
 			List<Node> children = new ArrayList<Node>();
 			Repository repo = null;
 			String repoPath = Utils.getRepo(node.getNodeUri());
-			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+			repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 			
 			Set<String> remotes = repo.getRemoteNames();
 			
 			for (String entry : remotes) {
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(GIT_SCHEME)
-						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath,GIT_REMOTE_TYPE,entry), entry));
+						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath, GIT_REMOTE_TYPE, entry), entry));
 			}
-			return children; 
-		} catch (Exception e){
+			
+			return children;
+			
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
