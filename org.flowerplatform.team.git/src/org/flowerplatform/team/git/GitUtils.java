@@ -18,7 +18,6 @@ package org.flowerplatform.team.git;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -158,7 +157,7 @@ public class GitUtils {
 	}
 
 	public static String getNodeUri(String repoPath,String type,String name) {
-		return CoreUtils.createNodeUriWithRepo(GIT_SCHEME, repoPath, type + (name != null ? "$" + name:""));	
+		return CoreUtils.createNodeUriWithRepo(GIT_SCHEME, repoPath, type + (name != null ? "$" + name : ""));	
 	}
 
 	public static String getNodeUri(String repoPath,String type){

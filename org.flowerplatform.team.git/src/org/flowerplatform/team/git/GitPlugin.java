@@ -46,21 +46,18 @@ import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
 
-import org.eclipse.jgit.lib.Constants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
-import org.flowerplatform.core.node.resource.BaseResourceHandler;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.controller.GitChildrenProvider;
-import org.flowerplatform.team.git.controller.GitVirtualChildPropertiesProvider;
 import org.flowerplatform.team.git.controller.GitPropertiesProvider;
 import org.flowerplatform.team.git.controller.GitRefPropertiesProvider;
 import org.flowerplatform.team.git.controller.GitRefsChildrenProvider;
 import org.flowerplatform.team.git.controller.GitRemotePropertiesProvider;
 import org.flowerplatform.team.git.controller.GitRemotesChildrenProvider;
 import org.flowerplatform.team.git.controller.GitResourceHandler;
+import org.flowerplatform.team.git.controller.GitVirtualChildPropertiesProvider;
 import org.flowerplatform.team.git.controller.RepoChildrenProvider;
-import org.flowerplatform.team.git.history.internal.GitHistoryConstants;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -142,8 +139,6 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAG_TYPE)
 			.addCategory(GIT_REF)
 			.addCategory(GIT_CATEGORY);
-
-		//CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new BaseResourceHandler(GIT_REPO_TYPE));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitRemotePropertiesProvider())

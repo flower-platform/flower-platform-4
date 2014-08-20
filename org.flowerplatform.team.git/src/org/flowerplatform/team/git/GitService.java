@@ -36,7 +36,6 @@ import static org.flowerplatform.team.git.GitConstants.UNSTAGED;
 import static org.flowerplatform.team.git.GitConstants.UNTRACKED;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;

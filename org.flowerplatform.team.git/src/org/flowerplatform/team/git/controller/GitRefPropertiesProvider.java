@@ -29,8 +29,6 @@ import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
 import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
 import static org.flowerplatform.team.git.GitConstants.NAME;
 
-import java.io.File;
-
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -98,18 +96,18 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 		String type = GitUtils.getType(node.getNodeUri());
 		
 		switch (type) {
-		case GIT_LOCAL_BRANCH_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/branch.gif");
-			break;
-		case GIT_REMOTE_BRANCH_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/branch.gif");
-			break;
-		case GIT_TAG_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/tag.gif");
-			break;
-		case GIT_REMOTE_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/remote.gif");
-			break;
+			case GIT_LOCAL_BRANCH_TYPE :
+				icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/branch.gif");
+				break;
+			case GIT_REMOTE_BRANCH_TYPE :
+				icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/branch.gif");
+				break;
+			case GIT_TAG_TYPE :
+				icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/tag.gif");
+				break;
+			case GIT_REMOTE_TYPE :
+				icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/remote.gif");
+				break;
 		}
 		
 		return icon;

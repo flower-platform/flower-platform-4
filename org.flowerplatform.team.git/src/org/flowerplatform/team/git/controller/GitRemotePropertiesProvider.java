@@ -21,11 +21,9 @@ import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
@@ -47,13 +45,12 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		try {
-			Repository repo = null;	
 			String name = (String) node.getRawNodeData();
 			List<String> fetch = new ArrayList<String>();
 			List<String> push = new ArrayList<String>();
 			List<String> uris = new ArrayList<String>();
 
-			RemoteConfig config = new RemoteConfig(GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))).getConfig(),name);
+			RemoteConfig config = new RemoteConfig(GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))).getConfig(), name);
 
 			for (RefSpec spec : config.getFetchRefSpecs()) {
 				fetch.add(spec.toString());

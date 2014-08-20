@@ -19,8 +19,6 @@ import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 
-import java.io.File;
-
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.flowerplatform.core.file.FileControllerUtils;

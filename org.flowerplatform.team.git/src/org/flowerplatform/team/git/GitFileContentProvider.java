@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.team.git;
 
-import java.io.File;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;

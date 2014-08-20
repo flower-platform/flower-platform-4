@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 

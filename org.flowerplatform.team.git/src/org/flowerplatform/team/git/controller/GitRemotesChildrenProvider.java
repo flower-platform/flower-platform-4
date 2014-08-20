@@ -18,7 +18,6 @@ package org.flowerplatform.team.git.controller;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

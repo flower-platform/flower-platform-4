@@ -15,20 +15,19 @@
  */
 package org.flowerplatform.team.git.controller;
 
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
-import org.eclipse.jgit.lib.Constants;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -49,28 +48,30 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		try {
 			List<Node> children = new ArrayList<Node>();
-			Repository repo = null;
-			String repoPath = Utils.getRepo(node.getNodeUri());
 			
-			repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+			String repoPath = Utils.getRepo(node.getNodeUri());			
+			Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
-			String refType = null;
-			String type = null;
-
-			if (node.getType().equals(GIT_LOCAL_BRANCHES_TYPE)) {
-				refType = Constants.R_HEADS;
-				type = GIT_LOCAL_BRANCH_TYPE;
-			} else if (node.getType().equals(GIT_REMOTE_BRANCHES_TYPE)) {
-				refType = Constants.R_REMOTES;
-				type = GIT_REMOTE_BRANCH_TYPE;
-			} else if (node.getType().equals(GIT_TAGS_TYPE)) {
-				refType = Constants.R_TAGS;
-				type = GIT_TAG_TYPE;
-			}
+			String refType;
+			String type;
 			
+			switch (node.getType()) {
+				case GIT_LOCAL_BRANCHES_TYPE:
+					refType = Constants.R_HEADS;
+					type = GIT_LOCAL_BRANCH_TYPE;
+					break;
+				case GIT_REMOTE_BRANCHES_TYPE:
+					refType = Constants.R_REMOTES;
+					type = GIT_REMOTE_BRANCH_TYPE;
+					break;
+				default:
+					refType = Constants.R_TAGS;
+					type = GIT_TAG_TYPE;
+			}
+						
 			Map<String, org.eclipse.jgit.lib.Ref> local = repo.getRefDatabase().getRefs(refType);
 				
-			for (Entry<String, org.eclipse.jgit.lib.Ref> entry : local.entrySet()) {
+			for (Entry<String, Ref> entry : local.entrySet()) {
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(node.getScheme())
 						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath, type, entry.getValue().getName()), entry.getValue()));
 			}		
@@ -83,10 +84,7 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		if (getChildren(node, context).size() > 0) {
-			return true;
-		}
-		return false;
+		return getChildren(node, context).size() > 0;
 	}
 
 }

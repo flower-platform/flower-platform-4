@@ -49,12 +49,13 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 			
 			node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.git"));
 			node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/git.gif"));
+			node.getProperties().put(GitConstants.IS_GIT_REPOSITORY, repo != null);	
 			
 			if (repo != null) {								
 				node.getProperties().put(CURRENT_BRANCH, repo.getBranch());
 				node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 				
-				Map<String, org.eclipse.jgit.lib.Ref> refs = repo.getRefDatabase().getRefs(RefDatabase.ALL);
+				Map<String, Ref> refs = repo.getRefDatabase().getRefs(RefDatabase.ALL);
 					
 				for (Ref entry : refs.values()) {
 					if (entry.getTarget().getName().equals(repo.getFullBranch())) {
@@ -62,10 +63,7 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 						break;
 					}
 				}				
-			}
-			
-			node.getProperties().put(GitConstants.IS_GIT_REPOSITORY, repo != null);
-			
+			}					
 		} catch (Exception e){
 			throw new RuntimeException(e);
 		}

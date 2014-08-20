@@ -65,11 +65,7 @@ public class GitChildrenProvider extends AbstractController implements IChildren
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		try {
-			if(GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))) != null){
-				return true;
-			}
-			
-			return false;
+			return GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))) != null;
 		}catch (Exception e){
 			throw new RuntimeException(e);
 		}
