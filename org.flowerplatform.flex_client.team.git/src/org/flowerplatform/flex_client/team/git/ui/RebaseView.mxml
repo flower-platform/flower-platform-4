@@ -4,7 +4,7 @@
 					 xmlns:mx="library://ns.adobe.com/flex/mx"
 					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
 					 xmlns:ntc="org.flowerplatform.flex_client.core.node_tree.*"
-					 creationComplete="rebaseCreationCompleteHandler(event)">
+					 >
 	
 	
 	<fx:Script>
@@ -33,13 +33,15 @@
 			[Bindable]
 			public var color:Number = 0xA0A0A0;
 			
-			protected function rebaseCreationCompleteHandler(event:FlexEvent):void {
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
 				node = node.parent.parent;
 				var pair:Pair = CorePlugin.getInstance().getSubscribableResource(node);
 				tree.initializeTree(pair == null ? node.nodeUri : pair.a as String);
 			}
+					
 			
 			protected function treeClickHandler(event:MouseEvent):void {
 				var selectedNode:Node = Node(HierarchicalModelWrapper(tree.selectedItem).treeNode);

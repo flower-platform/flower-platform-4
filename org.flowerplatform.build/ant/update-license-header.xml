@@ -4,11 +4,13 @@
 
 	<property name="workspace" value="../../"/>
 	<property name="projectRegex" value="org\.flowerplatform.*" />
+	<property name="ignoreRegex" value=".*org\.flowerplatform\.tests.*resources.*" />
 	
 	<target name="updateLicenseHeader">
 		<headerUpdaterTask 
 				workspaceFolder="${workspace}" 
 		        projectFilterRegex="${projectRegex}"
+				ignoreFilterRegex="${ignoreRegex}"
 				fileExtension="java" 
 				headerFile="license_headers/standardHeader.txt"
 				startToken="license-start"
@@ -16,6 +18,7 @@
 		<headerUpdaterTask 
 				workspaceFolder="${workspace}"
 				projectFilterRegex="${projectRegex}"
+				ignoreFilterRegex="${ignoreRegex}"
 				fileExtension="as" 
 				headerFile="license_headers/standardHeader.txt"
 				startToken="license-start"
@@ -23,6 +26,7 @@
 		<headerUpdaterTask 
 				workspaceFolder="${workspace}"
 				projectFilterRegex="${projectRegex}"
+				ignoreFilterRegex="${ignoreRegex}"
 				fileExtension="mxml" 
 				headerFile="license_headers/mxmlStandardHeader.txt"
 				startToken="license-start"

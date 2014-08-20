@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!--
+@author Catalin Burcea
+-->
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="500" height="300" xmlns:layout="org.osmf.layout.*" creationComplete="creationCompleteHandler(event)">
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
 	
 	<fx:Script>
 		<![CDATA[
@@ -12,35 +31,21 @@
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			
-			
-			
-			[Bindable]
 			public var repoNode:Node;
-
-			protected function deleteGitRepository():void {
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteGitRepository", [repoNode.nodeUri,keepWorkingDirectoryContent.selected]);
-			}
 			
 			override protected function okHandler(event:Event = null):void {			
-				deleteGitRepository();
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteGitRepository", [repoNode.nodeUri, keepWorkingDirectoryContent.selected]);
 				cancelHandler(event);
 			}
 			
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);
-				var index:int = repoNode.nodeUri.indexOf("|");
-				if (index < 0) {
-					index = repoNode.nodeUri.length;
-				}
-				var repoPath:String = repoNode.nodeUri.substring(repoNode.nodeUri.indexOf(":") + 1, index);
-				deleteGitRepoLabel.text = Resources.getMessage('flex_client.team.git.action.deleteGitRepositoryLabel', new Array(repoPath));
 				
+				deleteGitRepoLabel.text = Resources.getMessage('flex_client.team.git.action.deleteGitRepositoryLabel', [CorePlugin.getInstance().getRepository(repoNode.nodeUri)]);
 			}
 			
 		]]>
 	</fx:Script>
-	
-	<s:Label fontSize="17" id="deleteGitRepoLabel"></s:Label>
-	<s:CheckBox fontSize="13" id="keepWorkingDirectoryContent"> Keep working directory content </s:CheckBox>
-	
+	<s:Label id="deleteGitRepoLabel" />
+	<s:CheckBox id="keepWorkingDirectoryContent">{Resources.getMessage('flex_client.team.git.ui.keepWorkingDirectoryContent')}</s:CheckBox>
 </ns:BasicViewContent>

@@ -1,0 +1,28 @@
+diff --git a/modified/Test.java b/modified/Test.java
+index eff5578..da35bb0 100644
+--- a/modified/Test.java
++++ b/modified/Test.java
+@@ -6,19 +6,20 @@
+ 		
+ 	}
+ 	
+-	public void testRemovedMethod(){
++	public void testAddedMethod(){
+ 		
+ 	}
+ 	
+ 	/**
+-	 * param original
++	 * param modified
+ 	 */
+ 	public void testDocWillBeChangedMethod(){
+ 		
+ 	}
+ 	
+ 	public void testBodyWillBeChangedMethod(){
+-		
++		//modified body
++		String modifiedBody = "Body Modified";
+ 	}
+ 	
+ }

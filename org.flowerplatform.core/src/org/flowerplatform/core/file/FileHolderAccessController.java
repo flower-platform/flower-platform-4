@@ -87,7 +87,7 @@ public class FileHolderAccessController implements IFileAccessController {
 
 	@Override
 	public boolean exists(Object file) {
-		return true;
+		return getFileHolder(file).exists();
 	}
 
 	@Override

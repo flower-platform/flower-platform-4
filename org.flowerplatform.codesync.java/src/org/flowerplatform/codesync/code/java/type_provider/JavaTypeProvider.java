@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.codesync.code.java.type_provider;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.ANNOTATION;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.ANNOTATION_MEMBER;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.ANNOTATION_TYPE;
@@ -50,20 +49,16 @@ import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncConstants;
-import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.core.file.IFileAccessController;
+import org.flowerplatform.codesync.type_provider.FileTypeProvider;
 
 /**
  * @author Mariana Gheorghe
  */
-public class JavaTypeProvider implements ITypeProvider {
+public class JavaTypeProvider extends FileTypeProvider {
 
 	private Map<Class<?>, String> directMap = new HashMap<Class<?>, String>();
 	
 	public JavaTypeProvider() {
-		directMap.put(CodeSyncFile.class, FILE);
 		directMap.put(EnumDeclaration.class, ENUM);
 		directMap.put(AnnotationTypeDeclaration.class, ANNOTATION_TYPE);
 		directMap.put(FieldDeclaration.class, ATTRIBUTE);
@@ -77,12 +72,11 @@ public class JavaTypeProvider implements ITypeProvider {
 	
 	@Override
 	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm) {
-		IFileAccessController fileAccessController = codeSyncAlgorithm.getFileAccessController();
-		if (fileAccessController.isFile(object)) {
-			if (fileAccessController.isDirectory(object)) {
-				return CodeSyncConstants.FOLDER;
-			}
-		} else if (object instanceof TypeDeclaration) {
+		String type = super.getType(object, codeSyncAlgorithm);
+		if (type != null) {
+			return type;
+		}
+		if (object instanceof TypeDeclaration) {
 			if (((TypeDeclaration) object).isInterface()) {
 				return INTERFACE;
 			} else {

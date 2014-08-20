@@ -16,7 +16,13 @@
 package org.flowerplatform.codesync.adapter;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_SYNC;
+import static org.flowerplatform.codesync.CodeSyncConstants.CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CONFLICT_SUFFIX;
+import static org.flowerplatform.codesync.CodeSyncConstants.ORIGINAL_SUFFIX;
 import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncConstants.SYNC;
 import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
@@ -24,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
@@ -82,8 +89,10 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	}
 	
 	@Override
-	public void setValueFeatureValue(Object element, Object feature, Object newValue, CodeSyncAlgorithm codeSyncAlgorithm) {		
-		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+	public void setValueFeatureValue(Object element, Object feature, Object newValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);		
+		CorePlugin.getInstance().getNodeService().setProperty(getNode(element), (String) feature, newValue, context);
 	}
 	
 	/**
@@ -118,7 +127,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				String ssp = Utils.getSchemeSpecificPart(parentNode.getNodeUri());
 				String childUri = Utils.getUri(scheme, ssp, null);
 				Node child = new Node(childUri, type);
-				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+				ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+				context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);
+				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, context);
 				return child;
 //		}
 //		
@@ -127,7 +138,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	
 	@Override
 	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
-		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);
+		CorePlugin.getInstance().getNodeService().removeChild(getNode(parent), getNode(child), context);
 	}
 
 	@Override
@@ -142,14 +155,145 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return false;
 	}
 
-	@Override
-	public void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm) {		
-		CodeSyncControllerUtils.setConflictTrueAndPropagateToParents(getNode(element), feature.toString(), oppositeValue, CorePlugin.getInstance().getNodeService());
+	public String getConflictPropertyName(String property) {
+		return property + CONFLICT_SUFFIX;
+	}
+
+	public boolean isConflict(Node node) {
+		return hasFlagTrue(node, CONFLICT);
+	}
+
+	public boolean isConflictPropertyName(String property) {
+		return property.endsWith(CONFLICT_SUFFIX);
+	}
+
+	public boolean isOriginalPropertyName(String property) {
+		return property.endsWith(ORIGINAL_SUFFIX);
+	}
+
+	private boolean hasFlagTrue(Node node, String flag) {
+		Boolean b = (Boolean) node.getPropertyValue(flag);
+		return b != null && b;
+	}
+
+	public boolean noChildConflict(Node node, NodeService service) {
+		for (Node child : service.getChildren(node, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true))) {
+			if (isConflict(child) || isChildrenConflict(child)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean isChildrenConflict(Node node) {
+		return hasFlagTrue(node, CHILDREN_CONFLICT);
+	}
+
+	public boolean isSync(Node node) {
+		return hasFlagTrue(node, SYNC);
+	}
+
+	public boolean isAdded(Node node) {
+		return hasFlagTrue(node, ADDED);
+	}
+
+	public boolean isRemoved(Node node) {
+		return hasFlagTrue(node, REMOVED);
 	}
 	
 	@Override
-	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {		
-		CodeSyncControllerUtils.setConflictFalseAndPropagateToParents(getNode(element), feature.toString(), CorePlugin.getInstance().getNodeService());
+	public void setConflict(Object element, Object feature, Object conflictValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Node node = getNode(element);
+		String conflictProperty = feature.toString();
+		NodeService service = CorePlugin.getInstance().getNodeService();
+
+		service.setProperty(node, getConflictPropertyName(conflictProperty), conflictValue, new ServiceContext<NodeService>(service));
+
+		if (isConflict(node)) {
+			// already set
+			return;
+		}
+
+		// set conflict true
+		service.setProperty(node, CONFLICT, true, new ServiceContext<NodeService>(service));
+	}
+	
+	@Override
+	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm) {
+		Node node = getNode(element);
+		String conflictProperty = feature.toString();
+		NodeService service = CorePlugin.getInstance().getNodeService();
+
+		if (!isConflict(node)) {
+			return;
+		}
+
+		service.unsetProperty(node, getConflictPropertyName(conflictProperty), new ServiceContext<NodeService>(service));
+
+		// check if it has any other property.conflict set
+		boolean conflict = false;
+		for (String property : node.getProperties().keySet()) {
+			if (isConflictPropertyName(property)) {
+				conflict = true;
+			}
+		}
+		if (conflict) {
+			return;
+		}
+
+		// set conflict false
+		service.setProperty(node, CONFLICT, false, new ServiceContext<NodeService>(service));
+	}
+	
+	@Override
+	public void setChildrenConflict(Object element) {
+		Node node = getNode(element);
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		service.setProperty(node, CHILDREN_CONFLICT, true, new ServiceContext<NodeService>(service));
+	}
+
+	@Override
+	public void unsetChildrenConflict(Object element) {
+		Node node = getNode(element);
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		service.setProperty(node, CHILDREN_CONFLICT, false, new ServiceContext<NodeService>(service));
+	}
+	
+	@Override
+	public void setSync(Object element) {
+		Node node = getNode(element);
+		NodeService service = CorePlugin.getInstance().getNodeService();
+
+		if (isSync(node)) {
+			// already set
+			return;
+		}
+
+		// added/removed nodes are not sync
+		if (isAdded(node) || isRemoved(node)) {
+			return;
+		}
+
+		// check if it has any property.original set
+		boolean sync = true;
+		for (String property : node.getProperties().keySet()) {
+			if (isOriginalPropertyName(property)) {
+				sync = false;
+			}
+		}
+		if (!sync) {
+			return;
+		}
+
+		// set sync true
+		service.setProperty(node, SYNC, true, new ServiceContext<NodeService>(service));
+	}
+	
+	@Override
+	public void setChildrenSync(Object element) {
+		Node node = getNode(element);
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		service.setProperty(node, CHILDREN_SYNC, true, new ServiceContext<NodeService>(service));
 	}
 
 	protected Node getNode(Object element) {

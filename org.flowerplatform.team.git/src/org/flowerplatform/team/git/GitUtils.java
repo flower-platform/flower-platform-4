@@ -15,14 +15,16 @@
  */
 package org.flowerplatform.team.git;
 
+import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.io.FilenameUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
@@ -81,6 +83,9 @@ public class GitUtils {
 	public static String getType(String nodeUri){
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
+		if (indexEnd < indexStart) {
+			indexEnd = nodeUri.length();
+		}
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 	
@@ -89,32 +94,78 @@ public class GitUtils {
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
-	
-	public static String getShortName(String nodeUri){
-		int index = nodeUri.lastIndexOf("/");
-		
-		if (index < 0 || index < nodeUri.indexOf("$")){
-			index = nodeUri.indexOf("$");
-		}
-		return nodeUri.substring(index);
-	}
 
-	public static void delete(File f) {	
-		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
-			for (File c : f.listFiles()) {
-				delete(c);
+	/**
+	 * @author Cristina Constantienscu
+	 * @author Tita Andreea
+	 */
+	public static String handleMergeResult(MergeResult mergeResult) {
+		StringBuilder sb = new StringBuilder();		
+		if (mergeResult == null) {
+			return sb.toString();
+		}
+		sb.append("Status: ");
+		sb.append(mergeResult.getMergeStatus());
+		sb.append("\n");
+		
+		if (mergeResult.getMergedCommits() != null) {
+			sb.append("\nMerged commits: ");
+			sb.append("\n");
+			for (ObjectId id : mergeResult.getMergedCommits()) {
+				sb.append(id.getName());
+				sb.append("\n");
 			}
 		}
-		f.delete();
-	}
-	
-	public static String getNodePath(String nodeUri){
-		int index = nodeUri.indexOf("|");
-		if (index < 0) {
-			index = nodeUri.length();
+		
+		if (mergeResult.getCheckoutConflicts() != null) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for (String conflict : mergeResult.getCheckoutConflicts()) {
+				sb.append(conflict);
+				sb.append("\n");
+			}
 		}
-		String nodePath = nodeUri.substring(nodeUri.indexOf(":") + 1, index);
-		return nodePath;
+				
+		if (mergeResult.getFailingPaths() != null) {
+			sb.append("\nFailing paths: ");
+			sb.append("\n");
+			for (String path : mergeResult.getFailingPaths().keySet()) {
+				sb.append(path);
+				sb.append(" -> ");
+				sb.append(mergeResult.getFailingPaths().get(path).toString());
+				sb.append("\n");
+			}
+		}
+		
+		List<String> conflicts = new ArrayList<>();  
+		if(mergeResult.getConflicts() != null) {			
+			for(String path : mergeResult.getConflicts().keySet()) {
+				if (!conflicts.contains(path)) {
+					conflicts.add(path);
+				}
+			}
+		}		
+		if(!conflicts.isEmpty()) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for(String path : conflicts) {
+				sb.append(path);
+				sb.append("\n");				
+			}
+		}
+		
+		return sb.toString();
+	}
+
+	public static String getNodeUri(String repoPath,String type,String name){
+		if (name != null){
+			return GIT_SCHEME + ":" + repoPath + "|" + type + "$" + name;
+		}
+		return GIT_SCHEME + ":" + repoPath + "|" + type;
+	}
+
+	public static String getNodeUri(String repoPath,String type){
+		return getNodeUri(repoPath, type, null);
 	}
 	
 }
