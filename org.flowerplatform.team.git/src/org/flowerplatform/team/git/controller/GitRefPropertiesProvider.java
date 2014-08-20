@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.team.git.GitConstants.COMMIT_ID;
 import static org.flowerplatform.team.git.GitConstants.COMMIT_MESSAGE;
@@ -58,7 +57,7 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 		try {
 			Repository repo = null;
 			String repoPath = Utils.getRepo(node.getNodeUri());
-			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+			repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 			
 			String name = Repository.shortenRefName(((Ref) node.getRawNodeData()).getName());
 			String message = "";
@@ -74,7 +73,7 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 			}
 			
 			String configUpstreamBranch = config.getString(ConfigConstants.CONFIG_BRANCH_SECTION, name, ConfigConstants.CONFIG_KEY_MERGE);
-			if (configUpstreamBranch == null){
+			if (configUpstreamBranch == null) {
 				configUpstreamBranch = "";
 			}
 		
@@ -86,7 +85,6 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 			node.getProperties().put(CONFIG_UPSTREAM_BRANCH, configUpstreamBranch);
 			node.getProperties().put(CONFIG_REBASE, configRebase);				
 			node.getProperties().put(ICONS, setIcon(node));
-			node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 			node.getProperties().put(IS_CHECKEDOUT, repo.getBranch().equals(name));
 			node.getProperties().put(COMMIT_ID, repo.getRef(name).getObjectId().name());
 			node.getProperties().put(COMMIT_MESSAGE, message);
@@ -95,22 +93,22 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 		}
 	}
 	
-	public String setIcon(Node node){
+	public String setIcon(Node node) {
 		String icon = null;	
 		String type = GitUtils.getType(node.getNodeUri());
 		
 		switch (type) {
 		case GIT_LOCAL_BRANCH_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "branch.gif");
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/branch.gif");
 			break;
 		case GIT_REMOTE_BRANCH_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "branch.gif");
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/branch.gif");
 			break;
 		case GIT_TAG_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "tag.gif");
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/tag.gif");
 			break;
 		case GIT_REMOTE_TYPE :
-			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "remote.gif");
+			icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/remote.gif");
 			break;
 		}
 		

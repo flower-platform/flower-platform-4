@@ -15,6 +15,14 @@
  */
 package org.flowerplatform.team.git.controller;
 
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
+import org.eclipse.jgit.lib.Constants;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +44,6 @@ import org.flowerplatform.util.controller.AbstractController;
  * @author Cojocea Marius Eduard
  */
 public class GitRefsChildrenProvider extends AbstractController implements IChildrenProvider {
-
-	private String refType;
-	private String scheme;
-	private String type;
-	
-	
-	public GitRefsChildrenProvider(String refType, String scheme, String type){
-		this.refType = refType;
-		this.scheme = scheme;
-		this.type = type;
-	}
 	
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
@@ -55,18 +52,31 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 			Repository repo = null;
 			String repoPath = Utils.getRepo(node.getNodeUri());
 			
-			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+			repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
+			String refType = null;
+			String type = null;
+
+			if (node.getType().equals(GIT_LOCAL_BRANCHES_TYPE)) {
+				refType = Constants.R_HEADS;
+				type = GIT_LOCAL_BRANCH_TYPE;
+			} else if (node.getType().equals(GIT_REMOTE_BRANCHES_TYPE)) {
+				refType = Constants.R_REMOTES;
+				type = GIT_REMOTE_BRANCH_TYPE;
+			} else if (node.getType().equals(GIT_TAGS_TYPE)) {
+				refType = Constants.R_TAGS;
+				type = GIT_TAG_TYPE;
+			}
 			
 			Map<String, org.eclipse.jgit.lib.Ref> local = repo.getRefDatabase().getRefs(refType);
 				
 			for (Entry<String, org.eclipse.jgit.lib.Ref> entry : local.entrySet()) {
-				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(scheme)
-						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath,type,entry.getValue().getName()), entry.getValue()));
+				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(node.getScheme())
+						.createNodeFromRawNodeData(GitUtils.getNodeUri(repoPath, type, entry.getValue().getName()), entry.getValue()));
 			}		
 			
 			return children;
-		} catch(Exception e){
+		} catch(Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

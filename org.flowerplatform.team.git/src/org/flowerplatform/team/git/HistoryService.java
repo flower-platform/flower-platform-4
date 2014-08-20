@@ -47,7 +47,7 @@ public class HistoryService {
 		
 		List<Node> entries = new ArrayList<Node>();
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File)FileControllerUtils.getFileAccessController().getFile(repoPath));			
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));			
 		
 		RevWalk walk = new RevWalk(repo);
 		
@@ -90,7 +90,7 @@ public class HistoryService {
 	
 	public List<String> getCommitBranches(String nodeUri, String commitId) throws Exception {
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		WebWalk walk = getWebWalk(nodeUri);
 		RevCommit commit = walk.parseCommit(repo.resolve(commitId));
 		List<Ref> branches = getBranches((WebCommit)commit, getAllBranches(repo), repo);
@@ -111,7 +111,7 @@ public class HistoryService {
 	public List<Node> getLogEntries(String nodeUri)throws Exception {
 		
 			String repoPath = Utils.getRepo(nodeUri);
-			Repository repo = GitUtils.getRepository((File)FileControllerUtils.getFileAccessController().getFile(repoPath));
+			Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 			WebWalk walk = getWebWalk(nodeUri);
 		
 			WebCommitList loadedCommits = new WebCommitList();
@@ -186,7 +186,7 @@ public class HistoryService {
 	 */
 	private WebWalk getWebWalk(String nodeUri) throws Exception {
 		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		WebWalk walk = new WebWalk(repo);	
 
 		setupWalk(walk, repo, null); 

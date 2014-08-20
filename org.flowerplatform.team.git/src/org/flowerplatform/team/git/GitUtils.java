@@ -30,6 +30,7 @@ import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
 import org.eclipse.jgit.util.FS;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 
@@ -80,7 +81,7 @@ public class GitUtils {
 		return getGitDir(file) != null;
 	}
 
-	public static String getType(String nodeUri){
+	public static String getType(String nodeUri) {
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
 		if (indexEnd < indexStart) {
@@ -89,7 +90,7 @@ public class GitUtils {
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 	
-	public static String getName(String nodeUri){
+	public static String getName(String nodeUri) {
 		int indexStart = nodeUri.indexOf("$");
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
@@ -156,11 +157,8 @@ public class GitUtils {
 		return sb.toString();
 	}
 
-	public static String getNodeUri(String repoPath,String type,String name){
-		if (name != null){
-			return GIT_SCHEME + ":" + repoPath + "|" + type + "$" + name;
-		}
-		return GIT_SCHEME + ":" + repoPath + "|" + type;
+	public static String getNodeUri(String repoPath,String type,String name) {
+		return CoreUtils.createNodeUriWithRepo(GIT_SCHEME, repoPath, type + (name != null ? "$" + name:""));	
 	}
 
 	public static String getNodeUri(String repoPath,String type){

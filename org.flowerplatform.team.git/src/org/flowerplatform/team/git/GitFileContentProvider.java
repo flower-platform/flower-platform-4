@@ -50,7 +50,7 @@ public class GitFileContentProvider implements IFileContentProvider {
 		String oldFileContent, newFileContent;
 
 		try {
-			Repository repository = GitUtils.getRepository((File) FileControllerUtils
+			Repository repository = GitUtils.getRepository(FileControllerUtils
 											.getFileAccessController()
 											.getFile(repositoryPath));
 			RevWalk revWalk = new RevWalk(repository);

@@ -148,7 +148,7 @@ public class GitService {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Ref ref = repo.getRef((String)node.getPropertyValue(GitConstants.NAME));
 		
 		Git gitInstance = new Git(repo);
@@ -463,7 +463,7 @@ public class GitService {
 	public void checkout(String nodeUri) throws Exception {				
 		String Name = GitUtils.getName(nodeUri);
 		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 				
 		Git g = new Git(repo);	
 		
@@ -600,7 +600,7 @@ public class GitService {
 	}
 
 	public List<Node> stagingList(String repositoryPath, String stagingType) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		Set<String> conflictList = git.status().call().getConflicting();
 		boolean ok = false;
@@ -705,7 +705,7 @@ public class GitService {
 	}
 
 	public List<String> amendAuthorCommiter(String repositoryPath, boolean ok) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		List<String> list = new ArrayList<String>();
 		PersonIdent pi = new PersonIdent(repo);
 		list.add(pi.getName() + " <" + pi.getEmailAddress() + ">");
@@ -731,20 +731,20 @@ public class GitService {
 	}
 
 	public void commitMethod(String repositoryPath, boolean ok, String message) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		git.commit().setMessage(message).setAmend(ok).call();
 	}
 
 	public void addToGitIndex(String repositoryPath, String filePathToAdd) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		git.add().addFilepattern(filePathToAdd).setUpdate(true).call();
 		git.add().addFilepattern(filePathToAdd).setUpdate(false).call();
 	}
 
 	public void removeFromGitIndex(String repositoryPath, String filePathToRemove) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		git.reset().addPath(filePathToRemove).call();
 	}
