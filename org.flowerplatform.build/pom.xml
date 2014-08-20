@@ -64,7 +64,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.12.1</version>
         <configuration>
-        	<configLocation>checkstyle\checkstyle-config.xml</configLocation>     	
+        	<configLocation>checkstyle/checkstyle-config.xml</configLocation>     	
         </configuration>
       </plugin>
     </plugins>
@@ -76,7 +76,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.12.1</version>
         <configuration>
-        	<configLocation>checkstyle\checkstyle-config.xml</configLocation>       	
+        	<configLocation>checkstyle/checkstyle-config.xml</configLocation>       	
         </configuration> 
       </plugin>
     </plugins>
