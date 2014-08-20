@@ -30,6 +30,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */
 	public class SaveAllAction extends ActionBase {
 		
+//		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.SaveAllAction";
+		
 		public function SaveAllAction() {			
 			label = Resources.getMessage("saveAll.action.label");
 			icon = Resources.saveAllIcon;

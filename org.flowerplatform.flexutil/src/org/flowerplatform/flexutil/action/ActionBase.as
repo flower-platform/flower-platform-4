@@ -23,7 +23,7 @@ package org.flowerplatform.flexutil.action {
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class ActionBase implements IAction {
+	public dynamic class ActionBase implements IAction {
 
 		private var _id:String = getQualifiedClassName(this);
 		private var _parentId:String;
@@ -56,6 +56,9 @@ package org.flowerplatform.flexutil.action {
 		private var _isToggleAction:Boolean = false;
 		
 		public function get id():String {
+			if (this.hasOwnProperty("ID") && this.ID != null) {
+				_id = this.ID;
+			}
 			return _id;
 		}
 		

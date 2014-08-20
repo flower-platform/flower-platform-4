@@ -29,6 +29,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	public class ShowTextEditorAction extends MultipleSelectionActionBase implements IEditorFrontendAware {
 		
 		private var _editorFrontend:EditorFrontend;
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorAction";
 		
 		public function ShowTextEditorAction() {
 			super();

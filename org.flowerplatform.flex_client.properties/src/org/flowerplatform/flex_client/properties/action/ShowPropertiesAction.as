@@ -25,6 +25,8 @@ package org.flowerplatform.flex_client.properties.action {
 	 */ 
 	public class ShowPropertiesAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.properties.action.ShowPropertiesAction";
+		
 		public function ShowPropertiesAction(){
 			super();
 			label = Resources.getMessage("properties.action.show");
@@ -32,9 +34,9 @@ package org.flowerplatform.flex_client.properties.action {
 			orderIndex = 1000;
 		}
 			
-		override public function get visible():Boolean {
-			return true;
-		}
+//		override public function get visible():Boolean {
+//			return true;
+//		}
 		
 		override public function run():void {	
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				

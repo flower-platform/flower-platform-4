@@ -28,6 +28,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */ 
 	public class CreateStructureDiffFromGitCommitsAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction";
+		
 		public function CreateStructureDiffFromGitCommitsAction() {
 			super();
 			

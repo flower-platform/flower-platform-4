@@ -1,3 +1,4 @@
+
 /* license-start
  * 
  * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
@@ -27,6 +28,7 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 
 		public static const GIT_REPO_TYPE:String = "gitRepo";		
+
 		public static const GIT_LOCAL_BRANCHES_TYPE:String = "gitLocalBranches";
 		public static const GIT_REMOTE_BRANCHES_TYPE:String = "gitRemoteBranches";
 		public static const GIT_TAGS_TYPE:String = "gitTags";
@@ -84,3 +86,4 @@ package org.flowerplatform.flex_client.team.git {
 		public static const FILE_COPIED:String = "COPY";
 	}
 }
+

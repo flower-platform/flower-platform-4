@@ -33,6 +33,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */ 
 	public class DownloadAction extends MultipleSelectionActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.DownloadAction";
+		
 		public function DownloadAction() {
 			super();
 			label = Resources.getMessage("action.download");
@@ -40,9 +42,9 @@ package org.flowerplatform.flex_client.core.editor.action {
 			orderIndex = 300;
 		}
 		
-		override protected function isVisibleForSelectedElement(element:Object):Boolean {
-			return element is Node && (Node(element).type == CoreConstants.FILE_NODE_TYPE || Node(element).type == CoreConstants.FILE_SYSTEM_NODE_TYPE);
-		}
+//		override protected function isVisibleForSelectedElement(element:Object):Boolean {
+//			return element is Node && (Node(element).type == CoreConstants.FILE_NODE_TYPE || Node(element).type == CoreConstants.FILE_SYSTEM_NODE_TYPE);
+//		}
 		
 		override public function run():void {
 			var fullNodeIds:ArrayCollection = new ArrayCollection();

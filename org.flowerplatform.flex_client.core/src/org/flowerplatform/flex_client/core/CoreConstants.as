@@ -88,6 +88,7 @@ package org.flowerplatform.flex_client.core {
 		// Typed descriptors
 		
 		public static const ADD_CHILD_DESCRIPTOR:String = "addChildDescriptor";
+		public static const ACTION_DESCRIPTOR:String = "actionDescriptor";
 		
 		// Generic value descriptors
 		
@@ -144,5 +145,6 @@ package org.flowerplatform.flex_client.core {
 		//////////////////////////////////
 		
 		public static const FLOWER_PLATFORM:String = "flower-platform";
+		
 	}
 }

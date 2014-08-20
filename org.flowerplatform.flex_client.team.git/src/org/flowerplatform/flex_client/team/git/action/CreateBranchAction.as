@@ -19,7 +19,6 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.CreateBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -29,6 +28,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */	
 	public class CreateBranchAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.CreateBranchAction";
+		
 		public function CreateBranchAction() {
 			super();
 			
@@ -36,16 +37,16 @@ package org.flowerplatform.flex_client.team.git.action {
 			icon = Resources.createBranchIcon;
 			orderIndex = 300;
 		}
-				
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0;
-			}
-			return false;
-		}
+			
+//		override public function get visible():Boolean {
+//			if (selection.length == 1 && selection.getItemAt(0) is Node) {
+//				var node:Node = Node(selection.getItemAt(0));
+//
+//				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
+//					.categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0;
+//			}
+//			return false;
+//		}
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));

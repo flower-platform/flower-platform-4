@@ -18,7 +18,9 @@ package org.flowerplatform.flex_client.properties {
 	
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.properties.action.NewComposedAction;
@@ -75,8 +77,14 @@ package org.flowerplatform.flex_client.properties {
 			INSTANCE = this;
 									
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
+		
+//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
+//			CorePlugin.getInstance().actionRegistry[ShowPropertiesAction.ID] = new FactoryWithInitialization(ShowPropertiesAction).newInstance();
+			
+			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowPropertiesAction.ID));
 			
 			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
 			

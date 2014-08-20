@@ -125,7 +125,7 @@ public class GitService {
 				return false;
 			}
 			ObjectId resolved = repo.resolve(hash);
-			if (resolved == null){
+			if (resolved == null) {
 				return false;
 			}
 
