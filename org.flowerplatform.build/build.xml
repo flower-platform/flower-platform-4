@@ -133,6 +133,8 @@
 		<artifact:mvn pom="pom.xml" mavenHome="${mavenHome}" fork="true">
 			<jvmarg value="-Xmx1024m" />
 			<jvmarg value="-XX:MaxPermSize=256m" />
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=5001,suspend=y" />
 			
 			<!-- <arg value="clean" /> -->
 			
