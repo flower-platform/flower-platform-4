@@ -15,18 +15,13 @@
  */
 package org.flowerplatform.flex_client.codesync.sdiff {
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
-	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
-	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction;
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
-	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
 	 * @author Mariana Gheorghe
