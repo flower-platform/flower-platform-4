@@ -20,16 +20,18 @@
  */
 package org.flowerplatform.flex_client.team.git.action
 {
+	import mx.controls.Alert;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
+	import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
 	import org.flowerplatform.flex_client.team.git.ui.CreateBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
-	
+
 	/**
 	 * @author Vlad Bogdan Manica
 	 */ 
@@ -58,18 +60,19 @@ package org.flowerplatform.flex_client.team.git.action
 			//TODO call commit
 		}
 		
-		public function reset(node:Node):void {
+		public function reset(node:Node, commitID:String):void {
 			for each(var child:Node in node.parent.children) {
 				if (child.properties[GitConstants.IS_CHECKEDOUT] == true){
 					CorePlugin.getInstance().serviceLocator.invoke("GitService.reset", [child.nodeUri, "HARD", String(child.properties[GitConstants.COMMIT_ID])]);
 					break;
 				}
 			}
-			callGitServiceCheckout(node);			
+			callGitServiceCheckout(node, commitID);			
 		}		
 		
-		public function faultCallback(event:FaultEvent, node:Node):void {				
-			if (event != null) {				
+		public function faultCallback(event:FaultEvent, node:Node, commitID:String):void {				
+			if (event != null) {	
+				Alert.show("Error!");
 				var index:Number = event.fault.faultString.search("CheckoutConflictException");
 				if (index != -1) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
@@ -78,15 +81,16 @@ package org.flowerplatform.flex_client.team.git.action
 						.setWidth(300)
 						.setHeight(150)
 						.addButton(Resources.getMessage("flex_client.team.git.action.commitChanges"), function():void {commitChanges();})
-						.addButton(Resources.getMessage("flex_client.team.git.action.Reset"), function():void {reset(node);})
+						.addButton(Resources.getMessage("flex_client.team.git.action.Reset"), function():void {reset(node, commitID);})
 						.addButton(Resources.getMessage("flex_client.team.git.action.Cancel"), function():void {})
 						.showMessageBox();	
 				}
 			}
 		}	
 		
-		public function callGitServiceCheckout(node:Node):void {			
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri], null, function(event:FaultEvent):void {faultCallback(event, node)});
+		public function callGitServiceCheckout(node:Node, commitID:String):void {			
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], null, function(event:FaultEvent):void {faultCallback(event, node, commitID)});
+			
 		}
 		
 		override public function get visible():Boolean {
@@ -107,7 +111,7 @@ package org.flowerplatform.flex_client.team.git.action
 					.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
 					.setWidth(300)
 					.setHeight(125)
-					.addButton(Resources.getMessage("flex_client.team.git.action.Yes"), function():void {callGitServiceCheckout(node);})
+					.addButton(Resources.getMessage("flex_client.team.git.action.Yes"), function():void {callGitServiceCheckout(node, null);})
 					.addButton(Resources.getMessage("flex_client.team.git.action.No"))
 					.showMessageBox();
 			} else if (node.type == "gitRemoteBranch") {
@@ -117,7 +121,7 @@ package org.flowerplatform.flex_client.team.git.action
 					.setWidth(350)
 					.setHeight(200)
 					.addButton(Resources.getMessage("flex_client.team.git.action.CreateNewBranch"), function():void {createNewBranch(node);})
-					.addButton(Resources.getMessage("flex_client.team.git.action.CheckoutCommit"),  function():void {callGitServiceCheckout(node);})
+					.addButton(Resources.getMessage("flex_client.team.git.action.CheckoutCommit"),  function():void {callGitServiceCheckout(node, null);})
 					.addButton(Resources.getMessage("flex_client.team.git.action.Cancel"))
 					.showMessageBox();			
 			}			

@@ -22,9 +22,6 @@ import static org.flowerplatform.team.git.GitConstants.ADD;
 import static org.flowerplatform.team.git.GitConstants.CONFLICTED;
 import static org.flowerplatform.team.git.GitConstants.DELETE;
 import static org.flowerplatform.team.git.GitConstants.FILE;
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
-import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
-import static org.flowerplatform.core.CoreConstants.UPDATE_REQUEST_REFRESH;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
@@ -40,12 +37,7 @@ import static org.flowerplatform.team.git.GitConstants.UNTRACKED;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -65,20 +57,9 @@ import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.lib.ConfigConstants;
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.ConfigConstants;
-import org.eclipse.jgit.api.ListBranchCommand.ListMode;
-import org.eclipse.jgit.api.LsRemoteCommand;
-import org.eclipse.jgit.api.MergeCommand;
-import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
-import org.eclipse.jgit.api.MergeResult;
-import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.PersonIdent;
@@ -103,14 +84,9 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.resources.ResourcesPlugin;
-import org.flowerplatform.team.git.history.internal.GitHistoryConstants;
 import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.core.node.resource.ResourceService;
-import org.flowerplatform.core.node.update.remote.Update;
-import org.flowerplatform.resources.ResourcesPlugin;
-import org.flowerplatform.team.git.remote.GitRef;
 
 /**
  * 
@@ -325,7 +301,7 @@ public class GitService {
 		
 		if (checkoutBranch) {
 			/* call checkout branch method */
-			checkout(childUri);
+			checkout(childUri, null);
 		}
 		
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
@@ -382,12 +358,6 @@ public class GitService {
 		}		
 		Collections.sort(branches);
 		return branches;
-	}
-
-	/**
-	 * @author Diana Balutoiu
-	 */
-	public void configureBranch(String branchNodeUri, String remote, String upstream, Boolean rebase) throws Exception {
 	}
 
 	/**
@@ -538,18 +508,22 @@ public class GitService {
 
 	/** 
 	 * @author Vlad Bogdan Manica
-	 * @param nodeUri This is the name of a branch/tag.
-	 * @param createNew If is set to 'true' we create a new local branch. 
+	 * @param nodeUri Used to get the name of a branch/tag.
+	 * @param commitID If this is not null we checkout a commit.
 	 * @throws Exception
 	 */
-	public void checkout(String nodeUri) throws Exception {				
+	public void checkout(String nodeUri, String commitID) throws Exception {				
 		String name = GitUtils.getName(nodeUri);
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 				
 		Git g = new Git(repo);	
 		
-		g.checkout().setName(name).call();
+		if (commitID != null) {
+			g.checkout().setName(commitID).call(); //Checkout commit.
+		} else {
+			g.checkout().setName(name).call();	//Checkout branch or tag.
+		}		
 		
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
@@ -561,7 +535,7 @@ public class GitService {
 				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
 				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-	}
+	}	
 
 	/** 
 	 * @author Catalin Burcea
