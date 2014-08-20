@@ -29,8 +29,6 @@ public abstract class AbstractRegexWithAction {
 	
 	public abstract String getName();
 
-	public abstract List<RegexAction> getRegexActions();
-	
 	public abstract int getNumberOfCaptureGroups();
 	
 	public abstract void executeAction(RegexProcessingSession session);

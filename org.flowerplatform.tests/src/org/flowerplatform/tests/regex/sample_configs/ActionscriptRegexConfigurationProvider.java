@@ -16,10 +16,8 @@
  *
  * license-end
  */
-package org.flowerplatform.tests.regex;
+package org.flowerplatform.tests.regex.sample_configs;
 
-import static org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY;
-import static org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.METHOD_CATEGORY;
 import static org.flowerplatform.tests.regex.RegexUtil.CAPTURE_IDENTIFIER;
 import static org.flowerplatform.tests.regex.RegexUtil.CLASS_KEYWORD;
 import static org.flowerplatform.tests.regex.RegexUtil.CLOSE_BRACKET;
@@ -39,11 +37,12 @@ import static org.flowerplatform.tests.regex.RegexUtil.SPACES_OR_COMMENTS_OPTION
 import static org.flowerplatform.tests.regex.RegexUtil.SPACE_OR_COMMENT;
 import static org.flowerplatform.tests.regex.RegexUtil.STAR;
 import static org.flowerplatform.tests.regex.RegexUtil.STOP_BEFORE_OPEN_BRACKET_CHAR;
+import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY;
+import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.METHOD_CATEGORY;
 
 import java.util.regex.Pattern;
 
 import org.flowerplatform.util.regex.RegexConfiguration;
-import org.flowerplatform.util.regex.RegexWithAction;
 
 /**
  * @author Sorin
@@ -114,7 +113,7 @@ public class ActionscriptRegexConfigurationProvider {
 		config.setTargetNestingForMatches(ACTIONSCRIPT_NESTING_LEVEL_FOR_DECLARATIONS).add(new RegexWithAction.IfFindThisModifyNesting("Opening curly bracket", OPEN_BRACKET, 1))
 				.add(new RegexWithAction.IfFindThisModifyNesting("Closing curly bracket", CLOSE_BRACKET, -1))
 				.add(new RegexWithAction.UntilFoundThisIgnoreAll("Begining of type ", ACTIONSCRIPT_TYPE_BEGIN))
-				.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY, ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
+				.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY, ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
 				.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, ACTIONSCRIPT_METHOD, METHOD_CATEGORY))
 				.add(new RegexWithAction.IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
 				.add(new RegexWithAction.IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT)).compile(Pattern.DOTALL);

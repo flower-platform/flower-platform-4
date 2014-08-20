@@ -7,7 +7,6 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_L;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.RESOURCE_URI;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_C;
@@ -24,13 +23,12 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
-import org.flowerplatform.codesync.regex.action.CodeSyncRegexAction;
 import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.config_processor.ConfigProcessor;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.NodeService;
@@ -96,9 +94,8 @@ public class CodeSyncRegexService {
 		
 		// create regEx configuration
 		RegexConfiguration regexConfig = new RegexConfiguration();		
-		for (Node regex : CodeSyncRegexPlugin.getInstance().getChildren(resourceNode, REGEX_TYPE)) {
-			regexConfig.add(new DelegatingRegexWithAction().setNode(regex));
-		}
+		new ConfigProcessor().processConfigHierarchy(resourceNode, regexConfig);
+ 
 		regexConfig.compile(Pattern.DOTALL);
 		
 		// start session

@@ -15,8 +15,6 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TY
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_KEEP_SPECIFIC_INFO_KEY_PROPERTY;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_VALID_STATES_PROPERTY;
 
-import org.flowerplatform.codesync.CodeSyncConstants;
-import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;

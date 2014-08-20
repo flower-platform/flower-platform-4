@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.codesync.regex.action.CreateNodeAction;
+import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
 import org.flowerplatform.core.config_processor.IConfigNodeProcessor;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
@@ -14,10 +15,13 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.regex.RegexAction;
 
-public class CreateNodeConfigurationProcessor extends AbstractController implements IConfigNodeProcessor {
+/**
+ * @author Elena Posea
+ */
+public class CreateNodeConfigurationProcessor extends AbstractController implements IConfigNodeProcessor<RegexAction, DelegatingRegexWithAction> {
 
 	@Override
-	public Object processConfigNode(Node node, Object parentProcessedDataStructure, ServiceContext<NodeService> context) {
+	public RegexAction processConfigNode(Node node, DelegatingRegexWithAction parentProcessedDataStructure, ServiceContext<NodeService> context) {
 		String type = (String) node.getPropertyValue(ACTION_TYPE_CREATE_NODE_NEW_NODE_TYPE);
 		String csvList = (String) node.getPropertyValue(ACTION_TYPE_CREATE_NODE_PROPERTIES);
 		List<String> properties = new ArrayList<String>();
@@ -26,7 +30,8 @@ public class CreateNodeConfigurationProcessor extends AbstractController impleme
 			for (int x = 0; x < prop.length; x++)
 				properties.add(prop[x]);
 		}
-		((List<RegexAction>) parentProcessedDataStructure).add(new CreateNodeAction(type, properties));
-		return null;
+		RegexAction ra = new CreateNodeAction(type, properties);
+		parentProcessedDataStructure.getRegexActions().add(ra);
+		return ra;
 	}
 }

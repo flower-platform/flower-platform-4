@@ -16,10 +16,8 @@
  *
  * license-end
  */
-package org.flowerplatform.tests.regex;
+package org.flowerplatform.tests.regex.sample_configs;
 
-import static org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY;
-import static org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.METHOD_CATEGORY;
 import static org.flowerplatform.tests.regex.RegexUtil.CLOSE_BRACKET;
 import static org.flowerplatform.tests.regex.RegexUtil.MULTI_LINE_COMMENT;
 import static org.flowerplatform.tests.regex.RegexUtil.OPEN_BRACKET;
@@ -27,11 +25,12 @@ import static org.flowerplatform.tests.regex.RegexUtil.SINGLE_LINE_COMMENT;
 import static org.flowerplatform.tests.regex.RegexUtil.XML_CDATA_END;
 import static org.flowerplatform.tests.regex.RegexUtil.XML_CDATA_START;
 import static org.flowerplatform.tests.regex.RegexUtil.XML_MULTI_LINE_COMMENT;
+import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY;
+import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.METHOD_CATEGORY;
 
 import java.util.regex.Pattern;
 
 import org.flowerplatform.util.regex.RegexConfiguration;
-import org.flowerplatform.util.regex.RegexWithAction;
 
 /**
  * @author Sorin

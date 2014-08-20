@@ -5,7 +5,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.IController;
 
-public interface IConfigNodeProcessor extends IController {
+public interface IConfigNodeProcessor<SELF_DT, PARENT_DT> extends IController {
 	/**
 	 * @param node
 	 *            the node that you want to process/ instantiate
@@ -15,6 +15,6 @@ public interface IConfigNodeProcessor extends IController {
 	 *         this node has children that need to be processed, in with field
 	 *         of the instance should I add them?
 	 */
-	public Object processConfigNode(Node node, Object parentProcessedDataStructure, ServiceContext<NodeService> context);
+	public SELF_DT processConfigNode(Node node, PARENT_DT parentProcessedDataStructure, ServiceContext<NodeService> context);
 
 }

@@ -24,10 +24,10 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
+import org.flowerplatform.tests.regex.sample_configs.RegexWithAction;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexException;
 import org.flowerplatform.util.regex.RegexProcessingSession;
-import org.flowerplatform.util.regex.RegexWithAction;
 import org.junit.Test;
 
 /**

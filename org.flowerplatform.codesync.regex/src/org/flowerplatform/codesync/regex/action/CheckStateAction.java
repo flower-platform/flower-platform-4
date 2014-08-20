@@ -4,6 +4,9 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
 
+/**
+ * @author Elena Posea
+ */
 public class CheckStateAction  extends RegexAction{
 	String []states;
 	

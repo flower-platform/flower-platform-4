@@ -18,11 +18,12 @@
  */
 package org.flowerplatform.tests.regex;
 
-import static org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY;
-import static org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.METHOD_CATEGORY;
-import static org.flowerplatform.tests.regex.JavaRegexConfigurationProvider.buildJavaConfiguration;
+import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY;
+import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.METHOD_CATEGORY;
+import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.buildJavaConfiguration;
 
 import org.flowerplatform.tests.TestUtil;
+import org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexException;
 import org.flowerplatform.util.regex.RegexProcessingSession;

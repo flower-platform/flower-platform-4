@@ -1,7 +1,6 @@
 package org.flowerplatform.codesync.regex.action;
 
 import java.util.List;
-import java.util.Map;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -10,6 +9,9 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
 
+/**
+ * @author Elena Posea
+ */
 public class AttachSpecificInfoAction extends RegexAction {
 
 	String attachInfoKey;

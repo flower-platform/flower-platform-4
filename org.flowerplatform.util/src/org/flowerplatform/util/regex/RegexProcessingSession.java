@@ -35,7 +35,7 @@ public class RegexProcessingSession {
 	
 	protected Matcher matcher;
 	
-	protected RegexConfiguration configuration;
+	public RegexConfiguration configuration;
 
 	// attributes holding results of the last match
 	

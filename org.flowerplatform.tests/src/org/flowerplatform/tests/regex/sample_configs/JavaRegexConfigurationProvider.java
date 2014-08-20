@@ -16,7 +16,7 @@
  *
  * license-end
  */
-package org.flowerplatform.tests.regex;
+package org.flowerplatform.tests.regex.sample_configs;
 
 import static org.flowerplatform.tests.regex.RegexUtil.CLASS_KEYWORD;
 import static org.flowerplatform.tests.regex.RegexUtil.CLOSE_ANGLE_PARENTHESIS;
@@ -39,7 +39,6 @@ import static org.flowerplatform.tests.regex.RegexUtil.STOP_BEFORE_OPEN_BRACKET_
 import java.util.regex.Pattern;
 
 import org.flowerplatform.util.regex.RegexConfiguration;
-import org.flowerplatform.util.regex.RegexWithAction;
 
 /**
  * @author Cristi

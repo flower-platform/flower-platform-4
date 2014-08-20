@@ -39,7 +39,7 @@ public class RegexConfiguration {
 	
 	protected Pattern pattern;
 	
-	protected int targetNestingForMatches;
+	public int targetNestingForMatches;
 	
 	protected boolean useUntilFoundThisIgnoreAll = true;
 	

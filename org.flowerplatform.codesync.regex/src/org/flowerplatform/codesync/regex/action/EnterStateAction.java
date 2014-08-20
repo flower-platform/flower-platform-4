@@ -7,7 +7,7 @@ import org.flowerplatform.util.regex.State;
 /**
  * @author Elena Posea
  */
-public class EnterStateAction extends RegexAction{
+public class EnterStateAction extends RegexAction {
 
 	@Override
 	public void executeAction(RegexProcessingSession param) {

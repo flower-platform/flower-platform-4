@@ -16,10 +16,13 @@
  *
  * license-end
  */
-package org.flowerplatform.util.regex;
+package org.flowerplatform.tests.regex.sample_configs;
 
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.flowerplatform.util.regex.AbstractRegexWithAction;
+import org.flowerplatform.util.regex.RegexProcessingSession;
 
 /**
  * @author Cristi
@@ -40,12 +43,6 @@ public abstract class RegexWithAction extends AbstractRegexWithAction {
 		return name;
 	}	
 	
-	@Override
-	public List<RegexAction> getRegexActions() {
-		// isn't used
-		return null;
-	}
-
 	@Override
 	public int getNumberOfCaptureGroups() {		
 		return numberOfCaptureGroups;
