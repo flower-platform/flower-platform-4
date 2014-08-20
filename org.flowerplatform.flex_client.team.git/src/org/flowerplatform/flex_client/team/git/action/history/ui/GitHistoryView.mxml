@@ -24,6 +24,7 @@
 			import org.flowerplatform.flex_client.team.git.action.MergeAction;
 			import org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard;
 			import org.flowerplatform.flex_client.team.git.action.history.action.HistoryCheckout;
+			import org.flowerplatform.flex_client.team.git.action.history.action.HistoryReset;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -32,6 +33,8 @@
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			
 			
 			[Bindable]
 			public var repo:String;
@@ -165,6 +168,7 @@
 				result.push(new CopyIdToClipboard());
 				result.push(new MergeAction(true));
 				result.push(new HistoryCheckout());
+				result.push(new HistoryReset());
 				return result;
 			}
 		
