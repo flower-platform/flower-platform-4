@@ -1,3 +1,6 @@
+/**
+ * @author Alina Bratu
+ */
 package org.flowerplatform.flex_client.team.git.action
 {
 	import org.flowerplatform.flex_client.core.CorePlugin;

@@ -604,6 +604,15 @@ public class GitService {
 		}
 	}
 	
+	/**
+	 * @author Alina Bratu
+	 * @param nodeUri 
+	 * 		node URI of the repository
+	 * @param commitId 
+	 * 		id of the commit to be cherry-picked
+	 * @return message describing the result of the cherry-picking (successful, with conflicts, failed, already done)
+	 * @throws Exception
+	 */
 	public String cherryPickCommit(String nodeUri, String commitId ) throws Exception {
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
 		CherryPickCommand command = new Git(repo).cherryPick();
