@@ -634,22 +634,22 @@ public class GitService {
 		return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.ok");
 	}
 	
-	public RevCommit revertCommit(String nodeUri, String commitId ) throws Exception {
+	/**
+	 * Reverts the commit identified by the id passed through <code>commitId</code>
+	 * 
+	 * @author Alina Bratu
+	 * @param nodeUri node URI of the repository
+	 * @param commitId id of the commit to be reverted
+	 * @throws Exception
+	 */
+	public void revertCommit(String nodeUri, String commitId ) throws Exception {
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		
 		RevertCommand command = new Git(repo).revert();
 		RevCommit commit = new RevWalk(repo).parseCommit(repo.resolve(commitId));
 		command.include(commit);
-		
-		RevCommit result = command.call();
-//		
-//		String uri = Utils.getUri(FILE_SCHEME, repoPath);
-//		CorePlugin.getInstance().getResourceSetService().addUpdate(
-//				CorePlugin.getInstance().getResourceService().getNode(uri), 
-//				new Update().setFullNodeIdAs(uri).setTypeAs(UPDATE_REQUEST_REFRESH), 
-//				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-//		
-		return result;
+		command.call();
 	}
 }
 

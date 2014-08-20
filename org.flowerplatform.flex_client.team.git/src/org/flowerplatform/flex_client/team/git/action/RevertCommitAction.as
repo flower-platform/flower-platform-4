@@ -1,3 +1,6 @@
+/**
+ * @author Alina Bratu
+ */
 package org.flowerplatform.flex_client.team.git.action
 {
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -25,15 +28,7 @@ package org.flowerplatform.flex_client.team.git.action
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var idCommit:String = node.getPropertyValue(GitHistoryConstants.ID);
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.revertCommit",[node.nodeUri,idCommit],
-				function(result:String):void {
-					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setText(result)
-					.setTitle(Resources.getMessage('info'))
-					.setWidth(300)
-					.setHeight(200)
-					.showMessageBox();
-				});
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.revertCommit",[node.nodeUri,idCommit]);
 		}
 	}
 }
