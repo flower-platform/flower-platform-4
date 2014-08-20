@@ -68,8 +68,7 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */	
-	private List<Ref> getAllBranches(Repository repo) throws IOException {
-		
+	private List<Ref> getAllBranches(Repository repo) throws IOException {		
 		List<Ref> ref = new ArrayList<Ref>();		
 		ref.addAll(repo.getRefDatabase().getRefs(Constants.R_HEADS).values());
 		ref.addAll(repo.getRefDatabase().getRefs(Constants.R_REMOTES).values());		
@@ -79,9 +78,7 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private List<Ref> getBranches(RevCommit commit, Collection<Ref> allRefs, Repository db)
-			throws MissingObjectException, IncorrectObjectTypeException,
-			IOException {
+	private List<Ref> getBranches(RevCommit commit, Collection<Ref> allRefs, Repository db) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		RevWalk revWalk = new RevWalk(db);
 		try {
 			revWalk.setRetainBody(false);
@@ -241,8 +238,7 @@ public class HistoryService {
 			List<String> stringPaths = new ArrayList<String>(1);
 			stringPaths.add(path);
 	
-			walk.setTreeFilter(AndTreeFilter.create(PathFilterGroup
-					.createFromStrings(stringPaths), TreeFilter.ANY_DIFF));
+			walk.setTreeFilter(AndTreeFilter.create(PathFilterGroup.createFromStrings(stringPaths), TreeFilter.ANY_DIFF));
 		}
 		return fileWalker;
 	}	
@@ -250,14 +246,12 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markStartAllRefs(Repository repo, RevWalk walk, String prefix)
-			throws IOException, MissingObjectException,
-			IncorrectObjectTypeException {
-		for (Entry<String, Ref> refEntry : repo
-				.getRefDatabase().getRefs(prefix).entrySet()) {
+	private void markStartAllRefs(Repository repo, RevWalk walk, String prefix)	throws IOException, MissingObjectException, IncorrectObjectTypeException {
+		for (Entry<String, Ref> refEntry : repo.getRefDatabase().getRefs(prefix).entrySet()) {
 			Ref ref = refEntry.getValue();
-			if (ref.isSymbolic())
+			if (ref.isSymbolic()) {
 				continue;
+			}
 			markStartRef(repo, walk, ref);
 		}
 	}
@@ -266,21 +260,21 @@ public class HistoryService {
 	 * @author Cristina Constantinescu
 	 */
 	private void markStartAdditionalRefs(Repository repo, RevWalk walk) throws IOException {
-		List<Ref> additionalRefs = repo.getRefDatabase()
-				.getAdditionalRefs();
-		for (Ref ref : additionalRefs)
+		List<Ref> additionalRefs = repo.getRefDatabase().getAdditionalRefs();
+		for (Ref ref : additionalRefs) {
 			markStartRef(repo, walk, ref);
+		}
 	}
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markStartRef(Repository repo, RevWalk walk, Ref ref) throws IOException,
-			IncorrectObjectTypeException {
+	private void markStartRef(Repository repo, RevWalk walk, Ref ref) throws IOException, IncorrectObjectTypeException {
 		try {
 			Object refTarget = walk.parseAny(ref.getLeaf().getObjectId());
-			if (refTarget instanceof RevCommit)
+			if (refTarget instanceof RevCommit) {
 				walk.markStart((RevCommit) refTarget);
+			}
 		} catch (MissingObjectException e) {
 			// If there is a ref which points to Nirvana then we should simply
 			// ignore this ref. We should not let a corrupt ref cause that the
@@ -291,17 +285,16 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markUninteresting(Repository repo, RevWalk walk, String prefix)
-			throws IOException, MissingObjectException,
-			IncorrectObjectTypeException {
-		for (Entry<String, Ref> refEntry : repo
-				.getRefDatabase().getRefs(prefix).entrySet()) {
+	private void markUninteresting(Repository repo, RevWalk walk, String prefix) throws IOException, MissingObjectException, IncorrectObjectTypeException {
+		for (Entry<String, Ref> refEntry : repo.getRefDatabase().getRefs(prefix).entrySet()) {
 			Ref ref = refEntry.getValue();
-			if (ref.isSymbolic())
+			if (ref.isSymbolic()) {
 				continue;
+			}
 			Object refTarget = walk.parseAny(ref.getLeaf().getObjectId());
-			if (refTarget instanceof RevCommit)
+			if (refTarget instanceof RevCommit) {
 				walk.markUninteresting((RevCommit) refTarget);
+			}
 		}
 	}
 }
