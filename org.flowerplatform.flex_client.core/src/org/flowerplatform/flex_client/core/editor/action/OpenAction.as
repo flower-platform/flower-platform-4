@@ -30,15 +30,14 @@ package org.flowerplatform.flex_client.core.editor.action {
 		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.OpenAction";
 		
 		public function OpenAction(contentType:String = null) {
-			super();
-					
+			super();					
 			
 			this.contentType = contentType;
 			if (contentType != null) {
 				var editorDescriptor:BasicEditorDescriptor = CorePlugin.getInstance().contentTypeRegistry[contentType];
 				label = editorDescriptor.getEditorName();
 				icon = editorDescriptor.getIcon();
-				parentId = OpenWithEditorComposedAction.ACTION_ID_OPEN_WITH;
+				parentId = OpenWithEditorComposedAction.ID;
 			} else {
 				orderIndex = 20;
 				label = Resources.getMessage("editor.action.open");

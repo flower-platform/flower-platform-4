@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.flex_client.core.editor.action {
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.UploadView;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -42,9 +43,12 @@ package org.flowerplatform.flex_client.core.editor.action {
 			return super.visible;
 		}	
 		
-//		override protected function isVisibleForSelectedElement(element:Object):Boolean {
-//			return element is Node && (Node(element).type == CoreConstants.FILE_NODE_TYPE && Node(element).properties[CoreConstants.FILE_IS_DIRECTORY] || Node(element).type == CoreConstants.FILE_SYSTEM_NODE_TYPE);
-//		}
+		override protected function isVisibleForSelectedElement(element:Object):Boolean {
+			if (Node(element).type == CoreConstants.FILE_NODE_TYPE && !Node(element).properties[CoreConstants.FILE_IS_DIRECTORY]) {
+				return false;
+			}
+			return super.isVisibleForSelectedElement(element);
+		}
 		
 		override public function run():void {	
 			var node:Node = Node(selection.getItemAt(0));	

@@ -45,13 +45,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 		public function get editorFrontend():EditorFrontend {			
 			return _editorFrontend;
 		}		
-		
-		override protected function isVisibleForSelectedElement(element:Object):Boolean {			
-			return (element is Node && (
-				Node(element).type == CodeSyncRegexConstants.REGEX_MATCH_TYPE || 
-				Node(element).type == CodeSyncRegexConstants.VIRTUAL_REGEX_TYPE));
-		}		
-		
+				
 		override public function get visible():Boolean {
 			if (super.visible) {				
 				colorTextEditorFrontend(selection);

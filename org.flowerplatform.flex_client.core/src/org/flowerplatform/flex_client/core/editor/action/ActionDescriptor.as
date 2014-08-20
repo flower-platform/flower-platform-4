@@ -6,7 +6,7 @@ package org.flowerplatform.flex_client.core.editor.action
 		
 		private var _actionId:String;
 		
-		public function ActionDescriptor(s:String):void {
+		public function ActionDescriptor(s:String) {
 			_actionId = s;
 		}
 		

@@ -22,6 +22,8 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	 */
 	public class ShowTextEditorInRightAction extends ShowTextEditorAction {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction";
+		
 		public function ShowTextEditorInRightAction() {
 			super();			
 			label = Resources.getMessage("regex.showTextEditorInRight", [Resources.getMessage('regex.showTextEditor')]);			

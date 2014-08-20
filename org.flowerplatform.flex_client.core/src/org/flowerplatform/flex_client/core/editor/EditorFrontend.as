@@ -55,8 +55,9 @@ package org.flowerplatform.flex_client.core.editor {
 			super();
 			nodeRegistry = CorePlugin.getInstance().nodeRegistryManager.createNodeRegistry();
 			CorePlugin.getInstance().nodeRegistryManager.addListener(this);
-			actionProvider.composedActionProviderProcessors.push(new EditorFrontendAwareProcessor(this));
+			
 			actionProvider.actionProviders.push(CorePlugin.getInstance().nodeTypeActionProvider);
+			actionProvider.composedActionProviderProcessors.push(new EditorFrontendAwareProcessor(this));			
 		}
 					
 		public function get editorInput():String {

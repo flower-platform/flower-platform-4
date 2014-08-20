@@ -25,7 +25,7 @@ package org.flowerplatform.flexutil.action {
 	 */
 	public dynamic class ActionBase implements IAction {
 
-		private var _id:String = getQualifiedClassName(this);
+		private var _id:String;
 		private var _parentId:String;
 		private var _orderIndex:Number;
 		private var _preferShowOnActionBar:Boolean;
@@ -56,9 +56,14 @@ package org.flowerplatform.flexutil.action {
 		private var _isToggleAction:Boolean = false;
 		
 		public function get id():String {
-			if (this.hasOwnProperty("ID") && this.ID != null) {
-				_id = this.ID;
-			}
+			if (_id == null) {
+				// try to get id from each class (static attribute ID), if not found, use qualified class name
+				if (Object(this).constructor.hasOwnProperty("ID")) {
+					_id = Object(this).constructor["ID"];
+				} else {
+					_id = getQualifiedClassName(this);
+				}
+			}			
 			return _id;
 		}
 		

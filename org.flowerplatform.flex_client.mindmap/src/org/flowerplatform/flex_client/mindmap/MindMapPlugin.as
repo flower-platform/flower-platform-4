@@ -121,17 +121,8 @@ package org.flowerplatform.flex_client.mindmap {
 					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
 						CorePlugin.getInstance().serviceLocator.invoke("mindmapService.getStyles", [node.nodeUri], callbackFunction);
 					}
-			});	
-			
-//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);
-//			
-//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNodeDetailsInDialogAction);
-//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNoteInDialogAction);
-			
-//			CorePlugin.getInstance().actionRegistry[RefreshAction.ID] = new FactoryWithInitialization(RefreshAction).newInstance();
-//			CorePlugin.getInstance().actionRegistry[EditNodeDetailsInDialogAction.ID] = new FactoryWithInitialization(EditNodeDetailsInDialogAction).newInstance();
-//			CorePlugin.getInstance().actionRegistry[EditNoteInDialogAction.ID] = new FactoryWithInitialization(EditNoteInDialogAction).newInstance();
-			
+			});				
+
 			FlexUtilGlobals.getInstance().registerAction(RefreshAction);
 			FlexUtilGlobals.getInstance().registerAction(EditNodeDetailsInDialogAction);
 			FlexUtilGlobals.getInstance().registerAction(EditNoteInDialogAction);

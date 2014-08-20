@@ -32,7 +32,7 @@ package org.flowerplatform.flex_client.core.editor.action
 				// get list of action descriptors for the type of node the selection has
 				
 				var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(nodeType)
-					.getAdditiveControllers(CoreConstants.ACTION_DESCRIPTOR,selection);
+					.getAdditiveControllers(CoreConstants.ACTION_DESCRIPTOR,selection.getItemAt(0));
 				
 				// create list of action factories using action descriptors and action registry
 				for each (var a:ActionDescriptor in descriptors) {

@@ -44,20 +44,6 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			icon = Resources.reloadIcon;
 		}
 		
-		override public function get visible():Boolean {			
-			if (selection == null || selection.length != 1) {
-				return false;
-			}
-			var obj:Object = selection.getItemAt(0);
-			if (obj is MindMapRootModelWrapper) {
-				obj = MindMapRootModelWrapper(obj).model;
-			}
-			return obj is Node && 
-				(Node(obj).type == CodeSyncRegexConstants.REGEX_CONFIG_TYPE 
-					|| Node(obj).type == CodeSyncRegexConstants.REGEX_MACRO_TYPE 
-					|| Node(obj).type == CodeSyncRegexConstants.REGEX_TYPE);
-		}
-		
 		override public function run():void {
 			var obj:Object = selection.getItemAt(0);
 			if (obj is MindMapRootModelWrapper) {

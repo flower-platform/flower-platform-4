@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.flex_client.properties.action {
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	

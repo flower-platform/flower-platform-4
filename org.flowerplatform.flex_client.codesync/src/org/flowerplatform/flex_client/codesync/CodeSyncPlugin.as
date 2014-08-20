@@ -51,17 +51,13 @@ package org.flowerplatform.flex_client.codesync {
 			}
 			INSTANCE = this;
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(CodeSyncNodeRenderer, -10000)));
-			
-			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
-//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(SynchronizeAction);
-//			CorePlugin.getInstance().actionRegistry[SynchronizeAction.actionId] = new FactoryWithInitialization(SynchronizeAction).newInstance();
-			
 			FlexUtilGlobals.getInstance().registerAction(SynchronizeAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(CodeSyncNodeRenderer, -10000)))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(SynchronizeAction.ID));
+			
+			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 		}
 		
 		override protected function registerMessageBundle():void {

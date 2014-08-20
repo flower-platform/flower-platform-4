@@ -14,10 +14,19 @@
  * license-end
  */
 package org.flowerplatform.flex_client.codesync.sdiff {
+	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
+	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
+	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -39,7 +48,14 @@ package org.flowerplatform.flex_client.codesync.sdiff {
 			
 			CorePlugin.getInstance().serviceLocator.addService("structureDiffService");
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromWorkspaceAndPatchAction);
+			FlexUtilGlobals.getInstance().registerAction(CreateStructureDiffFromWorkspaceAndPatchAction);
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncConstants.CODESYNC)			
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateStructureDiffFromWorkspaceAndPatchAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)			
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateStructureDiffFromWorkspaceAndPatchAction.ID));
+			
 		}
 		
 		override protected function registerMessageBundle():void {

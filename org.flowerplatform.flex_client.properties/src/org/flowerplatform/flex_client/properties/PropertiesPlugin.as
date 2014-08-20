@@ -78,10 +78,6 @@ package org.flowerplatform.flex_client.properties {
 									
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
 		
-//			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowPropertiesAction);
-			
-//			CorePlugin.getInstance().actionRegistry[ShowPropertiesAction.ID] = new FactoryWithInitialization(ShowPropertiesAction).newInstance();
-			
 			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowPropertiesAction.ID));

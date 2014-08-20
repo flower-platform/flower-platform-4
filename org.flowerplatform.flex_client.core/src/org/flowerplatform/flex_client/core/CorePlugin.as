@@ -173,23 +173,12 @@ package org.flowerplatform.flex_client.core {
 			
 //			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
 //			editorClassFactoryActionProvider.addActionClass(RenameAction);			
-//			editorClassFactoryActionProvider.addActionClass(OpenAction);
-//			editorClassFactoryActionProvider.addActionClass(OpenWithEditorComposedAction);
-					
+
 			FlexUtilGlobals.getInstance().registerAction(RemoveNodeAction);
 			FlexUtilGlobals.getInstance().registerAction(RenameAction);
 			FlexUtilGlobals.getInstance().registerAction(OpenAction);
 			FlexUtilGlobals.getInstance().registerAction(OpenWithEditorComposedAction);
-			FlexUtilGlobals.getInstance().registerAction(DownloadAction);
-			FlexUtilGlobals.getInstance().registerAction(UploadAction);
-			
-//			actionRegistry[RemoveNodeAction.ID] = new FactoryWithInitialization(RemoveNodeAction).newInstance();
-//			actionRegistry[RenameAction.ID] = new FactoryWithInitialization(RenameAction).newInstance();
-//			actionRegistry[OpenAction.ID] = new FactoryWithInitialization(OpenAction).newInstance();
-//			actionRegistry[OpenWithEditorComposedAction.ID] = new FactoryWithInitialization(OpenWithEditorComposedAction).newInstance();
-//			actionRegistry[DownloadAction.ID] = new FactoryWithInitialization(DownloadAction).newInstance();
-//			actionRegistry[UploadAction.ID] = new FactoryWithInitialization(UploadAction).newInstance();
-			
+				
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenWithEditorComposedAction.ID));
@@ -202,17 +191,16 @@ package org.flowerplatform.flex_client.core {
 			editorClassFactoryActionProvider.addActionClass(NodeTreeAction);
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
-//				editorClassFactoryActionProvider.addActionClass(DownloadAction);
-//				editorClassFactoryActionProvider.addActionClass(UploadAction);		
+				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
+				FlexUtilGlobals.getInstance().registerAction(UploadAction);
+				
 				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
 					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
 					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
 				
 				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
 					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
-					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
-					
-				
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));				
 			}
 			
 			// check version compatibility with server side
