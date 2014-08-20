@@ -10,8 +10,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<checkstyleDir>${basedir}/resources</checkstyleDir>
-	</properties>
+<!-- 		<checkstyleDir>${basedir}/resources</checkstyleDir>
+ -->	</properties>
 	
 	<profiles>
 		<profile>

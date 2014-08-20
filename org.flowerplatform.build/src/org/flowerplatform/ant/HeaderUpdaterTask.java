@@ -134,7 +134,7 @@ public class HeaderUpdaterTask extends Task {
 			}
 		}
 	}
-
+	
 	/**
 	 * @author Mariana Gheorghe
 	 */
