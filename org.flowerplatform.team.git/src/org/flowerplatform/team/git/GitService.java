@@ -48,6 +48,7 @@ import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.api.RevertCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
@@ -631,6 +632,24 @@ public class GitService {
 		}	
 		
 		return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.ok");
+	}
+	
+	public RevCommit revertCommit(String nodeUri, String commitId ) throws Exception {
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		RevertCommand command = new Git(repo).revert();
+		RevCommit commit = new RevWalk(repo).parseCommit(repo.resolve(commitId));
+		command.include(commit);
+		
+		RevCommit result = command.call();
+//		
+//		String uri = Utils.getUri(FILE_SCHEME, repoPath);
+//		CorePlugin.getInstance().getResourceSetService().addUpdate(
+//				CorePlugin.getInstance().getResourceService().getNode(uri), 
+//				new Update().setFullNodeIdAs(uri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+//				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+//		
+		return result;
 	}
 }
 

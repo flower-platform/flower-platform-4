@@ -24,6 +24,7 @@
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
 			import org.flowerplatform.flex_client.team.git.action.CherryPickAction;
+			import org.flowerplatform.flex_client.team.git.action.RevertCommitAction;
 			import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
 			import org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -166,6 +167,7 @@
 				result.push(new CopyIdToClipboard());
 				result.push(new MergeBranchAction(true));
 				result.push(new CherryPickAction());
+				result.push(new RevertCommitAction());
 				return result;
 			}
 		
