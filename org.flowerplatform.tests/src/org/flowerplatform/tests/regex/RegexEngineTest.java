@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
-import org.flowerplatform.tests.regex.sample_configs.RegexWithAction;
+import org.flowerplatform.util.regex.IfFindThisAnnounceMatchCandidate;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexException;
 import org.flowerplatform.util.regex.RegexProcessingSession;
@@ -46,7 +46,7 @@ public class RegexEngineTest extends RegexTestBase {
 		final String rule3Descr = "cuvant:cuvant";
 		
 		re
-			.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(rule1Descr, "suf(\\d*)", "categ: " + rule1Descr) {
+			.add(new IfFindThisAnnounceMatchCandidate(rule1Descr, "suf(\\d*)", "categ: " + rule1Descr) {
 				
 				@Override
 				public void executeAction(RegexProcessingSession session) {
@@ -56,7 +56,7 @@ public class RegexEngineTest extends RegexTestBase {
 					Assert.assertEquals("23", session.getCurrentSubMatchesForCurrentRegex()[0]);
 				}
 			})
-			.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(rule2Descr, "string", "categ: " + rule2Descr) {
+			.add(new IfFindThisAnnounceMatchCandidate(rule2Descr, "string", "categ: " + rule2Descr) {
 				
 				@Override
 				public void executeAction(RegexProcessingSession session) {
@@ -65,7 +65,7 @@ public class RegexEngineTest extends RegexTestBase {
 					Assert.assertNull(session.getCurrentSubMatchesForCurrentRegex());
 				}
 			})
-			.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(rule3Descr, "(\\w*):(\\w*)", "categ: " + rule3Descr) {
+			.add(new IfFindThisAnnounceMatchCandidate(rule3Descr, "(\\w*):(\\w*)", "categ: " + rule3Descr) {
 				
 				@Override
 				public void executeAction(RegexProcessingSession session) {

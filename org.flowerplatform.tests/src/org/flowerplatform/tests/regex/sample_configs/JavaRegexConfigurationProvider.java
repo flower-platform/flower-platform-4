@@ -23,7 +23,7 @@ import static org.flowerplatform.tests.regex.RegexUtil.CLOSE_ANGLE_PARENTHESIS;
 import static org.flowerplatform.tests.regex.RegexUtil.COMMA;
 import static org.flowerplatform.tests.regex.RegexUtil.DONT_CAPTURE;
 import static org.flowerplatform.tests.regex.RegexUtil.EXCLUDE;
-import static org.flowerplatform.tests.regex.RegexUtil.IDENTIFIER_AFTER_BEGGINING_CHAR;
+import static org.flowerplatform.tests.regex.RegexUtil.IDENTIFIER_AFTER_BEGINNING_CHAR;
 import static org.flowerplatform.tests.regex.RegexUtil.INTERFACE_KEYWORD;
 import static org.flowerplatform.tests.regex.RegexUtil.MULTIPLE_TIMES;
 import static org.flowerplatform.tests.regex.RegexUtil.MULTI_LINE_COMMENT;
@@ -38,7 +38,11 @@ import static org.flowerplatform.tests.regex.RegexUtil.STOP_BEFORE_OPEN_BRACKET_
 
 import java.util.regex.Pattern;
 
+import org.flowerplatform.util.regex.IfFindThisAnnounceMatchCandidate;
+import org.flowerplatform.util.regex.IfFindThisModifyNesting;
+import org.flowerplatform.util.regex.IfFindThisSkip;
 import org.flowerplatform.util.regex.RegexConfiguration;
+import org.flowerplatform.util.regex.UntilFoundThisIgnoreAll;
 
 /**
  * @author Cristi
@@ -64,7 +68,7 @@ public class JavaRegexConfigurationProvider {
 			"(" + DONT_CAPTURE + 																// possibly multiple comments or identifiers or commas or unghiular parentheses
 				SPACE_OR_COMMENT + "|" +																			// comment  
 				"[" + 
-					IDENTIFIER_AFTER_BEGGINING_CHAR + COMMA + OPEN_ANGLE_PARENTHESIS + CLOSE_ANGLE_PARENTHESIS +	// every identifier or enumeration character or generic character
+					IDENTIFIER_AFTER_BEGINNING_CHAR + COMMA + OPEN_ANGLE_PARENTHESIS + CLOSE_ANGLE_PARENTHESIS +	// every identifier or enumeration character or generic character
 					EXCLUDE + OPEN_BRACKET + EXCLUDE + SLASH + EXCLUDE + STAR +  									// except comment and bracket, because comment is processed as a hole and bracket is the condition to stop.
 				"]" +   
 			")"	+ MULTIPLE_TIMES +
@@ -86,14 +90,14 @@ public class JavaRegexConfigurationProvider {
 	
 	public static void buildJavaConfiguration(RegexConfiguration config) {
 		config
-		.add(new RegexWithAction.UntilFoundThisIgnoreAll("Begining of type",  CLASS_KEYWORD + "[\\w\\s\\<\\>]*?" + STOP_BEFORE_OPEN_BRACKET_CHAR)) // TODO CS/RE de adaugat si posibilitatea de coment
-		.add(new RegexWithAction.IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
-		.add(new RegexWithAction.IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT))
-		.add(new RegexWithAction.IfFindThisSkip("new keyword", NEW_KEYWORD))
-		.add(new RegexWithAction.IfFindThisModifyNesting("Opening curly bracket", "\\{", 1))
-		.add(new RegexWithAction.IfFindThisModifyNesting("Closing curly bracket", "\\}", -1))
-		.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(ATTRIBUTE_CATEGORY, JAVA_ATTRIBUTE, ATTRIBUTE_CATEGORY))
-		.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, JAVA_METHOD, METHOD_CATEGORY))
+		.add(new UntilFoundThisIgnoreAll("Begining of type",  CLASS_KEYWORD + "[\\w\\s\\<\\>]*?" + STOP_BEFORE_OPEN_BRACKET_CHAR)) // TODO CS/RE de adaugat si posibilitatea de coment
+		.add(new IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
+		.add(new IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT))
+		.add(new IfFindThisSkip("new keyword", NEW_KEYWORD))
+		.add(new IfFindThisModifyNesting("Opening curly bracket", "\\{", 1))
+		.add(new IfFindThisModifyNesting("Closing curly bracket", "\\}", -1))
+		.add(new IfFindThisAnnounceMatchCandidate(ATTRIBUTE_CATEGORY, JAVA_ATTRIBUTE, ATTRIBUTE_CATEGORY))
+		.add(new IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, JAVA_METHOD, METHOD_CATEGORY))
 		.setTargetNestingForMatches(JAVA_NEXTING_LEVEL_FOR_DECLARATIONS)
 		.compile(Pattern.DOTALL);
 	}

@@ -41,6 +41,7 @@ public class RegexConfiguration {
 	
 	public int targetNestingForMatches;
 	
+	// TODO CS: remove
 	protected boolean useUntilFoundThisIgnoreAll = true;
 	
 	protected RegexProcessingSession createSessionInstance() {
@@ -134,6 +135,5 @@ public class RegexConfiguration {
 	public AbstractRegexWithAction[] getCaptureGroupToRegexMapping() {
 		return captureGroupToRegexMapping;
 	}
-	
-	
+		
 }

@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
-import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -40,6 +39,7 @@ import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexProcessingSession;
+import org.flowerplatform.util.regex.RegexWithActions;
 import org.flowerplatform.util.regex.State;
 
 /**
@@ -114,7 +114,7 @@ public class CodeSyncRegexService {
 			public void run() {	
 				// match found => create node
 				Node match = new Node(null, REGEX_MATCH_TYPE);
-				DelegatingRegexWithAction regex = (DelegatingRegexWithAction) session.getCurrentRegex();
+				RegexWithActions regex = (RegexWithActions) session.getCurrentRegex();
 				
 				ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 				context.getContext().put(NAME, String.format("%s) %s", String.valueOf(currentIndex++), session.getCurrentRegex().getName()));

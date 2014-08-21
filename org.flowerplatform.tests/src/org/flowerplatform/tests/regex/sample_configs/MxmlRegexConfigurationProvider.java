@@ -30,6 +30,9 @@ import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurati
 
 import java.util.regex.Pattern;
 
+import org.flowerplatform.util.regex.IfFindThisAnnounceMatchCandidate;
+import org.flowerplatform.util.regex.IfFindThisModifyNesting;
+import org.flowerplatform.util.regex.IfFindThisSkip;
 import org.flowerplatform.util.regex.RegexConfiguration;
 
 /**
@@ -43,18 +46,18 @@ public class MxmlRegexConfigurationProvider extends	ActionscriptRegexConfigurati
 		config
 			.setTargetNestingForMatches(MXML_NESTING_LEVEL_FOR_DECLARATIONS) 
 			.setUseUntilFoundThisIgnoreAll(false)
-			.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(ATTRIBUTE_CATEGORY, ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
-			.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, ACTIONSCRIPT_METHOD, METHOD_CATEGORY))
+			.add(new IfFindThisAnnounceMatchCandidate(ATTRIBUTE_CATEGORY, ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
+			.add(new IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, ACTIONSCRIPT_METHOD, METHOD_CATEGORY))
 			
-			.add(new RegexWithAction.IfFindThisModifyNesting("Opening CDATA", XML_CDATA_START, 1))
-			.add(new RegexWithAction.IfFindThisModifyNesting("Closing CDATA", XML_CDATA_END, -1))
-			.add(new RegexWithAction.IfFindThisModifyNesting("Opening curly bracket", OPEN_BRACKET, 1))
-			.add(new RegexWithAction.IfFindThisModifyNesting("Closing curly bracket", CLOSE_BRACKET, -1))
+			.add(new IfFindThisModifyNesting("Opening CDATA", XML_CDATA_START, 1))
+			.add(new IfFindThisModifyNesting("Closing CDATA", XML_CDATA_END, -1))
+			.add(new IfFindThisModifyNesting("Opening curly bracket", OPEN_BRACKET, 1))
+			.add(new IfFindThisModifyNesting("Closing curly bracket", CLOSE_BRACKET, -1))
 			
 
-			.add(new RegexWithAction.IfFindThisSkip("XML comment", XML_MULTI_LINE_COMMENT))
-			.add(new RegexWithAction.IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
-			.add(new RegexWithAction.IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT))
+			.add(new IfFindThisSkip("XML comment", XML_MULTI_LINE_COMMENT))
+			.add(new IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
+			.add(new IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT))
 			.compile(Pattern.DOTALL);
 	}
 }

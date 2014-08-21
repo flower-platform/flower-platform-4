@@ -18,18 +18,44 @@
  */
 package org.flowerplatform.util.regex;
 
-import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Cristina Constantinescu
  */
 public abstract class AbstractRegexWithAction {
-		
-	public abstract String getRegex();
-	
-	public abstract String getName();
 
-	public abstract int getNumberOfCaptureGroups();
+	protected String name;
+	protected String regex;
+	protected int numberOfCaptureGroups = -1;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getRegex() {
+		return regex;
+	}
+
+	public void setRegex(String regex) {
+		this.regex = regex;
+		this.numberOfCaptureGroups = Pattern.compile(regex).matcher("").groupCount();
+	}
+
+	public int getNumberOfCaptureGroups() {
+		return numberOfCaptureGroups;
+	}
+
+	@Override
+	public String toString() {
+		return "RegexWithAction [name="
+				+ name + ", regex=" + regex
+				+ ", numberOfCaptureGroups=" + numberOfCaptureGroups + "]";
+	}
 	
 	public abstract void executeAction(RegexProcessingSession session);
 	

@@ -63,12 +63,12 @@ public class RegexUtil {
 	public static final String SLASH								= "/"; // represent the character used to open or close a comment  /
 	public static final String STAR									= "\\*"; // represents the second character used to open or close a multiline comment *
 	public static final String MINUS								= "\\-";
-	public static final String IDENTIFIER_BEGGINING_CHAR 			= "[a-zA-Z" + UNDERSCORE + DOLLAR + "]"; // letter , _ , $
-	public static final String IDENTIFIER_AFTER_BEGGINING_CHAR		= "[" + WORD + UNDERSCORE + DOLLAR + "]"; // letter, digit, _ , $
+	public static final String IDENTIFIER_BEGINNING_CHAR 			= "[a-zA-Z" + UNDERSCORE + DOLLAR + "]"; // letter , _ , $
+	public static final String IDENTIFIER_AFTER_BEGINNING_CHAR		= "[" + WORD + UNDERSCORE + DOLLAR + "]"; // letter, digit, _ , $
 	
 	public static final String STOP_BEFORE_OPEN_BRACKET_CHAR = "(" + STOP_BEFORE + OPEN_BRACKET + ")"; // matcher will stop before open bracket
 	
-	public static final String IDENTIFIER = IDENTIFIER_BEGGINING_CHAR + IDENTIFIER_AFTER_BEGGINING_CHAR  + MULTIPLE_TIMES; // longest sequence of identifier characters, with at least a character
+	public static final String IDENTIFIER = IDENTIFIER_BEGINNING_CHAR + IDENTIFIER_AFTER_BEGINNING_CHAR  + MULTIPLE_TIMES; // longest sequence of identifier characters, with at least a character
 	public static final String CAPTURE_IDENTIFIER = "(" + IDENTIFIER + ")";   
 	
 	public static final String CLASS_KEYWORD 						= "\\bclass\\b"; // word that starts and ends with class

@@ -24,7 +24,7 @@ import static org.flowerplatform.tests.regex.RegexUtil.CLOSE_BRACKET;
 import static org.flowerplatform.tests.regex.RegexUtil.COMMA;
 import static org.flowerplatform.tests.regex.RegexUtil.DONT_CAPTURE;
 import static org.flowerplatform.tests.regex.RegexUtil.EXCLUDE;
-import static org.flowerplatform.tests.regex.RegexUtil.IDENTIFIER_AFTER_BEGGINING_CHAR;
+import static org.flowerplatform.tests.regex.RegexUtil.IDENTIFIER_AFTER_BEGINNING_CHAR;
 import static org.flowerplatform.tests.regex.RegexUtil.INTERFACE_KEYWORD;
 import static org.flowerplatform.tests.regex.RegexUtil.MULTIPLE_TIMES;
 import static org.flowerplatform.tests.regex.RegexUtil.MULTI_LINE_COMMENT;
@@ -42,7 +42,11 @@ import static org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurati
 
 import java.util.regex.Pattern;
 
+import org.flowerplatform.util.regex.IfFindThisAnnounceMatchCandidate;
+import org.flowerplatform.util.regex.IfFindThisModifyNesting;
+import org.flowerplatform.util.regex.IfFindThisSkip;
 import org.flowerplatform.util.regex.RegexConfiguration;
+import org.flowerplatform.util.regex.UntilFoundThisIgnoreAll;
 
 /**
  * @author Sorin
@@ -85,7 +89,7 @@ public class ActionscriptRegexConfigurationProvider {
 																					// or
 																					// commas
 			SPACE_OR_COMMENT + "|" + // comment
-			"[" + IDENTIFIER_AFTER_BEGGINING_CHAR + COMMA + // every identifier or enumeration character
+			"[" + IDENTIFIER_AFTER_BEGINNING_CHAR + COMMA + // every identifier or enumeration character
 			EXCLUDE + OPEN_BRACKET + EXCLUDE + SLASH + EXCLUDE + STAR + 
 			// except comment and bracket, because comment is processed as a hole and bracket is the condition to stop.
 			"]" + ")" + MULTIPLE_TIMES + STOP_BEFORE_OPEN_BRACKET_CHAR; // ensure at a moment it will start with {
@@ -110,13 +114,13 @@ public class ActionscriptRegexConfigurationProvider {
 			OPEN_PARENTHESIS; // ensure it has (
 
 	public static void buildASConfiguration(RegexConfiguration config) {
-		config.setTargetNestingForMatches(ACTIONSCRIPT_NESTING_LEVEL_FOR_DECLARATIONS).add(new RegexWithAction.IfFindThisModifyNesting("Opening curly bracket", OPEN_BRACKET, 1))
-				.add(new RegexWithAction.IfFindThisModifyNesting("Closing curly bracket", CLOSE_BRACKET, -1))
-				.add(new RegexWithAction.UntilFoundThisIgnoreAll("Begining of type ", ACTIONSCRIPT_TYPE_BEGIN))
-				.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY, ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
-				.add(new RegexWithAction.IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, ACTIONSCRIPT_METHOD, METHOD_CATEGORY))
-				.add(new RegexWithAction.IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
-				.add(new RegexWithAction.IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT)).compile(Pattern.DOTALL);
+		config.setTargetNestingForMatches(ACTIONSCRIPT_NESTING_LEVEL_FOR_DECLARATIONS).add(new IfFindThisModifyNesting("Opening curly bracket", OPEN_BRACKET, 1))
+				.add(new IfFindThisModifyNesting("Closing curly bracket", CLOSE_BRACKET, -1))
+				.add(new UntilFoundThisIgnoreAll("Begining of type ", ACTIONSCRIPT_TYPE_BEGIN))
+				.add(new IfFindThisAnnounceMatchCandidate(org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY, ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
+				.add(new IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, ACTIONSCRIPT_METHOD, METHOD_CATEGORY))
+				.add(new IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
+				.add(new IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT)).compile(Pattern.DOTALL);
 	}
 
 }

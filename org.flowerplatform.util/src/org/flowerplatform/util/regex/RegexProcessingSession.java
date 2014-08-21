@@ -20,6 +20,7 @@ package org.flowerplatform.util.regex;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
@@ -45,29 +46,19 @@ public class RegexProcessingSession {
 	
 	protected String[] currentSubMatchesForCurrentRegex;
 	
+	// TODO CS: move to map
 	public boolean ignoreMatches;
-	
 	public int currentNestingLevel;
 	
 	protected String lastMatchCategory;
 	
+	// TODO CS: move to map
 	public Object currentNode; // type Node, but util cannot depend on core. 
 	public HashMap<String, Object> specificInfo;
 	public List<State> stateStack;	
 	public boolean DO_NOT_EXECUTE_OTHER_ACTIONS = false;
 	
-	public void reset(boolean resetMatcher) {
-		currentMatchGroupIndex = -1;
-		currentRegex = null;		
-		currentSubMatchesForCurrentRegex = null;		
-		ignoreMatches = !configuration.useUntilFoundThisIgnoreAll ? false : true;
-		currentNestingLevel = 0;
-		lastMatchCategory = null;
-		
-		if (resetMatcher) {
-			matcher.reset();
-		}
-	}
+	protected Map<Object, Object> context;
 	
 	public Matcher getMatcher() {
 		return matcher;
@@ -87,6 +78,26 @@ public class RegexProcessingSession {
 
 	public String[] getCurrentSubMatchesForCurrentRegex() {
 		return currentSubMatchesForCurrentRegex;
+	}
+	
+	public Map<Object, Object> getContext() {
+		return context;
+	}
+
+	public void reset(boolean resetMatcher) {
+		currentMatchGroupIndex = -1;
+		currentRegex = null;		
+		currentSubMatchesForCurrentRegex = null;		
+		lastMatchCategory = null;
+		context = new HashMap<>();
+		
+		if (resetMatcher) {
+			matcher.reset();
+		}
+		// TODO CS: move
+		ignoreMatches = !configuration.useUntilFoundThisIgnoreAll ? false : true;
+		currentNestingLevel = 0;
+
 	}
 
 	public boolean find() throws RegexException {
@@ -160,7 +171,6 @@ public class RegexProcessingSession {
 		
 		return true;
 	}
-	
 	
 	public void find(Runnable runnable) throws RegexException {
 		while (find()) {

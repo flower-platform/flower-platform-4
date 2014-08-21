@@ -16,64 +16,29 @@
  *
  * license-end
  */
-package org.flowerplatform.codesync.regex.action;
+package org.flowerplatform.util.regex;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.util.regex.AbstractRegexWithAction;
-import org.flowerplatform.util.regex.RegexAction;
-import org.flowerplatform.util.regex.RegexProcessingSession;
-
 /**
  * @author Cristina Constantinescu
  */
-public class DelegatingRegexWithAction extends AbstractRegexWithAction {
-	
+// de mutat in .util; rename RegexWithActions
+public class RegexWithActions extends AbstractRegexWithAction {
+
 	protected List<RegexAction> actions = new ArrayList<RegexAction>();
-	
-	protected String regex;
-		
-	protected int numberOfCaptureGroups = -1;
-	
-	protected String name;
-	protected String regexWithMacros; 
 
-	public void setRegex(String regex){
-		this.regex = regex;
+	public RegexWithActions() {
 	}
 	
-	@Override
-	public String getRegex() {
-		return regex;
-	} 
+	public RegexWithActions(String name, String regex) {
+		super();
+		setName(name);
+		setRegex(regex);
+	}	
 
-	public void setNumberOfCaptureGroups(int numberOfCaptureGroups){
-		this.numberOfCaptureGroups = numberOfCaptureGroups;
-	}
-	
-	@Override
-	public int getNumberOfCaptureGroups() {
-		return numberOfCaptureGroups;
-	}
-	
-	@Override
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name; 
-	}
-
-	public void setRegexWithMacros(String regexWithMacros) {
-		this.regexWithMacros = regexWithMacros;
-	}
-
-	public String getRegexWithMacros() {
-		return  regexWithMacros;
-	}
-	
 	public void setRegexActions(List<RegexAction> actions) {
 		this.actions = actions;
 	}
@@ -81,17 +46,17 @@ public class DelegatingRegexWithAction extends AbstractRegexWithAction {
 	public List<RegexAction> getRegexActions() {
 		return actions;
 	}
-	
+
 	@Override
 	public void executeAction(RegexProcessingSession session) {
 		List<RegexAction> listOfRegexActionsAvailable = getRegexActions();
 		session.DO_NOT_EXECUTE_OTHER_ACTIONS = false;
 		for (RegexAction listItem : listOfRegexActionsAvailable) {
-			if(session.DO_NOT_EXECUTE_OTHER_ACTIONS){
+			if (session.DO_NOT_EXECUTE_OTHER_ACTIONS) {
 				break;
 			}
 			listItem.executeAction(session);
 		}
 	}
-	
+
 }

@@ -49,12 +49,10 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	CodeSyncTestSuite.class,
-	CoreTestSuite.class,
+//	CodeSyncTestSuite.class,
+//	CoreTestSuite.class,
 	RegexTestSuite.class
 //	FileSystemControllersTest.class
-	
-//	RegexTestSuite.class
 })
 public class EclipseIndependentTestSuite {
 	
