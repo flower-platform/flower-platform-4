@@ -29,8 +29,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */
 	public class SaveAction extends EditorFrontendAwareAction {
 		
-//		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.SaveAction";
-		
 		public function SaveAction() {			
 			label = Resources.getMessage("save.action.label");
 			icon = Resources.saveIcon;

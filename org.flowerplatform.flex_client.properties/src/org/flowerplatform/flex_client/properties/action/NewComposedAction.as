@@ -23,14 +23,13 @@ package org.flowerplatform.flex_client.properties.action {
 	 */ 
 	public class NewComposedAction extends ComposedAction {
 		
-		public static const ACTION_ID_NEW:String = "new";
+		public static const ID:String = "org.flowerplatform.flex_client.properties.action.NewComposedAction";
 		
 		public function NewComposedAction() {
 			label = Resources.getMessage("action.new");	
 			icon = Resources.addIcon;
 			orderIndex = 10;
-			delegateIfSingleChild = true;
-			id = ACTION_ID_NEW;
+			delegateIfSingleChild = true;			
 		}
 		
 	}

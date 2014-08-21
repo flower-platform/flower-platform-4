@@ -126,8 +126,7 @@ package org.flowerplatform.flexutil.shortcut {
 			} else if (handler is Function) {
 				// execute function
 				handler();
-			} else {		
-//				var actions:Vector.<IAction> = additionalActionProviders.getActions(null);
+			} else {	
 				
 				// search actionId also in active's view list of available actions	
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
@@ -138,31 +137,18 @@ package org.flowerplatform.flexutil.shortcut {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
 					
-//					var actions:Vector.<IAction> = IActionProvider(view).getActions(selection);	
-//					trace("in keybindings : "+viewActions);
-//					for (i = 0; i < viewActions.length; i++) {
-//						actions.push(viewActions[i]);
-//					}
-				}
-				
-//				if (actions == null) {
-//					return;
-//				}
-//				for (var i:int = 0; i < actions.length; i++) {
 					action = FlexUtilGlobals.getInstance().actionRegistry[handler].newInstance();
-//					if (action.id == handler) {
-						try {
-							action.selection = selection;
-							if (action.visible && action.enabled) {								
-								action.run(); 
-							}
-						} finally {
-							action.selection = null;
-						}						
-//						break;
-//					}
-//				}								
+					try {
+						action.selection = selection;
+						if (action.visible && action.enabled) {								
+							action.run(); 
+						}
+					} finally {
+						action.selection = null;
+					}							
+				}
 			}
+				
 		}
 	
 		public function getRegisteredHandler(shortcut:Shortcut):Object {			

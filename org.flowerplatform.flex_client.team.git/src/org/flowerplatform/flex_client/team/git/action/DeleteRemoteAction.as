@@ -30,6 +30,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	
 	public class DeleteRemoteAction extends ActionBase {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction";
+		
 		public function DeleteRemoteAction() {
 			super();
 			
@@ -37,17 +39,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			label = Resources.getMessage("flex_client.team.git.action.DeleteRemoteAction.deleteRemote");
 			orderIndex = 355;
 		}
-		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
 				
-				return (node.type == GitConstants.GIT_REMOTE_TYPE);
-			}
-			
-			return false;
-		}
-		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			

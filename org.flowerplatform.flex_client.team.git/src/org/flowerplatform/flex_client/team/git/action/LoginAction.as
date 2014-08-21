@@ -14,18 +14,13 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */
 	
 	public class LoginAction extends ActionBase {
+		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.LoginAction";
+		
 		public function LoginAction() {
 			super();
 			label = Resources.getMessage('flex_client.team.git.action.changeCredentials.label');
 			icon = Resources.permission;
-		}
-		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				return node.type == GitConstants.GIT_REMOTE_TYPE;
-			}
-			return false;
 		}
 		
 		override public function run():void {

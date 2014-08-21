@@ -36,13 +36,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 			orderIndex = 310;
 		}
 		
-		override public function get visible():Boolean {
-			if (selection.length == 0 || selection.length > 1) {
-				return false;
-			}
-			return super.visible;
-		}	
-		
 		override protected function isVisibleForSelectedElement(element:Object):Boolean {
 			if (Node(element).type == CoreConstants.FILE_NODE_TYPE && !Node(element).properties[CoreConstants.FILE_IS_DIRECTORY]) {
 				return false;
