@@ -14,19 +14,20 @@ package org.flowerplatform.flex_client.mindmap.action {
 			super();
 		}
 		
-		override public function run():void {
-			if(selection.getItemAt(0) is Node){
-				var node:Node = Node(selection.getItemAt(0));
-				context.diagramShell.getModelController(context, node).
-				setExpanded(context, node, !context.diagramShell.getModelController(context, node).getExpanded(context, node));
-			}
-		}
-		
 		override public function get visible():Boolean{
 			if(!(selection.getItemAt(0) is Node)){
 				return false;
 			}
 			return Node(selection.getItemAt(0)).getPropertyValue(CoreConstants.HAS_CHILDREN);
 		}
+		
+		override public function run():void {
+			var node:Node = Node(selection.getItemAt(0));
+			context.diagramShell.getModelController(context, node).setExpanded(
+				context, 
+				node, 
+				!context.diagramShell.getModelController(context, node).getExpanded(context, node));
+		}	
+		
 	}
 }

@@ -13,9 +13,10 @@ package org.flowerplatform.flexdiagram.tool {
 	public class ActionTool extends Tool implements IWakeUpableTool {
 		
 		public var action:IAction;
+		
 		private var _eventType:String;
 		
-		public function ActionTool(diagramShell:DiagramShell){
+		public function ActionTool(diagramShell:DiagramShell) {
 			super(diagramShell);				
 		}
 		
@@ -29,10 +30,7 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 		
 		public function wakeUp(eventType:String, initialEvent:MouseEvent):Boolean {
-			if(eventType == this.eventType){
-				return true;
-			}	
-			return false;
+			return eventType == this.eventType;
 		}
 		
 		override public function activateAsMainTool():void {

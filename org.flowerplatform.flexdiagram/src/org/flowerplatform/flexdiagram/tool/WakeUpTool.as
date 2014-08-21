@@ -14,6 +14,7 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool {
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
@@ -41,9 +42,9 @@ package org.flowerplatform.flexdiagram.tool {
 		
 		public var listeners:ArrayList = new ArrayList();
 			
-		public var myEventType:String; 
+		protected var myEventType:String; 
 		
-		private var secondClick:Boolean = false;
+		private var isDoubleClick:Boolean = false;
 		
 		public function WakeUpTool(diagramShell:DiagramShell) {
 			super(diagramShell);
@@ -126,23 +127,21 @@ package org.flowerplatform.flexdiagram.tool {
 		private function mouseDoubleClickHandler(event:MouseEvent):void {
 			myEventType = DOUBLE_CLICK;
 			dispatchMyEvent(myEventType, event);
-			secondClick = true;
+			isDoubleClick = true;
 		}
 		
 		private function clickHandler(event:MouseEvent):void {
 			/*A timer is needed so that the clickEvent won`t be dispatched along with the doubleClickEvent */
-			secondClick = false;
-			var timer:Timer = new Timer(250,1);
-			timer.addEventListener(TimerEvent.TIMER, onTimer);
+			isDoubleClick = false;
+			var timer:Timer = new Timer(250, 1);
+			timer.addEventListener(TimerEvent.TIMER, function (e:TimerEvent):void {
+				if (!isDoubleClick && myEventType != MOUSE_DRAG) {
+					myEventType = CLICK;
+					dispatchMyEvent(myEventType, event);
+				}
+				isDoubleClick = false;
+			});
 			timer.start();		
-		}
-		
-		private function onTimer(event:TimerEvent):void {
-			if(secondClick == false && myEventType != MOUSE_DRAG){
-				myEventType = CLICK;
-				dispatchMyEvent(myEventType, new MouseEvent(CLICK));
-			}
-			secondClick = false;
 		}
 		
 		private function dispatchMyEvent(eventType:String, initialEvent:MouseEvent):void {			
