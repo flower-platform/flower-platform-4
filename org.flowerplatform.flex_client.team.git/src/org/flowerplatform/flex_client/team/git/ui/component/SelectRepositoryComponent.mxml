@@ -23,10 +23,13 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
 		<![CDATA[
+
 			import flash.utils.getDefinitionByName;
 			
 			import mx.binding.utils.BindingUtils;
 			import mx.collections.IList;
+			
+			import spark.components.DropDownList;
 			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;

@@ -23,6 +23,7 @@ import static org.flowerplatform.team.git.GitConstants.CONFLICTED;
 import static org.flowerplatform.team.git.GitConstants.DELETE;
 import static org.flowerplatform.team.git.GitConstants.FILE;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_PREFIX_SESSION;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
@@ -574,11 +575,13 @@ public class GitService {
 	public GitCredentials getCredentials(String remote) throws Exception {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
 		
-		if ((GitCredentials)session.getAttribute(remote) != null ) {
-			return  (GitCredentials)session.getAttribute(remote);
-		}
-		
-		return null;
+		synchronized (session) {
+			String attr = GIT_PREFIX_SESSION + remote;
+			if (session.getAttribute(attr) != null) {
+				return (GitCredentials) session.getAttribute(attr);
+			}
+			return null;
+		}		
 	}
 	
 	/** 
@@ -586,16 +589,10 @@ public class GitService {
 	 */
 	public void setCredentials(String remote, GitCredentials credentials) {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
-			
-			if (credentials == null) {
-				if ((GitCredentials)session.getAttribute(remote) != null) {
-					return;
-				} else {
-					session.setAttribute(remote, null);
-				}
-			} else {
-				session.setAttribute(remote, credentials);
-			}
+		
+		synchronized (session) {
+			session.setAttribute(GIT_PREFIX_SESSION + remote, credentials);			
+		}
 	}
 
 	public List<Node> stagingList(String repositoryPath, String stagingType) throws Exception {
