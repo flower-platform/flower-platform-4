@@ -15,65 +15,56 @@
  */
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.CoreConstants.ICONS;
-import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
-import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
-import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
-import static org.flowerplatform.mindmap.MindMapConstants.COLOR_TEXT;
-import static org.flowerplatform.mindmap.MindMapConstants.EDGE_COLOR;
-import static org.flowerplatform.mindmap.MindMapConstants.EDGE_STYLE;
-import static org.flowerplatform.mindmap.MindMapConstants.EDGE_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_BOLD;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_FAMILY;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_ITALIC;
-import static org.flowerplatform.mindmap.MindMapConstants.FONT_SIZE;
-import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.NODE_DETAILS;
-import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
-import static org.flowerplatform.mindmap.MindMapConstants.POSITION_LEFT;
-import static org.flowerplatform.mindmap.MindMapConstants.POSITION_RIGHT;
-import static org.flowerplatform.mindmap.MindMapConstants.SIDE;
-import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
-import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Collections;
 
-import java.awt.Color;
-import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.core.node.remote.StylePropertyWrapper;
-import org.flowerplatform.resources.ResourcesPlugin;
-import org.freeplane.core.util.ColorUtils;
-import org.freeplane.features.cloud.CloudController;
-import org.freeplane.features.cloud.CloudModel;
-import org.freeplane.features.edge.EdgeController;
-import org.freeplane.features.edge.EdgeModel;
-import org.freeplane.features.edge.EdgeStyle;
-import org.freeplane.features.icon.MindIcon;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
+import org.freeplane.features.clipboard.ClipboardController;
+import org.freeplane.features.clipboard.MindMapNodesSelection;
 import org.freeplane.features.map.NodeModel;
-import org.freeplane.features.nodestyle.NodeSizeModel;
-import org.freeplane.features.nodestyle.NodeStyleController;
-import org.freeplane.features.nodestyle.NodeStyleModel;
-import org.freeplane.features.note.NoteModel;
-import org.freeplane.features.styles.IStyle;
-import org.freeplane.features.styles.LogicalStyleModel;
-import org.freeplane.features.styles.MapStyleModel;
-import org.freeplane.features.text.DetailTextModel;
+import org.freeplane.features.mode.Controller;
+import org.freeplane.features.mode.ModeController;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
- * @author Cristina Constantinescu
- * @author Sebastian Solomon
+ * @author Catalin Burcea
+ *
  */
-public class MindMapPropertiesProvider1 extends MindMapPropertiesProvider {
-		
+public class MindMapPropertiesProvider1 extends PersistencePropertiesProvider {
+
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		super.populateWithProperties(node, context);
-		node.getProperties().put("test", "test");
-	}
-		
-}
 
+		NodeModel rawNodeData = (NodeModel) node.getRawNodeData();
+		final ModeController modeController = Controller.getCurrentModeController();
+		final ClipboardController clipboardController = (ClipboardController) modeController.getExtension(ClipboardController.class);
+		MindMapNodesSelection data = clipboardController.copy(Collections.singleton(rawNodeData), true);
+
+		try {
+			String XMLString = data.getTransferData(MindMapNodesSelection.mindMapNodesFlavor).toString();
+			SAXParserFactory factory = SAXParserFactory.newInstance();
+			SAXParser saxParser = factory.newSAXParser();
+			XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
+			InputSource inputSource = new InputSource(new StringReader(XMLString));
+			saxParser.parse(inputSource, handler);
+			if (handler.convertAllAttributes_tagProcessorDinamicallyAdded) {
+				saxParser.reset();
+				inputSource = new InputSource(new StringReader(XMLString));
+				saxParser.parse(inputSource, handler);
+			}
+		} catch (Exception e) {
+			new RuntimeException(e);
+		}
+	}
+}
