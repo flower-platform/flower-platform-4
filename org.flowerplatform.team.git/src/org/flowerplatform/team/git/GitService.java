@@ -472,11 +472,30 @@ public class GitService {
 //		g.gc().call();
 	}
 
+	/**
+	 * 
+	 * @author Cojocea Marius Eduard
+	 * 
+	 * @param nodeUri
+	 * @throws Exception
+	 */	
 	public void rebase(String nodeUri) throws Exception {
-		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath) );
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath) );
 		
 		new Git(repo).rebase().setUpstream(GitUtils.getName(nodeUri)).call();
+		
+		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
+		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
+				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/** 

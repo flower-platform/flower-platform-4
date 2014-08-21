@@ -1,10 +1,15 @@
 package org.flowerplatform.flex_client.team.git.action{
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.RebaseView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
+	
+	/**
+	 * @author Cojocea Marius Eduard
+	 */
 	
 	public class RebaseAction extends ActionBase{
 		
@@ -17,12 +22,15 @@ package org.flowerplatform.flex_client.team.git.action{
 		override public function get visible():Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
-					node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ){
+				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) {
+					if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) { 
+						// not a git repository
+						return false;
+					}
 					return true;
 				}
 			}	
-			return false;
+			return false;	
 		}
 		
 		override public function run():void {
