@@ -15,23 +15,8 @@
  */
 package org.flowerplatform.freeplane.resource;
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLDecoder;
-
-import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.file.FileControllerUtils;
-import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.resource.IResourceHandler;
 import org.flowerplatform.mindmap.MindMapConstants;
-import org.flowerplatform.util.Utils;
-import org.freeplane.features.map.MapModel;
-import org.freeplane.features.map.MapWriter.Mode;
 import org.freeplane.features.map.NodeModel;
-import org.freeplane.features.mode.Controller;
-import org.freeplane.features.url.UrlManager;
-import org.freeplane.features.url.mindmapmode.MFileManager;
 
 /**
  * @author Mariana Gheorghe

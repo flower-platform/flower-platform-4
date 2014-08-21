@@ -1,0 +1,10 @@
+<node TEXT="test" ID="ID_1229967238" CREATED="1407493284393" MODIFIED="1407493284393" FOLDED="false">
+
+	<icon BUILTIN="yes"/>
+	<icon BUILTIN="checked"/>
+	<icon BUILTIN="password"/>
+	
+	<cloud COLOR="#0033ff" SHAPE="RECT"/>
+	
+	<font NAME="Segoe UI" SIZE="18" BOLD="true" ITALIC="true"/>	
+</node>
