@@ -15,8 +15,11 @@
  */
 package org.flowerplatform.team.git;
 
+import org.apache.commons.io.FilenameUtils;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,8 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.util.FS;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -159,9 +164,29 @@ public class GitUtils {
 	public static String getNodeUri(String repoPath,String type,String name) {
 		return CoreUtils.createNodeUriWithRepo(GIT_SCHEME, repoPath, type + (name != null ? "$" + name : ""));	
 	}
-
+	
 	public static String getNodeUri(String repoPath,String type){
 		return getNodeUri(repoPath, type, null);
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public static String handlePushResult(PushResult pushResult) {
+		StringBuilder sb = new StringBuilder();		
+		
+		sb.append(pushResult.getMessages());
+		sb.append("\n");
+		
+		for (RemoteRefUpdate rru : pushResult.getRemoteUpdates()) {
+			String rm = rru.getRemoteName();
+			RemoteRefUpdate.Status status = rru.getStatus();
+			sb.append(rm);
+			sb.append(" -> ");
+			sb.append(status.name());
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+		
 }

@@ -47,6 +47,7 @@ import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.controller.GitChildrenProvider;

@@ -37,6 +37,7 @@ import static org.flowerplatform.team.git.GitConstants.UNSTAGED;
 import static org.flowerplatform.team.git.GitConstants.UNTRACKED;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +55,7 @@ import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -69,9 +71,11 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.codesync.sdiff.IFileContentProvider;
@@ -85,6 +89,7 @@ import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.team.git.remote.GitRef;
+import org.flowerplatform.team.git.remote.RemoteConfiguration;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -468,9 +473,13 @@ public class GitService {
 		Git g = new Git(repo);	
 		
 		g.checkout().setName(Name).call();	
+		g.gc().getRepository().close();
+		g.gc().call();
+	}
+	
 //		g.gc().getRepository().close();
 //		g.gc().call();
-	}
+
 
 	/** 
 	 * @author Catalin Burcea
@@ -492,6 +501,7 @@ public class GitService {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory().getParentFile());
 		}
 	}
+
 
 	/**
 	 * @author Cristina Brinza
@@ -553,7 +563,7 @@ public class GitService {
 	public void deleteRemote(String childUri, String parentUri) throws Exception {
 		Node child = CorePlugin.getInstance().getResourceService().getNode(childUri);
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
-		
+	
 		String repoPath = Utils.getRepo(childUri);
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 
@@ -568,6 +578,82 @@ public class GitService {
 			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristina Brinza
+	 * @author Andreea Tita 
+	 */
+	public List<RemoteConfiguration> getFetchPushConfigData (String nodeUri, boolean selectFetchPush) throws Exception {
+		List<RemoteConfiguration> remoteConfigurationList = new ArrayList<RemoteConfiguration>();
+		
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+
+		List<RemoteConfig> remotes = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
+		for (RemoteConfig remote : remotes) {
+			RemoteConfiguration remoteConfiguration = new RemoteConfiguration();
+			remoteConfiguration.setName(remote.getName());
+			remoteConfiguration.setUri(remote.getURIs().get(0).toString());
+		
+			if (selectFetchPush) {
+				List<String> fetchRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getFetchRefSpecs()) {
+					fetchRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setFetchMappings(fetchRefSpecs);
+			} else {
+				List<String> pushRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getPushRefSpecs()) {
+					pushRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setPushMappings(pushRefSpecs);
+			}
+			
+			remoteConfigurationList.add(remoteConfiguration);
+		}
+		
+		return remoteConfigurationList;
+	}
+	
+	/**
+	 * @author Andreea Tita
+	 */
+	@SuppressWarnings("unchecked")
+	public String push (String nodeUri, String pushNodeUri, ArrayList<String> pushRefMappings) throws Exception {
+		String repoPath =  Utils.getRepo(nodeUri);
+		Repository  repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		
+		PushCommand pushCommand;
+		GitCredentials credentials = new GitCredentials();
+
+		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
+			pushCommand = new Git(repository).push().setRemote(GitUtils.getName(nodeUri));
+
+			//check if credentials for remote are set
+			credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
+		} else {
+			List<RefSpec> specsList = new ArrayList<RefSpec>();
+			if (pushRefMappings != null)  {
+				for (String refMapping : pushRefMappings) {
+					specsList.add(new RefSpec(refMapping));
+				}
+			}
+		
+			pushCommand = new Git(repository).push().setRemote(new URIish(pushNodeUri).toPrivateString()).setRefSpecs(specsList);
+		
+			//check if credentials for pushNode are set
+			credentials = getCredentials("git|" + pushNodeUri);
+		}
+		
+		// provide credentials for use in connecting to repositories 
+		if (credentials != null) {
+			pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(),credentials.getPassword()));
+		}
+		Iterable<PushResult> resultIterable = pushCommand.call();
+	
+		return GitUtils.handlePushResult(resultIterable.iterator().next());
+	}
 
 	/** 
 	 * @author Andreea Tita
@@ -746,4 +832,5 @@ public class GitService {
 	}
 	
 }
+
 

@@ -14,6 +14,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.team.git {
+
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -38,6 +39,25 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
+	import org.flowerplatform.flex_client.team.git.action.CheckoutAction;
+	import org.flowerplatform.flex_client.team.git.action.CloneRepoAction;
+	import org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.ConfigureRemoteAction;
+	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
+	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
+	import org.flowerplatform.flex_client.team.git.action.LoginAction;
+	import org.flowerplatform.flex_client.team.git.action.MergeAction;
+	import org.flowerplatform.flex_client.team.git.action.PushAction;
+	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
+	import org.flowerplatform.flex_client.team.git.action.ResetAction;
+	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
+	import org.flowerplatform.flex_client.team.git.remote.GitRef;
+	import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -57,7 +77,7 @@ package org.flowerplatform.flex_client.team.git {
 								" already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
-			
+
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
 			CorePlugin.getInstance().serviceLocator.addService("HistoryService");
 
@@ -80,6 +100,8 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureRemoteAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteRemoteAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);		
+
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(PushAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(LoginAction);
 
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
@@ -111,7 +133,6 @@ package org.flowerplatform.flex_client.team.git {
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateStructureDiffFromGitCommitsAction.ID));
-
 		}
 		
 		override protected function registerMessageBundle():void {
@@ -124,6 +145,7 @@ package org.flowerplatform.flex_client.team.git {
 		override protected function registerClassAliases():void {
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(GitRef);
+			registerClassAliasFromAnnotation(RemoteConfiguration);
 			registerClassAliasFromAnnotation(GitCredentials);
 		}
 	}

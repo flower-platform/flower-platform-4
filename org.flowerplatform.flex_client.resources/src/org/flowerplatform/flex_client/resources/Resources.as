@@ -562,14 +562,17 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/remote_entry_tbl.gif")]
 		public static const remoteEntry:Class;
 
+		[Embed(source="/team.git/remotespec.gif")]
+		public static const configureFetchPush:Class;
+
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
 
-		[Embed(source="/team.git/remoteSpec.gif")]
-		public static const configureFetchPush:Class;
-
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
+		
+		[Embed(source="/team.git/push.gif")]
+		public static const push:Class;	
 
 		[Embed(source="/git/reset.gif")]
 		public static const resetIcon:Class;
