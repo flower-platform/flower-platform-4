@@ -1,23 +1,37 @@
-package org.flowerplatform.flex_client.team.git.action
-{
+package org.flowerplatform.flex_client.team.git.action {
+	
+	import mx.collections.ArrayCollection;
+	
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.GitStagingView;
 	import org.flowerplatform.flexutil.action.ActionBase;
 
-	public class AddToGitIndex  extends ActionBase{
+	/**
+	 * @author Marius Iacob
+	 */
+	public class AddToGitIndex extends ActionBase {
 		
 		private var gitStagingView:GitStagingView;
-		private var selectedNodes:Vector.<Object>;
-		
-		public function AddToGitIndex(gitStagingView:GitStagingView, selectedNodes:Vector.<Object>) {						
+	
+		public function AddToGitIndex(gitStagingView:GitStagingView) {						
 			super();				
 			label = Resources.getMessage("team.git.action.AddToGitIndex");
-			this.gitStagingView = gitStagingView;
-			this.selectedNodes = selectedNodes;
+			this.gitStagingView = gitStagingView;			
 		}
 		
+		override public function get visible():Boolean {			
+			return selection != null && selection.length > 0;
+		}	
+		
 		override public function run():void {
-			gitStagingView.addToGitIndex(selectedNodes);
+			var list:ArrayCollection = new ArrayCollection();;
+			for (var i:int = 0; i < selection.length; i++) {
+				list.addItem(Node(selection.getItemAt(i)).getPropertyValue(GitConstants.FILE_PATH));
+			}
+			gitStagingView.addToGitIndex(list);
 		}
+		
 	}
 }

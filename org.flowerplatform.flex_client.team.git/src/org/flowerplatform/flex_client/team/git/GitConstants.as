@@ -63,7 +63,7 @@ package org.flowerplatform.flex_client.team.git {
 
 		public static const PUSH_REF_SPECS:String = "pushRefSpecs";
 		public static const REMOTE_URIS:String = "URIs";
-		public static const SERVER_URI:String = "serverUri"
+		public static const FILE_PATH:String = "filePath";
 
 		/////////////////////////////////////////////////////////////
 		//Reset types
@@ -82,6 +82,12 @@ package org.flowerplatform.flex_client.team.git {
 		public static const FILE_DELETED:String = "DELETE";
 		public static const FILE_RENAMED:String = "RENAME";
 		public static const FILE_COPIED:String = "COPY";
+		
+		public static const AUTHOR:String = "author";
+		public static const COMMITTER:String = "committer";
+		public static const PREVIOUS_AUTHOR:String = "previous_author";
+		public static const PREVIOUS_COMMIT_MESSAGE:String = "previous_commitMessage";
+		
 	}
 }
 

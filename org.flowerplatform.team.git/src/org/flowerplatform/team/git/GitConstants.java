@@ -70,6 +70,12 @@ public class GitConstants {
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
+	public static final String AUTHOR = "author";
+	public static final String COMMITTER = "committer";
+	public static final String PREVIOUS_AUTHOR = "previous_author";
+	public static final String PREVIOUS_COMMIT_MESSAGE = "previous_commitMessage";
+
+	
 	/////////////////////////////////////////////////////////////
 	// Other
 	/////////////////////////////////////////////////////////////
@@ -87,7 +93,7 @@ public class GitConstants {
 	public static final String MODIFY = "MODIFY";
 	public static final String RENAME = "RENAME";
 	public static final String COPY = "COPY";
-	public static final String SERVER_URI = "serverUri";
+	public static final String FILE_PATH = "filePath";
 
 	public static final String GIT_PREFIX_SESSION = "git|";
 

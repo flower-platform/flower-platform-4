@@ -2,8 +2,6 @@
 <s:List xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
-		width="100%" 
-		height="100%" 
 		creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
@@ -11,37 +9,33 @@
 			import mx.events.FlexEvent;
 			
 			import org.apache.flex.collections.ArrayList;
-			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.team.git.action.AddToGitIndex;
 			import org.flowerplatform.flex_client.team.git.action.RemoveFromGitIndex;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.context_menu.FillContextMenuEvent;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			public var gitStagingView:GitStagingView;
+			
 			public var showStageFiles:Boolean = true;
-			public var host:IViewHost
-			protected var icon:Class;
-			public var selectedNodes:Vector.<Object>;
-					
+						
 			public function getSelection():IList {
-				var result:Array = new Array();
+				var result:ArrayList = new ArrayList();
 				
-				if (this.selectedIndices) {
-					var count:int = this.selectedIndices.length;
-					
-					for (var i:int = 0; i < count; i++)
-						result.push(this.dataProvider.getItemAt(this.selectedIndices[i]));  
+				if (this.selectedItems) {				
+					for each(var obj:Object in selectedItems) {
+						result.addItem(obj);  
+					}
 				}
-				return new ArrayList(result);
+				return result;
 			}
+			
 			public function getActions(selection:IList):Vector.<IAction> {
 				var result:Vector.<IAction> = new Vector.<IAction>();
 				
 				if (showStageFiles) {
-					result.push(new AddToGitIndex(gitStagingView, selectedNodes));
+					result.push(new AddToGitIndex(gitStagingView));
 				} else {
-					result.push(new RemoveFromGitIndex(gitStagingView, selectedNodes));
+					result.push(new RemoveFromGitIndex(gitStagingView));
 				}
 				return result;
 			}
@@ -77,8 +71,7 @@
 							return data.getPropertyValue(CoreConstants.ICONS);
 						}
 						
-						protected function item_creationCompleteHandler(event:FlexEvent):void
-						{
+						protected function item_creationCompleteHandler(event:FlexEvent):void {
 							if (!FlexUtilGlobals.getInstance().isMobile) {
 								// only for web
 								minHeight = 22;	

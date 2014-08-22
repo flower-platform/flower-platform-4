@@ -42,7 +42,6 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
-	import org.flowerplatform.flex_client.team.git.action.ShowGitStagingAction;
 
 	/**
 	 * @author Valentina-Camelia Bojan
@@ -78,13 +77,13 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().registerAction(MergeAction);
 			FlexUtilGlobals.getInstance().registerAction(RenameBranchAction);
 			FlexUtilGlobals.getInstance().registerAction(ResetAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowGitStagingAction);
 		
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGitHistoryAction);
 
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingViewProvider());
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGitStagingAction);
-
+			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(PushAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
@@ -124,7 +123,8 @@ package org.flowerplatform.flex_client.team.git {
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(GitConstants.GIT_CATEGORY)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(MergeAction.ID))
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ResetAction.ID));
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ResetAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowGitStagingAction.ID));
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(GitConstants.GIT_REF_CATEGORY)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateBranchAction.ID))

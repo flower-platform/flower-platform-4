@@ -623,6 +623,9 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/staging.png")]
 		public static const gitStagingIcon:Class;
+		
+		[Embed(source="/team.git/switch.gif")]
+		public static const switchIcon:Class;
 
 	}
 }
