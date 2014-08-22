@@ -1,3 +1,6 @@
+// MODIF_FROM_ORIGINAL begin
+// This file is needed by the StageWebViewBridge to allow communication Flex <-> HTML
+// MODIF_FROM_ORIGINAL end
 (function(window)
 {
 	window.StageWebViewBridge = (function()
