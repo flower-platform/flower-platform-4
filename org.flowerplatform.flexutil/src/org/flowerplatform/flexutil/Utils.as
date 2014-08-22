@@ -14,24 +14,16 @@
  * license-end
  */
 package org.flowerplatform.flexutil {
-	import flash.text.Font;
-	import flash.text.FontType;
-	import flash.text.StyleSheet;
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
-	import mx.controls.Alert;
 	import mx.core.ITextInput;
-	import mx.utils.StringUtil;
 	
 	import spark.components.TextInput;
-	import spark.components.supportClasses.RegExPatterns;
 	import spark.components.supportClasses.SkinnableTextBase;
-	
-	import flashx.textLayout.utils.CharacterUtil;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -105,6 +97,14 @@ package org.flowerplatform.flexutil {
 			
 		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
 			return str == null ? defaultStr : str;
+		}
+		
+		public static function getBaseName(path:String):String {
+			var lastIndexOfSlash:int = path.lastIndexOf("/");
+			var baseNameWithExtension:String = path.substring(lastIndexOfSlash + 1);
+			var lastIndexOfDot:int = baseNameWithExtension.lastIndexOf(".");
+				
+			return baseNameWithExtension.substring(0, lastIndexOfDot);			
 		}
 		
 		/**

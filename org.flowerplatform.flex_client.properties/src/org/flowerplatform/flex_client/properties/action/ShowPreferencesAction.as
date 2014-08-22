@@ -26,6 +26,8 @@ package org.flowerplatform.flex_client.properties.action {
 	 */ 
 	public class ShowPreferencesAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.properties.action.ShowPreferencesAction";
+		
 		public function ShowPreferencesAction(){
 			super();
 			label = Resources.getMessage("preferences.action.show");

@@ -27,6 +27,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	
 	public class ConfigureRemoteAction extends ActionBase {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.ConfigureRemoteAction";
+		
 		public function ConfigureRemoteAction() {
 			super();
 			

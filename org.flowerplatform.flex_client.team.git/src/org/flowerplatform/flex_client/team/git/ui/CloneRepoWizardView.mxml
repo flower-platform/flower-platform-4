@@ -60,7 +60,7 @@
 			}	
 			
 			override protected function nextClickHandler():void {
-				repoUri = repositorySelectionPage.getURI();
+				repoUri = repositorySelectionPage.getResult() as String;
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.validateRepoURL", [repoUri], validateRepoURLResultHandler);
 			}
 			
@@ -115,7 +115,7 @@
 			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('git.selectRepo.description')}"/>
 			
 			<mx:AddChild relativeTo="{contentArea}">
-				<component:SelectRepositoryComponent id="repositorySelectionPage" width="100%" height="100%" showRemotesList="false"/>	
+				<component:SelectRepositoryComponent id="repositorySelectionPage" width="100%" height="100%" showRemotesList="false" nodeUri="{nodeUri}"/>	
 			</mx:AddChild>
 		
 		</mx:State>

@@ -30,6 +30,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */
 	public class MergeAction extends ActionBase {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.MergeAction";
+		
 		public function MergeAction() {
 			super();
 			icon = Resources.mergeBranch;

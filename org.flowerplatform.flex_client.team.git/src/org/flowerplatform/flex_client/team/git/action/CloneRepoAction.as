@@ -27,6 +27,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */
 	public class CloneRepoAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.CloneRepoAction";
+		
 		public function CloneRepoAction() {
 			super();
 			label = Resources.getMessage("git.cloneRepo.title");

@@ -64,7 +64,7 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			shortcutsActionProvider.addAction(new InplaceEditorAction());
 			
-			actionProvider.actionProviders.push(shortcutsActionProvider);
+			actionProvider.actionProviders.push(shortcutsActionProvider);			
 		}
 		
 		/**
