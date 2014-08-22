@@ -58,8 +58,6 @@ package org.flowerplatform.flexutil.shortcut {
 		
 		public var learnShortcutOnNextActionInvocation:Boolean = false;
 		
-		public var additionalActionProviders:ComposedActionProvider = new ComposedActionProvider();
-		
 		public function KeyBindings() {
 			if (UIComponent(FlexGlobals.topLevelApplication).stage != null) {
 				registerKeyListener();
@@ -120,14 +118,11 @@ package org.flowerplatform.flexutil.shortcut {
 			if (handler is IAction) {
 				// check if visible & enabled, then run it
 				action = IAction(handler);
-				if (action.visible && action.enabled) {
-					action.run(); 
-				}
+				FlexUtilGlobals.getInstance().actionHelper.runAction(action, null, null, true, true);				
 			} else if (handler is Function) {
 				// execute function
 				handler();
-			} else {	
-				
+			} else {				
 				// search actionId also in active's view list of available actions	
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 				var view:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
@@ -137,18 +132,10 @@ package org.flowerplatform.flexutil.shortcut {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
 					
-					action = FlexUtilGlobals.getInstance().actionRegistry[handler].newInstance();
-					try {
-						action.selection = selection;
-						if (action.visible && action.enabled) {								
-							action.run(); 
-						}
-					} finally {
-						action.selection = null;
-					}							
+					action = FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(String(handler));
+					FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, null, true, true);										
 				}
-			}
-				
+			}				
 		}
 	
 		public function getRegisteredHandler(shortcut:Shortcut):Object {			

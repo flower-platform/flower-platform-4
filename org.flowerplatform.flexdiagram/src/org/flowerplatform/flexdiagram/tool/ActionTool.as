@@ -34,11 +34,12 @@ package org.flowerplatform.flexdiagram.tool {
 		}
 		
 		override public function activateAsMainTool():void {
-			var selection:IList = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider.getSelection();
-			action.selection = selection;
-			if(action.visible){
-				FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, diagramShell.getNewDiagramShellContext());
-			}
+			FlexUtilGlobals.getInstance().actionHelper.runAction(
+				action, 
+				FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider.getSelection(), 
+				diagramShell.getNewDiagramShellContext(),
+				true);
+			
 			diagramShell.mainToolFinishedItsJob();
 		}
 	}

@@ -130,6 +130,7 @@ package org.flowerplatform.flex_client.mindmap {
 
 			FlexUtilGlobals.getInstance().registerAction(RefreshAction);
 			FlexUtilGlobals.getInstance().registerAction(EditNodeDetailsInDialogAction);
+			FlexUtilGlobals.getInstance().registerAction(EditNoteInDialogAction);
 			FlexUtilGlobals.getInstance().registerAction(NodeDownAction);
 			FlexUtilGlobals.getInstance().registerAction(NodeLeftAction);
 			FlexUtilGlobals.getInstance().registerAction(NodePageDownAction);

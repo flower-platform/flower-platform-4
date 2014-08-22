@@ -79,18 +79,16 @@ package org.flowerplatform.flex_client.properties {
 									
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
 		
-			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);
-			FlexUtilGlobals.getInstance().registerAction(ShowPreferencesAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);			
 			FlexUtilGlobals.getInstance().registerAction(NewComposedAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowPropertiesAction.ID))
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(AddNodeAction.ID));
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowPropertiesAction.ID));
 			
 			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PreferencesViewProvider());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new ShowPreferencesAction());
+			CorePlugin.getInstance().registerActionToGlobalMenu(new ShowPreferencesAction());
 		}
 		
 		override public function start():void {

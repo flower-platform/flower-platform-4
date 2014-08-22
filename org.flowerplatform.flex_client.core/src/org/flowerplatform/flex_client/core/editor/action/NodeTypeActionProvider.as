@@ -4,8 +4,8 @@
  * 
  * @author Alina Bratu
  */
-package org.flowerplatform.flex_client.core.editor.action
-{
+package org.flowerplatform.flex_client.core.editor.action {
+	
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -16,6 +16,9 @@ package org.flowerplatform.flex_client.core.editor.action
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 
+	/**
+	 * @author Alina Bratu
+	 */
 	public class NodeTypeActionProvider implements IActionProvider {
 		
 		public function NodeTypeActionProvider():void {
@@ -23,8 +26,7 @@ package org.flowerplatform.flex_client.core.editor.action
 		
 		/**
 		 * If all nodes in <code>selection</code> have the same type, it returns a list of the actions 
-		 * that can be done on that particular type of node. If not, returns null, so no actions are displayed.
-		 * It uses the <code>actionRegistry</code> in <code>FlexUtilGlobals</code>.
+		 * that can be executed on that particular type of node.
 		 */
 		public function getActions(selection:IList):Vector.<IAction> {
 			var nodeType:String;
@@ -52,13 +54,11 @@ package org.flowerplatform.flex_client.core.editor.action
 					}
 				}
 				
-				// get list of action descriptors for the type of node the selection has
 				var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(nodeType)
 					.getAdditiveControllers(CoreConstants.ACTION_DESCRIPTOR,selection.getItemAt(0));
 				
-				// create list of action factories using action descriptors and action registry
 				for each (var a:ActionDescriptor in descriptors) {
-					actions.push(FlexUtilGlobals.getInstance().actionRegistry[a.actionId].newInstance());
+					actions.push(FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(a.actionId));
 				}
 				return actions;
 			}

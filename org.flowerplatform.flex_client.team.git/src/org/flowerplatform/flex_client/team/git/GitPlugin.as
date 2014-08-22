@@ -102,8 +102,7 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GitStagingAction);
 
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(PushAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(LoginAction);
-
+			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CloneRepoAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DeleteGitRepositoryAction.ID));
