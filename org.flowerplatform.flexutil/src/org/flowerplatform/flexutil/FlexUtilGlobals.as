@@ -78,6 +78,10 @@ package org.flowerplatform.flexutil {
 		
 		public var flexPluginManager:FlexPluginManager = new FlexPluginManager();
 		
+		/**
+		 * Dictionary that maps action class instances to their ID.
+		 * @author Alina Bratu
+		 */
 		public var actionRegistry:Dictionary = new Dictionary();
 		
 		
@@ -108,6 +112,12 @@ package org.flowerplatform.flexutil {
 			}
 		}
 		
+		/**
+		 * Adds an instance of the <code>generator</code> in <code>actionRegistry</code>. The instance is 
+		 * mapped at the generator's ID.
+		 * 
+		 * @author Alina Bratu
+		 */
 		public function registerAction(generator:Class):void {
 			actionRegistry[Object(generator).ID] = new FactoryWithInitialization(generator);
 		}

@@ -33,10 +33,6 @@ package org.flowerplatform.flex_client.properties.action {
 			icon = Resources.propertiesIcon;
 			orderIndex = 1000;
 		}
-			
-//		override public function get visible():Boolean {
-//			return true;
-//		}
 		
 		override public function run():void {	
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				

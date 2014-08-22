@@ -38,16 +38,6 @@ package org.flowerplatform.flex_client.team.git.action {
 			orderIndex = 300;
 		}
 			
-//		override public function get visible():Boolean {
-//			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-//				var node:Node = Node(selection.getItemAt(0));
-//
-//				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-//					.categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0;
-//			}
-//			return false;
-//		}
-		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var view:CreateBranchView = new CreateBranchView();

@@ -36,21 +36,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 			
 		}
 		
-//		override public function get visible():Boolean {
-//			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
-//				var type:String = Node(selection.getItemAt(0)).type;
-//				if (type == CoreConstants.ROOT_TYPE ||
-//					type == CoreConstants.REPOSITORY_TYPE ||
-//					type == CoreConstants.FILE_SYSTEM_NODE_TYPE ||
-//					type == CoreConstants.CODE_TYPE) {
-//					
-//					return false;
-//				}
-//				return true;
-//			}
-//			return false;
-//		}
-		
 		override public function run():void {
 			CorePlugin.getInstance().serviceLocator.invoke("nodeService.removeChild", [Node(selection.getItemAt(0)).parent.nodeUri, Node(selection.getItemAt(0)).nodeUri]);
 		}
