@@ -23,6 +23,7 @@ import static org.flowerplatform.team.git.GitConstants.CONFLICTED;
 import static org.flowerplatform.team.git.GitConstants.DELETE;
 import static org.flowerplatform.team.git.GitConstants.FILE;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_PREFIX_SESSION;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
@@ -54,6 +55,7 @@ import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -69,9 +71,11 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffPlugin;
 import org.flowerplatform.codesync.sdiff.IFileContentProvider;
@@ -85,6 +89,7 @@ import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.team.git.remote.GitRef;
+import org.flowerplatform.team.git.remote.RemoteConfiguration;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -125,7 +130,7 @@ public class GitService {
 				return false;
 			}
 			ObjectId resolved = repo.resolve(hash);
-			if (resolved == null){
+			if (resolved == null) {
 				return false;
 			}
 
@@ -148,7 +153,7 @@ public class GitService {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Ref ref = repo.getRef((String)node.getPropertyValue(GitConstants.NAME));
 		
 		Git gitInstance = new Git(repo);
@@ -363,6 +368,8 @@ public class GitService {
 				childNode, 
 				new ServiceContext<NodeService>().add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
+
+
 	
 	/**
 	 * @author Diana Balutoiu
@@ -461,14 +468,18 @@ public class GitService {
 	public void checkout(String nodeUri) throws Exception {				
 		String Name = GitUtils.getName(nodeUri);
 		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 				
 		Git g = new Git(repo);	
 		
 		g.checkout().setName(Name).call();	
+		g.gc().getRepository().close();
+		g.gc().call();
+	}
+	
 //		g.gc().getRepository().close();
 //		g.gc().call();
-	}
+
 
 	/** 
 	 * @author Catalin Burcea
@@ -490,6 +501,7 @@ public class GitService {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory().getParentFile());
 		}
 	}
+
 
 	/**
 	 * @author Cristina Brinza
@@ -551,7 +563,7 @@ public class GitService {
 	public void deleteRemote(String childUri, String parentUri) throws Exception {
 		Node child = CorePlugin.getInstance().getResourceService().getNode(childUri);
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
-		
+	
 		String repoPath = Utils.getRepo(childUri);
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 
@@ -566,6 +578,82 @@ public class GitService {
 			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristina Brinza
+	 * @author Andreea Tita 
+	 */
+	public List<RemoteConfiguration> getFetchPushConfigData (String nodeUri, boolean selectFetchPush) throws Exception {
+		List<RemoteConfiguration> remoteConfigurationList = new ArrayList<RemoteConfiguration>();
+		
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+
+		List<RemoteConfig> remotes = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
+		for (RemoteConfig remote : remotes) {
+			RemoteConfiguration remoteConfiguration = new RemoteConfiguration();
+			remoteConfiguration.setName(remote.getName());
+			remoteConfiguration.setUri(remote.getURIs().get(0).toString());
+		
+			if (selectFetchPush) {
+				List<String> fetchRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getFetchRefSpecs()) {
+					fetchRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setFetchMappings(fetchRefSpecs);
+			} else {
+				List<String> pushRefSpecs = new ArrayList<String>();
+				for (RefSpec refSpec : remote.getPushRefSpecs()) {
+					pushRefSpecs.add(refSpec.toString());
+				}
+				remoteConfiguration.setPushMappings(pushRefSpecs);
+			}
+			
+			remoteConfigurationList.add(remoteConfiguration);
+		}
+		
+		return remoteConfigurationList;
+	}
+	
+	/**
+	 * @author Andreea Tita
+	 */
+	@SuppressWarnings("unchecked")
+	public String push (String nodeUri, String pushNodeUri, ArrayList<String> pushRefMappings) throws Exception {
+		String repoPath =  Utils.getRepo(nodeUri);
+		Repository  repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		
+		PushCommand pushCommand;
+		GitCredentials credentials = new GitCredentials();
+
+		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
+			pushCommand = new Git(repository).push().setRemote(GitUtils.getName(nodeUri));
+
+			//check if credentials for remote are set
+			credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
+		} else {
+			List<RefSpec> specsList = new ArrayList<RefSpec>();
+			if (pushRefMappings != null)  {
+				for (String refMapping : pushRefMappings) {
+					specsList.add(new RefSpec(refMapping));
+				}
+			}
+		
+			pushCommand = new Git(repository).push().setRemote(new URIish(pushNodeUri).toPrivateString()).setRefSpecs(specsList);
+		
+			//check if credentials for pushNode are set
+			credentials = getCredentials("git|" + pushNodeUri);
+		}
+		
+		// provide credentials for use in connecting to repositories 
+		if (credentials != null) {
+			pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(),credentials.getPassword()));
+		}
+		Iterable<PushResult> resultIterable = pushCommand.call();
+	
+		return GitUtils.handlePushResult(resultIterable.iterator().next());
+	}
 
 	/** 
 	 * @author Andreea Tita
@@ -573,11 +661,13 @@ public class GitService {
 	public GitCredentials getCredentials(String remote) throws Exception {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
 		
-		if ((GitCredentials)session.getAttribute(remote) != null ) {
-			return  (GitCredentials)session.getAttribute(remote);
-		}
-		
-		return null;
+		synchronized (session) {
+			String attr = GIT_PREFIX_SESSION + remote;
+			if (session.getAttribute(attr) != null) {
+				return (GitCredentials) session.getAttribute(attr);
+			}
+			return null;
+		}		
 	}
 	
 	/** 
@@ -585,20 +675,14 @@ public class GitService {
 	 */
 	public void setCredentials(String remote, GitCredentials credentials) {
 		HttpSession session = CorePlugin.getInstance().getRequestThreadLocal().get().getSession();
-			
-			if (credentials == null) {
-				if ((GitCredentials)session.getAttribute(remote) != null) {
-					return;
-				} else {
-					session.setAttribute(remote, null);
-				}
-			} else {
-				session.setAttribute(remote, credentials);
-			}
+		
+		synchronized (session) {
+			session.setAttribute(GIT_PREFIX_SESSION + remote, credentials);			
+		}
 	}
 
 	public List<Node> stagingList(String repositoryPath, String stagingType) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		Set<String> conflictList = git.status().call().getConflicting();
 		boolean ok = false;
@@ -703,7 +787,7 @@ public class GitService {
 	}
 
 	public List<String> amendAuthorCommiter(String repositoryPath, boolean ok) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		List<String> list = new ArrayList<String>();
 		PersonIdent pi = new PersonIdent(repo);
 		list.add(pi.getName() + " <" + pi.getEmailAddress() + ">");
@@ -729,23 +813,24 @@ public class GitService {
 	}
 
 	public void commitMethod(String repositoryPath, boolean ok, String message) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		git.commit().setMessage(message).setAmend(ok).call();
 	}
 
 	public void addToGitIndex(String repositoryPath, String filePathToAdd) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		git.add().addFilepattern(filePathToAdd).setUpdate(true).call();
 		git.add().addFilepattern(filePathToAdd).setUpdate(false).call();
 	}
 
 	public void removeFromGitIndex(String repositoryPath, String filePathToRemove) throws Exception {
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		git.reset().addPath(filePathToRemove).call();
 	}
 	
 }
+
 

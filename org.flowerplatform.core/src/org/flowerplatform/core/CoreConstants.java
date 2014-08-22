@@ -155,6 +155,8 @@ public class CoreConstants {
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
 	
+	public static final String OVERRIDE = "override";
+	
 	//////////////////////////////////
 	// Resource
 	//////////////////////////////////

@@ -20,6 +20,7 @@ import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.OVERRIDE;
 import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
@@ -114,11 +115,17 @@ public class FileChildrenController extends AbstractController
 		String name = (String) context.get(NAME);
 		Object fileToCreate = getFileAccessController().getFile(parentFile, name);
 		child.setNodeUri(createFileNodeUri(getRepoFromNode(parentNode), getFileAccessController().getPath(fileToCreate)));
-		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
+		boolean isDir = context.getBooleanValue(FILE_IS_DIRECTORY);
 		
 		if (getFileAccessController().exists(fileToCreate)) {
-			throw new RuntimeException("There is already a file with the same name in this location.");
-		} else if (!getFileAccessController().createFile(fileToCreate, isDir)) {
+			if (context.getBooleanValue(OVERRIDE)) {
+				getFileAccessController().delete(fileToCreate);
+			} else {
+				throw new RuntimeException("There is already a file with the same name in this location.");
+			}
+		} 
+		
+		if (!getFileAccessController().createFile(fileToCreate, isDir)) {
 			throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
 		}
 	}

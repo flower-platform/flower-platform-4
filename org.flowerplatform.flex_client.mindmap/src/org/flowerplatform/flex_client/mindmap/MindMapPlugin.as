@@ -16,12 +16,19 @@
 package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.action.EditNodeDetailsInDialogAction;
 	import org.flowerplatform.flex_client.mindmap.action.EditNoteInDialogAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageUpAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeRightAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeAbsoluteLayoutRectangleController;
@@ -90,11 +97,10 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
-				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR));
-			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
-				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR));
-			
+				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNodeDetailsInDialogAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNoteInDialogAction.ID));
+		
 			// register PropertiesPlugin Renderer
 			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE] = new FactoryWithInitialization
 				(IconsWithButtonPropertyRenderer, {
@@ -120,12 +126,20 @@ package org.flowerplatform.flex_client.mindmap {
 					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
 						CorePlugin.getInstance().serviceLocator.invoke("mindmapService.getStyles", [node.nodeUri], callbackFunction);
 					}
-			});	
+			});				
+
+			FlexUtilGlobals.getInstance().registerAction(RefreshAction);
+			FlexUtilGlobals.getInstance().registerAction(EditNodeDetailsInDialogAction);
+			FlexUtilGlobals.getInstance().registerAction(EditNoteInDialogAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeDownAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeLeftAction);
+			FlexUtilGlobals.getInstance().registerAction(NodePageDownAction);
+			FlexUtilGlobals.getInstance().registerAction(NodePageUpAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeRightAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeUpAction);
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RefreshAction);
-			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNodeDetailsInDialogAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(EditNoteInDialogAction);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RefreshAction.ID));
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);
 			

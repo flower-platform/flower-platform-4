@@ -99,4 +99,6 @@ public class GitConstants {
 	public static final String RENAME = "RENAME";
 	public static final String COPY = "COPY";
 
+	public static final String GIT_PREFIX_SESSION = "git|";
+
 }

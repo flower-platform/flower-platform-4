@@ -16,6 +16,9 @@ import org.flowerplatform.core.RemoteMethodInvocationListener;
  * Notifies the registered {@link RemoteMethodInvocationListener} before and 
  * after a service method is invoked.
  * 
+ * <p>
+ * Equivalent of the Blaze DS server class: <code>FlowerJavaAdapter</code>.
+ * 
  * @author Mariana Gheorghe
  */
 public class RemoteMethodInvocationFilter implements ContainerRequestFilter, ContainerResponseFilter {

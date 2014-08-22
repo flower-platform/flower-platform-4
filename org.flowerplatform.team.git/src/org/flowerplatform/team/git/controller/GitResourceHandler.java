@@ -15,11 +15,11 @@
  */
 package org.flowerplatform.team.git.controller;
 
+import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
-
-import java.io.File;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -36,7 +36,7 @@ public class GitResourceHandler implements IResourceHandler {
 	
 	@Override
 	public String getResourceUri(String nodeUri) {
-		return Utils.getUri(Utils.getScheme(nodeUri), Utils.getRepo(nodeUri) + "|" + GIT_REPO_TYPE, null);
+		return GitUtils.getNodeUri(Utils.getRepo(nodeUri), GIT_REPO_TYPE);
 	}
 
 	@Override
@@ -45,49 +45,49 @@ public class GitResourceHandler implements IResourceHandler {
 			if (GitUtils.getType(nodeUri).equals(GIT_REMOTES_TYPE) || GitUtils.getType(nodeUri).equals(GIT_REMOTE_TYPE)) {
 				return GitUtils.getName(nodeUri);
 			}
-			
-			String repositoryPath = Utils.getRepo(nodeUri);
-			Repository repo = null;
+
 			Ref ref = null;
-			repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-			ref = repo.getRef(GitUtils.getName(nodeUri));	
+			Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+			if (repo != null) {
+				ref = repo.getRef(GitUtils.getName(nodeUri));	
+			}
 			
 			return ref;
-		} catch (Exception e){
+			
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+
 	}
 
 	@Override
 	public Node createNodeFromRawNodeData(String nodeUri, Object rawNodeData) {
-		String type = GitUtils.getType(nodeUri);
-		Node node = new Node(nodeUri, type);
+		Node node = new Node(nodeUri, GitUtils.getType(nodeUri));
 		node.setRawNodeData(rawNodeData);
 		return node;
 	}
 
 	@Override
 	public Object load(String resourceUri) throws Exception {
-		// TODO Auto-generated method stub
+		// do nothing
 		return null;
 	}
 
 	@Override
 	public void save(Object resourceData) throws Exception {
-		// TODO Auto-generated method stub
+		// do nothing
 		
 	}
 
 	@Override
 	public boolean isDirty(Object resourceData) {
-		// TODO Auto-generated method stub
+		// do nothing
 		return false;
 	}
 
 	@Override
 	public void unload(Object resourceData) throws Exception {
-		// TODO Auto-generated method stub
-		
+		// do nothing		
 	}
 
 }
