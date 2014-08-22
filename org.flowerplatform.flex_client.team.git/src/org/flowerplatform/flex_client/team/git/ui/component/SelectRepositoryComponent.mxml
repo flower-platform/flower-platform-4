@@ -66,28 +66,30 @@
 			override protected function createChildren():void {
 				super.createChildren();
 				
-				if (FlexUtilGlobals.getInstance().isMobile) {
-					var mobileClass:Class = Class(getDefinitionByName("com.flextras.mobile.dropDownList.DropDownList"));
-					remotes = new mobileClass();									
-				} else {
-					remotes = new spark.components.DropDownList();											
-				}		
-				
-				var serviceContext:ServiceContext = new ServiceContext();
-				serviceContext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
-				
-				var remotesNodeUri:String = CorePlugin.getInstance().createNodeUriWithRepo(GitConstants.GIT_SCHEME, CorePlugin.getInstance().getRepository(nodeUri), GitConstants.GIT_REMOTES_TYPE);
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [remotesNodeUri, serviceContext] ,
-					function(result:ArrayCollection):void {
-						remotes.dataProvider = result;
-						remotes.labelFunction = getLabelFunction;
-					}); 
-				
-				remotes.percentWidth = 100;
-				remotes.requireSelection = true;
-				BindingUtils.bindProperty(remotes, "visible", this, "showRemotesList");
-				BindingUtils.bindProperty(remotes, "includeInLayout", this, "showRemotesList");
-				addElementAt(remotes, 1);
+				if (showRemotesList) {
+					if (FlexUtilGlobals.getInstance().isMobile) {
+						var mobileClass:Class = Class(getDefinitionByName("com.flextras.mobile.dropDownList.DropDownList"));
+						remotes = new mobileClass();									
+					} else {
+						remotes = new spark.components.DropDownList();											
+					}		
+					
+					var serviceContext:ServiceContext = new ServiceContext();
+					serviceContext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+					
+					var remotesNodeUri:String = CorePlugin.getInstance().createNodeUriWithRepo(GitConstants.GIT_SCHEME, CorePlugin.getInstance().getRepository(nodeUri), GitConstants.GIT_REMOTES_TYPE);
+					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [remotesNodeUri, serviceContext] ,
+						function(result:ArrayCollection):void {
+							remotes.dataProvider = result;
+							remotes.labelFunction = getLabelFunction;
+						}); 
+					
+					remotes.percentWidth = 100;
+					remotes.requireSelection = true;
+					BindingUtils.bindProperty(remotes, "visible", this, "showRemotesList");
+					BindingUtils.bindProperty(remotes, "includeInLayout", this, "showRemotesList");
+					addElementAt(remotes, 1);				
+				}
 			}
 			
 			public function getResult():Object {
@@ -113,10 +115,10 @@
 		<s:VerticalLayout />
 	</s:layout>
 	
-	<s:RadioButton id="remoteConfig" selected="true" label="{Resources.getMessage('git.selectRepo.remote')}"
+	<s:RadioButton id="remoteConfig" selected="{showRemotesList}" label="{Resources.getMessage('git.selectRepo.remote')}"
 				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}" />
 		
-	<s:RadioButton id="customUri" label="{Resources.getMessage('git.selectRepo.uri')}" 
+	<s:RadioButton id="customUri" selected="{!showRemotesList}" label="{Resources.getMessage('git.selectRepo.uri')}" 
 				visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}"/>
 		<s:TextInput id="uriTextInput" width="100%" enabled="false" />		
 	
