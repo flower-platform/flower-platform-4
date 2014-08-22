@@ -18,7 +18,7 @@ flowerProject.config([ '$routeProvider', function($routeProvider) {
 		controller : 'ComposedCtrl',
 		resolve : {
 			template : function() {
-				return 'userForm';
+				return 'userProfile';
 			}
 		}
 	}).otherwise({

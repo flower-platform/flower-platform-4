@@ -1,0 +1,106 @@
+<div ng-controller="UserProfileCtrl">
+<!-- <div data-include="/partials/test.html"></div> -->
+	<p/>
+	<div id="userProfile"></div>
+	<div class="user-panel">
+		<div>
+			<h4>
+				<img src="images/user-image.png">
+				{{user.messageResult.properties.name}}
+			</h4>
+		</div>
+		
+		<nav class="navbar navbar-default" role="navigation">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand">Menu</a>
+		    </div>
+		    <div class="collapse navbar-collapse">
+		      <ul class="nav navbar-nav">
+		      	<li><a>Logout</a></li>
+		        <li><a data-toggle="modal" data-target="#myModal">Profile</a></li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+	</div>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+				<div class="group-password">
+					<h4>Change password</h4>
+					<div class="form-password">
+						<form class="well" role="form" id="form-password-change">
+								<dl class="form password-confirmation-form">
+									<dt>
+										<label class="control-label required">Old password</label>
+									</dt>
+									<dd>
+										<input id="user_old_password" type="password" required="required">
+									</dd>
+								</dl>
+								<dl class="form password-confirmation-form">
+									<dt>
+										<label class="control-label required">New password</label>
+									</dt>
+									<dd>
+										<input id="user_new_password" type="password" required="required">
+									</dd>
+								</dl>
+								<dl class="form password-confirmation-form">
+									<dt>
+										<label class="control-label required">Confirm new password</label>
+									</dt>
+									<dd>
+										<input id="user_confirm_password" type="password" required="required">
+									</dd>
+								</dl>
+								<p>
+									<button class="button">Change password</button>
+								</p>
+						</form>
+					</div>
+				</div>
+			
+				<div class="group-username">
+					<h4>Change username</h4>
+					<div class="form-username">
+						<form class="well" role="form" id="form-username-change">
+							<dl class="form change-username-form">
+								<dt>
+									<label class="control-label required">New login</label>
+								</dt>
+								<dd>
+									<input id="user_new_username" type="text" required="required">
+								</dd>
+							</dl>
+							<p>
+								<button class="button">Change username</button>
+							</p>
+						</form>
+					</div>
+				</div>
+				
+				<div class="group-delete">
+					<h4>Delete Account</h4>
+					<div class="form-delete">
+						<form class="well" role="form" id="form-delete-account">
+							<p>
+								<button class="button">Delete account</button>
+							</p>
+						</form>	
+					</div>	
+				</div>
+		    </div>
+		  </div>
+		</div>
+	
+</div>

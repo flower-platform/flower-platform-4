@@ -25,7 +25,9 @@ flowerServices.factory('Template', [function() {
 	
 	return {
 		userList: 'partials/userList.html',
-		userForm: 'partials/userForm.html'
+		userForm: 'partials/userForm.html',
+		userProfile: 'partials/userProfile.html',
+		userAccountSettings: 'partials/userAccountSettings.html'
 	}
 	
 }]);

@@ -1,0 +1,70 @@
+<!-- <div ng-controller="UserAccountSettingsCtrl"> -->
+
+<div class = "user-settings">
+	<br>
+	<div class="group-password">
+		<h4>Change password</h4>
+		<div class="form-password">
+			<form class="well" role="form" id="form-password-change">
+					<dl class="form password-confirmation-form">
+						<dt>
+							<label class="control-label required">Old password</label>
+						</dt>
+						<dd>
+							<input id="user_old_password" type="password" required="required">
+						</dd>
+					</dl>
+					<dl class="form password-confirmation-form">
+						<dt>
+							<label class="control-label required">New password</label>
+						</dt>
+						<dd>
+							<input id="user_new_password" type="password" required="required">
+						</dd>
+					</dl>
+					<dl class="form password-confirmation-form">
+						<dt>
+							<label class="control-label required">Confirm new password</label>
+						</dt>
+						<dd>
+							<input id="user_confirm_password" type="password" required="required">
+						</dd>
+					</dl>
+					<p>
+						<button class="button">Change password</button>
+					</p>
+			</form>
+		</div>
+	</div>
+
+	<div class="group-username">
+		<h4>Change username</h4>
+		<div class="form-username">
+			<form class="well" role="form" id="form-username-change">
+				<dl class="form change-username-form">
+					<dt>
+						<label class="control-label required">New login</label>
+					</dt>
+					<dd>
+						<input id="user_new_username" type="text" required="required">
+					</dd>
+				</dl>
+				<p>
+					<button class="button">Change username</button>
+				</p>
+			</form>
+		</div>
+	</div>
+	
+	<div class="group-delete">
+		<h4>Delete Account</h4>
+		<div class="form-delete">
+			<form class="well" role="form" id="form-delete-account">
+				<p>
+					<button class="button">Delete account</button>
+				</p>
+			</form>	
+		</div>	
+	</div>
+	
+</div>

@@ -59,3 +59,14 @@ flowerControllers.controller('UserFormCtrl', ['$scope', '$routeParams', '$locati
  		}
  	
  }]);
+
+flowerControllers.controller('UserProfileCtrl',  ['$scope', '$routeParams', 'User', 
+        function($scope, $routeParams, User) {
+
+		/**
+		 * Get the user from the server, or create new user for this $scope.
+		 */
+		$scope.user = $routeParams.id == 'new' ? new User() : User.get({ id: $routeParams.id });
+		
+		}
+]);
