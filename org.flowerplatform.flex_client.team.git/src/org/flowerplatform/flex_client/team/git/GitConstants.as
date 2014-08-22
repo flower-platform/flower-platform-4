@@ -60,10 +60,10 @@ package org.flowerplatform.flex_client.team.git {
 		public static const CURRENT_BRANCH:String = "currentBranch";		
 		public static const IS_CHECKEDOUT:String = "isCheckedOut";		
 		public static const FETCH_REF_SPECS:String = "fetchRefSpecs";
+
 		public static const PUSH_REF_SPECS:String = "pushRefSpecs";
 		public static const REMOTE_URIS:String = "URIs";
-		//public static const IS_CHECKEDOUT:String = "isCheckedOut";
-		//public static const CURRENT_BRANCH:String = "currentBranch";
+		public static const SERVER_URI:String = "serverUri"
 
 		/////////////////////////////////////////////////////////////
 		//Reset types

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+				paddingTop="5"
+				paddingRight="5"
+				paddingBottom="5"
+				paddingLeft="5"
+				creationComplete="creationCompleteHandler(event)"
+				implements="org.flowerplatform.flexutil.view_content_host.IViewContent" 
+				xmlns:ns1="org.flowerplatform.flex_client.team.git.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			import org.flowerplatform.flexutil.selection.ISelectionProvider;
+			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			/**
+			 * @author Marius Iacob
+			 */
+			
+			[Bindable]
+			public var repo:String;
+			[Bindable]
+			public var unstagedData:ArrayCollection;
+			[Bindable]
+			public var stagedData:ArrayCollection;
+			protected var _viewHost:IViewHost;
+			private var testAmend:Boolean = false;
+						
+			public function creationCompleteHandler(flexvent:FlexEvent):void{
+				refreshFromSelection();
+			}
+			
+			private function refreshFromSelection():void {
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				if (activeSelectionProvider != null) {
+					if (activeSelectionProvider.getSelection() == null || activeSelectionProvider.getSelection().length == 0 || !(activeSelectionProvider.getSelection().getItemAt(0) is Node)) { 
+						// happens when changing active view
+						return;
+					}
+					// get new selected node
+					var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
+					var index:int = node.nodeUri.indexOf("|");
+					if (index < 0) {
+						index = node.nodeUri.length;
+					}
+					if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
+						.categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) {
+						repo = node.nodeUri.substring(node.nodeUri.indexOf(":") + 1, index);
+						refresh();
+					}			
+				}				
+				
+			}
+						
+			public function additionalCloseHandler():void {
+				// TODO Auto Generated method stub
+			}
+			
+			public function get viewHost():IViewHost {
+				return _viewHost;
+			}
+			
+			public function set viewHost(value:IViewHost):void {
+				_viewHost = value;
+			}
+						
+			private function amendFunction(evt:Event):void {
+				if (evt.target.selected){
+					testAmend = true;
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.getAuthorAndCommiter", [repo, testAmend], function(data:ArrayCollection):void {author.text = String(data.getItemAt(1)); commiter.text = String(data.getItemAt(0)); commitMessage.text = String(data.getItemAt(2));});
+				} else {
+					testAmend = false;
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.getAuthorAndCommiter", [repo, testAmend], function(data:ArrayCollection):void {author.text = String(data.getItemAt(1)); commiter.text = String(data.getItemAt(0)); commitMessage.text = "";});
+				}
+			}
+			
+			private function commitFunction():void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.commitAndPush", [repo, testAmend, commitMessage.text] );
+				refresh();
+			}
+			
+			private function getAnArrayCollectionFromVector(vector:Vector.<Node>):ArrayCollection {
+				var list:ArrayCollection = new ArrayCollection();;
+				for each(var obj:Node in vector) {
+					list.addItem(obj.getPropertyValue(GitConstants.SERVER_URI));
+				}
+				return list;
+			}
+			
+			public function addToGitIndex(selectedItems:Vector.<Object>):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.addToGitIndex", [repo, getAnArrayCollectionFromVector(Vector.<Node>(selectedItems))]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getStageAndUnstageFiles", [repo], function(data:ArrayCollection):void {unstagedData = ArrayCollection(data.getItemAt(0)); stagedData = ArrayCollection(data.getItemAt(1))} );
+			}
+			
+			public function deleteFromGitIndex(selectedItems:Vector.<Object>):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.removeFromGitIndex", [repo, getAnArrayCollectionFromVector(Vector.<Node>(selectedItems))]);
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getStageAndUnstageFiles", [repo], function(data:ArrayCollection):void {unstagedData = ArrayCollection(data.getItemAt(0)); stagedData = ArrayCollection(data.getItemAt(1))} );
+			}
+			
+			private function refresh():void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getStageAndUnstageFiles", [repo], function(data:ArrayCollection):void {unstagedData = ArrayCollection(data.getItemAt(0)); stagedData = ArrayCollection(data.getItemAt(1))} );
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getAuthorAndCommiter", [repo, testAmend], function(data:ArrayCollection):void {commiter.text = String(data.getItemAt(0)); author.text = String(data.getItemAt(1)); if(testAmend) commitMessage.text = String(data.getItemAt(2));});
+			}
+			
+			protected function textInputCreationCompleteHandler(event:FlexEvent):void {
+				Utils.makePseudoDisabled(repoText);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%" 
+			  horizontalAlign="right">
+		<s:FormItem width="100%" 
+					label="{Resources.getMessage('team.git.Repository')}">
+			<s:TextInput id="repoText" 
+						 width="100%"
+						 creationComplete="textInputCreationCompleteHandler(event)" text="{repo}"/>
+		</s:FormItem>
+		<s:Button id="refreshButton" 
+				  creationComplete="{if (!FlexUtilGlobals.getInstance().isMobile) {refreshButton.width = refreshButton.height = 22}}" 
+				  click="refresh()"
+				  icon="{Resources.refreshIcon}"
+				  toolTip="{Resources.getMessage('team.git.Refresh')}"/>
+		<s:Button id="refreshSelectionButton" 
+				  creationComplete="{if (!FlexUtilGlobals.getInstance().isMobile) {refreshSelectionButton.width = refreshSelectionButton.height = 22}}" 
+				  click="refreshFromSelection()"
+				  icon="{Resources.refreshIcon}"
+				  toolTip="{Resources.getMessage('team.git.RefreshSelection')}"/>
+		<s:ToggleButton id="amendButton" 
+						creationComplete="{if (!FlexUtilGlobals.getInstance().isMobile) {amendButton.width = amendButton.height = 22}}" 
+						click="amendFunction(event)"
+						icon="{Resources.amendIcon}"
+						toolTip="{Resources.getMessage('team.git.Amend')}"/>
+	</s:HGroup>
+	<s:HGroup width="100%" 
+			  height="100%" 
+			  paddingTop="7">
+		<s:VGroup width="50%" 
+				  height="100%">	
+			<s:Label width="100%"
+					 text="{Resources.getMessage('team.git.Unstaged')} ({unstagedData.length})"
+					 verticalAlign="bottom"/>	
+			<ns1:GitStagingList id="unstagedChanges" 
+								width="100%" 
+								height="50%"
+								allowMultipleSelection="true"
+							    dataProvider="{unstagedData}" 
+								gitStagingView="{this}"
+								selectedNodes="{unstagedChanges.selectedItems}"
+							    showStageFiles="true"/>
+			<s:HGroup width="100%" 
+					  horizontalAlign="center">	
+				<s:Button id="addToIndex" 
+						  click="addToGitIndex(unstagedChanges.selectedItems)"
+						  enabled="{unstagedChanges.selectedItem != null}"
+						  icon="{Resources.arrowDownIcon}"
+						  toolTip="{Resources.getMessage('team.git.action.AddToGitIndex')}"/>
+				<s:Button id="removeFromIndex" 
+						  click="deleteFromGitIndex(stagedChanges.selectedItems)"
+						  enabled="{stagedChanges.selectedItem != null}"
+						  icon="{Resources.arrowUpIcon}"
+						  toolTip="{Resources.getMessage('team.git.action.RemoveFromGitIndex')}"/>
+			</s:HGroup>
+			<s:Label width="100%"
+					 text="{Resources.getMessage('team.git.Staged')} ({stagedData.length})"
+					 verticalAlign="bottom"/>
+			<ns1:GitStagingList id="stagedChanges" 
+								width="100%" 
+								height="50%"
+								allowMultipleSelection="true"
+							    dataProvider="{stagedData}" 
+								gitStagingView="{this}"
+								selectedNodes="{stagedChanges.selectedItems}"
+							    showStageFiles="false"/>
+		</s:VGroup>
+		<s:VGroup width="50%" 
+				  height="100%">
+			<s:Label text="{Resources.getMessage('git.commitMessage')}" 
+					 verticalAlign="bottom"/>	
+			<s:TextArea id="commitMessage" 
+						width="100%" 
+						height="100%" 
+						fontStyle="italic"/>
+			<s:Form width="100%">
+				<s:FormItem width="100%" 
+							label="{Resources.getMessage('team.git.Author')}">
+					<s:TextInput id="author" 
+								 width="100%"/>
+				</s:FormItem>
+				<s:FormItem width="100%" 
+							label="{Resources.getMessage('team.git.Commiter')}">
+					<s:TextInput id="commiter" 
+								 width="100%"/>
+				</s:FormItem>
+			</s:Form>
+			<s:HGroup width="100%" 
+					  horizontalAlign="center" 
+					  verticalAlign="middle">
+				<s:Button id="commitAndPush" 
+						  label="{Resources.getMessage('team.git.CommitPush')}"
+						  click="commitFunction()" 
+						  enabled="{commitMessage.text != ''}"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+</s:VGroup>

@@ -81,23 +81,13 @@ public class GitConstants {
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
 
-	/////////////////////////////////////////////////////////////
-	//Git File States
-	/////////////////////////////////////////////////////////////
-		
-	public static final String UNTRACKED = "images/team.git/untracked.gif";	
-	public static final String STAGE_REMOVED = "images/team.git/staged_removed.gif";
-	public static final String STAGE_ADDED = "images/team.git/staged_added.gif";
-	public static final String UNSTAGED = "images/team.git/unstaged.gif";
-	public static final String STAGED = "images/team.git/staged.gif";
-	public static final String FILE =  "images/core/file.gif";
-	public static final String CONFLICTED =  "images/team.git/conflict.gif";
 	
 	public static final String ADD = "ADD";	
 	public static final String DELETE = "DELETE";
 	public static final String MODIFY = "MODIFY";
 	public static final String RENAME = "RENAME";
 	public static final String COPY = "COPY";
+	public static final String SERVER_URI = "serverUri";
 
 	public static final String GIT_PREFIX_SESSION = "git|";
 
