@@ -424,6 +424,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/arrowUp.png")]
 		public static const arrowUpIcon:Class;
 		
+		[Embed(source="/mindmap/ExternalImageAddAction.png")]
+		public static const mindmap_customIconsIcon:Class;
+				
 		public static const mindmapIcons:Object = {
 			"help" : mindmap_helpIcon,
 			"yes" : mindmap_yesIcon,
@@ -525,7 +528,8 @@ package org.flowerplatform.flex_client.resources {
 			"addition" : mindmap_additionIcon,
 			"subtraction" : mindmap_subtractionIcon,
 			"multiplication" : mindmap_multiplicationIcon,
-			"division" : mindmap_divisionIcon
+			"division" : mindmap_divisionIcon,
+			"customIconsIcon" : mindmap_customIconsIcon
 		};
 		
 		[Embed(source="/properties/preference.png")]
