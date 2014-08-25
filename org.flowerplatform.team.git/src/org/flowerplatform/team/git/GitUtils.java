@@ -99,6 +99,7 @@ public class GitUtils {
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
+
 	/**
 	 * @author Cristina Constantienscu
 	 * @author Tita Andreea

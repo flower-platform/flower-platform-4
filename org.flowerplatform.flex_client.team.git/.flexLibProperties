@@ -22,6 +22,8 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.RevertCommitAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.ui.RebaseView"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
