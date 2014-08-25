@@ -17,6 +17,7 @@ package org.eclipse.equinox.servletbridge.flower;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -27,6 +28,9 @@ import java.nio.file.Paths;
 import java.security.Policy;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
 import org.eclipse.equinox.servletbridge.FrameworkLauncher;
@@ -104,6 +108,14 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 	
 	private static final String POLICY_FILE = "/WEB-INF/all.policy";
 	
+	private static final String FLOWER_PLATFORM_HOME = "FLOWER_PLATFORM_HOME";
+	
+	private static final String LAUNCHER_PROPERTIES = "/launcher.properties";
+	
+	private static final String WORKSPACE = "/workspace";
+	
+	private static final String FLOWER_PROPERTIES_DIRECTORY = "/.flower-properties";
+
 	@Override
 	public void init() {
 		super.init();
@@ -135,19 +147,59 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 	 * Reads the configuration file and generates some properties if in dev. mode.
 	 * @see web.xml file for parameter documentation
 	 * 
+	 * @author Cristian Spiescu
+	 * @author Cristina Brinza
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected Map buildInitialPropertyMap() {
+		// determining which is the Flower Platform Home dir
+		String flowerPlatformHomeDirectoryPath = System.getProperty(FLOWER_PLATFORM_HOME);
+		if (flowerPlatformHomeDirectoryPath == null) {
+			flowerPlatformHomeDirectoryPath = System.getenv(FLOWER_PLATFORM_HOME); 
+			if (flowerPlatformHomeDirectoryPath == null) {
+				flowerPlatformHomeDirectoryPath = System.getProperty("user.home") + FLOWER_PROPERTIES_DIRECTORY;
+			}
+			System.setProperty(FLOWER_PLATFORM_HOME, flowerPlatformHomeDirectoryPath);
+		}		
+		File homeFolder = new File(flowerPlatformHomeDirectoryPath);
+		if (!homeFolder.exists()) {
+			homeFolder.mkdirs();			
+		}
+		
+		String eclipseConfigurationLocation = "WEB-INF/eclipse/configuration";
+		String developmentLaunchConfiguration = null;
+		
+		// loading and parsing launcher properties
+		// an example can be found in META-INF/launcher.properties
+		File localPropertiesFile = new File(System.getProperty(FLOWER_PLATFORM_HOME) + LAUNCHER_PROPERTIES);
+		if (localPropertiesFile.exists()) {
+			// read the properties from local.properties
+			Properties localProperties = new Properties();
+			FileInputStream localPropertiesFileInputStream = null;
+			try {
+				localPropertiesFileInputStream = new FileInputStream(localPropertiesFile);
+				localProperties.load(localPropertiesFileInputStream);
+				developmentLaunchConfiguration = localProperties.getProperty("developmentLaunchConfiguration");
+				if (developmentLaunchConfiguration == null) {
+					eclipseConfigurationLocation = localProperties.getProperty("eclipseConfigurationLocation");
+				}
+			} catch (Exception e) {
+				// won't happen; file exists here
+			} finally {
+				if (localPropertiesFileInputStream != null)
+					try {
+						localPropertiesFileInputStream.close();
+					} catch (IOException e) {
+						// ignore
+					}
+			}
+		}
+		
 		Properties properties = new Properties();
 		String configFileLocation;
 		
-		String developmentLaunchConfigurationProperty = "developmentLaunchConfiguration" + 
-															(System.getProperty("os.name").startsWith("Windows") ? 
-																"Windows" : "Linux");
-		
 		// if in development mode, generate some properties + config file path
-		String developmentLaunchConfiguration = config.getInitParameter(developmentLaunchConfigurationProperty);
 		String osgiConfigurationArea = null;
 		String developmentWorkspaceRoot = null;
 		if (developmentLaunchConfiguration != null) {
@@ -157,10 +209,10 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			// osgi.configuration.area a.k.a. -configuration 
 			osgiConfigurationArea = String.format("%s/.metadata/.plugins/org.eclipse.pde.core/%s", developmentWorkspaceRoot, developmentLaunchConfiguration);
 			if (!(new File(osgiConfigurationArea).exists()))
-				throw new RuntimeException(osgiConfigurationArea + " file not found. Either the '" + developmentLaunchConfigurationProperty + "' is not correctly set or the Eclipse configuration was not generated (=> you need to launch the target launch config " + developmentLaunchConfiguration + " at least once directly from Eclipse).");
+				throw new RuntimeException(osgiConfigurationArea + " file not found. Either the 'developmentLaunchConfiguration' is not correctly set or the Eclipse configuration was not generated (=> you need to launch the target launch config " + developmentLaunchConfiguration + " at least once directly from Eclipse).");
 		} else {
 			// prod mode
-			String relativeOsgiConfigurationArea = config.getInitParameter("eclipseConfigurationLocation");
+			String relativeOsgiConfigurationArea = eclipseConfigurationLocation;
 			osgiConfigurationArea = context.getRealPath(relativeOsgiConfigurationArea);
 			if (!(new File(osgiConfigurationArea).exists())) {
 				throw new RuntimeException(osgiConfigurationArea + " file not found.");
@@ -210,27 +262,8 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		}
 		
 		// generate osgi.instance.area a.k.a. -data a.k.a. workspace location
-		String workspaceLocation = config.getInitParameter("workspaceLocation");
-		if (workspaceLocation == null)
-			throw new RuntimeException("'workspaceLocation' must be specified.");
-		String osgiInstanceArea;
-		// if in dev mode, the ws location is relative to the eclipse project/WebContent
-		if (developmentWorkspaceRoot != null) {
-			// previous versions (from SVN era)
-//			osgiInstanceArea = developmentWorkspaceRoot + context.getContextPath() + "/WebContent/" + workspaceLocation;
-//			osgiInstanceArea = developmentWorkspaceRoot + "/" + workspaceLocation;
-			Path path = Paths.get(context.getRealPath("absolute-path-helper.txt"));
-			byte[] encoded;
-			try {
-				encoded = Files.readAllBytes(path);
-			} catch (IOException e) {
-				throw new IllegalStateException("Dev flow step forgotten? The file 'absolute-path-helper.txt' was not found. Try to clean & CTRL + B, so that the external builder generates this file.", e);
-			}
-			String hostWebAppAbsolutePath = Charset.defaultCharset().decode(ByteBuffer.wrap(encoded)).toString();
-			osgiInstanceArea = hostWebAppAbsolutePath + "/" + workspaceLocation;
-		} else {
-			osgiInstanceArea = context.getRealPath(workspaceLocation);
-		}
+		String workspaceLocation = System.getProperty(FLOWER_PLATFORM_HOME) + WORKSPACE;
+		String osgiInstanceArea = workspaceLocation;		
 		
 		try {
 			// if path doesn't exist, create it
@@ -250,5 +283,4 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		properties.put("flower.server.tmpdir", ((File) context.getAttribute(context.getTempDir())).getAbsolutePath());
 		return properties;
 	}
-
 }

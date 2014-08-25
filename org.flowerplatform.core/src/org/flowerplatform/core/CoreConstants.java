@@ -199,4 +199,7 @@ public class CoreConstants {
 	public static final String USER_SUFFIX = ".user";
 		
 	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
+
+	public static final String FLOWER_PLATFORM_HOME = "FLOWER_PLATFORM_HOME";
+	public static final String DEFAULT_LOG_PATH = "META-INF/logback.xml";
 }

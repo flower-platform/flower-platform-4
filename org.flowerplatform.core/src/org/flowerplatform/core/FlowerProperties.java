@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -22,6 +24,8 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.flowerplatform.core.CoreConstants.FLOWER_PLATFORM_HOME;
 
 /**
  * Central repository for configuration related properties.
@@ -34,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
+ * @author Cristina Brinza
  */
 public class FlowerProperties extends Properties {
 
@@ -44,7 +49,7 @@ public class FlowerProperties extends Properties {
 	public static final long DB_VERSION = 0;
 	
 	private static final String PROPERTIES_FILE = "META-INF/flower-platform.properties";
-	private static final String PROPERTIES_FILE_LOCAL = PROPERTIES_FILE + ".local";
+	private static final String PROPERTIES_FILE_LOCAL = System.getProperty(FLOWER_PLATFORM_HOME) + "/flower-platform.properties";
 	
 	/* package */ FlowerProperties() {
 		super();
@@ -52,19 +57,22 @@ public class FlowerProperties extends Properties {
 		defaults = new Properties();
 		
 		// get properties from global and local file, if exists
-		try {
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE_LOCAL);
-			if (is != null) {
+		try {			
+			FileInputStream fis = new FileInputStream(new File(PROPERTIES_FILE_LOCAL));
+			if (fis != null) {
+				this.load(fis);
+				IOUtils.closeQuietly(fis);
+			}
+		} catch (IOException e) {
+			//throw new RuntimeException("Error while loading properties from local file.", e);
+		} finally {
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);			
+			try {
 				this.load(is);
 				IOUtils.closeQuietly(is);
-			} 
-			
-			is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);			
-			this.load(is);
-			IOUtils.closeQuietly(is);
-			
-		} catch (IOException e) {
-			throw new RuntimeException("Error while loading properties from local file.", e);
+			} catch (IOException e) {
+				// won't happen; PROPERTIES_FILE already exists
+			}
 		}
 	}
 	
