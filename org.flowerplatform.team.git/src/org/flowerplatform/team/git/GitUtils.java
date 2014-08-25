@@ -16,15 +16,19 @@
 package org.flowerplatform.team.git;
 
 import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
@@ -99,6 +103,7 @@ public class GitUtils {
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
+
 	/**
 	 * @author Cristina Constantienscu
 	 * @author Tita Andreea
@@ -189,4 +194,36 @@ public class GitUtils {
 		return sb.toString();
 	}
 		
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public static String handleRebaseResult(RebaseResult rebaseResult) {
+		StringBuilder sb = new StringBuilder();		
+		
+		sb.append("Status: ");
+		sb.append(rebaseResult.getStatus());
+		sb.append("\n");
+		
+		if (rebaseResult.getConflicts() != null) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for (String conflict : rebaseResult.getConflicts()) {
+				sb.append(conflict);
+				sb.append("\n");
+			}
+		}
+		
+		if (rebaseResult.getFailingPaths() != null) {
+			sb.append("\nFailing paths: ");
+			sb.append("\n");
+			for (String path : rebaseResult.getFailingPaths().keySet()) {
+				sb.append(path);
+				sb.append(" -> ");
+				sb.append(rebaseResult.getFailingPaths().get(path).toString());
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
+	}
+	
 }
