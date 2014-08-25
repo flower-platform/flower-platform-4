@@ -53,6 +53,7 @@ import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -481,15 +482,12 @@ public class GitService {
 	/**
 	 * 
 	 * @author Cojocea Marius Eduard
-	 * 
-	 * @param nodeUri
-	 * @throws Exception
 	 */	
-	public void rebase(String nodeUri) throws Exception {
+	public String rebase(String nodeUri, String hash) throws Exception {
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath) );
+		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
-		new Git(repo).rebase().setUpstream(GitUtils.getName(nodeUri)).call();
+		RebaseResult result = new Git(repo).rebase().setUpstream(hash).call();
 		
 		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
 		
@@ -502,6 +500,8 @@ public class GitService {
 				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
 				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		return GitUtils.handleRebaseResult(result);
 	}
 	
 	/** 

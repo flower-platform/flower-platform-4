@@ -9,14 +9,16 @@ package org.flowerplatform.flex_client.team.git.action{
 	
 	/**
 	 * @author Cojocea Marius Eduard
-	 */
-	
+	 */	
 	public class RebaseAction extends ActionBase{
+		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.RebaseAction";
 		
 		public function RebaseAction() {
 			super();
 			label = Resources.getMessage('flex_client.team.git.action.rebase');
 			icon = Resources.rebaseIcon;
+			orderIndex = 380;
 		}
 		
 		override public function get visible():Boolean {
@@ -39,8 +41,8 @@ package org.flowerplatform.flex_client.team.git.action{
 			rebaseView.node = Node(selection.getItemAt(0));
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(rebaseView)
-				.setWidth(350)
-				.setHeight(400)
+				.setWidth(500)
+				.setHeight(530)
 				.setTitle(label)
 				.setIcon(icon)
 				.show();

@@ -78,6 +78,7 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().registerAction(MergeAction);
 			FlexUtilGlobals.getInstance().registerAction(RenameBranchAction);
 			FlexUtilGlobals.getInstance().registerAction(ResetAction);
+			FlexUtilGlobals.getInstance().registerAction(RebaseAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowGitStagingAction);
 		
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
@@ -85,7 +86,6 @@ package org.flowerplatform.flex_client.team.git {
 
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingViewProvider());
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RebaseAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(PushAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
@@ -126,6 +126,7 @@ package org.flowerplatform.flex_client.team.git {
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(GitConstants.GIT_CATEGORY)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(MergeAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ResetAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RebaseAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowGitStagingAction.ID));
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(GitConstants.GIT_REF_CATEGORY)
