@@ -26,6 +26,7 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */
 	public class CloseAction extends WorkbenchAction {
+				
 		public static const CLOSE:int = 0;
 		
 		public static const CLOSE_ALL:int = 1;

@@ -50,6 +50,7 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
+			import mx.controls.TextArea;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
@@ -118,6 +119,7 @@
 			
 			// needed by .mindmap
 			TileLayout;
+			TextArea;
 			
 			// needed by .core
 			DateTimeFormatter;

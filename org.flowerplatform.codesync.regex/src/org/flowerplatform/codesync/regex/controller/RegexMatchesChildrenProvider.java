@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.regex.controller;
 
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
@@ -34,7 +49,13 @@ public class RegexMatchesChildrenProvider extends AbstractController implements 
 	
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(SKIP_PROVIDER) || !context.getBooleanValue(SHOW_GROUPED_BY_REGEX)) {
+		if (context.getBooleanValue(SKIP_PROVIDER)) {
+			return null;
+		}
+		
+		node.getOrPopulateProperties(new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+		
+		if ((boolean) node.getPropertyValue(SHOW_GROUPED_BY_REGEX)) { // the other children provider will be executed
 			return null;
 		}
 		

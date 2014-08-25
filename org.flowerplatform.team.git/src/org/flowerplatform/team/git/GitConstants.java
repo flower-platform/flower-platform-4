@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.team.git;
 
 import org.flowerplatform.util.UtilConstants;
@@ -8,13 +23,7 @@ import org.flowerplatform.util.UtilConstants;
 public class GitConstants {
 
 	/////////////////////////////////////////////////////////////
-	// Scheme
-	/////////////////////////////////////////////////////////////
-	
-	public static final String GIT_SCHEME = "git";
-
-	/////////////////////////////////////////////////////////////
-	// Node types
+	//Node type in Git folder hierarchy
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_REPO_TYPE = "gitRepo";
@@ -27,11 +36,21 @@ public class GitConstants {
 	public static final String GIT_TAG_TYPE = "gitTag";
 	public static final String GIT_REMOTE_TYPE = "gitRemote";
 		
+	////////////////////////////////////////////////////////////
+	//Categories
+	////////////////////////////////////////////////////////////
+	
 	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
-		
+	
 	/////////////////////////////////////////////////////////////
-	// Node Properties
+	//Schemes
+	/////////////////////////////////////////////////////////////
+	
+	public static final String GIT_SCHEME = "git";
+	
+	/////////////////////////////////////////////////////////////
+	// Git Node Properties
 	/////////////////////////////////////////////////////////////
 	
 	public static final String NAME = "name";
@@ -64,11 +83,30 @@ public class GitConstants {
 	 public static final String REMOTES_ICON = "remotes.gif";
 	 public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
 
+	public static final String AUTHOR = "author";
+	public static final String COMMITTER = "committer";
+	public static final String PREVIOUS_AUTHOR = "previous_author";
+	public static final String PREVIOUS_COMMIT_MESSAGE = "previous_commitMessage";
+
+	
 	/////////////////////////////////////////////////////////////
-	//Reset types
+	// Other
 	/////////////////////////////////////////////////////////////
+
+	public static final String TEPORARY_LOCATION = "\tmp";
+	public static final int NETWORK_TIMEOUT_SEC = 30;
 	
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
+
+	
+	public static final String ADD = "ADD";	
+	public static final String DELETE = "DELETE";
+	public static final String MODIFY = "MODIFY";
+	public static final String RENAME = "RENAME";
+	public static final String COPY = "COPY";
+	public static final String FILE_PATH = "filePath";
+
+	public static final String GIT_PREFIX_SESSION = "git|";
 }

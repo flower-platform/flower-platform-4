@@ -27,6 +27,7 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */
 	public class UndockAction extends WorkbenchAction {
+		
 		public function UndockAction(bench:Workbench) {
 			super(bench);
 			label = UtilAssets.INSTANCE.getMessage("layout.action.undock");

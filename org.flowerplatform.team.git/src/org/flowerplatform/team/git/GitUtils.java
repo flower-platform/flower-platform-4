@@ -15,21 +15,30 @@
  */
 package org.flowerplatform.team.git;
 
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.util.FS;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 
@@ -80,7 +89,7 @@ public class GitUtils {
 		return getGitDir(file) != null;
 	}
 
-	public static String getType(String nodeUri){
+	public static String getType(String nodeUri) {
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
 		if (indexEnd < indexStart) {
@@ -89,11 +98,12 @@ public class GitUtils {
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 	
-	public static String getName(String nodeUri){
+	public static String getName(String nodeUri) {
 		int indexStart = nodeUri.indexOf("$");
 		int indexEnd = nodeUri.length();
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
+
 	/**
 	 * @author Cristina Constantienscu
 	 * @author Tita Andreea
@@ -156,15 +166,64 @@ public class GitUtils {
 		return sb.toString();
 	}
 
-	public static String getNodeUri(String repoPath,String type,String name){
-		if (name != null){
-			return GIT_SCHEME + ":" + repoPath + "|" + type + "$" + name;
-		}
-		return GIT_SCHEME + ":" + repoPath + "|" + type;
+	public static String getNodeUri(String repoPath,String type,String name) {
+		return CoreUtils.createNodeUriWithRepo(GIT_SCHEME, repoPath, type + (name != null ? "$" + name : ""));	
 	}
-
+	
 	public static String getNodeUri(String repoPath,String type){
 		return getNodeUri(repoPath, type, null);
+	}
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public static String handlePushResult(PushResult pushResult) {
+		StringBuilder sb = new StringBuilder();		
+		
+		sb.append(pushResult.getMessages());
+		sb.append("\n");
+		
+		for (RemoteRefUpdate rru : pushResult.getRemoteUpdates()) {
+			String rm = rru.getRemoteName();
+			RemoteRefUpdate.Status status = rru.getStatus();
+			sb.append(rm);
+			sb.append(" -> ");
+			sb.append(status.name());
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+		
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public static String handleRebaseResult(RebaseResult rebaseResult) {
+		StringBuilder sb = new StringBuilder();		
+		
+		sb.append("Status: ");
+		sb.append(rebaseResult.getStatus());
+		sb.append("\n");
+		
+		if (rebaseResult.getConflicts() != null) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for (String conflict : rebaseResult.getConflicts()) {
+				sb.append(conflict);
+				sb.append("\n");
+			}
+		}
+		
+		if (rebaseResult.getFailingPaths() != null) {
+			sb.append("\nFailing paths: ");
+			sb.append("\n");
+			for (String path : rebaseResult.getFailingPaths().keySet()) {
+				sb.append(path);
+				sb.append(" -> ");
+				sb.append(rebaseResult.getFailingPaths().get(path).toString());
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
 	}
 	
 }
