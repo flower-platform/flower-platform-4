@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	/**
 	 * @author Mariana Gheorghe
 	 * @author Cristina Constantinescu
+	 * @author Cristina Brinza
 	 */
 	public class OpenAction extends ActionBase {
 		

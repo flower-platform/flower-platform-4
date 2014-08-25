@@ -390,6 +390,7 @@ package org.flowerplatform.flex_client.core {
 		 * @author Mariana Gheorghe
 		 * @author Claudiu Matei
 		 * @author Cristina Constantinescu
+		 * @author Cristina Brinza
 		 */
 		public function openEditor(resourceUri:String, ct:String = null, addEditorInRight:Boolean = false):UIComponent {
 			if (ct == null) {
