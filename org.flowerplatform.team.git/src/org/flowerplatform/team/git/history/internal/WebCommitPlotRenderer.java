@@ -24,6 +24,7 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revplot.AbstractPlotRenderer;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.team.git.GitConstants;
 
 /**
  *	@author Cristina Constantinescu
@@ -68,55 +69,53 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void drawLine(String color, int x1, int y1, int x2, int y2, int width) {
-		Object existingLine =  new  ArrayList<Object>();	
-			existingLine = drawings.getProperties().get(GitHistoryConstants.DRAW_LINE_LIST);
+		ArrayList<Object> existingLine = (ArrayList<Object>)drawings.getProperties().get(GitConstants.DRAW_LINE_LIST);
 		if (existingLine == null) {
 			ArrayList<Object> line = new ArrayList<Object>();		
-			line.add(GitHistoryConstants.DRAW_LINE);
+			line.add(GitConstants.DRAW_LINE);
 			line.add(x1);
 			line.add(y1);
 			line.add(x2);
 			line.add(y2);		
 			line.add(width);
 			line.add(color);
-			drawings.getProperties().put(GitHistoryConstants.DRAW_LINE_LIST,line);			
-		}
-		else {
-			((ArrayList<Object>)existingLine).add(GitHistoryConstants.DRAW_LINE);
-			((ArrayList<Object>)existingLine).add(x1);
-			((ArrayList<Object>)existingLine).add(y1);
-			((ArrayList<Object>)existingLine).add(x2);
-			((ArrayList<Object>)existingLine).add(y2);	
-			((ArrayList<Object>)existingLine).add(width);
-			((ArrayList<Object>)existingLine).add(color);			
-			drawings.getProperties().put(GitHistoryConstants.DRAW_LINE_LIST,existingLine);
+			drawings.getProperties().put(GitConstants.DRAW_LINE_LIST, line);			
+		} else {
+			existingLine.add(GitConstants.DRAW_LINE);
+			existingLine.add(x1);
+			existingLine.add(y1);
+			existingLine.add(x2);
+			existingLine.add(y2);	
+			existingLine.add(width);
+			existingLine.add(color);			
+			drawings.getProperties().put(GitConstants.DRAW_LINE_LIST, existingLine);
 		}				
 	}
 
 	@Override
 	protected void drawCommitDot(int x, int y, int w, int h) {
 		ArrayList<Object> line = new ArrayList<Object>();
-		line.add(GitHistoryConstants.DRAW_DOT);
+		line.add(GitConstants.DRAW_DOT);
 		line.add(x);
 		line.add(y);
 		line.add(w);
 		line.add(h);		
 		line.add(commitDotOutline);
 		line.add(commitDotFill);
-		drawings.getProperties().put(GitHistoryConstants.DRAW_COMMIT_DOT,line);
+		drawings.getProperties().put(GitConstants.DRAW_COMMIT_DOT, line);
 	}
 
 	@Override
 	protected void drawBoundaryDot(int x, int y, int w, int h) {
 		ArrayList<Object> line = new ArrayList<Object>();
-		line.add(GitHistoryConstants.DRAW_DOT);
+		line.add(GitConstants.DRAW_DOT);
 		line.add(x);
 		line.add(y);
 		line.add(w);
 		line.add(h);		
 		line.add(gray);
 		line.add(white);
-		drawings.getProperties().put(GitHistoryConstants.DRAW_BOUNDARY_DOT,line);		
+		drawings.getProperties().put(GitConstants.DRAW_BOUNDARY_DOT, line);		
 	}
 
 	@Override

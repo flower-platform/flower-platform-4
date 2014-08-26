@@ -24,8 +24,8 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
-	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
+	import org.flowerplatform.flex_client.team.git.history.GitHistoryViewProvider;
+	import org.flowerplatform.flex_client.team.git.history.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
 	import org.flowerplatform.flex_client.team.git.action.LoginAction;
@@ -60,7 +60,7 @@ package org.flowerplatform.flex_client.team.git {
 			INSTANCE = this;
 			
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
-			CorePlugin.getInstance().serviceLocator.addService("HistoryService");
+			CorePlugin.getInstance().serviceLocator.addService("gitHistoryService");
 						
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);		

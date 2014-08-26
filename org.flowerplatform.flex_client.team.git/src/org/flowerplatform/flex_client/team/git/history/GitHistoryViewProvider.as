@@ -1,8 +1,8 @@
-package org.flowerplatform.flex_client.team.git.action.history {
+package org.flowerplatform.flex_client.team.git.history {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.action.history.ui.GitHistoryView;
+	import org.flowerplatform.flex_client.team.git.history.ui.GitHistoryView;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
@@ -11,7 +11,7 @@ package org.flowerplatform.flex_client.team.git.action.history {
 	 */ 
 	public class GitHistoryViewProvider extends AbstractViewProvider {
 		
-		public static const ID:String = "githistory";
+		public static const ID:String = "gitHistory";
 		
 		override public function getId():String {
 			return ID;
@@ -19,8 +19,9 @@ package org.flowerplatform.flex_client.team.git.action.history {
 		
 		override public function createView(viewLayoutData:ViewLayoutData):UIComponent {		
 			return new GitHistoryView();
-		}		
-		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
+		}	
+		
+		override public function getTitle(viewLayoutData:ViewLayoutData=null):String {
 			return Resources.getMessage("gitHistory.view");
 		}		
 		

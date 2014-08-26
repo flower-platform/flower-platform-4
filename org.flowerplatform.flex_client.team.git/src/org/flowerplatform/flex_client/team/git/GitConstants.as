@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flex_client.team.git {
 
+	import mx.collections.ArrayCollection;
+	
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	public class GitConstants {
@@ -82,5 +84,70 @@ package org.flowerplatform.flex_client.team.git {
 		public static const FILE_DELETED:String = "DELETE";
 		public static const FILE_RENAMED:String = "RENAME";
 		public static const FILE_COPIED:String = "COPY";
+		
+		//////////////////////////////////
+		// Git History Node properties
+		//////////////////////////////////
+		
+		public static const ID:String = "ID";
+		
+		public static const ENTRY_SHORT_ID:String = "ShortId";
+		
+		public static const SHORT_MESSAGE:String = "shortMessage";
+		
+		public static const LONG_MESSAGE:String = "longMessage";
+		
+		public static const AUTHOR:String = "Author";
+		
+		public static const AUTHOR_EMAIL:String = "AuthorEmail";
+		
+		public static const AUTHORED_DATE:String = "AuthoredDate";
+		
+		public static const COMMITTER:String = "Committer";
+		
+		public static const COMMITTER_EMAIL:String = "CommitterEmail";
+		
+		public static const COMMITER_DATE:String = "CommitteredDate";
+		
+		public static const SPECIAL_MESSAGE:String = "SpecialMessage";
+		
+		public static const DRAWINGS:String = "Drawings"; 
+		
+		public static const DRAW_LINE:String = "drawLine";
+		
+		public static const DRAW_DOT:String = "drawDot";
+		
+		public static const DRAW_LINE_LIST:String = "drawLineList";
+		
+		public static const DRAW_COMMIT_DOT:String = "drawCommitDot";
+		
+		public static const DRAW_BOUNDARY_DOT:String = "drawBoundaryDot";		
+		
+		public static const FILES:String = "files";
+		
+		public static const IMG:String = "img";
+		
+		public static const PARENT:String = "parent";
+		
+		public static const CHILD:String = "child";		
+		
+		public static const BRANCHES:String = "branches";
+		
+		public static const WEBCOMMIT:String = "webcommit";
+		
+		public static const COMMIT_ID:String = "commitID";
+		
+		public static const COMMIT_SHORT_ID:String = "commitShortId";
+		
+		public static const LABEL:String = "label";
+		
+		public static const IMAGE:String = "image";
+		
+		public static const TAGS:String = "tags";
+		
+		public static const COLORS:ArrayCollection = new ArrayCollection(new Array( 
+			"#C78639", "#839662", "#C57B7F", "#308790", "#BE5D42", "#6565D9",
+			"#489977", "#1765A0", "#FF8A01", "#7BBB5F", "#E95862", "#5D9EFE", 
+			"#E8A815", "#00ACBF", "#FB3A04", "#3F40FF", "#1BC282", "#0068B7"));
 	}
 }

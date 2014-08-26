@@ -608,6 +608,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/refresh.gif")]
 		public static const refreshIcon:Class;
 		
+		[Embed(source="/mindmap/switch.gif")]
+		public static const switchIcon:Class;
+		
 		[Embed(source="/mindmap/comments.gif")]
 		public static const commentsIcon:Class;
 		

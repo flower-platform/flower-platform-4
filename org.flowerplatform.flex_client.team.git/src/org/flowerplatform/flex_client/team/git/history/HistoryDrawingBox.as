@@ -16,13 +16,14 @@
  *
  * license-end
  */
-package org.flowerplatform.flex_client.team.git {
+package org.flowerplatform.flex_client.team.git.history {
 	
 	import mx.collections.ArrayCollection;
 	
 	import spark.components.gridClasses.GridItemRenderer;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 
 	/**
 	 *	@author Cristina Constantinescu
@@ -66,24 +67,24 @@ package org.flowerplatform.flex_client.team.git {
 			}
 			
 			graphics.clear();
-			var drawingNode:Node = Node(Node(data).getPropertyValue(GitHistoryConstants.DRAWINGS));
+			var drawingNode:Node = Node(Node(data).getPropertyValue(GitConstants.DRAWINGS));
 			
 			for (var key:String in drawingNode.properties) {
-				if (key == GitHistoryConstants.DRAW_LINE) {
+				var drawingKey:ArrayCollection = ArrayCollection(drawingNode.getPropertyValue(key));
+				if (key == GitConstants.DRAW_LINE) {
 					var lines:Number = ArrayCollection(drawingNode.getPropertyValue(key)).length; 
-					
 					for (var i:Number = 1; i < lines; i += 7) {
 						drawLine(
-							int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(i)), int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(i+1)),
-							int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(i+2)), int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(i+3)),
-							int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(i+4)), parseColor(String(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(i+5))));													
+							int(drawingKey.getItemAt(i)), int(drawingKey.getItemAt(i+1)),
+							int(drawingKey.getItemAt(i+2)), int(drawingKey.getItemAt(i+3)),
+							int(drawingKey.getItemAt(i+4)), parseColor(String(drawingKey.getItemAt(i+5))));													
 					}											
 				}
-				else if (key == GitHistoryConstants.DRAW_COMMIT_DOT || key == GitHistoryConstants.DRAW_BOUNDARY_DOT) {
+				else if (key == GitConstants.DRAW_COMMIT_DOT || key == GitConstants.DRAW_BOUNDARY_DOT) {
 					drawDot(
-						int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(1)), int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(2)),
-						int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(3)), int(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(4)),
-						parseColor(String(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(5))), parseColor(String(ArrayCollection(drawingNode.getPropertyValue(key)).getItemAt(6))));
+						int(drawingKey.getItemAt(1)), int(drawingKey.getItemAt(2)),
+						int(drawingKey.getItemAt(3)), int(drawingKey.getItemAt(4)),
+						parseColor(String(drawingKey.getItemAt(5))), parseColor(String(drawingKey.getItemAt(6))));
 				}
 			}		
 		}
