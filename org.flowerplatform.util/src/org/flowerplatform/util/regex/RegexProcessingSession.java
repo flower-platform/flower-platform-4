@@ -42,23 +42,23 @@ public class RegexProcessingSession {
 	
 	protected int currentMatchGroupIndex;
 	
-	protected AbstractRegexWithAction currentRegex;
+	protected AbstractRegexWithActions currentRegex;
 	
 	protected String[] currentSubMatchesForCurrentRegex;
 	
 	// TODO CS: move to map
-	public boolean ignoreMatches;
-	public int currentNestingLevel;
+	// public boolean ignoreMatches;
+	// public int currentNestingLevel;
 	
 	protected String lastMatchCategory;
 	
 	// TODO CS: move to map
-	public Object currentNode; // type Node, but util cannot depend on core. 
-	public HashMap<String, Object> specificInfo;
-	public List<State> stateStack;	
-	public boolean DO_NOT_EXECUTE_OTHER_ACTIONS = false;
+	// public Object currentNode; // type Node, but util cannot depend on core. 
+	// public HashMap<String, Object> specificInfo;
+	// public List<Object> stateStack;	
+	// public boolean DO_NOT_EXECUTE_OTHER_ACTIONS = false;
 	
-	protected Map<Object, Object> context;
+	public Map<Object, Object> context;
 	
 	public Matcher getMatcher() {
 		return matcher;
@@ -72,7 +72,7 @@ public class RegexProcessingSession {
 		return currentMatchGroupIndex;
 	}
 
-	public AbstractRegexWithAction getCurrentRegex() {
+	public AbstractRegexWithActions getCurrentRegex() {
 		return currentRegex;
 	}
 
@@ -95,9 +95,12 @@ public class RegexProcessingSession {
 			matcher.reset();
 		}
 		// TODO CS: move
-		ignoreMatches = !configuration.useUntilFoundThisIgnoreAll ? false : true;
-		currentNestingLevel = 0;
-
+		//ignoreMatches = !configuration.useUntilFoundThisIgnoreAll ? false : true;
+		// ignoreMatches = configuration.useUntilFoundThisIgnoreAll;
+		context.put("ignoreMatches", !configuration.useUntilFoundThisIgnoreAll ? false : true);
+		context.put("currentNestingLevel", 0);
+		context.put("currentNode", null);
+		context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
 	}
 
 	public boolean find() throws RegexException {

@@ -8,6 +8,6 @@ public class UntilFoundThisIgnoreAll extends RegexWithActions {
 
 	@Override
 	public void executeAction(RegexProcessingSession session) {
-		session.ignoreMatches = false;
+		session.context.put("ignoreMatches", false);
 	}
 }

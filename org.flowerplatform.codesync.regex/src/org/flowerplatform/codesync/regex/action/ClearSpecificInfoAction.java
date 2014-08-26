@@ -16,7 +16,7 @@ public class ClearSpecificInfoAction   extends RegexAction{
 
 	@Override
 	public void executeAction(RegexProcessingSession param) {
-		param.specificInfo.remove(clearInfoKey);
+		param.context.remove(clearInfoKey);
 	}
 
 }

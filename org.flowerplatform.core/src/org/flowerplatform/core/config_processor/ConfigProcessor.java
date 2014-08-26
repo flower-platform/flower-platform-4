@@ -25,6 +25,7 @@ public class ConfigProcessor {
 			return;
 		}
 		IConfigNodeProcessor<Object, Object> processor = descriptor.getSingleController(CONFIG_NODE_PROCESSOR, node);
+		if(processor == null) return;
 		// I need to know the dataStructure of the current node, in order to know where to add its children
 		Object nodeProcessedDataStructure = processor.processConfigNode(node, parentProcessedDataStructure, service);
 

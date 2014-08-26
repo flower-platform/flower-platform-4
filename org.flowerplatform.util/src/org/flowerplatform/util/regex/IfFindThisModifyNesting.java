@@ -11,7 +11,8 @@ public class IfFindThisModifyNesting extends RegexWithActions {
 
 	@Override
 	public void executeAction(RegexProcessingSession session) {
-		session.currentNestingLevel += increment;
+		int currentNestingLevel = (int) session.context.get("currentNestingLevel");
+		session.context.put("currentNestingLevel", currentNestingLevel + increment);
 	}
 
 }

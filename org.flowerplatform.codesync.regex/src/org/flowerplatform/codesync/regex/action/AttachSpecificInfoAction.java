@@ -24,11 +24,11 @@ public class AttachSpecificInfoAction extends RegexAction {
 
 	@Override
 	public void executeAction(RegexProcessingSession param) {
-		Node currentNode = (Node) param.currentNode;
+		Node currentNode = (Node)param.context.get("currentNode");
 		ServiceContext<NodeService> serviceContext;
 		if (isContainment) {
 			// attach info as children
-			Object currentValue = param.specificInfo.get(attachInfoKey);
+			Object currentValue = param.context.get(attachInfoKey);
 			if(currentValue instanceof List){
 				List<Object> listOfChildrenToBeAdded = (List<Object>) currentValue;
 				for(Object child : listOfChildrenToBeAdded){
@@ -41,7 +41,7 @@ public class AttachSpecificInfoAction extends RegexAction {
 		} else {
 			// attach info as properties in the properties map
 			serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-			CorePlugin.getInstance().getNodeService().setProperty(currentNode, attachInfoKey, param.specificInfo.get(attachInfoKey), serviceContext);
+			CorePlugin.getInstance().getNodeService().setProperty(currentNode, attachInfoKey, param.context.get(attachInfoKey), serviceContext);
 		}
 	}
 

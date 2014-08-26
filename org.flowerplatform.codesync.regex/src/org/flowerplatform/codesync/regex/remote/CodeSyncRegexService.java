@@ -16,7 +16,6 @@ import static org.flowerplatform.core.CoreConstants.NAME;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +23,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
+import org.flowerplatform.codesync.regex.State;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -40,7 +40,6 @@ import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexProcessingSession;
 import org.flowerplatform.util.regex.RegexWithActions;
-import org.flowerplatform.util.regex.State;
 
 /**
  * @author Cristina Constantinescu
@@ -101,11 +100,10 @@ public class CodeSyncRegexService {
 		// start session
 		final RegexProcessingSession session = regexConfig.startSession(textFileContent);
 		
-		session.stateStack = new ArrayList<State>();
+		session.context.put("stateStack", new ArrayList<Object>());
 		Node child = new Node(null, FILE);
 		nodeService.addChild(matchRoot, child, context);
-		session.stateStack.add(0, new State(0, child));
-		session.specificInfo = new HashMap<String, Object>(); 
+		((ArrayList<Object>)session.context.get("stateStack")).add(0, new State(0, child));
 		// find matches
 		session.find(new Runnable() {
 			int currentIndex = 1;			
@@ -140,17 +138,20 @@ public class CodeSyncRegexService {
 						context = new ServiceContext<NodeService>();
 						context.getContext().put(NAME, session.getCurrentSubMatchesForCurrentRegex()[i]);
 						
-						start = formatIndex(textFileContent, session.getMatcher().start(index));
+						int startIndex = session.getMatcher().start(index);
+						
+						if(startIndex == -1) continue;
+						
+						start = formatIndex(textFileContent, startIndex);
 						context.getContext().put(START, String.format("L%d C%d", start[0], start[1]));
 						context.getContext().put(START_L, start[0]);
 						context.getContext().put(START_C, start[1]);
 						
-						end = formatIndex(textFileContent, session.getMatcher().end(index));
+						int endIndex = session.getMatcher().end(index);
+						end = formatIndex(textFileContent, endIndex);
 						context.getContext().put(END, String.format("L%d C%d", end[0], end[1]));
 						context.getContext().put(END_L, end[0]);
 						context.getContext().put(END_C, end[1]);
-						
-						context.getContext().put(END, String.format("L%d C%d", end[0], end[1]));
 						nodeService.addChild(match, new Node(null, REGEX_MATCH_TYPE), context);
 					}
 				}

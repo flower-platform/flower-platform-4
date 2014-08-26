@@ -3,6 +3,7 @@ package org.flowerplatform.codesync.regex.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
 
@@ -24,21 +25,22 @@ public class KeepSpecificInfoAction extends RegexAction {
 	public void executeAction(RegexProcessingSession param) {
 		Object newInfo = null;
 		if (isContainment) {
-			newInfo = param.currentNode;
+			Node currentNode = (Node)param.context.get("currentNode");
+			newInfo = currentNode;
 		} else {
 			newInfo = new String(param.getCurrentSubMatchesForCurrentRegex()[0]);
 		}
 		if (isList) {
 			List<Object> currentList = null;
-			if (param.specificInfo.get(keepInfoKey) == null) {
+			if (param.context.get(keepInfoKey) == null) {
 				currentList = new ArrayList<Object>();
 			} else {
-				currentList = (List<Object>) param.specificInfo.get(keepInfoKey);
+				currentList = (List<Object>) param.context.get(keepInfoKey);
 			}
 			currentList.add(newInfo);
-			param.specificInfo.put(keepInfoKey, currentList);
+			param.context.put(keepInfoKey, currentList);
 		} else {
-			param.specificInfo.put(keepInfoKey, newInfo);
+			param.context.put(keepInfoKey, newInfo);
 		}
 	}
 }

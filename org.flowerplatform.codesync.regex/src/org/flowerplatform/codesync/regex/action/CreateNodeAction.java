@@ -28,13 +28,14 @@ public class CreateNodeAction extends RegexAction{
 		String listOfValues[] = param.getCurrentSubMatchesForCurrentRegex(); 
 		int i, n;
 		if(listOfValues != null){
-			n = listOfValues.length;
+			n = listOfValues.length; //because I can have more properties than actual capture groups;
 			for(i = 0; i < n; i++){
+				if(listOfValues[i] == null)continue;
 				listOfProperties.put(properties.get(i), listOfValues[i]);
 			}
 		}
 		c.setProperties(listOfProperties);
-		param.currentNode  = c;
+		param.context.put("currentNode", c);
 	}
 
 }

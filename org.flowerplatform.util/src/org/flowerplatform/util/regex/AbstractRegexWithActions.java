@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * @author Cristina Constantinescu
  */
-public abstract class AbstractRegexWithAction {
+public abstract class AbstractRegexWithActions {
 
 	protected String name;
 	protected String regex;

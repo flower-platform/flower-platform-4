@@ -24,8 +24,7 @@ import java.util.List;
 /**
  * @author Cristina Constantinescu
  */
-// de mutat in .util; rename RegexWithActions
-public class RegexWithActions extends AbstractRegexWithAction {
+public class RegexWithActions extends AbstractRegexWithActions {
 
 	protected List<RegexAction> actions = new ArrayList<RegexAction>();
 
@@ -50,9 +49,10 @@ public class RegexWithActions extends AbstractRegexWithAction {
 	@Override
 	public void executeAction(RegexProcessingSession session) {
 		List<RegexAction> listOfRegexActionsAvailable = getRegexActions();
-		session.DO_NOT_EXECUTE_OTHER_ACTIONS = false;
+//		session.DO_NOT_EXECUTE_OTHER_ACTIONS = false;
+		session.context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
 		for (RegexAction listItem : listOfRegexActionsAvailable) {
-			if (session.DO_NOT_EXECUTE_OTHER_ACTIONS) {
+			if ((boolean)session.context.get("DO_NOT_EXECUTE_OTHER_ACTIONS")) {
 				break;
 			}
 			listItem.executeAction(session);

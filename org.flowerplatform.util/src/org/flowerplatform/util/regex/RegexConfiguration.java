@@ -33,9 +33,9 @@ public class RegexConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegexConfiguration.class); 
 
-	protected List<AbstractRegexWithAction> regexes = new ArrayList<AbstractRegexWithAction>();
+	protected List<AbstractRegexWithActions> regexes = new ArrayList<AbstractRegexWithActions>();
 	
-	protected AbstractRegexWithAction[] captureGroupToRegexMapping;
+	protected AbstractRegexWithActions[] captureGroupToRegexMapping;
 	
 	protected Pattern pattern;
 	
@@ -61,12 +61,12 @@ public class RegexConfiguration {
 		return this;
 	}
 
-	public RegexConfiguration add(AbstractRegexWithAction regex) {
+	public RegexConfiguration add(AbstractRegexWithActions regex) {
 		regexes.add(regex);
 		return this;
 	}
 		
-	public List<AbstractRegexWithAction> getRegexes() {
+	public List<AbstractRegexWithActions> getRegexes() {
 		return regexes;
 	}
 
@@ -76,10 +76,10 @@ public class RegexConfiguration {
 	 */
 	protected void createCaptureGroupToRegexMappingArray() {
 		int nextCaptureGroupIndex = 1;
-		for (AbstractRegexWithAction regex : regexes) {
+		for (AbstractRegexWithActions regex : regexes) {
 			nextCaptureGroupIndex += 1 + regex.getNumberOfCaptureGroups();
 		}
-		captureGroupToRegexMapping = new AbstractRegexWithAction[nextCaptureGroupIndex];
+		captureGroupToRegexMapping = new AbstractRegexWithActions[nextCaptureGroupIndex];
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class RegexConfiguration {
 		for (int i = 0; i < regexes.size(); i++) {
 			composedRegex.append('(');
 		
-			AbstractRegexWithAction regex = regexes.get(i);
+			AbstractRegexWithActions regex = regexes.get(i);
 			
 			if (logger.isTraceEnabled()) {
 				logger.trace("Adding to capture group = {} regex = {} having {} capture groups", new Object[] { nextCaptureGroupIndex, regex.getRegex(), regex.getNumberOfCaptureGroups()});
@@ -132,7 +132,7 @@ public class RegexConfiguration {
 		return session;
 	}
 
-	public AbstractRegexWithAction[] getCaptureGroupToRegexMapping() {
+	public AbstractRegexWithActions[] getCaptureGroupToRegexMapping() {
 		return captureGroupToRegexMapping;
 	}
 		
