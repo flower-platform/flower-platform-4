@@ -14,9 +14,11 @@
 	<packaging>swc</packaging>
 
 	<properties>
+		<sourceDirectory>src</sourceDirectory>
 		<!-- override default dirs; the Eclipse build uses linked resources -->
 		<messagesDirectory>../org.flowerplatform.resources/public-resources/messages</messagesDirectory>
 		<iconsDirectory>../org.flowerplatform.resources/public-resources/images</iconsDirectory>
+		<output.flex.prefix>..</output.flex.prefix>
 	</properties>
 
 	<dependencies>

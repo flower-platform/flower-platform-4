@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!-- 
  @author Valentina-Camelia Bojan
@@ -149,7 +149,7 @@ license-end
 			override protected function okHandler(event:Event=null):void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createStructureDiffFromGitCommits", 
 					[startHash.text, endHash.text, repo, 
-					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.getTextInput()])],
+					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.text])],
 					function(node:Node):void {
 						CorePlugin.getInstance().openEditor(node);
 						cancelHandler();
@@ -202,7 +202,7 @@ license-end
 		</s:VGroup>
 		
 		<cs:TextInputWithAutoCompleteLabelComponent id="outputFileComponent"
-													autoCompletelabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
+													autoCompleteLabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
 													labelText="{Resources.getMessage('codesync.sdiff.createSdiff.fileName')}"/>
 	</s:VGroup>	
 	

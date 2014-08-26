@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.codesync.as.type_provider;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CLASS;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.CONST;
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.FUNCTION;
@@ -43,15 +42,12 @@ import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.definitions.SyntheticBindableGetterDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
-import org.flowerplatform.codesync.CodeSyncConstants;
-import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
-import org.flowerplatform.codesync.type_provider.ITypeProvider;
-import org.flowerplatform.core.file.IFileAccessController;
+import org.flowerplatform.codesync.type_provider.FileTypeProvider;
 
 /**
  * @author Mariana Gheorghe
  */
-public class AsTypeProvider implements ITypeProvider {
+public class AsTypeProvider extends FileTypeProvider {
 
 	@Override
 	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm) {
@@ -82,15 +78,7 @@ public class AsTypeProvider implements ITypeProvider {
 			return META_TAG;
 		} else if (object instanceof IMetaTagAttribute) {
 			return META_TAG_ATTRIBUTE;
-		} else if (object instanceof CodeSyncFile) {
-			return FILE;
 		}
-		IFileAccessController fileAccessController = codeSyncAlgorithm.getFileAccessController();
-		if (fileAccessController.isFile(object)) {
-			if (fileAccessController.isDirectory(object)) {
-				return CodeSyncConstants.FOLDER;
-			}
-		}
-		return null;
+		return super.getType(object, codeSyncAlgorithm);
 	}
 }

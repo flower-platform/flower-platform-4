@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.regex.remote;
 
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
@@ -8,11 +23,15 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MAT
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.RESOURCE_URI;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.SHOW_GROUPED_BY_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_C;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_L;
+import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
+import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.OVERRIDE;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,12 +39,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
 import org.flowerplatform.codesync.regex.action.CodeSyncRegexAction;
 import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.FileControllerUtils;
@@ -36,6 +53,7 @@ import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.Pair;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexProcessingSession;
@@ -56,7 +74,7 @@ public class CodeSyncRegexService {
 		return list;
 	}
 	
-	public String generateMatches(String nodeUri, String textNodeUri) throws Exception {
+	public String generateMatches(String nodeUri, String textNodeUri, String newPath, boolean override) throws Exception {
 		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> context;	
 		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
@@ -65,31 +83,51 @@ public class CodeSyncRegexService {
 		// get text file & content
 		Object textFile = fileController.getFile(FileControllerUtils.getFilePathWithRepo(textNodeUri));		
 		final String textFileContent = IOUtils.toString((InputStream) fileController.getContent(textFile));
-				
-		// get regexConfig file
-		Object file = fileController.getFile(FileControllerUtils.getFilePathWithRepo(resourceNode));
+
+		Object fileToGenerate = FileControllerUtils.getFileAccessController().getFile(newPath);
+		Object parentFile = fileController.getParentFile(fileToGenerate);
 		
-		// get parent (matches file will be created next to regexConfig File)
-		Object parentFile = fileController.getParentFile(file);
+		if (!fileController.exists(parentFile)) {
+			fileController.createFile(parentFile, true);
+		}
 		String parentFilePath = fileController.getPath(parentFile);		
 		String parentNodeUri = FileControllerUtils.createFileNodeUri(CoreUtils.getRepoFromNode(resourceNode), parentFilePath);
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
-				
-		// create matches file
-		Node matchFile = new Node(null, CoreConstants.FILE_NODE_TYPE);			
-		context = new ServiceContext<NodeService>(nodeService);
-		context.getContext().put(NAME, FileControllerUtils.getNextAvailableName(String.format("%s/matches_%s.regexMatches", parentFilePath, FilenameUtils.removeExtension(fileController.getName(textFile)))));
-		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, false);
-		nodeService.addChild(parent, matchFile, context);
 		
-		// subscribe file using fpp schema
-		String matchUri = matchFile.getNodeUri().replace(FILE_SCHEME, "fpp");
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
+		
+		String name = null;
+		if (FileControllerUtils.getFileAccessController().exists(fileToGenerate) && !override) {
+			name = FileControllerUtils.getNextAvailableName(newPath);			
+		} else {
+			name = fileController.getName(fileToGenerate);
+		}
+		
+		String matchUri;
+		if (name != null) {
+			// create matches file
+			Node matchFile = new Node(null, FILE_NODE_TYPE);			
+			context = new ServiceContext<NodeService>(nodeService);
+			context.getContext().put(NAME, name);
+			context.getContext().put(FILE_IS_DIRECTORY, false);
+			context.getContext().put(OVERRIDE, override);
+			nodeService.addChild(parent, matchFile, context);
+			
+			matchUri = matchFile.getNodeUri();
+		} else {
+			matchUri = FileControllerUtils.createFileNodeUri(Utils.getRepo(nodeUri), newPath);
+		}
+		
+		matchUri = matchUri.replace(FILE_SCHEME, "fpp");
+		// TODO CC: unsubscribe resource if needed (to discuss with MG)
+		
+		// subscribe file using fpp schema	
 		new ResourceServiceRemote().subscribeToParentResource(matchUri);
 		
 		// get matches root node & save the textNodeUri as property
 		final Node matchRoot = CorePlugin.getInstance().getResourceService().getNode(matchUri);
 		nodeService.setProperty(matchRoot, RESOURCE_URI, textNodeUri, new ServiceContext<NodeService>(nodeService));
-		
+		nodeService.setProperty(matchRoot, SHOW_GROUPED_BY_REGEX, false, new ServiceContext<NodeService>(nodeService));
+				
 		// create regEx configuration
 		RegexConfiguration regexConfig = new RegexConfiguration();		
 		for (Node regex : CodeSyncRegexPlugin.getInstance().getChildren(resourceNode, REGEX_TYPE)) {

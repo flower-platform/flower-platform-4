@@ -155,6 +155,8 @@ public class CoreConstants {
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
 	
+	public static final String OVERRIDE = "override";
+	
 	//////////////////////////////////
 	// Resource
 	//////////////////////////////////
@@ -166,8 +168,10 @@ public class CoreConstants {
 	// Updates
 	//////////////////////////////////
 	
+	public static final String UPDATE_PROPERTY = "UPDATED";
 	public static final String UPDATE_CHILD_ADDED = "ADDED";
 	public static final String UPDATE_CHILD_REMOVED = "REMOVED";
+	public static final String UPDATE_REQUEST_REFRESH = "REQUEST_REFRESH";
 	
 	//////////////////////////////////
 	// Content types

@@ -22,14 +22,13 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 * @author Cristina Constantinescu
 	 */
 	public class OpenWithEditorComposedAction extends ComposedAction {
-		
-		public static const ACTION_ID_OPEN_WITH:String = "openWith";
+				
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.OpenWithEditorComposedAction";
 		
 		public function OpenWithEditorComposedAction() {
 			label = Resources.getMessage("action.open.with");
 			icon = Resources.openIcon;
-			orderIndex = 30;
-			id = ACTION_ID_OPEN_WITH;
+			orderIndex = 30;			
 		}
 		
 	}

@@ -23,6 +23,7 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.TYPED_ELEMENT_T
 import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
@@ -52,12 +53,17 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		String name = getFunction(element).getBaseName();
 		if (element instanceof ISetterDefinition) {
-			return "set " + name;
+			name = "set " + name;
 		} else if (element instanceof IGetterDefinition) {
-			return "get " + name;
+			name = "get " + name;
 		}
-		return name;
-	}
+		@SuppressWarnings("rawtypes")
+		List paramList = Arrays.asList(getFunction(element).getParameters());
+		String formatedParamList = paramList.toString().replace("[", "(").replace("]", ")");
+		String type = getFunction(element).getReturnTypeAsDisplayString();
+		return name + formatedParamList + (type != null && !type.isEmpty() ? ":" + type : "");
+		}
+	
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (TYPED_ELEMENT_TYPE.equals(feature)) {

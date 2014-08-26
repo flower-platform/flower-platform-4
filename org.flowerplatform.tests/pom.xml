@@ -19,6 +19,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
@@ -58,14 +64,6 @@
 					<excludes>
 						<exclude>**/resources/</exclude>
 					</excludes>
-			
-					<extraClasspathElements>
-						<extraClassPathElement>
-							<groupId>org.mockito</groupId>
-							<artifactId>mockito-all</artifactId>
-							<version>${mockito.version}</version>
-						</extraClassPathElement>
-					</extraClasspathElements>
 				</configuration>
 			</plugin>
 
@@ -92,6 +90,12 @@
 						<version>2.17</version>
 					</dependency>
 				</dependencies>
+				
+				<configuration>
+					<additionalClasspathElements>
+						<additionalClasspathElement>${basedir}\lib\mockito-all-${mockito.version}.jar</additionalClasspathElement>
+					</additionalClasspathElements>
+				</configuration>
 				
 				<executions>
 					<execution>

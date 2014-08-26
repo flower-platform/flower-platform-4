@@ -150,7 +150,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		public function getViewComponentForEditor(editor:UIComponent):UIComponent {			
 			return editor;
 		}
-		
+				
 		/**
 		 * @author Cristina Constantinescu
 		 */ 
@@ -164,6 +164,10 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 				}
 			}
 			return result;
+		}
+		
+		public function moveComponentNearWorkbench(sourceComponent:UIComponent, side:Number):void {
+			// do nothing
 		}
 		
 	}

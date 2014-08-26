@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Text
 Bundle-SymbolicName: org.flowerplatform.text;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.1.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.text.TextPlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
