@@ -31,6 +31,7 @@ import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.mode.ModeController;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * @author Catalin Burcea
