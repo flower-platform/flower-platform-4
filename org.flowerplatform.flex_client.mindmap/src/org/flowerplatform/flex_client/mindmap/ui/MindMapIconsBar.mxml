@@ -31,13 +31,13 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayList;
-			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 			import org.flowerplatform.flex_client.mindmap.renderer.IconRenderer;
+			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexdiagram.DiagramShell;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -100,7 +100,7 @@
 				
 				for (var i:int=0; i < nodeList.length; i++) {					
 					var node:Object = nodeList.getItemAt(i);				
-					if (node is Node && node.type == MindMapConstants.MINDMAP_NODE_TYPE) {
+					if (node is Node && PropertiesPlugin.getInstance().getPropertyDescriptor(Node(node), CoreConstants.ICONS, false)) {						
 						currentValue = Utils.computeStringTokens(node.properties[CoreConstants.ICONS], Utils.ICONS_SEPARATOR, result.type, result.iconUrl);
 						CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, CoreConstants.ICONS, currentValue]);
 					}

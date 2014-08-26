@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.flowerplatform.util;visibility:=reexport,
  org.flowerplatform.core;visibility:=reexport,
  org.flowerplatform.resources,
- org.eclipse.text
+ org.eclipse.text,
+ org.flowerplatform.mindmap
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.flowerplatform.codesync,

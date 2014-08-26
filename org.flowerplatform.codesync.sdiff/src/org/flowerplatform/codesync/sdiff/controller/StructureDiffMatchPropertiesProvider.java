@@ -25,12 +25,14 @@ import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COL
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_CHILDREN_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_PROP_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_REMOVED;
+import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 
 import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
+import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
@@ -39,24 +41,40 @@ import org.flowerplatform.util.controller.AbstractController;
 /**
  * @author Mariana Gheorghe
  */
-public class StructureDiffMatchPropertiesProvider extends AbstractController implements IPropertiesProvider {
+public class StructureDiffMatchPropertiesProvider extends AbstractController implements IPropertiesProvider,
+		IPropertySetter {
 
 	public StructureDiffMatchPropertiesProvider() {
 		// invoke after the persistence providers
 		// so the properties are populate
 		setOrderIndex(10000);
 	}
-	
+
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		setIcon(node);
+		String icons = (String) node.getProperties().get(ICONS);
+		if (icons == null) {
+			node.getProperties().put(ICONS, "");
+		}
+
+		String codeSyncIcons = getCodeSyncIcons(node);
+		if (codeSyncIcons != null) {
+			node.getProperties().put(CODESYNC_ICONS, codeSyncIcons);
+		}
+
 		setBackgroundColor(node);
 	}
-	
-	private void setIcon(Node node) {
+
+	private String getCodeSyncIcons(Node node) {
+		String icons = (String) node.getProperties().get(ICONS);
+		
 		String elementType = (String) node.getProperties().get(MATCH_MODEL_ELEMENT_TYPE);
+		if (icons == null) {
+			icons = "";
+		}
+		
 		if (elementType == null) {
-			return;
+			return icons;
 		}
 		String icon = null;
 		if (elementType.endsWith("File")) {
@@ -74,16 +92,19 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		} else if (elementType.endsWith("Operation")) {
 			icon = getImagePath("method_obj.gif");
 		}
-		if (icon != null) {
-			node.getProperties().put(ICONS, icon);
+
+		if (icon == null) {
+			return icons;
+		} else {
+			return (icons.isEmpty()) ? icon : (icons + "," + icon);
 		}
 	}
-	
+
 	private String getImagePath(String img) {
 		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.java/" + img);
 	}
-	
-	private void setBackgroundColor(Node node) {	
+
+	private void setBackgroundColor(Node node) {
 		String matchType = (String) node.getProperties().get(MATCH_TYPE);
 		if (matchType == null) {
 			return;
@@ -106,7 +127,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 			}
 			break;
 		}
-		
+
 		// set color
 		if (color != null) {
 			node.getProperties().put(COLOR_BACKGROUND, color);
@@ -117,5 +138,25 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		Boolean b = (Boolean) node.getProperties().get(flag);
 		return b != null && b;
 	}
-	
+
+	@Override
+	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+		if (ICONS.equals(property)) {
+			node.getOrPopulateProperties(context);
+			
+			String codeSyncIcons = getCodeSyncIcons(node);
+			if (codeSyncIcons == null) {
+				codeSyncIcons = "";
+			}
+			context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, context);
+		}
+	}
+
+	@Override
+	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
+		// At this moment, this method it is not necessary because the
+		// "remove..." actions for
+		// the icons are treated by the setProperty(...) method
+	}
+
 }

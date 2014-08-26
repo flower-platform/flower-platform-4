@@ -28,7 +28,8 @@ package org.flowerplatform.flex_client.mindmap {
 		// Node types and categories
 		//////////////////////////////////
 		
-		public static const MINDMAP_NODE_TYPE:String = "freeplaneNode"
+		public static const MINDMAP_NODE_TYPE:String = "freeplaneNode";
+		public static const MINDMAP_NODE_TYPE_1:String = "freeplaneNode1";
 		
 		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "fpm";
 		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "fpp";
