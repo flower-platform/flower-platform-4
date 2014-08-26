@@ -21,7 +21,7 @@ public class TagFullContentProcessor implements ITagProcessor {
 	public void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
 		if (parser.tagFullContent_nesting == 0) {
 			parser.forcedTagProcessor = this;
-			parser.tagFullContent_tagName = getkeyName(tag, attributes);
+			parser.tagFullContent_tagName = getPropertyName(tag, attributes);
 			parser.tagFullContent_stringBuffer = new StringBuffer();
 			for (int i = 0; i < attributes.getLength(); i++) {
 				if (!attributes.getQName(i).equals(keyProperty)) {
@@ -35,7 +35,6 @@ public class TagFullContentProcessor implements ITagProcessor {
 			}
 			parser.tagFullContent_stringBuffer.append(">");
 		}
-		parser.tagFullContent_plainTextBuffer = new StringBuffer();
 		parser.tagFullContent_nesting++;
 	}
 
@@ -47,13 +46,11 @@ public class TagFullContentProcessor implements ITagProcessor {
 			parser.forcedTagProcessor = null;
 			parser.tagFullContent_tagName = null;
 		} else {
-			parser.tagFullContent_stringBuffer.append(parser.tagFullContent_plainTextBuffer);
-			parser.tagFullContent_plainTextBuffer = new StringBuffer();
 			parser.tagFullContent_stringBuffer.append("</" + tag + ">");
 		}
 	}
 
-	private String getkeyName(String tag, Attributes attributes) {
+	private String getPropertyName(String tag, Attributes attributes) {
 		if (keyProperty == null) {
 			return tag + "." + tagIndex++;
 		}
@@ -68,6 +65,6 @@ public class TagFullContentProcessor implements ITagProcessor {
 
 	@Override
 	public void processPlainText(XmlNodePropertiesParser parser, String plainText) {
-		parser.tagFullContent_plainTextBuffer.append(plainText);
+		parser.tagFullContent_stringBuffer.append(plainText);
 	}
 }

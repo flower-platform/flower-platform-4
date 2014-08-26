@@ -42,6 +42,6 @@ public class TagsAsCsvListProcessor implements ITagProcessor {
 
 	@Override
 	public void processPlainText(XmlNodePropertiesParser parser, String plainText) {
-		parser.tagFullContent_plainTextBuffer.append(plainText);
+		parser.tagFullContent_stringBuffer.append(plainText);
 	}
 }

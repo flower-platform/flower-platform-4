@@ -1,6 +1,7 @@
 package org.flowerplatform.freeplane.controller.xml_parser;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.flowerplatform.core.node.remote.Node;
@@ -20,8 +21,8 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 	private Node node;
 	public ITagProcessor forcedTagProcessor = null;
 	public String tagFullContent_tagName;
-	public StringBuffer tagFullContent_stringBuffer;
-	public StringBuffer tagFullContent_plainTextBuffer = new StringBuffer();
+	public StringBuffer tagFullContent_stringBuffer = new StringBuffer();
+	public HashSet<String> xmlTags = new HashSet<String>();
 	public boolean convertAllAttributes_tagProcessorDinamicallyAdded;
 	public int tagFullContent_nesting = 0;
 
@@ -43,6 +44,7 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 	public void startDocument() throws SAXException {
 		super.startDocument();
 		node.getProperties().clear();
+		xmlTags = new HashSet<String>();
 		xmlTagProcessors.put(FreeplaneConstants.ICON, new TagsAsCsvListProcessor(FreeplaneConstants.ICONS, FreeplaneConstants.ICON_KEY_PROPERTY));
 		xmlTagProcessors.put(FreeplaneConstants.HOOK, new TagFullContentProcessor(FreeplaneConstants.HOOK_KEY_PROPERTY));
 		xmlTagProcessors.put(FreeplaneConstants.RICHCONTENT, new TagFullContentProcessor(FreeplaneConstants.RICHCONTENT_KEY_PROPERTY));

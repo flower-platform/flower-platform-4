@@ -15,12 +15,9 @@
  */
 package org.flowerplatform.freeplane.controller;
 
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collections;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 

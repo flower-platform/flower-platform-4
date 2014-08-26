@@ -31,8 +31,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_RESO
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_CATEGORY;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
-import static org.flowerplatform.mindmap.MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR;
-import static org.flowerplatform.mindmap.MindMapConstants.SIDE;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 

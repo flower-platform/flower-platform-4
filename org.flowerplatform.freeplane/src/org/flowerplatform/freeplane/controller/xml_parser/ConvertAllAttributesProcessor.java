@@ -11,18 +11,16 @@ public class ConvertAllAttributesProcessor implements ITagProcessor {
 
 	@Override
 	public void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
-		String result = null;
-		if (attributes.getLength() > 0) {
-			result = (String) node.getProperties().get(tag + "." + attributes.getQName(0));
-		}
-		if (result != null) {
+		if (parser.xmlTags.contains(tag)) {
 			parser.convertAllAttributes_tagProcessorDinamicallyAdded = true;
 			parser.xmlTagProcessors.put(tag, new DuplicateTagProcessor());
-		} else {
-			for (int i = 0; i < attributes.getLength(); i++) {
-				node.getProperties().put(tag + "." + attributes.getQName(i), attributes.getValue(i));
-			}
+			return;
 		}
+
+		for (int i = 0; i < attributes.getLength(); i++) {
+			node.getProperties().put(tag + "." + attributes.getQName(i), attributes.getValue(i));
+		}
+		parser.xmlTags.add(tag);
 	}
 
 	@Override
@@ -32,6 +30,6 @@ public class ConvertAllAttributesProcessor implements ITagProcessor {
 
 	@Override
 	public void processPlainText(XmlNodePropertiesParser parser, String plainText) {
-		parser.tagFullContent_plainTextBuffer.append(plainText);
+		parser.tagFullContent_stringBuffer.append(plainText);
 	}
 }
