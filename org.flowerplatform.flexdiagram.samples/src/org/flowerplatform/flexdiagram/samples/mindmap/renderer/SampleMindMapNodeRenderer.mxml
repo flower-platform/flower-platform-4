@@ -19,9 +19,9 @@ license-end
 @author Alexandra Topoloaga
 -->
 <mindmap:AbstractMindMapNodeRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
+									 xmlns:s="library://ns.adobe.com/flex/spark" 
+									 xmlns:mx="library://ns.adobe.com/flex/mx" 
+									 xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -30,14 +30,13 @@ license-end
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 			
-						
 			public function get dataConverted():SampleMindMapModel {
 				return SampleMindMapModel(data);
 			}
 			
 			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 				var mindMapDiagramShell:MindMapDiagramShell = this.mindMapDiagramShell;
-				if (mindMapDiagramShell != null) {
+				if (mindMapDiagramShell != null && diagramShellContext != null) {
 					// i.e. used as a renderer in a mind map diagram
 					if (event == null || event.property == "x") {
 						x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");	
@@ -45,7 +44,21 @@ license-end
 					if (event == null || event.property == "y") {
 						y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");	
 					}
+					if (event == null || event.property == "depth") {
+						depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");	
+					}
+					if (event == null || event.property == "cloudColor") {
+						cloudColor = dataConverted.cloudColor;
+					}			
+					
+					if (event == null || event.property == "cloudType") {
+						cloudType = dataConverted.cloudType;
+					}
+					if (event == null || event.property == "expandedWidth") {
+						invalidateDisplayList();
+					}
 				}
+				
 				// else used as a renderer in a plain Flex component
 				
 				if (event == null || event.property == "fontFamily") {
@@ -63,7 +76,18 @@ license-end
 				if (event == null || event.property == "text") {
 					text = dataConverted.text;
 				}
-			}
+				if (event == null || event.property == "textColor") {
+					textColor = dataConverted.textColor
+				}
+				if (event == null || event.property == "background") {
+					invalidateDisplayList();
+					background = dataConverted.background;
+				}
+				if (event == null || event.property == "icons") {
+					icons = dataConverted.icons;
+				}
+			} 
+			
 			
 		]]>
 	</fx:Script>
