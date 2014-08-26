@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.core.service {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
 	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
@@ -89,7 +90,7 @@ package org.flowerplatform.flex_client.core.service {
 				CorePlugin.getInstance().lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().lastUpdateTimestampOfClient = new Date().time;
 				
-				CorePlugin.getInstance().debug_forceUpdateAction.updateLabel();
+				ForceUpdateAction(FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(ForceUpdateAction.ID)).updateLabel();
 			}
 			
 			if (result.hasOwnProperty(CoreConstants.UPDATES)) { // updates exists, process them

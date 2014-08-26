@@ -49,6 +49,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.tool.Tool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -197,10 +198,11 @@ package org.flowerplatform.flexdiagram {
 			Multitouch.inputMode = MultitouchInputMode.GESTURE;
 		}
 		
-		public function registerTools(toolClasses:Array):void {
-			for (var i:int=0; i < toolClasses.length; i++) {
-				tools[toolClasses[i]] = new toolClasses[i](this);
-			}
+		/**
+		 *@author Diana Balutoiu
+		 */
+		public function registerTool(id:String, tool:FactoryWithInitialization):void {
+			tools[id] = tool.newInstance(true, this);
 		}
 				
 		public function addInModelMapIfNecesssary(context:DiagramShellContext, model:Object):Boolean {

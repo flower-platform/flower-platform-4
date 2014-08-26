@@ -16,10 +16,12 @@
 package com.crispico.flower.util.layout {
 	import flash.events.MouseEvent;
 	
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.IAction;
+	import mx.binding.utils.BindingUtils;
 	
 	import spark.components.Button;
+	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.IAction;
 	
 	/**		
 	 * @author Cristian Spiescu
@@ -29,8 +31,21 @@ package com.crispico.flower.util.layout {
 		
 		public var viewWrapper:WorkbenchViewHost;
 		
-		public var action:IAction;
-				
+		private var _action:IAction;
+						
+		public function get action():IAction {
+			return _action;
+		}
+
+		public function set action(value:IAction):void {
+			_action = value;
+			BindingUtils.bindSetter(updateIcon, action, "icon", true);
+		}
+
+		protected function updateIcon(value:Object):void {
+			setStyle("icon", FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(value));
+		}
+		
 		protected override function clickHandler(event:MouseEvent):void {
 			super.clickHandler(event);
 			if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(action)) {

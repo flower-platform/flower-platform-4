@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.codesync.sdiff;
 
-import org.flowerplatform.util.UtilConstants;
-
 public class CodeSyncSdiffConstants {
 
 	//////////////////////////////////
@@ -27,8 +25,6 @@ public class CodeSyncSdiffConstants {
 	public static final String STRUCTURE_DIFF_EXTENSION = ".sdiff";
 	
 	public static final String COMMENT = "sdiffComment";
-	public static final String CONTAINS_COMMENT = "containsComment";
-	public static final String CATEGORY_CAN_CONTAIN_COMMENT = UtilConstants.CATEGORY_PREFIX + "canContainComment";
 	
 	// relative to repository
 	public static final String STRUCTURE_DIFFS_FOLDER = "sdiffs";
@@ -44,24 +40,10 @@ public class CodeSyncSdiffConstants {
 	public static final String MATCH_COLOR_CHILDREN_MODIFIED = "#FFCC00";
 	public static final String MATCH_COLOR_COMMENT = "#FFFF00";
 	
-	// dirty marker for comments
-	public static final String NODE_URI_TO_BE_IGNORED = "nodeURIToBeIgnored";
-
-	// flag so CanContainCommentPropertyProvider won't loop while trying to set CODESYNC_ICONS property
-	public static final String ALREADY_BEEN_IN_THIS_SETTER = "alreadyBeenInThisSetter";
-	
-
 	//////////////////////////////////
 	// Service context options
 	//////////////////////////////////
 	
 	public static final String SKIP_MATCH_CHILDREN_PROVIDER = "skipMatchChildrenProvider";
-	
-	/////////////////////////////////
-	// Images
-	////////////////////////////////
-	
-	public static final String IMG_TYPE_COMMENTS = "comments.png";
-	public static final String IMG_TYPE_COMMENT = "comment.png";
 	
 }

@@ -31,8 +31,10 @@ package org.flowerplatform.flexutil.global_menu {
 	import mx.controls.menuClasses.IMenuBarItemRenderer;
 	import mx.controls.menuClasses.MenuBarItem;
 	import mx.core.ClassFactory;
+	import mx.core.FlexGlobals;
 	import mx.core.IFactory;
 	import mx.core.LayoutDirection;
+	import mx.core.UIComponent;
 	import mx.events.MenuEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.managers.ISystemManager;
@@ -40,7 +42,9 @@ package org.flowerplatform.flexutil.global_menu {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
+	import org.flowerplatform.flexutil.context_menu.ContextMenu;
 	import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
+	import org.flowerplatform.flexutil.shortcut.AssignShortcutForActionEvent;
 	
 	/**
 	 * Extends the existing MenuBar so it can use an actionProvider.
@@ -401,8 +405,17 @@ package org.flowerplatform.flexutil.global_menu {
 			var action:IAction = event.item as IAction;
 			
 			if (action != null) {
-				action.run();
+				if (FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation) { // learning state -> just send event to notify listeners
+					try {
+						UIComponent(FlexGlobals.topLevelApplication).stage.dispatchEvent(new AssignShortcutForActionEvent(action.id));
+					} catch (e:Error) { // something went wrong -> reset state, otherwise actions cannot be executed anymore
+						FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
+					}
+				} else {				
+					FlexUtilGlobals.getInstance().actionHelper.runAction(action, null, null);			
+				}
 			}
 		}
+		
 	}
 }

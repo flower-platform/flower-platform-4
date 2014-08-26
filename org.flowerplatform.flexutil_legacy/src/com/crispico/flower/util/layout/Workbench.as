@@ -2569,6 +2569,13 @@ package  com.crispico.flower.util.layout {
 				getAllEditorViews(layoutData, array);
 			}
 		}
+		
+		public function moveComponentNearWorkbench(sourceComponent:UIComponent, side:Number):void {
+			var source:LayoutData = componentToLayoutData[getViewComponentForEditor(sourceComponent)];
+			
+			moveLayout(source, rootLayout, -1, side);
+		}
+		
 	}
 		
 }

@@ -42,7 +42,7 @@ package org.flowerplatform.flexutil.view_content_host {
 	public class BasicViewContent extends Group implements IViewContent, IFocusManagerComponent	{
 		
 		protected var _viewHost:IViewHost;
-		
+
 		protected var okButton:Button;
 		protected var cancelButton:Button;
 		

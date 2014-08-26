@@ -16,21 +16,15 @@
 package org.flowerplatform.codesync.sdiff;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
-import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.CATEGORY_CAN_CONTAIN_COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
-import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
-import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
-import org.flowerplatform.codesync.sdiff.controller.CanContainCommentAddNodeListener;
-import org.flowerplatform.codesync.sdiff.controller.CanContainCommentPropertyProvider;
-import org.flowerplatform.codesync.sdiff.controller.CanContainCommentRemoveNodeListener;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchChildrenProvider;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchPropertiesProvider;
@@ -40,7 +34,6 @@ import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
-import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CAN_HOLD_CUSTOM_ICON;
 
 /**
  * @author Mariana Gheorghe
@@ -48,13 +41,13 @@ import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CAN_HOLD_CU
 public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CodeSyncSdiffPlugin INSTANCE;
-
+	
 	private StructureDiffService sDiffService = new StructureDiffService();
 	
 	public static CodeSyncSdiffPlugin getInstance() {
 		return INSTANCE;
 	}
-
+	
 	public StructureDiffService getSDiffService() {
 		return sDiffService;
 	}
@@ -62,39 +55,26 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		INSTANCE = this;
-
+		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesController = new StructureDiffMatchPropertiesProvider();
+		
+		
 		CorePlugin.getInstance().getServiceRegistry().registerService("structureDiffService", sDiffService);
-
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF)
-				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
-
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF);
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
-				.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(STRUCTURE_DIFF_EXTENSION, "fpp", "mindmap", true));
-
-		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesProvider = new StructureDiffMatchPropertiesProvider();
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(STRUCTURE_DIFF_EXTENSION, "fpp", "mindmap", true));
+	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
-				.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesProvider)
-			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesProvider)
-				.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
-				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
-
-		StructureDiffCommentController commentController = (StructureDiffCommentController) new StructureDiffCommentController().setOrderIndexAs(5000);
+			.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
+			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
+			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT).setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.comment")));
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
-				.addAdditiveController(PROPERTIES_PROVIDER, commentController)
-				.addAdditiveController(PROPERTY_SETTER, commentController)
-				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
-				.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
-
-		CanContainCommentPropertyProvider commentPropertyProvider = new CanContainCommentPropertyProvider(); 
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_COMMENT)
-				.addAdditiveController(PROPERTIES_PROVIDER, commentPropertyProvider)
-				.addAdditiveController(PROPERTY_SETTER, commentPropertyProvider)
-				.addAdditiveController(ADD_NODE_CONTROLLER, new CanContainCommentAddNodeListener().setOrderIndexAs(10000))
-				.addAdditiveController(REMOVE_NODE_CONTROLLER, new CanContainCommentRemoveNodeListener().setOrderIndexAs(-10000))
-				.addAdditiveController(ADD_CHILD_DESCRIPTOR,
-						new AddChildDescriptor().setChildTypeAs(COMMENT).setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.comment")));
+			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController());
 	}
-
+	
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
 		INSTANCE = null;
@@ -104,9 +84,5 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 	public void registerMessageBundle() throws Exception {
 		// nothing to do yet
 	}
-
-	public String getImagePath(String img) {
-		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.sdiff/comment-marker/" + img);
-	}
-
+	
 }

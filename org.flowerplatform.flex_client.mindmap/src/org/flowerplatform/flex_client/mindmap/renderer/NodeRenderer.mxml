@@ -37,7 +37,6 @@
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
-			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;

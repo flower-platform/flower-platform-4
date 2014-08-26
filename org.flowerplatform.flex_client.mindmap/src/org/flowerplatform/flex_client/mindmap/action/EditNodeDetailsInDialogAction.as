@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 	 */
 	public class EditNodeDetailsInDialogAction extends AbstractEditNodePropertyInDialogAction {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.mindmap.action.EditNodeDetailsInDialogAction";		
 		
 		public function EditNodeDetailsInDialogAction(descriptor:AddChildDescriptor = null)	{
 			super();
