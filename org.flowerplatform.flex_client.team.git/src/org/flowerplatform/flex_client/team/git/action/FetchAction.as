@@ -59,7 +59,7 @@ package org.flowerplatform.flex_client.team.git.action {
 				// show wizard
 				var fetchView:FetchView = new FetchView();
 				
-				fetchView.node = node;
+				fetchView.nodeUri = node.nodeUri;
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(fetchView)
