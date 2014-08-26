@@ -9,7 +9,9 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
- * whenever you add a new node of type comment, that new node has to be marked as dirty, and this flag has to be propagated to parents
+ * Whenever you add a new node of type comment, that new node has to be marked as dirty,
+ * and this flag has to be propagated to parents.
+ * 
  * @author Elena Posea
  */
 public class CanContainCommentAddNodeListener extends ContainsCommentPropagator implements IAddNodeController {

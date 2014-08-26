@@ -24,12 +24,11 @@ import org.flowerplatform.util.controller.AbstractController;
 public class CanContainCommentPropertyProvider extends AbstractController implements IPropertySetter, IPropertiesProvider {
 
 	/**
-	 * order index has to be higher than CanContainCommentAddNodeListener's
-	 * order index. First add the node, then set/provide properties it must also
-	 * be higher than StructureDiffMatchPropertiesProvider's order index. For
-	 * nodes of type Match, you should first invoke
-	 * StructureDifffMatchPropertiesProvider, then this provider and higher than
-	 * StructureDiffCommentController
+	 * Order index has to be higher than CanContainCommentAddNodeListener's
+	 * order index. First add the node, then set/provide properties. 
+	 * Order index must also be higher than StructureDiffMatchPropertiesProvider's order index. 
+	 * For nodes of type Match, you should first invoke StructureDifffMatchPropertiesProvider, 
+	 * then this provider. It should also be higher than StructureDiffCommentController.
 	 */
 	public CanContainCommentPropertyProvider() {
 		setOrderIndex(11000);

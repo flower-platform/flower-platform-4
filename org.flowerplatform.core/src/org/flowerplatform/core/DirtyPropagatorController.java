@@ -10,7 +10,7 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
- * contains all the common logic for propagation of flags; leaves describing particular behavior up to implementing classes
+ * Contains all the common logic for propagation of flags; leaves describing particular behavior up to implementing classes
  * @author Elena Posea
  */
 public abstract class DirtyPropagatorController extends AbstractController{
