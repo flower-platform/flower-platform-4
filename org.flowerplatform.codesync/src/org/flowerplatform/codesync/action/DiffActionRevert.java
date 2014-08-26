@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync.action;
@@ -31,20 +28,20 @@ public class DiffActionRevert extends DiffAction {
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Diff diff = match.getDiffs().get(diffIndex);
-		IModelAdapter ancestorModelAdapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(match, match.getAncestor());
+		IModelAdapter ancestorModelAdapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(match.getAncestor());
 		IModelAdapter leftModelAdapter = null;
 		if (diff.isLeftModified())
-			leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match, match.getLeft());
+			leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
 		IModelAdapter rightModelAdapter = null;
 		if (diff.isRightModified())
-			rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match, match.getRight());
+			rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
 		
-		Object value = ancestorModelAdapter.getValueFeatureValue(match.getAncestor(), diff.getFeature(), null);
+		Object value = ancestorModelAdapter.getValueFeatureValue(match.getAncestor(), diff.getFeature(), null, match.getCodeSyncAlgorithm());
 		if (diff.isLeftModified()) {
-			leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value);
+			leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value, match.getCodeSyncAlgorithm());
 		}
 		if (diff.isRightModified()) {
-			rightModelAdapter.setValueFeatureValue(match.getRight(), diff.getFeature(), value);
+			rightModelAdapter.setValueFeatureValue(match.getRight(), diff.getFeature(), value, match.getCodeSyncAlgorithm());
 		}
 		match.getDiffs().remove(diffIndex);
 

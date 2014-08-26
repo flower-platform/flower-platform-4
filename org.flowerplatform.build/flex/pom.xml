@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.flowerplatform</groupId>
+	<artifactId>parent-flex</artifactId>
+	<packaging>pom</packaging>
+
+	<!-- _flex suffix because some flex projects are also packaged as Eclipse plugins -->
+	<!-- and the Tycho build does not allow duplicate pom versions in the same reactor -->
+	<version>0.1.1_flex</version>
+
+	<!-- list of modules to build -->
+	<profiles>
+		<profile>
+			<id>flex-base</id>
+			<modules>
+				<!-- base libraries -->
+				<module>../../org.flowerplatform.flexutil</module>
+				<module>../../org.flowerplatform.flexutil_legacy</module>
+				<module>../../org.flowerplatform.flexdiagram</module>
+				<module>../../org.flowerplatform.flex_client.resources</module>
+
+				<!-- flex client libraries -->
+				<!-- explicitly use flex/pom.xml, as these are also packaged as eclipse-plugin -->
+				<module>../../org.flowerplatform.flex_client.core/flex</module>
+				<module>../../org.flowerplatform.flex_client.properties/flex</module>
+				<module>../../org.flowerplatform.flex_client.mindmap/flex</module>
+				<module>../../org.flowerplatform.flex_client.text/flex</module>
+				<module>../../org.flowerplatform.flex_client.codesync/flex</module>
+				<module>../../org.flowerplatform.flex_client.codesync.sdiff/flex</module>
+				<module>../../org.flowerplatform.flex_client.codesync.regex/flex</module>
+				<module>../../org.flowerplatform.flex_client.team.git/flex</module>
+				<module>../../org.flowerplatform.flex_client.host_app/flex</module>
+				<module>../../org.flowerplatform.flex_client.web/flex</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>flex-mobile</id>
+			<modules>
+				<module>../../org.flowerplatform.flex_client.host_app.mobile</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+		<!-- modules may override -->
+		<sourceDirectory>../src</sourceDirectory>
+		<messagesDirectory>../messages</messagesDirectory>
+		<iconsDirectory>../icons</iconsDirectory>
+		<output.flex.prefix>../..</output.flex.prefix>
+		<finalName>${project.artifactId}</finalName>
+
+		<flexmojos.version>7.0.0</flexmojos.version>
+	</properties>
+
+	<build>
+		<sourceDirectory>${sourceDirectory}</sourceDirectory>
+		<outputDirectory>${output.flex.prefix}/${output.flex}/classes/${project.artifactId}</outputDirectory>
+		<directory>${output.flex.prefix}/${output.flex}/distr/${project.artifactId}</directory>
+
+		<plugins>
+			<plugin>
+				<groupId>net.flexmojos.oss</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flexmojos.version}</version>
+				<extensions>true</extensions>
+				<dependencies>
+					<!-- override the flex SDK -->
+					<dependency>
+						<groupId>org.apache.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flexVersion}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<finalName>${finalName}</finalName>
+					<localesCompiled>
+						<locale>en_US</locale>
+					</localesCompiled>
+					<mergeResourceBundle>true</mergeResourceBundle>
+					<compilerWarnings>
+						<show-actionscript-warnings>false</show-actionscript-warnings>
+					</compilerWarnings>
+				</configuration>
+			</plugin>
+
+			<!-- additional source folders, since the pom only allows one -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${messagesDirectory}</source>
+								<source>${iconsDirectory}</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

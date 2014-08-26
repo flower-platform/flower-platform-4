@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.shortcut {
@@ -27,10 +24,13 @@ package org.flowerplatform.flexutil.shortcut {
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
-	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
 	/**
@@ -50,7 +50,7 @@ package org.flowerplatform.flexutil.shortcut {
 
 		private var keyBindings:Dictionary = new Dictionary();
 
-		public var filterShortcuts:Array = [];
+		public var filterShortcuts:Dictionary = new Dictionary();
 		
 		public var actionIdsToShortcuts:Dictionary = new Dictionary();
 		
@@ -64,6 +64,12 @@ package org.flowerplatform.flexutil.shortcut {
 			} else {
 				UIComponent(FlexGlobals.topLevelApplication).addEventListener(Event.ADDED_TO_STAGE, registerKeyListener);
 			}
+			// initial filterShortcuts
+			// other filterShortcut must be added by corresponding keyboard action
+			filterShortcuts[FlexUtilConstants.CONTROL] = Keyboard.CONTROL;
+			filterShortcuts[FlexUtilConstants.COMMAND] = Keyboard.COMMAND;
+			filterShortcuts[FlexUtilConstants.SHIFT] = Keyboard.SHIFT;
+			filterShortcuts[FlexUtilConstants.ALTERNATE] = Keyboard.ALTERNATE;
 		}
 		
 		protected function registerKeyListener(event:Event = null):void {
@@ -71,18 +77,18 @@ package org.flowerplatform.flexutil.shortcut {
 			UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);			
 		}
 
-		public function registerBinding(shortcut:Shortcut, handler:Object):Boolean {
+		public function registerBinding(shortcut:Shortcut, handler:Object, addToFilterShortcutsIfNecessary:Boolean = false):void {
 			if (!(handler is IAction) && !(handler is Function) && !(handler is String)) {
 				// not what we expected
 				throw new Error("The handler must be an action, an action id or a function!");
 			}
 			
 			// check if shortcut already exists					
-			if (getRegisteredShortcut(shortcut)) {
-				return false;
+			if (keyBindings.hasOwnProperty(shortcut.toString())) {
+				return;
 			}
 			
-			keyBindings[shortcut] = handler;
+			keyBindings[shortcut.toString()] = handler;
 			
 			// register in actionIdsToShortcuts if string 
 			if (handler is String) {
@@ -92,83 +98,55 @@ package org.flowerplatform.flexutil.shortcut {
 				actionIdsToShortcuts[handler] = shortcut;
 			}
 			
-			if (!shortcut.ctrlKey && !shortcut.altKey && !shortcut.shiftKey) { 
-				filterShortcuts.push(shortcut.keyCode);
+			if (addToFilterShortcutsIfNecessary && !shortcut.ctrlKey && !shortcut.altKey && !shortcut.shiftKey) { 
+				filterShortcuts[Utils.getKeyNameFromKeyCode(shortcut.keyCode)] = shortcut.keyCode;
 			}
-			
-			return true;
 		}
 
 		private function onKeyUp(event:KeyboardEvent):void {		
 			if (!canProcessEvent(event)) {
 				return;
 			}			
-			var shortcut:Shortcut = getRegisteredShortcut(new Shortcut(event.ctrlKey, event.shiftKey, event.altKey, event.keyCode));
-			if (shortcut == null) { // no shortcut registered for this event
+			var shortcut:Shortcut = new Shortcut(event.ctrlKey, event.shiftKey, event.altKey, event.keyCode);
+			if (!keyBindings.hasOwnProperty(shortcut.toString())) { // no shortcut registered for this event
 				return;
 			}
 			
 			var action:IAction;
-			var handler:Object = keyBindings[shortcut];
+			var handler:Object = keyBindings[shortcut.toString()];
 			
 			if (handler is IAction) {
 				// check if visible & enabled, then run it
 				action = IAction(handler);
-				if (action.visible && action.enabled) {
-					action.run(); 
-				}
+				FlexUtilGlobals.getInstance().actionHelper.runAction(action, null, null, true, true);				
 			} else if (handler is Function) {
 				// execute function
 				handler();
-			} else {
-				// search actionId in active's view list of available actions; if found, run it				
+			} else {				
+				// search actionId also in active's view list of available actions	
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 				var view:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
-				
-				if (view != null && view is IViewContent) {
+				if (view != null && view is IActionProvider) {
 					var selection:IList = null;
 					if (view is IViewHostAware) {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
-					var actions:Vector.<IAction> = IViewContent(view).getActions(selection);
-					if (actions != null) {
-						for (var i:int = 0; i < actions.length; i++) {
-							action = actions[i];
-							if (action.id == handler) {
-								try {
-									action.selection = selection;
-									if (action.visible && action.enabled) {								
-										action.run(); 
-									}
-								} finally {
-									action.selection = null;
-								}
-								break;
-							}
-						}
-					}
+					
+					action = FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(String(handler));
+					FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, null, true, true);										
 				}
-			}
-		}
-
-		private function getRegisteredShortcut(shortcut:Shortcut):Shortcut {
-			for (var obj:Object in keyBindings) {				
-				if (shortcut.equals(obj)) {
-					return Shortcut(obj);
-				}
-			}
-			return null;
+			}				
 		}
 	
+		public function getRegisteredHandler(shortcut:Shortcut):Object {			
+			return keyBindings[shortcut.toString()];
+		}
+		
 		private function canProcessEvent(event:KeyboardEvent):Boolean {
-			if (!learnShortcutOnNextActionInvocation && allowKeyBindingsToProcessEvents &&
-				(event.ctrlKey && (filterShortcuts.indexOf(Keyboard.CONTROL) != -1 || filterShortcuts.indexOf(Keyboard.COMMAND) != -1) ||
-				event.altKey && (filterShortcuts.indexOf(Keyboard.ALTERNATE) != -1) ||
-				event.shiftKey && (filterShortcuts.indexOf(Keyboard.SHIFT) != -1) ||
-				event.keyCode && (filterShortcuts.indexOf(event.keyCode) != -1))) {				
-				return true;
-			}
-			return false;
+			return !learnShortcutOnNextActionInvocation && allowKeyBindingsToProcessEvents &&
+				(filterShortcuts.hasOwnProperty(FlexUtilConstants.CONTROL) || filterShortcuts.hasOwnProperty(FlexUtilConstants.COMMAND) ||
+				filterShortcuts.hasOwnProperty(FlexUtilConstants.ALTERNATE) ||filterShortcuts.hasOwnProperty(FlexUtilConstants.SHIFT) ||
+				filterShortcuts.hasOwnProperty(Utils.getKeyNameFromKeyCode(event.keyCode)));				
 		}
 		
 	}

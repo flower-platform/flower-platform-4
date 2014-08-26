@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram {
@@ -52,6 +49,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.tool.Tool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -200,10 +198,11 @@ package org.flowerplatform.flexdiagram {
 			Multitouch.inputMode = MultitouchInputMode.GESTURE;
 		}
 		
-		public function registerTools(toolClasses:Array):void {
-			for (var i:int=0; i < toolClasses.length; i++) {
-				tools[toolClasses[i]] = new toolClasses[i](this);
-			}
+		/**
+		 *@author Diana Balutoiu
+		 */
+		public function registerTool(id:String, tool:FactoryWithInitialization):void {
+			tools[id] = tool.newInstance(true, this);
 		}
 				
 		public function addInModelMapIfNecesssary(context:DiagramShellContext, model:Object):Boolean {

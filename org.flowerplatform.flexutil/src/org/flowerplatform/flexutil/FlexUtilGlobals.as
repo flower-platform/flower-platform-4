@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,16 +11,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil {
+	import flash.utils.Dictionary;
+	
 	import mx.utils.LoaderUtil;
 	
 	import spark.core.ContentCache;
 	
+	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flexutil.action.ActionHelper;
+	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
 	import org.flowerplatform.flexutil.layout.ComposedViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
@@ -79,6 +81,18 @@ package org.flowerplatform.flexutil {
 		public var flexPluginManager:FlexPluginManager = new FlexPluginManager();
 		
 		/**
+		 * Dictionary that maps action class instances to their ID.
+		 * @author Alina Bratu
+		 */
+		public var actionRegistry:Dictionary = new Dictionary();
+		
+		
+		/**
+		 * @author Cristina Contantinescu
+		 */
+		public var actionHelper:ActionHelper = new ActionHelper();
+		
+		/**
 		 * @author Cristina Contantinescu
 		 */
 		public var imageContentCache:ContentCache;
@@ -98,6 +112,33 @@ package org.flowerplatform.flexutil {
 				// an URL
 				return createAbsoluteUrl(String(image));
 			}
+		}
+		
+		/**
+		 * Adds an instance of the <code>generator</code> in <code>actionRegistry</code>. The instance is 
+		 * mapped at the generator's ID.
+		 * 
+		 * @author Alina Bratu
+		 */
+		public function registerAction(generator:Class):void {
+			actionRegistry[Object(generator).ID] = new FactoryWithInitialization(generator);
+		}
+			
+		public function registerActionInstance(instance:IAction):void {
+			actionRegistry[instance.id] = instance;
+		}
+		
+		public function getActionInstanceFromRegistry(actionId:String):IAction {
+			var obj:Object = actionRegistry[actionId];
+			if (obj != null) {
+				if (obj is ActionBase) {
+					return ActionBase(obj);
+				}
+				if (obj is FactoryWithInitialization) {
+					return FactoryWithInitialization(obj).newInstance();
+				}
+			}
+			return null;
 		}
 		
 	}

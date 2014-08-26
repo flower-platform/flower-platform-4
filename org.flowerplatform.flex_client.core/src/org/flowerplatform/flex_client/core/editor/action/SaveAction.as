@@ -1,21 +1,18 @@
 /* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.core.editor.action {
 	
 	import flash.ui.Keyboard;
@@ -32,6 +29,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */
 	public class SaveAction extends EditorFrontendAwareAction {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.SaveAction";
+		
 		public function SaveAction() {			
 			label = Resources.getMessage("save.action.label");
 			icon = Resources.saveIcon;
@@ -42,15 +41,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.S), id); // Ctrl + S
 		}
 				
-		override public function run():void {			
-			var dirtyResourceNodeIds:Array = CorePlugin.getInstance().resourceNodesManager.getEditorsDirtyResourceNodeIds([editorFrontend]);
-			if (dirtyResourceNodeIds.length == 1) { 
-				// single resourceNode to save -> save without asking
-				CorePlugin.getInstance().serviceLocator.invoke("resourceService.save", [dirtyResourceNodeIds[0]]);
-			} else { 
-				// multiple resourceNodes to save -> show dialog
-				CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors([editorFrontend], dirtyResourceNodeIds, function():void {});
-			}
+		override public function run():void {	
+			CorePlugin.getInstance().nodeRegistryManager.resourceOperationsManager.save(editorFrontend.nodeRegistry);
 		}
 				
 	}

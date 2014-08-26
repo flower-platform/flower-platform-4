@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,21 +11,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
-	import flash.events.IEventDispatcher;
-	
 	import mx.collections.ArrayList;
-	import mx.core.INavigatorContent;
-	import mx.events.CollectionEvent;
-	import mx.events.CollectionEventKind;
-	import mx.events.PropertyChangeEvent;
-	
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -41,6 +30,11 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var side:int;
 		
 		public var expanded:Boolean;
+		
+		public var fontFamily:String;
+		public var fontSize:Number;
+		public var fontWeight:Boolean;
+		public var fontStyle:Boolean;
 		
 	}	
 }

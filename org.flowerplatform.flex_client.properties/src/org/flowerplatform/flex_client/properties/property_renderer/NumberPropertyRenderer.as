@@ -1,22 +1,21 @@
 /* license-start
-*
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-*
-* Contributors:
-* Crispico - Initial API and implementation
-*
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.properties.property_renderer {
+	import flash.events.Event;
+	
 	import flashx.textLayout.formats.TextAlign;
 	
 	import mx.events.FlexEvent;
@@ -36,21 +35,24 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		
 		private var numberValidator:NumberValidator;
 		
-		override protected function creationCompleteHandler(event:FlexEvent):void {
-			super.creationCompleteHandler(event);
+		public function NumberPropertyRenderer() {
+			super();
 			
-			numberValidator = new NumberValidator();
-			
-			propertyValue.restrict = "0-9\\-";
-			propertyValue.setStyle("textAlign", TextAlign.RIGHT);
+			addEventListener(FlexEvent.CREATION_COMPLETE, 
+				function(event:FlexEvent):void {
+					numberValidator = new NumberValidator();				
+					restrict = "0-9\\-";
+					setStyle("textAlign", TextAlign.RIGHT);
+				}
+			);
 		}
-		
-		override protected function validPropertyValue():Boolean {
-			var value:Object = getValue();
+				
+		override public function isValidValue():Boolean {	
+			var value:Object = valueToCommit;
 			if (value == null) {
 				return true;
 			}
-			if (value != 0) {// done to alow '0', see: https://forums.adobe.com/thread/1038745
+			if (value != 0) { // done to alow '0', see: https://forums.adobe.com/thread/1038745
 				var validationResultEvent:ValidationResultEvent = numberValidator.validate(value);			
 				if (validationResultEvent.type == ValidationResultEvent.INVALID) {	
 					// show validation error to client
@@ -65,13 +67,14 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 			}
 			return true;
 		}
-		
-		override protected function getValue():Object {
-			var value:Object = super.getValue();
+				
+		override public function get valueToCommit():Object {
+			var value:Object = super.valueToCommit;
 			if (value == "") {
 				return null;
 			}
 			return new Number(value);
 		}
+		
 	}
 }

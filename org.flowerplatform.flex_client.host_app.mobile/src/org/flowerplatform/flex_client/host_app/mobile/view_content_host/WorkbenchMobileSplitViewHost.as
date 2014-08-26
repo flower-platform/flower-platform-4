@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import flash.events.IEventDispatcher;
 	
@@ -57,7 +72,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			// TODO
 		}
 		
-		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean=false, existingComponent:UIComponent=null):UIComponent {
+		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean=false, existingComponent:UIComponent=null, addViewInOtherStack:Boolean = false):UIComponent {
 			var comp:UIComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(viewLayoutData);
 			rightActiveComponent = comp;
 			rightComponents.addItem(comp);
@@ -74,21 +89,25 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			}
 		}
 			
-		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean=true):void {
-			closeViews(new ArrayCollection([view]), shouldDispatchEvent);
+		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
+			closeViews(new ArrayCollection([view]), shouldDispatchEvent, canPreventDefault);
 		}
 		
-		public function closeViews(views:ArrayCollection, shouldDispatchEvent:Boolean=true):void {
+		public function closeViews(views:ArrayCollection, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
 			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
 			if (shouldDispatchEvent) {
+				viewsRemovedEvent.canPreventDefault = canPreventDefault;
 				dispatchEvent(viewsRemovedEvent);
 			}
+
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
 					if (shouldDispatchEvent) {
+						viewRemovedEvent.canPreventDefault = canPreventDefault;
 						view.dispatchEvent(viewRemovedEvent);
 					}
+					view.dispatchEvent(viewRemovedEvent);
 				}				
 			}
 		}
@@ -131,7 +150,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		public function getViewComponentForEditor(editor:UIComponent):UIComponent {			
 			return editor;
 		}
-		
+				
 		/**
 		 * @author Cristina Constantinescu
 		 */ 
@@ -145,6 +164,10 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 				}
 			}
 			return result;
+		}
+		
+		public function moveComponentNearWorkbench(sourceComponent:UIComponent, side:Number):void {
+			// do nothing
 		}
 		
 	}

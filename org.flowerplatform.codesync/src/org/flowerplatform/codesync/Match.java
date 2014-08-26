@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync;
@@ -56,6 +53,8 @@ public class Match {
 	
 	private Object right;
 
+	private Object matchKey;
+	
 	private List<Diff> diffs;
 
 	/**
@@ -131,7 +130,15 @@ public class Match {
 	public void setRight(Object right) {
 		this.right = right;
 	}
+	
+	public Object getMatchKey() {
+		return matchKey;
+	}
 
+	public void setMatchKey(Object matchKey) {
+		this.matchKey = matchKey;
+	}
+	
 	/**
 	 * This field should be used only in read mode. The add
 	 * should be done using {@link #addDiff()}.
@@ -210,32 +217,6 @@ public class Match {
 		else
 			return getRight();
 	}
-	
-	/**
-	 * @author Cristi
-	 * @author Mariana
-	 */
-	public Object[] getDelegateAndModelAdapter(CodeSyncAlgorithm algorithm) {
-		Object delegate = null;
-		IModelAdapter modelAdapter = null;
-		if (getAncestor() != null && !getAncestor().equals(CodeSyncConstants.UNDEFINED)) {
-			delegate = getAncestor();
-			modelAdapter = algorithm.getAncestorModelAdapter(this, delegate);
-		} else if (getLeft() != null && !getLeft().equals(CodeSyncConstants.UNDEFINED)) {
-			delegate = getLeft();
-			modelAdapter = algorithm.getLeftModelAdapter(this, delegate);
-		} else if (getRight() != null && !getRight().equals(CodeSyncConstants.UNDEFINED)) {
-			delegate = getRight();
-			modelAdapter = algorithm.getRightModelAdapter(this, delegate);
-		}
-		
-		if (delegate == null)
-			return null;
-		else 
-			return new Object[] { delegate, modelAdapter };
-	}
-	
-
 	
 	/**
 	 * Calculated.

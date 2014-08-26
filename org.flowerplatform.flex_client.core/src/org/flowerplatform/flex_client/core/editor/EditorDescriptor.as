@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,26 +11,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package  org.flowerplatform.flex_client.core.editor {
 	
 	
-	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
-	import mx.core.mx_internal;
 	
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.layout.IViewProvider;
-	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
-	import org.flowerplatform.flexutil.view_content_host.IViewContent;
-	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 
 	/**
 	 * Abstract class; should be subclassed.
@@ -52,7 +42,6 @@ package  org.flowerplatform.flex_client.core.editor {
 	public class EditorDescriptor extends BasicEditorDescriptor implements IViewProvider {
 		
 		private static const OPEN_FORCED_BY_SERVER_EDITOR_INPUT_MARKER:String = "???___open_forced_by_server";
-		private static const HIDE_ROOT_NODE_MARKER:String = "???___hide_root_node";
 		
 		/**
 		 * Abstract method.
@@ -84,9 +73,9 @@ package  org.flowerplatform.flex_client.core.editor {
 		 * @author Mariana Gheorghe
 		 * @author Cristina Constantinescu
 		 */
-		override public function openEditor(editableResourcePath:String, preferNewEditor:Boolean = false, hideRootNode:Boolean = false, 
+		override public function openEditor(editableResourcePath:String, preferNewEditor:Boolean = false,
 											forceNewEditor:Boolean = false, openForcedByServer:Boolean = false, 
-											handleAsClientSubscription:Boolean = false):UIComponent {
+											handleAsClientSubscription:Boolean = false, addViewInOtherStack:Boolean = false):UIComponent {
 			var viewLayoutData:ViewLayoutData = new ViewLayoutData();
 			viewLayoutData.viewId = getId();
 			viewLayoutData.customData = editableResourcePath;
@@ -95,13 +84,10 @@ package  org.flowerplatform.flex_client.core.editor {
 			if (openForcedByServer) {
 				viewLayoutData.customData += OPEN_FORCED_BY_SERVER_EDITOR_INPUT_MARKER;
 			}
-			if (hideRootNode) {
-				viewLayoutData.customData += HIDE_ROOT_NODE_MARKER;
-			}
-			
+						
 			viewLayoutData.isEditor = true;
 			
-			return FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);		
+			return FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true, null, addViewInOtherStack);		
 		}
 		
 		public function getTabCustomizer(viewLayoutData:ViewLayoutData):Object {			
@@ -128,11 +114,7 @@ package  org.flowerplatform.flex_client.core.editor {
 				viewLayoutData.customData = viewLayoutData.customData.replace(OPEN_FORCED_BY_SERVER_EDITOR_INPUT_MARKER, "");
 				openForcedByServer = true;
 			}
-			if (viewLayoutData.customData.indexOf(HIDE_ROOT_NODE_MARKER) >= 0) {
-				viewLayoutData.customData = viewLayoutData.customData.replace(HIDE_ROOT_NODE_MARKER, "");
-				editor.hideRootNode = true;
-			}
-			
+						
 			editor.editorInput = viewLayoutData.customData;
 			return editor;
 		}

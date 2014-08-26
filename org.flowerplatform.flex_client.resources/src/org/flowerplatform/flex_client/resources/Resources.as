@@ -1,3 +1,18 @@
+/* license-start
+* 
+* Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package org.flowerplatform.flex_client.resources {
 	import mx.resources.ResourceManager;
 	
@@ -21,15 +36,18 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/icon_flower.gif")]
 		public static const flowerIcon:Class;
 		
+		[Embed(source="/core/file.gif")]
+		public static const fileIcon:Class;
+		
 		[Embed(source="/core/disk.png")]
 		public static const saveIcon:Class;
-
+		
 		[Embed(source="/core/disk_multiple.png")]
 		public static const saveAllIcon:Class;
 		
 		[Embed(source="/core/refresh_blue.png")]
 		public static const reloadIcon:Class;
-	
+		
 		[Embed(source="/core/external_link.png")]
 		public static const externalLinkIcon:Class;
 		
@@ -63,6 +81,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/keyboard.png")]
 		public static const keyboardIcon:Class;
 		
+		[Embed(source="/core/table_gear.png")]
+		public static const tableGear:Class;
+		
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]
@@ -75,9 +96,10 @@ package org.flowerplatform.flex_client.resources {
 		
 		// MindMap
 		
-		[Embed(source="/mindmap/refresh.gif")]
-		public static const refreshIcon:Class;
+		[Embed(source="/mindmap/icons/checkout.gif")]
+		public static const mindmap_button_checkout:Class;
 		
+				
 		[Embed(source="/mindmap/images.png")]
 		public static const imagesIcon:Class;
 		
@@ -402,6 +424,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/arrowUp.png")]
 		public static const arrowUpIcon:Class;
 		
+		[Embed(source="/mindmap/ExternalImageAddAction.png")]
+		public static const mindmap_customIconsIcon:Class;
+				
 		public static const mindmapIcons:Object = {
 			"help" : mindmap_helpIcon,
 			"yes" : mindmap_yesIcon,
@@ -503,8 +528,107 @@ package org.flowerplatform.flex_client.resources {
 			"addition" : mindmap_additionIcon,
 			"subtraction" : mindmap_subtractionIcon,
 			"multiplication" : mindmap_multiplicationIcon,
-			"division" : mindmap_divisionIcon
+			"division" : mindmap_divisionIcon,
+			"customIconsIcon" : mindmap_customIconsIcon
 		};
 		
+		[Embed(source="/properties/preference.png")]
+		public static const preferenceIcon:Class;
+		
+		[Embed(source="/properties/preferences.png")]
+		public static const preferencesIcon:Class;
+		
+		// CodeSync Regex
+		
+		[Embed(source="/codesync.regex/brick.png")]
+		public static const brickIcon:Class;
+		
+		[Embed(source="/codesync.regex/bricks.png")]
+		public static const bricksIcon:Class;
+		
+		[Embed(source="/codesync.regex/bullet_star.png")]
+		public static const bulletIcon:Class;
+		
+		[Embed(source="/codesync.regex/percent.png")]
+		public static const percentIcon:Class;
+		
+		[Embed(source="/codesync.regex/wrench.png")]
+		public static const wrenchIcon:Class;
+		
+		// Team Git
+		
+		[Embed(source="/team.git/new_branch_obj.gif")]
+		public static const createBranchIcon:Class;
+		
+		[Embed(source="/team.git/editconfig.gif")]
+		public static const renameBranch:Class;
+
+		[Embed(source="/team.git/remote_entry_tbl.gif")]
+		public static const remoteEntry:Class;
+
+		[Embed(source="/team.git/remoteSpec.gif")]
+		public static const configureFetchPush:Class;
+
+		[Embed(source="/team.git/config.png")]
+		public static const configBranchIcon:Class;
+
+		[Embed(source="/team.git/merge.gif")]
+		public static const mergeBranch:Class;
+		
+		[Embed(source="/team.git/push.gif")]
+		public static const push:Class;	
+
+		[Embed(source="/git/reset.gif")]
+		public static const resetIcon:Class;
+
+		[Embed(source="/team.git/gitDiffFromCommits.png")]
+		public static const gitDiffFromCommitsIcon:Class;
+		
+		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
+		public static const gitDiffFromWorkspaceAndPatch:Class;
+
+		[Embed(source="/team.git/rebase.gif")]
+		public static const rebaseIcon:Class;
+
+		[Embed(source="/team.git/permission.png")]
+		public static const permission:Class;
+		
+		[Embed(source="/team.git/branch_obj.gif")]
+		public static const branchIcon:Class;
+		
+		[Embed(source="/team.git/branches_obj.gif")]
+		public static const branchesIcon:Class;
+		
+		[Embed(source="/team.git/cloneGit.gif")]
+		public static const cloneRepoIcon:Class;
+		
+		[Embed(source="/team.git/gitrepository.gif")]
+		public static const gitRepoIcon:Class;
+
+		[Embed(source="/team.git/delete_obj.gif")]
+		public static const deleteRemote:Class;
+
+		[Embed(source="/team.git/commit_amend.gif")]
+		public static const amendIcon:Class;
+				
+		// Git History 
+		[Embed(source="/git/history.gif")]
+		public static const gitHistoryIcon:Class;
+		
+		[Embed(source="/mindmap/refresh.gif")]
+		public static const refreshIcon:Class;
+		
+		[Embed(source="/mindmap/comments.gif")]
+		public static const commentsIcon:Class;
+		
+		[Embed(source="/mindmap/flatLayout.gif")]
+		public static const flatLayoutIcon:Class;			
+
+		[Embed(source="/team.git/staging.png")]
+		public static const gitStagingIcon:Class;
+		
+		[Embed(source="/team.git/switch.gif")]
+		public static const switchIcon:Class;
+
 	}
 }

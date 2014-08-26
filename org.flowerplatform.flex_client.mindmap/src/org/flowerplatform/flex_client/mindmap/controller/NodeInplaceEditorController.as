@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap.controller {
@@ -68,7 +65,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			textArea.setStyle("color", rendererLabelDisplay.getStyle("color"));
 					
 			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
-			textArea.text = String(titleProvider.getValue(Node(model)));			
+			textArea.text = titleProvider.getValue(Node(model)) as String;			
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
 			// select all text
@@ -84,7 +81,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
 			
 			if (titleProvider.getValue(Node(model)) != textArea.text) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).fullNodeId, 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).nodeUri, 
 					titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text], function(data:Object):void {
 						context.diagramShell.mainToolFinishedItsJob();
 					});

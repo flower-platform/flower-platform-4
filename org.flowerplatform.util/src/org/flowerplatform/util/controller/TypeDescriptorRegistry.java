@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.util.controller;
 
 import java.util.ArrayList;
@@ -124,16 +139,16 @@ public class TypeDescriptorRegistry {
 			TypeDescriptorRemote remote = new TypeDescriptorRemote(descriptor.getType(), descriptor.getCategories());
 			
 			// filter the single controllers map
-			for (Entry<String, ControllerEntry<AbstractController>> entry : descriptor.singleControllers.entrySet()) {
+			for (Entry<String, ControllerEntry<IController>> entry : descriptor.singleControllers.entrySet()) {
 				if (entry.getValue().getSelfValue() instanceof IDescriptor) {
 					remote.getSingleControllers().put(entry.getKey(), (IDescriptor) entry.getValue().getSelfValue());
 				}
 			}
 			
 			// filter the additive controlers map
-			for (Entry<String, ControllerEntry<List<? extends AbstractController>>> entry : descriptor.additiveControllers.entrySet()) {
+			for (Entry<String, ControllerEntry<List<? extends IController>>> entry : descriptor.additiveControllers.entrySet()) {
 				List<IDescriptor> additiveControllers = new ArrayList<IDescriptor>();
-				for (AbstractController abstractController : entry.getValue().getSelfValue()) {
+				for (IController abstractController : entry.getValue().getSelfValue()) {
 					if (abstractController instanceof IDescriptor) {
 						additiveControllers.add((IDescriptor) abstractController);
 					}

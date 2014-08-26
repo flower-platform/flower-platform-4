@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core;
 
 import java.io.BufferedInputStream;
@@ -10,36 +25,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Mariana Gheorghe
  */
 public class CoreUtils {
 
-	public static boolean isSubscribable(Map<String, Object> properties) {
-		Boolean isSubscribable = (Boolean) properties.get(CoreConstants.IS_SUBSCRIBABLE);
-		if (isSubscribable == null) {
-			return false;
-		}
-		return isSubscribable;
-	}
-	
-	public static Node getResourceNode(Node node) {
-		if (node.getResource() == null) {
-			return null;
-		} else if (CoreConstants.SELF_RESOURCE.equals(node.getResource())) {
-			return node;
-		}
-		return new Node(node.getResource());
-	}
-	
 	public static void delete(File f) {	
 		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
 			for (File c : f.listFiles()) {
@@ -136,6 +134,44 @@ public class CoreUtils {
 			outputStream.close();
 			inputStream.close();
 		}
+	}
+	
+	/**
+	 * @return <tt>scheme:repo|schemeSpecificPart</tt>
+	 */
+	public static String createNodeUriWithRepo(String scheme, String repo, String schemeSpecificPart) {
+		return scheme + ":" + (repo == null ? "" : repo) + "|" + (schemeSpecificPart == null ? "" : schemeSpecificPart);
+	}
+	
+	/**
+	 * @see #getRepoFromNodeUri(String)
+	 */
+	public static String getRepoFromNode(Node node) {
+		return getRepoFromNodeUri(node.getNodeUri());
+	}
+	
+	/**
+	 * @return <tt>repo</tt> for URI <tt>scheme:repo|schemeSpecificPart</tt>
+	 */
+	public static String getRepoFromNodeUri(String nodeUri) {
+		String ssp = Utils.getSchemeSpecificPart(nodeUri);
+		int index = ssp.indexOf("|");
+		if (index < 0) {
+			return ssp;
+		}
+		return ssp.substring(0, index);
+	}
+	
+	/**
+	 * @return <tt>schemeSpecificPart</tt> for URI <tt>scheme:repo|schemeSpecificPart</tt>
+	 */
+	public static String getSchemeSpecificPartWithoutRepo(String nodeUri) {
+		String ssp = Utils.getSchemeSpecificPart(nodeUri);
+		int index = ssp.indexOf("|");
+		if (index < 0) {
+			return null;
+		}
+		return ssp.substring(index + 1);
 	}
 	
 }

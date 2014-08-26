@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-Contributors:
-Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!---
 @author Sebastian Solomon
@@ -28,14 +25,22 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
-			import spark.components.Group;
+			import mx.controls.Label;
 			
+			import spark.components.Group;
+			import spark.components.supportClasses.StyleableTextField;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.Utils;
-						
+					
 			public var icons:String;
+			[Bindable]
+			public var customIcons:Array;
+			[Bindable]
+			public var defaultIcons:Array;
 			
 			[SkinPart(required="true")]
 			[Bindable]  
@@ -44,15 +49,50 @@ license-end
 			[SkinPart(required="true")]
 			[Bindable]
 			public var removeGroup:Group;
-					
+			
+			[Bindable]
+			public var repo:String;
+			
+			[Bindable]
+			public var _getCustomIcons:Boolean = true;
+			
+			[Bindable]
+			public var getDefaultIcons:Boolean = true;
+			
+			[Bindable]
+			public var showMessageLabel:Boolean = false;
+						
 			/**
 			 * @author Cristina Constantinescu
 			 * @author Sebastian Solomon
 			 */
 			override protected function createChildren():void {
 				super.createChildren();
-				
-
+			}
+			
+			/**
+			 * @author Alina Bratu
+			 */
+			public function set getCustomIcons(b:Boolean):void {
+				_getCustomIcons = b;
+			}
+			
+			/**
+			 * @author Alina Bratu
+			 */
+			public function get getCustomIcons():Boolean {
+				return _getCustomIcons;
+			}
+			
+			/**
+			 * @author Alina Bratu
+			 */
+			private function getCustomIconsResultHandler(list:String):void {
+				customIcons = list.split(';');
+				finishDisplay(customIcons,MindMapConstants.LOAD_CUSTOM_ICONS);
+				if (defaultIcons != null) {
+					finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
+				}
 			}
 			
 			override protected function partAdded(partName:String, instance:Object):void {
@@ -79,18 +119,66 @@ license-end
 				}
 				
 				if (partName == "imageGroup") {
-					var icons:Array = MindMapConstants.ICONS_LIST.split(';');
-					for (var i:int=0; i < icons.length; i++) {
-						var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-						btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-						btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
-						btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
-						
-						imageGroup.addElement(btnImage);
+					
+					if (getDefaultIcons) {
+						defaultIcons = MindMapConstants.ICONS_LIST.split(';');
+						if (getCustomIcons) {
+							if (customIcons == null) {
+								CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
+							}
+						}
+						else {
+							finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
+						}
 					}
+					else {
+						if (getCustomIcons) {
+							if (customIcons == null) {
+								CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
+							}
+						}
+					}
+					
+				}
+				
+				if (partName == "contentGroup") {
+					var message:StyleableTextField = new StyleableTextField();
+					message.text = Resources.getMessage("resource.icon.custom");
+					message.width = parent.width;
+					message.wordWrap = true;
+					contentGroup.addElement(message);
 				}
 			}
 			
+			/**
+			 * @author Alina Bratu
+			 */
+			protected function getCustomImageUrl(name:String):String {
+				return "servlet/load/" + repo + MindMapConstants.CUSTOM_ICONS_DIRECTORY + name;
+			}
+			
+			protected function finishDisplay(icons:Array, type:Number):void {
+				for (var i:int=0; i < icons.length; i++) {
+					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
+					switch (type) {
+						case MindMapConstants.LOAD_CUSTOM_ICONS:
+							btnImage.iconUrl = repo + MindMapConstants.CUSTOM_ICONS_DIRECTORY + icons[i] + ".png";
+							btnImage.setStyle("icon", getCustomImageUrl(icons[i] + ".png"));
+							break;
+						case MindMapConstants.LOAD_DEFAULT_ICONS:
+							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+							btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
+							break;
+						default:
+							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+							btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
+							break;
+					}
+					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
+					
+					imageGroup.addElement(btnImage);
+				}
+			}
 					
 			protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
 				var result:Object = new Object();
@@ -114,13 +202,18 @@ license-end
 				var result:Object = new Object();
 				result.type = Utils.ADD;
 				var iconUrl:String = MindMapButtonWithIcon(event.target).iconUrl;
-				result.iconUrl = Resources.getResourceUrl(iconUrl);
+				if (iconUrl.indexOf("mindmap_icons") != -1) {
+					result.iconUrl = "servlet/load/" + iconUrl;
+				}
+				else {
+					result.iconUrl = Resources.getResourceUrl(iconUrl);
+				}
 				handleClick(result);
 			}
 			
 			protected function handleClick(result:Object):void {
 			}
-						
+							
 		]]>
 	</fx:Script>
 	

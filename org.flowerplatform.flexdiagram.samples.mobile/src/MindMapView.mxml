@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,9 +13,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 	
-	Contributors:
-	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
- 
 	license-end
 -->
 <!---
@@ -30,24 +27,26 @@
 	   <fx:Script>
 		   <![CDATA[
 			   import mx.core.FlexGlobals;
-			   
-			   import org.flowerplatform.flexdiagram.tool.DragTool;
-			   
 			   import mx.events.FlexEvent;
 			   
 			   import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			   import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
+			   import org.flowerplatform.flexdiagram.tool.DragTool;
 			   import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
 			   import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			   import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			   import org.flowerplatform.flexdiagram.tool.ZoomTool;
+			   import org.flowerplatform.flexutil.FactoryWithInitialization;
 			   
 			   protected function creationCompleteHandler(event:FlexEvent):void {
 				   MindMapPopulator.populateRootModel(IModelHolder(FlexGlobals.topLevelApplication));
 				   
-				   diagramShell.registerTools([
-					   ScrollTool, SelectOnClickTool, ZoomTool, InplaceEditorTool, DragTool]);
-				   
+				   diagramShell.registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
+				   diagramShell.registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
+				   diagramShell.registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
+				   diagramShell.registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
+				   diagramShell.registerTool(DragTool.ID, new FactoryWithInitialization(DragTool));
+
 				   DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {FlexGlobals.topLevelApplication.rootModel.getItemAt(0).expanded = true});
 			   }
 			   

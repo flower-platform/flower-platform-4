@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,49 +11,79 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import mx.core.FlexGlobals;
-	
-	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.NodeUpdateProcessor;
+	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
+	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
+	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.mindmap.action.ExpandCollapseAction;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
+	import org.flowerplatform.flexdiagram.tool.ActionTool;
 	import org.flowerplatform.flexdiagram.tool.ScrollTool;
 	import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
+	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class MindMapEditorDiagramShell extends MindMapDiagramShell {
+	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
-		public var updateProcessor:NodeUpdateProcessor;
+		private var _nodeRegistry:NodeRegistry;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
-						
-			var tools:Array = [ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool];
-			if (!FlexUtilGlobals.getInstance().isMobile) {
-				tools.push(InplaceEditorTool);
-			}
-			registerTools(tools);
+									
+			registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
+			registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
+			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
+			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
+			registerTool(OpenAction.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
+			registerTool(ExpandCollapseAction.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
+		}
+			
+		public function get nodeRegistry():NodeRegistry {
+			return _nodeRegistry;
+		}
+
+		public function set nodeRegistry(value:NodeRegistry):void {
+			_nodeRegistry = value;
+			_nodeRegistry.addNodeChangeListener(this);
 		}
 		
+		public function nodeAdded(node:Node):void {
+			if (rootModel != null) {
+				refreshRootModelChildren(getNewDiagramShellContext());
+			}
+		}
+		
+		public function nodeRemoved(node:Node):void {
+			unassociateModelFromRenderer(getNewDiagramShellContext(), node, getRendererForModel(getNewDiagramShellContext(), node), true);	
+			
+			if (rootModel != null) {
+				refreshRootModelChildren(getNewDiagramShellContext());				
+			}
+		}
+		
+		public function nodeUpdated(node:Node, property:String, oldValue:Object, newValue:Object):void {
+			// do nothing
+		}
+						
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
-			var rootModel:Node = updateProcessor.getNodeById(Node(MindMapRootModelWrapper(rootModel).model).fullNodeId);			
-			if (rootModel != null && rootModel.properties[CoreConstants.CONTENT_TYPE] == MindMapConstants.MINDMAP_CONTENT_TYPE) { 
+			var rootModel:Node = Node(MindMapRootModelWrapper(rootModel).model);
+			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getValueProvider(
+				MindMapEditorDiagramShell(context.diagramShell).registry, rootModel, MindMapConstants.NODE_SIDE_PROVIDER);
+			if (sideProvider != null) {
 				return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/2; // horizontal align = center
 			}
 			return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/8; // horizontal align = left, but not 0

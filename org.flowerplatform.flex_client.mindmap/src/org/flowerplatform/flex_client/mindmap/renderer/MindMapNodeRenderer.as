@@ -1,25 +1,32 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.mindmap.renderer {
 	
-	import flash.events.MouseEvent;
-	
-	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
-	import mx.skins.spark.EditableComboBoxSkin;
 	import mx.utils.StringUtil;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	
@@ -46,7 +53,75 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			super.modelChangedHandler(event);
-			switch (event.property) {			
+			
+			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(mindMapDiagramShell.registry, node);
+			var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
+					
+			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
+			var dynamicObject:Object = diagramShell.getDynamicObject(diagramShellContext, data);
+						
+			switch (event.property) {	
+				case iconsProperty:
+					var icon:String = iconsProvider.getValue(node) as String;
+					
+					if (node.properties.note != null && String(node.properties.note).length > 0) {				 
+						icon = Resources.getResourceUrl("/images/mindmap/knotes.png") + (icon == null ? "" : (Utils.ICONS_SEPARATOR + icon));
+						icons = new FlowerArrayList(icon.split(Utils.ICONS_SEPARATOR));
+					} 
+					break;
+				case MindMapConstants.MIN_WIDTH:
+					minWidth = node.getPropertyValue(MindMapConstants.MIN_WIDTH);
+					invalidateSize();
+					invalidateDisplayList();
+					break;
+				case MindMapConstants.MAX_WIDTH:
+					maxWidth = node.getPropertyValue(MindMapConstants.MAX_WIDTH);
+					invalidateSize();
+					invalidateDisplayList();
+					break;
+				case MindMapConstants.FONT_FAMILY:
+					labelDisplay.setStyle("fontFamily", Utils.getSupportedFontFamily(data.getPropertyValue(MindMapConstants.FONT_FAMILY)));
+					break;
+				case MindMapConstants.FONT_SIZE:
+					labelDisplay.setStyle("fontSize", MindMapConstants.FONT_SCALE_FACTOR * data.getPropertyValue(MindMapConstants.FONT_SIZE));
+					break;
+				case MindMapConstants.FONT_BOLD:
+					labelDisplay.setStyle("fontWeight", data.getPropertyValue(MindMapConstants.FONT_BOLD) == true ? "bold" : "normal");
+					break;
+				case MindMapConstants.FONT_ITALIC:
+					labelDisplay.setStyle("fontStyle", data.getPropertyValue(MindMapConstants.FONT_ITALIC) == true ? "italic" : "normal");
+					break;
+				case MindMapConstants.COLOR_TEXT:
+					labelDisplay.setStyle("color", Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.COLOR_TEXT)));
+					break;
+				case MindMapConstants.COLOR_BACKGROUND:
+					backgroundColor = Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.COLOR_BACKGROUND));
+					invalidateDisplayList();
+					break;
+				case MindMapConstants.CLOUD_COLOR:
+					invalidateDisplayList();
+					break;
+				case MindMapConstants.CLOUD_SHAPE:
+					var refreshNodePositions:Boolean = false;
+					var shape:String = data.getPropertyValue(MindMapConstants.CLOUD_SHAPE);
+					
+					if (shape != null && shape != MindMapConstants.SHAPE_NONE) { // we have a cloud shape, add additional padding to node and request refresh				
+						diagramShell.setPropertyValue(diagramShellContext, data, "additionalPadding", diagramShell.additionalPadding);	
+						refreshNodePositions = true;				
+					} else if (dynamicObject.additionalPadding) { // no cloud shape needed anymore, remove additional padding from node and request refresh
+						delete dynamicObject.additionalPadding;		
+						refreshNodePositions = true;		
+					}					
+					mindMapDiagramShell.shouldRefreshModelPositions(diagramShellContext, diagramShell.rootModel);
+					break;
+				case MindMapConstants.EDGE_WIDTH:
+				case MindMapConstants.EDGE_STYLE:
+				case MindMapConstants.EDGE_COLOR:
+					if (dynamicObject.connector != null) {
+						dynamicObject.connector.invalidateDisplayList();
+					}
+					propagatePropertyChangeOnChildrens(diagramShellContext, node);
+					break;
 				case "expandedHeight":
 				case "expandedWidth":				
 					invalidateDisplayList();
@@ -55,10 +130,10 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		
 		override protected function drawGraphics(unscaledWidth:Number, unscaledHeight:Number):void {			
 			// draw could shape
-			var shape:String = data.properties[MindMapConstants.CLOUD_SHAPE];
+			var shape:String = data.getPropertyValue(MindMapConstants.CLOUD_SHAPE);
 			if (shape != null && shape != MindMapConstants.SHAPE_NONE) {				
 				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness
-				graphics.beginFill(Utils.convertValueToColor(data.properties[MindMapConstants.CLOUD_COLOR]), 1);
+				graphics.beginFill(Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.CLOUD_COLOR)), 1);
 				
 				var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
 				var cloudPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
@@ -86,105 +161,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			super.drawGraphics(unscaledWidth, unscaledHeight);
 		}
-			
-		/**
-		 * @author Cristina Constantinescu
-		 * @author Sebastian Solomon
-		 */
-		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
-			super.nodeUpdatedHandler(event);
-			
-			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
-			var icon:String = iconsProvider.getValue(node) as String;
-			
-			if (node.properties.note != null && String(node.properties.note).length > 0) {				 
-				icon = Resources.getResourceUrl("/images/mindmap/knotes.png") + (icon == null ? "" : (Utils.ICONS_SEPARATOR + icon));
-				icons = new FlowerArrayList(icon.split(Utils.ICONS_SEPARATOR));
-			} 
-			
-			var refreshNodePositions:Boolean = false;
-			var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
-			var dynamicObject:Object = diagramShell.getDynamicObject(diagramShellContext, data);
-			
-			var minWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MIN_WIDTH, event);
-			if (minWidthChanged) {
-				minWidth = node.properties[MindMapConstants.MIN_WIDTH];
-			}	
-			
-			var maxWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MAX_WIDTH, event);
-			if (maxWidthChanged) {
-				maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
-			}
-			
-			var fontFamilyChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_FAMILY, event);
-			if (fontFamilyChanged) {
-				labelDisplay.setStyle("fontFamily", Utils.getSupportedFontFamily(data.properties[MindMapConstants.FONT_FAMILY]));				
-			}
-			
-			var fontSizeChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_SIZE, event);
-			if (fontSizeChanged) {
-				labelDisplay.setStyle("fontSize", MindMapConstants.FONT_SCALE_FACTOR * data.properties[MindMapConstants.FONT_SIZE]);
-			}
-			
-			var fontBoldChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_BOLD, event);
-			if (fontBoldChanged) {				
-				labelDisplay.setStyle("fontWeight", data.properties[MindMapConstants.FONT_BOLD] == true ? "bold" : "normal");
-			}
-			
-			var fontItalicChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.FONT_ITALIC, event);
-			if (fontItalicChanged) {
-				labelDisplay.setStyle("fontStyle", data.properties[MindMapConstants.FONT_ITALIC] == true ? "italic" : "normal");
-			}
-			
-			var colorChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.COLOR_TEXT, event);
-			if (colorChanged) {
-				labelDisplay.setStyle("color", Utils.convertValueToColor(data.properties[MindMapConstants.COLOR_TEXT]));
-			}
-			
-			var backgroundColorChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.COLOR_BACKGROUND, event);
-			if (backgroundColorChanged) {				
-				backgroundColor = Utils.convertValueToColor(data.properties[MindMapConstants.COLOR_BACKGROUND]);
-			}
-				
-			var cloudColorChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.CLOUD_COLOR, event);
-			
-			var cloudShapeChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.CLOUD_SHAPE, event);						
-			if (cloudShapeChanged) {				
-				var shape:String = data.properties[MindMapConstants.CLOUD_SHAPE];
-				
-				if (shape != null && shape != MindMapConstants.SHAPE_NONE) { // we have a cloud shape, add additional padding to node and request refresh				
-					diagramShell.setPropertyValue(diagramShellContext, data, "additionalPadding", diagramShell.additionalPadding);	
-					refreshNodePositions = true;				
-				} else if (dynamicObject.additionalPadding) { // no cloud shape needed anymore, remove additional padding from node and request refresh
-					delete dynamicObject.additionalPadding;		
-					refreshNodePositions = true;		
-				}				
-			}
-			
-			if (refreshNodePositions) {
-				var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, data).getParent(diagramShellContext, data);
-				mindMapDiagramShell.refreshModelPositions(diagramShellContext, parent != null ? parent : data);
-			}
-			
-			if (minWidthChanged || maxWidthChanged) {
-				invalidateSize();				
-			}	
-			if (minWidthChanged || maxWidthChanged || backgroundColorChanged || cloudColorChanged) {			
-				invalidateDisplayList();
-			}
-			
-			var edgeWidthChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_WIDTH, event);
-			var edgeStyleChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_STYLE, event);
-			var edgeColorChange:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.EDGE_COLOR, event);
-			
-			if (edgeWidthChange || edgeStyleChange || edgeColorChange) {
-				if (dynamicObject.connector != null) {
-					dynamicObject.connector.invalidateDisplayList();
-				}
-				propagatePropertyChangeOnChildrens(diagramShellContext, node);
-			}
-		}
-		
+
 		/**
 		 * @author Sebastian Solomon
 		 */
@@ -194,21 +171,22 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 		
 			for (var i:int=0; i < model.children.length; i++) {
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [model.children[i].fullNodeId], 
-					function(returnedNode:Node):void {
-						var childNode:Node = mindMapDiagramShell.updateProcessor.getNodeById(returnedNode.fullNodeId);
+				var childNode:Node = Node(model.children[i]);
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.getNode", [childNode.nodeUri], 
+					function(returnedNode:Node):void {						
 						var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, childNode);
 						var edgeProperties:Array = [MindMapConstants.EDGE_COLOR, MindMapConstants.EDGE_STYLE, MindMapConstants.EDGE_WIDTH];
 						
 						for (var i:int=0; i < edgeProperties.length; i++) {
-							if(childNode.properties[edgeProperties[i]] != returnedNode.properties[edgeProperties[i]]) {								
+							if(childNode.getPropertyValue(edgeProperties[i]) != returnedNode.getPropertyValue(edgeProperties[i])) {								
 								var defaultProperty:String = StringUtil.substitute(CoreConstants.PROPERTY_DEFAULT_FORMAT, edgeProperties[i]);
 								
 								childNode.properties[edgeProperties[i]] = returnedNode.properties[edgeProperties[i]];
 								childNode.properties[defaultProperty] = returnedNode.properties[defaultProperty];
 								
-								dynamicObject.connector.invalidateDisplayList();
-								
+								if (dynamicObject.connector != null) {
+									dynamicObject.connector.invalidateDisplayList();
+								}
 								propagatePropertyChangeOnChildrens(context, childNode)
 							}
 						}

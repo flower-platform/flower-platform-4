@@ -1,25 +1,24 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.mindmap.renderer {
 	import flash.events.MouseEvent;
-	
-	import flashx.textLayout.conversion.TextConverter;
 	
 	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
-	
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
-	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.ControllerUtils;
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
-	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
-	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexutil.Utils;
 	
 	import spark.components.DataRenderer;
 	import spark.components.Group;
@@ -27,6 +26,19 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import spark.components.RichText;
 	import spark.layouts.HorizontalLayout;
 	import spark.layouts.VerticalLayout;
+	
+	import flashx.textLayout.conversion.TextConverter;
+	
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
+	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
+	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
+	import org.flowerplatform.flexutil.Utils;
 	
 	/**
 	 * @author Sebastian Solomon
@@ -68,9 +80,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		 * Duplicate from AbstractMindMapModelRenderer.
 		 */
 		override public function set data(value:Object):void {
-			if (data != null) {
-				data.removeEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
-				data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+			if (node != null) {
+				node.properties.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 				depth = 0;
 				unassignData();
 			}
@@ -86,14 +97,13 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				if (dynamicObject.depth) {
 					depth = dynamicObject.depth;
 				}
-				data.addEventListener(NodeUpdatedEvent.NODE_UPDATED, nodeUpdatedHandler);
-				data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);				
+				node.properties.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 				assignData();
 			}
 		}
 		
 		/**
-		 * Duplicate from NodeRenderer
+		 * Duplicate from NodeRenderer.
 		 */
 		protected function unassignData():void {
 			// Important: measuredHeight/measuredWidth are reset to their default values; otherwise the renderer will use recycled values for width/height 
@@ -114,31 +124,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			detailsText.visible = detailsTextVisible == 1;
 			detailsText.includeInLayout = detailsTextVisible == 1;
 			
-			nodeUpdatedHandler();
-		}
-		
-		/**
-		 * Duplicate from NodeRenderer + MindMapNodeRenderer.
-		 */
-		protected function modelChangedHandler(event:PropertyChangeEvent):void {
-			switch (event.property) {
-				case "x":
-					x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");					
-					break;
-				case "y":
-					y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");				
-					break;
-				case "depth":
-					depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");				
-					break;
-				case "hasChildren":
-					invalidateSize();
-				case "children":
-					invalidateDisplayList();
-				case "expandedHeight":
-				case "expandedWidth":				
-					invalidateDisplayList();
-			}
+			modelChangedHandler();
 		}
 		
 		protected function get mindMapDiagramShell():MindMapEditorDiagramShell {
@@ -208,7 +194,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "detailsTextVisible", detailsText.includeInLayout ? 1 : 0);	
 		}
 		
-		protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
+		protected function modelChangedHandler(event:PropertyChangeEvent = null):void {
 			if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
 				setDetailsGroupVisibile(true);
 				if (detailsText.includeInLayout) {
@@ -226,14 +212,37 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				detailsText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
 			}
 			
-			var minWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MIN_WIDTH, event);
-			if (minWidthChanged) {
-				minWidth = node.properties[MindMapConstants.MIN_WIDTH];
-			}	
+			if (event == null) {
+				return;
+			}
 			
-			var maxWidthChanged:Boolean = NodeControllerUtils.hasPropertyChanged(node, MindMapConstants.MAX_WIDTH, event);
-			if (maxWidthChanged) {
-				maxWidth = node.properties[MindMapConstants.MAX_WIDTH];
+			// duplicate from NodeRenderer + MindMapNodeRenderer
+			switch (event.property) {
+				case "x":
+					x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");					
+					break;
+				case "y":
+					y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");				
+					break;
+				case MindMapConstants.MIN_WIDTH:
+					minWidth = node.getPropertyValue(MindMapConstants.MIN_WIDTH);
+					invalidateSize();
+					invalidateDisplayList();
+					break;
+				case MindMapConstants.MAX_WIDTH:
+					maxWidth = node.getPropertyValue(MindMapConstants.MAX_WIDTH);
+					invalidateSize();
+					invalidateDisplayList();
+					break;
+				case "depth":
+					depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");				
+					break;
+				case "hasChildren":
+					invalidateSize();
+				case "children":
+				case "expandedHeight":
+				case "expandedWidth":				
+					invalidateDisplayList();
 			}
 		}
 		
@@ -316,9 +325,9 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				refresh = true;
 			}
 			
-			if (refresh) {				
-				var parent:Object = ControllerUtils.getModelChildrenController(diagramShellContext, data).getParent(diagramShellContext, data);
-				mindMapDiagramShell.refreshModelPositions(diagramShellContext, parent != null ? parent : data);
+			if (refresh) {					
+				mindMapDiagramShell.shouldRefreshModelPositions(diagramShellContext, mindMapDiagramShell.rootModel);
+				mindMapDiagramShell.shouldRefreshVisualChildren(diagramShellContext, mindMapDiagramShell.rootModel);
 			}
 		}
 		

@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,9 +13,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 	
-	Contributors:
-	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
- 
 	license-end
 -->
 <s:Application implements="org.flowerplatform.flexdiagram.samples.IModelHolder"
@@ -30,6 +27,7 @@
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
@@ -37,28 +35,31 @@
 			import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
-			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+			import org.flowerplatform.flexutil.FactoryWithInitialization;
 			
-			private var _rootModel:ParentAwareArrayList;
+			private var _rootModel:Object;
 			
 			[Bindable]
-			public function get rootModel():ParentAwareArrayList {
+			public function get rootModel():Object {
 				return _rootModel;
 			}
 			
-			public function set rootModel(value:ParentAwareArrayList):void {
+			public function set rootModel(value:Object):void {
 				_rootModel = value;				
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				MindMapPopulator.populateRootModel(this);
 				
-				diagramShell.registerTools([
-					ScrollTool, SelectOnClickTool, ZoomTool, InplaceEditorTool, DragTool]);
+				diagramShell.rootModel = rootModel;
+				diagramShell.registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
+				diagramShell.registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
+				diagramShell.registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
+				diagramShell.registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
+				diagramShell.registerTool(DragTool.ID, new FactoryWithInitialization(DragTool));
 				
 				var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
-				diagramShell.addModelInRootModelChildrenList(context, rootModel.getItemAt(0));
-				DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, rootModel.getItemAt(0)).setExpanded(context, rootModel.getItemAt(0), true)});
+				MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, diagramShell.getRoot(context)).setExpanded(context, diagramShell.getRoot(context), true)});
 			}
 			
 		
@@ -66,7 +67,7 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<mindmap:SampleMindMapDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}" rootModel="{rootModel}"/>
+		<mindmap:SampleMindMapDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}" />
 		
 	</fx:Declarations>
 	
@@ -74,9 +75,7 @@
 		<s:HorizontalLayout />
 	</s:layout>	
 	<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%" >
-		<renderer:DiagramRenderer id="diagramRenderer" viewPortRectOffsetTowardOutside="0" width="100%" height="100%">
-			
-		</renderer:DiagramRenderer>				
+		<mindmap1:MindMapDiagramRenderer id="diagramRenderer" viewPortRectOffsetTowardOutside="0" width="100%" height="100%" />
 	</infinitegroup:InfiniteScroller>			
 	
 </s:Application>

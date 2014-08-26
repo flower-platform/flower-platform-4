@@ -1,25 +1,21 @@
 /* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexutil.global_menu {
 	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
@@ -35,18 +31,20 @@ package org.flowerplatform.flexutil.global_menu {
 	import mx.controls.menuClasses.IMenuBarItemRenderer;
 	import mx.controls.menuClasses.MenuBarItem;
 	import mx.core.ClassFactory;
+	import mx.core.FlexGlobals;
 	import mx.core.IFactory;
 	import mx.core.LayoutDirection;
+	import mx.core.UIComponent;
 	import mx.events.MenuEvent;
 	import mx.events.PropertyChangeEvent;
-	import mx.events.PropertyChangeEventKind;
 	import mx.managers.ISystemManager;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionUtil;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
+	import org.flowerplatform.flexutil.context_menu.ContextMenu;
 	import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
+	import org.flowerplatform.flexutil.shortcut.AssignShortcutForActionEvent;
 	
 	/**
 	 * Extends the existing MenuBar so it can use an actionProvider.
@@ -187,7 +185,7 @@ package org.flowerplatform.flexutil.global_menu {
 			if (actionProvider != null) {
 				var listActions:ArrayCollection = new ArrayCollection();
 				
-				ActionUtil.processAndIterateActions(parentId, 
+				FlexUtilGlobals.getInstance().actionHelper.processAndIterateActions(parentId, 
 					actionProvider.getActions(selection),
 					selection,
 					null,
@@ -239,7 +237,7 @@ package org.flowerplatform.flexutil.global_menu {
 				var menuBarAction:IAction = item.data as IAction;
 				
 				// Only a composed action can have children
-				if (ActionUtil.isComposedAction(menuBarAction)) {
+				if (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(menuBarAction)) {
 					// get the current selection
 					var selection:IList = null;
 					if (FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider != null) {
@@ -393,7 +391,7 @@ package org.flowerplatform.flexutil.global_menu {
 				// dont notify parent if RIGHT and we are on an expandable menu
 				// so that the menu has a chance to expand itself
 				if (!(keyCode == Keyboard.RIGHT 
-					&& ActionUtil.isComposedAction(IAction(Menu(event.target).selectedItem)))) {
+					&& FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(Menu(event.target).selectedItem)))) {
 					dispatchEvent(event);
 				}
 			}
@@ -407,8 +405,17 @@ package org.flowerplatform.flexutil.global_menu {
 			var action:IAction = event.item as IAction;
 			
 			if (action != null) {
-				action.run();
+				if (FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation) { // learning state -> just send event to notify listeners
+					try {
+						UIComponent(FlexGlobals.topLevelApplication).stage.dispatchEvent(new AssignShortcutForActionEvent(action.id));
+					} catch (e:Error) { // something went wrong -> reset state, otherwise actions cannot be executed anymore
+						FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
+					}
+				} else {				
+					FlexUtilGlobals.getInstance().actionHelper.runAction(action, null, null);			
+				}
 			}
 		}
+		
 	}
 }

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flex_client.web {
@@ -22,19 +19,15 @@ package org.flowerplatform.flex_client.web {
 	
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
-	import mx.messaging.messages.ErrorMessage;
-	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -73,7 +66,7 @@ package org.flowerplatform.flex_client.web {
 						
 			CorePlugin.getInstance().getPerspective(FlowerPerspective.ID).resetPerspective(FlexUtilGlobals.getInstance().workbench);
 			
-			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
+			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
 			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 		}
 		
@@ -82,7 +75,7 @@ package org.flowerplatform.flex_client.web {
 		}	
 		
 		public function invokeSaveResourcesDialog():Boolean {
-			CorePlugin.getInstance().resourceNodesManager.showSaveDialogIfDirtyStateOrCloseEditors();
+			CorePlugin.getInstance().nodeRegistryManager.resourceOperationsManager.showSaveDialog();
 			return CorePlugin.getInstance().resourceNodesManager.getGlobalDirtyState();
 		}
 		

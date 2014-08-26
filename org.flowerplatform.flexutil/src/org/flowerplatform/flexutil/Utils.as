@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,27 +11,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil {
-	import flash.text.Font;
-	import flash.text.FontType;
-	import flash.text.StyleSheet;
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
-	import flashx.textLayout.utils.CharacterUtil;
-	
 	import mx.core.ITextInput;
-	import mx.utils.StringUtil;
 	
 	import spark.components.TextInput;
-	import spark.components.supportClasses.RegExPatterns;
 	import spark.components.supportClasses.SkinnableTextBase;
 	
 	/**
@@ -100,8 +91,20 @@ package org.flowerplatform.flexutil {
 			return simpleClassName;
 		}
 		
+		public static function getClass(obj:Object):Class {			
+			return Class(getDefinitionByName(getQualifiedClassName(obj)));
+		}
+			
 		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
 			return str == null ? defaultStr : str;
+		}
+		
+		public static function getBaseName(path:String):String {
+			var lastIndexOfSlash:int = path.lastIndexOf("/");
+			var baseNameWithExtension:String = path.substring(lastIndexOfSlash + 1);
+			var lastIndexOfDot:int = baseNameWithExtension.lastIndexOf(".");
+				
+			return baseNameWithExtension.substring(0, lastIndexOfDot);			
 		}
 		
 		/**
@@ -117,25 +120,29 @@ package org.flowerplatform.flexutil {
 		 * @author Sebastian Solomon
 		 * @author Cristina Constantinescu
 		 */
-		public static function computeStringTokens(str:String, separator:String, type:int, token:String = null):String {
+		public static function computeStringTokens(str:String, separator:String, type:int, token:String = ""):String {
 			switch (type) {
 				case ADD:
-					str = (str == null ? "" : (str + separator)) + token;
+					if(str == null || str == "") {
+						str = token;
+					} else {
+						str += separator + token;
+					}
 					break;
 				case REMOVE_FIRST:
-					if (str != null) {
+					if (str != null || str != "") {
 						var firstIndexOf:int = str.indexOf(separator);
-						str = firstIndexOf != -1 ? str.substr(firstIndexOf + 1, str.length) : null;
+						str = firstIndexOf != -1 ? str.substr(firstIndexOf + 1, str.length) : "";
 					}
 					break;
 				case REMOVE_LAST:
-					if (str != null) {
+					if (str != null || str != "") {
 						var lastIndexOf:int = str.lastIndexOf(separator);
-						str = lastIndexOf != -1 ? str.substr(0, lastIndexOf) : null;
+						str = lastIndexOf != -1 ? str.substr(0, lastIndexOf) : "";
 					}
 					break;
 				case REMOVE_ALL:
-					str = null;
+					str = "";
 					break;
 			}
 			return str;

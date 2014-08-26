@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,15 +13,12 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 	
-	Contributors:
-	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
- 
 	license-end
 -->
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:tree="org.flowerplatform.flexutil.samples.tree.*" xmlns:renderer="org.flowerplatform.flexutil.samples.renderer.*" xmlns:ns="org.flowerplatform.flexutil.samples.context_menu.*" xmlns:layout="com.crispico.flower.util.layout.*"
-			   applicationComplete="applicationCompleteHandler()" xmlns:ns1="org.flowerplatform.flexutil.samples.gradient_list.*" xmlns:text="org.flowerplatform.flexutil.samples.text.*" xmlns:layout1="org.flowerplatform.flexutil.samples.web.layout.*" xmlns:iframe="org.flowerplatform.flexutil.iframe.*" xmlns:globalmenu="org.flowerplatform.flexutil.samples.web.global_menu" xmlns:ns2="org.flowerplatform.flexutil.samples.global_menu.*" xmlns:spinner="org.flowerplatform.flexutil.samples.spinner.*">
+			   applicationComplete="applicationCompleteHandler()" xmlns:ns1="org.flowerplatform.flexutil.samples.gradient_list.*" xmlns:text="org.flowerplatform.flexutil.samples.text.*" xmlns:layout1="org.flowerplatform.flexutil.samples.web.layout.*" xmlns:iframe="org.flowerplatform.flexutil.iframe.*" xmlns:globalmenu="org.flowerplatform.flexutil.samples.web.global_menu" xmlns:ns2="org.flowerplatform.flexutil.samples.global_menu.*" xmlns:spinner="org.flowerplatform.flexutil.samples.spinner.*" xmlns:objproxy="org.flowerplatform.flexutil.samples.object_proxy.*">
 	<fx:Script>
 		<![CDATA[
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
@@ -64,6 +61,9 @@
 			<layout1:LayoutSample label="Layout/Workbench Framework"/>
 			<s:NavigatorContent label="Modal Spinner" width="100%" height="100%">
 				<spinner:ModalSpinnerSample width="100%" height="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="ObjectProxy" width="100%" height="100%">
+				<objproxy:ObjectProxySample width="100%" height="100%"/>
 			</s:NavigatorContent>
 		</mx:TabNavigator>
 	</s:VGroup>

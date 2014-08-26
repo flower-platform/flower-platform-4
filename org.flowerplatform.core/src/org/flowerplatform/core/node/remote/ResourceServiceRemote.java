@@ -1,8 +1,24 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.node.remote;
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 
 /**
  * @see ResourceService
@@ -11,10 +27,10 @@ import org.flowerplatform.core.node.resource.ResourceService;
  */
 public class ResourceServiceRemote {
 
-	public Node subscribeToSelfOrParentResource(String nodeId) {
+	public SubscriptionInfo subscribeToParentResource(String nodeUri) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		return CorePlugin.getInstance().getResourceService()
-				.subscribeToSelfOrParentResource(nodeId, sessionId, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+				.subscribeToParentResource(sessionId, nodeUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 	}
 	
 	/**
@@ -31,11 +47,13 @@ public class ResourceServiceRemote {
 	 * @author Cristina Constantinescu
 	 */
 	public void save(String resourceNodeId) {
-		CorePlugin.getInstance().getResourceService().save(resourceNodeId, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+		CorePlugin.getInstance().getResourceSetService().save(resourceNodeId, 
+				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
 	
 	public void reload(String resourceNodeId) {
-		CorePlugin.getInstance().getResourceService().reload(resourceNodeId, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+		CorePlugin.getInstance().getResourceSetService().reload(resourceNodeId, 
+				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
 	
 }

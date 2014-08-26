@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package com.crispico.flower.util.popup {
@@ -22,7 +19,9 @@ package com.crispico.flower.util.popup {
 	
 	import mx.collections.IList;
 	import mx.containers.ControlBar;
+	import mx.events.EffectEvent;
 	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
@@ -125,6 +124,10 @@ package com.crispico.flower.util.popup {
 			
 			activeViewContent.viewHost = this;
 			addElement(activeViewContent);
+		}
+		
+		override protected function fadeOutEffectEndHandler(event:EffectEvent):void {
+			FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(activeViewContent);		
 		}
 		
 	}
