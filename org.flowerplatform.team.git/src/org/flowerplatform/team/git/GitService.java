@@ -612,72 +612,53 @@ public class GitService {
 			    child, 
 			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
-
-	/**
-	 * @author Cristina Constantinescu
-	 * @author Cristina Brinza
-	 * @author Andreea Tita 
-	 */
-	public List<RemoteConfiguration> getFetchPushConfigData (String nodeUri, boolean selectFetchPush) throws Exception {
-		List<RemoteConfiguration> remoteConfigurationList = new ArrayList<RemoteConfiguration>();
-		
-		String repoPath = Utils.getRepo(nodeUri);
-		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-
-		List<RemoteConfig> remotes = RemoteConfig.getAllRemoteConfigs(repository.getConfig());
-		for (RemoteConfig remote : remotes) {
-			RemoteConfiguration remoteConfiguration = new RemoteConfiguration();
-			remoteConfiguration.setName(remote.getName());
-			remoteConfiguration.setUri(remote.getURIs().get(0).toString());
-		
-			if (selectFetchPush) {
-				List<String> fetchRefSpecs = new ArrayList<String>();
-				for (RefSpec refSpec : remote.getFetchRefSpecs()) {
-					fetchRefSpecs.add(refSpec.toString());
-				}
-				remoteConfiguration.setFetchMappings(fetchRefSpecs);
-			} else {
-				List<String> pushRefSpecs = new ArrayList<String>();
-				for (RefSpec refSpec : remote.getPushRefSpecs()) {
-					pushRefSpecs.add(refSpec.toString());
-				}
-				remoteConfiguration.setPushMappings(pushRefSpecs);
-			}
-			
-			remoteConfigurationList.add(remoteConfiguration);
-		}
-		
-		return remoteConfigurationList;
-	}
 	
 	/**
 	 * @author Cristina Brinza
 	 */
-	public void fetch(String nodeUri, RemoteConfiguration fetchConfig) throws Exception {	
+	@SuppressWarnings("unchecked")
+	public String fetch(String nodeUri, String fetchNodeUri, ArrayList<String> fetchRefMappings) throws Exception {	
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
-		Git git = new Git(repository);
+		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
-		if (fetchConfig == null) {
-			git.fetch().setRemote(GitUtils.getName(nodeUri)).call();
+		FetchCommand fetchCommand;
+		GitCredentials credentials = new GitCredentials();
+		
+		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
+			fetchCommand = new Git(repository).fetch().setRemote(GitUtils.getName(nodeUri));
+
+			//check if credentials are set
+			credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
 		} else {
-			/* use fetchConfig */
-			List<RefSpec> fetchRefSpecs = new ArrayList<RefSpec>();
-			if (fetchConfig.getFetchMappings() != null) {
-				for (String fetchRefSpecString : fetchConfig.getFetchMappings()) {
-					fetchRefSpecs.add(new RefSpec(fetchRefSpecString));
+			List<RefSpec> fetchRefSpecsList = new ArrayList<RefSpec>();
+			if (fetchRefMappings != null) {
+				for (String fetchRefSpecString : fetchRefMappings) {
+					fetchRefSpecsList.add(new RefSpec(fetchRefSpecString));
 				}
 			}
-		
-			git.fetch().setRemote(new URIish(fetchConfig.getUri()).toPrivateString()).setRefSpecs(fetchRefSpecs).call();
+			fetchCommand = new Git(repository).fetch().setRemote(new URIish(fetchNodeUri).toPrivateString()).setRefSpecs(fetchRefSpecsList);
+			
+			//check if credentials are set
+			credentials = getCredentials("git|" + fetchNodeUri);			
 		}
 		
-		/* refresh Remote Branches node */
+		// provide credentials for use in connecting to repositories 
+		if (credentials != null) {
+			fetchCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(), credentials.getPassword()));
+		}
+		
+		FetchResult fetchResult = fetchCommand.call();
+		
+		// refresh Remote Branches node
 		String remoteBranchesUri = GitUtils.getNodeUri(repoPath, GIT_REMOTE_BRANCHES_TYPE);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				CorePlugin.getInstance().getResourceService().getNode(remoteBranchesUri), 
 				new Update().setFullNodeIdAs(remoteBranchesUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		return GitUtils.handleFetchResult(fetchResult);
+	
 	}
 	
 	/**

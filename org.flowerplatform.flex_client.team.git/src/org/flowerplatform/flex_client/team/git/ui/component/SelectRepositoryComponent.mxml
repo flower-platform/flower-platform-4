@@ -110,29 +110,15 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="group" change="changeSelection()" />
 	</fx:Declarations>
-	
+
 	<s:layout>
 		<s:VerticalLayout />
 	</s:layout>
 	
-	<s:VGroup id="remoteRepoGroup"  height="40%" width="100%" paddingLeft="5">
-		<s:RadioButton id="remoteRadioButton"
-					   selected="false" label="{Resources.getMessage('git.selectRepo.remote')}" />
-		<s:DropDownList id="repositoriesList" >
-			
-		</s:DropDownList>
-	</s:VGroup>
-	
-	<s:VGroup height="40%" width="100%" paddingLeft="5">
-		<s:HGroup>
-			<s:RadioButton id="uriRadioButton"
-						   selected="true" label="{Resources.getMessage('git.selectRepo.uri')}" />
-		</s:HGroup>
 	<s:RadioButton id="remoteConfig" selected="{showRemotesList}" label="{Resources.getMessage('git.selectRepo.remote')}"
 				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}" />
-		
-	<s:RadioButton id="customUri" selected="{!showRemotesList}" label="{Resources.getMessage('git.selectRepo.uri')}" 
-				visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}"/>
-		<s:TextInput id="uriTextInput" width="100%" enabled="false" />		
+	<s:RadioButton id="customUri" selected="{!showRemotesList}" label="{Resources.getMessage('git.selectRepo.uri')}"
+				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}"/>
+	<s:TextInput id="uriTextInput" width="100%" enabled="false" />	
 	
 </s:Group>

@@ -28,21 +28,14 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
-	import org.flowerplatform.flex_client.team.git.action.FetchAction;
-	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
-	import org.flowerplatform.flex_client.team.git.remote.GitRef;
-	import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
-	import org.flowerplatform.flex_client.team.git.action.MergeBranchAction;
-	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
+	import org.flowerplatform.flex_client.team.git.action.FetchAction;
 	import org.flowerplatform.flex_client.team.git.action.LoginAction;
 	import org.flowerplatform.flex_client.team.git.action.MergeAction;
 	import org.flowerplatform.flex_client.team.git.action.PushAction;
 	import org.flowerplatform.flex_client.team.git.action.RebaseAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
-	import org.flowerplatform.flex_client.team.git.remote.GitRef;
 	import org.flowerplatform.flex_client.team.git.action.ShowGitStagingAction;
 	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
 	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
@@ -71,18 +64,6 @@ package org.flowerplatform.flex_client.team.git {
 			INSTANCE = this;
 
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateStructureDiffFromGitCommitsAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CreateBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureRemoteAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ResetAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(RenameBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ConfigureBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(MergeBranchAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(DeleteGitRepositoryAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CloneRepoAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(CheckoutAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(FetchAction);
 			CorePlugin.getInstance().serviceLocator.addService("HistoryService");
 
 			FlexUtilGlobals.getInstance().registerAction(CheckoutAction);
@@ -100,6 +81,7 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().registerAction(ResetAction);
 			FlexUtilGlobals.getInstance().registerAction(RebaseAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowGitStagingAction);
+			FlexUtilGlobals.getInstance().registerAction(FetchAction);
 		
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGitHistoryAction);
@@ -107,6 +89,7 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingViewProvider());
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(PushAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(FetchAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CloneRepoAction.ID))

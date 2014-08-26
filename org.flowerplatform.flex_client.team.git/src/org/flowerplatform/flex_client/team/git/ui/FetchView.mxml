@@ -28,13 +28,11 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
-			import mx.events.FlexEvent;
-			
+			import mx.collections.ArrayCollection;			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
-			import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
 			public var node:Node;
@@ -49,56 +47,25 @@ license-end
 				return -1;
 			}
 			
-			protected function selectRepositoryComponentCreationCompleteHandler(event:FlexEvent):void {
-				selectDestinationRepositoryPage.remoteRadioButton.selected = true;
-				
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.getFetchPushConfigData", [node.nodeUri, true] , 
-					function(result:ArrayCollection):void {
-						selectDestinationRepositoryPage.repositoriesList.dataProvider = result;
-						selectDestinationRepositoryPage.repositoriesList.labelFunction = getLabelFunction;
-						selectDestinationRepositoryPage.repositoriesList.requireSelection = true;
-					});
-			}
-			
-			private function getLabelFunction(item:Object):String {
-				return RemoteConfiguration(item).name + ":" + RemoteConfiguration(item).uri;
-			}
-			
-			private function chooseUri():String {
-				if (selectDestinationRepositoryPage.remoteRadioButton.selected) {
-					return RemoteConfiguration(selectDestinationRepositoryPage.repositoriesList.selectedItem).uri; 
-				} else {
-					return selectDestinationRepositoryPage.uriTextInput.text;
-				}
-			}
-			
-			private function chooseRefMappings():ArrayCollection {
-				if (selectDestinationRepositoryPage.remoteRadioButton.selected) {
-					return RemoteConfiguration(selectDestinationRepositoryPage.repositoriesList.selectedItem).fetchMappings;
-				} else {
-					return new ArrayCollection();
-				}
-			}
-			
 			override protected function nextClickHandler():void {
-				this.currentState = "configureFetchPushState";
 				back.enabled = false;
-				
 				super.nextClickHandler();
+				
+				if (selectRepositoryComponent.getResult() as Node) {
+					configureFetchPushComponent.refMappings = Node(selectRepositoryComponent.remotes.selectedItem).getPropertyValue(GitConstants.FETCH_REF_SPECS);
+				}
 			}
 			
 			override protected function finishClickHandler():void {
-				var fetchConfig:RemoteConfiguration = new RemoteConfiguration();
-
-				if (selectDestinationRepositoryPage.remoteRadioButton.selected) {
-					fetchConfig = RemoteConfiguration(selectDestinationRepositoryPage.repositoriesList.selectedItem);
-					fetchConfig.fetchMappings = configureFetchPushPage.getRefSpecs();
+				var fetchNodeUri:String;
+				
+				if (selectRepositoryComponent.getResult() as Node) {
+					fetchNodeUri = String(ArrayCollection(Node(selectRepositoryComponent.remotes.selectedItem).getPropertyValue(GitConstants.REMOTE_URIS)));
 				} else {
-					fetchConfig.uri = selectDestinationRepositoryPage.uriTextInput.text;
-					fetchConfig.fetchMappings = configureFetchPushPage.getRefSpecs();	
+					fetchNodeUri = selectRepositoryComponent.getResult() as String;
 				}
 			
-				if (configureFetchPushPage.getRefSpecs().length == 0) {
+				if (configureFetchPushComponent.getRefSpecs().length == 0) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setTitle('error')
 						.setText(Resources.getMessage('flex_client.team.git.FetchPush.error'))
@@ -109,8 +76,19 @@ license-end
 					return;
 				}
 				
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch",[node.nodeUri, fetchConfig]);
-				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch",
+					[node.nodeUri, 
+					 fetchNodeUri,
+					 ArrayCollection(configureFetchPushComponent.getRefSpecs())],
+					function (result:String):void {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(result)
+						.setTitle(Resources.getMessage('flex_client.team.git.ui.FetchView.fetchResult'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					});
+			
 				super.finishClickHandler();
 			}
 			
@@ -122,12 +100,12 @@ license-end
 		<s:State name="configureFetchPushState"/>
 	</ns:states>
 	
-	<local:SelectRepositoryComponent id="selectDestinationRepositoryPage"
-									 creationComplete="selectRepositoryComponentCreationCompleteHandler(event)"
+	<local:SelectRepositoryComponent id="selectRepositoryComponent"
+									 width="100%" height="100%"
+									 nodeUri="{node.nodeUri}"
 									 includeIn="selectDestinationRepositoryState"/>
-	<local:ConfigureFetchPushComponent id="configureFetchPushPage"
-									   remoteUri="{chooseUri()}"
-									   refMappings="{chooseRefMappings()}"
+	<local:ConfigureFetchPushComponent id="configureFetchPushComponent"
+									   width="100%" height="100%"
 									   includeIn="configureFetchPushState"/>
 
 </ns:Wizard>

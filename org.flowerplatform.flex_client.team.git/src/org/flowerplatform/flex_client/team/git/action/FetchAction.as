@@ -56,7 +56,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			
 			if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
 				&& node.type != GitConstants.GIT_REMOTE_TYPE) {
-				/* show wizard */
+				// show wizard
 				var fetchView:FetchView = new FetchView();
 				
 				fetchView.node = node;
@@ -69,8 +69,16 @@ package org.flowerplatform.flex_client.team.git.action {
 					.setIcon(icon)
 					.show();
 			} else {				
-				/* call action */
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch", [node.nodeUri, null]);
+				// call action
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch", [node.nodeUri, null, null],
+					function (result:String):void {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(result)
+						.setTitle(Resources.getMessage('flex_client.team.git.ui.FetchView.fetchResult'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					});
 			}
 		}
 	}
