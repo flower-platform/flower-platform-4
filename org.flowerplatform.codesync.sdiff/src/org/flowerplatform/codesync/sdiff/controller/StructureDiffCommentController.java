@@ -35,24 +35,27 @@ import org.flowerplatform.util.controller.AbstractController;
  * @author Mariana Gheorghe
  */
 public class StructureDiffCommentController extends AbstractController implements IPropertiesProvider, IPropertySetter {
-	
+
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(COLOR_BACKGROUND, MATCH_COLOR_COMMENT);
 		Object obj = node.getProperties().get(ICONS);
 		String icons = "";
-		if(obj != null) icons = (String) obj;
+		if (obj != null) {
+			icons = (String) obj;
+		}
 		node.getProperties().put(ICONS, icons);
-		node.getProperties().put(CODESYNC_ICONS, icons + (icons.isEmpty()? "" : CoreConstants.ICONS_SEPARATOR) + CodeSyncSdiffPlugin.getInstance().getImagePath(IMG_TYPE_COMMENT));
+		node.getProperties().put(CODESYNC_ICONS, icons + (icons.isEmpty() ? "" : CoreConstants.ICONS_SEPARATOR) + CodeSyncSdiffPlugin.getInstance().getImagePath(IMG_TYPE_COMMENT));
 	}
-	
+
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
 		ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
 		newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
 		if (property.equals(ICONS)) {
-			String icons = (String)value;
-			context.getService().setProperty(node, CODESYNC_ICONS, icons + (icons.isEmpty()? "" : CoreConstants.ICONS_SEPARATOR) + CodeSyncSdiffPlugin.getInstance().getImagePath(IMG_TYPE_COMMENT), newContext);		
+			String icons = (String) value;
+			context.getService().setProperty(node, CODESYNC_ICONS,
+					icons + (icons.isEmpty() ? "" : CoreConstants.ICONS_SEPARATOR) + CodeSyncSdiffPlugin.getInstance().getImagePath(IMG_TYPE_COMMENT), newContext);
 		}
 	}
 

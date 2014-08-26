@@ -17,9 +17,7 @@ import org.flowerplatform.core.node.resource.ResourceService;
 import org.junit.Test;
 
 /**
- * 
  * @author Elena Posea
- *
  */
 public class CodeSyncCommentPropagationTest {
 
@@ -51,7 +49,6 @@ public class CodeSyncCommentPropagationTest {
 		// get the node that we want to use as parent for our new node
 		Node testNode = CodeSyncTestSuite.getChild(root, new String[] { "CodeSyncSdiffConstants.java", "CodeSyncSdiffConstants", "STRUCTURE_DIFFS_FOLDER" });
 		String testNodeFullyQualifiedName = testNode.getNodeUri();
-		;
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
 		assertTrue("testNode is supposed to be initially clean", !isComment(testNode) && !isChildrenDirty(testNode));
 
@@ -226,7 +223,6 @@ public class CodeSyncCommentPropagationTest {
 		assertTrue("testNode is supposed to be a comment", isComment(testNode));
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
 		serviceContext.setService(CorePlugin.getInstance().getNodeService());
-
 		// get the parent of node
 		Node parentOfTestNode = serviceContext.getService().getParent(testNode, serviceContext);
 		String parentOfTestNodeFullyQualifiedName = parentOfTestNode.getNodeUri();

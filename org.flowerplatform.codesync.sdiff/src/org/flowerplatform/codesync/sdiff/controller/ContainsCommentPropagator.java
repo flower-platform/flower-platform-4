@@ -10,6 +10,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
+ * this class describes the behavior of comment propagation: what does "dirty" mean, the logic/way of propagating clean/dirty 
  * @author Elena Posea
  */
 public class ContainsCommentPropagator extends DirtyPropagatorController {
@@ -21,8 +22,8 @@ public class ContainsCommentPropagator extends DirtyPropagatorController {
 
 	@Override
 	public void unsetDirty(Node node, ServiceContext<NodeService> serviceContext) {
-		// if(node.getType().equals(COMMENT)) // if it is not a comment, isDirty
-		// will return false anyway, but isChildrenDirty won't
+		// I can't unset dirty on a comment; comment is, because of the fact that it is a comment, dirty
+		// but I don't want isDirty to return true for this node, because it doesn't matter what it is, I want to erase it anyway
 		serviceContext.add(NODE_URI_TO_BE_IGNORED, node.getNodeUri());
 	}
 
@@ -48,6 +49,7 @@ public class ContainsCommentPropagator extends DirtyPropagatorController {
 	public boolean isChildrenDirty(Node node, ServiceContext<NodeService> serviceContext) {
 		Boolean b = (Boolean) node.getPropertyValue(CONTAINS_COMMENT); 
 		// is something that has a child comment, and it should not be ignored
+		// we always ignore the current node/ the node on which we invoked unsetDirty as it should not count as dirty/ we want to erase it now
 		return b != null && b && !(node.getNodeUri().equals(serviceContext.getContext().get(NODE_URI_TO_BE_IGNORED)));
 	}
 

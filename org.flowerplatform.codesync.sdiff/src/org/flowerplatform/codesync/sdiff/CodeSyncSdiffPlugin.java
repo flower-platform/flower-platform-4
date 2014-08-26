@@ -71,22 +71,24 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 				.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(STRUCTURE_DIFF_EXTENSION, "fpp", "mindmap", true));
 
-		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesController = new StructureDiffMatchPropertiesProvider();
+		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesProvider = new StructureDiffMatchPropertiesProvider();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
-				.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
-			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
+				.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesProvider)
+			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesProvider)
 				.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
 				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
 
+		StructureDiffCommentController commentController = (StructureDiffCommentController) new StructureDiffCommentController().setOrderIndexAs(5000);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
-				.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController().setOrderIndexAs(5000))
-				.addAdditiveController(PROPERTY_SETTER, new StructureDiffCommentController().setOrderIndexAs(5000))
+				.addAdditiveController(PROPERTIES_PROVIDER, commentController)
+				.addAdditiveController(PROPERTY_SETTER, commentController)
 				.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
 				.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
 
+		CanContainCommentPropertyProvider commentPropertyProvider = new CanContainCommentPropertyProvider(); 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_COMMENT)
-				.addAdditiveController(PROPERTIES_PROVIDER, new CanContainCommentPropertyProvider())
-				.addAdditiveController(PROPERTY_SETTER, new CanContainCommentPropertyProvider())
+				.addAdditiveController(PROPERTIES_PROVIDER, commentPropertyProvider)
+				.addAdditiveController(PROPERTY_SETTER, commentPropertyProvider)
 				.addAdditiveController(ADD_NODE_CONTROLLER, new CanContainCommentAddNodeListener().setOrderIndexAs(10000))
 				.addAdditiveController(REMOVE_NODE_CONTROLLER, new CanContainCommentRemoveNodeListener().setOrderIndexAs(-10000))
 				.addAdditiveController(ADD_CHILD_DESCRIPTOR,

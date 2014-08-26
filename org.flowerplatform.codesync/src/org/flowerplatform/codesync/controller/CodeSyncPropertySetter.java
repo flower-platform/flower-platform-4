@@ -47,6 +47,11 @@ public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPrope
 	 */
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+		// disable the controllers during the execution of sync algorithm
+		if (context.getBooleanValue(CodeSyncConstants.SYNC_IN_PROGRESS)) {
+			return;
+		}
+
 		// if the node is newly added or marked removed => propagate sync flag
 		// false
 		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {

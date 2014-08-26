@@ -19,14 +19,20 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
- * 
  * @author Elena Posea
- *
  */
 public class CanContainCommentPropertyProvider extends AbstractController implements IPropertySetter, IPropertiesProvider {
 
+	/**
+	 * order index has to be higher than CanContainCommentAddNodeListener's
+	 * order index. First add the node, then set/provide properties it must also
+	 * be higher than StructureDiffMatchPropertiesProvider's order index. For
+	 * nodes of type Match, you should first invoke
+	 * StructureDifffMatchPropertiesProvider, then this provider and higher than
+	 * StructureDiffCommentController
+	 */
 	public CanContainCommentPropertyProvider() {
-		setOrderIndex(10001);
+		setOrderIndex(11000);
 	}
 
 	@Override
@@ -36,33 +42,40 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
- 		if(context.get(ALREADY_BEEN_IN_THIS_SETTER) != null) return;
+		if (context.get(ALREADY_BEEN_IN_THIS_SETTER) != null)
+			return;
 		if ((property.equals(CONTAINS_COMMENT) && (Boolean) value == true)) {
 			ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
 			newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
 			newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
+			// here I set only the codesync icons, that are not to be persisted;
+			// in order not to cycle/infinitely recourse in this setProperty
+			// function, I use the ALREADY_BEEN_IN_THIS_SETTER flag, in context
 			context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
-		} else{
-			 if(property.equals(CODESYNC_ICONS)){
+		} else {
+			if (property.equals(CODESYNC_ICONS)) {
 				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
-				// otherwise, the next controller for MATCH is CanContainCommentPropertyProvider + Updater (we don't want this)
+				// otherwise, the next controller for MATCH is
+				// CanContainCommentPropertyProvider + Updater (we don't want
+				// this)
 				context.getContext().put(DONT_PROCESS_OTHER_CONTROLLERS, true);
 				newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
-				context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);	 
-			 }
+				context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
+			}
 		}
 	}
 
 	private String getCodeSyncIcon(Node node, ServiceContext<NodeService> context) {
-		Boolean b = (Boolean) node.getProperties().get(CONTAINS_COMMENT);
-		Object obj = node.getProperties().get(CODESYNC_ICONS);
+		Boolean containsCommentFlag = (Boolean) node.getProperties().get(CONTAINS_COMMENT);
+		Object codesyncListOfIcons = node.getProperties().get(CODESYNC_ICONS);
 		String icon = "";
-		if (obj != null)
-			icon = (String) obj;
+		if (codesyncListOfIcons != null) {
+			icon = (String) codesyncListOfIcons;
+		}
 		// icon = current icon list
 		String newIcon = CodeSyncSdiffPlugin.getInstance().getImagePath(IMG_TYPE_COMMENTS);
 		// newIcon = the icon that I would like to add
-		if (b != null && b == true) {
+		if (containsCommentFlag != null && containsCommentFlag == true) {
 			if (icon.indexOf(newIcon) == -1) { // this node doesn't already
 												// contain this icon
 				icon = icon + (!icon.isEmpty() ? CoreConstants.ICONS_SEPARATOR : "") + newIcon;

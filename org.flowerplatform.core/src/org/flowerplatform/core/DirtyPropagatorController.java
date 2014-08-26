@@ -10,7 +10,7 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
- * 
+ * contains all the common logic for propagation of flags; leaves describing particular behavior up to implementing classes
  * @author Elena Posea
  */
 public abstract class DirtyPropagatorController extends AbstractController{
@@ -24,14 +24,12 @@ public abstract class DirtyPropagatorController extends AbstractController{
 	public abstract void unsetChildrenDirty(Node node, ServiceContext<NodeService> serviceContext);
 
 	/**
-	 * In Node node, for property flagProperty, is it changer, or does it have
-	 * the default value?
-	 * 
 	 * @param node
-	 * @param flagProperty
-	 * @param defaultFlagValue
-	 * @return true, if the flagProperty property of node is different than the
-	 *         defaultFlagValue
+	 *            the node which I want to test for dirty
+	 * @param serviceContext
+	 *            the service used for this node
+	 * @return true, if the node isDisrty, accordingly to the logic of being
+	 *         dirty in the implementing class false, otherwise
 	 */
 	public abstract boolean isDirty(Node node, ServiceContext<NodeService> serviceContext);
 
@@ -42,8 +40,6 @@ public abstract class DirtyPropagatorController extends AbstractController{
 	 *            the node on which I want to start propagation
 	 * @param serviceContext
 	 *            the service used for this node
-	 * @param propagator
-	 *            the class that contains the implementation for
 	 */
 	public void setDirtyAndPropagateToParents(Node node, ServiceContext<NodeService> serviceContext) {
 		if (isDirty(node, serviceContext)){

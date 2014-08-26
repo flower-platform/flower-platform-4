@@ -32,7 +32,7 @@ public class MindMapParentProvider extends AbstractController implements IParent
 
 	@Override
 	public Node getParent(Node node, ServiceContext<NodeService> context) {
-		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());		
+		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		NodeModel parentNodeModel = rawNodeData.getParentNode();
 		if (parentNodeModel == null) {
 			return null;
@@ -40,7 +40,8 @@ public class MindMapParentProvider extends AbstractController implements IParent
 		String scheme = Utils.getScheme(node.getNodeUri());
 		String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
 		String parentUri = scheme + ":" + ssp;
-		if(!parentNodeModel.getMap().getRootNode().createID().equals(parentNodeModel.createID())){
+		// this statement ensures that the string after "#" is not concatenated for root node (as this node should not contain it)
+		if (!parentNodeModel.getMap().getRootNode().createID().equals(parentNodeModel.createID())) {
 			parentUri += "#" + parentNodeModel.createID();
 		}
 		IResourceHandler resourceHandler = CorePlugin.getInstance().getResourceService().getResourceHandler(scheme);
