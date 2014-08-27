@@ -17,7 +17,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import flash.system.Capabilities;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	/**
 	 * @author Cristina Constantinescu

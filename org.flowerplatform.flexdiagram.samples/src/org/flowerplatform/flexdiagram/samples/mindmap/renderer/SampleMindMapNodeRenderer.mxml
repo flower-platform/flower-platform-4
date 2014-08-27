@@ -35,7 +35,9 @@ license-end
 			}
 			
 			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
+				
 				var mindMapDiagramShell:MindMapDiagramShell = this.mindMapDiagramShell;
+				
 				if (mindMapDiagramShell != null && diagramShellContext != null) {
 					// i.e. used as a renderer in a mind map diagram
 					if (event == null || event.property == "x") {
@@ -50,7 +52,6 @@ license-end
 					if (event == null || event.property == "cloudColor") {
 						cloudColor = dataConverted.cloudColor;
 					}			
-					
 					if (event == null || event.property == "cloudType") {
 						cloudType = dataConverted.cloudType;
 					}
@@ -77,7 +78,7 @@ license-end
 					text = dataConverted.text;
 				}
 				if (event == null || event.property == "textColor") {
-					textColor = dataConverted.textColor
+					textColor = dataConverted.textColor;
 				}
 				if (event == null || event.property == "background") {
 					invalidateDisplayList();

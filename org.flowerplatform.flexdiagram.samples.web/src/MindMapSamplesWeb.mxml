@@ -83,7 +83,7 @@
 			}
 			
 			public function onFontSizeChange():void {
-				if (textInputFontSize.text != '' && int(textInputFontSize.text) > 0 && int(textInputFontSize.text) < 720 ) {
+				if (textInputFontSize.text != '' && int(textInputFontSize.text) >= 0 && int(textInputFontSize.text) < 720 ) {
 					selectedItem.fontSize = int(textInputFontSize.text);	
 				}
 			}
