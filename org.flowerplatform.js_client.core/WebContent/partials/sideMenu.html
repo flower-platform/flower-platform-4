@@ -1,5 +1,42 @@
 <div ng-controller="SideMenuCtrl">
+	<p/>
+	<div class="user-panel">
+		<div class="user-panel-name">
+			<h4>
+				<img src="images/user-image.png">
+					{{userName}}
+			</h4>
+		</div>
+		
+		<div class="navbar-menu">
+			<nav class="navbar navbar-default" role="navigation">
+			  <div class="container-fluid">
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			      <a class="navbar-brand">Menu</a>
+			    </div>
+			    <div class="collapse navbar-collapse">
+			      <ul class="nav navbar-nav">
+			      	<li><a>Logout</a></li>
+			        <li><a ng-href="#/users/{{userID}}/General">Profile</a></li>
+			        <hr>
+			        <li><a ng-class="{hidden:!{{isAdmin}}}">{{repo}}</a>
+			        <li><a ng-class="{hidden:!{{isAdmin}}}">{{repo}}</a>
+ 			        <li><a ng-href="#/users/" ng-class="{hidden:!{{isAdmin}}}">Users</a>
+			      </ul>
+			    </div>
+			  </div>
+			</nav>
+		 </div>
+		 
+		 <div ng-include="template_sideMenuContentTemplate.url"></div>
+		 
+	</div>
 
-	This is where the side menu goes. Add whatever you want here.
-	
 </div>
+

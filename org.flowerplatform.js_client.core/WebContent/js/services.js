@@ -16,18 +16,31 @@ flowerServices.factory('User', ['$resource', function($resource) {
 		query: 	{ method: 'GET'/*, interceptor: { 'response': getMessageResult }*/ },
 		get:	{ method: 'GET', params: { id: '@id' } },
 		save:	{ method: 'POST' },
-		remove: { method: 'DELETE' }
+		remove: { method: 'DELETE', params: { id: '@id' } }
 	});
 	
 }]);
+
+flowerServices.factory('Login', [function() {
+	return {
+		userID: 'user:test|John',
+		userName: 'John Johnson',
+		login: 'John',
+		nodeUri: 'user:test|John',
+		isAdmin: true,
+		repo: 'Repository'
+	}
+}]); 
 
 flowerServices.factory('Template', [function() {
 	
 	return {
 		userList: 'partials/userList.html',
+		userListInfo: 'partials/userListInfo.html',
 		userForm: 'partials/userForm.html',
 		userProfile: 'partials/userProfile.html',
-		userAccountSettings: 'partials/userAccountSettings.html'
+		userAccountSettings: 'partials/userAccountSettings.html',
+		sideMenuContent: 'partials/sideMenuContent.html'
 	}
 	
 }]);

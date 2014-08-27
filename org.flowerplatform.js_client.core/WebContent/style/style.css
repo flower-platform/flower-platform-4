@@ -1,12 +1,12 @@
 .user-panel {
     background:RGB(219,217,214);
     position:absolute;
-    right:0px;
+    right:-100px;
+    width: 300px;
 }
 
-.user-name-image {
-	padding-left: 50px;
-	padding-right: 50px;
+.user-panel-name {
+	padding: 40px;
 }
 
 .navbar-header {
@@ -34,32 +34,27 @@
   float: none;
 }
 
+#profile {
+	border-bottom: 1px solid RGB(219,217,214);
+}
+
 .user-settings {
 	width: 500px;
 	background: none repeat scroll 0 0 #fff;
     color: #666;
+    padding-left: 30px;
+	padding-right: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.user-settings h3 {
+	padding-left: 30px;
+	padding-right: 30px;
 }
 
 .change-username-form , .password-confirmation-form {
 	margin-top: 0;
-}
-
-.group-password h4 , .group-username h4 , .group-delete h4 {
-    background-color: #f5f5f5;
-    border-color: #d8d8d8 #d8d8d8;
-    border-radius: 2px 2px 0 0;
-    border-style: solid solid none;
-    border-width: 1px 1px 0;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 17px;
-    margin: 0;
-    padding: 9px 10px 10px;
-}
-
-.group-delete h4 {
-	 background-color: #A50D0D;
-	 color: #ffffff;
 }
 
 .button {
@@ -73,3 +68,44 @@
     position: relative;
     opacity: 0.8;
 }
+
+.navbar-menu {
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+}
+
+.panel-default {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.nav-pills>li>a {
+	text-decoration:none;
+	color: black;
+}
+
+.panel-danger {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.alert-danger {
+    margin-left: -30px;
+    margin-right: -30px;
+}
+
+.nav-pills>li.active>a {
+	background-color: RGB(219,217,214);
+	color: black;
+}
+
+.nav-pills>li.active>a:hover {
+	background-color: #EEE;
+	color: black;
+}
+
+:required {
+  box-shadow: 1px 1px 4px transparent;
+}
+
+hr { margin: 0.1em auto; }

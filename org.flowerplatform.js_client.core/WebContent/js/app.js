@@ -9,16 +9,53 @@ flowerProject.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'partials/composed/sideMenuLayout.html',
 		controller : 'ComposedCtrl',
 		resolve : {
-			template : function() {
+			contentTemplate : function() {
 				return 'userList';
+			}, 
+			sideMenuContentTemplate : function() {
+				return 'userListInfo';
 			}
+			
 		}
 	}).when('/users/:id', {
 		templateUrl : 'partials/composed/sideMenuLayout.html',
 		controller : 'ComposedCtrl',
 		resolve : {
-			template : function() {
-				return 'userProfile';
+			contentTemplate : function() {
+				return 'userForm';
+			}, 
+			sideMenuContentTemplate : function() {
+				return 'userListInfo';
+			}
+		}
+//	}).when('/users/:id/:name', {
+//		templateUrl : 'partials/composed/sideMenuLayout.html',
+//		controller : 'ComposedCtrl',
+//		resolve : {
+//			contentTemplate : function() {
+//				return 'userAccountSettings';
+//			}
+//		}
+	}).when('/users/:id/General', {
+		templateUrl : 'partials/composed/sideMenuLayout.html',
+		controller : 'ComposedCtrl',
+		resolve : {
+			contentTemplate : function() {
+				return 'userForm';
+			},
+			sideMenuContentTemplate : function() {
+				return 'sideMenuContent';
+			}
+		}
+	}).when('/users/:id/AccountSettings', {
+		templateUrl : 'partials/composed/sideMenuLayout.html',
+		controller : 'ComposedCtrl',
+		resolve : {
+			contentTemplate : function() {
+				return 'userAccountSettings';
+			},
+			sideMenuContentTemplate : function() {
+				return 'sideMenuContent';
 			}
 		}
 	}).otherwise({

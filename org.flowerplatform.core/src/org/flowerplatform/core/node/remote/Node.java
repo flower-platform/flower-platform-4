@@ -48,6 +48,13 @@ public class Node implements Externalizable {
 
 	private Object rawNodeData;
 	
+	/**
+	 * TODO
+	 */
+	public Node() {
+		super();
+	}
+
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);
