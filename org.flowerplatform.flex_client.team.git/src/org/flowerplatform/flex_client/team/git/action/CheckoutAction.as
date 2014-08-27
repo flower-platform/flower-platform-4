@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.team.git.action
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
+	import org.flowerplatform.flex_client.team.git.GitStagingDialog;
 	import org.flowerplatform.flex_client.team.git.ui.CreateBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -55,7 +56,8 @@ package org.flowerplatform.flex_client.team.git.action
 		}
 		
 		public function commitChanges():void {	
-			//TODO call commit
+			var gitStaging:GitStagingAction = new GitStagingAction;
+			gitStaging.run();
 		}
 		
 		public function reset(node:Node):void {
