@@ -605,7 +605,7 @@ public class GitService {
 	@SuppressWarnings("unchecked")
 	public String fetch(String nodeUri, String fetchNodeUri, ArrayList<String> fetchRefMappings) throws Exception {	
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repository = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
 		FetchCommand fetchCommand;
