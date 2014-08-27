@@ -91,8 +91,7 @@
 	<ns:states>	
 		<mx:State name="selectFetchPushState">
 			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteAction.firstPageTitle')}"/>
-			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteAction.firstPageDescription')}"/>
-		
+			
 			<mx:AddChild relativeTo="{contentArea}">
 				<s:Form width="100%" height="100%">			
 					<s:FormItem	label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.remoteName')}">

@@ -611,14 +611,12 @@ public class GitService {
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
-		FetchCommand fetchCommand;
+		FetchCommand fetchCommand = new Git(repository).fetch();
 		GitCredentials credentials = new GitCredentials();
 		
-		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
-			fetchCommand = new Git(repository).fetch().setRemote(GitUtils.getName(nodeUri));
-
-			//check if credentials are set
-			credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
+		if (GitConstants.GIT_REMOTE_TYPE.equals(node.getType())) {
+			fetchCommand.setRemote(GitUtils.getName(nodeUri));
+			credentials = getCredentials(((ArrayList<String>) node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
 		} else {
 			List<RefSpec> fetchRefSpecsList = new ArrayList<RefSpec>();
 			if (fetchRefMappings != null) {
@@ -626,10 +624,8 @@ public class GitService {
 					fetchRefSpecsList.add(new RefSpec(fetchRefSpecString));
 				}
 			}
-			fetchCommand = new Git(repository).fetch().setRemote(new URIish(fetchNodeUri).toPrivateString()).setRefSpecs(fetchRefSpecsList);
-			
-			//check if credentials are set
-			credentials = getCredentials("git|" + fetchNodeUri);			
+			fetchCommand.setRemote(fetchNodeUri).setRefSpecs(fetchRefSpecsList);			
+			credentials = getCredentials(fetchNodeUri);			
 		}
 		
 		// provide credentials for use in connecting to repositories 
@@ -646,8 +642,7 @@ public class GitService {
 				new Update().setFullNodeIdAs(remoteBranchesUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		
-		return GitUtils.handleFetchResult(fetchResult);
-	
+		return GitUtils.handleFetchResult(fetchResult);	
 	}
 	
 	/**
