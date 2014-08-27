@@ -36,6 +36,8 @@ package org.flowerplatform.flex_client.properties.action {
 	 */
 	public class AddNodeAction extends DiagramShellAwareActionBase {
 			
+		public static const ID:String = "org.flowerplatform.flex_client.properties.action.AddNodeAction";
+		
 		public var childType:String;
 		
 		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
@@ -46,7 +48,7 @@ package org.flowerplatform.flex_client.properties.action {
 			label = descriptor.label;
 			icon = descriptor.icon;
 			orderIndex = descriptor.orderIndex;
-			parentId = NewComposedAction.ACTION_ID_NEW;
+			parentId = NewComposedAction.ID;
 		}
 		
 		override public function get visible():Boolean {			

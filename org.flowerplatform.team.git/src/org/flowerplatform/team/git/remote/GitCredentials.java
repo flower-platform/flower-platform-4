@@ -23,10 +23,11 @@ public class GitCredentials {
 	}
 	
 	public GitCredentials() {
-		
+		super();
 	}
 	
 	public GitCredentials(String username, String password) {
+		super();
 		this.username = username;
 		this.password = password;
 	}

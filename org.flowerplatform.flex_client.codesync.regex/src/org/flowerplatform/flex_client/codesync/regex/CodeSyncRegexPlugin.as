@@ -23,8 +23,10 @@ package org.flowerplatform.flex_client.codesync.regex {
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorInRightAction;
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
@@ -65,13 +67,36 @@ package org.flowerplatform.flex_client.codesync.regex {
 						return Pair(item).a + " - " + 	Pair(item).b;
 					}
 				});	
+
+			FlexUtilGlobals.getInstance().registerAction(GenerateMatchesAction);			
+			FlexUtilGlobals.getInstance().registerAction(ShowGroupByRegexMatchesAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowTextEditorAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowTextEditorInRightAction);
+			FlexUtilGlobals.getInstance().registerAction(ColorTextEditorAction);
 			
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(GenerateMatchesAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGroupByRegexMatchesAction);
-		
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowTextEditorAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowTextEditorInRightAction);
-			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ColorTextEditorAction);
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_CONFIG_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_MACRO_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_MATCHES_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowGroupByRegexMatchesAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowTextEditorAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowTextEditorInRightAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_MATCH_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowTextEditorAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ColorTextEditorAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowTextEditorInRightAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.VIRTUAL_REGEX_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowTextEditorAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ColorTextEditorAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowTextEditorInRightAction.ID));
 		}
 		
 		override protected function registerClassAliases():void	{

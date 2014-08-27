@@ -26,6 +26,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 * @author Catalin Burcea
 	 */
 	public class DeleteGitRepositoryAction extends ActionBase {
+		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction";
 		 
 		public function DeleteGitRepositoryAction() {
 			super();

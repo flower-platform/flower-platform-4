@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
+-->
+<!--
+@author Cristina Brinza 
+-->
+<ns:Wizard xmlns:fx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"	
+		   xmlns:ns="org.flowerplatform.flexutil.popup.*"
+		   xmlns:local="org.flowerplatform.flex_client.team.git.ui.component.*"
+		   getIndexForStateFunction="getIndexForState">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			public var nodeUri:String;
+			
+			protected function getIndexForState(stateName:String):int {
+				if (stateName == "selectDestinationRepositoryState") {
+					return 0;
+				} else if (stateName == "configureFetchPushState") {
+					return 1;
+				}
+				return -1;
+			}
+			
+			override protected function nextClickHandler():void {
+				super.nextClickHandler();
+				
+				if (selectRepositoryComponent.getResult() as Node) {
+					configureFetchPushComponent.refMappings = Node(selectRepositoryComponent.remotes.selectedItem).getPropertyValue(GitConstants.FETCH_REF_SPECS);
+				} else {
+					configureFetchPushComponent.refMappings.removeAll();
+				}
+			}
+			
+			override protected function finishClickHandler():void {
+				var fetchNodeUri:String;
+				
+				if (selectRepositoryComponent.getResult() as Node) {
+					fetchNodeUri = String(ArrayCollection(Node(selectRepositoryComponent.remotes.selectedItem).getPropertyValue(GitConstants.REMOTE_URIS)));
+				} else {
+					fetchNodeUri = selectRepositoryComponent.getResult() as String;
+				}
+			
+				if (configureFetchPushComponent.getRefSpecs().length == 0) {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setTitle('error')
+						.setText(Resources.getMessage('flex_client.team.git.FetchPush.error'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					
+					return;
+				}
+				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch",
+					[nodeUri, 
+					 fetchNodeUri,
+					 ArrayCollection(configureFetchPushComponent.getRefSpecs())],
+					function (result:String):void {						
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(result)
+						.setTitle(Resources.getMessage('flex_client.team.git.ui.FetchView.fetchResult'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					});			
+				super.finishClickHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<ns:states>
+		<mx:State name="selectDestinationRepositoryState">
+			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('git.selectRepo.title')}"/>
+			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('git.selectRepo.description')}"/>
+			
+			<mx:AddChild relativeTo="{contentArea}">
+				<local:SelectRepositoryComponent id="selectRepositoryComponent" 
+												 width="100%" height="100%" 
+												 nodeUri="{nodeUri}"/>	
+			</mx:AddChild>
+		</mx:State>
+		
+		<mx:State name="configureFetchPushState">
+			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.title', ['fetch'])}"/>
+			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.description', ['fetch'])}"/>
+			
+			<mx:AddChild relativeTo="{contentArea}">
+				<local:ConfigureFetchPushComponent id="configureFetchPushComponent"
+												   width="100%" height="100%"/>
+			</mx:AddChild>
+		</mx:State>
+		
+	</ns:states>
+
+</ns:Wizard>

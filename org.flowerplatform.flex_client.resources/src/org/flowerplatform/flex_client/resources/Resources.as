@@ -423,7 +423,7 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/mindmap/arrowUp.png")]
 		public static const arrowUpIcon:Class;
-		
+				
 		public static const mindmapIcons:Object = {
 			"help" : mindmap_helpIcon,
 			"yes" : mindmap_yesIcon,
@@ -550,9 +550,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/codesync.regex/wrench.png")]
 		public static const wrenchIcon:Class;
-		
+
 		// Team Git
-		
+
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
 		
@@ -562,14 +562,20 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/remote_entry_tbl.gif")]
 		public static const remoteEntry:Class;
 
-		[Embed(source="/team.git/config.png")]
-		public static const configBranchIcon:Class;
-
 		[Embed(source="/team.git/remoteSpec.gif")]
 		public static const configureFetchPush:Class;
 
+		[Embed(source="/team.git/config.png")]
+		public static const configBranchIcon:Class;
+				
+		[Embed(source="/team.git/copy.gif")]
+		public static const copy:Class;
+
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
+		
+		[Embed(source="/team.git/push.gif")]
+		public static const push:Class;	
 
 		[Embed(source="/git/reset.gif")]
 		public static const resetIcon:Class;
@@ -579,6 +585,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
+		
+		[Embed(source="/team.git/rebase.gif")]
+		public static const rebaseIcon:Class;
 
 		[Embed(source="/team.git/permission.png")]
 		public static const permission:Class;
@@ -591,7 +600,7 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/cloneGit.gif")]
 		public static const cloneRepoIcon:Class;
-		
+
 		[Embed(source="/team.git/gitrepository.gif")]
 		public static const gitRepoIcon:Class;
 
@@ -619,6 +628,12 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/staging.png")]
 		public static const gitStagingIcon:Class;
+		
+		[Embed(source="/team.git/switch.gif")]
+		public static const switchIcon:Class;
+		
+		[Embed(source="/team.git/fetch.gif")]
+		public static const fetchIcon:Class;
 
 	}
 }

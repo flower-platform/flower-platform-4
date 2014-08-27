@@ -56,9 +56,9 @@ public class GitConstants {
 	
 	public static final String NAME = "name";
 	public static final String IS_GIT_REPOSITORY = "isGitRepository";
+
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
-
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";
 
@@ -68,9 +68,16 @@ public class GitConstants {
 	public static final String FETCH_REF_SPECS = "fetchRefSpecs";
 	public static final String PUSH_REF_SPECS = "pushRefSpecs";
 	public static final String REMOTE_URIS = "URIs";
+
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
+	public static final String AUTHOR = "author";
+	public static final String COMMITTER = "committer";
+	public static final String PREVIOUS_AUTHOR = "previous_author";
+	public static final String PREVIOUS_COMMIT_MESSAGE = "previous_commitMessage";
+
+	
 	/////////////////////////////////////////////////////////////
 	// Other
 	/////////////////////////////////////////////////////////////
@@ -81,24 +88,15 @@ public class GitConstants {
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
-
-	/////////////////////////////////////////////////////////////
-	//Git File States
-	/////////////////////////////////////////////////////////////
-		
-	public static final String UNTRACKED = "images/team.git/untracked.gif";	
-	public static final String STAGE_REMOVED = "images/team.git/staged_removed.gif";
-	public static final String STAGE_ADDED = "images/team.git/staged_added.gif";
-	public static final String UNSTAGED = "images/team.git/unstaged.gif";
-	public static final String STAGED = "images/team.git/staged.gif";
-	public static final String FILE =  "images/core/file.gif";
-	public static final String CONFLICTED =  "images/team.git/conflict.gif";
 	
 	public static final String ADD = "ADD";	
 	public static final String DELETE = "DELETE";
 	public static final String MODIFY = "MODIFY";
 	public static final String RENAME = "RENAME";
 	public static final String COPY = "COPY";
+	public static final String FILE_PATH = "filePath";
+
+	public static final String GIT_PREFIX_SESSION = "git|";
 
 //////////////////////////////////
 // Git History Node properties

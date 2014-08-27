@@ -33,6 +33,8 @@ package org.flowerplatform.flex_client.team.git.action
 	 
 	public class CheckoutAction extends ActionBase  {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.CheckoutAction";
+		
 		public function CheckoutAction() {						
 			super();				
 			label = Resources.getMessage("flex_client.team.git.action.checkoutAction");
@@ -82,16 +84,6 @@ package org.flowerplatform.flex_client.team.git.action
 			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout",[nodeUri],null,FaultCallback);						
 		}
 		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE) {
-					return true; 
-				}
-			}
-			return false;
-		}
-
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0))		
 			var Name:String = node.properties[GitConstants.NAME];

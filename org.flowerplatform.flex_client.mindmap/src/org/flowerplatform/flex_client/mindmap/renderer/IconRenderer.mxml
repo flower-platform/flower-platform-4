@@ -56,6 +56,9 @@
 					case "removeLastIconIcon":
 						toolTip = Resources.getMessage('manageIcons.remove.last.label');
 						break;
+					case "customIconsIcon":
+						toolTip = Resources.getMessage('manageIcons.custom.label');
+						break;
 				}
 			}
 			

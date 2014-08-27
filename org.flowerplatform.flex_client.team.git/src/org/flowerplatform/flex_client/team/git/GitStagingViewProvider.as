@@ -14,8 +14,8 @@
 * license-end
 */
 
-package org.flowerplatform.flex_client.team.git
-{
+package org.flowerplatform.flex_client.team.git {
+	
 	import mx.core.UIComponent;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.layout.AbstractViewProvider;
@@ -23,9 +23,9 @@ package org.flowerplatform.flex_client.team.git
 
 	/**
 	 * @author Marius Iacob
-	 */
-	
-	public class GitStagingProperties extends AbstractViewProvider {
+	 */	
+	public class GitStagingViewProvider extends AbstractViewProvider {
+		
 		public static const ID:String = "gitStaging";
 		
 		override public function getId():String {
@@ -33,15 +33,16 @@ package org.flowerplatform.flex_client.team.git
 		}
 		
 		override public function createView(viewLayoutData:ViewLayoutData):UIComponent {			
-			return new GitStagingDialog();
+			return new GitStagingView();
 		}
 		
-		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
+		override public function getTitle(viewLayoutData:ViewLayoutData=null):String {
 			return Resources.getMessage("team.git.action.GitStagingAction");
 		}
 		
 		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {
 			return Resources.gitStagingIcon;
 		}
+		
 	}
 }

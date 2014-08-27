@@ -19,7 +19,6 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
-	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	
@@ -28,24 +27,15 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	 */
 	public class ShowGroupByRegexMatchesAction extends DiagramShellAwareActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction";
+		
 		public function ShowGroupByRegexMatchesAction() {
 			super();			
 			isToggleAction = true;
 			preferShowOnActionBar = true;
 			label = Resources.getMessage("regex.action.grouped");	
 		}
-		
-		override public function get visible():Boolean {			
-			if (selection == null || selection.length != 1) {
-				return false;
-			}
-			var obj:Object = selection.getItemAt(0);
-			if (obj is MindMapRootModelWrapper) {
-				obj = MindMapRootModelWrapper(obj).model;
-			}
-			return (obj is Node && Node(obj).type == CodeSyncRegexConstants.REGEX_MATCHES_TYPE);
-		}		
-		
+				
 		override public function run():void {
 			super.run();
 			var obj:Object = selection.getItemAt(0);
