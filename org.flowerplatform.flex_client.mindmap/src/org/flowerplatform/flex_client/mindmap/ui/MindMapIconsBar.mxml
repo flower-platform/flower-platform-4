@@ -132,6 +132,11 @@
 				}
 			}
 			
+			/**
+			 * Gets the clicked icon and passes it to a handler which adds it into a mind map node. 
+			 * Implements the <code>handleDialogResult</code> method in interface <code>IDialogResultHandler</code>. 
+			 * @author Alina Bratu
+			 */
 			public function handleDialogResult(res:Object):void {
 				result.iconUrl = res.iconUrl;
 				result.type = Utils.ADD;

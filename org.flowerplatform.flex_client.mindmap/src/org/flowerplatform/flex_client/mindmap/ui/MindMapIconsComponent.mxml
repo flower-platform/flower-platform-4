@@ -131,7 +131,6 @@
 				
 				if (partName == "contentGroup") {
 					var message:StyleableTextField = new StyleableTextField();
-//					var message:Label = new Label();
 					message.text = Resources.getMessage("resource.icon.custom");
 					message.width = 250;
 					message.wordWrap = true;

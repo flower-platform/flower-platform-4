@@ -60,6 +60,11 @@ public class LoadCustomFileServlet extends ResourcesServlet {
 		}
 	}
 	
+	/**
+	 * @param req The <code>HttpServletRequest</code> passed as parameter in <code>doGet</code> method
+	 * @return file at path found in the request
+	 * @throws Exception
+	 */
 	protected File getFile( HttpServletRequest req) throws Exception {
 		return FileControllerUtils.getFileAccessController().getFileAsFile(FileControllerUtils.getFileAccessController().getFile(req.getPathInfo()));
 	}
