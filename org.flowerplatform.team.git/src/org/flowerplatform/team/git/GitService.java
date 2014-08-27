@@ -730,14 +730,20 @@ public class GitService {
 	 * @param commitId id of the commit to be reverted
 	 * @throws Exception
 	 */
-	public void revertCommit(String nodeUri, String commitId ) throws Exception {
+	public String revertCommit(String nodeUri, String commitId) throws Exception {
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
-		RevertCommand command = new Git(repo).revert();
-		RevCommit commit = new RevWalk(repo).parseCommit(repo.resolve(commitId));
-		command.include(commit);
-		command.call();
+		RevertCommand cmd = new Git(repo).revert().include(repo.resolve(commitId));
+		RevCommit newHead = cmd.call();
+		
+		if (newHead != null && cmd.getRevertedRefs().isEmpty()) {
+			return ResourcesPlugin.getInstance().getMessage("team.git.history.revert.alreadyReverted.message");
+		}
+		if (newHead == null) {
+			return cmd.getFailingResult().toString();
+		}
+		return null;
 	}
 
 	/** 

@@ -1,8 +1,8 @@
 /**
  * @author Alina Bratu
  */
-package org.flowerplatform.flex_client.team.git.action
-{
+package org.flowerplatform.flex_client.team.git.action {
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -10,6 +10,9 @@ package org.flowerplatform.flex_client.team.git.action
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
+	/**
+	 * @author Alina Bratu
+	 */
 	public class RevertCommitAction extends ActionBase {
 		
 		public function RevertCommitAction() {
@@ -28,7 +31,18 @@ package org.flowerplatform.flex_client.team.git.action
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var idCommit:String = node.getPropertyValue(GitHistoryConstants.ID);
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.revertCommit",[node.nodeUri,idCommit]);
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.revertCommit", [node.nodeUri, idCommit],
+				function(result:String):void {
+					if (result != null) {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(result)
+						.setTitle(Resources.getMessage('info'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					}
+			});
 		}
+		
 	}
 }
