@@ -15,9 +15,6 @@
  */
 package org.flowerplatform.core;
 
-import java.io.File;
-
-import org.flowerplatform.core.file.FileControllerUtils;
 
 /**
  * @author Cristina Constantinescu
@@ -26,23 +23,5 @@ public class CoreService {
 
 	public String[] getVersions() {
 		return new String[] {CoreConstants.APP_VERSION, CoreConstants.API_VERSION};
-	}
-	
-	/**
-	 * @author Alina Bratu
-	 * @return a string containing image names from user workspace, separated by semicolons
-	 * @throws Exception 
-	 */
-	
-	public String getCustomIconsPaths(String repo) throws Exception {
-		String results = "";
-		File[] files = FileControllerUtils.getFileAccessController().getFileAsFile(FileControllerUtils.getFileAccessController().getFile(repo + "/mindmap_icons/")).listFiles();
-		for (File file : files) {
-		    if (file.isFile() && file.getName().endsWith(".png")) {
-		        results += file.getName().substring(0,file.getName().lastIndexOf('.')) + ";";
-		    }
-		}
-		results = results.substring(0, results.lastIndexOf(';'));
-		return results;
-	}
+	}	
 }

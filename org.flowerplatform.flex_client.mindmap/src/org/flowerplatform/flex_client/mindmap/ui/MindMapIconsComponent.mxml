@@ -21,12 +21,11 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 xmlns:local="org.flowerplatform.flex_client.mindmap.ui.*">
+		 xmlns:local="org.flowerplatform.flex_client.mindmap.ui.*"
+		 width="100%">
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Label;
-			
 			import spark.components.Group;
 			import spark.components.supportClasses.StyleableTextField;
 			
@@ -37,10 +36,6 @@
 			import org.flowerplatform.flexutil.Utils;
 					
 			public var icons:String;
-			[Bindable]
-			public var customIcons:Array;
-			[Bindable]
-			public var defaultIcons:Array;
 			
 			[SkinPart(required="true")]
 			[Bindable]  
@@ -51,17 +46,11 @@
 			public var removeGroup:Group;
 			
 			[Bindable]
-			public var repo:String;
+			public var repoPath:String;
 			
 			[Bindable]
-			public var _getCustomIcons:Boolean = true;
+			public var showOnlyRepositoryCustomIcons:Boolean = false;
 			
-			[Bindable]
-			public var getDefaultIcons:Boolean = true;
-			
-			[Bindable]
-			public var showMessageLabel:Boolean = false;
-						
 			/**
 			 * @author Cristina Constantinescu
 			 * @author Sebastian Solomon
@@ -71,30 +60,48 @@
 			}
 			
 			/**
+			 * Method that fetches a list of custom icons paths in the user repository. 
 			 * @author Alina Bratu
 			 */
-			public function set getCustomIcons(b:Boolean):void {
-				_getCustomIcons = b;
-			}
 			
-			/**
-			 * @author Alina Bratu
-			 */
-			public function get getCustomIcons():Boolean {
-				return _getCustomIcons;
+			private function getCustomIcons():void {
+				CorePlugin.getInstance().serviceLocator.invoke("mindMapService.getRepositoryCustomIcons",[Resources.getMessage("mindmap.custom_icons.path",[repoPath])],getCustomIconsResultHandler);
 			}
-			
 			/**
+			 * Gets the list of custom icons paths and, if <code>showOnlyRepositoryCustomIcons</code>
+			 * is false, gets also the list of default icons names. Calls  <code>addIcons</code> method 
+			 * which displays them.
 			 * @author Alina Bratu
 			 */
 			private function getCustomIconsResultHandler(list:String):void {
-				customIcons = list.split(';');
-				finishDisplay(customIcons,MindMapConstants.LOAD_CUSTOM_ICONS);
-				if (defaultIcons != null) {
-					finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
+				addIcons(list.split(';'),true);
+				if (!showOnlyRepositoryCustomIcons) {
+					addIcons(MindMapConstants.ICONS_LIST.split(';'),false);
 				}
 			}
 			
+			/**
+			 * Adds child icons to the view based on the relative paths provided in <code>icons</code>.
+			 * @author Alina Bratu
+			 */
+			protected function addIcons(icons:Array, areCustomIcons:Boolean):void {
+				for (var i:int=0; i < icons.length; i++) {
+					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
+					if (areCustomIcons) {
+						btnImage.iconUrl = icons[i];
+						btnImage.setStyle("icon", CorePlugin.getInstance().getCustomResourceUrl(icons[i]));
+					}
+					else {
+						btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+						btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
+					}
+					
+					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
+					
+					imageGroup.addElement(btnImage);
+				}
+			}
+					
 			override protected function partAdded(partName:String, instance:Object):void {
 				super.partAdded(partName, instance);
 				if (partName == "removeGroup") {
@@ -119,67 +126,19 @@
 				}
 				
 				if (partName == "imageGroup") {
-					
-					if (getDefaultIcons) {
-						defaultIcons = MindMapConstants.ICONS_LIST.split(';');
-						if (getCustomIcons) {
-							if (customIcons == null) {
-								CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
-							}
-						}
-						else {
-							finishDisplay(defaultIcons,MindMapConstants.LOAD_DEFAULT_ICONS);
-						}
-					}
-					else {
-						if (getCustomIcons) {
-							if (customIcons == null) {
-								CorePlugin.getInstance().serviceLocator.invoke("coreService.getCustomIconsPaths",[repo],getCustomIconsResultHandler);
-							}
-						}
-					}
-					
+					getCustomIcons();			
 				}
 				
 				if (partName == "contentGroup") {
 					var message:StyleableTextField = new StyleableTextField();
+//					var message:Label = new Label();
 					message.text = Resources.getMessage("resource.icon.custom");
-					message.width = parent.width;
+					message.width = 250;
 					message.wordWrap = true;
 					contentGroup.addElement(message);
 				}
 			}
-			
-			/**
-			 * @author Alina Bratu
-			 */
-			protected function getCustomImageUrl(name:String):String {
-				return "servlet/load/" + repo + MindMapConstants.CUSTOM_ICONS_DIRECTORY + name;
-			}
-			
-			protected function finishDisplay(icons:Array, type:Number):void {
-				for (var i:int=0; i < icons.length; i++) {
-					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
-					switch (type) {
-						case MindMapConstants.LOAD_CUSTOM_ICONS:
-							btnImage.iconUrl = repo + MindMapConstants.CUSTOM_ICONS_DIRECTORY + icons[i] + ".png";
-							btnImage.setStyle("icon", getCustomImageUrl(icons[i] + ".png"));
-							break;
-						case MindMapConstants.LOAD_DEFAULT_ICONS:
-							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-							btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
-							break;
-						default:
-							btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
-							btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
-							break;
-					}
-					btnImage.addEventListener(MouseEvent.CLICK, btnImage_clickHandler);
-					
-					imageGroup.addElement(btnImage);
-				}
-			}
-					
+										
 			protected function btnRemoveAll_clickHandler(event:MouseEvent):void {
 				var result:Object = new Object();
 				result.type = Utils.REMOVE_ALL;
@@ -203,7 +162,7 @@
 				result.type = Utils.ADD;
 				var iconUrl:String = MindMapButtonWithIcon(event.target).iconUrl;
 				if (iconUrl.indexOf("mindmap_icons") != -1) {
-					result.iconUrl = "servlet/load/" + iconUrl;
+					result.iconUrl = CorePlugin.getInstance().getCustomResourceUrl(iconUrl);
 				}
 				else {
 					result.iconUrl = Resources.getResourceUrl(iconUrl);
