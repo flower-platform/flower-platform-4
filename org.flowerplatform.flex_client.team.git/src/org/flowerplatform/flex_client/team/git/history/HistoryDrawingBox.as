@@ -35,9 +35,9 @@ package org.flowerplatform.flex_client.team.git.history {
 			clipAndEnableScrolling = true;
 		}
 		
-		private function drawLine(x1:int, y1:int, x2:int, y2:int, width:int, color:uint):void {
-			graphics.lineStyle(width, color);
+		private function drawLine(x1:int, y1:int, x2:int, y2:int, width:int, color:uint):void {			
 			graphics.moveTo(x1, y1);
+			graphics.lineStyle(width, color);
 			graphics.lineTo(x2, y2);			
 		}
 		
@@ -45,6 +45,7 @@ package org.flowerplatform.flex_client.team.git.history {
 			graphics.beginFill(backgroundColor);
 			graphics.lineStyle(2, foreground);
 			graphics.drawEllipse(x + 2, y + 1, w - 2, h - 2);
+			graphics.endFill();
 		}
 			
 		private function parseColor(color:String):uint {
@@ -77,7 +78,7 @@ package org.flowerplatform.flex_client.team.git.history {
 						drawLine(
 							int(drawingKey.getItemAt(i)), int(drawingKey.getItemAt(i+1)),
 							int(drawingKey.getItemAt(i+2)), int(drawingKey.getItemAt(i+3)),
-							int(drawingKey.getItemAt(i+4)), parseColor(String(drawingKey.getItemAt(i+5))));													
+							int(drawingKey.getItemAt(i+4)), parseColor(String(drawingKey.getItemAt(i+5))));
 					}											
 				}
 				else if (key == GitConstants.DRAW_COMMIT_DOT || key == GitConstants.DRAW_BOUNDARY_DOT) {

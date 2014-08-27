@@ -230,7 +230,11 @@ public class GitHistoryService {
 			setupWalk(walk, repo, null);
 		} else {
 			String file = FileControllerUtils.getFilePathFromNodeUri(nodeUri);
-			setupWalk(walk, repo, file); 
+			if (file != null && file.equals(GitConstants.DOT_GIT_SCHEME)) {
+				setupWalk(walk, repo, null);
+			} else {
+				setupWalk(walk, repo, file);				
+			}
 		}
 		return walk;
 	}

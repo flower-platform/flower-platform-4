@@ -48,6 +48,7 @@ public class GitConstants {
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_SCHEME = "git";
+	public static final String DOT_GIT_SCHEME = ".git";
 	
 	/////////////////////////////////////////////////////////////
 	// Git Node Properties

@@ -79,7 +79,7 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 			line.add(y2);		
 			line.add(width);
 			line.add(color);
-			drawings.getProperties().put(GitConstants.DRAW_LINE_LIST, line);			
+			drawings.getProperties().put(GitConstants.DRAW_LINE_LIST, line);
 		} else {
 			existingLine.add(GitConstants.DRAW_LINE);
 			existingLine.add(x1);

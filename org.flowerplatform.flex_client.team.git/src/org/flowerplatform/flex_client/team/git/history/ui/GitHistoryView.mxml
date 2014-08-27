@@ -10,7 +10,6 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.core.Container;
 			import mx.events.FlexEvent;
 			
 			import spark.components.gridClasses.GridColumn;
@@ -25,7 +24,6 @@
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
-			import org.flowerplatform.flexutil.spinner.ModalSpinner;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			[Bindable]
