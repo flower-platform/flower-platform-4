@@ -47,6 +47,7 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
@@ -229,7 +230,7 @@ public class GitService {
 	 * Creates new branch
 	 * 
 	 */
-	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch) throws Exception {	
+	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch, String commitId) throws Exception {
 		String repoPath = Utils.getRepo(parentUri);
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
@@ -250,22 +251,18 @@ public class GitService {
 			upstreamMode = SetupUpstreamMode.SET_UPSTREAM;
 		}
 		
-		/* createBranch */
-		Ref createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(startPoint).call();
-
-		/* uri for the child to be created */
-		String childUri = GitUtils.getNodeUri(repoPath, GIT_LOCAL_BRANCH_TYPE, createdBranch.getName());
-		
+		Ref createdBranch = git.branchCreate().setName(name).setUpstreamMode(upstreamMode).setStartPoint(commitId == null ? startPoint : commitId).call();
+				
 		if (checkoutBranch) {
 			/* call checkout branch method */
-			checkout(childUri);
+			checkout(GitUtils.getNodeUri(repoPath, GIT_LOCAL_BRANCH_TYPE, createdBranch.getName()));
+		} else {
+			Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
+			CorePlugin.getInstance().getResourceSetService().addUpdate(
+					parent,
+					new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 		}
-		
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
-		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				parent,
-				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));		
 	}
 	
 	/**
@@ -478,6 +475,12 @@ public class GitService {
 		g.checkout().setName(Name).call();
 //		g.gc().getRepository().close();
 //		g.gc().call();
+		
+		String localBranchesUri = GitUtils.getNodeUri(repositoryPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE);
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(localBranchesUri),
+				new Update().setFullNodeIdAs(localBranchesUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 
 
