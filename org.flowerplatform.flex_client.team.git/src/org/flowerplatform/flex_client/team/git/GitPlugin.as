@@ -36,18 +36,11 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.RebaseAction;
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
-
 	import org.flowerplatform.flex_client.team.git.action.ShowGitStagingAction;
 	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
 	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
-	import org.flowerplatform.flex_client.team.git.remote.RemoteConfiguration;
-=======
-	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
-	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
-	import org.flowerplatform.flex_client.team.git.remote.GitRef;
-
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 

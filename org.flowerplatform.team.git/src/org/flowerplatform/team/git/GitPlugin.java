@@ -31,7 +31,6 @@ import static org.flowerplatform.team.git.GitConstants.FETCH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.FULL_NAME;
 import static org.flowerplatform.team.git.GitConstants.GIT_CATEGORY;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
-<<<<<<< HEAD
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REF;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
@@ -46,25 +45,8 @@ import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
 import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
-=======
-import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REF;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
-import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
-import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
-import static org.flowerplatform.team.git.GitConstants.NAME;
-import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
-import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
->>>>>>> origin/GH395-git-history-copy-id
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.controller.GitChildrenProvider;

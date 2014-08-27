@@ -75,17 +75,10 @@
 				grid.addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU,fillContextMenuHandler);
 			}
 			
-			protected function fillContextMenuHandler(event:FillContextMenuEvent):void {
+			public function fillContextMenuHandler(event:FillContextMenuEvent):void {
 				event.allActions = getActions(new ArrayCollection([grid.selectedItem]));
 				event.selection = new ArrayCollection([grid.selectedItem]);
 				event.rootActionsAlreadyCalculated = null;
-				
-//				contextForActions = new Object();			
-//				contextForActions.rectangle = new Rectangle(
-//					UIComponent(FlexGlobals.topLevelApplication).mouseX, 
-//					UIComponent(FlexGlobals.topLevelApplication).mouseY, 
-//					NaN, NaN);
-//				event.context = contextForActions;
 			}
 			
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
@@ -360,6 +353,7 @@
 						<s:ItemRenderer>
 							<fx:Script>
 								<![CDATA[
+									import org.flowerplatform.flex_client.resources.Resources;
 								]]>
 							</fx:Script>
 							<s:HGroup paddingLeft="2" paddingTop="4" paddingRight="2" paddingBottom="2">	

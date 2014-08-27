@@ -58,17 +58,17 @@ package org.flowerplatform.flex_client.team.git.action {
 						} else {	
 							// Merge
 							label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");
-						}
+						}						
 					}
 				} else {
-					label = Resources.getMessage("flex_client.team.git.action.mergeBranch");
-					return true;
+					label = Resources.getMessage("flex_client.team.git.action.mergeBranch");					
 				}
+				return true;
 			}
 			return false;
 		}
 
-		public function callMergeAction (nodeUri:String, squash:Boolean, commit:Boolean, fastForwardUpdate:int, idCommit:String):void {
+		public function callMergeAction(nodeUri:String, squash:Boolean, commit:Boolean, fastForwardUpdate:int, idCommit:String):void {
 			CorePlugin.getInstance().serviceLocator.invoke("GitService.mergeBranch",[nodeUri, squash, commit, fastForwardUpdate, idCommit],
 				function(result:String):void {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
