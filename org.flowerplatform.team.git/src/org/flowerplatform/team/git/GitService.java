@@ -46,8 +46,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.jgit.api.CherryPickCommand;
+import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.CloneCommand;
-import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
@@ -630,7 +631,7 @@ public class GitService {
 			fetchCommand.setRemote(fetchNodeUri).setRefSpecs(fetchRefSpecsList);			
 			credentials = getCredentials(fetchNodeUri);			
 		}
-		
+
 		// provide credentials for use in connecting to repositories 
 		if (credentials != null) {
 			fetchCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(), credentials.getPassword()));
@@ -686,6 +687,39 @@ public class GitService {
 		Iterable<PushResult> resultIterable = pushCommand.call();
 	
 		return GitUtils.handlePushResult(resultIterable.iterator().next());
+	}
+	
+	/**
+	 * @author Alina Bratu
+	 * 
+	 * @param nodeUri 
+	 * 		node URI of the repository
+	 * @param commitId 
+	 * 		id of the commit to be cherry-picked
+	 * @return message describing the result of the cherry-picking (successful, with conflicts, failed, already done)
+	 * @throws Exception
+	 */
+	public String cherryPickCommit(String nodeUri, String commitId) throws Exception {
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+		
+		CherryPickResult result = new Git(repo).cherryPick().include(repo.resolve(commitId)).call();
+		
+		RevCommit newHead = result.getNewHead();
+		if (newHead != null && result.getCherryPickedRefs().isEmpty()) {
+			return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.null");
+		}
+		
+		if (newHead == null) {
+			switch (result.getStatus()) {
+				case CONFLICTING:
+					return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.conflicts");					
+				case FAILED:
+					return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.fail");
+				default:
+					break;				
+			} 
+		}		
+		return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.ok");
 	}
 
 	/** 

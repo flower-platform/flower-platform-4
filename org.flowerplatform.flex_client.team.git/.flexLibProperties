@@ -31,6 +31,7 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.action.FetchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.CherryPickAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

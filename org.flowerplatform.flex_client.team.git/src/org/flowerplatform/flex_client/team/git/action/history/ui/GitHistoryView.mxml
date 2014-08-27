@@ -21,6 +21,7 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
+			import org.flowerplatform.flex_client.team.git.action.CherryPickAction;
 			import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 			import org.flowerplatform.flex_client.team.git.action.MergeAction;
 			import org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard;
@@ -32,9 +33,7 @@
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-			
-			
-			
+						
 			[Bindable]
 			public var repo:String;
 			
@@ -160,7 +159,7 @@
 				result.push(new CopyIdToClipboard());
 				result.push(new MergeAction(true));
 				result.push(new CreateBranchAction(true));
-
+				result.push(new CherryPickAction());
 				return result;
 			}
 		
@@ -356,7 +355,6 @@
 						<s:ItemRenderer>
 							<fx:Script>
 								<![CDATA[
-									
 									import org.flowerplatform.flex_client.resources.Resources;
 								]]>
 							</fx:Script>
