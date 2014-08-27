@@ -22,6 +22,10 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.ResizeEvent;
 	import mx.managers.IFocusManagerComponent;
 	
+	import spark.components.DataRenderer;
+	import spark.components.RichText;
+	import spark.layouts.HorizontalLayout;
+	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -29,11 +33,6 @@ package org.flowerplatform.flexdiagram.mindmap
 	import org.flowerplatform.flexutil.focusable_component.FocusableRichText;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
-	
-	import spark.components.DataRenderer;
-	import spark.components.Group;
-	import spark.components.RichText;
-	import spark.layouts.HorizontalLayout;
 	
 	/**
 	 * @author Cristina Constantinescu

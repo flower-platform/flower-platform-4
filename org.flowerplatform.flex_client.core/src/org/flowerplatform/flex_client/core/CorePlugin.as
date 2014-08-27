@@ -165,6 +165,9 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("uploadService");
 			serviceLocator.addService("preferenceService");
 			
+			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
+			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
+						
  			updateTimer = new UpdateTimer(5000);
 			
 			FlexUtilGlobals.getInstance().registerAction(RemoveNodeAction);

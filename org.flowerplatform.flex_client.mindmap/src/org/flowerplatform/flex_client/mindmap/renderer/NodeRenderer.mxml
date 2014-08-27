@@ -28,6 +28,7 @@
 			import mx.utils.ObjectUtil;
 			
 			import spark.core.SpriteVisualElement;
+			import spark.layouts.HorizontalLayout;
 			
 			import flashx.textLayout.conversion.TextConverter;
 			
@@ -35,7 +36,6 @@
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -43,9 +43,6 @@
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.FlowerArrayList;
 			import org.flowerplatform.flexutil.Utils;
-			
-			import spark.core.SpriteVisualElement;
-			import spark.layouts.HorizontalLayout;
 			
 			[Bindable]
 			public var circleRadius:int = 10;
@@ -106,7 +103,7 @@
 				var classInfoProperties:Array = ObjectUtil.getClassInfo(node.properties).properties as Array;
 				for each (var property:String in classInfoProperties) {
 					modelChangedHandler(PropertyChangeEvent.createUpdateEvent(node, property, NaN, node.properties[property]));
-				}				
+				}
 			}
 			
 			override protected function unassignData():void {
