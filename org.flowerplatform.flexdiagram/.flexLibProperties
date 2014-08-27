@@ -35,6 +35,7 @@
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDragTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.AbstractMindMapNodeRenderer"/>
+    <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenControllerWithBiggerSkip"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

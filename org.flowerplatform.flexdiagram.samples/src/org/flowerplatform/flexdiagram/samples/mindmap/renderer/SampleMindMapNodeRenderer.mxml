@@ -21,16 +21,27 @@
 <mindmap:AbstractMindMapNodeRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
+				xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*"
+				implements="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable">
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.events.PropertyChangeEvent;
 			
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 			
-						
+			protected var visualChildrenController:VisualChildrenController;
+			private var _shouldRefreshVisualChildren:Boolean;
+			public function get shouldRefreshVisualChildren():Boolean {
+				return _shouldRefreshVisualChildren;
+			}
+			
+			public function set shouldRefreshVisualChildren(value:Boolean):void {
+				_shouldRefreshVisualChildren = value;
+			}
 			public function get dataConverted():SampleMindMapModel {
 				return SampleMindMapModel(data);
 			}
@@ -62,6 +73,24 @@
 				}
 				if (event == null || event.property == "text") {
 					text = dataConverted.text;
+				}
+				
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+				if (visualChildrenController != null) {
+					visualChildrenController.refreshVisualChildren(diagramShellContext, data);
+				}
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+			
+			override public function set data(value:Object):void {
+				super.data = value;
+				
+				if (data == null) {
+					visualChildrenController = null;
+				} else {
+					visualChildrenController = ControllerUtils.getVisualChildrenController(diagramShellContext, data);
 				}
 			}
 			

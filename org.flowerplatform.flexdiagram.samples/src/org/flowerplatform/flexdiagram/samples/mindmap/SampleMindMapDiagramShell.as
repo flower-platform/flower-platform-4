@@ -16,7 +16,10 @@
 package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenControllerWithBiggerSkip;
 	import org.flowerplatform.flexdiagram.mindmap.GenericMindMapConnector;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
@@ -24,13 +27,16 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
+	import org.flowerplatform.flexdiagram.samples.controller.BasicSubModelChildrenProvider;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelDragController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelInplaceEditorController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider;
+	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -47,6 +53,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			registry.getOrCreateTypeDescriptor("mindmap")
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new SampleMindMapModelController())
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MindMapAbsoluteLayoutRectangleController())
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new SequentialLayoutVisualChildrenControllerWithBiggerSkip())
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new SampleMindMapModelChildrenController())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new MindMapModelRendererController(SampleMindMapNodeRenderer, GenericMindMapConnector))
@@ -58,7 +65,13 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new SampleMindMapModelController())			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER,  new MindMapAbsoluteLayoutVisualChildrenController());			
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER,  new MindMapAbsoluteLayoutVisualChildrenController());
+			
+			registry.getOrCreateTypeDescriptor("basicSubModel1")
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))				
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider())
+
 		}
 				
 	}

@@ -27,13 +27,10 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.events.FlexEvent;
-			
-			import org.flowerplatform.flexdiagram.DiagramShell;
-			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 			import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
 			import org.flowerplatform.flexdiagram.samples.model.BasicModel;
 			import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
+			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 			
 			public var modelHolder:IModelHolder;
 			

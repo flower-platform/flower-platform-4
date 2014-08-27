@@ -14,8 +14,6 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples.model {
-	import mx.collections.ArrayList;
-	
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	
 	[Bindable]

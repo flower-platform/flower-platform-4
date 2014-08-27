@@ -22,6 +22,7 @@ package org.flowerplatform.flexdiagram.samples {
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController;
+	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenControllerWithBiggerSkip;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
 	import org.flowerplatform.flexdiagram.renderer.selection.StandardAnchorsSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.controller.BasicConnectionRendererController;
@@ -80,7 +81,14 @@ package org.flowerplatform.flexdiagram.samples {
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())	
 				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new AbsoluteLayoutVisualChildrenController())								
 				.addSingleController(FlexDiagramConstants.SELECT_OR_DRAG_TO_CREATE_ELEMENT_CONTROLLER, new SelectOrDragToCreateElementController());
+			
+			registry.getOrCreateTypeDescriptor("basicSubModel1")
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider())
+
+					
 		}
+		
 	
 	}
 }

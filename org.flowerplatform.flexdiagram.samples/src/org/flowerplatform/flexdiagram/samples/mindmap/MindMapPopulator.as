@@ -17,6 +17,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.samples.IModelHolder;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+	import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
+	import org.flowerplatform.flexdiagram.samples.model.BasicModel;
+	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	
 	/**
@@ -36,6 +39,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			rootModel.children.addItem(getMindMapModel(rootModel));
 			rootModel.children.addItem(getMindMapModel(rootModel));
 			rootModel.expanded = true;
+			rootModel.subModels.addItem(new BasicSubModel("bsm1", rootModel));
+			rootModel.subModels.addItem(new BasicSubModel("bsm2", rootModel));
 			
 			var child2:SampleMindMapModel = getMindMapModel(rootModel);	
 			child2.side = MindMapDiagramShell.POSITION_LEFT;
@@ -82,7 +87,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			child111.hasChildren = true;
 			child11.children.addItem(child111);	
 			
+			
+			
 			modelHolder.rootModel = rootModel;
+			
 		}
 		
 		/**
@@ -114,6 +122,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			if (!(parent is ParentAwareArrayList)) {
 				model.parent = parent;
 			}
+			
+			//model.subModels = new ParentAwareArrayList(model, [new BasicSubModel("1", model), new BasicSubModel("2", model)]);
+//			model.subModels.addItem(new BasicSubModel("bsm1", model));
+//			model.subModels.addItem(new BasicSubModel("bsm2", model));
 			return model;
 		}
 	}

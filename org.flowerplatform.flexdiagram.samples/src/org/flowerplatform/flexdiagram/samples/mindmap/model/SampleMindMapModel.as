@@ -16,6 +16,8 @@
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
 	import mx.collections.ArrayList;
 	
+	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */
@@ -35,6 +37,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var fontSize:Number;
 		public var fontWeight:Boolean;
 		public var fontStyle:Boolean;
+		
+		public var subModels:ParentAwareArrayList = new ParentAwareArrayList(this);
 		
 	}	
 }

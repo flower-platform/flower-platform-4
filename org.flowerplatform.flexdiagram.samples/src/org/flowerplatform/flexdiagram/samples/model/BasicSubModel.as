@@ -23,9 +23,9 @@ package org.flowerplatform.flexdiagram.samples.model {
 
 		public var name:String = "Default Text";
 		
-		public var parent:BasicModel;
+		public var parent:Object;
 		
-		public function BasicSubModel(name:String, parent:BasicModel) {
+		public function BasicSubModel(name:String, parent:Object) {
 			this.name = name;
 			this.parent = parent;
 		}

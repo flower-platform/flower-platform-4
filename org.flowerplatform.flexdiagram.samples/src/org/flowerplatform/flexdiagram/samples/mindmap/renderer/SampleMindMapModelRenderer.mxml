@@ -43,6 +43,7 @@
 
 			private static const circleRadius:int = 3;
 								
+			
 			protected var _context:DiagramShellContext;
 			
 			public function get diagramShellContext():DiagramShellContext {			
@@ -101,6 +102,7 @@
 			}
 			
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
+				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
 				graphics.clear();

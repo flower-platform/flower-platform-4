@@ -4,6 +4,7 @@
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_PROJECT" value="org.flowerplatform.flex_client.host_app"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_RUN_URL" value="http://localhost:8080/org.flowerplatform.host.web_app/main.jsp"/>
 <booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_USE_DEFAULT_URLS" value="false"/>
+<booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_USE_METRO_MODE" value="false"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/org.flowerplatform.flex_client.host_app"/>
 <listEntry value="/org.flowerplatform.flex_client.host_app/src/FlexHostApp.mxml"/>
