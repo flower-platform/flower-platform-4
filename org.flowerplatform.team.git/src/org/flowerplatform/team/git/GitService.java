@@ -510,24 +510,27 @@ public class GitService {
 		return GitUtils.handleRebaseResult(result);
 	}
 	
-	/** 
+	/**
 	 * @author Catalin Burcea
-	 */	
+	 */
 	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
 		String repositoryPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		
+
 		RepositoryCache.close(repo);
 		repo.getAllRefs().clear();
 		repo.close();
-			
+
 		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(CoreConstants.EXECUTE_ONLY_FOR_UPDATER, true));
-		
+
 		if (keepWorkingDirectoryContent) {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory());
 		} else {
-			FileControllerUtils.getFileAccessController().delete(repo.getDirectory().getParentFile());
+			File[] repoFiles = repo.getDirectory().getParentFile().listFiles();
+			for (File file : repoFiles) {
+				FileControllerUtils.getFileAccessController().delete(file);
+			}
 		}
 	}
 	
