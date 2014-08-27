@@ -35,3 +35,4 @@ Import-Package: javax.servlet,
  javax.servlet.http
 Eclipse-RegisterBuddy: org.flowerplatform.util
 Bundle-ActivationPolicy: lazy
+Export-Package: com.fasterxml.jackson.databind

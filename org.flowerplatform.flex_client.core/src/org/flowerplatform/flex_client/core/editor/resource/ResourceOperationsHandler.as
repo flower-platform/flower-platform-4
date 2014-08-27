@@ -1,18 +1,18 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package org.flowerplatform.flex_client.core.editor.resource {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
@@ -23,35 +23,33 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
-	import org.flowerplatform.flex_client.core.node.IExternalInvocator;
 	import org.flowerplatform.flex_client.core.node.IResourceOperationsHandler;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class ResourceOperationsManager implements IResourceOperationsHandler, IExternalInvocator {
-			
+	public class ResourceOperationsHandler implements IResourceOperationsHandler {
+		
 		public var saveAction:SaveAction = new SaveAction();
 		public var saveAllAction:SaveAllAction = new SaveAllAction();		
 		public var reloadAction:ReloadAction = new ReloadAction();
-				
-		private var _nodeRegistryManager:NodeRegistryManager;
-				
-		public function get nodeRegistryManager():NodeRegistryManager {
+		
+		private var _nodeRegistryManager:*;
+		
+		public function get nodeRegistryManager():* {
 			return _nodeRegistryManager;
 		}
-
-		public function set nodeRegistryManager(value:NodeRegistryManager):void {
+		
+		public function set nodeRegistryManager(value:*):void {
 			_nodeRegistryManager = value;
 		}
-					
+		
 		public function activeViewChangedHandler(evt:ActiveViewChangedEvent):void {			
 			updateEditorFrontendActionsEnablement();
 		}
@@ -106,7 +104,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function getResourceNodeLabel(resourceNodeId:String):String {			
 			return resourceNodeId;
 		}
-				
+		
 		/**
 		 * Don't remove editors immediately. If there are dirty editors, show save dialog.
 		 */ 
@@ -124,7 +122,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			}
 			_nodeRegistryManager.resourceOperationsManager.showSaveDialog(nodeRegistries);					
 		}
-				
+		
 		
 		/**
 		 * If at least one dirty resourceNode found, shows the save dialog, else closes the editors OR 
@@ -156,7 +154,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public function showReloadDialog(nodeRegistries:Array = null, resourceSets:Array = null):void {
 			var resourceNodes:ArrayList = new ArrayList();
 			for each (var resourceSet:String in resourceSets) {
-				resourceNodes.addItem(new ResourceNode(resourceSet, true));
+				resourceNodes.addItem({resourceNodeId: resourceSet, selected:true});
 			}
 			
 			var reloadView:ResourceNodesListView = new ResourceNodesListView();
@@ -178,7 +176,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				.setHeight(small ? 150 : 300)
 				.show();	
 		}
-				
+		
 		/**
 		 * @return global dirty state for all open editors = saveAll action enablement.
 		 */ 
@@ -186,14 +184,5 @@ package org.flowerplatform.flex_client.core.editor.resource {
 			return saveAllAction != null ? saveAllAction.enabled : false;
 		}		
 		
-		public function showMessageBox(text:String, title:String):void {			
-			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-				.setText(text)
-				.setTitle(title)
-				.setWidth(300)
-				.setHeight(200)
-				.showMessageBox();
-		}
-				
 	}
 }
