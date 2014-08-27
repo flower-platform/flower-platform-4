@@ -97,7 +97,7 @@ package org.flowerplatform.flex_client.resources {
 		// MindMap
 		
 		[Embed(source="/mindmap/icons/checkout.gif")]
-		public static const mindmap_button_checkout:Class;
+		public static const checkoutIcon:Class;
 		
 				
 		[Embed(source="/mindmap/images.png")]

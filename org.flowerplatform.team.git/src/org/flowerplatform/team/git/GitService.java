@@ -91,6 +91,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.team.git.history.internal.GitHistoryConstants;
 import org.flowerplatform.team.git.remote.GitCredentials;
 import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.util.Utils;
@@ -467,23 +468,23 @@ public class GitService {
 	 * @throws Exception
 	 */
 	public void checkout(String nodeUri) throws Exception {				
-		String Name = GitUtils.getName(nodeUri);
-		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		String name = GitUtils.getName(nodeUri);
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 				
-		Git g = new Git(repo);	
+		new Git(repo).checkout().setName(name).call();
 		
-		g.checkout().setName(Name).call();
-//		g.gc().getRepository().close();
-//		g.gc().call();
-		
-		String localBranchesUri = GitUtils.getNodeUri(repositoryPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				CorePlugin.getInstance().getResourceService().getNode(localBranchesUri),
-				new Update().setFullNodeIdAs(localBranchesUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
+				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
-
 
 	/**
 	 * 
