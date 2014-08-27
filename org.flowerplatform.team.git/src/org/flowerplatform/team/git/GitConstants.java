@@ -110,13 +110,9 @@ public static final String SHORT_MESSAGE = "shortMessage";
 
 public static final String LONG_MESSAGE = "longMessage";
 
-public static final String AUTHOR = "Author";
-
 public static final String AUTHOR_EMAIL = "AuthorEmail";
 
 public static final String AUTHORED_DATE = "AuthoredDate";
-
-public static final String COMMITTER = "Committer";
 
 public static final String COMMITTER_EMAIL = "CommitterEmail";
 

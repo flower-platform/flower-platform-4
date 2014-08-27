@@ -104,13 +104,9 @@ package org.flowerplatform.flex_client.team.git {
 		
 		public static const LONG_MESSAGE:String = "longMessage";
 		
-		public static const AUTHOR:String = "Author";
-		
 		public static const AUTHOR_EMAIL:String = "AuthorEmail";
 		
 		public static const AUTHORED_DATE:String = "AuthoredDate";
-		
-		public static const COMMITTER:String = "Committer";
 		
 		public static const COMMITTER_EMAIL:String = "CommitterEmail";
 		

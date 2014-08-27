@@ -21,7 +21,6 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
-	import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
 	import org.flowerplatform.flex_client.team.git.ui.MergeBranchView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -99,7 +98,7 @@ package org.flowerplatform.flex_client.team.git.action {
 					callMergeAction(node.nodeUri, false, true, 0, null);
 				}
 			} else {
-				callMergeAction(node.nodeUri, false, true, 0, node.getPropertyValue(GitHistoryConstants.ID));
+				callMergeAction(node.nodeUri, false, true, 0, node.getPropertyValue(GitConstants.ID));
 			}
 		}
 	}
