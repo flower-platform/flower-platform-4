@@ -33,6 +33,11 @@ public class UserService {
 		node.getProperties().put("login", login);
 		node.getProperties().put("name", login + " " + login + "son");
 		node.getProperties().put("email", login + "@domain.com");
+		
+		//set an admin
+		if (login.equals("Jim")) {
+			node.getProperties().put("isAdmin", true);
+		}
 		return node;
 	}
 	
@@ -60,7 +65,10 @@ public class UserService {
 			user.setNodeUri("user:test|" + user.getProperties().get("login"));
 			users.add(user);
 		}
+		
 		Node mem = getUser(user.getNodeUri());
+		
+		mem.getProperties().put("login", user.getProperties().get("login"));
 		mem.getProperties().put("name", user.getProperties().get("name"));
 		mem.getProperties().put("email", user.getProperties().get("email"));
 		return mem;
