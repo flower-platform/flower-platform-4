@@ -520,10 +520,7 @@ public class GitService {
 		RepositoryCache.close(repo);
 		repo.getAllRefs().clear();
 		repo.close();
-
-		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(CoreConstants.EXECUTE_ONLY_FOR_UPDATER, true));
-
+				
 		if (keepWorkingDirectoryContent) {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory());
 		} else {
@@ -532,6 +529,16 @@ public class GitService {
 				FileControllerUtils.getFileAccessController().delete(file);
 			}
 		}
+		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, repositoryPath)), 
+				new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, repositoryPath)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repositoryPath, GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/**
