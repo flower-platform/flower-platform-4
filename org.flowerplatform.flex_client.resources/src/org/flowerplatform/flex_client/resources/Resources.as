@@ -634,6 +634,9 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/cherry-pick.png")]
 		public static const gitCherryPickIcon:Class;
+		
+		[Embed(source="/team.git/revert.gif")]
+		public static const gitRevertCommitIcon:Class;
 
 	}
 }

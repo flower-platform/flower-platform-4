@@ -46,7 +46,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.jgit.api.CherryPickCommand;
 import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
@@ -59,6 +58,7 @@ import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.api.RevertCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.AnyObjectId;
@@ -720,6 +720,24 @@ public class GitService {
 			} 
 		}		
 		return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.ok");
+	}
+	
+	/**
+	 * Reverts the commit identified by the id passed through <code>commitId</code>
+	 * 
+	 * @author Alina Bratu
+	 * @param nodeUri node URI of the repository
+	 * @param commitId id of the commit to be reverted
+	 * @throws Exception
+	 */
+	public void revertCommit(String nodeUri, String commitId ) throws Exception {
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		
+		RevertCommand command = new Git(repo).revert();
+		RevCommit commit = new RevWalk(repo).parseCommit(repo.resolve(commitId));
+		command.include(commit);
+		command.call();
 	}
 
 	/** 
