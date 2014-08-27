@@ -59,6 +59,7 @@ import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -147,16 +148,14 @@ public class GitService {
 	/**
 	 * @author Tita Andreea
 	 */
-	
-	/* Merge branch */
-	public String mergeBranch(String nodeUri, Boolean setSquash, boolean commit, int fastForwardOptions) throws Exception {
+	public String mergeBranch(String nodeUri, boolean setSquash, boolean commit, int fastForwardOptions, String idCommit) throws Exception {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
-		Ref ref = repo.getRef((String)node.getPropertyValue(GitConstants.NAME));
 		
 		Git gitInstance = new Git(repo);
+		MergeCommand mergeCmd;
 		FastForwardMode fastForwardMode = FastForwardMode.FF;
 		
 		// set the parameters for Fast Forward options 
@@ -173,9 +172,14 @@ public class GitService {
 		}
 		
 		// call merge operation 
-		MergeCommand mergeCmd = gitInstance.merge().include(ref).setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit);
-		MergeResult mergeResult = mergeCmd.call();
-	   
+		if (idCommit != null) {
+			mergeCmd = gitInstance.merge().include((AnyObjectId) repo.resolve(idCommit));
+		} else {
+			mergeCmd = gitInstance.merge().include(repo.getRef((String) node.getPropertyValue(GitConstants.NAME)));
+		}
+
+		MergeResult mergeResult = mergeCmd.setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit).call();
+
 		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
@@ -369,7 +373,6 @@ public class GitService {
 				new ServiceContext<NodeService>().add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 
-
 	
 	/**
 	 * @author Diana Balutoiu
@@ -411,13 +414,13 @@ public class GitService {
 		
 		// set the new name
 		git.branchRename().setOldName((String) node.getPropertyValue(CoreConstants.NAME)).setNewName(newName).call();
-		
+
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				node, 
 				new Update().setFullNodeIdAs(parentUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
-	
+
 	/**
 	 * 
 	 * @param nodeUri URI of the parent node of where the repository will be cloned
@@ -911,3 +914,4 @@ public class GitService {
 	}	
 	
 }
+

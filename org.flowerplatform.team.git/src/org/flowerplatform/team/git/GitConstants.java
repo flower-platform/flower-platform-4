@@ -55,6 +55,7 @@ public class GitConstants {
 	
 	public static final String NAME = "name";
 	public static final String IS_GIT_REPOSITORY = "isGitRepository";
+
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
@@ -66,6 +67,7 @@ public class GitConstants {
 	public static final String FETCH_REF_SPECS = "fetchRefSpecs";
 	public static final String PUSH_REF_SPECS = "pushRefSpecs";
 	public static final String REMOTE_URIS = "URIs";
+
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
@@ -85,7 +87,6 @@ public class GitConstants {
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
-
 	
 	public static final String ADD = "ADD";	
 	public static final String DELETE = "DELETE";
@@ -95,4 +96,5 @@ public class GitConstants {
 	public static final String FILE_PATH = "filePath";
 
 	public static final String GIT_PREFIX_SESSION = "git|";
+
 }

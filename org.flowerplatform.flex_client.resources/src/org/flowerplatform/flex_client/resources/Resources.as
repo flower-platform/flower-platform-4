@@ -550,9 +550,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/codesync.regex/wrench.png")]
 		public static const wrenchIcon:Class;
-		
+
 		// Team Git
-		
+
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
 		
@@ -567,6 +567,16 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
+		
+		// Git History 
+		[Embed(source="/git/history.gif")]
+		public static const gitHistoryIcon:Class;
+		
+		[Embed(source="/team.git/copy.gif")]
+		public static const copy:Class;
+
+		[Embed(source="/team.git/remotespec.gif")]
+		public static const configureFetchPush:Class;
 
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
@@ -628,5 +638,6 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/fetch.gif")]
 		public static const fetchIcon:Class;
+
 	}
 }

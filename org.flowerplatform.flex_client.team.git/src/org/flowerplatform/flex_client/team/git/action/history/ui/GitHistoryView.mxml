@@ -9,9 +9,8 @@
 		  implements="org.flowerplatform.flexutil.view_content_host.IViewContent" xmlns:ns1="org.flowerplatform.flex_client.resources.*">
 	<fx:Script>
 		<![CDATA[
-			import mx.binding.utils.ChangeWatcher;
 			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
+			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
 			import spark.components.gridClasses.GridColumn;
@@ -22,8 +21,12 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
+			import org.flowerplatform.flex_client.team.git.action.MergeAction;
+			import org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.context_menu.FillContextMenuEvent;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
@@ -68,6 +71,21 @@
 				// listen for selection changes				
 				IEventDispatcher( _viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
 				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);							
+			
+				grid.addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU,fillContextMenuHandler);
+			}
+			
+			protected function fillContextMenuHandler(event:FillContextMenuEvent):void {
+				event.allActions = getActions(new ArrayCollection([grid.selectedItem]));
+				event.selection = new ArrayCollection([grid.selectedItem]);
+				event.rootActionsAlreadyCalculated = null;
+				
+//				contextForActions = new Object();			
+//				contextForActions.rectangle = new Rectangle(
+//					UIComponent(FlexGlobals.topLevelApplication).mouseX, 
+//					UIComponent(FlexGlobals.topLevelApplication).mouseY, 
+//					NaN, NaN);
+//				event.context = contextForActions;
 			}
 			
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
@@ -143,6 +161,13 @@
 				_viewHost = value;
 			}
 			
+			public function getActions(selection:IList):Vector.<IAction> {
+				var result:Vector.<IAction> = new Vector.<IAction>();
+				result.push(new CopyIdToClipboard());
+				result.push(new MergeAction(true));
+				return result;
+			}
+		
 			public function getId(obj:Object):String {
 				return Node(obj).getPropertyValue(GitHistoryConstants.ID);
 			}	
@@ -335,7 +360,6 @@
 						<s:ItemRenderer>
 							<fx:Script>
 								<![CDATA[
-									import org.flowerplatform.flex_client.resources.Resources;
 								]]>
 							</fx:Script>
 							<s:HGroup paddingLeft="2" paddingTop="4" paddingRight="2" paddingBottom="2">	

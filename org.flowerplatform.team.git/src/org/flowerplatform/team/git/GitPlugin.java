@@ -31,6 +31,7 @@ import static org.flowerplatform.team.git.GitConstants.FETCH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.FULL_NAME;
 import static org.flowerplatform.team.git.GitConstants.GIT_CATEGORY;
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCHES_TYPE;
+<<<<<<< HEAD
 import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REF;
 import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
@@ -45,6 +46,22 @@ import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
 import static org.flowerplatform.team.git.GitConstants.NAME;
 import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
 import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
+=======
+import static org.flowerplatform.team.git.GitConstants.GIT_LOCAL_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REF;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCHES_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_BRANCH_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_SCHEME;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAG_TYPE;
+import static org.flowerplatform.team.git.GitConstants.IS_CHECKEDOUT;
+import static org.flowerplatform.team.git.GitConstants.NAME;
+import static org.flowerplatform.team.git.GitConstants.PUSH_REF_SPECS;
+import static org.flowerplatform.team.git.GitConstants.REMOTE_URIS;
+>>>>>>> origin/GH395-git-history-copy-id
 
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
@@ -77,10 +94,10 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		INSTANCE = this;
-			
+
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
 		CorePlugin.getInstance().getServiceRegistry().registerService("HistoryService", new HistoryService());
-		
+
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_CATEGORY);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_REF)
@@ -110,7 +127,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider())
 			.addCategory(GIT_CATEGORY);
-		
+
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_BRANCHES_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitVirtualChildPropertiesProvider())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
@@ -128,7 +145,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRemotesChildrenProvider())
 			.addCategory(GIT_CATEGORY);
-				
+
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCH_TYPE)
 			.addCategory(GIT_REF)
 			.addCategory(GIT_CATEGORY);
