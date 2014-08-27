@@ -33,8 +33,7 @@ package org.flowerplatform.flex_client.team.git.action {
 
 			icon = Resources.fetchIcon;
 		}
-	
-		
+			
 		override public function get visible(): Boolean {
 			if (selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));

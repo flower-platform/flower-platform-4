@@ -69,20 +69,6 @@ public class GitConstants {
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
-	 /////////////////////////////////////////////////////////////
-	 //Icons paths
-	 /////////////////////////////////////////////////////////////
-	 
-	 public static final String ICONS_PATH = "/images/team.git/";
-	 public static final String BRANCH_ICON = "branch.gif";
-	 public static final String TAG_ICON = "tag.gif";
-	 public static final String TAGS_ICON = "tags.gif";
-	 public static final String REMOTE_ICON = "remote.gif";
-	 public static final String FOLDER_ICON = "folder.gif";
-	 public static final String GIT_ICON = "git.gif";
-	 public static final String REMOTES_ICON = "remotes.gif";
-	 public static final String REMOTE_SPEC_ICON = "remoteSpec.gif";
-
 	public static final String AUTHOR = "author";
 	public static final String COMMITTER = "committer";
 	public static final String PREVIOUS_AUTHOR = "previous_author";
