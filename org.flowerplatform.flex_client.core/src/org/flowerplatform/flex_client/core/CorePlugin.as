@@ -120,6 +120,8 @@ package org.flowerplatform.flex_client.core {
 		public var lastUpdateTimestampOfServer:Number = -1;
 		public var lastUpdateTimestampOfClient:Number = -1;
 		
+		public var channelSet:ChannelSet;
+		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
@@ -150,7 +152,7 @@ package org.flowerplatform.flex_client.core {
 				
 			correspondingJavaPlugin = "org.flowerplatform.core";
 						
-			var channelSet:ChannelSet = new ChannelSet();
+			channelSet = new ChannelSet();
 			channelSet.addChannel(new AMFChannel(null, FlexUtilGlobals.getInstance().rootUrl + 'messagebroker/remoting-amf'));
 		
 			serviceLocator = new UpdatesProcessingServiceLocator(channelSet);

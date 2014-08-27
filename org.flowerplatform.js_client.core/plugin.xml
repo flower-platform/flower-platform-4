@@ -8,5 +8,12 @@
             base-name="/WebContent">
       </resource>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/authenticate"
+            base-name="/WebContent/login">
+      </resource>
+   </extension>
 
 </plugin>

@@ -15,7 +15,8 @@ Export-Package: org.flowerplatform.core,
  org.flowerplatform.core.node.resource,
  org.flowerplatform.core.node.update.remote,
  org.flowerplatform.core.preference.remote,
- org.flowerplatform.core.session
+ org.flowerplatform.core.session,
+ org.flowerplatform.core.users
 Bundle-ClassPath: lib-from-maven/commons-fileupload-1.3.1.jar,
  lib-from-maven/commons-io-2.2.jar,
  .
