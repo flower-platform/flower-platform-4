@@ -14,7 +14,7 @@ import org.flowerplatform.util.regex.RegexWithActions;
 /**
  * @author Elena Posea
  */
-public class RegexWithActionProcessor extends AbstractController implements IConfigNodeProcessor<RegexWithActions, RegexConfiguration> {
+public class RegexWithActionsProcessor extends AbstractController implements IConfigNodeProcessor<RegexWithActions, RegexConfiguration> {
 
 	@Override
 	public RegexWithActions processConfigNode(Node node, RegexConfiguration parentProcessedDataStructure, ServiceContext<NodeService> context) {

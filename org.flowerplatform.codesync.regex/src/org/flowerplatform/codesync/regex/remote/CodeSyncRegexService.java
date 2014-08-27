@@ -113,7 +113,6 @@ public class CodeSyncRegexService {
 				// match found => create node
 				Node match = new Node(null, REGEX_MATCH_TYPE);
 				RegexWithActions regex = (RegexWithActions) session.getCurrentRegex();
-				
 				ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 				context.getContext().put(NAME, String.format("%s) %s", String.valueOf(currentIndex++), session.getCurrentRegex().getName()));
 				context.getContext().put(FULL_REGEX, regex.getRegex());

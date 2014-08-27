@@ -65,7 +65,7 @@ import org.flowerplatform.codesync.regex.controller.RegexActionController;
 import org.flowerplatform.codesync.regex.controller.RegexConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.RegexController;
 import org.flowerplatform.codesync.regex.controller.RegexMatchesChildrenProvider;
-import org.flowerplatform.codesync.regex.controller.RegexWithActionProcessor;
+import org.flowerplatform.codesync.regex.controller.RegexWithActionsProcessor;
 import org.flowerplatform.codesync.regex.controller.VirtualRegexChildrenProvider;
 import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
 import org.flowerplatform.core.CoreConstants;
@@ -131,7 +131,8 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TYPE)
 			.addCategory(CATEGORY_REGEX)
-			.addSingleController(CONFIG_NODE_PROCESSOR, new RegexWithActionProcessor())
+			.addSingleController(CONFIG_NODE_PROCESSOR, new RegexWithActionsProcessor())
+				//			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_STATUS_DISABLED).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.status")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ACTION_TYPE_CREATE_NODE).setLabelAs(ResourcesPlugin.getInstance().getMessage("regex.createNodeAction")).setOrderIndexAs(100))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION).setLabelAs(ResourcesPlugin.getInstance().getMessage("regex.attachNodeToCurrentStateAction")).setOrderIndexAs(200))

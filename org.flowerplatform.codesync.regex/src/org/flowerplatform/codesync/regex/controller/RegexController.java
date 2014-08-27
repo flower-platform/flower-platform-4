@@ -1,9 +1,9 @@
 package org.flowerplatform.codesync.regex.controller;
 
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MACRO_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_WITH_MACROS;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.SKIP_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.CONFIG_SETTING_DISABLED;
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
@@ -40,6 +40,8 @@ public class RegexController extends AbstractController implements IPropertiesPr
 			return;
 		}
 		node.getProperties().put(CodeSyncRegexConstants.FULL_REGEX, getFullRegex(node));
+		if(node.getProperties().get(CONFIG_SETTING_DISABLED) == null)
+			node.getProperties().put(CONFIG_SETTING_DISABLED, false);
 	}
 	
 	@Override
@@ -59,7 +61,7 @@ public class RegexController extends AbstractController implements IPropertiesPr
 		return getFullRegex(
 				resourceNode, 
 				(String) node.getProperties().get(REGEX_WITH_MACROS), 
-				CodeSyncRegexPlugin.getInstance().getChildren(resourceNode, REGEX_MACRO_TYPE));
+				CodeSyncRegexPlugin.getInstance().getChildren(resourceNode, REGEX_WITH_MACROS));
 	}
 	
 	private String getFullRegex(Node resourceNode, String regexWithMacros, List<Node> macros) {	

@@ -49,7 +49,6 @@ public class RegexWithActions extends AbstractRegexWithActions {
 	@Override
 	public void executeAction(RegexProcessingSession session) {
 		List<RegexAction> listOfRegexActionsAvailable = getRegexActions();
-//		session.DO_NOT_EXECUTE_OTHER_ACTIONS = false;
 		session.context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
 		for (RegexAction listItem : listOfRegexActionsAvailable) {
 			if ((boolean)session.context.get("DO_NOT_EXECUTE_OTHER_ACTIONS")) {

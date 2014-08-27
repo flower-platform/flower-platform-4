@@ -28,7 +28,7 @@ public abstract class AbstractRegexWithActions {
 	protected String name;
 	protected String regex;
 	protected int numberOfCaptureGroups = -1;
-	
+
 	public String getName() {
 		return name;
 	}
@@ -52,11 +52,9 @@ public abstract class AbstractRegexWithActions {
 
 	@Override
 	public String toString() {
-		return "RegexWithAction [name="
-				+ name + ", regex=" + regex
-				+ ", numberOfCaptureGroups=" + numberOfCaptureGroups + "]";
+		return "RegexWithAction [name=" + name + ", regex=" + regex + ", numberOfCaptureGroups=" + numberOfCaptureGroups + "]";
 	}
-	
+
 	public abstract void executeAction(RegexProcessingSession session);
-	
+
 }

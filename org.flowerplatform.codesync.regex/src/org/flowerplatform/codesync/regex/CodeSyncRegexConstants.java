@@ -59,7 +59,7 @@ public class CodeSyncRegexConstants {
 	public static final String ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY = "attachIsContainment";
 	public static final String ACTION_TYPE_VALID_STATES_PROPERTY = "validStates";
 	public static final String ACTION_TYPE_CLEAR_SPECIFIC_INFO_KEY_PROPERTY = "clearInfoKey";
-
+	
 	public static final String START = "start";
 	public static final String START_L = "startLine";
 	public static final String START_C = "startChar";

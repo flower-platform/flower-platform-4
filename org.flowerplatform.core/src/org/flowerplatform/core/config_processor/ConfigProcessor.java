@@ -1,6 +1,7 @@
 package org.flowerplatform.core.config_processor;
 
 import static org.flowerplatform.core.CoreConstants.CONFIG_NODE_PROCESSOR;
+import static org.flowerplatform.core.CoreConstants.CONFIG_SETTING_DISABLED;
 
 import java.util.List;
 
@@ -13,19 +14,26 @@ import org.flowerplatform.util.controller.TypeDescriptor;
 public class ConfigProcessor {
 
 	public void processConfigHierarchy(Node node, Object parentProcessedDataStructure) {
-		// take the current node and create the instance; add it to parentProcessingDataStructure
+		// take the current node and create the instance; add it to
+		// parentProcessingDataStructure
 		// get all controllers registered on this node
-		processConfigHierarchy(node, parentProcessedDataStructure, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));	
+		processConfigHierarchy(node, parentProcessedDataStructure, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 	}
-	
-	private void processConfigHierarchy(Node node, Object parentProcessedDataStructure, ServiceContext<NodeService> service) {
 
+	private void processConfigHierarchy(Node node, Object parentProcessedDataStructure, ServiceContext<NodeService> service) {
+		// if node has the property CONFIG_SETTING_DISABLED, I should not process it, as it means it is disabled
+		Boolean disabledFlag = (Boolean) node.getPropertyValue(CONFIG_SETTING_DISABLED);
+		if (disabledFlag != null && disabledFlag != false) {
+			return;
+		}
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 		IConfigNodeProcessor<Object, Object> processor = descriptor.getSingleController(CONFIG_NODE_PROCESSOR, node);
-		if(processor == null) return;
+		if (processor == null) { 
+			return;
+		}
 		// I need to know the dataStructure of the current node, in order to know where to add its children
 		Object nodeProcessedDataStructure = processor.processConfigNode(node, parentProcessedDataStructure, service);
 
@@ -38,5 +46,4 @@ public class ConfigProcessor {
 		}
 
 	}
-	
 }
