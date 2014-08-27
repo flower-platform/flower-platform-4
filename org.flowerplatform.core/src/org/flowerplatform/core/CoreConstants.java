@@ -72,8 +72,9 @@ public class CoreConstants {
 	
 	public static final String PROPERTY_DEFAULT_FORMAT = "%s.default";
 
-	public static final String CONFIG_SETTING_DISABLED = "CONFIG_STATUS_DISABLED";
-
+	public static final String CONFIG_SETTING_DISABLED = "configSettingDisabled";
+	public static final String CATEGORY_CONFIG_SETTINGS = UtilConstants.CATEGORY_PREFIX + "configSettings";
+	
 	//////////////////////////////////
 	// File node properties
 	//////////////////////////////////

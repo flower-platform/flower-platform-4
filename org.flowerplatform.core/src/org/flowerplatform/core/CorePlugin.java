@@ -15,8 +15,12 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.CoreConstants.CATEGORY_CONFIG_SETTINGS;
+import static org.flowerplatform.core.CoreConstants.CONFIG_SETTING_DISABLED;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
@@ -32,6 +36,7 @@ import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -58,6 +63,7 @@ import org.flowerplatform.core.repository.RootPropertiesProvider;
 import org.flowerplatform.core.session.ComposedSessionListener;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.core.session.SessionService;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -260,6 +266,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider())
 			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
 			.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
+		
+		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CONFIG_SETTINGS)
+			// .addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CONFIG_SETTING_DISABLED, false))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_SETTING_DISABLED).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.status")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PreferencePropertiesProvider().setOrderIndexAs(1000)); // after persistence props provider

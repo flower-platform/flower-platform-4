@@ -34,6 +34,7 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_WIT
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.VIRTUAL_REGEX_TYPE;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.CATEGORY_CONFIG_SETTINGS;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.CONFIG_NODE_PROCESSOR;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
@@ -131,8 +132,8 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TYPE)
 			.addCategory(CATEGORY_REGEX)
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addSingleController(CONFIG_NODE_PROCESSOR, new RegexWithActionsProcessor())
-				//			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_STATUS_DISABLED).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.status")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ACTION_TYPE_CREATE_NODE).setLabelAs(ResourcesPlugin.getInstance().getMessage("regex.createNodeAction")).setOrderIndexAs(100))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION).setLabelAs(ResourcesPlugin.getInstance().getMessage("regex.attachNodeToCurrentStateAction")).setOrderIndexAs(200))
@@ -148,6 +149,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CHECK_STATE)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_VALID_STATES_PROPERTY).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.validStates")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new CheckStateNodeConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 
 
@@ -155,41 +157,50 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_CREATE_NODE_PROPERTIES).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.properties")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_CREATE_NODE_NEW_NODE_TYPE).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.newNodeType")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new CreateNodeConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION)
 			.addSingleController(CONFIG_NODE_PROCESSOR, new AttachNodeToCurrentStateConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ATTACH_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_ATTACH_SPECIFIC_INFO_KEY_PROPERTY).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.attachInfoKey")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.isContainment")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new AttachSpecificInfoConfigurationProcessor())	
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CLEAR_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_CLEAR_SPECIFIC_INFO_KEY_PROPERTY).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.clearInfoKey")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new ClearSpecificInfoConfigurationProcessor())	
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_KEEP_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_KEEP_SPECIFIC_INFO_KEY_PROPERTY).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.keepInfoKey")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_KEEP_SPECIFIC_INFO_IS_LIST_PROPERTY).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.isList")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION_TYPE_KEEP_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY).setTitleAs(ResourcesPlugin.getInstance().getMessage("regex.isContainment")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new KeepSpecificInfoConfigurationProcessor())	
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_INCREASE_NESTING_LEVEL)
 			.addSingleController(CONFIG_NODE_PROCESSOR, new IncreaseNestingLevelConfigurationProcessor())	
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_DECREASE_NESTING_LEVEL)
 			.addSingleController(CONFIG_NODE_PROCESSOR, new DecreaseNestingLevelConfigurationProcessor())	
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ENTER_STATE)	
 			.addSingleController(CONFIG_NODE_PROCESSOR, new EnterStateConfigurationProcessor())	
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_EXIT_STATE)
 			.addSingleController(CONFIG_NODE_PROCESSOR, new ExitStateConfigurationProcessor())	
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
-
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_REGEX_ACTION)
 			.addAdditiveController(PROPERTIES_PROVIDER, new RegexActionController());
 
