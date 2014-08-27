@@ -423,9 +423,6 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/mindmap/arrowUp.png")]
 		public static const arrowUpIcon:Class;
-		
-		[Embed(source="/mindmap/ExternalImageAddAction.png")]
-		public static const mindmap_customIconsIcon:Class;
 				
 		public static const mindmapIcons:Object = {
 			"help" : mindmap_helpIcon,
@@ -528,8 +525,7 @@ package org.flowerplatform.flex_client.resources {
 			"addition" : mindmap_additionIcon,
 			"subtraction" : mindmap_subtractionIcon,
 			"multiplication" : mindmap_multiplicationIcon,
-			"division" : mindmap_divisionIcon,
-			"customIconsIcon" : mindmap_customIconsIcon
+			"division" : mindmap_divisionIcon
 		};
 		
 		[Embed(source="/properties/preference.png")]
@@ -586,7 +582,7 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
-
+		
 		[Embed(source="/team.git/rebase.gif")]
 		public static const rebaseIcon:Class;
 
@@ -601,7 +597,7 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/cloneGit.gif")]
 		public static const cloneRepoIcon:Class;
-		
+
 		[Embed(source="/team.git/gitrepository.gif")]
 		public static const gitRepoIcon:Class;
 
@@ -629,6 +625,8 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/switch.gif")]
 		public static const switchIcon:Class;
-
+		
+		[Embed(source="/team.git/fetch.gif")]
+		public static const fetchIcon:Class;
 	}
 }

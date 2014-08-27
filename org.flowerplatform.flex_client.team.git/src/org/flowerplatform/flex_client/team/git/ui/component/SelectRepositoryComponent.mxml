@@ -110,16 +110,15 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="group" change="changeSelection()" />
 	</fx:Declarations>
-	
+
 	<s:layout>
 		<s:VerticalLayout />
 	</s:layout>
 	
 	<s:RadioButton id="remoteConfig" selected="{showRemotesList}" label="{Resources.getMessage('git.selectRepo.remote')}"
 				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}" />
-		
-	<s:RadioButton id="customUri" selected="{!showRemotesList}" label="{Resources.getMessage('git.selectRepo.uri')}" 
-				visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}"/>
-		<s:TextInput id="uriTextInput" width="100%" enabled="false" />		
+	<s:RadioButton id="customUri" selected="{!showRemotesList}" label="{Resources.getMessage('git.selectRepo.uri')}"
+				   visible="{showRemotesList}" includeInLayout="{showRemotesList}" group = "{group}"/>
+	<s:TextInput id="uriTextInput" width="100%" enabled="false" />	
 	
 </s:Group>

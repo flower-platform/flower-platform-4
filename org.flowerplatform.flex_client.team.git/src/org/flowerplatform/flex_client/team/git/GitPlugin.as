@@ -29,6 +29,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
+	import org.flowerplatform.flex_client.team.git.action.FetchAction;
 	import org.flowerplatform.flex_client.team.git.action.LoginAction;
 	import org.flowerplatform.flex_client.team.git.action.MergeAction;
 	import org.flowerplatform.flex_client.team.git.action.PushAction;
@@ -80,6 +81,7 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().registerAction(ResetAction);
 			FlexUtilGlobals.getInstance().registerAction(RebaseAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowGitStagingAction);
+			FlexUtilGlobals.getInstance().registerAction(FetchAction);
 		
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(ShowGitHistoryAction);
@@ -87,6 +89,7 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingViewProvider());
 			
 			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(PushAction);
+			CorePlugin.getInstance().editorClassFactoryActionProvider.addActionClass(FetchAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_REPO_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CloneRepoAction.ID))
@@ -145,7 +148,6 @@ package org.flowerplatform.flex_client.team.git {
 		override protected function registerClassAliases():void {
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(GitRef);
-			registerClassAliasFromAnnotation(RemoteConfiguration);
 			registerClassAliasFromAnnotation(GitCredentials);
 		}
 	}

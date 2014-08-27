@@ -33,9 +33,12 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
+import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RemoteRefUpdate;
+import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.eclipse.jgit.util.FS;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -222,6 +225,50 @@ public class GitUtils {
 				sb.append(rebaseResult.getFailingPaths().get(path).toString());
 				sb.append("\n");
 			}
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * @author Cristina Constantinescu
+	 * 
+	 * Creates a string message to be displayed on client side
+	 * to inform the user about fetch result operation.
+	 */
+	public static String handleFetchResult(FetchResult fetchResult) {
+		StringBuilder sb = new StringBuilder();		
+		if (fetchResult.getTrackingRefUpdates().size() > 0) {
+			// handle result
+			for (TrackingRefUpdate updateRes : fetchResult.getTrackingRefUpdates()) {
+				sb.append(updateRes.getRemoteName());
+				sb.append(" -> ");
+				sb.append(updateRes.getLocalName());			
+				sb.append(" ");
+				sb.append(updateRes.getOldObjectId() == null ? "" : updateRes.getOldObjectId().abbreviate(7).name());
+				sb.append("..");
+				sb.append(updateRes.getNewObjectId() == null ? "" : updateRes.getNewObjectId().abbreviate(7).name());
+				sb.append(" ");
+				Result res = updateRes.getResult();
+				switch (res) {
+					case NOT_ATTEMPTED :
+					case NO_CHANGE :
+					case NEW :
+					case FORCED :
+					case FAST_FORWARD :
+					case RENAMED :
+						sb.append("OK.");
+						break;
+					case REJECTED :
+						sb.append("Fetch rejected, not a fast-forward.");					
+					case REJECTED_CURRENT_BRANCH :
+						sb.append("Rejected because trying to delete the current branch.");					
+					default :
+						sb.append(res.name());				
+				}
+				sb.append("\n");	
+			}
+		} else {
+			sb.append("OK.");
 		}
 		return sb.toString();
 	}
