@@ -18,7 +18,6 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenControllerWithBiggerSkip;
 	import org.flowerplatform.flexdiagram.mindmap.GenericMindMapConnector;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -33,9 +32,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelDragController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelInplaceEditorController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider;
-	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
-	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeWithBasicSubmodulesRenderer;
 	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
@@ -56,7 +54,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new SequentialLayoutVisualChildrenControllerWithBiggerSkip())
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new SampleMindMapModelChildrenController())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new MindMapModelRendererController(SampleMindMapNodeRenderer, GenericMindMapConnector))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new MindMapModelRendererController(SampleMindMapNodeWithBasicSubmodulesRenderer, GenericMindMapConnector))
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER,  new BasicSelectionController(SampleMindMapModelSelectionRenderer))	
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER,  new SampleMindMapModelInplaceEditorController())	
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new SampleMindMapModelDragController());
@@ -69,8 +67,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			
 			registry.getOrCreateTypeDescriptor("basicSubModel1")
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))				
-				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider())
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())	;			
+//				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider());
 
 		}
 				

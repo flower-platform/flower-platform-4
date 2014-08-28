@@ -22,11 +22,15 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*"
-				implements="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable">
+				implements="org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable"
+				creationComplete="creationCompleteHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
+			
+			import spark.layouts.VerticalLayout;
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
@@ -92,6 +96,10 @@
 				} else {
 					visualChildrenController = ControllerUtils.getVisualChildrenController(diagramShellContext, data);
 				}
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				layout = new VerticalLayout();
 			}
 			
 		]]>
