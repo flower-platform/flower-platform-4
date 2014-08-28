@@ -97,7 +97,7 @@ package org.flowerplatform.flex_client.resources {
 		// MindMap
 		
 		[Embed(source="/mindmap/icons/checkout.gif")]
-		public static const mindmap_button_checkout:Class;
+		public static const checkoutIcon:Class;
 		
 				
 		[Embed(source="/mindmap/images.png")]
@@ -631,6 +631,12 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/fetch.gif")]
 		public static const fetchIcon:Class;
+
+		[Embed(source="/team.git/cherry-pick.png")]
+		public static const gitCherryPickIcon:Class;
+		
+		[Embed(source="/team.git/revert.gif")]
+		public static const gitRevertCommitIcon:Class;
 
 	}
 }

@@ -46,8 +46,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.CloneCommand;
-import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
@@ -58,6 +58,7 @@ import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
+import org.eclipse.jgit.api.RevertCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.AnyObjectId;
@@ -466,23 +467,23 @@ public class GitService {
 	 * @throws Exception
 	 */
 	public void checkout(String nodeUri) throws Exception {				
-		String Name = GitUtils.getName(nodeUri);
-		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		String name = GitUtils.getName(nodeUri);
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 				
-		Git g = new Git(repo);	
+		new Git(repo).checkout().setName(name).call();
 		
-		g.checkout().setName(Name).call();
-//		g.gc().getRepository().close();
-//		g.gc().call();
-		
-		String localBranchesUri = GitUtils.getNodeUri(repositoryPath, GitConstants.GIT_LOCAL_BRANCHES_TYPE);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				CorePlugin.getInstance().getResourceService().getNode(localBranchesUri),
-				new Update().setFullNodeIdAs(localBranchesUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repoPath, GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
+				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
-
 
 	/**
 	 * 
@@ -509,25 +510,35 @@ public class GitService {
 		return GitUtils.handleRebaseResult(result);
 	}
 	
-	/** 
+	/**
 	 * @author Catalin Burcea
-	 */	
+	 */
 	public void deleteGitRepository(String nodeUri, Boolean keepWorkingDirectoryContent) throws Exception {
 		String repositoryPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
-		
+
 		RepositoryCache.close(repo);
 		repo.getAllRefs().clear();
 		repo.close();
-			
-		Node gitNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		CorePlugin.getInstance().getNodeService().setProperty(gitNode, GitConstants.IS_GIT_REPOSITORY, false, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(CoreConstants.EXECUTE_ONLY_FOR_UPDATER, true));
-		
+				
 		if (keepWorkingDirectoryContent) {
 			FileControllerUtils.getFileAccessController().delete(repo.getDirectory());
 		} else {
-			FileControllerUtils.getFileAccessController().delete(repo.getDirectory().getParentFile());
+			File[] repoFiles = repo.getDirectory().getParentFile().listFiles();
+			for (File file : repoFiles) {
+				FileControllerUtils.getFileAccessController().delete(file);
+			}
 		}
+		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, repositoryPath)), 
+				new Update().setFullNodeIdAs(Utils.getUri(FILE_SCHEME, repositoryPath)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new Update().setFullNodeIdAs(GitUtils.getNodeUri(repositoryPath, GIT_REPO_TYPE)).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 	/**
@@ -630,7 +641,7 @@ public class GitService {
 			fetchCommand.setRemote(fetchNodeUri).setRefSpecs(fetchRefSpecsList);			
 			credentials = getCredentials(fetchNodeUri);			
 		}
-		
+
 		// provide credentials for use in connecting to repositories 
 		if (credentials != null) {
 			fetchCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(), credentials.getPassword()));
@@ -686,6 +697,63 @@ public class GitService {
 		Iterable<PushResult> resultIterable = pushCommand.call();
 	
 		return GitUtils.handlePushResult(resultIterable.iterator().next());
+	}
+	
+	/**
+	 * @author Alina Bratu
+	 * 
+	 * @param nodeUri 
+	 * 		node URI of the repository
+	 * @param commitId 
+	 * 		id of the commit to be cherry-picked
+	 * @return message describing the result of the cherry-picking (successful, with conflicts, failed, already done)
+	 * @throws Exception
+	 */
+	public String cherryPickCommit(String nodeUri, String commitId) throws Exception {
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(nodeUri)));
+		
+		CherryPickResult result = new Git(repo).cherryPick().include(repo.resolve(commitId)).call();
+		
+		RevCommit newHead = result.getNewHead();
+		if (newHead != null && result.getCherryPickedRefs().isEmpty()) {
+			return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.null");
+		}
+		
+		if (newHead == null) {
+			switch (result.getStatus()) {
+				case CONFLICTING:
+					return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.conflicts");					
+				case FAILED:
+					return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.fail");
+				default:
+					break;				
+			} 
+		}		
+		return ResourcesPlugin.getInstance().getMessage("team.git.history.cherryPick.ok");
+	}
+	
+	/**
+	 * Reverts the commit identified by the id passed through <code>commitId</code>
+	 * 
+	 * @author Alina Bratu
+	 * @param nodeUri node URI of the repository
+	 * @param commitId id of the commit to be reverted
+	 * @throws Exception
+	 */
+	public String revertCommit(String nodeUri, String commitId) throws Exception {
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		
+		RevertCommand cmd = new Git(repo).revert().include(repo.resolve(commitId));
+		RevCommit newHead = cmd.call();
+		
+		if (newHead != null && cmd.getRevertedRefs().isEmpty()) {
+			return ResourcesPlugin.getInstance().getMessage("team.git.history.revert.alreadyReverted.message");
+		}
+		if (newHead == null) {
+			return cmd.getFailingResult().toString();
+		}
+		return null;
 	}
 
 	/** 

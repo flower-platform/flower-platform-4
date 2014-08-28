@@ -51,6 +51,7 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 
 		public static const NAME:String = "name";
+		public static const COMMIT_ID:String = "commitID";
 
 		public static const IS_GIT_REPOSITORY:String = "isGitRepository";
 
@@ -137,8 +138,6 @@ package org.flowerplatform.flex_client.team.git {
 		public static const BRANCHES:String = "branches";
 		
 		public static const WEBCOMMIT:String = "webcommit";
-		
-		public static const COMMIT_ID:String = "commitID";
 		
 		public static const COMMIT_SHORT_ID:String = "commitShortId";
 		

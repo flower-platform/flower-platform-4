@@ -250,10 +250,10 @@
 					<s:GridColumn id="messageColumn" dataField="shortMessage" headerText="{Resources.getMessage('flex_client.team.git.action.history.ui.labelMessage')}"
 								  itemRenderer="org.flowerplatform.flex_client.team.git.history.ui.GridColumnItemRenderer"
 								  labelFunction="getLabel"/>
-					<s:GridColumn dataField="Author" headerText="{Resources.getMessage('flex_client.team.git.action.history.ui.labelAuthor')}" labelFunction="getLabel"/>
+					<s:GridColumn dataField="author" headerText="{Resources.getMessage('flex_client.team.git.action.history.ui.labelAuthor')}" labelFunction="getLabel"/>
 					<s:GridColumn dataField="AuthoredDate" headerText="{Resources.getMessage('flex_client.team.git.action.history.ui.labelAuthoredDate')}"
 								  labelFunction="getLabel"/>
-					<s:GridColumn dataField="Committer" headerText="{Resources.getMessage('flex_client.team.git.action.history.ui.labelCommitter')}" labelFunction="getLabel"/>
+					<s:GridColumn dataField="committer" headerText="{Resources.getMessage('flex_client.team.git.action.history.ui.labelCommitter')}" labelFunction="getLabel"/>
 					<s:GridColumn dataField="CommitteredDate" headerText="{Resources.getMessage('flex_client.team.git.action.history.ui.labelCommittedDate')}"
 								  labelFunction="getLabel"/>
 					
