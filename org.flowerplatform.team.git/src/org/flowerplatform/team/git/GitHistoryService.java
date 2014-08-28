@@ -129,9 +129,7 @@ public class GitHistoryService {
 	 * @author Cristina Constantinescu
 	 * @author Vlad Bogdan Manica 
 	 */
-
 	public List<Node> getLogEntries(String nodeUri)throws Exception {
-
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		WebWalk walk = getWebWalk(nodeUri);
