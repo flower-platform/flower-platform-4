@@ -37,7 +37,6 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			
 			if (node.type == GitConstants.GIT_REMOTE_TYPE) {
 				// remote category
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.push", [node.nodeUri, null, null], 
