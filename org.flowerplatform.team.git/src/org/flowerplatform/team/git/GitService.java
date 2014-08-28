@@ -96,7 +96,7 @@ import org.flowerplatform.team.git.remote.GitRef;
 import org.flowerplatform.util.Utils;
 
 /**
- * 
+ * @author Cristina Constantinescu
  * @author Valentina-Camelia Bojan
  */
 public class GitService {
@@ -666,34 +666,31 @@ public class GitService {
 	@SuppressWarnings("unchecked")
 	public String push(String nodeUri, String pushNodeUri, ArrayList<String> pushRefMappings) throws Exception {
 		String repoPath =  Utils.getRepo(nodeUri);
-		Repository  repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
-		PushCommand pushCommand;
-		GitCredentials credentials = new GitCredentials();
-
 		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
-			pushCommand = new Git(repository).push().setRemote(GitUtils.getName(nodeUri));
-
-			//check if credentials for remote are set
-			credentials = getCredentials(((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
-		} else {
-			List<RefSpec> specsList = new ArrayList<RefSpec>();
-			if (pushRefMappings != null)  {
-				for (String refMapping : pushRefMappings) {
-					specsList.add(new RefSpec(refMapping));
-				}
+			return pushInternal(repository, GitUtils.getName(nodeUri), ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0), null);
+		}
+		List<RefSpec> specsList = new ArrayList<RefSpec>();
+		if (pushRefMappings != null)  {
+			for (String refMapping : pushRefMappings) {
+				specsList.add(new RefSpec(refMapping));
 			}
+		}	
+		return pushInternal(repository, pushNodeUri, pushNodeUri, specsList);				
+	}
+	
+	private String pushInternal(Repository repo, String remote, String repoUri, List<RefSpec> specsList) throws Exception {
+		PushCommand pushCommand = new Git(repo).push().setRemote(remote);
 		
-			pushCommand = new Git(repository).push().setRemote(new URIish(pushNodeUri).toPrivateString()).setRefSpecs(specsList);
-		
-			//check if credentials for pushNode are set
-			credentials = getCredentials(pushNodeUri);
+		if (specsList != null) {
+			pushCommand.setRefSpecs(specsList);
 		}
 		
-		// provide credentials for use in connecting to repositories 
+		GitCredentials credentials = getCredentials(repoUri);
 		if (credentials != null) {
-			pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(),credentials.getPassword()));
+			pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials.getUsername(), credentials.getPassword()));
 		}
 		Iterable<PushResult> resultIterable = pushCommand.call();
 	
@@ -950,12 +947,16 @@ public class GitService {
 	/**
 	 * @author Marius Iacob
 	 */
-	public void commitAndPush(String repositoryPath, boolean amend, String message) throws Exception {
+	public String commitAndPush(String repositoryPath, boolean amend, String message) throws Exception {
 		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		Git git = new Git(repo);
 		git.commit().setMessage(message).setAmend(amend).call();
 
-		// TODO CC: add push 
+		RemoteConfig config = GitUtils.getConfiguredRemote(repo);
+		if (config != null) {
+			return pushInternal(repo, config.getName(),config.getURIs().get(0).toString(), config.getPushRefSpecs());
+		}
+		return null;
 	}
 
 	/**

@@ -90,7 +90,6 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		public function callGitServiceCheckout(node:Node, commitID:String):void {			
 			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], null, function(event:FaultEvent):void {faultCallback(event, node, commitID)});
-			
 		}
 
 		override public function run():void {

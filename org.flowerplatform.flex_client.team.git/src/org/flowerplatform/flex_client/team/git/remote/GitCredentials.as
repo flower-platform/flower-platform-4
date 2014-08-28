@@ -5,7 +5,7 @@ package org.flowerplatform.flex_client.team.git.remote{
 	 */
 	[RemoteClass(alias="org.flowerplatform.team.git.remote.GitCredentials")]
 	[Bindable]
-	public class GitCredentials{
+	public class GitCredentials {
 		
 		public var username:String;
 		

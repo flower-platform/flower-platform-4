@@ -6,6 +6,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.team.git.ui.PushView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
+	
 	/**
 	 * @author Andreea Tita
 	 */
@@ -50,11 +51,11 @@ package org.flowerplatform.flex_client.team.git.action {
 					});
 			} else {
 				var viewPush:PushView = new PushView();
-				viewPush.node = node;
+				viewPush.nodeUri = node.nodeUri;
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()			
 					.setViewContent(viewPush)
 					.setWidth(500)
-					.setHeight(550)
+					.setHeight(400)
 					.setIcon(icon)
 					.setTitle(Resources.getMessage("flex_client.team.git.action.Push.pushOnGit"))
 					.show();

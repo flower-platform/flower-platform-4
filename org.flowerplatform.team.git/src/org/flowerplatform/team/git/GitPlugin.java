@@ -106,6 +106,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCHES_TYPE)
+			.addAdditiveController(PROPERTIES_PROVIDER, new GitVirtualChildPropertiesProvider())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("git.name")).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider())
 			.addCategory(GIT_CATEGORY);
