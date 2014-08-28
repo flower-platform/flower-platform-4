@@ -35,7 +35,6 @@
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
-			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
 			import org.flowerplatform.flexutil.Utils;
 						
 			[Bindable]
@@ -55,7 +54,7 @@
 					CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [node.nodeUri], getBranchesHandler); 
 				} else {
 					Utils.makePseudoDisabled(sourceCommit);
-					sourceCommit.text = node.getPropertyValue(GitHistoryConstants.ID);
+					sourceCommit.text = node.getPropertyValue(GitConstants.ID);
 					configureUpstreamGroup.visible = configureUpstreamGroup.includeInLayout = false;
 				}
 			}
@@ -86,7 +85,7 @@
 				var commitId:String;
 				var startPoint:String;
 				if (useNodeAsCommitId) {
-					commitId = node.getPropertyValue(GitHistoryConstants.ID);
+					commitId = node.getPropertyValue(GitConstants.ID);
 				} else {
 					startPoint = selectBranch.selectedItem.name; 
 				}

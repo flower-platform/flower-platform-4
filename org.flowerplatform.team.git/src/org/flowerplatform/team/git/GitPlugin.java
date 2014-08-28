@@ -78,7 +78,7 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 		INSTANCE = this;
 
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
-		CorePlugin.getInstance().getServiceRegistry().registerService("HistoryService", new HistoryService());
+		CorePlugin.getInstance().getServiceRegistry().registerService("gitHistoryService", new GitHistoryService());
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_CATEGORY);
 

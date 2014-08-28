@@ -6,7 +6,7 @@ package org.flowerplatform.flex_client.team.git.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
@@ -30,7 +30,7 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var idCommit:String = node.getPropertyValue(GitHistoryConstants.ID);
+			var idCommit:String = node.getPropertyValue(GitConstants.ID);
 			CorePlugin.getInstance().serviceLocator.invoke("GitService.revertCommit", [node.nodeUri, idCommit],
 				function(result:String):void {
 					if (result != null) {

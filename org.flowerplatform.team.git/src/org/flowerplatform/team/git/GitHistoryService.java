@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -25,7 +27,6 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.team.git.history.internal.FileDiff;
-import org.flowerplatform.team.git.history.internal.GitHistoryConstants;
 import org.flowerplatform.team.git.history.internal.WebCommit;
 import org.flowerplatform.team.git.history.internal.WebCommitList;
 import org.flowerplatform.team.git.history.internal.WebCommitPlotRenderer;
@@ -37,14 +38,14 @@ import org.flowerplatform.util.Utils;
  * @author Vlad Bogdan Manica
  */
 
-public class HistoryService {
+public class GitHistoryService {
 
 	/**
 	 * @author Vlad Bogdan Manica
 	 */
-	public List<Node> getCommitedData(String nodeUri, String commitId) throws Exception{
+	public List<String> getCommitedData(String nodeUri, String commitId) throws Exception{
 		
-		List<Node> entries = new ArrayList<Node>();
+		List<String> commitedFiles = new ArrayList<String>();
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));			
 		
@@ -57,13 +58,32 @@ public class HistoryService {
 		
 		FileDiff[] fileDiffs = FileDiff.compute(createFileWalker(new WebWalk(repo), repo, repoPath), commit, TreeFilter.ALL);
 		for (FileDiff fd : fileDiffs) {
-			Node fileEntry = new Node(nodeUri,null);
-			fileEntry.getProperties().put(GitHistoryConstants.FILE, fd.getLabel(fd));
-			entries.add(fileEntry);		
+			commitedFiles.add(fd.getLabel(fd));
 		}
-		return entries;	
+		return commitedFiles;	
 	}	
-
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */	
+	private String getTagsString(Repository repo, RevCommit commit) {
+		StringBuilder sb = new StringBuilder();
+		Map<String, Ref> tagsMap = repo.getTags();
+		for (Entry<String, Ref> tagEntry : tagsMap.entrySet()) {
+			ObjectId target = tagEntry.getValue().getPeeledObjectId();
+			if (target == null) {
+				target = tagEntry.getValue().getObjectId();
+			}
+			if (target != null && target.equals(commit)) {
+				if (sb.length() > 0) {
+					sb.append(", ");
+				}
+				sb.append(tagEntry.getKey());
+			}
+		}
+		return sb.toString();
+	}
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */	
@@ -87,6 +107,10 @@ public class HistoryService {
 		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Vlad Bogdan Manica
+	 */	
 	public List<String> getCommitBranches(String nodeUri, String commitId) throws Exception {
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
@@ -94,11 +118,10 @@ public class HistoryService {
 		RevCommit commit = walk.parseCommit(repo.resolve(commitId));
 		List<Ref> branches = getBranches((WebCommit)commit, getAllBranches(repo), repo);
 
-		List<String> branchesNames = new ArrayList<String>();;
+		List<String> branchesNames = new ArrayList<String>();
 		for (int i = 0; i < branches.size(); i++) {
 			branchesNames.add( branches.get(i).getName().substring((branches.get(i).getName()).indexOf('/', 5)+1));
 		}
-						
 		return branchesNames;
 	}
 
@@ -108,88 +131,111 @@ public class HistoryService {
 	 */
 
 	public List<Node> getLogEntries(String nodeUri)throws Exception {
-		
-			String repoPath = Utils.getRepo(nodeUri);
-			Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
-			WebWalk walk = getWebWalk(nodeUri);
-		
-			WebCommitList loadedCommits = new WebCommitList();
-			loadedCommits.source(walk);
-		
-			loadedCommits.fillTo(10000);
-			WebCommit[] commitsAsArray = new WebCommit[loadedCommits.size()];
-			loadedCommits.toArray(commitsAsArray);
-			
-			List<Node> result = new ArrayList<Node>();
-			
-			for (WebCommit commit : commitsAsArray) {
-				ArrayList<String> parents = new ArrayList<String>();
-				ArrayList<String> childs = new ArrayList<String>();
-				commit.parseBody();
-				
-				Node entry = new Node(nodeUri, null);
-				
-				entry.getProperties().put(GitHistoryConstants.ID, commit.getId().name());
-				entry.getProperties().put(GitHistoryConstants.ENTRY_SHORT_ID, commit.getId().abbreviate(7).name());
-				entry.getProperties().put(GitHistoryConstants.SHORT_MESSAGE, commit.getShortMessage());
-				entry.getProperties().put(GitHistoryConstants.LONG_MESSAGE, commit.getFullMessage());				
-				
-				PersonIdent person = commit.getAuthorIdent();
-				entry.getProperties().put(GitHistoryConstants.AUTHOR, person.getName());
-				entry.getProperties().put(GitHistoryConstants.AUTHOR_EMAIL, person.getEmailAddress());
-				entry.getProperties().put(GitHistoryConstants.AUTHORED_DATE, person.getWhen());
-				
-				person = commit.getCommitterIdent();
-				entry.getProperties().put(GitHistoryConstants.COMMITTER, person.getName());
-				entry.getProperties().put(GitHistoryConstants.COMMITTER_EMAIL, person.getEmailAddress());
-				entry.getProperties().put(GitHistoryConstants.COMMITER_DATE, person.getWhen());
-				
-				WebCommitPlotRenderer renderer = new WebCommitPlotRenderer(nodeUri, commit);
-				renderer.paint();
-				entry.getProperties().put(GitHistoryConstants.SPECIAL_MESSAGE, renderer.getSpecialMessage());
-				entry.getProperties().put(GitHistoryConstants.DRAWINGS, renderer.getDrawings());
-				
-				for (int i = 0; i < commit.getParentCount(); i++) {					
-					WebCommit p = (WebCommit)commit.getParent(i);
-					p.parseBody();						
-					Node parent = new Node(nodeUri, null);
-					parent.getProperties().put(GitHistoryConstants.COMMIT_ID, p.getId().name());
-					parent.getProperties().put(GitHistoryConstants.LABEL, p.getShortMessage());
-					parents.add(p.getName());
-					parents.add(p.getShortMessage());
-				}				
-				
-				entry.getProperties().put(GitHistoryConstants.PARENT, parents);
 
-				for (int i = 0; i < commit.getChildCount(); i++) {
-					WebCommit p = (WebCommit)commit.getChild(i);
-					p.parseBody();					
-					Node child = new Node(nodeUri, null);
-					child.getProperties().put(GitHistoryConstants.COMMIT_ID, p.getId().name());
-					child.getProperties().put(GitHistoryConstants.LABEL, p.getShortMessage());
-					childs.add(p.getName());
-					childs.add(p.getShortMessage());
-				}			
-				
-				entry.getProperties().put(GitHistoryConstants.CHILD, childs);												
-				
-				result.add(entry);
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		WebWalk walk = getWebWalk(nodeUri);
+		WebCommitList loadedCommits = new WebCommitList();
+		loadedCommits.source(walk);
+	
+		loadedCommits.fillTo(GitConstants.MAXCOMMITS);
+		WebCommit[] commitsAsArray = new WebCommit[loadedCommits.size()];
+		loadedCommits.toArray(commitsAsArray);
+		
+		List<Node> result = new ArrayList<Node>();
+		
+		for (WebCommit commit : commitsAsArray) {
+			ArrayList<String> parents = new ArrayList<String>();
+			ArrayList<String> childs = new ArrayList<String>();
+			commit.parseBody();
+			
+			Node entry = new Node(nodeUri, null);
+			entry.getProperties().put(GitConstants.ID, commit.getId().name());
+			entry.getProperties().put(GitConstants.ENTRY_SHORT_ID, commit.getId().abbreviate(7).name());
+			entry.getProperties().put(GitConstants.SHORT_MESSAGE, commit.getShortMessage());
+			entry.getProperties().put(GitConstants.LONG_MESSAGE, commit.getFullMessage());				
+			
+			PersonIdent person = commit.getAuthorIdent();
+			entry.getProperties().put(GitConstants.AUTHOR, person.getName());
+			entry.getProperties().put(GitConstants.AUTHOR_EMAIL, person.getEmailAddress());
+			entry.getProperties().put(GitConstants.AUTHORED_DATE, person.getWhen());
+			
+			person = commit.getCommitterIdent();
+			entry.getProperties().put(GitConstants.COMMITTER, person.getName());
+			entry.getProperties().put(GitConstants.COMMITTER_EMAIL, person.getEmailAddress());
+			entry.getProperties().put(GitConstants.COMMITER_DATE, person.getWhen());
+			
+			WebCommitPlotRenderer renderer = new WebCommitPlotRenderer(nodeUri, commit);
+			renderer.paint();
+			entry.getProperties().put(GitConstants.SPECIAL_MESSAGE, renderer.getSpecialMessage());
+			entry.getProperties().put(GitConstants.DRAWINGS, renderer.getDrawings());
+			
+			for (int i = 0; i < commit.getParentCount(); i++) {					
+				WebCommit p = (WebCommit)commit.getParent(i);
+				p.parseBody();						
+				Node parent = new Node(nodeUri, null);
+				parent.getProperties().put(GitConstants.COMMIT_ID, p.getId().name());
+				parent.getProperties().put(GitConstants.LABEL, p.getShortMessage());
+				parents.add(p.getName());
+				parents.add(p.getShortMessage());
+			}				
+			
+			entry.getProperties().put(GitConstants.PARENT, parents);
+
+			for (int i = 0; i < commit.getChildCount(); i++) {
+				WebCommit p = (WebCommit)commit.getChild(i);
+				p.parseBody();					
+				Node child = new Node(nodeUri, null);
+				child.getProperties().put(GitConstants.COMMIT_ID, p.getId().name());
+				child.getProperties().put(GitConstants.LABEL, p.getShortMessage());
+				childs.add(p.getName());
+				childs.add(p.getShortMessage());
 			}			
-			walk.dispose();
+			
+			entry.getProperties().put(GitConstants.CHILD, childs);		
+			
+			List<String> currentBranches = new ArrayList<String>();
+			for (int i = 0; i < commit.getRefCount(); i++) {
+				int index = commit.getRef(i).getName().lastIndexOf("/");
+				if (index > 0) {
+					currentBranches.add(commit.getRef(i).getName().substring(index+1));
+				} else {
+					currentBranches.add(commit.getRef(i).getName());
+				}
+			}
+			entry.getProperties().put(GitConstants.BRANCHES, currentBranches);
+			
+			String tagsString = getTagsString(repo, commit);
+			if (tagsString.length() > 0) {
+				entry.getProperties().put(GitConstants.TAGS, tagsString);
+			}
+			
+			result.add(entry);
+		}			
+		walk.dispose();
 			
 		return result;			
 	}
 
 	/**
 	 * @author Cristina Constantinescu
+	 * @author Vlad Bogdan Manica
 	 */
 	private WebWalk getWebWalk(String nodeUri) throws Exception {
 		String repositoryPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		WebWalk walk = new WebWalk(repo);	
-
-		setupWalk(walk, repo, null); 
 		
+		if (Utils.getScheme(nodeUri).equals(GitConstants.GIT_SCHEME)) {
+			setupWalk(walk, repo, null);
+		} else {
+			String file = FileControllerUtils.getFilePathFromNodeUri(nodeUri);
+			if (file != null && file.equals(GitConstants.DOT_GIT_SCHEME)) {
+				setupWalk(walk, repo, null);
+			} else {
+				setupWalk(walk, repo, file);				
+			}
+		}
 		return walk;
 	}
 

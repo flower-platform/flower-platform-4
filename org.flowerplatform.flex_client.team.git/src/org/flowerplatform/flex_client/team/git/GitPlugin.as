@@ -27,6 +27,8 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
+	import org.flowerplatform.flex_client.team.git.history.GitHistoryViewProvider;
+	import org.flowerplatform.flex_client.team.git.history.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
 	import org.flowerplatform.flex_client.team.git.action.FetchAction;
@@ -37,8 +39,6 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.RenameBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
 	import org.flowerplatform.flex_client.team.git.action.ShowGitStagingAction;
-	import org.flowerplatform.flex_client.team.git.action.history.GitHistoryViewProvider;
-	import org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -63,7 +63,7 @@ package org.flowerplatform.flex_client.team.git {
 			INSTANCE = this;
 
 			CorePlugin.getInstance().serviceLocator.addService("GitService");
-			CorePlugin.getInstance().serviceLocator.addService("HistoryService");
+			CorePlugin.getInstance().serviceLocator.addService("gitHistoryService");
 
 			FlexUtilGlobals.getInstance().registerAction(CheckoutAction);
 			FlexUtilGlobals.getInstance().registerAction(CloneRepoAction);

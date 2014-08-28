@@ -1,10 +1,10 @@
-package org.flowerplatform.flex_client.team.git.action.history.action {
+package org.flowerplatform.flex_client.team.git.history.action {
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
@@ -26,7 +26,7 @@ package org.flowerplatform.flex_client.team.git.action.history.action {
 		}
 		
 		override public function run():void {	
-			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, Node(selection.getItemAt(0)).getPropertyValue(GitHistoryConstants.ID));	
+			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, Node(selection.getItemAt(0)).getPropertyValue(GitConstants.ID));	
 		}
 	}
 }
