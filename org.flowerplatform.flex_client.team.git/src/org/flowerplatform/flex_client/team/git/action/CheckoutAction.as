@@ -41,6 +41,7 @@ package org.flowerplatform.flex_client.team.git.action
 			super();				
 			label = Resources.getMessage("flex_client.team.git.action.checkoutAction");
 			icon = Resources.checkoutIcon;
+			orderIndex = 240;
 		}
 		
 		public function createNewBranch(node:Node):void {

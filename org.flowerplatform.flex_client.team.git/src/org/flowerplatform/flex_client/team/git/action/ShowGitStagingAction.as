@@ -15,7 +15,9 @@
 */
 package org.flowerplatform.flex_client.team.git.action {
 	
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.GitStagingViewProvider;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -31,7 +33,17 @@ package org.flowerplatform.flex_client.team.git.action {
 			super();
 			label = Resources.getMessage("team.git.action.GitStagingAction");
 			icon = Resources.gitStagingIcon;
+			orderIndex = 510;
 		}
+		
+		override public function  get visible():Boolean {
+			var node:Node = Node(selection.getItemAt(0));
+			if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
+				// not a git repository
+				return false;
+			}	
+			return true;
+		}		
 		
 		override public function run():void {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				

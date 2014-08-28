@@ -28,24 +28,27 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */
 	public class FetchAction extends ActionBase {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.FetchAction";
+		
 		public function FetchAction() {
 			super();
 
 			icon = Resources.fetchIcon;
+			orderIndex = 250;
 		}
 			
 		override public function get visible(): Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				
-				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
-					&& node.type != GitConstants.GIT_REMOTE_TYPE) {
-					label = Resources.getMessage("flex_client.team.git.ui.FetchAction.fetchOnGit");
-					return true;
-				} else if (node.type == GitConstants.GIT_REMOTE_TYPE) {
-					label = Resources.getMessage("flex_client.team.git.ui.FetchAction.fetchOnRemote");
-					return true;
-				}
+			var node:Node = Node(selection.getItemAt(0));
+			if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
+				// not a git repository
+				return false;
+			}	
+			if (node.type != GitConstants.GIT_REMOTE_TYPE) {
+				label = Resources.getMessage("flex_client.team.git.ui.FetchAction.fetchOnGit");
+				return true;
+			} else {
+				label = Resources.getMessage("flex_client.team.git.ui.FetchAction.fetchOnRemote");
+				return true;
 			}
 			return false;
 		}
@@ -53,8 +56,18 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			
-			if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
-				&& node.type != GitConstants.GIT_REMOTE_TYPE) {
+			if (node.type == GitConstants.GIT_REMOTE_TYPE) {
+				// call action
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch", [node.nodeUri, null, null],
+					function (result:String):void {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(result)
+						.setTitle(Resources.getMessage('flex_client.team.git.ui.FetchView.fetchResult'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					});				
+			} else {				
 				// show wizard
 				var fetchView:FetchView = new FetchView();
 				
@@ -67,17 +80,6 @@ package org.flowerplatform.flex_client.team.git.action {
 					.setTitle(label)	
 					.setIcon(icon)
 					.show();
-			} else {				
-				// call action
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.fetch", [node.nodeUri, null, null],
-					function (result:String):void {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-						.setText(result)
-						.setTitle(Resources.getMessage('flex_client.team.git.ui.FetchView.fetchResult'))
-						.setWidth(300)
-						.setHeight(200)
-						.showMessageBox();
-					});
 			}
 		}
 	}

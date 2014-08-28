@@ -1,6 +1,5 @@
 package org.flowerplatform.flex_client.team.git.action.history.action {
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
@@ -13,23 +12,23 @@ package org.flowerplatform.flex_client.team.git.action.history.action {
 	 */ 
 	public class ShowGitHistoryAction extends ActionBase {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.history.action.ShowGitHistoryAction";
+		
 		public function ShowGitHistoryAction(){
 			super();
 			label = Resources.getMessage("gitHistory.action.show");
 			icon = Resources.gitHistoryIcon;
-			orderIndex = 1000;
+			orderIndex = 500;
 		}
 			
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) {
-					return true;
-				}
-			}
-			return false;
-		}		
+		override public function  get visible():Boolean {
+			var node:Node = Node(selection.getItemAt(0));
+			if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
+				// not a git repository
+				return false;
+			}	
+			return true;
+		}
 		
 		override public function run():void {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()

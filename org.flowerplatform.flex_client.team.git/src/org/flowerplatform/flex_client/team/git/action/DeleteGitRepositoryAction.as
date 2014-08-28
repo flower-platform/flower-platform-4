@@ -33,6 +33,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			super();
 			label = Resources.getMessage("flex_client.team.git.action.deleteGitRepository");
 			icon = Resources.deleteIcon;
+			orderIndex = 515;
 		}
 		
 		override public function get visible():Boolean {

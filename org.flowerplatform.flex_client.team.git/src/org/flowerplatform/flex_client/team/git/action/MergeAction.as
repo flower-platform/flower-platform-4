@@ -43,29 +43,24 @@ package org.flowerplatform.flex_client.team.git.action {
 		}
 		
 		override public function  get visible():Boolean {
-			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
-				if (!useNodeAsCommitId) {
-					var node:Node = Node(selection.getItemAt(0));
-					var categories:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories;
-					if (categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) { // git structure
-						if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
-							// not a git repository
-							return false;
-						}					
-						if (categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0 && !node.getPropertyValue(GitConstants.IS_CHECKEDOUT)) {
-							// Merge...
-							label = Resources.getMessage("flex_client.team.git.action.mergeBranch");
-						} else {	
-							// Merge
-							label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");
-						}						
-					}
-				} else {
-					label = Resources.getMessage("flex_client.team.git.action.mergeBranch");					
-				}
-				return true;
+			if (!useNodeAsCommitId) {
+				var node:Node = Node(selection.getItemAt(0));
+				if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
+					// not a git repository
+					return false;
+				}	
+				var categories:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories;				
+				if (categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0 && !node.getPropertyValue(GitConstants.IS_CHECKEDOUT)) {
+					// Merge...
+					label = Resources.getMessage("flex_client.team.git.action.mergeBranch");
+				} else {	
+					// Merge
+					label = Resources.getMessage("flex_client.team.git.action.mergeBranch.label");
+				}				
+			} else {
+				label = Resources.getMessage("flex_client.team.git.action.mergeBranch");					
 			}
-			return false;
+			return true;
 		}
 
 		public function callMergeAction(nodeUri:String, squash:Boolean, commit:Boolean, fastForwardUpdate:int, idCommit:String):void {
@@ -82,8 +77,10 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			if (!useNodeAsCommitId) {
-				if (node.getPropertyValue(GitConstants.IS_CHECKEDOUT) || node.type == GitConstants.GIT_REPO_TYPE) {
+			if (!useNodeAsCommitId) {			
+				if ((node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE) && !node.getPropertyValue(GitConstants.IS_CHECKEDOUT)) {				
+					callMergeAction(node.nodeUri, false, true, 0, null);
+				} else {
 					var viewMerge:MergeBranchView = new MergeBranchView();
 					viewMerge.node = node;
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()			
@@ -93,10 +90,6 @@ package org.flowerplatform.flex_client.team.git.action {
 						.setIcon(icon)
 						.setTitle(Resources.getMessage("flex_client.team.git.action.mergeBranch.label"))
 						.show();
-				}
-				
-				if ((node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE) && !node.getPropertyValue(GitConstants.IS_CHECKEDOUT)) {				
-					callMergeAction(node.nodeUri, false, true, 0, null);
 				}
 			} else {
 				callMergeAction(node.nodeUri, false, true, 0, node.getPropertyValue(GitHistoryConstants.ID));

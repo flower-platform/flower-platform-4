@@ -11,30 +11,45 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */
 	public class PushAction extends ActionBase {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.PushAction";
+		
 		public function PushAction() {
 			super();
 			icon = Resources.push;
+			orderIndex = 255;
 		}
 		
 		override public function  get visible():Boolean {
-			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == GitConstants.GIT_REPO_TYPE) {
-					label = Resources.getMessage("flex_client.team.git.action.Push.pushOnGit");
-					return true;
-				}
-				if (node.type == GitConstants.GIT_REMOTE_TYPE) {
-					label = Resources.getMessage("flex_client.team.git.action.Push.pushOnRemote");
-					return true;
-				}
-			}
+			var node:Node = Node(selection.getItemAt(0));
+			if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
+				// not a git repository
+				return false;
+			}	
+			if (node.type != GitConstants.GIT_REMOTE_TYPE) {
+				label = Resources.getMessage("flex_client.team.git.action.Push.pushOnGit");
+				return true;
+			} else {
+				label = Resources.getMessage("flex_client.team.git.action.Push.pushOnRemote");
+				return true;
+			}			
 			return false;
 		}
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			// git category
-			if (node.type == GitConstants.GIT_REPO_TYPE){
+			
+			if (node.type == GitConstants.GIT_REMOTE_TYPE) {
+				// remote category
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.push", [node.nodeUri, null, null], 
+					function(result:String):void {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(result)
+						.setTitle(Resources.getMessage('flex_client.team.git.ui.Push.pushResult'))
+						.setWidth(300)
+						.setHeight(200)
+						.showMessageBox();
+					});
+			} else {
 				var viewPush:PushView = new PushView();
 				viewPush.node = node;
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()			
@@ -44,18 +59,8 @@ package org.flowerplatform.flex_client.team.git.action {
 					.setIcon(icon)
 					.setTitle(Resources.getMessage("flex_client.team.git.action.Push.pushOnGit"))
 					.show();
-			} else if (node.type == GitConstants.GIT_REMOTE_TYPE) {
-				// remote category
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.push", [node.nodeUri, null, null], 
-					function(result:String):void {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-							.setText(result)
-							.setTitle(Resources.getMessage('flex_client.team.git.ui.Push.pushResult'))
-							.setWidth(300)
-							.setHeight(200)
-							.showMessageBox();
-					});
 			}
 		}
+		
 	}
 }
