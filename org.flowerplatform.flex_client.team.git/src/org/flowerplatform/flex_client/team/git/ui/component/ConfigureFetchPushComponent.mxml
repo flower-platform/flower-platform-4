@@ -97,7 +97,7 @@
 	</fx:Script>
 	
 	<s:layout>
-		<s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10" />
+		<s:VerticalLayout gap="10" paddingBottom="10" />
 	</s:layout>
 		
 	<s:Label text="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.refMappings')}" fontWeight="bold"/>

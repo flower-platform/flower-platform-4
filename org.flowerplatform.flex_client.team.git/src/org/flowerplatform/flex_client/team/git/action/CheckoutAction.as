@@ -37,6 +37,8 @@ package org.flowerplatform.flex_client.team.git.action
 	 */ 
 	public class CheckoutAction extends ActionBase  {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.CheckoutAction";
+		
 		public function CheckoutAction() {						
 			super();				
 			label = Resources.getMessage("flex_client.team.git.action.checkoutAction");
@@ -56,8 +58,8 @@ package org.flowerplatform.flex_client.team.git.action
 				.show();
 		}
 		
-		public function commitChanges():void {	
-			//TODO call commit
+		public function commitChanges():void {
+			FlexUtilGlobals.getInstance().actionHelper.runAction(FlexUtilGlobals.getInstance().actionRegistry[ShowGitStagingAction.ID], null, null);		
 		}
 		
 		public function reset(node:Node, commitID:String):void {
@@ -72,7 +74,6 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		public function faultCallback(event:FaultEvent, node:Node, commitID:String):void {				
 			if (event != null) {	
-				Alert.show("Error!");
 				var index:Number = event.fault.faultString.search("CheckoutConflictException");
 				if (index != -1) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
@@ -91,14 +92,6 @@ package org.flowerplatform.flex_client.team.git.action
 		public function callGitServiceCheckout(node:Node, commitID:String):void {			
 			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], null, function(event:FaultEvent):void {faultCallback(event, node, commitID)});
 			
-		}
-		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				return (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE);
-			}
-			return false;
 		}
 
 		override public function run():void {

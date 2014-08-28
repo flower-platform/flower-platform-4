@@ -21,10 +21,11 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flex_client.team.git.GitHistoryConstants;
+			import org.flowerplatform.flex_client.team.git.action.CherryPickAction;
+			import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 			import org.flowerplatform.flex_client.team.git.action.MergeAction;
+			import org.flowerplatform.flex_client.team.git.action.RevertCommitAction;
 			import org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard;
-			import org.flowerplatform.flex_client.team.git.action.history.action.HistoryCheckout;
-			import org.flowerplatform.flex_client.team.git.action.history.action.HistoryReset;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;
@@ -36,6 +37,8 @@
 			
 			
 			
+			
+						
 			[Bindable]
 			public var repo:String;
 			
@@ -77,17 +80,10 @@
 				grid.addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU,fillContextMenuHandler);
 			}
 			
-			protected function fillContextMenuHandler(event:FillContextMenuEvent):void {
+			public function fillContextMenuHandler(event:FillContextMenuEvent):void {
 				event.allActions = getActions(new ArrayCollection([grid.selectedItem]));
 				event.selection = new ArrayCollection([grid.selectedItem]);
 				event.rootActionsAlreadyCalculated = null;
-				
-//				contextForActions = new Object();			
-//				contextForActions.rectangle = new Rectangle(
-//					UIComponent(FlexGlobals.topLevelApplication).mouseX, 
-//					UIComponent(FlexGlobals.topLevelApplication).mouseY, 
-//					NaN, NaN);
-//				event.context = contextForActions;
 			}
 			
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
@@ -167,8 +163,9 @@
 				var result:Vector.<IAction> = new Vector.<IAction>();
 				result.push(new CopyIdToClipboard());
 				result.push(new MergeAction(true));
-				result.push(new HistoryCheckout());
-				result.push(new HistoryReset());
+				result.push(new CreateBranchAction(true));
+				result.push(new CherryPickAction());
+				result.push(new RevertCommitAction());
 				return result;
 			}
 		

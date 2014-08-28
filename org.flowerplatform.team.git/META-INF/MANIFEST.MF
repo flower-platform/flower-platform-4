@@ -10,11 +10,9 @@ Require-Bundle: org.eclipse.jgit,
  org.flowerplatform.util,
  org.flowerplatform.resources,
  org.flowerplatform.codesync.sdiff,
- org.eclipse.compare.core,
- org.eclipse.core.runtime
+ org.eclipse.compare.core
 Bundle-Activator: org.flowerplatform.team.git.GitPlugin
 Bundle-ActivationPolicy: lazy
-Export-Package: org.flowerplatform.team.git,
- org.flowerplatform.team.git.remote
+Export-Package: org.flowerplatform.team.git
 Import-Package: javax.servlet,
  javax.servlet.http

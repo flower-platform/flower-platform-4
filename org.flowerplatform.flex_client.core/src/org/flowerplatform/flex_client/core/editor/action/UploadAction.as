@@ -16,7 +16,6 @@
 package org.flowerplatform.flex_client.core.editor.action {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.UploadView;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -28,6 +27,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 */ 
 	public class UploadAction extends MultipleSelectionActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.UploadAction";
+		
 		public function UploadAction() {
 			super();
 			label = Resources.getMessage("action.upload");
@@ -35,15 +36,11 @@ package org.flowerplatform.flex_client.core.editor.action {
 			orderIndex = 310;
 		}
 		
-		override public function get visible():Boolean {
-			if (selection.length == 0 || selection.length > 1) {
+		override protected function isVisibleForSelectedElement(element:Object):Boolean {
+			if (Node(element).type == CoreConstants.FILE_NODE_TYPE && !Node(element).properties[CoreConstants.FILE_IS_DIRECTORY]) {
 				return false;
 			}
-			return super.visible;
-		}	
-		
-		override protected function isVisibleForSelectedElement(element:Object):Boolean {
-			return element is Node && (Node(element).type == CoreConstants.FILE_NODE_TYPE && Node(element).properties[CoreConstants.FILE_IS_DIRECTORY] || Node(element).type == CoreConstants.FILE_SYSTEM_NODE_TYPE);
+			return super.isVisibleForSelectedElement(element);
 		}
 		
 		override public function run():void {	

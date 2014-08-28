@@ -31,17 +31,20 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayList;
+			import mx.rpc.events.ResultEvent;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+			import org.flowerplatform.flex_client.mindmap.controller.MindMapIconsViewResultHandler;
 			import org.flowerplatform.flex_client.mindmap.renderer.IconRenderer;
 			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexdiagram.DiagramShell;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
+			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			
 			public  var diagramShell:DiagramShell;
 			
@@ -49,6 +52,7 @@
 				var icons:Array = MindMapConstants.ICONS_LIST.split(';');
 				var iconsDataProvider:Array = new Array();
 				
+				iconsDataProvider.push("customIconsIcon");
 				iconsDataProvider.push("removeFirstIconIcon");
 				iconsDataProvider.push("removeLastIconIcon");
 				iconsDataProvider.push("removeAllIconsIcon");
@@ -77,23 +81,47 @@
 					switch (iconUrl) {
 						case "removeFirstIconIcon" :
 							result.type = Utils.REMOVE_FIRST;
+							handleClick(result);
 							break;
 						case "removeLastIconIcon" :
 							result.type = Utils.REMOVE_LAST;
+							handleClick(result);
 							break;
 						case "removeAllIconsIcon" :
 							result.type = Utils.REMOVE_ALL;
+							handleClick(result);
+							break;
+						case "customIconsIcon":
+							
+							var repo:String = "user/repo";
+							if (diagramShell.selectedItems != null && PropertiesPlugin.getInstance().getPropertyDescriptor(Node(diagramShell.selectedItems.getItemAt(0)), CoreConstants.ICONS, false)) {
+								repo = CorePlugin.getInstance().getRepository(diagramShell.selectedItems.getItemAt(0).nodeUri);
+								var customView:MindMapIconsView = new MindMapIconsView();
+								customView.getDefaultIcons = false;
+								customView.repo = repo;
+								customView.setResultHandler(new MindMapIconsViewResultHandler(function(res:Object):void {
+									result.iconUrl = res.iconUrl;
+									result.type = Utils.ADD;
+									handleClick(result);
+								}));
+								FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+									.setViewContent(customView)						
+									.setWidth(300)
+									.setHeight(320)
+									.show();
+							}
+							
 							break;
 						default:
 							result.type = Utils.ADD;
 							result.iconUrl = Resources.getResourceUrl("images/mindmap/icons/" + iconUrl + ".png");
+							handleClick(result);
 							break;
 					}
-					handleClick(result);
 				}
 				selectedIndex = -1;
 			}
-			
+									
 			private function handleClick(result:Object):void {
 				var nodeList:ArrayList = diagramShell.selectedItems;
 				var currentValue:String;

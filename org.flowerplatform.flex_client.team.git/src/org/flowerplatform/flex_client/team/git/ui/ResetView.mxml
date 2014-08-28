@@ -55,7 +55,7 @@
 				if(selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
 					selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ||
 					selectedNode.type == GitConstants.GIT_TAG_TYPE){
-					textInput.text = selectedNode.getPropertyValue(CoreConstants.NAME);
+					textInput.text = selectedNode.getPropertyValue(GitConstants.FULL_NAME);
 				}
 			}
 			
@@ -93,9 +93,7 @@
 		
 		<s:Form width="100%">
 			<s:FormItem label = "{Resources.getMessage('flex_client.team.git.ui.resetView.reset')}">
-				<s:TextInput width="100%"
-							 editable="true"
-							 id="textInput"/>
+				<s:TextInput width="100%" id="textInput"/>
 			</s:FormItem>
 		</s:Form>
 		

@@ -27,6 +27,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */	
 	public class ResetAction extends ActionBase {
 		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.ResetAction";
+		
 		public function ResetAction() {
 			super();
 			label = Resources.getMessage('flex_client.team.git.action.reset');

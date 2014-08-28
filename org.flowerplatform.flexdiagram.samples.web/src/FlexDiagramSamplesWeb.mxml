@@ -33,6 +33,8 @@
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.SelectOrDragToCreateElementTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
+			import org.flowerplatform.flexutil.FactoryWithInitialization;
+			
 			
 			private var _rootModel:Object;
 			
@@ -47,10 +49,16 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {				
 				ModelPopulator.populateRootModel(this);
-				diagramShell.registerTools([
-					ScrollTool, SelectOnClickTool, InplaceEditorTool, ResizeTool, 
-					DragToCreateRelationTool, DragTool, SelectOrDragToCreateElementTool, ZoomTool]);
+				diagramShell.registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
+				diagramShell.registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
+				diagramShell.registerTool(ResizeTool.ID, new FactoryWithInitialization(ResizeTool));
+				diagramShell.registerTool(DragToCreateRelationTool.ID, new FactoryWithInitialization(DragToCreateRelationTool));
+				diagramShell.registerTool(DragTool.ID, new FactoryWithInitialization(DragTool));
+				diagramShell.registerTool(SelectOrDragToCreateElementTool.ID, new FactoryWithInitialization(SelectOrDragToCreateElementTool));
+				diagramShell.registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
+				diagramShell.registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
 			}
+			
 			
 		]]>
 	</fx:Script>

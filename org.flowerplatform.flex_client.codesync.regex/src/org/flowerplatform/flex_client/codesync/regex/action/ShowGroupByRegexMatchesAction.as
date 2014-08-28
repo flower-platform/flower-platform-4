@@ -25,37 +25,37 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class ShowOrderedMatchesAction extends DiagramShellAwareActionBase {
+	public class ShowGroupByRegexMatchesAction extends DiagramShellAwareActionBase {
 		
-		public function ShowOrderedMatchesAction() {
-			super();
-			label = Resources.getMessage("regex.action.ordered");
-			icon = Resources.brickIcon;
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction";
+		
+		public function ShowGroupByRegexMatchesAction() {
+			super();			
+			isToggleAction = true;
+			preferShowOnActionBar = true;
+			label = Resources.getMessage("regex.action.grouped");	
 		}
-		
-		override public function get visible():Boolean {			
-			if (selection == null || selection.length != 1) {
-				return false;
-			}
+				
+		override public function run():void {
+			super.run();
 			var obj:Object = selection.getItemAt(0);
 			if (obj is MindMapRootModelWrapper) {
 				obj = MindMapRootModelWrapper(obj).model;
 			}
-			return obj is Node && Node(obj).type == CodeSyncRegexConstants.REGEX_MATCHES_TYPE;
-		}
-		
-		
-		override public function run():void {
-			var node:Node = Node(selection.getItemAt(0));
+			var node:Node = Node(obj);
+			
 			var ds:MindMapEditorDiagramShell = MindMapEditorDiagramShell(diagramShell);
 			if (ds.getModelController(diagramShellContext, node).getExpanded(diagramShellContext, node)) {
 				CorePlugin.getInstance().nodeRegistryManager.collapse(ds.nodeRegistry, node);
 			}			
-			CorePlugin.getInstance().nodeRegistryManager.expand(ds.nodeRegistry, node, getExpandContext());
-		}
-			
-		protected function getExpandContext():Object {
-			return new Object();
+						
+			CorePlugin.getInstance().serviceLocator.invoke(
+				"nodeService.setProperty", 
+				[node.nodeUri, CodeSyncRegexConstants.SHOW_GROUPED_BY_REGEX, isSelected], 
+				function ():void {					
+					CorePlugin.getInstance().nodeRegistryManager.expand(ds.nodeRegistry, node, new Object());					
+				}
+			);
 		}
 		
 	}

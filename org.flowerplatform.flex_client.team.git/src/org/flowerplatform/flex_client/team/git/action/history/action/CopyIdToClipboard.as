@@ -9,15 +9,13 @@ package org.flowerplatform.flex_client.team.git.action.history.action {
 	
 	/**
 	 * @author Andreea Tita
-	 */
-	
+	 */	
 	public class CopyIdToClipboard extends ActionBase {
 		
 		public function CopyIdToClipboard() {
 			super();
 			label = Resources.getMessage("gitHistory.action.CopyId");
 			icon = Resources.copy;
-			setOrderIndex(int(Resources.getMessage('flex_client.team.git.action.history.sortIndex.CopyIdToClipboard')));
 		}
 		
 		override public function  get visible():Boolean {
@@ -28,8 +26,7 @@ package org.flowerplatform.flex_client.team.git.action.history.action {
 		}
 		
 		override public function run():void {	
-			var node:Node = Node(selection.getItemAt(0));
-			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, node.getPropertyValue(GitHistoryConstants.ID));	
+			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, Node(selection.getItemAt(0)).getPropertyValue(GitHistoryConstants.ID));	
 		}
 	}
 }

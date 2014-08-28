@@ -1,7 +1,6 @@
 package org.flowerplatform.team.git;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +46,7 @@ public class HistoryService {
 		
 		List<Node> entries = new ArrayList<Node>();
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File)FileControllerUtils.getFileAccessController().getFile(repoPath));			
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));			
 		
 		RevWalk walk = new RevWalk(repo);
 		
@@ -68,8 +67,7 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */	
-	private List<Ref> getAllBranches(Repository repo) throws IOException {
-		
+	private List<Ref> getAllBranches(Repository repo) throws IOException {		
 		List<Ref> ref = new ArrayList<Ref>();		
 		ref.addAll(repo.getRefDatabase().getRefs(Constants.R_HEADS).values());
 		ref.addAll(repo.getRefDatabase().getRefs(Constants.R_REMOTES).values());		
@@ -79,9 +77,7 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private List<Ref> getBranches(RevCommit commit, Collection<Ref> allRefs, Repository db)
-			throws MissingObjectException, IncorrectObjectTypeException,
-			IOException {
+	private List<Ref> getBranches(RevCommit commit, Collection<Ref> allRefs, Repository db) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		RevWalk revWalk = new RevWalk(db);
 		try {
 			revWalk.setRetainBody(false);
@@ -93,7 +89,7 @@ public class HistoryService {
 	
 	public List<String> getCommitBranches(String nodeUri, String commitId) throws Exception {
 		String repoPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repoPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		WebWalk walk = getWebWalk(nodeUri);
 		RevCommit commit = walk.parseCommit(repo.resolve(commitId));
 		List<Ref> branches = getBranches((WebCommit)commit, getAllBranches(repo), repo);
@@ -114,7 +110,7 @@ public class HistoryService {
 	public List<Node> getLogEntries(String nodeUri)throws Exception {
 		
 			String repoPath = Utils.getRepo(nodeUri);
-			Repository repo = GitUtils.getRepository((File)FileControllerUtils.getFileAccessController().getFile(repoPath));
+			Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 			WebWalk walk = getWebWalk(nodeUri);
 		
 			WebCommitList loadedCommits = new WebCommitList();
@@ -189,7 +185,7 @@ public class HistoryService {
 	 */
 	private WebWalk getWebWalk(String nodeUri) throws Exception {
 		String repositoryPath = Utils.getRepo(nodeUri);
-		Repository repo = GitUtils.getRepository((File) FileControllerUtils.getFileAccessController().getFile(repositoryPath));
+		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repositoryPath));
 		WebWalk walk = new WebWalk(repo);	
 
 		setupWalk(walk, repo, null); 
@@ -241,8 +237,7 @@ public class HistoryService {
 			List<String> stringPaths = new ArrayList<String>(1);
 			stringPaths.add(path);
 	
-			walk.setTreeFilter(AndTreeFilter.create(PathFilterGroup
-					.createFromStrings(stringPaths), TreeFilter.ANY_DIFF));
+			walk.setTreeFilter(AndTreeFilter.create(PathFilterGroup.createFromStrings(stringPaths), TreeFilter.ANY_DIFF));
 		}
 		return fileWalker;
 	}	
@@ -250,14 +245,12 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markStartAllRefs(Repository repo, RevWalk walk, String prefix)
-			throws IOException, MissingObjectException,
-			IncorrectObjectTypeException {
-		for (Entry<String, Ref> refEntry : repo
-				.getRefDatabase().getRefs(prefix).entrySet()) {
+	private void markStartAllRefs(Repository repo, RevWalk walk, String prefix)	throws IOException, MissingObjectException, IncorrectObjectTypeException {
+		for (Entry<String, Ref> refEntry : repo.getRefDatabase().getRefs(prefix).entrySet()) {
 			Ref ref = refEntry.getValue();
-			if (ref.isSymbolic())
+			if (ref.isSymbolic()) {
 				continue;
+			}
 			markStartRef(repo, walk, ref);
 		}
 	}
@@ -266,21 +259,21 @@ public class HistoryService {
 	 * @author Cristina Constantinescu
 	 */
 	private void markStartAdditionalRefs(Repository repo, RevWalk walk) throws IOException {
-		List<Ref> additionalRefs = repo.getRefDatabase()
-				.getAdditionalRefs();
-		for (Ref ref : additionalRefs)
+		List<Ref> additionalRefs = repo.getRefDatabase().getAdditionalRefs();
+		for (Ref ref : additionalRefs) {
 			markStartRef(repo, walk, ref);
+		}
 	}
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markStartRef(Repository repo, RevWalk walk, Ref ref) throws IOException,
-			IncorrectObjectTypeException {
+	private void markStartRef(Repository repo, RevWalk walk, Ref ref) throws IOException, IncorrectObjectTypeException {
 		try {
 			Object refTarget = walk.parseAny(ref.getLeaf().getObjectId());
-			if (refTarget instanceof RevCommit)
+			if (refTarget instanceof RevCommit) {
 				walk.markStart((RevCommit) refTarget);
+			}
 		} catch (MissingObjectException e) {
 			// If there is a ref which points to Nirvana then we should simply
 			// ignore this ref. We should not let a corrupt ref cause that the
@@ -291,17 +284,16 @@ public class HistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markUninteresting(Repository repo, RevWalk walk, String prefix)
-			throws IOException, MissingObjectException,
-			IncorrectObjectTypeException {
-		for (Entry<String, Ref> refEntry : repo
-				.getRefDatabase().getRefs(prefix).entrySet()) {
+	private void markUninteresting(Repository repo, RevWalk walk, String prefix) throws IOException, MissingObjectException, IncorrectObjectTypeException {
+		for (Entry<String, Ref> refEntry : repo.getRefDatabase().getRefs(prefix).entrySet()) {
 			Ref ref = refEntry.getValue();
-			if (ref.isSymbolic())
+			if (ref.isSymbolic()) {
 				continue;
+			}
 			Object refTarget = walk.parseAny(ref.getLeaf().getObjectId());
-			if (refTarget instanceof RevCommit)
+			if (refTarget instanceof RevCommit) {
 				walk.markUninteresting((RevCommit) refTarget);
+			}
 		}
 	}
 }

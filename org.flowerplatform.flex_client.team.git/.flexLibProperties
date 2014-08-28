@@ -43,6 +43,17 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.history.action.CopyIdToClipboard"/>
+	<classEntry path="org.flowerplatform.flex_client.team.git.ui.DeleteGitRepositoryView"/>
+	<classEntry path="org.flowerplatform.flex_client.team.git.remote.GitBranch"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.FetchAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.ui.FetchView"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
+	<classEntry path="org.flowerplatform.flex_client.team.git.remote.GitBranch"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.FetchAction"/>
+	<classEntry path="org.flowerplatform.flex_client.team.git.action.CherryPickAction"/>
+    <classEntry path="org.flowerplatform.flex_client.team.git.action.RevertCommitAction"
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
