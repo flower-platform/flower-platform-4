@@ -134,6 +134,13 @@ package org.flowerplatform.flex_client.core {
 		public var linkHandlers:Dictionary;
 		
 		/**
+		 * @author Alina Bratu
+		 */
+		public function getCustomResourceUrl(resource:String):String {
+			return "servlet/load/" + resource;
+		}
+		
+		/**
 		 * @author Sebastian Solomon
 		 */
 		public function getEditorClassFactoryActionProvider():ClassFactoryActionProvider {

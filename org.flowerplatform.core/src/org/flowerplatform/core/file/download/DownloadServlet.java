@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream.GetField;
 import java.io.OutputStream;
 
 import javax.servlet.ServletException;
@@ -35,48 +36,36 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Cristina Constantinescu
  */
-public class DownloadServlet extends ResourcesServlet {
+public class DownloadServlet extends LoadCustomFileServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(DownloadServlet.class);
 
 	private static final long serialVersionUID = 1L;
 		   
 	public static final String DOWNLOAD_SERVLET_NAME = "/servlet/download";
-	
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String info = req.getPathInfo();
-		String downloadId = info.substring(1, info.lastIndexOf("/"));
-	
-		DownloadInfo downloadInfo = ((DownloadService) CorePlugin.getInstance().getServiceRegistry().getService("downloadService")).getDownloadInfo(downloadId);
-		if (downloadInfo == null) {
-			// no data to download
-			return;
-		}
 		
-		File file = null;
-		try {
-			file = new File(downloadInfo.getPath());			
-			if (!file.exists()) {
-				return;
-			}
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
+	@Override
+	protected void writeToLog(HttpServletResponse resp) {
 		logger.trace("Downloading: {}", file.getAbsolutePath());
 		
 		resp.setContentType("application/octet-stream");
 		resp.setHeader("Content-Disposition", "attachment");
 		resp.setHeader("Cache-Control", "no cache");
 		
-		InputStream in = new FileInputStream(file);
-		OutputStream out = resp.getOutputStream();
-		try {
-			IOUtils.copy(in, out);
-		} catch (IOException e) {
-			IOUtils.closeQuietly(in);
-			IOUtils.closeQuietly(out);
+	}
+	
+	@Override
+	protected File getFile(HttpServletRequest req) {
+		String info = req.getPathInfo();
+		String downloadId = info.substring(1, info.lastIndexOf("/"));
+	
+		DownloadInfo downloadInfo = ((DownloadService) CorePlugin.getInstance().getServiceRegistry().getService("downloadService")).getDownloadInfo(downloadId);
+		if (downloadInfo == null) {
+			// no data to download
+			return null;
 		}
-	}			
+		return new File(downloadInfo.getPath());			
+		
+	}
 	
 }
