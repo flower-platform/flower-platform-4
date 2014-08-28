@@ -676,7 +676,7 @@ public class GitService {
 			pushCommand = new Git(repository).push().setRemote(GitUtils.getName(nodeUri));
 
 			//check if credentials for remote are set
-			credentials = getCredentials("git|" + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
+			credentials = getCredentials(GitConstants.GIT_PREFIX_SESSION + ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0));
 		} else {
 			List<RefSpec> specsList = new ArrayList<RefSpec>();
 			if (pushRefMappings != null)  {
@@ -688,7 +688,7 @@ public class GitService {
 			pushCommand = new Git(repository).push().setRemote(new URIish(pushNodeUri).toPrivateString()).setRefSpecs(specsList);
 		
 			//check if credentials for pushNode are set
-			credentials = getCredentials("git|" + pushNodeUri);
+			credentials = getCredentials(GitConstants.GIT_PREFIX_SESSION + pushNodeUri);
 		}
 		
 		// provide credentials for use in connecting to repositories 
@@ -781,6 +781,7 @@ public class GitService {
 		synchronized (session) {
 			session.setAttribute(GIT_PREFIX_SESSION + remote, credentials);			
 		}
+		
 	}
 
 	/**

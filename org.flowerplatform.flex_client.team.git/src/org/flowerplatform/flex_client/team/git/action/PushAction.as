@@ -19,7 +19,8 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function  get visible():Boolean {
 			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
 				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == GitConstants.GIT_REPO_TYPE) {
+				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
+					&& node.type != GitConstants.GIT_REMOTE_TYPE) {
 					label = Resources.getMessage("flex_client.team.git.action.Push.pushOnGit");
 					return true;
 				}
@@ -34,7 +35,8 @@ package org.flowerplatform.flex_client.team.git.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			// git category
-			if (node.type == GitConstants.GIT_REPO_TYPE){
+			if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
+				&& node.type != GitConstants.GIT_REMOTE_TYPE) {
 				var viewPush:PushView = new PushView();
 				viewPush.node = node;
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()			
