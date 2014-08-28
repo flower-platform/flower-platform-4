@@ -24,11 +24,13 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:local="org.flowerplatform.flex_client.mindmap.ui.*"
 		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.dialog.IDialog" 
-		 skinClass = "org.flowerplatform.flex_client.mindmap.ui.TileMindMapIconsSkin">
+		 skinClass = "org.flowerplatform.flex_client.mindmap.ui.TileMindMapIconsSkin"
+		 noIcons="closeHandler()">
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
+			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -56,11 +58,15 @@
 			
 			override protected function handleClick(result:Object):void {
 				resultHandler.handleDialogResult(result);
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+				closeHandler();
 			}
 			
 			public function additionalCloseHandler():void {	
 				// nothing to do
+			}
+			
+			private function closeHandler():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 		]]>
 	</fx:Script>

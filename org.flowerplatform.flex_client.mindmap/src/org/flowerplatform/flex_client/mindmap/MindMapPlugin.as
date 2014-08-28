@@ -77,6 +77,7 @@ package org.flowerplatform.flex_client.mindmap {
 
 			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
 			CorePlugin.getInstance().serviceLocator.addService("mindMapService");
+			CorePlugin.getInstance().serviceLocator.addService("mindmapService");
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
@@ -106,6 +107,7 @@ package org.flowerplatform.flex_client.mindmap {
 				(IconsWithButtonPropertyRenderer, {
 					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object,selection:Node):void {
 						var dialog:MindMapIconsView = new MindMapIconsView();
+						dialog.showOnlyRepositoryCustomIcons= false;
 						dialog.setResultHandler(itemRendererHandler);
 						dialog.icons = propertyValue;
 						dialog.repoPath = CorePlugin.getInstance().getRepository(selection.nodeUri);
