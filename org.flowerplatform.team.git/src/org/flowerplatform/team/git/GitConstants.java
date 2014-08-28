@@ -153,4 +153,5 @@ public class GitConstants {
 	public static final String TAGS = "tags";
 	
 	public static final Integer MAXCOMMITS = 10000;
+
 }

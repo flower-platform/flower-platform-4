@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.ResetAction;
 	import org.flowerplatform.flex_client.team.git.action.ShowGitStagingAction;
 	import org.flowerplatform.flex_client.team.git.history.GitHistoryViewProvider;
-	import org.flowerplatform.flex_client.team.git.history.action.ShowGitHistoryAction;
+	import org.flowerplatform.flex_client.team.git.action.ShowGitHistoryAction;
 	import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
 	import org.flowerplatform.flex_client.team.git.remote.GitRef;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -81,7 +81,6 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().registerAction(RebaseAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowGitHistoryAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowGitStagingAction);
-			
 			FlexUtilGlobals.getInstance().registerAction(FetchAction);
 			FlexUtilGlobals.getInstance().registerAction(PushAction);
 			

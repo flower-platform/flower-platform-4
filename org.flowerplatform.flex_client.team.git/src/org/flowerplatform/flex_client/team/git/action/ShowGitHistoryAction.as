@@ -1,4 +1,4 @@
-package org.flowerplatform.flex_client.team.git.history.action {
+package org.flowerplatform.flex_client.team.git.action {
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -12,7 +12,7 @@ package org.flowerplatform.flex_client.team.git.history.action {
 	 */ 
 	public class ShowGitHistoryAction extends ActionBase {
 		
-		public static const ID:String = "org.flowerplatform.flex_client.team.git.history.action.ShowGitHistoryAction";
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.ShowGitHistoryAction";
 		
 		public function ShowGitHistoryAction(){
 			super();

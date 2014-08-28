@@ -25,7 +25,7 @@
 			import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 			import org.flowerplatform.flex_client.team.git.action.MergeAction;
 			import org.flowerplatform.flex_client.team.git.action.RevertCommitAction;
-			import org.flowerplatform.flex_client.team.git.history.action.CopyIdToClipboard;
+			import org.flowerplatform.flex_client.team.git.action.CopyIdToClipboard;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.action.IAction;

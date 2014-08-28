@@ -1,4 +1,4 @@
-package org.flowerplatform.flex_client.team.git.history.action {
+package org.flowerplatform.flex_client.team.git.action {
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
 	

@@ -110,6 +110,7 @@ public class GitService {
 			Repository repository = GitUtils.getRepository(FileControllerUtils
 											.getFileAccessController()
 											.getFile(repoPath));
+
 			Git git = new Git(repository);
 			RevWalk revWalk = new RevWalk(repository);
 			ObjectReader reader = repository.newObjectReader();
@@ -122,8 +123,11 @@ public class GitService {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
 		return CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(patch.toString(), repoPath, sdiffOutputPath, fileContentProvider);
 	}
+
+	private static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
 	public boolean validateHash(String hash, String repositoryPath) {
 		try {
@@ -152,7 +156,6 @@ public class GitService {
 	 */
 	public String mergeBranch(String nodeUri, boolean setSquash, boolean commit, int fastForwardOptions, String idCommit) throws Exception {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
@@ -181,7 +184,6 @@ public class GitService {
 		}
 
 		MergeResult mergeResult = mergeCmd.setSquash(setSquash).setFastForward(fastForwardMode).setCommit(commit).call();
-
 		String fileSystemNodeUri = Utils.getUri(FILE_SCHEME, repoPath);
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
@@ -256,7 +258,7 @@ public class GitService {
 				
 		if (checkoutBranch) {
 			/* call checkout branch method */
-			checkout(GitUtils.getNodeUri(repoPath, GIT_LOCAL_BRANCH_TYPE, createdBranch.getName()));
+			checkout(GitUtils.getNodeUri(repoPath, GIT_LOCAL_BRANCH_TYPE, createdBranch.getName()), null);
 		} else {
 			Node parent = CorePlugin.getInstance().getResourceService().getNode(parentUri);
 			CorePlugin.getInstance().getResourceSetService().addUpdate(
@@ -371,7 +373,6 @@ public class GitService {
 				new ServiceContext<NodeService>().add(EXECUTE_ONLY_FOR_UPDATER, true));
 	}
 
-	
 	/**
 	 * @author Diana Balutoiu
 	 */
@@ -412,7 +413,7 @@ public class GitService {
 		
 		// set the new name
 		git.branchRename().setOldName((String) node.getPropertyValue(CoreConstants.NAME)).setNewName(newName).call();
-
+		
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				node, 
 				new Update().setFullNodeIdAs(parentUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
@@ -462,16 +463,16 @@ public class GitService {
 
 	/** 
 	 * @author Vlad Bogdan Manica
-	 * @param nodeUri This is the name of a branch/tag.
-	 * @param createNew If is set to 'true' we create a new local branch. 
+	 * @param nodeUri Used to get the name of a branch/tag.
+	 * @param commitID If this is not null we checkout a commit.
 	 * @throws Exception
 	 */
-	public void checkout(String nodeUri) throws Exception {				
+	public void checkout(String nodeUri, String commitID) throws Exception {				
 		String name = GitUtils.getName(nodeUri);
 		String repoPath = Utils.getRepo(nodeUri);
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 				
-		new Git(repo).checkout().setName(name).call();
+		new Git(repo).checkout().setName(commitID != null ? commitID : name).call();
 		
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
@@ -483,7 +484,7 @@ public class GitService {
 				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
 				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-	}
+	}	
 
 	/**
 	 * 
@@ -978,6 +979,5 @@ public class GitService {
 			git.reset().addPath(file).call();
 		}
 	}	
-	
 }
 
