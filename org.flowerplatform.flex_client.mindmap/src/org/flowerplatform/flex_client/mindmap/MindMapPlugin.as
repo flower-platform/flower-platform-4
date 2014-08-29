@@ -77,7 +77,7 @@ package org.flowerplatform.flex_client.mindmap {
 
 			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
 			CorePlugin.getInstance().serviceLocator.addService("mindMapService");
-			CorePlugin.getInstance().serviceLocator.addService("mindmapService");
+			CorePlugin.getInstance().serviceLocator.addService("freeplaneService");
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
@@ -107,15 +107,15 @@ package org.flowerplatform.flex_client.mindmap {
 				(IconsWithButtonPropertyRenderer, {
 					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object,selection:Node):void {
 						var dialog:MindMapIconsView = new MindMapIconsView();
-						dialog.showOnlyRepositoryCustomIcons= false;
+						dialog.showOnlyRepositoryCustomIcons = false;
 						dialog.setResultHandler(itemRendererHandler);
 						dialog.icons = propertyValue;
 						dialog.repoPath = CorePlugin.getInstance().getRepository(selection.nodeUri);
 						
 						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 						.setViewContent(dialog)						
-						.setWidth(300)
-						.setHeight(320)
+						.setWidth(370)
+						.setHeight(340)
 						.show();
 					},
 					
@@ -127,7 +127,7 @@ package org.flowerplatform.flex_client.mindmap {
 			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE] = new FactoryWithInitialization
 				(DropDownListPropertyRenderer, {	
 					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
-						CorePlugin.getInstance().serviceLocator.invoke("mindmapService.getStyles", [node.nodeUri], callbackFunction);
+						CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.getStyles", [node.nodeUri], callbackFunction);
 					}
 			});				
 

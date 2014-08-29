@@ -24,17 +24,12 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:local="org.flowerplatform.flex_client.mindmap.ui.*"
 		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent, org.flowerplatform.flexutil.dialog.IDialog" 
-		 skinClass = "org.flowerplatform.flex_client.mindmap.ui.TileMindMapIconsSkin"
-		 noIcons="closeHandler()">
+		 skinClass = "org.flowerplatform.flex_client.mindmap.ui.TileMindMapIconsSkin">
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
-			import mx.events.FlexEvent;
-			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			

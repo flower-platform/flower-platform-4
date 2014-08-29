@@ -1,6 +1,5 @@
 package org.flowerplatform.core.file.download;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,55 +16,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
 /**
- * Servlet for loading user files. Usage: set the object url with value "servlet/load/[path-to-file]"
  * @author Alina Bratu
- *
+ * @author Cristina Constantinescu
  */
-
 public class LoadCustomFileServlet extends ResourcesServlet {
 
-	private static final Logger logger = LoggerFactory.getLogger(DownloadServlet.class);
+	protected static final Logger logger = LoggerFactory.getLogger(LoadCustomFileServlet.class);
 
 	private static final long serialVersionUID = 1L;
 	
-	protected static File file = null;
-
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
+		InputStream in = null;
+		OutputStream out = null;
+		
+		resp.setContentType("application/octet-stream");
+		resp.setHeader("Content-Disposition", "attachment");
+		resp.setHeader("Cache-Control", "no cache");
 		
 		try {
-			file = getFile(req);
-			if (!file.exists()) {
+			Object file = getFile(req);
+			if (file == null || !FileControllerUtils.getFileAccessController().exists(file)) {
 				return;
+			}			
+			if (logger.isTraceEnabled()) {
+				logger.trace("Resource requested: {}", FileControllerUtils.getFileAccessController().getPath(file));
 			}
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		OutputStream out = resp.getOutputStream();
-		InputStream in = new FileInputStream(file);
-		
-		try {
+			
+			out = resp.getOutputStream();
+			in = new FileInputStream(FileControllerUtils.getFileAccessController().getFileAsFile(file));
+			
 			IOUtils.copy(in, out); 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
 		}
 	}	
-	
-	protected void writeToLog(HttpServletResponse resp) {
-		if (logger.isTraceEnabled()) {
-			logger.trace("Resource requested: {}", file);
-		}
-	}
 	
 	/**
 	 * @param req The <code>HttpServletRequest</code> passed as parameter in <code>doGet</code> method
 	 * @return file at path found in the request
 	 * @throws Exception
 	 */
-	protected File getFile( HttpServletRequest req) throws Exception {
-		return FileControllerUtils.getFileAccessController().getFileAsFile(FileControllerUtils.getFileAccessController().getFile(req.getPathInfo()));
+	protected Object getFile(HttpServletRequest req) throws Exception {
+		return FileControllerUtils.getFileAccessController().getFile(req.getPathInfo());
 	}
+	
 }

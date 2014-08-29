@@ -418,6 +418,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/EditDetailsInDialogAction.png")]
 		public static const editDetailsInDialogActionIcon:Class;
 		
+		[Embed(source="/mindmap/ExternalImageAddAction.png")]
+		public static const customIconsIcon:Class;
+		
 		[Embed(source="/mindmap/arrowDown.png")]
 		public static const arrowDownIcon:Class;
 		
@@ -574,7 +577,7 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/commit_amend.gif")]
 		public static const amendIcon:Class;
 		
-		[Embed(source="/team.git/remotespec.gif")]
+		[Embed(source="/team.git/remoteSpec.gif")]
 		public static const configureFetchPush:Class;
 
 		[Embed(source="/team.git/merge.gif")]

@@ -62,6 +62,7 @@ import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.mindmap.remote.MindMapServiceRemote;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -134,7 +135,7 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(SIDE));
 		
 		// register the MindMapService into the serviceRegistry in CorePlugin
-		CorePlugin.getInstance().getServiceRegistry().registerService("mindMapService", new MindMapService());
+		CorePlugin.getInstance().getServiceRegistry().registerService("mindMapService", new MindMapServiceRemote());
 	}	
 	
 	public void stop(BundleContext bundleContext) throws Exception {

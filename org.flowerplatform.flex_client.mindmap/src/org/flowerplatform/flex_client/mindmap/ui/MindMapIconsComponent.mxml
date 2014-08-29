@@ -22,17 +22,16 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:local="org.flowerplatform.flex_client.mindmap.ui.*"
-		 width="100%">
-	
-	<fx:Metadata>
-		[Event(name="noIcons",type="flash.events.Event")]
+		 >
 		
-	</fx:Metadata>
-	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
 			import spark.components.Group;
-			import spark.components.supportClasses.StyleableTextField;
+			import spark.components.RichText;
+			
+			import flashx.textLayout.conversion.TextConverter;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
@@ -41,7 +40,6 @@
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			
-					
 			public var icons:String;
 			
 			[SkinPart(required="true")]
@@ -69,37 +67,24 @@
 			/**
 			 * Method that fetches a list of custom icons paths in the user repository. 
 			 * @author Alina Bratu
-			 */
-			
+			 */			
 			private function getCustomIcons():void {
-				CorePlugin.getInstance().serviceLocator.invoke("mindMapService.getRepositoryCustomIcons",[Resources.getMessage("mindmap.custom_icons.path",[repoPath])],getCustomIconsResultHandler);
+				CorePlugin.getInstance().serviceLocator.invoke("mindMapService.getRepositoryCustomIcons", [Resources.getMessage("mindmap.custom_icons.path", [repoPath])], getCustomIconsResultHandler);
 			}
+			
 			/**
 			 * Gets the list of custom icons paths and, if <code>showOnlyRepositoryCustomIcons</code>
 			 * is false, gets also the list of default icons names. Calls  <code>addIcons</code> method 
 			 * which displays them.
 			 * @author Alina Bratu
 			 */
-			private function getCustomIconsResultHandler(list:String):void {
+			private function getCustomIconsResultHandler(list:ArrayCollection):void {
 				if (list != null) {
-					addIcons(list.split(';'),true);
+					addIcons(list.source, true);
 				}
 				if (!showOnlyRepositoryCustomIcons) {
-					addIcons(MindMapConstants.ICONS_LIST.split(';'),false);
-				}
-				else {
-					if (list == null) {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-							.setTitle(Resources.getMessage("mindmap.custom_icons.noIcons.title"))
-							.setText(Resources.getMessage("mindmap.custom_icons.noIcons"))
-							.setWidth(450)
-							.setHeight(150)
-							.setWordWrap(false)
-							.showMessageBox();
-						var ev:Event = new Event("noIcons");
-						dispatchEvent(ev);
-					}
-				}
+					addIcons(MindMapConstants.ICONS_LIST.split(';'), false);
+				}			
 			}
 			
 			/**
@@ -110,11 +95,11 @@
 				for (var i:int=0; i < icons.length; i++) {
 					var btnImage:MindMapButtonWithIcon = new MindMapButtonWithIcon();
 					if (areCustomIcons) {
-						btnImage.iconUrl = icons[i];
-						btnImage.setStyle("icon", CorePlugin.getInstance().getCustomResourceUrl(icons[i]));
+						btnImage.iconUrl = CorePlugin.getInstance().getCustomResourceUrl(icons[i]);
+						btnImage.setStyle("icon", FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(FlexUtilGlobals.getInstance().createAbsoluteUrl(btnImage.iconUrl)));
 					}
 					else {
-						btnImage.iconUrl = "images/mindmap/icons/" + icons[i] + ".png";
+						btnImage.iconUrl = Resources.getResourceUrl("images/mindmap/icons/" + icons[i] + ".png");
 						btnImage.setStyle("icon", Resources.mindmapIcons[icons[i]]);
 					}
 					
@@ -152,10 +137,8 @@
 				}
 				
 				if (partName == "contentGroup") {
-					var message:StyleableTextField = new StyleableTextField();
-					message.text = Resources.getMessage("resource.icon.custom");
-					message.width = 250;
-					message.wordWrap = true;
+					var message:RichText = new RichText();
+					message.textFlow = TextConverter.importToFlow(Resources.getMessage("mindmap.custom_icons.info", [Resources.getMessage("mindmap.custom_icons.path", [repoPath])]), TextConverter.TEXT_FIELD_HTML_FORMAT);
 					contentGroup.addElement(message);
 				}
 			}
@@ -181,13 +164,7 @@
 			protected function btnImage_clickHandler(event:MouseEvent):void {
 				var result:Object = new Object();
 				result.type = Utils.ADD;
-				var iconUrl:String = MindMapButtonWithIcon(event.target).iconUrl;
-				if (iconUrl.indexOf("mindmap_icons") != -1) {
-					result.iconUrl = CorePlugin.getInstance().getCustomResourceUrl(iconUrl);
-				}
-				else {
-					result.iconUrl = Resources.getResourceUrl(iconUrl);
-				}
+				result.iconUrl = MindMapButtonWithIcon(event.target).iconUrl;
 				handleClick(result);
 			}
 			

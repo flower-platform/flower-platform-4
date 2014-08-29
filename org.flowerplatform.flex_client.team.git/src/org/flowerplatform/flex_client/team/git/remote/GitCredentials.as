@@ -12,4 +12,4 @@ package org.flowerplatform.flex_client.team.git.remote{
 		public var password:String;
 		
 	}
-}
+} 

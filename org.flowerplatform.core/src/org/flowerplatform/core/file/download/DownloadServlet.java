@@ -15,47 +15,23 @@
  */
 package org.flowerplatform.core.file.download;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream.GetField;
-import java.io.OutputStream;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.download.remote.DownloadService;
-import org.flowerplatform.util.servlet.ResourcesServlet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Cristina Constantinescu
  */
 public class DownloadServlet extends LoadCustomFileServlet {
-
-	private static final Logger logger = LoggerFactory.getLogger(DownloadServlet.class);
-
+		   	
 	private static final long serialVersionUID = 1L;
-		   
-	public static final String DOWNLOAD_SERVLET_NAME = "/servlet/download";
-		
-	@Override
-	protected void writeToLog(HttpServletResponse resp) {
-		logger.trace("Downloading: {}", file.getAbsolutePath());
-		
-		resp.setContentType("application/octet-stream");
-		resp.setHeader("Content-Disposition", "attachment");
-		resp.setHeader("Cache-Control", "no cache");
-		
-	}
 	
+	public static final String DOWNLOAD_SERVLET_NAME = "/servlet/download";
+			
 	@Override
-	protected File getFile(HttpServletRequest req) {
+	protected Object getFile(HttpServletRequest req) throws Exception {
 		String info = req.getPathInfo();
 		String downloadId = info.substring(1, info.lastIndexOf("/"));
 	
@@ -64,8 +40,7 @@ public class DownloadServlet extends LoadCustomFileServlet {
 			// no data to download
 			return null;
 		}
-		return new File(downloadInfo.getPath());			
-		
+		return FileControllerUtils.getFileAccessController().getFile(downloadInfo.getPath());
 	}
 	
 }

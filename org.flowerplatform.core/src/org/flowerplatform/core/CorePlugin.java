@@ -203,6 +203,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return location;
 	}
 	
+	public String getCustomResourceUrl(String resource) {
+		return CoreConstants.LOAD_FILE_SERVLET + "/" + resource;
+	}
+	
 	public CorePlugin() {
 		super();
 			    
