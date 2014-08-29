@@ -24,6 +24,11 @@
 		 xmlns:local="org.flowerplatform.flex_client.mindmap.ui.*"
 		 width="100%">
 	
+	<fx:Metadata>
+		[Event(name="noIcons",type="flash.events.Event")]
+		
+	</fx:Metadata>
+	
 	<fx:Script>
 		<![CDATA[
 			import spark.components.Group;
@@ -33,7 +38,9 @@
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 			import org.flowerplatform.flex_client.mindmap.renderer.MindMapButtonWithIcon;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
+			
 					
 			public var icons:String;
 			
@@ -74,9 +81,24 @@
 			 * @author Alina Bratu
 			 */
 			private function getCustomIconsResultHandler(list:String):void {
-				addIcons(list.split(';'),true);
+				if (list != null) {
+					addIcons(list.split(';'),true);
+				}
 				if (!showOnlyRepositoryCustomIcons) {
 					addIcons(MindMapConstants.ICONS_LIST.split(';'),false);
+				}
+				else {
+					if (list == null) {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+							.setTitle(Resources.getMessage("mindmap.custom_icons.noIcons.title"))
+							.setText(Resources.getMessage("mindmap.custom_icons.noIcons"))
+							.setWidth(450)
+							.setHeight(150)
+							.setWordWrap(false)
+							.showMessageBox();
+						var ev:Event = new Event("noIcons");
+						dispatchEvent(ev);
+					}
 				}
 			}
 			

@@ -18,21 +18,27 @@ public class MindMapService {
 	public String getRepositoryCustomIcons(String repoPath) throws Exception {
 		String results = "";
 		File[] files = FileControllerUtils.getFileAccessController().getFileAsFile(FileControllerUtils.getFileAccessController().getFile(repoPath)).listFiles();
-		for (File file : files) {
-		    if (file.isFile() && file.getName().endsWith(".png")) {
-		    	BufferedImage image = ImageIO.read(file);
-		    	if (image.getWidth() == 16 && image.getHeight() == 16) {
-			        results += repoPath + '/' + file.getName() + ";";
-		    	}
-		    }
-		    else {
-		    	if (file.isDirectory()) {
-		    		results += getRepositoryCustomIcons(repoPath + '/' + file.getName()) + ";";
-		    	}
-		    }
-		    	
+		if (files != null) {
+			for (File file : files) {
+			    if (file.isFile() && file.getName().endsWith(".png")) {
+			    	BufferedImage image = ImageIO.read(file);
+			    	if (image.getWidth() == 16 && image.getHeight() == 16) {
+				        results += repoPath + '/' + file.getName() + ";";
+			    	}
+			    }
+			    else {
+			    	if (file.isDirectory()) {
+			    		results += getRepositoryCustomIcons(repoPath + '/' + file.getName()) + ";";
+			    	}
+			    }
+			    	
+			}
+			if (results != null) {
+				results = results.substring(0, results.lastIndexOf(';'));
+			}
+			
+			return results;
 		}
-		results = results.substring(0, results.lastIndexOf(';'));
-		return results;
+		return null;
 	}
 }
