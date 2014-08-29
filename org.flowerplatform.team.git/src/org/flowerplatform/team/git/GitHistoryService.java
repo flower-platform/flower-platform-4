@@ -143,8 +143,8 @@ public class GitHistoryService {
 		List<Node> result = new ArrayList<Node>();
 		
 		for (WebCommit commit : commitsAsArray) {
-			ArrayList<String> parents = new ArrayList<String>();
-			ArrayList<String> childs = new ArrayList<String>();
+			ArrayList<Node> parents = new ArrayList<Node>();
+			ArrayList<Node> children = new ArrayList<Node>();
 			commit.parseBody();
 			
 			Node entry = new Node(nodeUri, null);
@@ -161,7 +161,7 @@ public class GitHistoryService {
 			person = commit.getCommitterIdent();
 			entry.getProperties().put(GitConstants.COMMITTER, person.getName());
 			entry.getProperties().put(GitConstants.COMMITTER_EMAIL, person.getEmailAddress());
-			entry.getProperties().put(GitConstants.COMMITER_DATE, person.getWhen());
+			entry.getProperties().put(GitConstants.COMMITTER_DATE, person.getWhen());
 			
 			WebCommitPlotRenderer renderer = new WebCommitPlotRenderer(nodeUri, commit);
 			renderer.paint();
@@ -172,34 +172,25 @@ public class GitHistoryService {
 				WebCommit p = (WebCommit)commit.getParent(i);
 				p.parseBody();						
 				Node parent = new Node(nodeUri, null);
-				parent.getProperties().put(GitConstants.COMMIT_ID, p.getId().name());
+				parent.getProperties().put(GitConstants.COMMIT_ID, p.getName());
 				parent.getProperties().put(GitConstants.LABEL, p.getShortMessage());
-				parents.add(p.getName());
-				parents.add(p.getShortMessage());
+				parents.add(parent);
 			}				
-			
-			entry.getProperties().put(GitConstants.PARENT, parents);
+			entry.getProperties().put(GitConstants.PARENTS, parents);
 
 			for (int i = 0; i < commit.getChildCount(); i++) {
 				WebCommit p = (WebCommit)commit.getChild(i);
 				p.parseBody();					
 				Node child = new Node(nodeUri, null);
-				child.getProperties().put(GitConstants.COMMIT_ID, p.getId().name());
+				child.getProperties().put(GitConstants.COMMIT_ID, p.getName());
 				child.getProperties().put(GitConstants.LABEL, p.getShortMessage());
-				childs.add(p.getName());
-				childs.add(p.getShortMessage());
+				children.add(child);
 			}			
-			
-			entry.getProperties().put(GitConstants.CHILD, childs);		
+			entry.getProperties().put(GitConstants.CHILDREN, children);		
 			
 			List<String> currentBranches = new ArrayList<String>();
 			for (int i = 0; i < commit.getRefCount(); i++) {
-				int index = commit.getRef(i).getName().lastIndexOf("/");
-				if (index > 0) {
-					currentBranches.add(commit.getRef(i).getName().substring(index+1));
-				} else {
-					currentBranches.add(commit.getRef(i).getName());
-				}
+				currentBranches.add(Repository.shortenRefName(commit.getRef(i).getName())); 
 			}
 			entry.getProperties().put(GitConstants.BRANCHES, currentBranches);
 			
@@ -228,7 +219,7 @@ public class GitHistoryService {
 			setupWalk(walk, repo, null);
 		} else {
 			String file = FileControllerUtils.getFilePathFromNodeUri(nodeUri);
-			if (file != null && file.equals(GitConstants.DOT_GIT_SCHEME)) {
+			if (file != null && file.contains(Constants.DOT_GIT)) {
 				setupWalk(walk, repo, null);
 			} else {
 				setupWalk(walk, repo, file);				

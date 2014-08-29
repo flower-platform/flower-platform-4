@@ -41,7 +41,6 @@ license-end
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
-			import org.flowerplatform.flexutil.spinner.ModalSpinner;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 								
 			[Bindable]
