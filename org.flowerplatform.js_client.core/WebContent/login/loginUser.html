@@ -44,9 +44,50 @@
 	     js.src = "//connect.facebook.net/en_US/all.js";
 	     ref.parentNode.insertBefore(js, ref);
 	   }(document));
+	  
+	  (function() {
+		    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+		    po.src = 'https://apis.google.com/js/client.js?onload=onLoadCallback';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		  })();
+	  
+	  function onLoadCallback() {
+		    gapi.client.setApiKey('AIzaSyAQNYcRBpILtLCrTfiMf0Yrci6YqhhEP88');
+		    gapi.client.load('plus', 'v1',function(){});
+		}
+	  
+	  function login() {
+		  var myParams = {
+		    'clientid' : '882331124378-j5na21m8u2clveobm50up7eqmk894b3e.apps.googleusercontent.com',
+		    'cookiepolicy' : 'single_host_origin',
+		    'callback' : 'loginCallback',
+		    'approvalprompt':'force',
+		    'scope' : 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
+		  };
+		  gapi.auth.signIn(myParams);
+		}
+		 
+		function loginCallback(result) {
+		    if(result['status']['signed_in']) {
+		    	var request = gapi.client.plus.people.get({
+		    		   'userId': 'me'
+		    		 });
+		    		 request.execute(function(resp) {
+		    		    var primaryEmail;
+		    		    for (var i=0; i < resp.emails.length; i++) {
+		    		      if (resp.emails[i].type === 'account') primaryEmail = resp.emails[i].value;
+		    		    }
+		    		    document.getElementById('hiddenEmailField').value=primaryEmail;
+		  	          	document.getElementById('hiddenLoginMethodField').value='google';
+		  	          	console.log('Retrieved profile for:' + resp.displayName);
+		    		    console.log('Primary email: ' + primaryEmail);   		
+		  	          	document.forms["myForm"].submit();
+		    		 });
+		    } 
+		}
 	</script>
 
-	<form id="myForm" method="post" action="/org.flowerplatform.host.web_app/authenticate/loginUser">
+	<form method="post" id="myForm" action="/org.flowerplatform.host.web_app/authenticate/loginUser">
 		Username: <input type="text" name="name"/>
 		<br/><br/>
 		Password: <input type="password" name="password"/>
@@ -56,6 +97,8 @@
         <input type="hidden" id="hiddenEmailField" name="email"/>
 		<input type="hidden" id="hiddenLoginMethodField" name="loginMethod"/>
 		<img src="http://donatetab.firstgiving.com/images/fb-login-button.png" style="cursor:pointer;" onclick="Login()"/>                 
+		<br/>
+		<input type="button"  value="Login" onclick="login()" />
 	</form>
 </body>
 </html>

@@ -26,6 +26,12 @@ public class UserValidatorServlet extends HttpServlet {
             user = new UserPrincipal("facebookUser", email);
     		break;
     	}
+    	// TODO VB: Login with Google+
+    	case "google": {
+    		String email = request.getParameter("email"); 
+            user = new UserPrincipal("googleUser", email);
+    		break;
+    	}
     	// TODO VB: Usual login (username & password)
     	default:
     		// TODO VB: Get the user's info (username & password)
