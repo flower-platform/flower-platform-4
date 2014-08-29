@@ -7,12 +7,55 @@
 </head>
 
 <body>
-	<form action="/org.flowerplatform.host.web_app/authenticate/loginUser">
+	<div id="fb-root"></div>
+	<script>
+	  window.fbAsyncInit = function() {
+	    FB.init({
+	      appId      : '714528398641253', // Set YOUR APP ID
+	      status     : true, // check login status
+	      cookie     : true, // enable cookies to allow the server to access the session
+	      xfbml      : true  // parse XFBML
+	    });
+	    };
+	 
+	    function Login() {		
+	        FB.login(function(response) {
+	            if (response.authResponse) {	
+	                getUserInfo();          
+	            } else {
+	             console.log('User cancelled login or did not fully authorize.');
+	            }
+	         },{scope: 'email'}); 
+	    }
+	 
+	  	function getUserInfo() {
+	        FB.api('/me', function(response) {
+	          document.getElementById('hiddenEmailField').value=response.email;
+	          document.getElementById('hiddenLoginMethodField').value='facebook';
+              document.forms["myForm"].submit();
+	    });
+	    }
+	   
+	  // Load the SDK asynchronously
+	  (function(d){
+	     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	     if (d.getElementById(id)) {return;}
+	     js = d.createElement('script'); js.id = id; js.async = true;
+	     js.src = "//connect.facebook.net/en_US/all.js";
+	     ref.parentNode.insertBefore(js, ref);
+	   }(document));
+	</script>
+
+	<form id="myForm" method="post" action="/org.flowerplatform.host.web_app/authenticate/loginUser">
 		Username: <input type="text" name="name"/>
 		<br/><br/>
 		Password: <input type="password" name="password"/>
 		<br/>
-		<input type="submit" value="LogIn"/>      
+		<input type="submit" value="LogIn"/>
+		<br/>
+        <input type="hidden" id="hiddenEmailField" name="email"/>
+		<input type="hidden" id="hiddenLoginMethodField" name="loginMethod"/>
+		<img src="http://donatetab.firstgiving.com/images/fb-login-button.png" style="cursor:pointer;" onclick="Login()"/>                 
 	</form>
 </body>
 </html>
