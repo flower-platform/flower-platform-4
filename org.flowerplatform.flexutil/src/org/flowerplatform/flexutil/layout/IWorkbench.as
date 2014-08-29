@@ -37,5 +37,7 @@ package org.flowerplatform.flexutil.layout {
 		function getAllEditorViews(root:LayoutData, array:ArrayCollection):void;
 		function getEditorFromViewComponent(viewComponent:UIComponent):UIComponent;		
 		function getViewComponentForEditor(editor:UIComponent):UIComponent;
+		
+		function moveComponentNearWorkbench(sourceComponent:UIComponent, side:Number):void;
 	}
 }

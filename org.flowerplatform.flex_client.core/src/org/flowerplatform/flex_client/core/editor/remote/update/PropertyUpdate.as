@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.flex_client.core.editor.remote.update {
 	
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */
@@ -26,6 +27,7 @@ package org.flowerplatform.flex_client.core.editor.remote.update {
 		public var value:Object;
 		
 		public var isUnset:Boolean;
-		
+				
+				
 	}
 }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!---
 @author Alexandra Topoloaga
@@ -29,6 +29,8 @@ license-end
 			
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+			
+			public static const DEFAULT_PATH:String = "../../org.flowerplatform.flexdiagram.samples/icons/";
 			
 			public function get dataConverted():SampleMindMapModel {
 				return SampleMindMapModel(data);
@@ -85,11 +87,20 @@ license-end
 					background = dataConverted.background;
 				}
 				if (event == null || event.property == "icons") {
+					if (dataConverted.icons != null) {
+						for (var i:int = 0; i < dataConverted.icons.length; i++) {
+							if (dataConverted.icons.getItemAt(i).indexOf(DEFAULT_PATH) < 0) {
+								dataConverted.icons.setItemAt(DEFAULT_PATH + dataConverted.icons.getItemAt(i), i);
+							}
+						}
+					}
 					icons = dataConverted.icons;
 				}
 			} 
 			
-			
+			override protected function canDrawCircle():Boolean {	
+				return false;
+			}
 		]]>
 	</fx:Script>
 	

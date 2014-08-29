@@ -103,5 +103,10 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		public static const MINDMAP_CONTENT_TYPE:String = "mindmap";
 		public static const MINDMAP_EDITOR_NAME:String = "MindMap Editor";
+		
+		public static const REPO_ROOT:String = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
+		public static const LOAD_CUSTOM_ICONS:int = 1;
+		public static const LOAD_DEFAULT_ICONS:int = 2;
+		public static const CUSTOM_ICONS_DIRECTORY:String = "/mindmap_icons/";
 	}
 }

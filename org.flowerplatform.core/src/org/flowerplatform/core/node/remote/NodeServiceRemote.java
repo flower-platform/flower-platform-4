@@ -136,4 +136,8 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService();
 	}
 	
+	public void test() {
+		CorePlugin.addNewNode();
+	}
+	
 }

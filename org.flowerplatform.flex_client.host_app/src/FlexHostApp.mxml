@@ -50,6 +50,7 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
+			import mx.controls.TextArea;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
@@ -80,6 +81,14 @@
 			import mx.states.AddChild;
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
+			import mx.validators.RegExpValidator;
+			import mx.validators.StringValidator;
+			
+			import spark.core.ContentCache;
+			import spark.formatters.DateTimeFormatter;
+			import spark.layouts.TileLayout;
+			import spark.utils.DataItem;
+			import spark.validators.NumberValidator;
 			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
@@ -88,12 +97,6 @@
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
 			import org.flowerplatform.flexutil.spinner.LogoSpinner;
 			import org.flowerplatform.flexutil.spinner.ModalSpinner;
-			
-			import spark.core.ContentCache;
-			import spark.formatters.DateTimeFormatter;
-			import spark.layouts.TileLayout;
-			import spark.utils.DataItem;
-			import spark.validators.NumberValidator;
 			
 			// Classes from Flex framework, used by plugins. We put them here, to force them to
 			// be linked into this app. Otherwise, the compiler wouldn't include them in this app
@@ -111,9 +114,12 @@
 
 			// needed by .properties
 			NumberValidator;
+			RegExpValidator;
+			StringValidator;
 			
 			// needed by .mindmap
 			TileLayout;
+			TextArea;
 			
 			// needed by .core
 			DateTimeFormatter;

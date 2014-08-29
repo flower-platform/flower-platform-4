@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.remote.Update;
@@ -51,6 +53,7 @@ public class RemoteMethodInvocationListener {
 	 * so the client can react (e.g. close the obsolete editors).
 	 */
 	public void preInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
+		CorePlugin.addNewNode();
 		remoteMethodInvocationInfo.setStartTimestamp(new Date().getTime());
 
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
@@ -135,7 +138,7 @@ public class RemoteMethodInvocationListener {
 						}
 						logger.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
 					}
-				}				
+				}
 			}
 			if (resourceNodeIdToUpdates.size() > 0) {
 				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.UPDATES, resourceNodeIdToUpdates);

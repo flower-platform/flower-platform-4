@@ -1,18 +1,18 @@
 /* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 /**
  * 
  * @author Vlad Bogdan Manica
@@ -32,6 +32,8 @@ package org.flowerplatform.flex_client.team.git.action
 	
 	 
 	public class CheckoutAction extends ActionBase  {
+		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.CheckoutAction";
 		
 		public function CheckoutAction() {						
 			super();				
@@ -82,16 +84,6 @@ package org.flowerplatform.flex_client.team.git.action
 			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout",[nodeUri],null,FaultCallback);						
 		}
 		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE) {
-					return true; 
-				}
-			}
-			return false;
-		}
-
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0))		
 			var Name:String = node.properties[GitConstants.NAME];

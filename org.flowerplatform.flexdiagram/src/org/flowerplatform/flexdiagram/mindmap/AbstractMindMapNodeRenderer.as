@@ -1,5 +1,24 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexdiagram.mindmap {
+	import flash.system.Capabilities;
+	
 	import mx.collections.IList;
+	import mx.core.DPIClassification;
+	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.PropertyChangeEvent;
@@ -24,6 +43,12 @@ package org.flowerplatform.flexdiagram.mindmap {
 	public class AbstractMindMapNodeRenderer extends DataRenderer implements IDiagramShellContextAware {
 		
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
+
+		protected static const circleRadius:int = 3;
+		
+		protected static const TEXT_COLOR_DEFAULT:uint = 0x000000;
+		
+		protected static const FONT_STYLE_DEFAULT:String = "SansSerif";
 		
 		public static const CLOUD_TYPE_NONE:String = "No shape";
 		
@@ -47,15 +72,23 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Graphic properties supported by this renderer.
 		 *************************************************************************/
 		public function set text(value:String):void {
-			_label.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT); 
+			_label.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
 		}
 		
 		public function set fontFamily(value:String):void {
+			if (value == null) {
+				_label.setStyle("fontFamily", Utils.getSupportedFontFamily(FONT_STYLE_DEFAULT));
+			} else {
 			_label.setStyle("fontFamily", Utils.getSupportedFontFamily(value));
+			}
 		}
 		
 		public function set fontSize(value:Number):void {
-			_label.setStyle("fontSize", value);
+			if (value == 0) {
+				_label.setStyle("fontSize", ((Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72) * 9);	
+			} else {
+				_label.setStyle("fontSize", ((Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72) * value);
+			}
 		}
 		
 		public function set fontWeight(value:Boolean):void {
@@ -67,11 +100,19 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		public function set textColor(value:uint):void {
-			_label.setStyle("color", value);
+			if (value == 0) {
+				_label.setStyle("color", TEXT_COLOR_DEFAULT);
+			} else {
+				_label.setStyle("color", value);
+			}
 		}
 		
 		public function set background(value:uint):void {
+			if (value == 0) {
+				background = BACKGROUND_COLOR_DEFAULT
+			} else {
 			backgroundColor = value;
+			}
 		}
 		
 		public function set cloudColor(value:uint):void {
@@ -88,8 +129,9 @@ package org.flowerplatform.flexdiagram.mindmap {
 			if (_icons != null) {
 				_icons.removeEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);
 			}
-			if (value == _icons)
+			if (value == _icons) {
 				return;
+			}
 			_icons = value;
 			if (_icons != null) {
 				_icons.addEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);				
@@ -101,6 +143,44 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Other functions.
 		 *************************************************************************/
 		
+		public function AbstractMindMapNodeRenderer() {
+			mouseEnabledWhereTransparent = true;
+			
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				minHeight = 22;
+				minWidth = 10;
+			} else {
+				switch (applicationDPI) {
+					case DPIClassification.DPI_320:	{
+						minHeight = 88;
+						break;
+					}
+					case DPIClassification.DPI_240:	{
+						minHeight = 66;
+						break;
+					}
+					default: {
+						// default PPI160
+						minHeight = 44;
+						break;
+					}
+				}
+			}
+			setLayout();
+		}
+		
+		public function setLayout():void {
+			var hLayout:HorizontalLayout = new HorizontalLayout();
+			hLayout.gap = 2;
+			hLayout.paddingBottom = 2;
+			hLayout.paddingTop = 2;
+			hLayout.paddingLeft = 2;
+			hLayout.paddingRight = 2;
+			hLayout.verticalAlign = "middle";
+			
+			this.layout = hLayout;
+		}
+				
 		public function get diagramShellContext():DiagramShellContext {			
 			return _context;
 		}
@@ -116,6 +196,29 @@ package org.flowerplatform.flexdiagram.mindmap {
 			return diagramShellContext != null ? MindMapDiagramShell(diagramShellContext.diagramShell) : null;
 		}
 		
+		public function get applicationDPI():Number	{
+			return FlexGlobals.topLevelApplication.applicationDPI;
+		}
+		
+		override public function set data(value:Object):void {
+			if (data != null) {
+				endModelListen();
+			}
+			super.data = value;
+			if (data != null) {
+				beginModelListen();
+			}
+		}
+		
+		protected function beginModelListen():void {
+			data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);	
+			modelChangedHandler(null);
+		}
+		
+		protected function endModelListen():void {
+			data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+		}
+				
 		/**
 		 * We need to inform the system about the real dimensions of the renderer. The system will
 		 * process the nodes again, with the real dimensions.
@@ -141,35 +244,16 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 		}
 		
-		override public function set data(value:Object):void {
-			if (data != null) {
-				endModelListen();
-			}
-			super.data = value;
-			if (data != null) {
-				beginModelListen();
-			}
-		}
-		
-		protected function beginModelListen():void {
-			data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);	
-			modelChangedHandler(null);
-		}
-		
-		protected function endModelListen():void {
-			data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
-		}
-		
 		/**
 		 * Invoked when <code>data</code> changes or when the mind map system
 		 * recalculates data in the dynamic object.
 		 */
 		protected function modelChangedHandler(event:PropertyChangeEvent):void {
+			throw new Error("This method needs to be implemented.");
 		}
 		
 		override protected function createChildren():void {
 			super.createChildren();
-			layout = new HorizontalLayout;
 			_label = new FocusableRichText();
 			_label.percentHeight = 100;
 			_label.percentWidth = 100;			
@@ -228,24 +312,45 @@ package org.flowerplatform.flexdiagram.mindmap {
 			graphics.lineStyle(1, 0x808080);
 			graphics.beginFill(backgroundColor, 1);
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);
+			if (canDrawCircle()) {
+				drawLittleCircle();
+			}
 			graphics.endFill();
 		}
 		
+		protected function drawLittleCircle(circleY:Number=NaN):void {
+			if (isNaN(circleY)) {
+				circleY = height/2;
+			}
+			graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
+			var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
+			if (side == MindMapDiagramShell.POSITION_LEFT) {
+				graphics.drawCircle(-circleRadius, circleY, circleRadius);
+			} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
+				graphics.drawCircle(width + circleRadius, circleY, circleRadius);
+			}
+		}
+		
+		protected function canDrawCircle():Boolean {
+			throw new Error("This method needs to be implemented.");
+		}
+		
 		protected function handleIconsChanged(event:CollectionEvent):void {			
-			/* // delete all the icons displayed and display the whole list again
+			/* 
+			// delete all the icons displayed and display the whole list again
 			while (getElementAt(0) is BitmapImage) {
-			removeElementAt(0);
+				removeElementAt(0);
 			}
 			if (_icons != null) {
 			for (var i:Number = 0; i < _icons.length; i++) {
-			var iconDisplay:BitmapImage = new BitmapImage();
-			iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-			iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(i));
-			iconDisplay.verticalAlign = "middle";
-			iconDisplay.depth = UIComponent(this).depth;
-			addElementAt(iconDisplay, i);
-			}
-			}*/
+				var iconDisplay:BitmapImage = new BitmapImage();
+				iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
+				iconDisplay.source =FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));// FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(i));
+				iconDisplay.verticalAlign = "middle";
+				iconDisplay.depth = UIComponent(this).depth;
+				addElementAt(iconDisplay, i);
+				}
+			}*/ 
 			var i:Number;
 			var j:Number;
 			var iconDisplay:BitmapImage;
@@ -260,38 +365,49 @@ package org.flowerplatform.flexdiagram.mindmap {
 				while (getElementAt(n) is BitmapImage) {
 					n++;
 				}	//number of icons displayed at this moment
-				for (i = 0; i < Math.min(n,_icons.length); i++) {
-					if (getElementAt(i) != _icons.getItemAt(i)) {
-						while (getElementAt(i) is BitmapImage) {
-							removeElementAt(i);
-						}
-						for (j = i; j < Math.min(n,_icons.length); j++) {
-							iconDisplay = new BitmapImage();
-							iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-							iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(j));
-							iconDisplay.verticalAlign = "middle";
-							iconDisplay.depth = UIComponent(this).depth;
-							addElementAt(iconDisplay, j);
-						}
-						break;
-						deleted = true;
-					}
-				}
-				if (n >= _icons.length) {
-					if (deleted == false) {
-						while (getElementAt(_icons.length) is BitmapImage) {
-							removeElementAt(_icons.length);	
-						}
-					}
-				} else {
-					for (i = n; i < _icons.length; i++) {
+				if (n == 0) {
+					for (i = 0; i <_icons.length; i++) {
 						iconDisplay = new BitmapImage();
 						iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-						iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(i));
+						iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));//("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(j));
 						iconDisplay.verticalAlign = "middle";
 						iconDisplay.depth = UIComponent(this).depth;
 						addElementAt(iconDisplay, i);
-					}	
+					}
+				} else {
+					for (i = 0; i < Math.min(n,_icons.length); i++) {
+						if (getElementAt(i) != _icons.getItemAt(i)) {
+							while (getElementAt(i) is BitmapImage) {
+								removeElementAt(i);
+							}
+							for (j = i; j < Math.min(n,_icons.length); j++) {
+								iconDisplay = new BitmapImage();
+								iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
+								iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j));//("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(j));
+								iconDisplay.verticalAlign = "middle";
+								iconDisplay.depth = UIComponent(this).depth;
+								addElementAt(iconDisplay, j);
+							}
+							break;
+							deleted = true;
+						}
+					}
+					if (n >= _icons.length) {
+						if (deleted == false) {
+							while (getElementAt(_icons.length) is BitmapImage) {
+								removeElementAt(_icons.length);	
+							}
+						}
+					} else {
+						for (i = n; i < _icons.length; i++) {
+							iconDisplay = new BitmapImage();
+							iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
+							iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j)); //("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(i));
+							iconDisplay.verticalAlign = "middle";
+							iconDisplay.depth = UIComponent(this).depth;
+							addElementAt(iconDisplay, i);
+						}	
+					}
 				}
 			}
 		}

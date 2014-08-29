@@ -64,8 +64,5 @@ public class Test extends SuperClassFromModel implements IFromSource, IFromModel
 	}
 
 	public int t;
-
-	class InternalClassFromModel {
-	}
 	
 }
