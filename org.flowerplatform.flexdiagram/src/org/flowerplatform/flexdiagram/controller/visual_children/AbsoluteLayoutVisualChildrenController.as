@@ -213,7 +213,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 //						// follows the reused Figure 
 //						EditPartToAddEntry(editPartsToAdd[figToReuseEntry.nextEditPartToAddIndex]).correctionStartingWithMe--;			
 //					}
-//					
+//					               
 //					// position the figure to the correct index 
 //					AbsolutePositionEditPartUtils.setChildFigureIndex(IVisualElementContainer(getFigure()), IVisualElement(currentFigure), entry.visualIndex + currentCorrection);
 //					figToReuseEntry = null;

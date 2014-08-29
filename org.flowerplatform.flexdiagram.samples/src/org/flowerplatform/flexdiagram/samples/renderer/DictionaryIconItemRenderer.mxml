@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--@author Diana Balutoiu
+-->
+<s:DataRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.Pair;
+			
+			public function get dataConverted():Pair {
+				return Pair(data);
+			}
+			override public function set data(pair:Object):void {
+				super.data = pair;
+				
+				labelKey.text = String(dataConverted.a);
+				labelValue.text = String(dataConverted.b);
+
+			}
+			
+			
+		]]>
+	</fx:Script>
+
+	<s:Group id="rect">
+		<s:Rect width="100%" height="100%" >
+			<s:stroke>
+				<s:SolidColorStroke color="0x000000" weight="1" />
+			</s:stroke>
+		</s:Rect>
+		
+		<s:HGroup id="group">
+			<mx:Label id="labelKey"/>
+			<mx:Label id="labelValue" />
+		</s:HGroup>
+	</s:Group>
+	
+	
+</s:DataRenderer>

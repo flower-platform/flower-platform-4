@@ -96,7 +96,12 @@ license-end
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				layout = new VerticalLayout();
-			//	str.text = "Just a random String";
+				mindMapNode.text = dataConverted.text;
+				mindMapNode.fontFamily = dataConverted.fontFamily;
+				mindMapNode.fontSize = dataConverted.fontSize;
+				mindMapNode.fontWeight = dataConverted.fontWeight;
+				mindMapNode.fontStyle = dataConverted.fontStyle;
+				mindMapNode.percentWidth = 100;
 				
 			}
 			
@@ -163,10 +168,5 @@ license-end
 		]]>
 	</fx:Script>
 	
-	<mindmap:AbstractMindMapNodeRenderer id="str" 
-										 fontFamily = "{dataConverted.fontFamily}"
-										 fontSize = "{dataConverted.fontSize}"
-										 fontWeight = "{dataConverted.fontWeight}"
-										 fontStyle = "{dataConverted.fontStyle}"
-										 text = "{dataConverted.text}"/>
+	<mindmap:AbstractMindMapNodeRenderer id="mindMapNode"/>
 </s:DataRenderer>

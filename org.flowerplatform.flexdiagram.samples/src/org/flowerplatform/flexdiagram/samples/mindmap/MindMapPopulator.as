@@ -39,8 +39,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			rootModel.children.addItem(getMindMapModel(rootModel));
 			rootModel.children.addItem(getMindMapModel(rootModel));
 			rootModel.expanded = true;
-			rootModel.subModels.addItem(new BasicSubModel("bsm1", rootModel));
-			rootModel.subModels.addItem(new BasicSubModel("bsm2", rootModel));
+			rootModel.subModelsDict["key1"] = "value1";
+			rootModel.subModelsDict["key2"] = "value2";
+			rootModel.subModelsDict["key3"] = "value3";
 			
 			var child2:SampleMindMapModel = getMindMapModel(rootModel);	
 			child2.side = MindMapDiagramShell.POSITION_LEFT;
@@ -49,6 +50,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			}
 			child2.children.addItem(getMindMapModel(child2));	
 			child2.hasChildren = true;
+			child2.subModelsDict["key1"] = "value1";
+			child2.subModelsDict["key2"] = "value1";
+			child2.subModelsDict["key3"] = "value1";
+			
 			
 			rootModel.children.addItem(child2);
 			rootModel.hasChildren = true;
@@ -63,13 +68,11 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			child.children.addItem(getMindMapModel(child));
 			child.hasChildren = true;
 			child.parent = rootModel;
-			child.subModels.addItem(new BasicSubModel("bsm3", rootModel));
-			child.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child.subModels.addItem(new BasicSubModel("bsm4", rootModel));
+			child.subModelsDict["key1"] = "value1";
+			child.subModelsDict["key2"] = "value1";
+			child.subModelsDict["key3"] = "value1";
+			child.subModelsDict["key4"] = "value1";
+			child.subModelsDict["key5"] = "value1";
 			
 			rootModel.children.addItem(child);
 			
@@ -78,10 +81,14 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			child1.children.addItem(getMindMapModel(child1));
 			child1.hasChildren = true;
 			child1.parent = rootModel;	
-			child1.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child1.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child1.subModels.addItem(new BasicSubModel("bsm4", rootModel));
-			child1.subModels.addItem(new BasicSubModel("bsm4", rootModel));
+			child1.subModelsDict["key1"] = "value11";
+			child1.subModelsDict["key2"] = "value11";
+			child1.subModelsDict["key3"] = "value11";
+			child1.subModelsDict["key4"] = "value11";
+			child1.subModelsDict["key5"] = "value11";
+			child1.subModelsDict["key6"] = "value11";
+			child1.subModelsDict["key7"] = "value11";
+
 
 			rootModel.children.addItem(child1);	
 			
@@ -96,13 +103,13 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			var child111:SampleMindMapModel = getMindMapModel(child11);				
 			child111.children.addItem(getMindMapModel(child111));
 			child111.children.addItem(getMindMapModel(child111));
-			child111.hasChildren = true;
+			child111.subModelsDict["key1"] = "value11";
+			child111.subModelsDict["key2"] = "value11";
+			child111.subModelsDict["key3"] = "value11";
+			child111.subModelsDict["key4"] = "value11";
+			child111.subModelsDict["key5"] = "value11";
+			child11.hasChildren = true;
 			child11.children.addItem(child111);
-			child11.subModels.addItem(new BasicSubModel("bsm5", rootModel));
-			child11.subModels.addItem(new BasicSubModel("bsm6", rootModel));
-			child111.subModels.addItem(new BasicSubModel("bsm7", rootModel));
-			
-			
 			
 			modelHolder.rootModel = rootModel;
 			

@@ -18,6 +18,7 @@ package org.flowerplatform.flexutil {
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
+	[Bindable]
 	[RemoteClass(alias="org.flowerplatform.util.Pair")]
 	public class Pair {
 		

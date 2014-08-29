@@ -15,8 +15,11 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	
+	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
+	
+	import flashx.textLayout.elements.ParagraphElement;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -25,6 +28,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.Pair;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -32,6 +36,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	public class SampleMindMapModelChildrenController extends ModelChildrenController {
 		
 		private static const EMPTY_LIST:ArrayList = new ArrayList();
+		
 				
 		override public function getParent(context:DiagramShellContext, model:Object):Object {
 			return SampleMindMapModel(model).parent;
@@ -40,7 +45,16 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
 			// no children; this controller is used only to dispatch events
 			//return EMPTY_LIST;
-			return SampleMindMapModel(model).subModels;
+			var list:IList = new ArrayCollection();
+			
+			
+			for(var key:Object in SampleMindMapModel(model).subModelsDict) {
+				var dictionaryEntry:Pair = new Pair();
+				dictionaryEntry.a = key;
+				dictionaryEntry.b = SampleMindMapModel(model).subModelsDict[key];
+				list.addItem(dictionaryEntry);
+			}
+			return list;
 		}
 		
 		

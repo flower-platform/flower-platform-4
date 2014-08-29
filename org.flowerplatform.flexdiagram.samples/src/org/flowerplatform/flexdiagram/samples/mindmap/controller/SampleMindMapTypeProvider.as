@@ -20,6 +20,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
+	import org.flowerplatform.flexutil.Pair;
 	
 	public class SampleMindMapTypeProvider implements ITypeProvider {
 		
@@ -32,6 +33,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 			}
 			if (model is BasicSubModel) {
 				return "basicSubModel1";
+			}
+			if (model is Pair) { //Pair??
+				return "dictionaryEntry"
 			}
 			return null;
 		}

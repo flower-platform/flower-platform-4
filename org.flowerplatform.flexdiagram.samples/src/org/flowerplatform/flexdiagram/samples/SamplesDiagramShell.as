@@ -84,8 +84,9 @@ package org.flowerplatform.flexdiagram.samples {
 			
 			registry.getOrCreateTypeDescriptor("basicSubModel1")
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))
-				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider())
-
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider());
+			
+			
 					
 		}
 		

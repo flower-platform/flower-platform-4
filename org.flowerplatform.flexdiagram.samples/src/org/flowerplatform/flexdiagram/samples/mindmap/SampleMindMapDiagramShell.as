@@ -34,7 +34,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeWithBasicSubmodulesRenderer;
-	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
+	import org.flowerplatform.flexdiagram.samples.renderer.DictionaryIconItemRenderer;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -65,10 +65,16 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
 				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER,  new MindMapAbsoluteLayoutVisualChildrenController());
 			
-			registry.getOrCreateTypeDescriptor("basicSubModel1")
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))				
-				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())	;			
-//				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider());
+//			registry.getOrCreateTypeDescriptor("basicSubModel1")
+//				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))				
+//				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())	;			
+////				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider());
+//			
+			registry.getOrCreateTypeDescriptor("dictionaryEntry")
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(DictionaryIconItemRenderer))
+				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider());		
+			
+
 
 		}
 				

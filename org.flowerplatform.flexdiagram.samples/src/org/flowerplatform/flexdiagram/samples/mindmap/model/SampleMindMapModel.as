@@ -41,6 +41,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var fontStyle:Boolean;
 		
 	//	public var subModels:ParentAwareArrayList = new ParentAwareArrayList(this);
+		
 		public var subModelsDict:Dictionary  = new Dictionary();
 		
 	}	
