@@ -27,7 +27,6 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
 	import org.flowerplatform.flexutil.iframe.EmbedViewProvider;
-	import org.flowerplatform.flexutil.iframe.IFrameOpenUrl;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;

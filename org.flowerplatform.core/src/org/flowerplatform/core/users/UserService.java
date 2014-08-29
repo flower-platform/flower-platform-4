@@ -12,7 +12,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 
 /**
  * @author Mariana Gheorghe
@@ -23,30 +30,38 @@ public class UserService {
 	private List<Node> users = new ArrayList<Node>();
 	
 	public UserService() {
-		users.add(newTestUser("John"));
-		users.add(newTestUser("Jane"));
-		users.add(newTestUser("Jim"));
+//		users.add(newTestUser("John"));
+//		users.add(newTestUser("Jane"));
+//		users.add(newTestUser("Jim"));
 	}
 	
-	private Node newTestUser(String login) {
-		Node node = new Node("user:test|" + login, "user");
-		node.getProperties().put("login", login);
-		node.getProperties().put("name", login + " " + login + "son");
-		node.getProperties().put("email", login + "@domain.com");
-		
-		//set an admin
-		if (login.equals("Jim")) {
-			node.getProperties().put("isAdmin", true);
-		}
-		return node;
-	}
+//	private Node newTestUser(String login) {
+//		Node node = new Node("user:test|" + login, "user");
+//		node.getProperties().put("login", login);
+//		node.getProperties().put("name", login + " " + login + "son");
+//		node.getProperties().put("email", login + "@domain.com");
+//		
+//		//set an admin
+//		if (login.equals("Jim")) {
+//			node.getProperties().put("isAdmin", true);
+//		}
+//		return node;
+//	}
 	
 	@GET
 	public List<Node> getUsers() {
+		String pathUri = "fpp:|.users";
+		new ResourceServiceRemote().subscribeToParentResource(pathUri);
+		Node node =  CorePlugin.getInstance().getResourceService().getNode(pathUri);
+		
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+		users = CorePlugin.getInstance().getNodeService().getChildren(node,context);
+		
 		return users;
 	}
 	
-	@GET @Path("/{nodeUri}")
+	@GET @Path("/{nodeUri}")	
 	@Produces(MediaType.APPLICATION_JSON)
 	public Node getUser(@PathParam("nodeUri") String nodeUri) {
 		for (Node user : users) {
