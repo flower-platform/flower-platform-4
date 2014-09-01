@@ -67,22 +67,28 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 					.showMessageBox();
 				return;
 			}
-			
+
 			var view:SelectObjListPopup = new SelectObjListPopup();
 			view.listProvider = new ArrayList(resourceUris);
 			view.resultHandler = function(resourceUri:String):void {
 				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", 
-					[Node(obj).nodeUri, resourceUri], 
-					function(matchUri:String):void {CorePlugin.getInstance().openEditor(new Node(matchUri), null, true)});
+					[Node(obj).nodeUri, resourceUri],  null 
+					/*function(matchUri:String):void {CorePlugin.getInstance().openEditor(new Node(matchUri), null, true)}*/);
 			};
-			
+
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setTitle(Resources.getMessage("regex.generateMatches.title"))
 				.setIcon(Resources.reloadIcon)
 				.setViewContent(view)
 				.setHeight(300)
 				.setWidth(300)
-				.show();			
+				.show();
+			// parse all the files in a given folder File System/.regex-configs/ActionScript/test-files/*
+			// and call 
+			//CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", [Node(obj).nodeUri, resourceUri],  null)
+			// for each of them
+			
+			// or... call just one server method, which does everything, parses the files, and calls this methods for each of them
 		}
 		
 	}

@@ -5,6 +5,8 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_C;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_L;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCHES_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.RESOURCE_URI;
@@ -20,8 +22,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
 import org.flowerplatform.codesync.regex.State;
 import org.flowerplatform.core.CoreConstants;
@@ -35,6 +37,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexConfiguration;
@@ -72,20 +75,26 @@ public class CodeSyncRegexService {
 		
 		// get parent (matches file will be created next to regexConfig File)
 		Object parentFile = fileController.getParentFile(file);
-		String parentFilePath = fileController.getPath(parentFile);		
+		String parentFilePath = fileController.getPath(parentFile) + "/" + REGEX_MATCH_FILES_FOLDER;		
 		String parentNodeUri = FileControllerUtils.createFileNodeUri(CoreUtils.getRepoFromNode(resourceNode), parentFilePath);
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
 				
 		// create matches file
 		Node matchFile = new Node(null, CoreConstants.FILE_NODE_TYPE);			
 		context = new ServiceContext<NodeService>(nodeService);
-		context.getContext().put(NAME, FileControllerUtils.getNextAvailableName(String.format("%s/matches_%s.regexMatches", parentFilePath, FilenameUtils.removeExtension(fileController.getName(textFile)))));
+//		context.getContext().put(NAME, FileControllerUtils.getNextAvailableName(String.format("%s/matches_%s.regexMatches", parentFilePath, FilenameUtils.removeExtension(fileController.getName(textFile)))));
+		String matchFileName = String.format("%s.regexMatches", fileController.getName(textFile));
+		context.getContext().put(NAME, matchFileName);
+
 		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, false);
+		context.getContext().put(CoreConstants.OVERWRITE_IF_NECESSARY, true);
 		nodeService.addChild(parent, matchFile, context);
 		
 		// subscribe file using fpp schema
-		String matchUri = matchFile.getNodeUri().replace(FILE_SCHEME, "fpp");
+		String matchUri = matchFile.getNodeUri().replaceFirst(FILE_SCHEME, "fpp");
 		new ResourceServiceRemote().subscribeToParentResource(matchUri);
+		CorePlugin.getInstance().getResourceSetService().reload(matchUri, new ServiceContext<ResourceSetService>());
+		
 		
 		// get matches root node & save the textNodeUri as property
 		final Node matchRoot = CorePlugin.getInstance().getResourceService().getNode(matchUri);
@@ -101,7 +110,7 @@ public class CodeSyncRegexService {
 		final RegexProcessingSession session = regexConfig.startSession(textFileContent);
 		
 		session.context.put("stateStack", new ArrayList<Object>());
-		Node child = new Node(null, FILE);
+		Node child = new Node(null, REGEX_MATCHES_NODE_TYPE); // CodeSyncConstantsFILE
 		nodeService.addChild(matchRoot, child, context);
 		((ArrayList<Object>)session.context.get("stateStack")).add(0, new State(0, child));
 		// find matches

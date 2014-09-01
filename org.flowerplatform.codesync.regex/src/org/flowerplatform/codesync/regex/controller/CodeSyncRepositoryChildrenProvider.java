@@ -13,10 +13,11 @@
  * 
  * license-end
  */
-package org.flowerplatform.codesync.controller;
+package org.flowerplatform.codesync.regex.controller;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.MDA;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_NODE_TYPE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,8 @@ public class CodeSyncRepositoryChildrenProvider extends AbstractController imple
 				virtualNodeHandler.createVirtualNodeUri(repo, CODESYNC, null), null));
 		children.add(virtualNodeHandler.createNodeFromRawNodeData(
 				virtualNodeHandler.createVirtualNodeUri(repo, MDA, null), null));
+		children.add(virtualNodeHandler.createNodeFromRawNodeData(
+				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_CONFIGS_NODE_TYPE, null), null));
 		return children;
 	}
 

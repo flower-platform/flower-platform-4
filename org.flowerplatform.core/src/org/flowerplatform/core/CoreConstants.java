@@ -75,6 +75,8 @@ public class CoreConstants {
 	public static final String CONFIG_SETTING_DISABLED = "configSettingDisabled";
 	public static final String CATEGORY_CONFIG_SETTINGS = UtilConstants.CATEGORY_PREFIX + "configSettings";
 	
+	public static final String OVERWRITE_IF_NECESSARY = "overrideIfNecessary";
+	
 	//////////////////////////////////
 	// File node properties
 	//////////////////////////////////

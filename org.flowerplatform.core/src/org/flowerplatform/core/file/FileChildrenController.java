@@ -20,15 +20,18 @@ import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.OVERWRITE_IF_NECESSARY;
 import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
 import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
@@ -116,9 +119,17 @@ public class FileChildrenController extends AbstractController
 		child.setNodeUri(createFileNodeUri(getRepoFromNode(parentNode), getFileAccessController().getPath(fileToCreate)));
 		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
 		
+		Boolean overwrite = (Boolean) context.get(OVERWRITE_IF_NECESSARY);
 		if (getFileAccessController().exists(fileToCreate)) {
-			throw new RuntimeException("There is already a file with the same name in this location.");
-		} else if (!getFileAccessController().createFile(fileToCreate, isDir)) {
+			if(overwrite == null || overwrite == false){
+				throw new RuntimeException("There is already a file with the same name in this location.");
+			} else {
+				// this file already exists, but I want to overwrite it
+ 				((File) fileToCreate).delete();
+				CorePlugin.getInstance().getNodeService().removeChild(parentNode, child, context);
+			}
+		}
+		if (!getFileAccessController().createFile(fileToCreate, isDir)) {
 			throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
 		}
 	}

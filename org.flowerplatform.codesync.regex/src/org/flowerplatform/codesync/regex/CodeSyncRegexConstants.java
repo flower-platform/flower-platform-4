@@ -36,6 +36,23 @@ public class CodeSyncRegexConstants {
 	public static final String ACTION_TYPE_INCREASE_NESTING_LEVEL = "IncreaseNestingLevelAction";
 	public static final String ACTION_TYPE_DECREASE_NESTING_LEVEL = "DecreaseNestingLevelAction";
 
+	public static final String REGEX_CONFIGS_NODE_TYPE = "regexConfigs";
+	public static final String REGEX_CONFIGS_FOLDER = ".regex-configs";
+	public static final String REGEX_CONFIG_FILE = ".regex-config";
+	public static final String REGEX_TECHNOLOGY_NODE_TYPE = "regexTechnology";
+	public static final String REGEXES_NODE_TYPE = "regExes";
+
+	public static final String REGEX_TEST_FILES_NODE_TYPE = "testFiles";
+	public static final String REGEX_TEST_FILES_FOLDER = "test-files";
+	public static final String REGEX_TEST_FILE_NODE_TYPE = "testFile";
+
+	public static final String REGEX_MATCH_FILES_FOLDER = "match-files";
+	
+	public static final String REGEX_MODEL_TREE_NODE_TYPE = "modelTree";
+	public static final String REGEX_EXPECTED_MODEL_TREE_NODE_TYPE = "expectedModelTree";
+	public static final String REGEX_MATCHES_NODE_TYPE = "matches";
+	public static final String REGEX_EXPECTED_MATCHES_NODE_TYPE = "expectedMatches";
+	
 	//////////////////////////////////
 	// File Extensions
 	//////////////////////////////////
