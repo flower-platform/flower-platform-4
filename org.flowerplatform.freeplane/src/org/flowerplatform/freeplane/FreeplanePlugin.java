@@ -44,7 +44,7 @@ import org.flowerplatform.freeplane.controller.MindMapRemoveNodeController;
 import org.flowerplatform.freeplane.controller.PersistenceAddNodeProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertiesProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertySetter;
-import org.flowerplatform.freeplane.remote.MindMapServiceRemote;
+import org.flowerplatform.freeplane.remote.FreeplaneServiceRemote;
 import org.flowerplatform.freeplane.resource.FreeplaneMindmapResourceHandler;
 import org.flowerplatform.freeplane.resource.FreeplanePersistenceResourceHandler;
 import org.flowerplatform.freeplane.style.controller.MindMapStyleChildrenProvider;
@@ -126,7 +126,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_RESOURCE_PREFIX + MIND_MAP_STYLE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider());
 		
-		CorePlugin.getInstance().getServiceRegistry().registerService("mindmapService", new MindMapServiceRemote());	
+		CorePlugin.getInstance().getServiceRegistry().registerService("freeplaneService", new FreeplaneServiceRemote());	
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {

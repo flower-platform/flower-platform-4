@@ -25,6 +25,7 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */ 
 	public class MinimizeAction extends WorkbenchAction {
+		
 		public function MinimizeAction(bench:Workbench) {
 			super(bench);
 			

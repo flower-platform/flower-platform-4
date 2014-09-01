@@ -24,6 +24,8 @@ package org.flowerplatform.flex_client.core.node_tree {
 	 */
 	public class NodeTreeAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.node_tree.NodeTreeAction";
+		
 		public function NodeTreeAction() {
 			super();
 			orderIndex = 20;

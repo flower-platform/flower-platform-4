@@ -157,6 +157,9 @@ public class CoreConstants {
 	 * An example is {@link CoreConstants#IS_DIRTY}: if option not set, the update will be registered on parent resource -> bad.
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
+
+	public static final String OVERRIDE = "override";
+	
 	
 	/**
 	 * Used to save the last value of a node's property in context, before the property is updated 
@@ -169,6 +172,7 @@ public class CoreConstants {
 	// Resource
 	//////////////////////////////////
 	
+	public static final String SELF_RESOURCE = "self";
 	public static final String CATEGORY_RESOURCE_PREFIX = UtilConstants.CATEGORY_PREFIX + "resource.";
 	
 	//////////////////////////////////
@@ -206,5 +210,10 @@ public class CoreConstants {
 	public static final String DEFAULT_SUFFIX = ".default";
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
+
+	public static final String PNG_EXTENSION = ".png";
+	
+	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
+
 	
 }
