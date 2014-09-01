@@ -1,41 +1,26 @@
-/* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
-package org.flowerplatform.flex_client.properties.property_line_renderer {
-	
+package org.flowerplatform.flexutil.properties.property_line_renderer {
 	import flash.events.MouseEvent;
 	
 	import spark.components.Button;
 	
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-
+	
 	/**
+	 * @author Diana Balutoiu
 	 * @author Cristina Constantinescu
-	 */ 
+	 */
 	public class PreferenceDefaultPropertyLineRenderer extends PreferencePropertyLineRenderer {
-				
+		
 		protected var copyToUser:Button;
 		protected var copyToGlobal:Button;
 		
-		override protected function createChildren():void {			
+		override protected function createChildren():void {
 			copyToGlobal = new Button();
 			copyToGlobal.toolTip = Resources.getMessage("preference.copy.to.global");
 			copyToGlobal.setStyle("icon", Resources.propertiesIcon);
 			copyToGlobal.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void {setPreference(globalPropertyName)});
-					
+			
 			copyToUser = new Button();
 			copyToUser.toolTip = Resources.getMessage("preference.copy.to.user");
 			copyToUser.setStyle("icon", Resources.propertiesIcon);
@@ -46,10 +31,9 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 				copyToUser.height = copyToGlobal.height = 22
 			}
 			super.createChildren()
-				
+			
 			rendererArea.addElement(copyToGlobal);			
-			rendererArea.addElement(copyToUser);				
-		}		
-	
+			rendererArea.addElement(copyToUser);	
+		}
 	}
 }

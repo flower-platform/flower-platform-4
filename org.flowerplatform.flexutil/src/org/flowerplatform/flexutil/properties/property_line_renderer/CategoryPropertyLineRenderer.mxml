@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Diana Balutoiu
+@author Sebastian Solomon
+-->
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  implements="org.flowerplatform.flexutil.properties.property_line_renderer.IPropertyLineRenderer"
+		  width="100%" verticalAlign="middle" gap="0">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.properties.remote.PropertyDescriptor;
+			
+			private var _propertyDescriptor:PropertyDescriptor;			
+			private var _nodeObject:Object;		//node from mindmap
+			
+			
+			public function get propertyDescriptor():PropertyDescriptor {
+				return _propertyDescriptor;
+			}
+			
+			public function set propertyDescriptor(value:PropertyDescriptor):void {				
+				if (_propertyDescriptor == value) {
+					return;
+				}
+				_propertyDescriptor = value;
+				
+				if (_propertyDescriptor == null) {
+					return;
+				}		
+				
+				if (labelDisplay != null) {
+					labelDisplay.text = _propertyDescriptor.title != null ? _propertyDescriptor.title : _propertyDescriptor.name;
+				}
+				labelDisplay.setStyle("paddingRight", (labelDisplay.text == null || labelDisplay.text == "") ? 0 : 15);				
+			}
+			
+			public function get nodeObject():Object {
+				return _nodeObject;
+			}
+			
+			public function set nodeObject(value:Object):void {
+				_nodeObject = value;
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<s:Label id="labelDisplay" fontWeight="bold" />
+	<s:Group width="100%" >
+		<s:Line width="100%" >
+			<s:stroke>
+				<s:SolidColorStroke color="0xC4CCCC" weight="2" caps="square"/>
+			</s:stroke>
+		</s:Line>
+	</s:Group>	
+</s:HGroup>

@@ -17,12 +17,11 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 	
 	import flash.events.MouseEvent;
 	
+	import spark.components.CheckBox;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.StylePropertyWrapper;
 	import org.flowerplatform.flex_client.resources.Resources;
-	
-	import spark.components.CheckBox;
 
 	/**
 	 * @author Cristina Constantinescu

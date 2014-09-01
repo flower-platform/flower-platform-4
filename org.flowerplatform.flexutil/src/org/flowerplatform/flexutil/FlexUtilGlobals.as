@@ -28,6 +28,7 @@ package org.flowerplatform.flexutil {
 	import org.flowerplatform.flexutil.popup.IMessageBoxFactory;
 	import org.flowerplatform.flexutil.popup.IPopupHandlerFactory;
 	import org.flowerplatform.flexutil.popup.IProgressMonitorFactory;
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.selection.SelectionManager;
 	import org.flowerplatform.flexutil.shortcut.KeyBindings;
 
@@ -85,6 +86,11 @@ package org.flowerplatform.flexutil {
 		 * @author Cristina Contantinescu
 		 */
 		public var actionHelper:ActionHelper = new ActionHelper();
+		
+		/**
+		 * @author Balutoiu Diana
+		 */
+		public var propertiesHelper:PropertiesHelper = new PropertiesHelper();
 		
 		/**
 		 * @author Cristina Contantinescu
