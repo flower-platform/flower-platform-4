@@ -15,46 +15,47 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import mx.core.UIComponent;
-	
+	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
+	import org.flowerplatform.flex_client.mindmap.action.ExpandCollapseAction;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
+	import org.flowerplatform.flexdiagram.tool.ActionTool;
 	import org.flowerplatform.flexdiagram.tool.ScrollTool;
 	import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
+	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.FactoryWithInitialization;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
-		private var _nodeRegistry:NodeRegistry;
+		private var _nodeRegistry:*;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
 									
-			var tools:Array = [ScrollTool, ZoomTool, SelectOnClickTool, MindMapDragTool];
-			if (!FlexUtilGlobals.getInstance().isMobile) {
-				tools.push(InplaceEditorTool);
-			}
-			registerTools(tools);
+			registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
+			registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
+			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
+			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
+			registerTool(OpenAction.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
+			registerTool(ExpandCollapseAction.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
 		}
 			
-		public function get nodeRegistry():NodeRegistry {
+		public function get nodeRegistry():* {
 			return _nodeRegistry;
 		}
 
-		public function set nodeRegistry(value:NodeRegistry):void {
+		public function set nodeRegistry(value:*):void {
 			_nodeRegistry = value;
 			_nodeRegistry.addNodeChangeListener(this);
 		}

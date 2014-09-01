@@ -7,9 +7,6 @@
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.PathRenderer"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.controller.NodeWithDetailsRendererController"/>
     <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.constants.CodeSyncSdiffConstants"/>
-    <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.controller.SDiffNodeWithPathRenderer"/>
-    <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.CodeSyncSDiffConstants"/>
-    <classEntry path="org.flowerplatform.flex_client.codesync.sdiff.controller.SDiffNodeRendererController"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

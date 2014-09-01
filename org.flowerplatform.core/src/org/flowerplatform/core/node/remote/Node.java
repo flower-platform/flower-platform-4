@@ -47,7 +47,11 @@ public class Node implements Externalizable {
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
+	
+	public Node() {
 		
+	}
+	
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);

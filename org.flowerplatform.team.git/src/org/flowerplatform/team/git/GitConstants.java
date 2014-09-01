@@ -23,13 +23,7 @@ import org.flowerplatform.util.UtilConstants;
 public class GitConstants {
 
 	/////////////////////////////////////////////////////////////
-	// Scheme
-	/////////////////////////////////////////////////////////////
-	
-	public static final String GIT_SCHEME = "git";
-
-	/////////////////////////////////////////////////////////////
-	// Node types
+	//Node type in Git folder hierarchy
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_REPO_TYPE = "gitRepo";
@@ -42,17 +36,28 @@ public class GitConstants {
 	public static final String GIT_TAG_TYPE = "gitTag";
 	public static final String GIT_REMOTE_TYPE = "gitRemote";
 		
+	////////////////////////////////////////////////////////////
+	//Categories
+	////////////////////////////////////////////////////////////
+	
 	public static final String GIT_CATEGORY = UtilConstants.CATEGORY_PREFIX + "git";
 	public static final String GIT_REF = UtilConstants.CATEGORY_PREFIX + "gitRef";
-		
+	
 	/////////////////////////////////////////////////////////////
-	// Node Properties
+	//Schemes
+	/////////////////////////////////////////////////////////////
+	
+	public static final String GIT_SCHEME = "git";
+	
+	/////////////////////////////////////////////////////////////
+	// Git Node Properties
 	/////////////////////////////////////////////////////////////
 	
 	public static final String NAME = "name";
 	public static final String IS_GIT_REPOSITORY = "isGitRepository";
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
+
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";
 
@@ -66,11 +71,34 @@ public class GitConstants {
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
 	/////////////////////////////////////////////////////////////
-	//Reset types
+	// Other
 	/////////////////////////////////////////////////////////////
+
+	public static final String TEPORARY_LOCATION = "\tmp";
+	public static final int NETWORK_TIMEOUT_SEC = 30;
 	
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
+
+	/////////////////////////////////////////////////////////////
+	//Git File States
+	/////////////////////////////////////////////////////////////
+		
+	public static final String UNTRACKED = "images/team.git/untracked.gif";	
+	public static final String STAGE_REMOVED = "images/team.git/staged_removed.gif";
+	public static final String STAGE_ADDED = "images/team.git/staged_added.gif";
+	public static final String UNSTAGED = "images/team.git/unstaged.gif";
+	public static final String STAGED = "images/team.git/staged.gif";
+	public static final String FILE =  "images/core/file.gif";
+	public static final String CONFLICTED =  "images/team.git/conflict.gif";
+	
+	public static final String ADD = "ADD";	
+	public static final String DELETE = "DELETE";
+	public static final String MODIFY = "MODIFY";
+	public static final String RENAME = "RENAME";
+	public static final String COPY = "COPY";
+
+	public static final String GIT_PREFIX_SESSION = "git|";
 
 }

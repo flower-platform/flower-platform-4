@@ -149,7 +149,7 @@
 			override protected function okHandler(event:Event=null):void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createStructureDiffFromGitCommits", 
 					[startHash.text, endHash.text, repo, 
-					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.getTextInput()])],
+					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.text])],
 					function(node:Node):void {
 						CorePlugin.getInstance().openEditor(node);
 						cancelHandler();
@@ -202,7 +202,7 @@
 		</s:VGroup>
 		
 		<cs:TextInputWithAutoCompleteLabelComponent id="outputFileComponent"
-													autoCompletelabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
+													autoCompleteLabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
 													labelText="{Resources.getMessage('codesync.sdiff.createSdiff.fileName')}"/>
 	</s:VGroup>	
 	

@@ -14,6 +14,8 @@
  * license-end
  */
 package org.flowerplatform.flex_client.team.git.action {
+
+	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -27,6 +29,8 @@ package org.flowerplatform.flex_client.team.git.action {
 	 * @author Marius Iacob
 	 */
 	public class DeleteBranchAction extends ActionBase {
+		
+		public static const ID:String = "org.flowerplatform.flex_client.team.git.action.DeleteBranchAction";
 		
 		public function DeleteBranchAction() {
 			super();
@@ -52,7 +56,7 @@ package org.flowerplatform.flex_client.team.git.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			
+
 			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 				.setText(Resources.getMessage("team.git.action.deleteBranch.message", [node.getPropertyValue(GitConstants.FULL_NAME)]))
 				.setTitle(Resources.getMessage("info"))
