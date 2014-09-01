@@ -384,7 +384,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MATCHES_TYPE)
 				.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexMatches.root")))
-				.addAdditiveController(CHILDREN_PROVIDER, new RegexMatchesChildrenProvider());
+				.addAdditiveController(CHILDREN_PROVIDER, new RegexMatchesChildrenProvider().setOrderIndexAs(10000));
 
 		CorePlugin
 				.getInstance()

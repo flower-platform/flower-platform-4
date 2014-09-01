@@ -49,7 +49,7 @@ package org.flowerplatform.flex_client.codesync.regex.ui {
 		}
 		
 		override protected function getViewResult():Object {
-			return [super.getViewResult(), textInput.fullText, textInput.override];				
+			return [super.getViewResult(), /*textInput.fullText,*/ textInput.override];				
 		}
 		
 	}

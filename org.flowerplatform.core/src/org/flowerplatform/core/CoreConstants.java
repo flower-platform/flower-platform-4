@@ -75,7 +75,7 @@ public class CoreConstants {
 	public static final String CONFIG_SETTING_DISABLED = "configSettingDisabled";
 	public static final String CATEGORY_CONFIG_SETTINGS = UtilConstants.CATEGORY_PREFIX + "configSettings";
 	
-	public static final String OVERWRITE_IF_NECESSARY = "overrideIfNecessary";
+	public static final String OVERWRITE_IF_NECESSARY = "overwriteIfNecessary";
 	
 	//////////////////////////////////
 	// File node properties
@@ -161,7 +161,7 @@ public class CoreConstants {
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
 	
-	public static final String OVERRIDE = "override";
+	//	public static final String OVERRIDE = "override";
 	
 	//////////////////////////////////
 	// Resource

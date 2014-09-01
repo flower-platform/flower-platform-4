@@ -81,14 +81,15 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			view.node = Node(obj);
 			view.resultHandler = function(data:Array):void {
 			CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", 
-			[Node(obj).nodeUri, data[0], data[1], data[2]], 
-					function(matchUri:String):void { 
-						if (allResourceUris.indexOf(matchUri) != -1) {
-							CorePlugin.getInstance().nodeRegistryManager.serviceInvocator.invoke("resourceService.reload", [CorePlugin.getInstance().nodeRegistryManager.getResourceSetsForResourceUris([matchUri])[0]]);
-						} else {
-							CorePlugin.getInstance().openEditor(new Node(matchUri), null);
-						}
-					});
+			[Node(obj).nodeUri, data[0], data[1]], null 
+//					function(matchUri:String):void { 
+//						if (allResourceUris.indexOf(matchUri) != -1) {
+//							CorePlugin.getInstance().nodeRegistryManager.serviceInvocator.invoke("resourceService.reload", [CorePlugin.getInstance().nodeRegistryManager.getResourceSetsForResourceUris([matchUri])[0]]);
+//						} else {
+//							CorePlugin.getInstance().openEditor(new Node(matchUri), null);
+//						}
+//					}
+			);
 			};
 
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()

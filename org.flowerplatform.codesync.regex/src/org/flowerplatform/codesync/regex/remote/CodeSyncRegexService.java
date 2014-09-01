@@ -74,7 +74,7 @@ public class CodeSyncRegexService {
 		return list;
 	}
 	
-	public String generateMatches(String nodeUri, String textNodeUri, String newPath, boolean override) throws Exception {
+	public String generateMatches(String nodeUri, String textNodeUri, boolean overwrite) throws Exception {
 		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> context;	
 		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
@@ -83,13 +83,12 @@ public class CodeSyncRegexService {
 		// get text file & content
 		Object textFile = fileController.getFile(FileControllerUtils.getFilePathWithRepo(textNodeUri));		
 		final String textFileContent = IOUtils.toString((InputStream) fileController.getContent(textFile));
-
-		Object fileToGenerate = FileControllerUtils.getFileAccessController().getFile(newPath);
-		Object parentFile = fileController.getParentFile(fileToGenerate);
+				
+		// get regexConfig file
+		Object file = fileController.getFile(FileControllerUtils.getFilePathWithRepo(resourceNode));
 		
-		if (!fileController.exists(parentFile)) {
-			fileController.createFile(parentFile, true);
-		}
+		// get parent (matches file will be created under match-files, under parent)
+		Object parentFile = fileController.getParentFile(file);
 		String parentFilePath = fileController.getPath(parentFile) + "/" + REGEX_MATCH_FILES_FOLDER;		
 		String parentNodeUri = FileControllerUtils.createFileNodeUri(CoreUtils.getRepoFromNode(resourceNode), parentFilePath);
 		
@@ -103,7 +102,7 @@ public class CodeSyncRegexService {
 		context.getContext().put(NAME, matchFileName);
 
 		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, false);
-		context.getContext().put(CoreConstants.OVERWRITE_IF_NECESSARY, true);
+		context.getContext().put(CoreConstants.OVERWRITE_IF_NECESSARY, overwrite);
 		nodeService.addChild(parent, matchFile, context);
 		
 		// subscribe file using fpp schema
