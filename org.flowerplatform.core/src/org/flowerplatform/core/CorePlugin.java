@@ -21,6 +21,8 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
+import static org.flowerplatform.core.CoreConstants.USERS;
+import static org.flowerplatform.core.CoreConstants.USER;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -236,8 +238,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		virtualNodeResourceHandler.addVirtualNodeType(ROOT_TYPE);
 		virtualNodeResourceHandler.addVirtualNodeType(REPOSITORY_TYPE);
 		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("users");
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("user");
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())

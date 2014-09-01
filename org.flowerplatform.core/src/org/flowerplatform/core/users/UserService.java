@@ -1,5 +1,10 @@
 package org.flowerplatform.core.users;
 
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +21,9 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.util.Utils;
+import org.flowerplatform.core.node.resource.ResourceService;
 
 /**
  * @author Mariana Gheorghe
@@ -30,9 +34,6 @@ public class UserService {
 	private List<Node> users = new ArrayList<Node>();
 	
 	public UserService() {
-//		users.add(newTestUser("John"));
-//		users.add(newTestUser("Jane"));
-//		users.add(newTestUser("Jim"));
 	}
 	
 //	private Node newTestUser(String login) {
@@ -48,55 +49,68 @@ public class UserService {
 //		return node;
 //	}
 	
+	@SuppressWarnings("deprecation")
 	@GET
 	public List<Node> getUsers() {
-		String pathUri = "fpp:|.users";
-		new ResourceServiceRemote().subscribeToParentResource(pathUri);
-		Node node =  CorePlugin.getInstance().getResourceService().getNode(pathUri);
+		new ResourceServiceRemote().subscribeToParentResource(CoreConstants.USERS_PATH);
+		Node node =  CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH);
 		
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
 		users = CorePlugin.getInstance().getNodeService().getChildren(node,context);
-		
+			for (Node user : users){
+				user.setNodeUri(URLEncoder.encode(user.getNodeUri()));
+			}
+	
 		return users;
 	}
 	
 	@GET @Path("/{nodeUri}")	
 	@Produces(MediaType.APPLICATION_JSON)
 	public Node getUser(@PathParam("nodeUri") String nodeUri) {
-		for (Node user : users) {
-			if (user.getNodeUri().equals(nodeUri)) {
-				return user;
-			}
+		
+		ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
+		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+		Node user = CorePlugin.getInstance().getResourceService().getNode(nodeUri, context);
+		
+		if (user != null) {
+			return user;
 		}
+
 		return null;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Node saveUser(Node user) {
-		if (user.getNodeUri() == null) {
-			// new user
-			user.setNodeUri("user:test|" + user.getProperties().get("login"));
-			users.add(user);
+	public Node saveUser(Node user) throws UnsupportedEncodingException {
+
+	 Node parent = CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH);
+		if (user.getType() == null) {
+			user.setType(CoreConstants.USER);
+			CorePlugin.getInstance().getNodeService().addChild(
+					parent, 
+					user, 
+					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
+			
 		}
 		
-		Node mem = getUser(user.getNodeUri());
+		//CorePlugin.getInstance().getNodeService().setProperty(user, "name", user.getPropertyValue("name"),  new ServiceContext<NodeService>());
+		//CorePlugin.getInstance().getNodeService().setProperty(user, "email", user.getPropertyValue("email"), new ServiceContext<NodeService>());
+		//CorePlugin.getInstance().getNodeService().setProperty(user, "login", user.getPropertyValue("login"),  new ServiceContext<NodeService>());
 		
-		mem.getProperties().put("login", user.getProperties().get("login"));
-		mem.getProperties().put("name", user.getProperties().get("name"));
-		mem.getProperties().put("email", user.getProperties().get("email"));
-		return mem;
+		user.getProperties().put("login", user.getPropertyValue("login"));
+		
+		return user;
 	}
 	
 	@DELETE @Path("/{nodeUri}")
 	public void deleteUser(@PathParam("nodeUri") String nodeUri) {
-		for (Node user : users) {
-			if (user.getNodeUri().equals(nodeUri)) {
-				users.remove(user);
-				break;
-			}
-		}
+		
+		CorePlugin.getInstance().getNodeService().removeChild(
+				CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH), 
+				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
 }

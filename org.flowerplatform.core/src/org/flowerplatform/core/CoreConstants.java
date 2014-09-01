@@ -201,4 +201,14 @@ public class CoreConstants {
 	public static final String USER_SUFFIX = ".user";
 		
 	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
+	
+	
+	//////////////////////////////////
+	// Users
+	//////////////////////////////////
+	
+	public static final String USERS = "users";
+	public static final String USER = "user";
+	public static final String USERS_PATH = "fpp:|.users";
+	
 }
