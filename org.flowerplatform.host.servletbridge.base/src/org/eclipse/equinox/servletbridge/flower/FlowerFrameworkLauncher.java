@@ -17,20 +17,11 @@ package org.eclipse.equinox.servletbridge.flower;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Policy;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
 
 import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
 import org.eclipse.equinox.servletbridge.FrameworkLauncher;
@@ -114,7 +105,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 	
 	private static final String WORKSPACE = "/workspace";
 	
-	private static final String FLOWER_PROPERTIES_DIRECTORY = "/.flower-properties";
+	private static final String DEFAULT_FLOWER_PLATFORM_HOME_DIR = "/.flower-platform";
 
 	@Override
 	public void init() {
@@ -144,8 +135,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 	}
 
 	/**
-	 * Reads the configuration file and generates some properties if in dev. mode.
-	 * @see web.xml file for parameter documentation
+	 * Reads the launcher.properties file (if exists) and generates some properties if in dev. mode.
 	 * 
 	 * @author Cristian Spiescu
 	 * @author Cristina Brinza
@@ -154,42 +144,45 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 	@Override
 	protected Map buildInitialPropertyMap() {
 		// determining which is the Flower Platform Home dir
+		// 1st try: system property
 		String flowerPlatformHomeDirectoryPath = System.getProperty(FLOWER_PLATFORM_HOME);
 		if (flowerPlatformHomeDirectoryPath == null) {
+			// 2nd try: environment variable
 			flowerPlatformHomeDirectoryPath = System.getenv(FLOWER_PLATFORM_HOME); 
 			if (flowerPlatformHomeDirectoryPath == null) {
-				flowerPlatformHomeDirectoryPath = System.getProperty("user.home") + FLOWER_PROPERTIES_DIRECTORY;
+				// 3rd try: default location
+				flowerPlatformHomeDirectoryPath = System.getProperty("user.home") + DEFAULT_FLOWER_PLATFORM_HOME_DIR;
 			}
+			// put the value as a property, so others can access it
 			System.setProperty(FLOWER_PLATFORM_HOME, flowerPlatformHomeDirectoryPath);
 		}		
-		File homeFolder = new File(flowerPlatformHomeDirectoryPath);
-		if (!homeFolder.exists()) {
-			homeFolder.mkdirs();			
+		File homeDir = new File(flowerPlatformHomeDirectoryPath);
+		if (!homeDir.exists()) {
+			homeDir.mkdirs();			
 		}
 		
 		String eclipseConfigurationLocation = "WEB-INF/eclipse/configuration";
 		String developmentLaunchConfiguration = null;
 		
 		// loading and parsing launcher properties
-		// an example can be found in META-INF/launcher.properties
 		File localPropertiesFile = new File(System.getProperty(FLOWER_PLATFORM_HOME) + LAUNCHER_PROPERTIES);
 		if (localPropertiesFile.exists()) {
 			// read the properties from local.properties
-			Properties localProperties = new Properties();
-			FileInputStream localPropertiesFileInputStream = null;
+			Properties launcherProperties = new Properties();
+			FileInputStream launcherPropertiesFileInputStream = null;
 			try {
-				localPropertiesFileInputStream = new FileInputStream(localPropertiesFile);
-				localProperties.load(localPropertiesFileInputStream);
-				developmentLaunchConfiguration = localProperties.getProperty("developmentLaunchConfiguration");
+				launcherPropertiesFileInputStream = new FileInputStream(localPropertiesFile);
+				launcherProperties.load(launcherPropertiesFileInputStream);
+				developmentLaunchConfiguration = launcherProperties.getProperty("developmentLaunchConfiguration");
 				if (developmentLaunchConfiguration == null) {
-					eclipseConfigurationLocation = localProperties.getProperty("eclipseConfigurationLocation");
+					eclipseConfigurationLocation = launcherProperties.getProperty("eclipseConfigurationLocation");
 				}
 			} catch (Exception e) {
-				// won't happen; file exists here
+				throw new RuntimeException("Error while parsing " + LAUNCHER_PROPERTIES, e);
 			} finally {
-				if (localPropertiesFileInputStream != null)
+				if (launcherPropertiesFileInputStream != null)
 					try {
-						localPropertiesFileInputStream.close();
+						launcherPropertiesFileInputStream.close();
 					} catch (IOException e) {
 						// ignore
 					}
@@ -215,7 +208,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			String relativeOsgiConfigurationArea = eclipseConfigurationLocation;
 			osgiConfigurationArea = context.getRealPath(relativeOsgiConfigurationArea);
 			if (!(new File(osgiConfigurationArea).exists())) {
-				throw new RuntimeException(osgiConfigurationArea + " file not found.");
+				throw new RuntimeException("Is the system starting in dev mode? Then make sure 'FLOWER_PLATFORM_HOME/launcher.properties' exists and contains a value for 'developmentLaunchConfiguration'. Otherwise, if the system is starting in prod mode, there's an issue because 'osgiConfigurationArea' = " + osgiConfigurationArea + " doesn't exist.");
 			}
 			
 			String pluginsDir = osgiConfigurationArea + "/../plugins";
@@ -261,9 +254,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 				}
 		}
 		
-		// generate osgi.instance.area a.k.a. -data a.k.a. workspace location
-		String workspaceLocation = System.getProperty(FLOWER_PLATFORM_HOME) + WORKSPACE;
-		String osgiInstanceArea = workspaceLocation;		
+		String osgiInstanceArea = System.getProperty(FLOWER_PLATFORM_HOME) + WORKSPACE;		
 		
 		try {
 			// if path doesn't exist, create it

@@ -22,6 +22,14 @@ public class CoreConstants {
 	public static final String APP_VERSION = "0.1.1";
 	public static final String API_VERSION = "0.1.0";
 	
+	/**
+	 * When this class loads, the launcher code (from <code>FlowerFrameworkLauncher</code>) has already
+	 * populated this property. So it's safe to use it as a constant throughout the whole plugins.
+	 */
+	public static final String FLOWER_PLATFORM_HOME = System.getProperty("FLOWER_PLATFORM_HOME");
+	public static final String LOGBACK_CONFIG_FILE = "/logback.xml";
+	public static final String DEFAULT_LOG_PATH = "META-INF" + LOGBACK_CONFIG_FILE;
+	
 	//////////////////////////////////
 	// Node types and schemes
 	//////////////////////////////////
@@ -197,9 +205,4 @@ public class CoreConstants {
 	public static final String DEFAULT_SUFFIX = ".default";
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
-		
-	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
-
-	public static final String FLOWER_PLATFORM_HOME = "FLOWER_PLATFORM_HOME";
-	public static final String DEFAULT_LOG_PATH = "META-INF/logback.xml";
 }

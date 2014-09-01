@@ -25,8 +25,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.flowerplatform.core.CoreConstants.FLOWER_PLATFORM_HOME;
-
 /**
  * Central repository for configuration related properties.
  * 
@@ -49,7 +47,7 @@ public class FlowerProperties extends Properties {
 	public static final long DB_VERSION = 0;
 	
 	private static final String PROPERTIES_FILE = "META-INF/flower-platform.properties";
-	private static final String PROPERTIES_FILE_LOCAL = System.getProperty(FLOWER_PLATFORM_HOME) + "/flower-platform.properties";
+	private static final String PROPERTIES_FILE_LOCAL = CoreConstants.FLOWER_PLATFORM_HOME + "/flower-platform.properties";
 	
 	/* package */ FlowerProperties() {
 		super();
