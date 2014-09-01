@@ -161,6 +161,8 @@ public class CoreConstants {
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
 	
+	public static final String OVERRIDE = "override";
+	
 	//////////////////////////////////
 	// Resource
 	//////////////////////////////////
@@ -172,8 +174,10 @@ public class CoreConstants {
 	// Updates
 	//////////////////////////////////
 	
+	public static final String UPDATE_PROPERTY = "UPDATED";
 	public static final String UPDATE_CHILD_ADDED = "ADDED";
 	public static final String UPDATE_CHILD_REMOVED = "REMOVED";
+	public static final String UPDATE_REQUEST_REFRESH = "REQUEST_REFRESH";
 	
 	//////////////////////////////////
 	// Content types
@@ -201,6 +205,9 @@ public class CoreConstants {
 	public static final String DEFAULT_SUFFIX = ".default";
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
-		
-	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
+
+	public static final String PNG_EXTENSION = ".png";
+	
+	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
+
 }

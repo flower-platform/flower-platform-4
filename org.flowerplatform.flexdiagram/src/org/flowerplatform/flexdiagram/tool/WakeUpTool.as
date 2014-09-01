@@ -14,16 +14,14 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.tool {
-	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.ui.Keyboard;
+	import flash.utils.Timer;
 	
 	import mx.collections.ArrayList;
-	import mx.core.mx_internal;
-	import mx.utils.ArrayUtil;
 	
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	
@@ -39,10 +37,14 @@ package org.flowerplatform.flexdiagram.tool {
 		public static const MOUSE_DOWN:String = "mouseDown";
 		public static const MOUSE_UP:String = "mouseUp";
 		public static const MOUSE_RIGHT_CLICK:String = "mouseRightClick";
+		public static const DOUBLE_CLICK:String ="doubleClick";
+		public static const CLICK:String ="click";
 		
 		public var listeners:ArrayList = new ArrayList();
 			
-		public var myEventType:String;
+		protected var myEventType:String; 
+		
+		private var isDoubleClick:Boolean = false;
 		
 		public function WakeUpTool(diagramShell:DiagramShell) {
 			super(diagramShell);
@@ -57,11 +59,14 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramShell.tools[WakeUpTool].listeners.addItem(listener);
 		}
 		
-		override public function activateAsMainTool():void {			
+		override public function activateAsMainTool():void {
+			diagramRenderer.doubleClickEnabled = true;
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);			
 			diagramRenderer.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.addEventListener(MouseEvent.RIGHT_CLICK, rightClickHandler);
+			diagramRenderer.addEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickHandler);
+			diagramRenderer.addEventListener(MouseEvent.CLICK, clickHandler);
 			super.activateAsMainTool();
 		}
 		
@@ -70,6 +75,9 @@ package org.flowerplatform.flexdiagram.tool {
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);			
 			diagramRenderer.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			diagramRenderer.removeEventListener(MouseEvent.RIGHT_CLICK, rightClickHandler);
+			diagramRenderer.removeEventListener(MouseEvent.DOUBLE_CLICK, mouseDoubleClickHandler);
+			diagramRenderer.removeEventListener(MouseEvent.CLICK, clickHandler);
+
 			super.deactivateAsMainTool();
 		}
 				
@@ -97,7 +105,7 @@ package org.flowerplatform.flexdiagram.tool {
 		
 		private function mouseDownHandler(event:MouseEvent):void {
 			myEventType = MOUSE_DOWN;			
-			dispatchMyEvent(myEventType, event);			
+			dispatchMyEvent(myEventType, event);	
 		}
 		
 		private function mouseMoveHandler(event:MouseEvent):void {
@@ -113,7 +121,27 @@ package org.flowerplatform.flexdiagram.tool {
 				myEventType = MOUSE_UP;
 				dispatchMyEvent(myEventType, event);
 				reset();
-			}			
+			}
+		}
+		
+		private function mouseDoubleClickHandler(event:MouseEvent):void {
+			myEventType = DOUBLE_CLICK;
+			dispatchMyEvent(myEventType, event);
+			isDoubleClick = true;
+		}
+		
+		private function clickHandler(event:MouseEvent):void {
+			/*A timer is needed so that the clickEvent won`t be dispatched along with the doubleClickEvent */
+			isDoubleClick = false;
+			var timer:Timer = new Timer(250, 1);
+			timer.addEventListener(TimerEvent.TIMER, function (e:TimerEvent):void {
+				if (!isDoubleClick && myEventType != MOUSE_DRAG) {
+					myEventType = CLICK;
+					dispatchMyEvent(myEventType, event);
+				}
+				isDoubleClick = false;
+			});
+			timer.start();		
 		}
 		
 		private function dispatchMyEvent(eventType:String, initialEvent:MouseEvent):void {			

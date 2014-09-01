@@ -1,6 +1,20 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.codesync.regex.remote;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_C;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_L;
@@ -10,6 +24,7 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MAT
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.RESOURCE_URI;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.SHOW_GROUPED_BY_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_C;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_L;
@@ -23,7 +38,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
 import org.flowerplatform.codesync.regex.State;
 import org.flowerplatform.core.CoreConstants;
@@ -60,7 +74,7 @@ public class CodeSyncRegexService {
 		return list;
 	}
 	
-	public String generateMatches(String nodeUri, String textNodeUri) throws Exception {
+	public String generateMatches(String nodeUri, String textNodeUri, String newPath, boolean override) throws Exception {
 		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> context;	
 		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
@@ -69,14 +83,16 @@ public class CodeSyncRegexService {
 		// get text file & content
 		Object textFile = fileController.getFile(FileControllerUtils.getFilePathWithRepo(textNodeUri));		
 		final String textFileContent = IOUtils.toString((InputStream) fileController.getContent(textFile));
-				
-		// get regexConfig file
-		Object file = fileController.getFile(FileControllerUtils.getFilePathWithRepo(resourceNode));
+
+		Object fileToGenerate = FileControllerUtils.getFileAccessController().getFile(newPath);
+		Object parentFile = fileController.getParentFile(fileToGenerate);
 		
-		// get parent (matches file will be created next to regexConfig File)
-		Object parentFile = fileController.getParentFile(file);
+		if (!fileController.exists(parentFile)) {
+			fileController.createFile(parentFile, true);
+		}
 		String parentFilePath = fileController.getPath(parentFile) + "/" + REGEX_MATCH_FILES_FOLDER;		
 		String parentNodeUri = FileControllerUtils.createFileNodeUri(CoreUtils.getRepoFromNode(resourceNode), parentFilePath);
+		
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
 				
 		// create matches file
@@ -99,7 +115,8 @@ public class CodeSyncRegexService {
 		// get matches root node & save the textNodeUri as property
 		final Node matchRoot = CorePlugin.getInstance().getResourceService().getNode(matchUri);
 		nodeService.setProperty(matchRoot, RESOURCE_URI, textNodeUri, new ServiceContext<NodeService>(nodeService));
-		
+		nodeService.setProperty(matchRoot, SHOW_GROUPED_BY_REGEX, false, new ServiceContext<NodeService>(nodeService));
+				
 		// create regEx configuration
 		RegexConfiguration regexConfig = new RegexConfiguration();		
 		new ConfigProcessor().processConfigHierarchy(resourceNode, regexConfig);

@@ -16,6 +16,7 @@
 package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.PNG_EXTENSION;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
@@ -47,7 +48,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyWrapper;
@@ -60,6 +63,7 @@ import org.freeplane.features.cloud.CloudModel.Shape;
 import org.freeplane.features.edge.EdgeModel;
 import org.freeplane.features.edge.EdgeStyle;
 import org.freeplane.features.icon.MindIcon;
+import org.freeplane.features.icon.UserIcon;
 import org.freeplane.features.map.MapModel;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
@@ -75,7 +79,8 @@ import org.freeplane.features.text.DetailTextModel;
  */
 public class MindMapPropertySetter extends PersistencePropertySetter {
 
-	private static final Pattern ICON_URL_PATTERN = Pattern.compile("((.*?/)+)(.*?).png");
+	private static final Pattern ICON_URL_PATTERN = Pattern.compile("servlet/public-resources/((.*?/)+)(.*?).png");
+	private static final Pattern CUSTOM_ICON_URL_PATTERN = Pattern.compile("servlet/load/(.*?).png");
 	
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
@@ -127,10 +132,26 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 						Matcher matcher = ICON_URL_PATTERN.matcher(icon);
 						if (matcher.find()) {
 							rawNodeData.addIcon(new MindIcon(matcher.group(3)));	
-						}											
+						} else {
+							Matcher matcher2 = CUSTOM_ICON_URL_PATTERN.matcher(icon);
+							if (matcher2.find()) {
+								Object iconFile;
+								try {
+									iconFile = FileControllerUtils.getFileAccessController().getFile(matcher2.group(1) + PNG_EXTENSION);
+								} catch (Exception e) {
+									throw new RuntimeException(e);
+								}								
+								if (FileControllerUtils.getFileAccessController().isDirectory(iconFile)) {
+									continue;
+								}
+								String path = FileControllerUtils.getFileAccessController().getPath(iconFile);
+												
+								rawNodeData.addIcon(new UserIcon(FilenameUtils.removeExtension(path), path, FilenameUtils.removeExtension(path)));
+							}
+							
+						}
 					}
-				}
-				
+				}				
 				isPropertySet = true;
 				break;
 			case NOTE:

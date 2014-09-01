@@ -1,18 +1,18 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package org.flowerplatform.flex_client.resources {
 	import mx.resources.ResourceManager;
 	
@@ -41,13 +41,13 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/core/disk.png")]
 		public static const saveIcon:Class;
-
+		
 		[Embed(source="/core/disk_multiple.png")]
 		public static const saveAllIcon:Class;
 		
 		[Embed(source="/core/refresh_blue.png")]
 		public static const reloadIcon:Class;
-	
+		
 		[Embed(source="/core/external_link.png")]
 		public static const externalLinkIcon:Class;
 		
@@ -97,11 +97,9 @@ package org.flowerplatform.flex_client.resources {
 		// MindMap
 		
 		[Embed(source="/mindmap/icons/checkout.gif")]
-		public static const mindmap_button_checkout:Class;
+		public static const checkoutIcon:Class;
 		
-		[Embed(source="/mindmap/refresh.gif")]
-		public static const refreshIcon:Class;
-		
+
 		[Embed(source="/mindmap/images.png")]
 		public static const imagesIcon:Class;
 		
@@ -420,6 +418,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/EditDetailsInDialogAction.png")]
 		public static const editDetailsInDialogActionIcon:Class;
 		
+		[Embed(source="/mindmap/ExternalImageAddAction.png")]
+		public static const customIconsIcon:Class;
+		
 		[Embed(source="/mindmap/arrowDown.png")]
 		public static const arrowDownIcon:Class;
 		
@@ -551,24 +552,45 @@ package org.flowerplatform.flex_client.resources {
 		public static const percentIcon:Class;
 		
 		[Embed(source="/codesync.regex/wrench.png")]
-		public static const wrenchIcon:Class;
-		
-		// Create Branch
+		public static const wrenchIcon:Class;		
+
+		// Team Git
+
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
-
+		
 		[Embed(source="/team.git/editconfig.gif")]
 		public static const renameBranch:Class;
-		
+
+		[Embed(source="/team.git/remote_entry_tbl.gif")]
+		public static const remoteEntry:Class;
+
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
+
+		[Embed(source="/team.git/permission.png")]
+		public static const permission:Class;
+
+		[Embed(source="/team.git/delete_obj.gif")]
+		public static const deleteRemote:Class;
+
+		[Embed(source="/team.git/commit_amend.gif")]
+		public static const amendIcon:Class;
 		
-		// Team Git
-		
+		[Embed(source="/team.git/remoteSpec.gif")]
+		public static const configureFetchPush:Class;
 
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
-		
+
+		[Embed(source="/team.git/push.gif")]
+		public static const push:Class;	
+
+		[Embed(source="/team.git/rebase.gif")]
+		public static const rebaseIcon:Class;
+
+		[Embed(source="/git/reset.gif")]
+		public static const resetIcon:Class;
 
 		[Embed(source="/team.git/gitDiffFromCommits.png")]
 		public static const gitDiffFromCommitsIcon:Class;
@@ -576,8 +598,18 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
 		
-		// Git
+		[Embed(source="/team.git/switch.gif")]
+		public static const switchIcon:Class;
 		
+		[Embed(source="/team.git/fetch.gif")]
+		public static const fetchIcon:Class;
+		
+		[Embed(source="/team.git/cherry-pick.png")]
+		public static const gitCherryPickIcon:Class;
+		
+		[Embed(source="/team.git/revert.gif")]
+		public static const gitRevertCommitIcon:Class;
+
 		[Embed(source="/team.git/branch_obj.gif")]
 		public static const branchIcon:Class;
 		
@@ -585,10 +617,28 @@ package org.flowerplatform.flex_client.resources {
 		public static const branchesIcon:Class;
 		
 		[Embed(source="/team.git/cloneGit.gif")]
-		public static const cloneRepoIcon:Class;
-		
+		public static const cloneRepoIcon:Class;		
+
 		[Embed(source="/team.git/gitrepository.gif")]
 		public static const gitRepoIcon:Class;
+		
+		[Embed(source="/mindmap/refresh.gif")]
+		public static const refreshIcon:Class;
+		
+		[Embed(source="/mindmap/comments.gif")]
+		public static const commentsIcon:Class;
+		
+		[Embed(source="/mindmap/flatLayout.gif")]
+		public static const flatLayoutIcon:Class;			
 
+		[Embed(source="/team.git/staging.png")]
+		public static const gitStagingIcon:Class;
+
+		[Embed(source="/git/history.gif")]
+		public static const gitHistoryIcon:Class;
+		
+		[Embed(source="/team.git/copy.gif")]
+		public static const copy:Class;
 	}
 }
+		

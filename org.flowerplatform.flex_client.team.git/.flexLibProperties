@@ -4,7 +4,6 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.GitPlugin"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.CreateStructureDiffFromGitCommitsView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.MergeBranchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.CreateBranchView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateBranchAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>

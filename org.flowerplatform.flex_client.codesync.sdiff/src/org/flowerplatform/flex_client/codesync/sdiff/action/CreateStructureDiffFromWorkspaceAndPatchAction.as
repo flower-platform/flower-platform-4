@@ -28,25 +28,15 @@ package org.flowerplatform.flex_client.codesync.sdiff.action {
 	 */ 
 	public class CreateStructureDiffFromWorkspaceAndPatchAction extends ActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.sdiff.action.CreateStructureDiffFromWorkspaceAndPatchAction";
+		
 		public function CreateStructureDiffFromWorkspaceAndPatchAction() {
 			super();
 			
 			label = Resources.getMessage("codesync.sdiff.action.createSdiffFromWorkspaceAndPatch");
 			icon = Resources.gitDiffFromWorkspaceAndPatch;
 		}
-		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				if (node.type == CodeSyncConstants.CODESYNC) {
-					return true;
-				}
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-								 .categories.getItemIndex(CodeSyncConstants.CATEGORY_CODESYNC) >= 0;
-			}
-			return false;
-		}
-		
+				
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var dialog:CreateStructureDiffDialog = new CreateStructureDiffDialog();

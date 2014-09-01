@@ -14,7 +14,7 @@ The Freeplane 1.2.x does not contain the headless behavior.
 
 http://freeplane.sourceforge.net/wiki/index.php/How_to_build_Freeplane
 
-===== freeplaneeditor_modified.jar =====
+===== freeplaneeditor.jar =====
 
 Version : build 1.3.6_beta
 

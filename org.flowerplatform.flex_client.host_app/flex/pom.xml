@@ -15,10 +15,6 @@
 
 	<properties>
 		<finalName>FlexHostApp</finalName>
-		<sourceDirectory>../src</sourceDirectory>
-		<messagesDirectory>../messages</messagesDirectory>
-		<iconsDirectory>../icons</iconsDirectory>
-		<output.flex.prefix>../..</output.flex.prefix>
 	</properties>
 
 	<dependencies>

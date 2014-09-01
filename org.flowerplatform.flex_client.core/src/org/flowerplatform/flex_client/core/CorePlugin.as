@@ -27,8 +27,10 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.UpdateTimer;
+	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
+	import org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorComposedAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
@@ -45,13 +47,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -102,6 +104,9 @@ package org.flowerplatform.flex_client.core {
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
 		
 		public var editorClassFactoryActionProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider();
+		
+		// actions per type registry: stores for each actionId an action factory 
+		public var nodeTypeActionProvider:NodeTypeActionProvider = new NodeTypeActionProvider();
 
 		public var updateTimer:UpdateTimer;
 		
@@ -110,9 +115,7 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeProvider:ITypeProvider;
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
-			
-		public var debug_forceUpdateAction:ForceUpdateAction;
-					
+								
 		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
 				
 		public var nodeRegistryManager:NodeRegistryManager;
@@ -129,6 +132,13 @@ package org.flowerplatform.flex_client.core {
 		 * value = parameters as String (e.g. text://file1,file2,file3)
 		 */ 
 		public var linkHandlers:Dictionary;
+		
+		/**
+		 * @author Alina Bratu
+		 */
+		public function getCustomResourceUrl(resource:String):String {
+			return "servlet/load/" + resource;
+		}
 		
 		/**
 		 * @author Sebastian Solomon
@@ -163,22 +173,18 @@ package org.flowerplatform.flex_client.core {
 			
 			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
 			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
-			
+						
  			updateTimer = new UpdateTimer(5000);
 			
-			editorClassFactoryActionProvider.addActionClass(RemoveNodeAction);			
-			editorClassFactoryActionProvider.addActionClass(RenameAction);			
-			editorClassFactoryActionProvider.addActionClass(OpenAction);
-			editorClassFactoryActionProvider.addActionClass(OpenWithEditorComposedAction);
-			
+			FlexUtilGlobals.getInstance().registerAction(RemoveNodeAction);
+			FlexUtilGlobals.getInstance().registerAction(RenameAction);
+			FlexUtilGlobals.getInstance().registerAction(OpenAction);
+			FlexUtilGlobals.getInstance().registerAction(OpenWithEditorComposedAction);
+		
+			FlexUtilGlobals.getInstance().registerAction(NodeTreeAction);
+						
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
-			editorClassFactoryActionProvider.addActionClass(NodeTreeAction);
-			
-			if (!FlexUtilGlobals.getInstance().isMobile) {
-				editorClassFactoryActionProvider.addActionClass(DownloadAction);
-				editorClassFactoryActionProvider.addActionClass(UploadAction);				
-			}
-			
+						
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
 				function (result:Object):void {		
@@ -243,8 +249,28 @@ package org.flowerplatform.flex_client.core {
 			);
 			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(NodeTreeAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenWithEditorComposedAction.ID))
 				.addSingleController(CoreConstants.NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR))
 				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
+						
+			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RemoveNodeAction.ID));
+			
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
+				FlexUtilGlobals.getInstance().registerAction(UploadAction);
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));				
+			}
 			
 			new TypeDescriptorRegistryDebugControllers().registerControllers();
 			new ResourceDebugControllers().registerControllers();
@@ -259,14 +285,19 @@ package org.flowerplatform.flex_client.core {
 			// add actions to global menu
 			
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.file")).setId(CoreConstants.FILE_MENU_ID).setOrderIndex(10));
-			globalMenuActionProvider.addAction(resourceNodesManager.saveAction);
-			globalMenuActionProvider.addAction(resourceNodesManager.saveAllAction);
-			globalMenuActionProvider.addAction(resourceNodesManager.reloadAction);
 			
+			registerActionToGlobalMenu(resourceNodesManager.saveAction);
+			registerActionToGlobalMenu(resourceNodesManager.saveAllAction);
+			registerActionToGlobalMenu(resourceNodesManager.reloadAction);
+									
+			// Navigate Menu
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID).setOrderIndex(20));
-			globalMenuActionProvider.addAction(new ActionBase()
+						
+			// get/follow link action
+			registerActionToGlobalMenu(new ActionBase()
 				.setLabel(Resources.getMessage("link.title"))
 				.setIcon(Resources.externalLinkIcon)
+				.setId("global_org.flowerplatform.flex_client.core.LinkAction")
 				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
 				.setFunctionDelegate(function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
@@ -276,16 +307,13 @@ package org.flowerplatform.flex_client.core {
 					.setTitle(Resources.getMessage("link.title"))
 					.setIcon(Resources.externalLinkIcon)
 					.show();
-				})
-			);
+				}));
 			
-			debug_forceUpdateAction = new ForceUpdateAction();
-			globalMenuActionProvider.addAction(debug_forceUpdateAction);
-			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.debug")).setId(CoreConstants.DEBUG).setOrderIndex(100));	
-			
-			globalMenuActionProvider.addAction(new ActionBase()
+			// open node action
+			registerActionToGlobalMenu(new ActionBase()
 				.setLabel(Resources.getMessage("open.node.action.label"))
 				.setIcon(Resources.openResourceIcon)
+				.setId("global_org.flowerplatform.flex_client.core.OpenAction")
 				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
 				.setFunctionDelegate(function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
@@ -295,24 +323,33 @@ package org.flowerplatform.flex_client.core {
 					.setWidth(400)
 					.setHeight(150)
 					.show();
-				})
-			);
-				
-			globalMenuActionProvider.addAction(new ActionBase()
+				}));
+							
+			// Debug Menu
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.debug")).setId(CoreConstants.DEBUG).setOrderIndex(100));	
+						
+			// force update		
+			registerActionToGlobalMenu(new ForceUpdateAction());
+			
+			// open root action
+			registerActionToGlobalMenu(new ActionBase()
 				.setLabel(Resources.getMessage("open.root.action.label"))
 				.setIcon(Resources.openIcon)
 				.setParentId(CoreConstants.DEBUG)
 				.setFunctionDelegate(function ():void {
 					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
-				})
-			);
-					
-			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
-			globalMenuActionProvider.addAction(new AssignHotKeyAction());
+				}));
 			
+			// Tools menu
+			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
+			
+			// assign hot key action
+			registerActionToGlobalMenu(new AssignHotKeyAction());
+			
+			// Help menu
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.help")).setId(CoreConstants.HELP).setOrderIndex(500));
 			
-			globalMenuActionProvider.addAction(new ActionBase()
+			registerActionToGlobalMenu(new ActionBase()
 				.setLabel(Resources.getMessage("about.flower.action.label"))
 				.setIcon(Resources.flowerIcon)
 				.setParentId(CoreConstants.HELP)
@@ -322,10 +359,7 @@ package org.flowerplatform.flex_client.core {
 					.setWidth(300)
 					.setHeight(250)
 					.show();
-				})
-			);
-						
-			FlexUtilGlobals.getInstance().keyBindings.additionalActionProviders.actionProviders.push(globalMenuActionProvider);
+				}));			
 		}
 				
 		override protected function registerClassAliases():void {		
@@ -461,6 +495,14 @@ package org.flowerplatform.flex_client.core {
 			return parameters;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		public function registerActionToGlobalMenu(action:ActionBase):void {
+			FlexUtilGlobals.getInstance().registerActionInstance(action);
+			globalMenuActionProvider.addAction(action);
+		}
+		
 		public function getAppUrl():String {
 			return FlexUtilGlobals.getInstance().rootUrl + MAIN_PAGE;	
 		}
@@ -503,6 +545,13 @@ package org.flowerplatform.flex_client.core {
 			
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.resetSelection();
 			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);
+		}
+
+		/**
+		 * @author Diana Balutoiu
+		 */
+		public function createNodeUriWithRepo(scheme:String, repoPath:String, schemeSpecificPart:String):String {
+			return scheme + ":"+ repoPath + "|" + schemeSpecificPart;
 		}
 			
 	}

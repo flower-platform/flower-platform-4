@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.team.git;
 
-import java.io.File;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
@@ -50,7 +49,7 @@ public class GitFileContentProvider implements IFileContentProvider {
 		String oldFileContent, newFileContent;
 
 		try {
-			Repository repository = GitUtils.getRepository((File) FileControllerUtils
+			Repository repository = GitUtils.getRepository(FileControllerUtils
 											.getFileAccessController()
 											.getFile(repositoryPath));
 			RevWalk revWalk = new RevWalk(repository);

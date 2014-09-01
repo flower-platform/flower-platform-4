@@ -60,7 +60,9 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.mindmap.remote.MindMapServiceRemote;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -131,6 +133,9 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		// lower order index to override the default title property
 		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000))
 		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(SIDE));
+		
+		// register the MindMapService into the serviceRegistry in CorePlugin
+		CorePlugin.getInstance().getServiceRegistry().registerService("mindMapService", new MindMapServiceRemote());
 	}	
 	
 	public void stop(BundleContext bundleContext) throws Exception {

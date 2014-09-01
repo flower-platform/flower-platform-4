@@ -117,7 +117,7 @@ public class FileChildrenController extends AbstractController
 		String name = (String) context.get(NAME);
 		Object fileToCreate = getFileAccessController().getFile(parentFile, name);
 		child.setNodeUri(createFileNodeUri(getRepoFromNode(parentNode), getFileAccessController().getPath(fileToCreate)));
-		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
+		boolean isDir = context.getBooleanValue(FILE_IS_DIRECTORY);
 		
 		Boolean overwrite = (Boolean) context.get(OVERWRITE_IF_NECESSARY);
 		if (getFileAccessController().exists(fileToCreate)) {
