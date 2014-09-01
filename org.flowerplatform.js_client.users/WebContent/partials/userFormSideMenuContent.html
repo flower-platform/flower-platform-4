@@ -1,0 +1,11 @@
+<div id="settings-panel" class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Profile</h3>
+	</div>
+	<div class="panel-body">
+		<ul class="nav nav-pills nav-stacked">
+			<li ng-class="{active: currentPath == '/users/{{userID}}'}" ><a ng-href="#/users/{{userID}}">General</a></li>	
+			<li ng-class="{active: currentPath == '/users/{{userID}}/settings'}"><a ng-href="#/users/{{userID}}/settings">Account settings</a></li>
+		</ul>
+	</div>
+</div> 

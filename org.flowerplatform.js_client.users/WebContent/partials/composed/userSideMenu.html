@@ -1,9 +1,9 @@
-<div ng-controller="SideMenuCtrl">
+<div ng-controller="UserSideMenuCtrl">
 	<p/>
 	<div class="user-panel">
 		<div class="user-panel-name">
 			<h4>
-				<img src="images/user-image.png">
+				<img src="../js_client.users/images/user-image.png">
 					{{userName}}
 			</h4>
 		</div>
@@ -23,7 +23,7 @@
 			    <div class="collapse navbar-collapse">
 			      <ul class="nav navbar-nav">
 			      	<li><a>Logout</a></li>
-			        <li><a ng-href="#/users/{{userID}}/General">Profile</a></li>
+			        <li><a ng-href="#/users/{{userID}}">Profile</a></li>
 			        <hr>
 			        <li><a ng-class="{hidden:!{{isAdmin}}}">{{repo}}</a>
 			        <li><a ng-class="{hidden:!{{isAdmin}}}">{{repo}}</a>

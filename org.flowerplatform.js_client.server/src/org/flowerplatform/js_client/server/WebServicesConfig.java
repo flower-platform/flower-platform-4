@@ -1,7 +1,6 @@
 package org.flowerplatform.js_client.server;
 
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.js_client.server.test.TestService;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,7 +18,6 @@ public class WebServicesConfig extends ResourceConfig {
 		for (Object service : CorePlugin.getInstance().getServiceRegistry().getMap().values()) {
 			register(service);
 		}
-		register(new TestService());
 
 		register(new RemoteMethodInvocationFilter());
 		register(new RemoteMethodInvocationWriterInterceptor());
