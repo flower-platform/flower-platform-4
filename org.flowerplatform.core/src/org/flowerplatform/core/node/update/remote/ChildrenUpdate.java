@@ -21,25 +21,10 @@ import org.flowerplatform.core.node.remote.Node;
  * @author Cristina Constantinescu
  */
 public class ChildrenUpdate extends Update {
-
-	private String type;
 	
 	private Node targetNode;
 	
 	private String fullTargetNodeAddedBeforeId;
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public ChildrenUpdate setTypeAs(String type) {
-		this.type = type;
-		return this;
-	}
 		
 	public Node getTargetNode() {
 		return targetNode;
@@ -66,10 +51,10 @@ public class ChildrenUpdate extends Update {
 		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
 		return this;
 	}
-	
+		
 	@Override
 	public String toString() {
-		return "ChildrenUpdate [type=" + type + " targetNode=" + targetNode + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";
+		return "ChildrenUpdate [type=" + getType() + " targetNode=" + targetNode + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";
 	}
 	
 }

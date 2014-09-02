@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -96,7 +97,7 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	}
 
 	public String getResourceUrl(String resource) {
-		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + 
+		return UtilConstants.PUBLIC_RESOURCES_SERVLET + "/" + 
 				getBundleContext().getBundle().getSymbolicName() + "/" +
 				resource;
 	}
@@ -130,6 +131,32 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			composedUrl = UtilConstants.IMAGE_COMPOSER_SERVLET + composedUrl;
 		}
 		return composedUrl;
+	}
+
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public String getLabelForNodeType(String nodeType) {
+		String typeLabel;
+		try {
+			typeLabel = getMessage(nodeType + ".label");
+		} catch (MissingResourceException e) {
+			typeLabel = nodeType;
+		}
+		return typeLabel;
+	}
+
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public String getLabelForProperty(String propertyName) {
+		String propertyLabel;
+		try {
+			propertyLabel = getMessage(propertyName + ".label");
+		} catch (MissingResourceException e) {
+			propertyLabel = propertyName;
+		}
+		return propertyLabel;
 	}
 	
 }

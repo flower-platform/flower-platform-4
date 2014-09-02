@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!--
 @author Cristina Brinza 
@@ -21,8 +21,7 @@ license-end
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
-		 creationComplete="creationCompleteHandler(event)">
+		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*">
 		
 	<fx:Script>
 		<![CDATA[			
@@ -36,22 +35,28 @@ license-end
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
-			import org.flowerplatform.flex_client.team.git.remote.GitRef;
+			import org.flowerplatform.flexutil.Utils;
 						
 			[Bindable]
 			public var branches:ArrayCollection;
 			
 			public var node:Node;
-			
-			override protected function initializeHandler(event:FlexEvent):void {
-				super.initializeHandler(event);
-				(layout as VerticalLayout).gap = 15;
-			}
+						
+			// used for Git History View
+			[Bindable]
+			public var useNodeAsCommitId:Boolean;
 			
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);				
 				
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [node.nodeUri], getBranchesHandler); 
+				VerticalLayout(layout).gap = 15;
+				if (!useNodeAsCommitId) {
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [node.nodeUri], getBranchesHandler); 
+				} else {
+					Utils.makePseudoDisabled(sourceCommit);
+					sourceCommit.text = node.getPropertyValue(GitConstants.ID);
+					configureUpstreamGroup.visible = configureUpstreamGroup.includeInLayout = false;
+				}
 			}
 			
 			protected function getBranchesHandler(branches:ArrayCollection):void {
@@ -60,7 +65,7 @@ license-end
 				
 				/* find the selected index */
 				for each (var branch:Object in branches) {
-					if (branch.name == node.getPropertyValue("fullName")) {
+					if (branch.name == node.getPropertyValue(GitConstants.FULL_NAME)) {
 						selectBranch.selectedItem = branch;
 						checkState(branch);
 						break;
@@ -76,33 +81,24 @@ license-end
 				rebaseCommitsRadioButton.enabled = !rebaseCommitsRadioButton.enabled;
 			}
 					
-			override protected function okHandler(event:Event = null):void {	
-				var track:Boolean;
-				var setUpstream:Boolean;
-				var checkoutBranch:Boolean;
-				var configureUpstream:Boolean;
-				
-				/* if the node is a tag, don't configure upstream in createBranch */
-				configureUpstream = configureUpstreamGroup.visible;
-				/* Merge upstream commits into local branch */
-				track = configureUpstreamCheckBox.selected && mergeUpstreamRadioButton.selected;
-				/* Rebase commits of local branch onto upstream */
-				setUpstream = configureUpstreamCheckBox.selected && rebaseCommitsRadioButton.selected;
-				/* Checkout new Branch */
-				checkoutBranch = checkoutBranchCheckBox.selected;
-									
-				/* send to server the parent */
-				var parentUri:String;
-				if (node.parent.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE) {
-					parentUri = node.parent.nodeUri;
+			override protected function okHandler(event:Event = null):void {				
+				var commitId:String;
+				var startPoint:String;
+				if (useNodeAsCommitId) {
+					commitId = node.getPropertyValue(GitConstants.ID);
 				} else {
-					for each (var child:Node in node.parent.parent.children) {
-						if (child.type == GitConstants.GIT_LOCAL_BRANCHES_TYPE) {
-							parentUri = child.nodeUri;
-						}
-					}
+					startPoint = selectBranch.selectedItem.name; 
 				}
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", [parentUri, branchNameTextInput.text, selectBranch.selectedItem.name, configureUpstream, track, setUpstream, checkoutBranch]);
+				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", 
+					[node.nodeUri, 
+					branchNameTextInput.text, 
+					startPoint,
+					configureUpstreamGroup.visible, // if the node is a tag, don't configure upstream in createBranch
+					configureUpstreamCheckBox.selected && mergeUpstreamRadioButton.selected, // Merge upstream commits into local branch
+					configureUpstreamCheckBox.selected && rebaseCommitsRadioButton.selected, // Rebase commits of local branch onto upstream
+					checkoutBranchCheckBox.selected, // Checkout new Branch
+					commitId], cancelHandler); //use commit ID for Git History					
 			}
 			
 			protected function selectBranchChangeHandler(event:IndexChangeEvent):void {				
@@ -112,23 +108,11 @@ license-end
 			}
 			
 			/* determine which components will be visible / enabled / selected and which not */
-			protected function checkState(selectedItem:Object):void {
-				if (selectedItem.type == GitConstants.GIT_TAG_TYPE) {
-					configureUpstreamGroup.visible = false;
-				} else if (selectedItem.type == GitConstants.GIT_LOCAL_BRANCH_TYPE) {
-					configureUpstreamGroup.visible = true;
-					
-					configureUpstreamCheckBox.selected = false;
-					
-					rebaseCommitsRadioButton.enabled = false;
-					mergeUpstreamRadioButton.enabled = false;
-				} else if (selectedItem.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
-					configureUpstreamGroup.visible = true;
-					
-					configureUpstreamCheckBox.selected = true;
-					
-					rebaseCommitsRadioButton.enabled = true;
-					mergeUpstreamRadioButton.enabled = true;
+			protected function checkState(selectedItem:Object):void {				
+				configureUpstreamGroup.visible = configureUpstreamGroup.includeInLayout = (selectedItem.type != GitConstants.GIT_TAG_TYPE);
+				
+				if (selectedItem.type != GitConstants.GIT_TAG_TYPE) {					
+					configureUpstreamCheckBox.selected = rebaseCommitsRadioButton.enabled = mergeUpstreamRadioButton.enabled = (selectedItem.type == GitConstants.GIT_REMOTE_BRANCH_TYPE);					
 				}
 			}
 			
@@ -137,7 +121,9 @@ license-end
 			
 	<s:Form width="100%">
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.source')}"
-					width="100%">
+					width="100%"
+					visible="{!useNodeAsCommitId}"
+					includeInLayout="{!useNodeAsCommitId}">
 			<s:DropDownList id="selectBranch" 
 							requireSelection="true"
 							dataProvider="{branches}"
@@ -146,10 +132,17 @@ license-end
 							width="100%"/>
 		</s:FormItem>
 		
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.source')}"
+					width="100%"
+					visible="{useNodeAsCommitId}"
+					includeInLayout="{useNodeAsCommitId}">
+			<s:TextInput id="sourceCommit"
+						 width="100%" />
+		</s:FormItem>
+		
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.branchName')}"
 					width="100%">
-			<s:TextInput id="branchNameTextInput"
-						 baseline="15"
+			<s:TextInput id="branchNameTextInput"						
 						 width="100%"/>
 		</s:FormItem>
 	</s:Form>

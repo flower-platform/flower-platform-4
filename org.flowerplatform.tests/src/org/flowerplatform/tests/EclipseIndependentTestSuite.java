@@ -35,6 +35,8 @@ import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.mindmap.MindMapPlugin;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
+import org.flowerplatform.tests.controllers.FileSystemControllersTest;
+import org.flowerplatform.tests.core.CommandStackTest;
 import org.flowerplatform.tests.core.CoreTestSuite;
 import org.flowerplatform.tests.freeplane.XmlParserTest;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -51,10 +53,11 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
-//	CodeSyncTestSuite.class,
-//	CoreTestSuite.class,
+	CodeSyncTestSuite.class,
+	CoreTestSuite.class,
+	CommandStackTest.class,
+	FileSystemControllersTest.class,
 	XmlParserTest.class,
-//	FileSystemControllersTest.class
 //	RegexTestSuite.class
 })
 public class EclipseIndependentTestSuite {

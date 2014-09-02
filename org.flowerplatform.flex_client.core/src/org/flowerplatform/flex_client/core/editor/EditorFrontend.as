@@ -23,6 +23,7 @@ package org.flowerplatform.flex_client.core.editor {
 	import spark.components.VGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener;
 	import org.flowerplatform.flex_client.core.node.NodeRegistry;
@@ -54,7 +55,9 @@ package org.flowerplatform.flex_client.core.editor {
 			super();
 			nodeRegistry = CorePlugin.getInstance().nodeRegistryManager.createNodeRegistry();
 			CorePlugin.getInstance().nodeRegistryManager.addListener(this);
-			actionProvider.composedActionProviderProcessors.push(new EditorFrontendAwareProcessor(this));
+			
+			actionProvider.actionProviders.push(CorePlugin.getInstance().nodeTypeActionProvider);
+			actionProvider.composedActionProviderProcessors.push(new EditorFrontendAwareProcessor(this));			
 		}
 					
 		public function get editorInput():String {
@@ -78,7 +81,7 @@ package org.flowerplatform.flex_client.core.editor {
 		public function getActions(selection:IList):Vector.<IAction> {
 			return actionProvider.getActions(selection);
 		}
-		
+				
 		public function getSelection():IList {			
 			return null;
 		}

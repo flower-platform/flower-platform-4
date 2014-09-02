@@ -28,7 +28,7 @@ package org.flowerplatform.flex_client.properties.remote {
 	public class PropertyDescriptor extends AbstractController implements IPropertyDescriptor {
 		
 		private var _name:String;		
-		private var _title:String;
+		private var _label:String;
 								
 		private var _type:String;		
 		private var _category:String;
@@ -108,12 +108,12 @@ package org.flowerplatform.flex_client.properties.remote {
 			_type = value;
 		}
 
-		public function get title():String {
-			return _title;
+		public function get label():String {
+			return _label;
 		}
 
-		public function set title(value:String):void {
-			_title = value;
+		public function set label(value:String):void {
+			_label = value;
 		}
 
 		public function get name():String {
@@ -125,7 +125,7 @@ package org.flowerplatform.flex_client.properties.remote {
 		}
 
 		override public function toString():String {
-			return "PropertyDescriptor [name=" + name + ", title=" + title
+			return "PropertyDescriptor [name=" + name + ", title=" + label
 				+ ", type=" + type + ", category=" + category
 				+ ", propertyLineRenderer=" + propertyLineRenderer
 				+ ", contributesToCreation=" + contributesToCreation

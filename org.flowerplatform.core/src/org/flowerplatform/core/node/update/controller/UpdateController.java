@@ -56,27 +56,37 @@ public class UpdateController extends AbstractController
 			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
-							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setTargetNodeAs(child)
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
+							.setTypeAs(UPDATE_CHILD_ADDED)
 							.setFullNodeIdAs(node.getNodeUri()));
 			
 		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
+		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (resourceNode != null) {
 			String resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
 			if (resourceSet == null) {
 				resourceSet = resourceNode.getNodeUri();
 			}
+			// otherwise the node will reference probably the whole mindmap file, that would lead to memory leaks
+			child.setRawNodeData(null);
 			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+			Node removedNode = (Node) context.get("removedNode");
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
+							.setTargetNodeAs(removedNode)
+							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
 							.setTypeAs(UPDATE_CHILD_REMOVED)
-							.setTargetNodeAs(child)
+//							.setTargetNodeAs(child)
 							.setFullNodeIdAs(node.getNodeUri()));		
 		}
 	}
@@ -93,6 +103,10 @@ public class UpdateController extends AbstractController
 		setUnsetProperty(node, key, propertyValue, propertyValue == null, context);
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext<NodeService> context) {		
 		String resourceSet = null;
 		Node resourceNode;
@@ -110,7 +124,15 @@ public class UpdateController extends AbstractController
 			resourceSet = resourceNode.getNodeUri();
 		}
 		ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
-		service.addUpdate(resourceSet, new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri()));		
+		PropertyUpdate update = new PropertyUpdate();
+		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri());
+		
+		if (context.getContext().containsKey(CoreConstants.OLD_VALUE)) {
+			update.setHasOldValueAs(true);
+			update.setOldValueAs(context.get(CoreConstants.OLD_VALUE));
+		}
+		
+		service.addUpdate(resourceSet, update);		
 	}
 
 }

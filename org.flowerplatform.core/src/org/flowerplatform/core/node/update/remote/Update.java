@@ -22,10 +22,25 @@ import java.util.Date;
  */
 public class Update implements Comparable<Update> {
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	private String id;
+	
+	private String type;
+
 	private String fullNodeId;
 	
 	private long timestamp = new Date().getTime();
 	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getFullNodeId() {
 		return fullNodeId;
 	}
@@ -47,6 +62,19 @@ public class Update implements Comparable<Update> {
 		this.timestamp = timestamp;
 	}
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Update setTypeAs(String type) {
+		this.type = type;
+		return this;
+	}
+	
 	@Override
 	public int compareTo(Update o) {
 		return Long.compare(getTimestamp(), o.getTimestamp());
@@ -54,7 +82,7 @@ public class Update implements Comparable<Update> {
 
 	@Override
 	public String toString() {
-		return "Update [node=" + fullNodeId + ", timestamp=" + timestamp + "]";
+		return "Update [node=" + fullNodeId + ", type=" + type + ", timestamp=" + timestamp + "]";
 	}
 		
 }

@@ -104,7 +104,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		private function clickHandlerInternal(event:MouseEvent):void {
-			clickHandler(this, _propertyLineRenderer.propertyDescriptor.name, currentValue);
+			clickHandler(this, _propertyLineRenderer.propertyDescriptor.name, currentValue,this._propertyLineRenderer.node);
 		}
 		
 		public function handleDialogResult(result:Object):void {			

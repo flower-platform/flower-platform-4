@@ -14,17 +14,24 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.editor.remote.update {
-	
-	
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
+		
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	[RemoteClass(alias="org.flowerplatform.core.node.update.remote.Update")]
 	public class Update {
 		
+		public var type:String;
+		
 		public var fullNodeId:String;
 		
 		public var timestamp:Number;
+		
+		public function apply(nodeRegistry:NodeRegistry, node:Node):void {
+			// do nothing
+		}
 		
 	}
 }

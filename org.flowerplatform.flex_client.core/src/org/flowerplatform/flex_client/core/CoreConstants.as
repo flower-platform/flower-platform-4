@@ -88,6 +88,7 @@ package org.flowerplatform.flex_client.core {
 		// Typed descriptors
 		
 		public static const ADD_CHILD_DESCRIPTOR:String = "addChildDescriptor";
+		public static const ACTION_DESCRIPTOR:String = "actionDescriptor";
 		
 		// Generic value descriptors
 		
@@ -104,6 +105,8 @@ package org.flowerplatform.flex_client.core {
 		// Resource updates
 		//////////////////////////////////
 	
+		public static const UPDATE_PROPERTY:String = "UPDATED";		
+		public static const UPDATE_REQUEST_REFRESH:String = "REQUEST_REFRESH";		
 		public static const UPDATE_CHILD_ADDED:String = "ADDED";
 		public static const UPDATE_CHILD_REMOVED:String = "REMOVED";
 		
@@ -117,6 +120,13 @@ package org.flowerplatform.flex_client.core {
 		public static const RESOURCE_NODE_IDS_NOT_FOUND:String = "resourceNodeIdsNotFound";
 		public static const LAST_UPDATE_TIMESTAMP:String = "timestampOfLastUpdate";
 		public static const UPDATES:String = "updates";
+		
+		//////////////////////////////////
+		// Command stack
+		//////////////////////////////////
+
+		public static const COMMAND_STACK:String = "commandStack";
+		public static const COMMAND_TYPE:String = "command";
 		
 		//////////////////////////////////
 		// Editor
@@ -142,5 +152,6 @@ package org.flowerplatform.flex_client.core {
 		//////////////////////////////////
 		
 		public static const FLOWER_PLATFORM:String = "flower-platform";
+		
 	}
 }

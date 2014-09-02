@@ -228,4 +228,3 @@ public abstract class ResourceService implements IResourceHolder {
 	}
 
 }
-

@@ -22,6 +22,14 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	
+	import spark.components.Group;
+	import spark.components.Label;
+	import spark.components.View;
+	import spark.components.ViewMenuItem;
+	import spark.components.supportClasses.ButtonBase;
+	import spark.events.ViewNavigatorEvent;
+	import spark.primitives.BitmapImage;
+	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
@@ -30,14 +38,6 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	import org.flowerplatform.flexutil.selection.ISelectionProvider;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
-	
-	import spark.components.Group;
-	import spark.components.Label;
-	import spark.components.View;
-	import spark.components.ViewMenuItem;
-	import spark.components.supportClasses.ButtonBase;
-	import spark.events.ViewNavigatorEvent;
-	import spark.primitives.BitmapImage;
 	
 	/**
 	 * Abstract class. A mobile view that implements <code>IViewHost</code>.
@@ -95,9 +95,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 		protected function menuKeyPressedEvent(event:FlexEvent):void {
 			// we do this so that the main app logic (that just opens the menu) won't execute
 			event.preventDefault();
-			if (openMenuAction.enabled) {
-				openMenuAction.run();
-			}
+			FlexUtilGlobals.getInstance().actionHelper.runAction(openMenuAction, null, null, false, true);
 		}
 		
 		protected function backKeyPressHandler(event:FlexEvent):void {
@@ -302,9 +300,8 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			}			
 			populateViewWithActions(parentActionId);
 			
-			if (openMenuAction.enabled) {
-				openMenuAction.run();
-			}
+			FlexUtilGlobals.getInstance().actionHelper.runAction(openMenuAction, null, null, false, true);	
+			
 			return true;
 		}		
 		

@@ -26,6 +26,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 	 */ 
 	public class MindMapDragTool extends DragTool {
 		
+		public static const ID:String = "MindMapDragTool";
+		
 		public function MindMapDragTool(diagramShell:DiagramShell) {
 			super(diagramShell);
 		}

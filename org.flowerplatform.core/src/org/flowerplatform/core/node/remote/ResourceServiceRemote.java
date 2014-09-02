@@ -19,6 +19,7 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
+import org.flowerplatform.util.Utils;
 
 /**
  * @see ResourceService
@@ -55,5 +56,23 @@ public class ResourceServiceRemote {
 		CorePlugin.getInstance().getResourceSetService().reload(resourceNodeId, 
 				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
-	
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void undo(String commandNodeUri) {
+		String resourceSet = Utils.getSchemeSpecificPart(commandNodeUri);
+		String commandId = Utils.getFragment(commandNodeUri);
+		CorePlugin.getInstance().getResourceSetService().undo(resourceSet, commandId);
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void redo(String commandNodeUri) {
+		String resourceSet = Utils.getSchemeSpecificPart(commandNodeUri);
+		String commandId = Utils.getFragment(commandNodeUri);
+		CorePlugin.getInstance().getResourceSetService().redo(resourceSet, commandId);
+	}
+
 }

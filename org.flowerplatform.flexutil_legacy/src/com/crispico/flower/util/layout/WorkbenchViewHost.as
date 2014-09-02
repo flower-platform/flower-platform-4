@@ -158,8 +158,7 @@ package com.crispico.flower.util.layout {
 						actionButton.height = 22;
 					} else {
 						actionButton.label = action.label;
-					}
-					actionButton.setStyle("icon", FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(action.icon));
+					}					
 					actionButton.action = action;
 					actionButton.viewWrapper = this;
 					buttonBar.addElement(actionButton);

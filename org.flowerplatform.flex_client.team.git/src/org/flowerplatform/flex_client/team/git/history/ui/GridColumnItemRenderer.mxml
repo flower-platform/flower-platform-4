@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer  xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" 
+					 clipAndEnableScrolling="true"
+					 creationComplete="creationCompleteHandler(event)" >
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.layouts.VerticalAlign;
+			import spark.layouts.VerticalLayout;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
+			
+			[Bindable]
+			private var columnId:String = "";
+			
+			[Bindable]
+			private var text:String = "";
+			
+			override public function set data(value:Object):void
+			{
+				if (value != null) {
+					var node:Node = Node(value);
+					if (columnId != node.getPropertyValue(GitConstants.ID)) {
+						columnId = node.getPropertyValue(GitConstants.ID);							
+						var low:Number = 1;
+						var high:Number= ArrayCollection(GitConstants.COLORS).length-1;
+						var randomValue:Number = Math.floor(Math.random() * (1 + high - low)) + low;
+						var brances:ArrayCollection = node.getPropertyValue(GitConstants.BRANCHES);
+						//Adding colored Tags and Branches
+						text = "";						
+						for (var i:Number = 0; i < brances.length; i++) {
+							var textColor:String = String(ArrayCollection(GitConstants.COLORS).getItemAt((randomValue+i)%high));
+							text += Resources.getMessage("flex_client.team.git.action.history.ui.branchText",[textColor, brances.getItemAt(i)]);
+						}
+						text += node.getPropertyValue(GitConstants.SHORT_MESSAGE);						
+						RichText(labelDisplay).textFlow = TextConverter.importToFlow(text, TextConverter.TEXT_FIELD_HTML_FORMAT);	
+					}
+				}
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				layout= new VerticalLayout();
+				VerticalLayout(layout).verticalAlign = VerticalAlign.MIDDLE;
+				VerticalLayout(layout).paddingLeft = 7;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:RichText id="labelDisplay"  text='{data}'/>
+	
+</s:GridItemRenderer>

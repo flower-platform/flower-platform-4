@@ -41,6 +41,7 @@ import java.awt.Color;
 import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -53,6 +54,7 @@ import org.freeplane.features.edge.EdgeController;
 import org.freeplane.features.edge.EdgeModel;
 import org.freeplane.features.edge.EdgeStyle;
 import org.freeplane.features.icon.MindIcon;
+import org.freeplane.features.icon.UserIcon;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.nodestyle.NodeSizeModel;
 import org.freeplane.features.nodestyle.NodeStyleController;
@@ -143,7 +145,11 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		StringBuilder sb = new StringBuilder();
 		if (value != null) {
 			for (MindIcon icon : value) {
-				sb.append(ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/" + icon.getFileName()));
+				if (icon instanceof UserIcon) {
+					sb.append(CorePlugin.getInstance().getCustomResourceUrl(icon.getFileName()));
+				} else {
+					sb.append(ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/" + icon.getFileName()));
+				}
 				sb.append(CoreConstants.ICONS_SEPARATOR);
 			}
 		}
