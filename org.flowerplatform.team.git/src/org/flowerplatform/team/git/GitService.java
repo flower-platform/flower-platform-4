@@ -15,8 +15,8 @@
  */
 package org.flowerplatform.team.git;
 
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
+import static org.flowerplatform.core.CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES;
 import static org.flowerplatform.core.CoreConstants.UPDATE_REQUEST_REFRESH;
 import static org.flowerplatform.team.git.GitConstants.ADD;
 import static org.flowerplatform.team.git.GitConstants.AUTHOR;
@@ -89,6 +89,7 @@ import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.team.git.remote.GitCredentials;
@@ -370,7 +371,7 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().removeChild(
 				CorePlugin.getInstance().getResourceService().getNode(parentUri),
 				childNode, 
-				new ServiceContext<NodeService>().add(EXECUTE_ONLY_FOR_UPDATER, true));
+				new ServiceContext<NodeService>().add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 
 	/**
@@ -614,7 +615,7 @@ public class GitService {
 		CorePlugin.getInstance().getNodeService().removeChild(
 			    parent,
 			    child, 
-			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 	
 	/**
