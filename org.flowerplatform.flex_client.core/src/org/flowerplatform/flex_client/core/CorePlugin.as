@@ -33,9 +33,10 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorComposedAction;
+	import org.flowerplatform.flex_client.core.editor.action.RedoAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
-	import org.flowerplatform.flex_client.core.editor.action.TestAction;
+	import org.flowerplatform.flex_client.core.editor.action.UndoAction;
 	import org.flowerplatform.flex_client.core.editor.action.UploadAction;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
@@ -127,12 +128,19 @@ package org.flowerplatform.flex_client.core {
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
-				
+
 		/**
 		 * key = command name as String (e.g. "openResources")
 		 * value = parameters as String (e.g. text://file1,file2,file3)
 		 */ 
 		public var linkHandlers:Dictionary;
+		
+		/**
+		 * @author Alina Bratu
+		 */
+		public function getCustomResourceUrl(resource:String):String {
+			return "servlet/load/" + resource;
+		}
 		
 		/**
 		 * @author Sebastian Solomon
@@ -174,14 +182,14 @@ package org.flowerplatform.flex_client.core {
 			FlexUtilGlobals.getInstance().registerAction(RenameAction);
 			FlexUtilGlobals.getInstance().registerAction(OpenAction);
 			FlexUtilGlobals.getInstance().registerAction(OpenWithEditorComposedAction);
-			
+		
 			FlexUtilGlobals.getInstance().registerAction(NodeTreeAction);
 						
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
-					
 			
-			editorClassFactoryActionProvider.addActionClass(TestAction);
-			
+			editorClassFactoryActionProvider.addActionClass(UndoAction);
+			editorClassFactoryActionProvider.addActionClass(RedoAction);
+						
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
 				function (result:Object):void {		
@@ -210,7 +218,7 @@ package org.flowerplatform.flex_client.core {
 					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
-				
+
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
 					var list:ArrayCollection = ArrayCollection(result);
@@ -255,6 +263,19 @@ package org.flowerplatform.flex_client.core {
 			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RemoveNodeAction.ID));
+			
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
+				FlexUtilGlobals.getInstance().registerAction(UploadAction);
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));				
+			}
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				FlexUtilGlobals.getInstance().registerAction(DownloadAction);

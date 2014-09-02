@@ -2,9 +2,11 @@
 <!-- 
 Andreea Tita
 -->
-<ns:Wizard xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<ns:Wizard xmlns:fx="http://www.adobe.com/2006/mxml" 
 			  xmlns:s="library://ns.adobe.com/flex/spark" 
-			  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.popup.*" xmlns:src="org.flowerplatform.flex_client.team.git.ui.component.*"
+			  xmlns:mx="library://ns.adobe.com/flex/mx" 
+			  xmlns:ns="org.flowerplatform.flexutil.popup.*" 
+			  xmlns:local="org.flowerplatform.flex_client.team.git.ui.component.*"
 			  getIndexForStateFunction="getIndexForState" >
 			  
 	<fx:Script>
@@ -18,46 +20,44 @@ Andreea Tita
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
 			[Bindable]
-			public var node:Node;
+			public var nodeUri:String;
 			
 			protected function getIndexForState(stateName:String):int {
-				if (stateName == "pushBranchToRemote") {
+				if (stateName == "selectDestinationRepositoryState") {
 					return 0;
-				} else if (stateName == "pushConfirmation") {
+				} else if (stateName == "configureFetchPushState") {
 					return 1;
 				}
 				return -1;
 			}		
 
 			override protected function nextClickHandler():void {
-				if (currentState == "pushBranchToRemote") {
-					if (selectRepositoryComponent.getResult() is String && String (selectRepositoryComponent.getResult()).length == 0) { 
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-							.setTitle(Resources.getMessage('error'))
-							.setText(Resources.getMessage('flex_client.team.git.ui.Push.errorMessage'))
-							.setWidth(200)
-							.setHeight(150)
-							.showMessageBox();
-						return;
-					}
-				}
-				
-				this.currentState = "pushConfirmation";
-				back.enabled = false; 
 				super.nextClickHandler();
-			
-				if (selectRepositoryComponent.getResult() as Node) {
-					configureFetchPushComponent.refMappings = Node(selectRepositoryComponent.remotes.selectedItem).getPropertyValue(GitConstants.PUSH_REF_SPECS);
+				var resultSelectRepositoryComponent:Object = selectRepositoryComponent.getResult();
+				
+				if (resultSelectRepositoryComponent is String && String(resultSelectRepositoryComponent).length == 0) { 
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setTitle(Resources.getMessage('error'))
+						.setText(Resources.getMessage('flex_client.team.git.ui.Push.errorMessage'))
+						.setWidth(200)
+						.setHeight(150)
+						.showMessageBox();
+					return;
+				}
+		
+				if (resultSelectRepositoryComponent as Node) {
+					configureFetchPushComponent.refMappings = Node(resultSelectRepositoryComponent).getPropertyValue(GitConstants.PUSH_REF_SPECS);
 				}
 			}
 			
 			protected override function finishClickHandler():void {
 				var pushNodeUri:String;
+				var resultSelectRepositoryComponent:Object = selectRepositoryComponent.getResult();
 				
-				if (selectRepositoryComponent.getResult() as Node) {
+				if (resultSelectRepositoryComponent as Node) {
 					pushNodeUri = String(ArrayCollection(Node(selectRepositoryComponent.remotes.selectedItem).getPropertyValue(GitConstants.REMOTE_URIS)));
-				} else if (selectRepositoryComponent.getResult() as String) {
-					pushNodeUri = selectRepositoryComponent.getResult() as String;
+				} else if (resultSelectRepositoryComponent as String) {
+					pushNodeUri = resultSelectRepositoryComponent as String;
 				}
 				
 				if (configureFetchPushComponent.getRefSpecs().length == 0) {
@@ -72,7 +72,7 @@ Andreea Tita
 				
 				// invoke push from server - nodeUri, uri of selected node, pushRefMappings
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.push",
-					[node.nodeUri,
+					[nodeUri,
 					 pushNodeUri,
 					 ArrayCollection (configureFetchPushComponent.getRefSpecs())], 
 					function(result:String):void {
@@ -92,14 +92,28 @@ Andreea Tita
 	</fx:Script>
 	
 	<ns:states>
-		<s:State  name="pushBranchToRemote" />
-		<s:State  name="pushConfirmation" />
+		<mx:State name="selectDestinationRepositoryState">
+			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('git.selectRepo.title')}"/>
+			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('git.selectRepo.description')}"/>
+			
+			<mx:AddChild relativeTo="{contentArea}">
+				<local:SelectRepositoryComponent id="selectRepositoryComponent" 
+												 width="100%" height="100%" 
+												 nodeUri="{nodeUri}"/>	
+			</mx:AddChild>
+		</mx:State>
+		
+		<mx:State name="configureFetchPushState">
+			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.title', ['push'])}"/>
+			<mx:SetProperty name="wizardDescription" value="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.description', ['push'])}"/>
+			
+			<mx:AddChild relativeTo="{contentArea}">
+				<local:ConfigureFetchPushComponent id="configureFetchPushComponent"
+												   width="100%" height="100%"/>
+			</mx:AddChild>
+		</mx:State>
+		
 	</ns:states>
-	
-	<src:SelectRepositoryComponent id="selectRepositoryComponent" width="100%" height="100%"
-								   includeIn="pushBranchToRemote" nodeUri="{node.nodeUri}" />
-	
-	<src:ConfigureFetchPushComponent id="configureFetchPushComponent" width="100%" height="100%"
-									 includeIn="pushConfirmation" />		
+
 	
 </ns:Wizard>

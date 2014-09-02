@@ -99,7 +99,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			return Node(data);	
 		}
 		
-		override protected function canDrawCircle():Boolean {			
+		override protected function shouldDrawCircle():Boolean {			
 			return node != null 
 				&& node.properties.hasOwnProperty(CoreConstants.HAS_CHILDREN)
 				&& Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() 

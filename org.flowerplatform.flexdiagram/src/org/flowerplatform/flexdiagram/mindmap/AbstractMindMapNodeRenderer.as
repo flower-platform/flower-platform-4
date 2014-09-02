@@ -50,11 +50,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected static const FONT_STYLE_DEFAULT:String = "SansSerif";
 		
-		public static const CLOUD_TYPE_NONE:String = "No shape";
+		public static const CLOUD_TYPE_NONE:String = "cloudTypeNone";
 		
-		public static const CLOUD_TYPE_RECTANGLE:String = "Rectangle shape";
+		public static const CLOUD_TYPE_RECTANGLE:String = "cloudTypeRectangle";
 		
-		public static const CLOUD_TYPE_ROUNDEDRECTANGLE:String = "Rounded rectangle shape";
+		public static const CLOUD_TYPE_ROUNDED_RECTANGLE:String = "cloudTypeRoundedRectangle";
 		
 		protected var _label:FocusableRichText;
 		
@@ -81,7 +81,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			if (value == null) {
 				_label.setStyle("fontFamily", Utils.getSupportedFontFamily(FONT_STYLE_DEFAULT));
 			} else {
-			_label.setStyle("fontFamily", Utils.getSupportedFontFamily(value));
+				_label.setStyle("fontFamily", Utils.getSupportedFontFamily(value));
 			}
 		}
 		
@@ -111,9 +111,9 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public function set background(value:uint):void {
 			if (value == 0) {
-				background = BACKGROUND_COLOR_DEFAULT
+				background = BACKGROUND_COLOR_DEFAULT;
 			} else {
-			backgroundColor = value;
+				backgroundColor = value;
 			}
 		}
 		
@@ -152,7 +152,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				minHeight = 22;
 				minWidth = 10;
 			} else {
-				switch (applicationDPI) {
+				switch (FlexGlobals.topLevelApplication.applicationDPI) {
 					case DPIClassification.DPI_320:	{
 						minHeight = 88;
 						break;
@@ -196,10 +196,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected function get mindMapDiagramShell():MindMapDiagramShell {
 			return diagramShellContext != null ? MindMapDiagramShell(diagramShellContext.diagramShell) : null;
-		}
-		
-		public function get applicationDPI():Number	{
-			return FlexGlobals.topLevelApplication.applicationDPI;
 		}
 		
 		override public function set data(value:Object):void {
@@ -264,7 +260,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {			
-			if (_cloudType == CLOUD_TYPE_RECTANGLE || _cloudType == CLOUD_TYPE_ROUNDEDRECTANGLE) {				
+			if (_cloudType == CLOUD_TYPE_RECTANGLE || _cloudType == CLOUD_TYPE_ROUNDED_RECTANGLE) {				
 				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness
 				graphics.beginFill(Utils.convertValueToColor(_cloudColor), 1);
 				
@@ -310,14 +306,21 @@ package org.flowerplatform.flexdiagram.mindmap {
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			graphics.clear();
+
 			drawCloud(unscaledWidth, unscaledHeight);
+			
 			graphics.lineStyle(1, 0x808080);
 			graphics.beginFill(backgroundColor, 1);
 			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);
-			if (canDrawCircle()) {
+			
+			if (shouldDrawCircle()) {
 				drawLittleCircle();
 			}
 			graphics.endFill();
+		}
+		
+		protected function shouldDrawCircle():Boolean {			
+			return false;
 		}
 		
 		protected function drawLittleCircle(circleY:Number=NaN):void {
@@ -331,10 +334,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 			} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
 				graphics.drawCircle(width + circleRadius, circleY, circleRadius);
 			}
-		}
-		
-		protected function canDrawCircle():Boolean {
-			throw new Error("This method needs to be implemented.");
 		}
 		
 		protected function handleIconsChanged(event:CollectionEvent):void {			
@@ -371,7 +370,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 					for (i = 0; i <_icons.length; i++) {
 						iconDisplay = new BitmapImage();
 						iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-						iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));//("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(j));
+						iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
 						iconDisplay.verticalAlign = "middle";
 						iconDisplay.depth = UIComponent(this).depth;
 						addElementAt(iconDisplay, i);
@@ -385,7 +384,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 							for (j = i; j < Math.min(n,_icons.length); j++) {
 								iconDisplay = new BitmapImage();
 								iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-								iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j));//("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(j));
+								iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j));
 								iconDisplay.verticalAlign = "middle";
 								iconDisplay.depth = UIComponent(this).depth;
 								addElementAt(iconDisplay, j);
@@ -404,7 +403,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 						for (i = n; i < _icons.length; i++) {
 							iconDisplay = new BitmapImage();
 							iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-							iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j)); //("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(i));
+							iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j)); 
 							iconDisplay.verticalAlign = "middle";
 							iconDisplay.depth = UIComponent(this).depth;
 							addElementAt(iconDisplay, i);

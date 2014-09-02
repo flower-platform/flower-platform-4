@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
@@ -181,7 +182,12 @@ public class NodeService {
 		return parent;
 	}
 	
-
+	/**
+	 *
+	 * @author Cristian Spiescu
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -191,7 +197,13 @@ public class NodeService {
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-				
+		
+		// Save value before the change
+		if (node.getOrPopulateProperties(context).containsKey(property)) {
+			Object oldValue = node.getOrPopulateProperties(context).get(property);
+			context.add(CoreConstants.OLD_VALUE, oldValue);
+		}
+		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);		
 		for (IPropertySetter controller : controllers) {
 			controller.setProperty(node, property, value, context);
@@ -208,7 +220,7 @@ public class NodeService {
 			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
 		}
 	}
-	
+
 	/**
 	 * @author Mariana Gheorghe
 	 */
@@ -221,7 +233,11 @@ public class NodeService {
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-					
+
+		// Save value before the change
+		Object oldValue = node.getOrPopulateProperties(context).get(property);
+		context.add(CoreConstants.OLD_VALUE, oldValue);
+		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (IPropertySetter controller : controllers) {
 			controller.unsetProperty(node, property, context);
@@ -268,15 +284,41 @@ public class NodeService {
 	}
 	
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
+		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, context);
+		if (context.get("parentNode") == null) {
+			context.add("parentNode", node);
+		}
+		for (int i = grandChildren.size() - 1; i >= 0; i--) {
+			Node grandChild = grandChildren.get(i);
+			removeChild(child, grandChild, context);
+		}
+		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
-		
+
+		// Save full child in context; used for undo
+		// TODO CS: cred ca il putem folosi pe child direct; si cred ca nu mai trebuie pus in cotext
+		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
+		removedNode.getOrPopulateProperties(context);
+		// TODO CS: ar trebui sa fie constante; sa trecem prin modif metodei astea; la o privire rapida nu inteleg
+		context.add("removedNode", removedNode);
+
+		// Find next sibbling and save it for undo of position
+		if (context.get("parentNode")==node) {
+			List<Node> sibblings = getChildren(node, context);
+			int childIndex = sibblings.indexOf(child);
+			if (childIndex < sibblings.size() - 1) {
+				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, sibblings.get(childIndex + 1).getNodeUri());
+			}
+		}
+
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-						
+
+		child.getOrPopulateProperties(context);
 		List<IRemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (IRemoveNodeController controller : controllers) {
 			controller.removeNode(node, child, context);

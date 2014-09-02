@@ -38,14 +38,16 @@ license-end
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.action.PushAction;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
-			import org.flowerplatform.flexutil.spinner.ModalSpinner;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 								
 			[Bindable]
 			public var repo:String;
+			
+			private var node:Node;
 			
 			[Bindable]
 			protected var unstagedData:ArrayCollection;
@@ -65,7 +67,7 @@ license-end
 						return;
 					}
 					// get new selected node
-					var node:Node = Node(activeSelectionProvider.getSelection().getItemAt(0));
+					node = Node(activeSelectionProvider.getSelection().getItemAt(0));
 					
 					if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) {
 						repo = CorePlugin.getInstance().getRepository(node.nodeUri);
@@ -94,7 +96,20 @@ license-end
 			}
 			
 			private function commitFunction():void {
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.commitAndPush", [repo, amendButton.selected, commitMessage.text], refresh);				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.commitAndPush", [repo, amendButton.selected, commitMessage.text], 
+					function(result:String):void {
+						if (result != null) {
+							FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+							.setText(result)
+							.setTitle(Resources.getMessage('flex_client.team.git.ui.Push.pushResult'))
+							.setWidth(300)
+							.setHeight(200)
+							.showMessageBox();
+						} else {
+							FlexUtilGlobals.getInstance().actionHelper.runAction(FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(PushAction.ID), new ArrayCollection([node]), null);	
+						}
+						refresh();
+					});				
 			}
 						
 			public function addToGitIndex(selectedItems:IList):void {
@@ -123,7 +138,7 @@ license-end
 				stagedData = ArrayCollection(data.getItemAt(1));
 				
 				nodeInfo = Node(data.getItemAt(2));
-				commiter.text = nodeInfo.getPropertyValue("commiter");
+				commiter.text = nodeInfo.getPropertyValue(GitConstants.COMMITTER);
 			
 				amendButtonHandler();
 			}

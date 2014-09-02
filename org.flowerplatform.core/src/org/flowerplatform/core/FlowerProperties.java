@@ -59,7 +59,7 @@ public class FlowerProperties extends Properties {
 				IOUtils.closeQuietly(is);
 			} 
 			
-			is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);			
+			is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);
 			this.load(is);
 			IOUtils.closeQuietly(is);
 			

@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-    <classEntry path="org.flowerplatform.flex_client.team.git.GitPlugin"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.CreateStructureDiffFromGitCommitsDialog"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.CreateStructureDiffFromGitCommitsView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.MergeBranchAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.CreateBranchView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateBranchAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteBranchAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.MergeBranchView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.RenameBranchView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.RenameBranchAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureBranchView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.ConfigureBranchAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.view.SelectRepository"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoWizardView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.component.SelectableBranches"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.DeleteGitRepositoryView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.RevertCommitAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.ui.RebaseView"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

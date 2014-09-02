@@ -48,6 +48,7 @@ public class GitConstants {
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_SCHEME = "git";
+	public static final String DOT_GIT_SCHEME = ".git";
 	
 	/////////////////////////////////////////////////////////////
 	// Git Node Properties
@@ -55,9 +56,9 @@ public class GitConstants {
 	
 	public static final String NAME = "name";
 	public static final String IS_GIT_REPOSITORY = "isGitRepository";
+
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
-
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";
 
@@ -67,6 +68,7 @@ public class GitConstants {
 	public static final String FETCH_REF_SPECS = "fetchRefSpecs";
 	public static final String PUSH_REF_SPECS = "pushRefSpecs";
 	public static final String REMOTE_URIS = "URIs";
+
 	public static final String COMMIT_ID = "commitID";
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
@@ -86,7 +88,6 @@ public class GitConstants {
 	public static final String RESET_SOFT = "soft";
 	public static final String RESET_MIXED = "mixed";
 	public static final String RESET_HARD = "hard";
-
 	
 	public static final String ADD = "ADD";	
 	public static final String DELETE = "DELETE";
@@ -96,5 +97,61 @@ public class GitConstants {
 	public static final String FILE_PATH = "filePath";
 
 	public static final String GIT_PREFIX_SESSION = "git|";
+	
+	//////////////////////////////////
+	// Git History Node properties
+	//////////////////////////////////
+	
+	public static final String ID = "ID";
+	
+	public static final String ENTRY_SHORT_ID = "ShortId";
+	
+	public static final String SHORT_MESSAGE = "shortMessage";
+	
+	public static final String LONG_MESSAGE = "longMessage";
+	
+	public static final String AUTHOR_EMAIL = "AuthorEmail";
+	
+	public static final String AUTHORED_DATE = "AuthoredDate";
+	
+	public static final String COMMITTER_EMAIL = "CommitterEmail";
+	
+	public static final String COMMITER_DATE = "CommitteredDate";
+	
+	public static final String SPECIAL_MESSAGE = "SpecialMessage";
+	
+	public static final String DRAWINGS = "Drawings"; 
+	
+	public static final String DRAW_LINE = "drawLine";
+	
+	public static final String DRAW_DOT = "drawDot";
+	
+	public static final String DRAW_LINE_LIST = "drawLine";
+	
+	public static final String DRAW_COMMIT_DOT = "drawCommitDot";
+	
+	public static final String DRAW_BOUNDARY_DOT = "drawBoundaryDot";
+	
+	public static final String FILES = "files";
+	
+	public static final String IMG = "img";
+	
+	public static final String PARENT = "parent";
+	
+	public static final String CHILD = "child";
+	
+	public static final String BRANCHES = "branches";
+	
+	public static final String WEBCOMMIT = "webcommit";	
+	
+	public static final String COMMIT_SHORT_ID = "commitShortId";
+	
+	public static final String LABEL = "label";
+	
+	public static final String IMAGE = "image";
+	
+	public static final String TAGS = "tags";
+	
+	public static final Integer MAXCOMMITS = 10000;
 
 }

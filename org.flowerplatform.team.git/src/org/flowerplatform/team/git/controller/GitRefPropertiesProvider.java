@@ -35,6 +35,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
@@ -76,14 +77,14 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 			}
 		
 			Boolean configRebase = config.getBoolean(ConfigConstants.CONFIG_BRANCH_SECTION, name,ConfigConstants.CONFIG_KEY_REBASE, false);
-			
+			boolean isCheckedOut = GitUtils.isRefCheckedOut(repo, (Ref) node.getRawNodeData());
 			node.getProperties().put(NAME, name);
 			node.getProperties().put(FULL_NAME, ((Ref) node.getRawNodeData()).getName());
 			node.getProperties().put(CONFIG_REMOTE, configRemote);
 			node.getProperties().put(CONFIG_UPSTREAM_BRANCH, configUpstreamBranch);
 			node.getProperties().put(CONFIG_REBASE, configRebase);				
-			node.getProperties().put(ICONS, setIcon(node));
-			node.getProperties().put(IS_CHECKEDOUT, repo.getBranch().equals(name));
+			node.getProperties().put(ICONS, setIcon(node, isCheckedOut));
+			node.getProperties().put(IS_CHECKEDOUT, isCheckedOut);
 			node.getProperties().put(COMMIT_ID, repo.getRef(name).getObjectId().name());
 			node.getProperties().put(COMMIT_MESSAGE, message);
 		} catch (Exception e){	
@@ -91,7 +92,7 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 		}
 	}
 	
-	public String setIcon(Node node) {
+	public String setIcon(Node node, boolean isCheckedOut) {
 		String icon = null;	
 		String type = GitUtils.getType(node.getNodeUri());
 		
@@ -110,6 +111,9 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 				break;
 		}
 		
+		if (isCheckedOut) {
+			icon = CorePlugin.getInstance().getImageComposerUrl(icon, ResourcesPlugin.getInstance().getResourceUrl("images/team.git/checkedout_ov.gif"));
+		}
 		return icon;
 	}
 	
