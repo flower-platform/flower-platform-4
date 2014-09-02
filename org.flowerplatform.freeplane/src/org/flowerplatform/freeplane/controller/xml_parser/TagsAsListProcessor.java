@@ -10,12 +10,12 @@ import org.xml.sax.Attributes;
  * @author Catalin Burcea
  *
  */
-public class TagsAsCsvListProcessor implements ITagProcessor {
+public class TagsAsListProcessor implements ITagProcessor {
 
 	private String propertyName;
 	private String keyAttribute;
 
-	public TagsAsCsvListProcessor(String propertyName, String keyAttribute) {
+	public TagsAsListProcessor(String propertyName, String keyAttribute) {
 		this.propertyName = propertyName;
 		this.keyAttribute = keyAttribute;
 	}
@@ -29,6 +29,7 @@ public class TagsAsCsvListProcessor implements ITagProcessor {
 			node.getProperties().put(propertyName, list);
 		}
 		for (int i = 0; i < attributes.getLength(); i++) {
+			// TODO CS: cred ca putem inlocui for-ul
 			if (attributes.getQName(i).equals(keyAttribute)) {
 				list.add(attributes.getValue(i));
 			}
