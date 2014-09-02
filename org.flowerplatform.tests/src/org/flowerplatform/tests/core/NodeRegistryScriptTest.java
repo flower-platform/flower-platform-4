@@ -67,9 +67,9 @@ public class NodeRegistryScriptTest {
 		try {			
 			Scriptable scope = cx.initStandardObjects();
 					
-			cx.evaluateReader(scope, Files.newBufferedReader(Paths.get("D:/data/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
-			cx.evaluateReader(scope, Files.newBufferedReader(Paths.get("D:/data/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
-			cx.evaluateReader(scope, Files.newBufferedReader(Paths.get("D:/data/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);
+			cx.evaluateReader(scope, Files.newBufferedReader(Paths.get("D:/data/git/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
+			cx.evaluateReader(scope, Files.newBufferedReader(Paths.get("D:/data/git/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
+			cx.evaluateReader(scope, Files.newBufferedReader(Paths.get("D:/data/git/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);
 					
 			JsResourceOperationsHandler n1 = new JsResourceOperationsHandler();
 			ScriptableObject.putProperty(scope, "n1", Context.javaToJS(n1, scope));

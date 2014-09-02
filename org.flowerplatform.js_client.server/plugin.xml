@@ -27,13 +27,6 @@
       </resource>
    </extension>
    <extension
-         point="org.eclipse.equinox.http.registry.filters">
-      <filter
-            alias="/ws-dispatcher"
-            class="org.flowerplatform.js_client.server.LoginFilter">
-      </filter>
-   </extension>
-   <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/authenticate/loginUser"

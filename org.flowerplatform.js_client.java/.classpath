@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-client-2.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/oauth1-client-2.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/oauth1-signature-2.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-api-2.3.0-b05.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-locator-2.3.0-b05.jar"/>
@@ -14,7 +17,6 @@
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/javassist-3.18.1-GA.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/javax.annotation-api-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/javax.inject-2.3.0-b05.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-client-2.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-common-2.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-container-servlet-2.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-container-servlet-core-2.11.jar"/>
