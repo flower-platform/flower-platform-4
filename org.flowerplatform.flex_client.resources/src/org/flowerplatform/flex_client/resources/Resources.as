@@ -84,6 +84,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/table_gear.png")]
 		public static const tableGear:Class;
 		
+		[Embed(source="/core/url_icon.png")]
+		public static const urlIcon:Class;
+		
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]

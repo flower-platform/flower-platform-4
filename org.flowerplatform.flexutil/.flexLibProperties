@@ -28,6 +28,8 @@
     <classEntry path="org.flowerplatform.flexutil.view_content_host.BasicViewContent"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.ICachedActionsAndSelectionProvider"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.IViewHostAware"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrl"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrlView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
