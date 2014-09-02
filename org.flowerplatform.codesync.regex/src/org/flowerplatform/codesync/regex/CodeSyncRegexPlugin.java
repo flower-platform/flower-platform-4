@@ -101,6 +101,7 @@ import org.flowerplatform.codesync.regex.controller.RegexTechnologyPropertiesPro
 import org.flowerplatform.codesync.regex.controller.RegexTestFileChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.RegexTestFilePropertiesProvider;
 import org.flowerplatform.codesync.regex.controller.RegexTestFilesChildrenProvider;
+import org.flowerplatform.codesync.regex.controller.RegexTestMatchesChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.RegexWithActionsProcessor;
 import org.flowerplatform.codesync.regex.controller.VirtualRegexChildrenProvider;
 import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
@@ -348,7 +349,9 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_EXPECTED_MODEL_TREE_NODE_TYPE)
 				.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Expected model tree"));
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MATCHES_NODE_TYPE)
-				.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Matches"));
+				.addAdditiveController(CHILDREN_PROVIDER, new RegexTestMatchesChildrenProvider())
+				.addAdditiveController(PROPERTIES_PROVIDER, new RegexTestMatchesChildrenProvider());
+//				.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Matches"));
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_EXPECTED_MATCHES_NODE_TYPE)
 				.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Expected matches"));
 

@@ -125,7 +125,7 @@ public class FileChildrenController extends AbstractController
 				throw new RuntimeException("There is already a file with the same name in this location.");
 			} else {
 				// this file already exists, but I want to overwrite it
- 				((File) fileToCreate).delete();
+// 				((File) fileToCreate).delete();
 				CorePlugin.getInstance().getNodeService().removeChild(parentNode, child, context);
 			}
 		}

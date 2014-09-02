@@ -44,7 +44,8 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
-		String path = CoreUtils.getRepoFromNode(node) + "/" + REGEX_CONFIGS_FOLDER + "/" + virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri()) + "/"
+		String nodeSpecificPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri());
+		String path = CoreUtils.getRepoFromNode(node) + "/" + REGEX_CONFIGS_FOLDER + "/" + nodeSpecificPart + "/"
 				+ CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
 		Object file = null;
 		try {
@@ -57,7 +58,8 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 		if (files != null) {
 			for (Object object : files) {
 				if (((File) object).isFile()) {
-					Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node), REGEX_TEST_FILE_NODE_TYPE, ((File) object).getName()),
+					String typeSpecificPart = nodeSpecificPart + "/" + CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER + "/" + ((File) object).getName() + CodeSyncRegexConstants.REGEX_MATCH_EXTENSION; 
+					Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node), REGEX_TEST_FILE_NODE_TYPE, typeSpecificPart),
 							REGEX_TEST_FILE_NODE_TYPE);
 					children.add(child);
 				}

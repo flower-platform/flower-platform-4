@@ -21,7 +21,9 @@ public class RegexTestFilePropertiesProvider extends AbstractController implemen
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		node.getProperties().put(CoreConstants.NAME, new VirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri()));
+		String testFileName = new VirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
+		testFileName = testFileName.substring(testFileName.lastIndexOf('/') + 1);
+		node.getProperties().put(CoreConstants.NAME, testFileName);
 		node.getProperties().put(CoreConstants.HAS_CHILDREN, true);
 	}
 }
