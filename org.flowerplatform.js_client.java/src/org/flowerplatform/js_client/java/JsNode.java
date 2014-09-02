@@ -1,9 +1,13 @@
 package org.flowerplatform.js_client.java;
 
-public class JsNode {
+import org.flowerplatform.core.node.remote.Node;
+
+public class JsNode extends Node {
 
 	public JsList<JsNode> children;
 	
-	public String nodeUri;
+	public String nodeUri() {
+		return getNodeUri();
+	};
 	
 }

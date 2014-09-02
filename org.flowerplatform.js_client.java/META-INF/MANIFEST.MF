@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Java
-Bundle-SymbolicName: org.flowerplatform.js_client.java
+Bundle-SymbolicName: org.flowerplatform.js_client.java;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.flowerplatform.js_client.core,
  org.flowerplatform.util,
  org.flowerplatform.core,
- org.flowerplatform.js_client.server
+ org.eclipse.core.runtime
 Export-Package: org.flowerplatform.js_client.java,
  org.mozilla.javascript
 Bundle-ClassPath: lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar,

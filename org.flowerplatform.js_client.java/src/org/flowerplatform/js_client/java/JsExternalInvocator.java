@@ -20,18 +20,22 @@ public class JsExternalInvocator {
 	}
 
 	public void showMessageBox(String titleKeyMessage, String textKeyMessage, String[] textParams) {
+		// TODO implement
 		System.out.println("showMessageBox(" + titleKeyMessage + " " + textKeyMessage + " " + textParams);
 	}
 
 	public Object createUpdateEvent(Object source, String property, Object oldValue, Object newValue) {
+		// TODO implement
 		return new JsPropertyChangeEvent(source, property, oldValue, newValue);
 	}
 	
 	public void addEventListener(Object source, String eventType, Callable<?> handler) {
+		// TODO implement
 		System.out.println("addEventListener(" + source + " " + eventType + " " + handler);
 	}
 	
 	public void removeEventListener(Object source, String eventType, Callable<?> handler) {
+		// TODO implement
 		System.out.println("removeEventListener(" + source + " " + eventType + " " + handler);
 	}
 	

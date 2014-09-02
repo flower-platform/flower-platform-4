@@ -260,16 +260,16 @@ NodeRegistryManager.prototype.subscribe = function(nodeId, nodeRegistry, subscri
 			if (subscriptionInfo.resourceNode != null) {
 				subscriptionInfo.resourceNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.resourceNode);
 				self.linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, subscriptionInfo.resourceSet, nodeRegistry);
-			}
+			}			
 			if (subscribeResultCallback != null) {
-				subscribeResultCallback(subscriptionInfo.rootNode, subscriptionInfo.resourceNode);
+				subscribeResultCallback.call(null, subscriptionInfo.rootNode, subscriptionInfo.resourceNode);
 			}
 		},
-		function(event) {
-			self.externalInvocator.showMessageBox("editor.error.subscribe.title", "editor.error.subscribe.message", [event.fault.faultString]);
+		function(fault) {
+			self.externalInvocator.showMessageBox("editor.error.subscribe.title", "editor.error.subscribe.message", [fault.faultString]);
 					
 			if (subscribeFaultCallback != null) {
-				subscribeFaultCallback(event);
+				subscribeFaultCallback.call(null, fault);
 			}
 		});
 };

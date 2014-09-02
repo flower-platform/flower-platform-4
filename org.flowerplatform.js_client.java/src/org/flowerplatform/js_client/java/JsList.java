@@ -4,9 +4,6 @@ import java.util.ArrayList;
 
 public class JsList<E> extends ArrayList<E> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Override

@@ -3,9 +3,11 @@ package org.flowerplatform.tests.core;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Observable;
 
 import javax.script.ScriptEngine;
 
+import org.flowerplatform.js_client.java.IFunctionInvoker;
 import org.flowerplatform.js_client.java.INodeChangeListener;
 import org.flowerplatform.js_client.java.INodeRegistryManagerListener;
 import org.flowerplatform.js_client.java.JsExternalInvocator;
@@ -87,69 +89,28 @@ public class NodeRegistryScriptTest {
 			Object nodeRegistry = cx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		
 			Function fct = (Function) nodeRegistryManager.getPrototype().get("subscribe", nodeRegistryManager.getPrototype());
-			fct.call(cx, scope, nodeRegistryManager, new Object[] {"virtual:user/repo|root", nodeRegistry, 
-					null			
-				, 
-				new RunnableWithParam<Object, Object>() {
+			fct.call(cx, scope, nodeRegistryManager, new Object[] {"fpm:user1/repo-1|tt.mm", nodeRegistry, 
+				new IFunctionInvoker<Object, Object>() {
 					@Override
-					public Object run(Object param) {
-						System.out.println("subscribeFaultCallback");
+					public Object call(Object instance, Object... params) {
+						System.out.println("subscribeOKCallback -> " + params);
+						return null;
+					}
+				}, 
+				new IFunctionInvoker<Object, Object>() {
+					@Override
+					public Object call(Object instance, Object... params) {
+						System.out.println("subscribeFailedCallback -> " + params[0].toString());
 						return null;
 					}
 				}});
+									
+			fct = (Function) nodeRegistryManager.getPrototype().get("getResourceUris", nodeRegistryManager.getPrototype());
+			Object result = fct.call(cx, scope, nodeRegistryManager, new Object[] {});
+			System.out.println(result);
 		} finally {
 		    Context.exit();
 		}
-	
-//		ScriptEngineManager manager = new ScriptEngineManager();		
-//		engine = manager.getEngineByName("JavaScript");
-//		
-//			// read script files
-//			engine.eval(Files.newBufferedReader(Paths.get("D:/data/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8));
-//			engine.eval(Files.newBufferedReader(Paths.get("D:/data/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8));
-//			engine.eval(Files.newBufferedReader(Paths.get("D:/data/flower-platform-4/org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8));
-//			
-//			
-//			engine.put("n1", new JsResourceOperationsHandler());
-//			engine.put("n2", new JsServiceInvocator());
-//			engine.put("n3", new JsExternalInvocator());
-//			engine.eval("_nodeRegistryManager = new NodeRegistryManager(n1, n2, n3);");
-//			
-//			Object nodeRegistryManager = engine.get("_nodeRegistryManager");
-//			nodeRegistryManager.toString();
-//				
-//			Object nodeRegistry = ((Invocable) engine).invokeMethod(nodeRegistryManager, "createNodeRegistry");
-//			((Invocable) engine).invokeMethod(nodeRegistryManager, "addListener", new NodeRegistryManagerListener());
-//			
-//			((Invocable) engine).invokeMethod(nodeRegistryManager, "subscribe", "virtual:user/repo|root", nodeRegistry, 
-//					new RunnableWithParam<Object, Object>() {
-//						@Override
-//						public Object run(Object param) {
-//							System.out.println("subscribeResultCallback");
-//							return null;
-//						}
-//				
-//					}, 
-//					new RunnableWithParam<Object, Object>() {
-//						@Override
-//						public Object run(Object param) {
-//							System.out.println("subscribeFaultCallback");
-//							return null;
-//						}
-//				
-//					});
-//			CorePlugin.getInstance().nodeRegistryManager.addListener(this);
-			
-//			CorePlugin.getInstance().nodeRegistryManager.subscribe(editorInput, nodeRegistry, subscribeResultCallback, subscribeFaultCallback);
-//			Node node = new Node("myNodeUri", "myType");	
-//			Assert.assertEquals(((Invocable) engine).invokeMethod(nodeRegistry, "registerNode", node), "Node " + "[" + node.getType() + ", " + node.getNodeUri() + "] registered!");
-//			
-//			// this will trigger INodeChangedListener.nodeChanged
-//			((Invocable) engine).invokeMethod(nodeRegistry, "setType", node, "newType");
-									
-//		} catch (Exception e) {			
-//			throw new RuntimeException(e);
-//		}
 	}
 	
 }

@@ -21,7 +21,6 @@
     <classEntry path="org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.ActionDescriptor"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider"/>
-    <classEntry path="org.flowerplatform.flex_client.core.node.NodeExternalInvocator"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -1,4 +1,4 @@
-package org.flowerplatform.js_client.server;
+package org.flowerplatform.js_client.java;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -8,16 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Set custom properties to {@link ObjectMapper}.
- * 
- * @author Mariana Gheorghe
+ * @see JsServiceInvocator
+ * @author Cristina Constantinescu
  */
 @Provider
-public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
+public class ClientObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
 	private ObjectMapper objectMapper;
 	
-	public ObjectMapperProvider() {
+	public ClientObjectMapperProvider() {
 		objectMapper = new ObjectMapper();
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

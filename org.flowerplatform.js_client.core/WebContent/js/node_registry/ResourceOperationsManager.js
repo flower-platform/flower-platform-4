@@ -37,7 +37,7 @@ ResourceOperationsManager.prototype.showSaveDialog = function(nodeRegistries, di
 	}	
 	if (dirtyResourceNodes.length == 0) {
 		if (handler != null) {
-			handler();
+			handler.call();
 		} else {			
 			this.nodeRegistryManager.removeNodeRegistries(nodeRegistries);
 		}
