@@ -98,9 +98,7 @@
 				}
 			} 
 			
-			override protected function canDrawCircle():Boolean {	
-				return false;
-			}
+
 		]]>
 	</fx:Script>
 	

@@ -120,7 +120,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			node.properties.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 		}
 		
-		override protected function canDrawCircle():Boolean {			
+		override protected function shouldDrawCircle():Boolean {			
 			return node != null 
 				&& node.properties.hasOwnProperty(CoreConstants.HAS_CHILDREN)
 				&& Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() 
