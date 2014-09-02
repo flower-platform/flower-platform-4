@@ -82,7 +82,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			embeddedRenderer.data = value;
 			super.data = value;
-			
 			if (data != null) {
 				beginModelListen();
 			}

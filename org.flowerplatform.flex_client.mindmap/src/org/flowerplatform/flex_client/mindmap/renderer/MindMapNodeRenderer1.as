@@ -14,18 +14,13 @@
 * license-end
 */
 package org.flowerplatform.flex_client.mindmap.renderer {
-	import mx.collections.ArrayCollection;
-	import mx.core.UIComponent;
 	import mx.events.PropertyChangeEvent;
 	
-	import spark.primitives.BitmapImage;
-	
+	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapNodeRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
@@ -61,17 +56,17 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			// else used as a renderer in a plain Flex component
 			
-			if (event == null || event.property == "fontFamily") {
-				fontFamily = Utils.getSupportedFontFamily(data.getPropertyValue(MindMapConstants.FONT_FAMILY));
+			if (event == null || event.property == "font.NAME") { //fontFamily
+				fontFamily = data.getPropertyValue(MindMapConstants.FONT_FAMILY);
 			} 
-			if (event == null || event.property == "fontSize") {
+			if (event == null || event.property == "font.SIZE") {
 				fontSize = 12; //data.getPropertyValue(MindMapConstants.FONT_SIZE);
 			} 
-			if (event == null || event.property == "fontWeight") {
-				fontWeight = data.getPropertyValue(MindMapConstants.FONT_BOLD) == true ? "bold" : "normal";
+			if (event == null || event.property == "font.BOLD") {
+				fontWeight = data.getPropertyValue(MindMapConstants.FONT_BOLD);
 			} 
-			if (event == null || event.property == "fontStyle") {
-				fontStyle = data.getPropertyValue(MindMapConstants.FONT_ITALIC) == true ? "italic" : "normal";
+			if (event == null || event.property == "font.ITALIC") {
+				fontStyle = data.getPropertyValue(MindMapConstants.FONT_ITALIC);
 			}
 			if (event == null || event.property == "node.TEXT") {
 				text = data.getPropertyValue("node.TEXT");
@@ -83,15 +78,32 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				invalidateDisplayList();
 				background =  0xFFFFFFFF; //Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.COLOR_BACKGROUND));
 			}
-			if (event == null || event.property == "icons") {
-//				var iconDisplay:BitmapImage = new BitmapImage();
-//				iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-//				iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying("../../org.flowerplatform.flexdiagram.samples/icons/penguin.png");
-//				iconDisplay.verticalAlign = "middle";
-//				iconDisplay.depth = UIComponent(this).depth;
-//				var icons:ArrayCollection = new ArrayCollection();
-//				icons.addItem(iconDisplay);
-			}
+//			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(mindMapDiagramShell.registry, node);
+//			var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
+//			if (event == null || event.property == iconsProperty) {
+//				var iconsValue:String = iconsProvider.getValue(node) as String;
+//				if (node.properties.note != null && String(node.properties.note).length > 0) {				 
+//					iconsValue = Resources.getResourceUrl("/images/mindmap/knotes.png") + (iconsValue == null ? "" : (Utils.ICONS_SEPARATOR + iconsValue));
+//					icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
+//				} else {
+//					if (iconsValue != null) {
+//						icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
+//					} else {
+//						icons = null;
+//					}	
+//				}
+//			}
+		}
+		
+		protected function get node():Node {
+			return Node(data);	
+		}
+		
+		override protected function canDrawCircle():Boolean {			
+			return node != null 
+				&& node.properties.hasOwnProperty(CoreConstants.HAS_CHILDREN)
+				&& Boolean(node.properties[CoreConstants.HAS_CHILDREN]).valueOf() 
+				&& !mindMapDiagramShell.getModelController(diagramShellContext, node).getExpanded(diagramShellContext, node);
 		}
 		
 	}

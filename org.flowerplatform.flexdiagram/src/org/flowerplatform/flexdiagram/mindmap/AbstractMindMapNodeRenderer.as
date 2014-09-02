@@ -72,7 +72,9 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Graphic properties supported by this renderer.
 		 *************************************************************************/
 		public function set text(value:String):void {
-			_label.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
+			if (value != null) {
+				_label.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);	
+			}
 		}
 		
 		public function set fontFamily(value:String):void {
@@ -202,7 +204,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		override public function set data(value:Object):void {
 			if (data != null) {
-				endModelListen();
+				endModelListen();	
 			}
 			super.data = value;
 			if (data != null) {

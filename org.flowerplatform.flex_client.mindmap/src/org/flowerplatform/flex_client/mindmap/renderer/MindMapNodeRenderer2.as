@@ -110,14 +110,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
  			return Node(data);	
 		}
 		
-		override protected function beginModelListen():void
-		{
+		override protected function beginModelListen():void {
 			super.beginModelListen();
 			node.properties.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);	
 		}
 		
-		override protected function endModelListen():void
-		{
+		override protected function endModelListen():void {
 			super.endModelListen();
 			node.properties.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 		}
