@@ -31,20 +31,33 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelDragController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelInplaceEditorController;
+	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelPropertyAdapter;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeWithBasicSubmodulesRenderer;
 	import org.flowerplatform.flexdiagram.samples.renderer.DictionaryIconItemRenderer;
+	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class SampleMindMapDiagramShell extends MindMapDiagramShell {
-						
+				
+		public var mindMapModelPropertyAdapter:SampleMindMapModelPropertyAdapter = new SampleMindMapModelPropertyAdapter();
+		
+		protected static var INSTANCE:SampleMindMapDiagramShell;
+
+		public static function getInstance():SampleMindMapDiagramShell {
+			return INSTANCE;
+		}
 		public function SampleMindMapDiagramShell() {
 			super();
 			
+			if (INSTANCE != null) {
+				throw new Error("An instance of SampleMindMapDiagramShell already exists; it should be a singleton!");
+			}
+			INSTANCE = this;
 			typeProvider = new SampleMindMapTypeProvider();
 			
 			registry = new TypeDescriptorRegistry();

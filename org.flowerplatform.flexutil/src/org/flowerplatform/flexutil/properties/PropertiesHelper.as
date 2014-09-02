@@ -4,6 +4,7 @@ package org.flowerplatform.flexutil.properties {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.ComposedTypeProvider;
 	import org.flowerplatform.flexutil.controller.IPropertyModelAdapter;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
@@ -29,6 +30,14 @@ package org.flowerplatform.flexutil.properties {
 		public static function getInstance():PropertiesHelper {
 			return INSTANCE;
 		}
+		
+		public function PropertiesHelper() {
+			if (INSTANCE != null) {
+				throw new Error("An instance of PropertiesHelper already exists; it should be a singleton!");
+			}
+			INSTANCE = this;
+		}
+		
 		public function getNewPropertyLineRendererInstance(propertyLineRendererType:String):IPropertyLineRenderer {
 			var propertyLineRendererFactory:FactoryWithInitialization = propertyDescriptorTypeToPropertyLineRendererFactory[propertyLineRendererType];
 			if (propertyLineRendererFactory == null) {
