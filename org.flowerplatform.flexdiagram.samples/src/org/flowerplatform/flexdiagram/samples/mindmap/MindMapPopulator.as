@@ -102,8 +102,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			//			model.width = 151;
 			//			model.height = 22;
 			model.hasChildren = false;
-			model.fontFamily = "Times New Roman";
-			model.fontSize = 15;
+			model.fontFamily = "SansSerif";
+			model.fontSize = 9;
 			model.fontStyle = true;
 			model.fontWeight = false;
 			model.textColor = 0x000000;
