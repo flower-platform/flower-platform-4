@@ -259,8 +259,6 @@
 					FlexUtilGlobals.getInstance().rootUrl = result.host;
 					
 					startPlugins();
-														
-					CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "(root||)");
 				}
 			}
 			

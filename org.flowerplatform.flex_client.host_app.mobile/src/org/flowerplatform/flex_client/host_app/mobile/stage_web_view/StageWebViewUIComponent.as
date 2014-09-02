@@ -18,9 +18,6 @@
 */
 package org.flowerplatform.flex_client.host_app.mobile.stage_web_view {
 	
-	import es.xperiments.media.StageWebViewBridge;
-	import es.xperiments.media.StageWebViewDisk;
-	
 	import flash.display.Stage;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
@@ -28,6 +25,9 @@ package org.flowerplatform.flex_client.host_app.mobile.stage_web_view {
 	import flash.geom.Rectangle;
 	
 	import mx.core.UIComponent;
+	
+	import es.xperiments.media.StageWebViewBridge;
+	import es.xperiments.media.StageWebViewDisk;
 	
 	[Event(name="complete", type="flash.events.Event")]
 	[Event(name="locationChanging", type="flash.events.LocationChangeEvent")]

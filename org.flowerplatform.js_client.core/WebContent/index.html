@@ -5,6 +5,18 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 
+<script src="js/utils.js"></script>
+
+<script type="text/javascript">
+	var isMobile = getURLParam('isMobile');
+	if (isMobile == "true") {
+		document.write("<script src='js/StageWebViewBridge.js'><\/script><script src='js/embedMobile.js'><\/script>");
+		//logger.debug('mobile');
+	} else {
+		//logger.debug('not mobile');
+	}
+</script>
+
 <script src="js/angularjs/angular.js"></script>
 <script src="js/angularjs/angular-route.js"></script>
 <script src="js/angularjs/angular-resource.js"></script>
@@ -24,7 +36,6 @@
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
 </head>
-
 
 <body>
 

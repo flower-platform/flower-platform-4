@@ -1,6 +1,6 @@
 'use strict';
 
-console.log('init user services');
+logger.debug('init user services');
 
 flowerProject.lazy.factory('User', ['$resource', function($resource) {
 	
@@ -36,7 +36,7 @@ flowerProject.lazy.factory('Login', [function() {
  * Decorate the Template service from core.
  */
 flowerProject.lazy.decorator('Template', function($delegate) {
-	console.log('decorate');
+	logger.debug('decorate');
 	$delegate.userSideMenu 		  = '../js_client.users/partials/composed/userSideMenu.html';
 	
 	$delegate.userList 			  = '../js_client.users/partials/userList.html';
