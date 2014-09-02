@@ -47,7 +47,7 @@
 				}		
 				
 				if (labelDisplay != null) {
-					labelDisplay.text = _propertyDescriptor.title != null ? _propertyDescriptor.title : _propertyDescriptor.name;
+					labelDisplay.text = _propertyDescriptor.label != null ? _propertyDescriptor.label : _propertyDescriptor.name;
 				}
 				labelDisplay.setStyle("paddingRight", (labelDisplay.text == null || labelDisplay.text == "") ? 0 : 15);				
 			}

@@ -71,7 +71,7 @@ public class CodeSyncRegexService {
 	public List<Pair<String, String>> getRegexActions() {
 		List<Pair<String, String>> list = new ArrayList<Pair<String, String>>();
 
-		for (RegexAction regexAction : CodeSyncRegexPlugin.getInstance().getAction().values()) {
+		for (RegexAction regexAction : CodeSyncRegexPlugin.getInstance().getActions().values()) {
 			list.add(new Pair<String, String>(regexAction.getName(), regexAction.getDescription()));
 		}
 		return list;

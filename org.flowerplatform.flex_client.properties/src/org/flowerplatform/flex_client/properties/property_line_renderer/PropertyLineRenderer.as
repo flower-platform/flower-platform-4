@@ -56,7 +56,7 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 		
 		protected function propertyDescriptorUpdated():void {
 			// use title as label if set
-			this.label = _propertyDescriptor.title != null ? _propertyDescriptor.title : _propertyDescriptor.name;			
+			this.label = _propertyDescriptor.label != null ? _propertyDescriptor.label : _propertyDescriptor.name;			
 			
 			if (renderer != null) {
 				renderer.propertyDescriptorChangedHandler();

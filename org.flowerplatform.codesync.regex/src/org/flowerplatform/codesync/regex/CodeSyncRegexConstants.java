@@ -51,7 +51,6 @@ public class CodeSyncRegexConstants {
 	public static final String ACTION_TYPE_INCREASE_NESTING_LEVEL = "IncreaseNestingLevelAction";
 	public static final String ACTION_TYPE_DECREASE_NESTING_LEVEL = "DecreaseNestingLevelAction";
 
-	public static final String REGEX_CONFIGS_NODE_TYPE = "regexConfigs";
 	public static final String REGEX_CONFIGS_FOLDER = ".regex-configs";
 	public static final String REGEX_CONFIG_FILE = ".regex-config";
 	public static final String REGEX_TECHNOLOGY_NODE_TYPE = "regexTechnology";
