@@ -1,6 +1,10 @@
 package org.flowerplatform.flexutil.properties.controllers
 {
+	import mx.collections.IList;
+	
 	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.properties.PropertiesConstants;
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.remote.PropertyDescriptor;
 
 	/**
@@ -22,7 +26,20 @@ package org.flowerplatform.flexutil.properties.controllers
 		 * 			Otherwise returns <code>null</code>.
 		 */ 
 		public function getPropertyDescriptor(context:Object, nodeObject:Object, property:String):PropertyDescriptor {
-			//TODO: use node property
+			var propertyDescriptor:PropertyDescriptor;
+			var descriptors:IList = PropertiesHelper.getInstance().nodeTypeDescriptorRegistry
+				.getExpectedTypeDescriptor(PropertiesHelper.getInstance().composedTypeProvider.getType(nodeObject))
+				.getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR, nodeObject);
+			for (var i:int = 0; i < descriptors.length; i++) {
+				propertyDescriptor = PropertyDescriptor(descriptors.getItemAt(i));
+				if (propertyDescriptor.name == property) {
+					return propertyDescriptor;
+				}
+			}			
+			var index:int = property.lastIndexOf(".");
+			if (index != -1) {						
+				return getPropertyDescriptor(context, nodeObject, property.substring(0, index));				
+			}
 			return null;
 		}
 	}

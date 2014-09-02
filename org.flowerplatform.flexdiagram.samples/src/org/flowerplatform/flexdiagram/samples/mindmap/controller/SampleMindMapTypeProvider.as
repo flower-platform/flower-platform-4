@@ -34,7 +34,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 			if (model is BasicSubModel) {
 				return "basicSubModel1";
 			}
-			if (model is Pair) { //Pair??
+			if (model is Pair) {
 				return "dictionaryEntry"
 			}
 			return null;
