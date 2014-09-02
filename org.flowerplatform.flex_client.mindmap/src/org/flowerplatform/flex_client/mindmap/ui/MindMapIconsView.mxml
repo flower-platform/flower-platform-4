@@ -28,11 +28,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
-			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
@@ -56,11 +53,15 @@
 			
 			override protected function handleClick(result:Object):void {
 				resultHandler.handleDialogResult(result);
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+				closeHandler();
 			}
 			
 			public function additionalCloseHandler():void {	
 				// nothing to do
+			}
+			
+			private function closeHandler():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 		]]>
 	</fx:Script>

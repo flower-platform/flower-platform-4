@@ -35,6 +35,18 @@ public class FileControllerUtils {
 		return CorePlugin.getInstance().getFileAccessController();
 	}
 	
+	/**
+	 * @author Vlad Bogdan Manica
+	 */	
+	public static String getFilePathFromNodeUri(String nodeUri) {
+		int index = nodeUri.indexOf("|"); 
+		if (index < 0) {
+			return null;
+		} else {
+			return nodeUri.substring(index + 1);
+		}
+	}
+	
 	public static String getFilePathWithRepo(Node node) {
 		return getFilePathWithRepo(node.getNodeUri());
 	}

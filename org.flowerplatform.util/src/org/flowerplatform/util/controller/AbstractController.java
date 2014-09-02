@@ -53,6 +53,16 @@ public abstract class AbstractController implements IController {
 	 */
 	private int orderIndex;
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	private boolean sharedControllerAllowed;
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	private TypeDescriptor typeDescriptor; 
+	
 	/* (non-Javadoc)
 	 * @see org.flowerplatform.util.controller.IOrderedController#getOrderIndex()
 	 */
@@ -74,6 +84,26 @@ public abstract class AbstractController implements IController {
 		return this;
 	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
+		if (!sharedControllerAllowed && this.typeDescriptor !=null && this.typeDescriptor != typeDescriptor) {
+			throw new IllegalStateException(String.format("This instance of %s cannot be registered for type '%s'. It is is already registered for type '%s'.", 
+					this.getClass(), typeDescriptor.getType(), this.typeDescriptor.getType()));
+		}
+		this.typeDescriptor = typeDescriptor;
+	}
+	
+	public boolean isSharedControllerAllowed() {
+		return sharedControllerAllowed;
+	}
+
+	public void setSharedControllerAllowed(boolean sharedControllerAllowed) {
+		this.sharedControllerAllowed = sharedControllerAllowed;
+	}
+
 	/**
 	 * Needed to know how to sort the list of controllers. For additive controllers.
 	 */

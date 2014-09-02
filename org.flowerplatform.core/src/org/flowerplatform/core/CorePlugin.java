@@ -43,6 +43,9 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.resource.CommandStackChildrenProvider;
+import org.flowerplatform.core.node.resource.CommandStackPropertiesProvider;
+import org.flowerplatform.core.node.resource.CommandStackResourceHandler;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
@@ -101,10 +104,21 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected SessionService sessionService;
 	
 	protected VirtualNodeResourceHandler virtualNodeResourceHandler = new VirtualNodeResourceHandler();
+	protected CommandStackResourceHandler commandStackResourceHandler = new CommandStackResourceHandler();
 		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	private ThreadLocal<ContextThreadLocal> contextThreadLocal = new ThreadLocal<ContextThreadLocal>();
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private ILockManager lockManager = new InMemoryLockManager(); 
+	
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -156,6 +170,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return virtualNodeResourceHandler;
 	}
 	
+	public CommandStackResourceHandler getCommandStackResourceHandler() {
+		return commandStackResourceHandler;
+	}
+
 	/**
 	 * Setting/removing must be done from a try/finally block to make sure that 
 	 * the request is cleared, i.e.
@@ -181,6 +199,27 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return scheduledExecutorServiceFactory;
 	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ThreadLocal<ContextThreadLocal> getContextThreadLocal() {
+		return contextThreadLocal;
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ILockManager getLockManager() {
+		return lockManager;
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void setLockManager(ILockManager lockManager) {
+		this.lockManager = lockManager;
+	}
+
 	public ComposedSessionListener getComposedSessionListener() {
 		return composedSessionListener;
 	}
@@ -205,6 +244,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			location = location.substring("file:".length());
 		}
 		return location;
+	}
+	
+	public String getCustomResourceUrl(String resource) {
+		return CoreConstants.LOAD_FILE_SERVLET + "/" + resource;
 	}
 	
 	public CorePlugin() {
@@ -281,75 +324,16 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
+	
+		// Controllers for Command Stack
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
+				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new CommandStackPropertiesProvider())
+				.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new CommandStackChildrenProvider());
 		
-		/*getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStackDummyRoot")
-		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStackDummyRoot"))
-		.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
-			
-			@Override
-			public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-				return true;
-			}
-			
-			@Override
-			public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-				return Collections.singletonList(new Node("commandStack", "self", node.getIdWithinResource(), null));
-			}
-		});
-		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("commandStack")
-			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "commandStack"))
-			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.IS_SUBSCRIBABLE, true))
-			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new ChildrenProvider() {
-				
-				@Override
-				public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-					return true;
-				}
-				
-				@Override
-				public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-					return tempCommandStackList;
-				}
-			})
-			.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, new AddNodeController() {
-				
-				@Override
-				public void addNode(Node node, Node child,
-						ServiceContext<NodeService> context) {
-					tempCommandStackList.add(child);					
-				}
-			});*/
-		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor("command");
-	}
-	
-	public static List<Node> tempCommandStackList = new ArrayList<>();
-	
-	public static int counter;
-	
-//	public static Node createCommandNode(String label) {
-//		Node node;
-//		
-//		node = new Node("command", null, Integer.toString(counter++), null);
-//		if (label == null) {
-//			label = node.getIdWithinResource();
-//		}
-//		node.getProperties().put("name", label);
-//		
-//		return node;
-//	}
-	
-	public static void addNewNode() {
-//		Node commandStackNode = new Node("commandStack", "self", null, null);
-//		Node childNode = CorePlugin.createCommandNode(null);
-//		CorePlugin.getInstance().getNodeService().addChild(commandStackNode, childNode, new ServiceContext<NodeService>());
-	}
-	
-//	static {
-//		tempCommandStackList.add(createCommandNode("command 1"));
-//		tempCommandStackList.add(createCommandNode("command 2"));
-//	}
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
+
+		CorePlugin.getInstance().getResourceService().addResourceHandler(CoreConstants.COMMAND_STACK_SCHEME, commandStackResourceHandler);
+	}	
 
 	public void stop(BundleContext bundleContext) throws Exception {
 		scheduledExecutorServiceFactory.dispose();

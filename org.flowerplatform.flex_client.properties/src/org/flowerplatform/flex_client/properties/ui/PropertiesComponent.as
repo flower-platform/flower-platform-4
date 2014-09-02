@@ -88,6 +88,8 @@ package org.flowerplatform.flex_client.properties.ui {
 			var categories:Dictionary = new Dictionary();
 			var propertyDescriptor:IPropertyDescriptor;
 			
+			node.properties.nodeUri = node.nodeUri;
+
 			for (var key:* in node.properties) {
 				propertyDescriptor = PropertiesPlugin.getInstance().getPropertyDescriptor(node, key, includeRawProperties);
 				if (propertyDescriptor == null) { 
@@ -122,7 +124,7 @@ package org.flowerplatform.flex_client.properties.ui {
 				}
 				return 0;
 			});
-			
+	
 			return properties;
 		}
 		

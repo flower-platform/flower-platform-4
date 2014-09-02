@@ -21,8 +21,8 @@ package org.flowerplatform.flex_client.properties.remote {
 		function get name():String;
 		function set name(value:String):void;
 		
-		function get title():String;
-		function set title(value:String):void;
+		function get label():String;
+		function set label(value:String):void;
 		
 		function get type():String;
 		function set type(value:String):void;

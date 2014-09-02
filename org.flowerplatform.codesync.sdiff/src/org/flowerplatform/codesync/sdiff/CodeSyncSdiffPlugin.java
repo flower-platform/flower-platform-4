@@ -39,7 +39,6 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
-import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -88,9 +87,9 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
 			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
 			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT).setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.newlyAddedElement")))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT))
 			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
-	
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
 			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController());
 	}
