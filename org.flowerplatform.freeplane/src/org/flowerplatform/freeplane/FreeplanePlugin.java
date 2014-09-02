@@ -137,9 +137,9 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		
 		// freeplaneNode1
 		FreeplaneMindmapResourceHandler1 fpm1ResourceHandler = new FreeplaneMindmapResourceHandler1();
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
-			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(FREEPLANE_FILE_EXTENSION, 
-				FREEPLANE_MINDMAP_RESOURCE_KEY_1, MINDMAP_CONTENT_TYPE, true));
+//		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
+//			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(FREEPLANE_FILE_EXTENSION, 
+//				FREEPLANE_MINDMAP_RESOURCE_KEY_1, MINDMAP_CONTENT_TYPE, true));
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_MINDMAP_RESOURCE_KEY_1, fpm1ResourceHandler);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY_1)
