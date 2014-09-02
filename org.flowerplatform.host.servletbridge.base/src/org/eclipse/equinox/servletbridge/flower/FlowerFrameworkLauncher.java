@@ -19,9 +19,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
 import java.security.Policy;
 import java.util.Map;
 import java.util.Properties;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
 import org.eclipse.equinox.servletbridge.FrameworkLauncher;
@@ -106,6 +111,10 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 	private static final String WORKSPACE = "/workspace";
 	
 	private static final String DEFAULT_FLOWER_PLATFORM_HOME_DIR = "/.flower-platform";
+	
+	private static final String FLOWER_PLATFORM_HOME_DEFAULT_FILES = "/flower-platform-home-default-files";
+	
+	private static final String FLOWER_PLATFORM_HOME_DEFAULT_FILES_PATH = "/META-INF" + FLOWER_PLATFORM_HOME_DEFAULT_FILES;
 
 	@Override
 	public void init() {
@@ -158,20 +167,39 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		}		
 		File homeDir = new File(flowerPlatformHomeDirectoryPath);
 		if (!homeDir.exists()) {
-			homeDir.mkdirs();			
+			homeDir.mkdirs();
+			
+			// copy default files from META-INF/flower-platform-home-default-files
+			String defaultFilesDirPath = context.getRealPath(FLOWER_PLATFORM_HOME_DEFAULT_FILES_PATH);
+			File defaultFilesDir;
+			try {
+				defaultFilesDir = new File(defaultFilesDirPath);
+				
+				// create directory for default files in FLOWER_PLATFORM_HOME
+				String defaultFilesDirInFlowerPlatformHomePath = System.getProperty(FLOWER_PLATFORM_HOME) + FLOWER_PLATFORM_HOME_DEFAULT_FILES;
+				File defaultFilesDirInFlowerPlatformHome = new File(defaultFilesDirInFlowerPlatformHomePath);
+				defaultFilesDirInFlowerPlatformHome.mkdirs();
+				
+				// copy content to this directory
+				for (File file : defaultFilesDir.listFiles()) {
+					Files.copy(file.toPath(), new File((defaultFilesDirInFlowerPlatformHomePath + "/" + file.getName())).toPath(), new CopyOption[] {REPLACE_EXISTING});
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Error while copying content of flower-platform-home-default-files", e);
+			}
 		}
 		
 		String eclipseConfigurationLocation = "WEB-INF/eclipse/configuration";
 		String developmentLaunchConfiguration = null;
 		
 		// loading and parsing launcher properties
-		File localPropertiesFile = new File(System.getProperty(FLOWER_PLATFORM_HOME) + LAUNCHER_PROPERTIES);
-		if (localPropertiesFile.exists()) {
-			// read the properties from local.properties
+		File launcherPropertiesFile = new File(System.getProperty(FLOWER_PLATFORM_HOME) + LAUNCHER_PROPERTIES);
+		if (launcherPropertiesFile.exists()) {
+			// read the properties from launcher.properties
 			Properties launcherProperties = new Properties();
 			FileInputStream launcherPropertiesFileInputStream = null;
 			try {
-				launcherPropertiesFileInputStream = new FileInputStream(localPropertiesFile);
+				launcherPropertiesFileInputStream = new FileInputStream(launcherPropertiesFile);
 				launcherProperties.load(launcherPropertiesFileInputStream);
 				developmentLaunchConfiguration = launcherProperties.getProperty("developmentLaunchConfiguration");
 				if (developmentLaunchConfiguration == null) {
@@ -198,7 +226,6 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		if (developmentLaunchConfiguration != null) {
 			// dev mode
 			developmentWorkspaceRoot = context.getRealPath(WEB_APP_CONTEXT_TO_DEV_WS_PATH);
-			
 			// osgi.configuration.area a.k.a. -configuration 
 			osgiConfigurationArea = String.format("%s/.metadata/.plugins/org.eclipse.pde.core/%s", developmentWorkspaceRoot, developmentLaunchConfiguration);
 			if (!(new File(osgiConfigurationArea).exists()))
@@ -272,6 +299,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		properties.put("flower.server.app.context", context.getContextPath().length() == 0 ? "" : context.getContextPath().substring(1));
 		properties.put("flower.server.app.location", context.getRealPath(File.separator));
 		properties.put("flower.server.tmpdir", ((File) context.getAttribute(context.getTempDir())).getAbsolutePath());
+		
 		return properties;
 	}
 }

@@ -1,0 +1,27 @@
+<configuration>
+
+	<!-- 
+	You can add your custom configuration to be used by the Logger in a file similar to this
+	one, which resides directly in FLOWER_PLATFORM_HOME folder.
+	-->
+
+	<!--
+	######################################################################################
+		General configuration, appenders, etc.
+	######################################################################################
+	-->
+	<jmxConfigurator />
+	
+	<include resource="META-INF/logback-included.xml"/>
+
+	<!--
+	######################################################################################
+		Loggers
+	######################################################################################
+	-->
+	
+	<root level="all">
+		<appender-ref ref="STDOUT" />		
+	</root>
+	
+</configuration>

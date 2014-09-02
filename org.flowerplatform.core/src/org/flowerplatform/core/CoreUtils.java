@@ -92,7 +92,7 @@ public class CoreUtils {
 			addFileToZip(path, srcFolder, zip, true);
 		} else {			
 			for (String fileName : folder.list()) {
-				if (folder.equals(new File(CorePlugin.getInstance().getWorkspaceLocation())) && CoreConstants.METADATA.equals(fileName)) {
+				if (folder.equals(new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE)) && CoreConstants.METADATA.equals(fileName)) {
 					continue;
 				}
 				if (path.equals("")) {

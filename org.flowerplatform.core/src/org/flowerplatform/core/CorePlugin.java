@@ -199,20 +199,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	}
 
 	/**
-	 * @return workspace location from OSGI property
-	 * @author Cristina Constantinescu
-	 */
-	public String getWorkspaceLocation() {
-		String location = FrameworkProperties.getProperty("osgi.instance.area");
-		
-		// if property value starts with "file:", remove it
-		if (location.startsWith("file:")) {
-			location = location.substring("file:".length());
-		}
-		return location;
-	}
-		
-	/**
 	 * @author Cristian Spiescu
 	 * @author Cristina Brinza
 	 */
