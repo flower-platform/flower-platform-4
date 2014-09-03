@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * @author Cristi
@@ -70,7 +71,7 @@ public class TestUtil {
 //				projectName = projectName.substring(1);
 //			}
 //			
-			File to = new File(getWorkspaceResourceAbsolutePath("") + "/" + projectName);
+			File to = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + projectName);
 			if (from != null) {
 				FileUtils.copyDirectory(new File(from), to);
 			} else {
