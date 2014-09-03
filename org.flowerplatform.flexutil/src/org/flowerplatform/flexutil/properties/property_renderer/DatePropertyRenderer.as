@@ -1,4 +1,7 @@
 package org.flowerplatform.flexutil.properties.property_renderer {
+	import spark.formatters.DateTimeFormatter;
+	
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	
 	
 	/**
@@ -10,7 +13,13 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 		
 		
 		override public function valueChangedHandler():void {
-			//TODO: needs node property	
+			var newValue:Object = PropertiesHelper.getInstance().propertyModelAdapter
+				.getPropertyValue(_propertyLineRenderer.nodeObject, _propertyLineRenderer.propertyDescriptor.name);
+			if (newValue is Date) {
+				var dtf:DateTimeFormatter = new DateTimeFormatter();
+				dtf.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
+				text = dtf.format(newValue);
+			}		
 		}
 	}
 }

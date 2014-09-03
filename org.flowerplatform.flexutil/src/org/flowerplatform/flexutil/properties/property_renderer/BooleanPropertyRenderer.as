@@ -2,8 +2,11 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.formatters.PhoneFormatter;
+	
 	import spark.components.CheckBox;
 	
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.PropertyLineRenderer;
 
 	/**
@@ -32,7 +35,8 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 		}
 		
 		public function valueChangedHandler():void {
-			//TODO: needs node property
+			selected = PropertiesHelper.getInstance().propertyModelAdapter
+				.getPropertyValue(_propertyLineRenderer.nodeObject,_propertyLineRenderer.propertyDescriptor.name);
 		}
 		
 		public function propertyDescriptorChangedHandler():void {

@@ -4,12 +4,12 @@ package org.flowerplatform.flexutil.properties {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
-	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.ComposedTypeProvider;
 	import org.flowerplatform.flexutil.controller.IPropertyModelAdapter;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.properties.controllers.PropertyDescriptorProvider;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.IPropertyLineRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.IPropertyRenderer;
 	import org.flowerplatform.flexutil.properties.remote.IPropertyDescriptor;
 	
 	/**
@@ -25,6 +25,7 @@ package org.flowerplatform.flexutil.properties {
 		public var composedTypeProvider:ComposedTypeProvider  = new ComposedTypeProvider();
 		public var propertyDescriptorTypeToPropertyLineRendererFactory:Dictionary = new Dictionary();
 		public var propertyValueClassToPropertyDescriptorType:Dictionary = new Dictionary();
+		public var propertyDescriptorTypeToPropertyRendererFactory:Dictionary = new Dictionary();
 
 		
 		public static function getInstance():PropertiesHelper {
@@ -65,6 +66,17 @@ package org.flowerplatform.flexutil.properties {
 				}
 			}			
 			return propertyDescriptor;			
+		}
+		
+		public function getNewPropertyRendererInstance(type:String):IPropertyRenderer {
+			var propertyRendererFactory:FactoryWithInitialization = propertyDescriptorTypeToPropertyRendererFactory[type];
+			if (propertyRendererFactory == null) {
+				propertyRendererFactory = propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING];
+			}
+			if (propertyRendererFactory == null) {
+				throw new Error();
+			}
+			return propertyRendererFactory.newInstance(false);
 		}
 	}
 }

@@ -1,7 +1,10 @@
 package org.flowerplatform.flexutil.properties.property_line_renderer {
+	import mx.core.UIComponent;
+	
 	import spark.components.FormItem;
 	import spark.components.HGroup;
 	
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.property_renderer.IPropertyRenderer;
 	import org.flowerplatform.flexutil.properties.remote.PropertyDescriptor;
 	
@@ -34,7 +37,12 @@ package org.flowerplatform.flexutil.properties.property_line_renderer {
 		}
 		
 		protected function propertyDescriptorUpdated():void {
-			//TODO:
+			// use title as label if set
+			this.label = _propertyDescriptor.title != null ? _propertyDescriptor.title : _propertyDescriptor.name;			
+			
+			if (renderer != null) {
+				renderer.propertyDescriptorChangedHandler();
+			}
 		}
 		
 		public function get nodeObject():Object {
@@ -48,23 +56,50 @@ package org.flowerplatform.flexutil.properties.property_line_renderer {
 		}
 		
 		public function nodeObjectUpdated():void {
-			//TODO:
+			if (renderer != null && nodeObject != null) {
+				renderer.valueChangedHandler();
+			}
 		}
 		
 		override protected function createChildren():void {				
 			super.createChildren();
 			
-			//TODO:
+			UIComponent(labelDisplay).setStyle("fontWeight", "normal");	
+			
+			rendererArea = new HGroup();
+			rendererArea.percentHeight = 100;
+			rendererArea.percentWidth = 100;
+			rendererArea.gap = 15;
+			rendererArea.verticalAlign = "middle";
+			this.addElement(rendererArea);
+			
+			renderer = PropertiesHelper.getInstance().getNewPropertyRendererInstance(propertyDescriptor.type);
+			UIComponent(renderer).percentWidth = 100;
+			UIComponent(renderer).percentHeight = 100;
+			renderer.propertyLineRenderer = this;	
+			
+			rendererArea.addElement(UIComponent(renderer));
+			
+			propertyDescriptorUpdated();
+			nodeObjectUpdated();
 		}		
 		
 		public function commit(callbackHandler:Function = null):void {			
-			//TODO: needs node property;
+			if (!savePropertyEnabled || propertyDescriptor.readOnly || !renderer.isValidValue()) {
+				return;
+			}
+			
+			var oldPropertyValue:Object = PropertiesHelper.getInstance().propertyModelAdapter
+				.getPropertyValue(nodeObject,propertyDescriptor.name);
+			var newPropertyValue:Object = renderer.valueToCommit;
+			var propertyValueOrWrapper:Object = PropertiesHelper.getInstance().propertyModelAdapter.getPropertyValueOrWrapper(nodeObject,propertyDescriptor.name);
+			
+			if (oldPropertyValue != newPropertyValue) {
+				PropertiesHelper.getInstance().propertyModelAdapter
+					.commitPropertyValue(nodeObject, propertyValueOrWrapper, newPropertyValue, propertyDescriptor.name, callbackHandler);
+			}
 		}
 		
-		protected function prepareCommit(propertyValueOrWrapper:Object, newPropertyValue:Object):Object {
-			// TODO:
-			return null;
-		}
 		
 		public function get value():Object {
 			return renderer.valueToCommit;

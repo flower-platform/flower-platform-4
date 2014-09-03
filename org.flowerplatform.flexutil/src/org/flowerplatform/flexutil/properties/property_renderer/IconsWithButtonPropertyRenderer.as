@@ -10,6 +10,7 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.PropertyLineRenderer;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
@@ -136,7 +137,8 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 		}
 		
 		public function valueChangedHandler():void {
-			//TODO: needs node property	
+			iconsChanged(PropertiesHelper.getInstance().propertyModelAdapter
+				.getPropertyValue(_propertyLineRenderer.nodeObject, _propertyLineRenderer.propertyDescriptor.name));			
 		}
 		
 		public function propertyDescriptorChangedHandler():void {

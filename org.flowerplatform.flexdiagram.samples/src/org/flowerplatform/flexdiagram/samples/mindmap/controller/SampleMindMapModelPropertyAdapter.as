@@ -14,5 +14,15 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		public function getPropertyValue(model:Object, property:String):Object{
 			return SampleMindMapModel(model).subModelsDict[property];	
 		}
+		
+		public function getPropertyValueOrWrapper(model:Object,property:String):*{
+			//TODO: needs implementation
+			return null;
+		}
+		
+		public function commitPropertyValue(model:Object,propertyValueOrWrapper:Object, value:Object,propertyDescriptorName:String, callbackHandler:Function = null):void{
+			//TODO: needs implementation
+		}
+		
 	}
 }

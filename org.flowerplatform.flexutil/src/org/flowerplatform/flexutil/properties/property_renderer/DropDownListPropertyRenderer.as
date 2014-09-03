@@ -10,6 +10,7 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.PropertyLineRenderer;
 	
 	/**
@@ -72,7 +73,17 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 		}
 		
 		protected function requestDataProvider():void {
-			//TODO: needs node property
+			if (_propertyLineRenderer.propertyDescriptor.possibleValues == null) {
+				requestDataProviderHandler(_propertyLineRenderer.nodeObject, requestDataProviderCallbackHandler);
+				return;
+			}
+			dropDownList.dataProvider = _propertyLineRenderer.propertyDescriptor.possibleValues;
+			// if list of Pairs, use item.b as label
+			var listItem:Object = dropDownList.dataProvider.getItemAt(0);
+			if (listItem is Pair) {
+				dropDownList.labelField = "b";
+			}			
+			valueChangedHandler();
 		}
 		
 		protected function requestDataProviderCallbackHandler(dataProvider:IList):void {
@@ -105,7 +116,10 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 		}			
 		
 		public function valueChangedHandler():void {
-			//TODO: needs node property					
+			if (dropDownList.dataProvider != null && _propertyLineRenderer.nodeObject != null) {
+				dropDownList.selectedIndex = getItemIndexFromList(PropertiesHelper.getInstance().propertyModelAdapter
+					.getPropertyValue(_propertyLineRenderer.nodeObject, _propertyLineRenderer.propertyDescriptor.name), dropDownList.dataProvider);
+			}			
 		}
 		
 		public function propertyDescriptorChangedHandler():void {

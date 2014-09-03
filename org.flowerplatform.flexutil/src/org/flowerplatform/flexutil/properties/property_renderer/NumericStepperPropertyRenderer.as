@@ -5,6 +5,7 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 	
 	import flashx.textLayout.formats.TextAlign;
 	
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.PropertyLineRenderer;
 
 	/**
@@ -41,7 +42,8 @@ package org.flowerplatform.flexutil.properties.property_renderer {
 		}
 		
 		public function valueChangedHandler():void {
-			//TODO: needs node property
+			this.value = Number(PropertiesHelper.getInstance().propertyModelAdapter
+				.getPropertyValue(_propertyLineRenderer.nodeObject, _propertyLineRenderer.propertyDescriptor.name));
 		}
 		
 		public function propertyDescriptorChangedHandler():void {
