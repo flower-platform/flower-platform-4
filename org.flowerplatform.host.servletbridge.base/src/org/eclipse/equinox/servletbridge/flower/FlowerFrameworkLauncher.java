@@ -19,15 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
 import java.security.Policy;
 import java.util.Map;
 import java.util.Properties;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
@@ -114,9 +108,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 	
 	private static final String DEFAULT_FLOWER_PLATFORM_HOME_DIR = "/.flower-platform";
 	
-	private static final String FLOWER_PLATFORM_HOME_DEFAULT_FILES = "/flower-platform-home-default-files";
-	
-	private static final String FLOWER_PLATFORM_HOME_DEFAULT_FILES_PATH = "/META-INF" + FLOWER_PLATFORM_HOME_DEFAULT_FILES;
+	private static final String FLOWER_PLATFORM_HOME_DEFAULT_FILES_PATH = "/WEB-INF/flower-platform-home-default-files";
 
 	@Override
 	public void init() {
@@ -173,27 +165,19 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			
 			// copy default files from META-INF/flower-platform-home-default-files
 			String defaultFilesDirPath = context.getRealPath(FLOWER_PLATFORM_HOME_DEFAULT_FILES_PATH);
-			File defaultFilesDir;			
 			try {
-				// source directory - META-INF/flower-platform-home-default-files
-				defaultFilesDir = new File(defaultFilesDirPath);
-				
-				// destination directory - FLOWER_PLATFORM_HOME/flower-platform-home-default-files
-				String defaultFilesDirInFlowerPlatformHomePath = System.getProperty(FLOWER_PLATFORM_HOME) + FLOWER_PLATFORM_HOME_DEFAULT_FILES;
-				File defaultFilesDirInFlowerPlatformHome = new File(defaultFilesDirInFlowerPlatformHomePath);
-				
 				// copy content from source directory to destination directory
-				FileUtils.copyDirectory(defaultFilesDir, defaultFilesDirInFlowerPlatformHome);
+				FileUtils.copyDirectory(new File(defaultFilesDirPath), new File(flowerPlatformHomeDirectoryPath));
 			} catch (IOException e) {
-				throw new RuntimeException("Error while copying content of flower-platform-home-default-files", e);
+				throw new RuntimeException(String.format("Error while copying content of flower-platform-home-default-files: from %s to %s", defaultFilesDirPath, flowerPlatformHomeDirectoryPath), e);
 			}
 		}
 		
-		String eclipseConfigurationLocation = "WEB-INF/eclipse/configuration";
+		String eclipseConfigurationLocation = null;
 		String developmentLaunchConfiguration = null;
 		
 		// loading and parsing launcher properties
-		File launcherPropertiesFile = new File(System.getProperty(FLOWER_PLATFORM_HOME) + LAUNCHER_PROPERTIES);
+		File launcherPropertiesFile = new File(flowerPlatformHomeDirectoryPath + LAUNCHER_PROPERTIES);
 		if (launcherPropertiesFile.exists()) {
 			// read the properties from launcher.properties
 			Properties launcherProperties = new Properties();
@@ -217,6 +201,11 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			}
 		}
 		
+		// setting default values; either no launcher.properties exist, or has no values
+		if (eclipseConfigurationLocation == null) {
+			eclipseConfigurationLocation = "WEB-INF/eclipse/configuration";
+		}
+		
 		Properties properties = new Properties();
 		String configFileLocation;
 		
@@ -235,7 +224,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			String relativeOsgiConfigurationArea = eclipseConfigurationLocation;
 			osgiConfigurationArea = context.getRealPath(relativeOsgiConfigurationArea);
 			if (!(new File(osgiConfigurationArea).exists())) {
-				throw new RuntimeException("Is the system starting in dev mode? Then make sure 'FLOWER_PLATFORM_HOME/launcher.properties' exists and contains a value for 'developmentLaunchConfiguration'. Otherwise, if the system is starting in prod mode, there's an issue because 'osgiConfigurationArea' = " + osgiConfigurationArea + " doesn't exist.");
+				throw new RuntimeException("Is the system starting in dev mode? Then make sure 'FLOWER_PLATFORM_HOME/launcher.properties' (i.e. '" + flowerPlatformHomeDirectoryPath + "/launcher.properties') exists and contains a value for 'developmentLaunchConfiguration'. Otherwise, if the system is starting in prod mode, there's an issue because 'osgiConfigurationArea' = " + osgiConfigurationArea + " doesn't exist.");
 			}
 			
 			String pluginsDir = osgiConfigurationArea + "/../plugins";

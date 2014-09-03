@@ -31,6 +31,7 @@
 							<directory>../WebContent/WEB-INF</directory>
 							<includes>
 								<include>all.policy</include>
+								<include>flower-platform-home-default-files</include>
 							</includes>
 							<targetPath>WEB-INF</targetPath>
 						</resource>

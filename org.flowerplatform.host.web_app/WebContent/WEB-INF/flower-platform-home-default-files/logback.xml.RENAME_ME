@@ -1,17 +1,22 @@
 <configuration>
 
-	<!-- 
-	You can add your custom configuration to be used by the Logger in a file similar to this
-	one, which resides directly in FLOWER_PLATFORM_HOME folder.
+	<!--
+	NOTE: rename this file into 'logback.xml' in order to activate it.
 	-->
-
+	
 	<!--
 	######################################################################################
 		General configuration, appenders, etc.
 	######################################################################################
 	-->
-	<jmxConfigurator />
 	
+	<!-- 
+	The file below can be found at:
+	WEB_APP_DIR/WEB-INF/eclipse/plugins/org.flowerplatform.core_*.jar/META-INF/logback-included.xml
+	e.g. /var/tomcat/webapps/flower-platform/WEB-INF/eclipse/plugins/org.flowerplatform.core_1.0.3.v20140903-1255.jar/META-INF/logback-included.xml
+	
+	Take a look at it, and/or at the 'logback.xml' that's in the same dir.
+	 -->
 	<include resource="META-INF/logback-included.xml"/>
 
 	<!--
