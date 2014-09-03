@@ -80,6 +80,7 @@
       <plugin id="org.flowerplatform.js_client.core"/>
       <plugin id="org.flowerplatform.js_client.java"/>
       <plugin id="org.flowerplatform.js_client.server"/>
+      <plugin id="org.flowerplatform.js_client.users"/>
       <plugin id="org.flowerplatform.mindmap"/>
       <plugin id="org.flowerplatform.resources"/>
       <plugin id="org.flowerplatform.team.git"/>
@@ -140,6 +141,7 @@
       <plugin id="org.flowerplatform.js_client.core" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.js_client.java" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.js_client.server" autoStart="true" startLevel="0" />
+      <plugin id="org.flowerplatform.js_client.users" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.mindmap" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.resources" autoStart="true" startLevel="0" />
       <plugin id="org.flowerplatform.team.git" autoStart="true" startLevel="0" />
