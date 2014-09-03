@@ -34,5 +34,9 @@ public class StylePropertyWrapper extends PropertyWrapper {
 		setIsDefault(isDefault);
 		return this;
 	}
+
+	public StylePropertyWrapper() {
+		super();		
+	}	
 	
 }

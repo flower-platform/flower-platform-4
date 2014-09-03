@@ -49,7 +49,7 @@ public class Node implements Externalizable {
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
-	
+
 	/**
 	 * TODO
 	 */

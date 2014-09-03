@@ -20,6 +20,7 @@
  */
 package org.flowerplatform.flex_client.team.git.action
 {
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -72,11 +73,11 @@ package org.flowerplatform.flex_client.team.git.action
 				.showMessageBox();	
 		}	
 		
-		public function FaultCallback(event:FaultEvent):void {				
-			if (event != null) {				
-				var index:Number = event.fault.faultString.search("CheckoutConflictException");
+		public function FaultCallback(fault:Fault):void {				
+			if (fault != null) {				
+				var index:Number = fault.faultString.search("CheckoutConflictException");
 				if (index != -1)
-					uncommitedChanges(event.fault.faultString.substring(index));
+					uncommitedChanges(fault.faultString.substring(index));
 			}
 		}	
 		
