@@ -49,8 +49,8 @@ public class RegexEngineTest extends RegexTestBase {
 			.add(new IfFindThisAnnounceMatchCandidate(rule1Descr, "suf(\\d*)", "categ: " + rule1Descr) {
 				
 				@Override
-				public void executeAction(RegexProcessingSession session) {
-					super.executeAction(session);
+				public void executeActions(RegexProcessingSession session) {
+					super.executeActions(session);
 					results.add(rule1Descr);
 					Assert.assertEquals(1, session.getCurrentSubMatchesForCurrentRegex().length);
 					Assert.assertEquals("23", session.getCurrentSubMatchesForCurrentRegex()[0]);
@@ -59,8 +59,8 @@ public class RegexEngineTest extends RegexTestBase {
 			.add(new IfFindThisAnnounceMatchCandidate(rule2Descr, "string", "categ: " + rule2Descr) {
 				
 				@Override
-				public void executeAction(RegexProcessingSession session) {
-					super.executeAction(session);
+				public void executeActions(RegexProcessingSession session) {
+					super.executeActions(session);
 					results.add(rule2Descr);					
 					Assert.assertNull(session.getCurrentSubMatchesForCurrentRegex());
 				}
@@ -68,8 +68,8 @@ public class RegexEngineTest extends RegexTestBase {
 			.add(new IfFindThisAnnounceMatchCandidate(rule3Descr, "(\\w*):(\\w*)", "categ: " + rule3Descr) {
 				
 				@Override
-				public void executeAction(RegexProcessingSession session) {
-					super.executeAction(session);
+				public void executeActions(RegexProcessingSession session) {
+					super.executeActions(session);
 					results.add(rule3Descr);					
 					Assert.assertEquals(2, session.getCurrentSubMatchesForCurrentRegex().length);
 					Assert.assertEquals("atr", session.getCurrentSubMatchesForCurrentRegex()[0]);

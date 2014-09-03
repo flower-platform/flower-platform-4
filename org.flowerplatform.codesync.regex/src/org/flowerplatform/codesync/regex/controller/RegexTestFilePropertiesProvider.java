@@ -22,7 +22,7 @@ public class RegexTestFilePropertiesProvider extends AbstractController implemen
 			throw new RuntimeException(e);
 		}
 		String testFileName = new VirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
-		testFileName = testFileName.substring(testFileName.lastIndexOf('/') + 1);
+		testFileName = testFileName.substring(testFileName.lastIndexOf('$') + 1);
 		node.getProperties().put(CoreConstants.NAME, testFileName);
 		node.getProperties().put(CoreConstants.HAS_CHILDREN, true);
 	}

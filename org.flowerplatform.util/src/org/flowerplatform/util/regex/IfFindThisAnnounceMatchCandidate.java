@@ -10,7 +10,7 @@ public class IfFindThisAnnounceMatchCandidate extends RegexWithActions {
 	}
 
 	@Override
-	public void executeAction(RegexProcessingSession session) {
+	public void executeActions(RegexProcessingSession session) {
 		Boolean ignoreMatches = (Boolean) session.context.get("ignoreMatches");
 		if (ignoreMatches != null && !ignoreMatches && ((int) session.context.get("currentNestingLevel")) == session.configuration.targetNestingForMatches) {
 			session.candidateAnnounced(category);

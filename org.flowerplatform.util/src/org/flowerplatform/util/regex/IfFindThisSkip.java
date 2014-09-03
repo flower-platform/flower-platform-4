@@ -7,7 +7,7 @@ public class IfFindThisSkip extends RegexWithActions {
 	}
 
 	@Override
-	public void executeAction(RegexProcessingSession param) {
+	public void executeActions(RegexProcessingSession param) {
 		// do nothing
 	}
 }

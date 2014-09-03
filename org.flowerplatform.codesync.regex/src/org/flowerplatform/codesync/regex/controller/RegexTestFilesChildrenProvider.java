@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync.regex.controller;
 
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TECHNOLOGY_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
@@ -58,7 +57,8 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 		if (files != null) {
 			for (Object object : files) {
 				if (((File) object).isFile()) {
-					String typeSpecificPart = nodeSpecificPart + "/" + CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER + "/" + ((File) object).getName() + CodeSyncRegexConstants.REGEX_MATCH_EXTENSION; 
+//					String typeSpecificPart = nodeSpecificPart + "/" + CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER + "/" + ((File) object).getName() + CodeSyncRegexConstants.REGEX_MATCH_EXTENSION; 
+					String typeSpecificPart = nodeSpecificPart + "$" + ((File) object).getName(); 
 					Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node), REGEX_TEST_FILE_NODE_TYPE, typeSpecificPart),
 							REGEX_TEST_FILE_NODE_TYPE);
 					children.add(child);
@@ -66,14 +66,6 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 			}
 		}
 		return children;
-	}
-
-	protected String getResourceUri(Node node) {
-		String repo = CoreUtils.getRepoFromNode(node);
-		String specificPartTechnology = CorePlugin.getInstance().getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
-		return CoreUtils.createNodeUriWithRepo("fpp", repo, CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER + "/" + specificPartTechnology + "/"
-				+ CodeSyncRegexConstants.REGEX_CONFIG_FILE);
-		// D:\data\git\runtime-workspace\elena\repo1\.regex-configs\ActionScript\test-files
 	}
 
 	@Override

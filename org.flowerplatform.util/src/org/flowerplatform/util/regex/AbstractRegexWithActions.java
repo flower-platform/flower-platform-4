@@ -55,6 +55,6 @@ public abstract class AbstractRegexWithActions {
 		return "RegexWithAction [name=" + name + ", regex=" + regex + ", numberOfCaptureGroups=" + numberOfCaptureGroups + "]";
 	}
 
-	public abstract void executeAction(RegexProcessingSession session);
+	public abstract void executeActions(RegexProcessingSession session);
 
 }

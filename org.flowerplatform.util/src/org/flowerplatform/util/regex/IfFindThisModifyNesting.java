@@ -10,7 +10,7 @@ public class IfFindThisModifyNesting extends RegexWithActions {
 	}
 
 	@Override
-	public void executeAction(RegexProcessingSession session) {
+	public void executeActions(RegexProcessingSession session) {
 		int currentNestingLevel = (int) session.context.get("currentNestingLevel");
 		session.context.put("currentNestingLevel", currentNestingLevel + increment);
 	}

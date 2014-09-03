@@ -7,7 +7,7 @@ public class UntilFoundThisIgnoreAll extends RegexWithActions {
 	}
 
 	@Override
-	public void executeAction(RegexProcessingSession session) {
+	public void executeActions(RegexProcessingSession session) {
 		session.context.put("ignoreMatches", false);
 	}
 }

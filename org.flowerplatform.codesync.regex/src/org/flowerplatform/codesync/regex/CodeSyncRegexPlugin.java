@@ -16,6 +16,7 @@
 package org.flowerplatform.codesync.regex;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
+import static org.flowerplatform.codesync.CodeSyncConstants.REGEX_CONFIGS_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY;
@@ -40,7 +41,6 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.CATEGORY_
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEXES_NODE_TYPE;
-import static org.flowerplatform.codesync.CodeSyncConstants.REGEX_CONFIGS_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIG_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MATCHES_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MODEL_TREE_NODE_TYPE;
@@ -52,6 +52,8 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MAT
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MODEL_TREE_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_RESULT_EXTENSION;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_RESULT_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TECHNOLOGY_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILES_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILE_NODE_TYPE;
@@ -72,14 +74,12 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOO
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
-import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.AttachNodeToCurrentStateConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.AttachSpecificInfoConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.CheckStateNodeConfigurationProcessor;
@@ -96,12 +96,13 @@ import org.flowerplatform.codesync.regex.controller.RegexConfigsChildrenProvider
 import org.flowerplatform.codesync.regex.controller.RegexConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.RegexController;
 import org.flowerplatform.codesync.regex.controller.RegexMatchesChildrenProvider;
+import org.flowerplatform.codesync.regex.controller.RegexModelTreeController;
 import org.flowerplatform.codesync.regex.controller.RegexTechnologyChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.RegexTechnologyPropertiesProvider;
 import org.flowerplatform.codesync.regex.controller.RegexTestFileChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.RegexTestFilePropertiesProvider;
 import org.flowerplatform.codesync.regex.controller.RegexTestFilesChildrenProvider;
-import org.flowerplatform.codesync.regex.controller.RegexTestMatchesChildrenProvider;
+import org.flowerplatform.codesync.regex.controller.RegexTestMatchesController;
 import org.flowerplatform.codesync.regex.controller.RegexWithActionsProcessor;
 import org.flowerplatform.codesync.regex.controller.VirtualRegexChildrenProvider;
 import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
@@ -117,7 +118,6 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.flowerplatform.util.regex.RegexAction;
-import org.flowerplatform.util.regex.RegexProcessingSession;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -187,42 +187,57 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CHECK_STATE)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_VALID_STATES_PROPERTY).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
-			.addSingleController(CONFIG_NODE_PROCESSOR, new CheckStateNodeConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS).addCategory(CATEGORY_REGEX_ACTION);
+			.addSingleController(CONFIG_NODE_PROCESSOR, new CheckStateNodeConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CREATE_NODE)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_CREATE_NODE_PROPERTIES).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_CREATE_NODE_NEW_NODE_TYPE).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
-			.addSingleController(CONFIG_NODE_PROCESSOR, new CreateNodeConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS).addCategory(CATEGORY_REGEX_ACTION);
+			.addSingleController(CONFIG_NODE_PROCESSOR, new CreateNodeConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION)
-			.addSingleController(CONFIG_NODE_PROCESSOR, new AttachNodeToCurrentStateConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addSingleController(CONFIG_NODE_PROCESSOR, new AttachNodeToCurrentStateConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ATTACH_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_ATTACH_SPECIFIC_INFO_KEY_PROPERTY).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true)).addSingleController(CONFIG_NODE_PROCESSOR, new AttachSpecificInfoConfigurationProcessor())
-			.addCategory(CATEGORY_CONFIG_SETTINGS).addCategory(CATEGORY_REGEX_ACTION);
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CLEAR_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_CLEAR_SPECIFIC_INFO_KEY_PROPERTY).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
-			.addSingleController(CONFIG_NODE_PROCESSOR, new ClearSpecificInfoConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS).addCategory(CATEGORY_REGEX_ACTION);
+			.addSingleController(CONFIG_NODE_PROCESSOR, new ClearSpecificInfoConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_KEEP_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_KEEP_SPECIFIC_INFO_KEY_PROPERTY).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_KEEP_SPECIFIC_INFO_IS_LIST_PROPERTY).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(ACTION_TYPE_KEEP_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true)).addSingleController(CONFIG_NODE_PROCESSOR, new KeepSpecificInfoConfigurationProcessor())
-			.addCategory(CATEGORY_CONFIG_SETTINGS).addCategory(CATEGORY_REGEX_ACTION);
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_INCREASE_NESTING_LEVEL)
-			.addSingleController(CONFIG_NODE_PROCESSOR, new IncreaseNestingLevelConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addSingleController(CONFIG_NODE_PROCESSOR, new IncreaseNestingLevelConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_DECREASE_NESTING_LEVEL)
-			.addSingleController(CONFIG_NODE_PROCESSOR, new DecreaseNestingLevelConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addSingleController(CONFIG_NODE_PROCESSOR, new DecreaseNestingLevelConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ENTER_STATE)
-			.addSingleController(CONFIG_NODE_PROCESSOR, new EnterStateConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS).addCategory(CATEGORY_REGEX_ACTION);
+			.addSingleController(CONFIG_NODE_PROCESSOR, new EnterStateConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addCategory(CATEGORY_REGEX_ACTION);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_EXIT_STATE)
-			.addSingleController(CONFIG_NODE_PROCESSOR, new ExitStateConfigurationProcessor()).addCategory(CATEGORY_CONFIG_SETTINGS).addCategory(CATEGORY_REGEX_ACTION);
+			.addSingleController(CONFIG_NODE_PROCESSOR, new ExitStateConfigurationProcessor())
+			.addCategory(CATEGORY_CONFIG_SETTINGS)
+			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(REGEX_CONFIGS_NODE_TYPE);
 		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(REGEX_TECHNOLOGY_NODE_TYPE);
@@ -237,15 +252,18 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_CONFIGS_NODE_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new RegexConfigsChildrenProvider().setOrderIndexAs(1000))
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "Regex Configs")).addCategory(CATEGORY_MODEL);
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, "Regex Configs"))
+			.addCategory(CATEGORY_MODEL);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TECHNOLOGY_NODE_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new RegexTechnologyChildrenProvider().setOrderIndexAs(1000))
-			.addAdditiveController(PROPERTIES_PROVIDER, new RegexTechnologyPropertiesProvider()).addCategory(CATEGORY_MODEL);
+			.addAdditiveController(PROPERTIES_PROVIDER, new RegexTechnologyPropertiesProvider())
+			.addCategory(CATEGORY_MODEL);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEXES_NODE_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new CodeSyncRegexSubscribableResourceProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new CodeSyncRegexSubscribableResourceProvider()).addCategory(CATEGORY_MODEL);
+			.addAdditiveController(PROPERTIES_PROVIDER, new CodeSyncRegexSubscribableResourceProvider())
+			.addCategory(CATEGORY_MODEL);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TEST_FILES_NODE_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new RegexTestFilesChildrenProvider().setOrderIndexAs(1000))
@@ -258,12 +276,15 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_MODEL);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MODEL_TREE_NODE_TYPE)
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Model tree"));
+//			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Model tree"))
+			.addAdditiveController(CHILDREN_PROVIDER, new RegexModelTreeController())
+			.addAdditiveController(PROPERTIES_PROVIDER, new RegexModelTreeController());
+			
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_EXPECTED_MODEL_TREE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Expected model tree"));
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MATCHES_NODE_TYPE)
-			.addAdditiveController(CHILDREN_PROVIDER, new RegexTestMatchesChildrenProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new RegexTestMatchesChildrenProvider());
+			.addAdditiveController(CHILDREN_PROVIDER, new RegexTestMatchesController())
+			.addAdditiveController(PROPERTIES_PROVIDER, new RegexTestMatchesController());
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_EXPECTED_MATCHES_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Expected matches"));
 
@@ -280,14 +301,17 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setOrderIndexAs(10));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
-			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(REGEX_EXTENSION, "fpp", "mindmap", true));
-
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
-			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(REGEX_MATCH_EXTENSION, "fpp", "mindmap", true));
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(REGEX_EXTENSION, "fpp", "mindmap", true))
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(REGEX_MATCH_EXTENSION, "fpp", "mindmap", true))
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(REGEX_RESULT_EXTENSION, "fpp", "mindmap", true));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MATCHES_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexMatches.root")))
 			.addAdditiveController(CHILDREN_PROVIDER, new RegexMatchesChildrenProvider());
+
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_RESULT_TYPE)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexResults.root")));
+
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(VIRTUAL_REGEX_TYPE)
 			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(REGEX_NAME))

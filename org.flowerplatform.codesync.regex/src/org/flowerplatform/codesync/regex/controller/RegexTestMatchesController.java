@@ -1,12 +1,14 @@
 package org.flowerplatform.codesync.regex.controller;
 
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_EXTENSION;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER;
 import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
 import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -17,9 +19,8 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.AbstractController;
-import org.flowerplatform.util.controller.IController;
 
-public class RegexTestMatchesChildrenProvider extends AbstractController implements IChildrenProvider, IPropertiesProvider {
+public class RegexTestMatchesController extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
@@ -55,7 +56,8 @@ public class RegexTestMatchesChildrenProvider extends AbstractController impleme
 		// Node parent = CorePlugin.getInstance().getNodeService().getParent(node, new ServiceContext<NodeService>());
 		String repo = CoreUtils.getRepoFromNode(node);
 		String testFilePath = CorePlugin.getInstance().getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
-		return CoreUtils.createNodeUriWithRepo("fpp", repo, CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER + "/" + testFilePath);
+		testFilePath = testFilePath.replace("$","/" + REGEX_MATCH_FILES_FOLDER + "/") + REGEX_MATCH_EXTENSION;
+		return CoreUtils.createNodeUriWithRepo("fpp", repo, REGEX_CONFIGS_FOLDER + "/" + testFilePath);
 		// fpp:elena/repo1|.regex-configs/ActionScript/match-files/....as.match
 	}
 

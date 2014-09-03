@@ -166,7 +166,7 @@ public class RegexProcessingSession {
 			}
 		}
 		
-		currentRegex.executeAction(this);
+		currentRegex.executeActions(this);
 		
 		return true;
 	}

@@ -22,6 +22,7 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGE
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCHES_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MODEL_TREE_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_RESULT_FILES_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
@@ -168,10 +169,11 @@ public class CodeSyncRegexService {
 				final RegexProcessingSession session = regexConfig.startSession(testFileContent);
 
 				session.context.put("stateStack", new ArrayList<Object>());
-				Node resultRootNode = new Node(null, REGEX_MATCHES_NODE_TYPE); // CodeSyncConstantsFILE
-				// nodeService.addChild(matchRoot, child, context);
+				//Node resultRootNode = new Node(null, REGEX_MODEL_TREE_NODE_TYPE); // CodeSyncConstantsFILE
+				
+				//nodeService.addChild(resultRoot, resultRootNode, resultFilesContext);
 
-				((ArrayList<Object>) session.context.get("stateStack")).add(0, new State(0, resultRootNode));
+				((ArrayList<Object>) session.context.get("stateStack")).add(0, new State(0, resultRoot));
 				// find matches
 				session.find(new Runnable() {
 					int currentIndex = 1;
