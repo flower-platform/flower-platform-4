@@ -27,12 +27,14 @@
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.core.node.NodePropertyModelAdapter;
 			import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			import org.flowerplatform.flexutil.properties.PropertiesHelper;
 			import org.flowerplatform.flexutil.selection.ISelectionProvider;
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
@@ -40,6 +42,7 @@
 			protected var _viewHost:IViewHost;
 								
 			protected function creationCompleteHandler(flexvent:FlexEvent):void {
+				PropertiesHelper.getInstance().propertyModelAdapter = new NodePropertyModelAdapter();
 				// get selection from active provider to populate properties list with data
 				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
 				if (activeSelectionProvider != null) {

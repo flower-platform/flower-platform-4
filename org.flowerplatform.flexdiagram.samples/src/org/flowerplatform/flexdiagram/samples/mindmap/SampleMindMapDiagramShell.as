@@ -44,20 +44,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	 */
 	public class SampleMindMapDiagramShell extends MindMapDiagramShell {
 				
-		public var mindMapModelPropertyAdapter:SampleMindMapModelPropertyAdapter = new SampleMindMapModelPropertyAdapter();
-		
-		protected static var INSTANCE:SampleMindMapDiagramShell;
-
-		public static function getInstance():SampleMindMapDiagramShell {
-			return INSTANCE;
-		}
 		public function SampleMindMapDiagramShell() {
 			super();
 			
-			if (INSTANCE != null) {
-				throw new Error("An instance of SampleMindMapDiagramShell already exists; it should be a singleton!");
-			}
-			INSTANCE = this;
 			typeProvider = new SampleMindMapTypeProvider();
 			
 			registry = new TypeDescriptorRegistry();

@@ -62,8 +62,8 @@ package org.flowerplatform.flex_client.properties {
 		public var propertyDescriptorTypeToPropertyRendererFactory:Dictionary = new Dictionary();
 		public var propertyDescriptorTypeToPropertyLineRendererFactory:Dictionary = new Dictionary();
 		public var propertyValueClassToPropertyDescriptorType:Dictionary = new Dictionary();
-		
 		public var currentSelectedNode:Node;
+
 		
 		public static function getInstance():PropertiesPlugin {
 			return INSTANCE;

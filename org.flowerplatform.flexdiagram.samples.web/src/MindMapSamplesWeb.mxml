@@ -30,12 +30,14 @@
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
+			import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelPropertyAdapter;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
 			import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
 			import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
 			import org.flowerplatform.flexutil.FactoryWithInitialization;
+			import org.flowerplatform.flexutil.properties.PropertiesHelper;
 			
 			private var _rootModel:Object;
 
@@ -50,6 +52,7 @@
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
+				PropertiesHelper.getInstance().propertyModelAdapter = new SampleMindMapModelPropertyAdapter();
 				MindMapPopulator.populateRootModel(this);
 				
 				diagramShell.rootModel = rootModel;
