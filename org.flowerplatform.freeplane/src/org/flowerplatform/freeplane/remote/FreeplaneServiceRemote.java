@@ -28,7 +28,7 @@ import org.freeplane.features.styles.MapStyleModel;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapServiceRemote {
+public class FreeplaneServiceRemote {
 
 	public List<String> getStyles(String fullNodeId) {		
 		MapModel mapModel = ((NodeModel) CorePlugin.getInstance().getResourceService().getNode(fullNodeId).getRawNodeData()).getMap();
@@ -43,5 +43,5 @@ public class MindMapServiceRemote {
 		}		
 		return children;		
 	}
-	
+		
 }

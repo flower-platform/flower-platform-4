@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.flexutil.shortcut {
 	
-	import adobe.utils.CustomActions;
-	
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
@@ -33,7 +31,6 @@ package org.flowerplatform.flexutil.shortcut {
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
-	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
 	
 	/**
@@ -60,8 +57,6 @@ package org.flowerplatform.flexutil.shortcut {
 		public var allowKeyBindingsToProcessEvents:Boolean = true;
 		
 		public var learnShortcutOnNextActionInvocation:Boolean = false;
-		
-		public var additionalActionProviders:ComposedActionProvider = new ComposedActionProvider();
 		
 		public function KeyBindings() {
 			if (UIComponent(FlexGlobals.topLevelApplication).stage != null) {
@@ -123,15 +118,11 @@ package org.flowerplatform.flexutil.shortcut {
 			if (handler is IAction) {
 				// check if visible & enabled, then run it
 				action = IAction(handler);
-				if (action.visible && action.enabled) {
-					action.run(); 
-				}
+				FlexUtilGlobals.getInstance().actionHelper.runAction(action, null, null, true, true);				
 			} else if (handler is Function) {
 				// execute function
 				handler();
-			} else {		
-				var actions:Vector.<IAction> = additionalActionProviders.getActions(null);
-				
+			} else {				
 				// search actionId also in active's view list of available actions	
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 				var view:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
@@ -140,30 +131,11 @@ package org.flowerplatform.flexutil.shortcut {
 					if (view is IViewHostAware) {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
-					var viewActions:Vector.<IAction> = IActionProvider(view).getActions(selection);					
-					for (i = 0; i < viewActions.length; i++) {
-						actions.push(viewActions[i]);
-					}
+					
+					action = FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(String(handler));
+					FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, null, true, true);										
 				}
-				
-				if (actions == null) {
-					return;
-				}
-				for (var i:int = 0; i < actions.length; i++) {
-					action = actions[i];
-					if (action.id == handler) {
-						try {
-							action.selection = selection;
-							if (action.visible && action.enabled) {								
-								action.run(); 
-							}
-						} finally {
-							action.selection = null;
-						}						
-						break;
-					}
-				}								
-			}
+			}				
 		}
 	
 		public function getRegisteredHandler(shortcut:Shortcut):Object {			

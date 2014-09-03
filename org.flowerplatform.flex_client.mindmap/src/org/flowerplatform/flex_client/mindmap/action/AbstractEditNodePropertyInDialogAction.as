@@ -25,11 +25,7 @@ package org.flowerplatform.flex_client.mindmap.action {
 	 * @author Sebastian Solomon
 	 */
 	public class AbstractEditNodePropertyInDialogAction extends ActionBase {
-		
-		override public function get visible():Boolean {	
-			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node && Node(selection.getItemAt(0)).type == "freeplaneNode";
-		}
-		
+				
 		override public function run():void {
 			throw new Error("This method needs to be implemented.");
 		}

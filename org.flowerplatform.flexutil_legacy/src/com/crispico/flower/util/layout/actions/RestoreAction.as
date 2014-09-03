@@ -25,6 +25,7 @@ package com.crispico.flower.util.layout.actions {
 	 * @author Mircea Negreanu
 	 */
 	public class RestoreAction extends WorkbenchAction {
+		
 		public function RestoreAction(bench:Workbench) {
 			super(bench);
 			

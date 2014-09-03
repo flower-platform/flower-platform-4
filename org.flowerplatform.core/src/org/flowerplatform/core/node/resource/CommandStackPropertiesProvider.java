@@ -13,29 +13,35 @@
  * 
  * license-end
  */
-package org.flowerplatform.team.git.controller;
+package org.flowerplatform.core.node.resource;
 
-import static org.flowerplatform.core.CoreConstants.ICONS;
-import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.AUTO_SUBSCRIBE_ON_EXPAND;
+import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
- * @author Cojocea Marius Eduard
+ * @author Claudiu Matei
  */
-public class GitTagsPropertiesProvider extends AbstractController implements IPropertiesProvider  {
+public class CommandStackPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
-	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("git.tags"));
-		node.getProperties().put(ICONS, ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/" + "tags.gif"));
-		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND,true);
+		node.getProperties().put(NAME, node.getNodeUri());
+//		node.getProperties().put(CoreConstants.RESOURCE_SET, node.getNodeUri());
+		
+		List<Pair<String, String>> subscribableResources = new ArrayList<Pair<String, String>>();
+		subscribableResources.add(new Pair<String, String>(node.getNodeUri(), null));
+		node.getProperties().put(SUBSCRIBABLE_RESOURCES, subscribableResources);
+		node.getProperties().put(AUTO_SUBSCRIBE_ON_EXPAND, true);
 	}
-
+	
 }

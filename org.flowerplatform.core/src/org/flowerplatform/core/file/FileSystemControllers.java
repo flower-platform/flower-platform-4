@@ -50,7 +50,7 @@ public class FileSystemControllers {
 		.addAdditiveController(CHILDREN_PROVIDER, fileChildrenController)
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, fileChildrenController)
 		.addAdditiveController(ADD_NODE_CONTROLLER, fileChildrenController)
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE_NODE_TYPE).setLabelAs(ResourcesPlugin.getInstance().getMessage("file.folder")).setOrderIndexAs(10));
+		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE_NODE_TYPE).setOrderIndexAs(10));
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new FileSystemNodeController())
@@ -60,12 +60,12 @@ public class FileSystemControllers {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, filePropertiesController)
 		.addAdditiveController(PROPERTY_SETTER, filePropertiesController)
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.name")).setContributesToCreationAs(true).setMandatoryAs(true).setOrderIndexAs(-10))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.size")).setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.is.directory")).setReadOnlyAs(true).setContributesToCreationAs(true).setMandatoryAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setOrderIndexAs(-5))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.creation.time")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(10))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.modified.time")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(11))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setTitleAs(ResourcesPlugin.getInstance().getMessage("file.accessed.time")).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(12))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setContributesToCreationAs(true).setMandatoryAs(true).setOrderIndexAs(-10))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setReadOnlyAs(true))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setReadOnlyAs(true).setContributesToCreationAs(true).setMandatoryAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setOrderIndexAs(-5))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(10))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(11))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(12))
 		.addCategory("category.fileContainer");
 		
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FILE_SCHEME, new FileSystemResourceHandler());

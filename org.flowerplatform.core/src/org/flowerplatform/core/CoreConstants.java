@@ -54,6 +54,9 @@ public class CoreConstants {
 	public static final String FILE_SCHEME = "file";
 	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
+	public static final String COMMAND_TYPE = "command";
+	public static final String COMMAND_STACK_TYPE = "commandStack";
+	public static final String COMMAND_STACK_SCHEME = COMMAND_STACK_TYPE;
 	
 	public static final String PREFERENCE_TYPE = "preference";
 	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
@@ -150,7 +153,9 @@ public class CoreConstants {
 	 * if this option is set to true (e.g. persistence controllers should not set the <code>IS_DIRTY</code>
 	 * property, but the updater controller must register the update).
 	 */
-	public static final String EXECUTE_ONLY_FOR_UPDATER = "executeOnlyForUpdater";
+//	public static final String EXECUTE_ONLY_FOR_UPDATER = "executeOnlyForUpdater";
+
+	public static final String INVOKE_ONLY_CONTROLLERS_WITH_CLASSES = "invokeOnlyControllersWithClasses";
 	
 	public static final String POPULATE_WITH_PROPERTIES = "populateWithProperties";
 	
@@ -164,6 +169,16 @@ public class CoreConstants {
 	 * An example is {@link CoreConstants#IS_DIRTY}: if option not set, the update will be registered on parent resource -> bad.
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
+
+	public static final String OVERRIDE = "override";
+	
+	
+	/**
+	 * Used to save the last value of a node's property in context, before the property is updated 
+	 * @author Claudiu Matei
+	 */
+	public static final String OLD_VALUE = "oldValue";
+
 	
 	//////////////////////////////////
 	// Resource
@@ -207,4 +222,10 @@ public class CoreConstants {
 	public static final String DEFAULT_SUFFIX = ".default";
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
+
+	public static final String PNG_EXTENSION = ".png";
+	
+	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
+
+	
 }

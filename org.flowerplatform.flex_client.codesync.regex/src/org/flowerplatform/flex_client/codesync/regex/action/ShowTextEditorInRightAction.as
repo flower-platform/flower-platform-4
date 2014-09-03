@@ -14,23 +14,23 @@
  * license-end
  */
 package org.flowerplatform.flex_client.codesync.regex.action {
-	import org.flowerplatform.flex_client.codesync.regex.CodeSyncRegexConstants;
+	import org.flowerplatform.flex_client.codesync.regex.CodeSyncRegexPlugin;
 	import org.flowerplatform.flex_client.resources.Resources;
-	
+		
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class ShowMatchesGroupedByRegexAction extends ShowOrderedMatchesAction {
+	public class ShowTextEditorInRightAction extends ShowTextEditorAction {
 		
-		public function ShowMatchesGroupedByRegexAction() {			
-			label = Resources.getMessage("regex.action.grouped");
-			icon = Resources.bricksIcon;
-		}
-					
-		override protected function getExpandContext():Object {
-			var context:Object = super.getExpandContext();
-			context[CodeSyncRegexConstants.SHOW_GROUPED_BY_REGEX] = true;
-			return context;
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction";
+		
+		public function ShowTextEditorInRightAction() {
+			super();			
+			label = Resources.getMessage("regex.showTextEditorInRight", [Resources.getMessage('regex.showTextEditor')]);			
+		}	
+				
+		override public function run():void	{
+			CodeSyncRegexPlugin.getInstance().getTextEditorFrontend(editorFrontend, false, true);
 		}
 		
 	}

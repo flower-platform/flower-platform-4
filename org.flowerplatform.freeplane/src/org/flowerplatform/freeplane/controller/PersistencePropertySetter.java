@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.freeplane.controller;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
@@ -34,10 +33,6 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
-		
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 
 		if (MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {
@@ -74,9 +69,6 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		if (MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY.equals(property)) {

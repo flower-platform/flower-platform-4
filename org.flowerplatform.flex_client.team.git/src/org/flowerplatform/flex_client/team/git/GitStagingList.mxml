@@ -1,44 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:List xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
-		implements="org.flowerplatform.flexutil.selection.ISelectionProvider, org.flowerplatform.flexutil.action.IActionProvider">
+		xmlns:mx="library://ns.adobe.com/flex/mx" 
+		creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
+			import mx.events.FlexEvent;
 			
 			import org.apache.flex.collections.ArrayList;
 			import org.flowerplatform.flex_client.team.git.action.AddToGitIndex;
 			import org.flowerplatform.flex_client.team.git.action.RemoveFromGitIndex;
-			import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 			import org.flowerplatform.flexutil.action.IAction;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			import org.flowerplatform.flexutil.context_menu.FillContextMenuEvent;
 			
-			public var gitIndex:Boolean = true;
-			public var host:IViewHost
-			protected var icon:Class;
-			protected var actionStagedProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
-				.addActionClass(RemoveFromGitIndex);
-			protected var actionUnstagedProvider:ClassFactoryActionProvider = new ClassFactoryActionProvider()
-				.addActionClass(AddToGitIndex);
+			public var gitStagingView:GitStagingView;
 			
+			public var showStageFiles:Boolean = true;
+						
 			public function getSelection():IList {
-				var result:Array = new Array();
+				var result:ArrayList = new ArrayList();
 				
-				if (this.selectedIndices) {
-					var count:int = this.selectedIndices.length;
-					
-					for (var i:int = 0; i < count; i++)
-						result.push(this.dataProvider.getItemAt(this.selectedIndices[i]));  
+				if (this.selectedItems) {				
+					for each(var obj:Object in selectedItems) {
+						result.addItem(obj);  
+					}
 				}
-				return new ArrayList(result);
+				return result;
 			}
+			
 			public function getActions(selection:IList):Vector.<IAction> {
-				if(gitIndex) {
-					return actionUnstagedProvider.getActions(selection);
+				var result:Vector.<IAction> = new Vector.<IAction>();
+				
+				if (showStageFiles) {
+					result.push(new AddToGitIndex(gitStagingView));
 				} else {
-					return actionStagedProvider.getActions(selection);
+					result.push(new RemoveFromGitIndex(gitStagingView));
 				}
+				return result;
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU, fillContextMenuHandler);
+			}
+			
+			protected function fillContextMenuHandler(event:FillContextMenuEvent):void {
+				var selection:IList = getSelection();
+				event.allActions = getActions(selection);
+				event.selection = selection;
 			}
 			
 		]]>
@@ -46,7 +55,7 @@
 	<s:itemRenderer>
 		<fx:Component>
 			<s:IconItemRenderer width="100%"
-								iconFunction="{myiconfunction}"
+								iconFunction="{getIcon}"
 								verticalAlign="middle"
 								paddingLeft="5"
 								creationComplete="item_creationCompleteHandler(event)">
@@ -57,13 +66,12 @@
 						import org.flowerplatform.flex_client.core.CoreConstants;
 						import org.flowerplatform.flex_client.core.editor.remote.Node;
 						import org.flowerplatform.flexutil.FlexUtilGlobals;
-						
-						private function myiconfunction(data:Node):Object {
+
+						private function getIcon(data:Node):Object {
 							return data.getPropertyValue(CoreConstants.ICONS);
 						}
 						
-						protected function item_creationCompleteHandler(event:FlexEvent):void
-						{
+						protected function item_creationCompleteHandler(event:FlexEvent):void {
 							if (!FlexUtilGlobals.getInstance().isMobile) {
 								// only for web
 								minHeight = 22;	

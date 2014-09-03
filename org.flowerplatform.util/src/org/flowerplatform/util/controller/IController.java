@@ -31,4 +31,9 @@ public interface IController extends Comparable<IController> {
 	 */
 	void setOrderIndex(int orderIndex);
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	void setTypeDescriptor(TypeDescriptor typeDescriptor);
+	
 }

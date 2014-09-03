@@ -49,7 +49,13 @@ public class RegexMatchesChildrenProvider extends AbstractController implements 
 	
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(SKIP_PROVIDER) || !context.getBooleanValue(SHOW_GROUPED_BY_REGEX)) {
+		if (context.getBooleanValue(SKIP_PROVIDER)) {
+			return null;
+		}
+		
+		node.getOrPopulateProperties(new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+		
+		if ((boolean) node.getPropertyValue(SHOW_GROUPED_BY_REGEX)) { // the other children provider will be executed
 			return null;
 		}
 		

@@ -24,17 +24,15 @@ package org.flowerplatform.flex_client.mindmap.action {
 	 * @author Cristina Constantinescu
 	 */
 	public class RefreshAction extends DiagramShellAwareActionBase {
+		
+		public static const ID:String = "org.flowerplatform.flex_client.mindmap.action.RefreshAction";
 						
 		public function RefreshAction() {
 			label = Resources.getMessage("mindmap.action.refresh");
 			icon = Resources.refreshIcon;
 			orderIndex = 200;					
 		}
-				
-		override protected function isVisibleForSelectedElement(element:Object):Boolean {
-			return element is Node;
-		}
-				
+						
 		override public function run():void {
 			// refresh each node from selection
 			for (var i:int = 0; i < selection.length; i++) {

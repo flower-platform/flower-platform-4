@@ -13,46 +13,45 @@
 * 
 * license-end
 */
-
-package org.flowerplatform.flex_client.team.git.action
-{
-	import mx.collections.ArrayCollection;
+package org.flowerplatform.flex_client.team.git.action {
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flex_client.team.git.GitConstants;
-	import org.flowerplatform.flex_client.team.git.GitStagingProperties;
+	import org.flowerplatform.flex_client.team.git.GitStagingViewProvider;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
+	
 	/**
 	 * @author Marius Iacob
-	 */
-	
-	public class GitStagingAction extends ActionBase
-	{
-		public function GitStagingAction()
-		{
+	 */	
+	public class ShowGitStagingAction extends ActionBase {
+		
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.ShowGitStagingAction";
+		
+		public function ShowGitStagingAction() {
 			super();
 			label = Resources.getMessage("team.git.action.GitStagingAction");
 			icon = Resources.gitStagingIcon;
+			orderIndex = 510;
 		}
 		
-		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
-					.categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0
-			}
-			return false;
-		}
+		override public function  get visible():Boolean {
+			var node:Node = Node(selection.getItemAt(0));
+			if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) {
+				// not a git repository
+				return false;
+			}	
+			return true;
+		}		
 		
 		override public function run():void {
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
-				.setViewIdInWorkbench(GitStagingProperties.ID)
-				.setWidth(550)
-				.setHeight(500)
+				.setViewIdInWorkbench(GitStagingViewProvider.ID)
+				.setWidth(700)
+				.setHeight(600)
 				.show();
 		}
+		
 	}
 }
