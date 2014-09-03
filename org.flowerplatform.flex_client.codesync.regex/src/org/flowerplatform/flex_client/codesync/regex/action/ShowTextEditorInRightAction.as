@@ -22,7 +22,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	 */
 	public class ShowTextEditorInRightAction extends ShowTextEditorAction {
 		
-		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction";
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorInRightAction";
 		
 		public function ShowTextEditorInRightAction() {
 			super();			

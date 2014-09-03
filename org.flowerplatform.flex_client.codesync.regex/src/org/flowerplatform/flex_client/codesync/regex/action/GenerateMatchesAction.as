@@ -39,7 +39,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			if (obj is MindMapRootModelWrapper) {
 				obj = MindMapRootModelWrapper(obj).model;
 			}
-			CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", [Node(obj).nodeUri], null ); // true = override; va trebui eliminat 
+			CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", [Node(obj).nodeUri], null ); 
 		}
 	}
 }
