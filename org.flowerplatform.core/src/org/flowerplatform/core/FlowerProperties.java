@@ -62,7 +62,11 @@ public class FlowerProperties extends Properties {
 				this.load(is);
 				IOUtils.closeQuietly(is);
 			}
-			
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error while loading properties from %s file.", PROPERTIES_FILE), e);
+		}
+		
+		try {
 			// get properties from local file, if exists
 			FileInputStream fis = new FileInputStream(new File(PROPERTIES_FILE_LOCAL));
 			if (fis != null) {
@@ -70,7 +74,7 @@ public class FlowerProperties extends Properties {
 				IOUtils.closeQuietly(fis);
 			}
 		} catch (IOException e) {
-			// throw new RuntimeException("Error while loading properties from local file.", e);
+			// ignore this; local properties doesn't need to exist
 		}
 	}
 	

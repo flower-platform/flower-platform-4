@@ -26,8 +26,10 @@ import java.nio.file.Files;
 import java.security.Policy;
 import java.util.Map;
 import java.util.Properties;
+
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
 import org.eclipse.equinox.servletbridge.FrameworkLauncher;
 
@@ -171,20 +173,18 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			
 			// copy default files from META-INF/flower-platform-home-default-files
 			String defaultFilesDirPath = context.getRealPath(FLOWER_PLATFORM_HOME_DEFAULT_FILES_PATH);
-			File defaultFilesDir;
+			File defaultFilesDir;			
 			try {
+				// source directory - META-INF/flower-platform-home-default-files
 				defaultFilesDir = new File(defaultFilesDirPath);
 				
-				// create directory for default files in FLOWER_PLATFORM_HOME
+				// destination directory - FLOWER_PLATFORM_HOME/flower-platform-home-default-files
 				String defaultFilesDirInFlowerPlatformHomePath = System.getProperty(FLOWER_PLATFORM_HOME) + FLOWER_PLATFORM_HOME_DEFAULT_FILES;
 				File defaultFilesDirInFlowerPlatformHome = new File(defaultFilesDirInFlowerPlatformHomePath);
-				defaultFilesDirInFlowerPlatformHome.mkdirs();
 				
-				// copy content to this directory
-				for (File file : defaultFilesDir.listFiles()) {
-					Files.copy(file.toPath(), new File((defaultFilesDirInFlowerPlatformHomePath + "/" + file.getName())).toPath(), new CopyOption[] {REPLACE_EXISTING});
-				}
-			} catch (Exception e) {
+				// copy content from source directory to destination directory
+				FileUtils.copyDirectory(defaultFilesDir, defaultFilesDirInFlowerPlatformHome);
+			} catch (IOException e) {
 				throw new RuntimeException("Error while copying content of flower-platform-home-default-files", e);
 			}
 		}
