@@ -264,7 +264,6 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MATCHES_NODE_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new RegexTestMatchesChildrenProvider())
 			.addAdditiveController(PROPERTIES_PROVIDER, new RegexTestMatchesChildrenProvider());
-//			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Matches"));
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_EXPECTED_MATCHES_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Expected matches"));
 
@@ -272,10 +271,6 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_REGEX_ACTION)
 			.addAdditiveController(PROPERTIES_PROVIDER, new RegexActionController());
 
-//		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
-//			.addAdditiveController(CHILDREN_PROVIDER, new CodeSyncRepositoryChildrenProvider());
-
-		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_REGEX)
 			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(NAME))
 			.addAdditiveController(PROPERTIES_PROVIDER, new RegexController())
