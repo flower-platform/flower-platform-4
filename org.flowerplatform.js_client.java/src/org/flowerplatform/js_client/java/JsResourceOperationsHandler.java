@@ -2,6 +2,9 @@ package org.flowerplatform.js_client.java;
 
 import org.mozilla.javascript.Function;
 
+/**
+ * @author Cristina Constantinescu
+ */
 public class JsResourceOperationsHandler {
 
 	public Object nodeRegistryManager;

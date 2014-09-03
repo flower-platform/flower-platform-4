@@ -2,8 +2,17 @@ package org.flowerplatform.js_client.java;
 
 import javax.ws.rs.core.Response.StatusType;
 
+/**
+ * Used as parameter in a faultCallback handler.
+ * 
+ * <p>
+ * Corresponds to <code>mx.rpc.Fault</code>.
+ * 
+ * @author Cristina Constantinescu
+ */
+//TODO CC: this class can be improved to show exception message too
 public class Fault {
-
+	
 	private StatusType status;
 	
 	public Fault(StatusType status) {

@@ -1,8 +1,15 @@
 package org.flowerplatform.js_client.java;
 
-public interface IFunctionInvoker<R, P> {
+/**
+ * Used when needed to send a method as parameter.
+ * 
+ * <p>
+ * Corresponds to flex Function.
+ * 
+ * @author Cristina Constantinescu
+ */
+public interface IFunctionInvoker {
 
-	@SuppressWarnings("unchecked")
-	public R call(Object instance, P... params);
+	public void call(Object instance, Object... params);
 
 }

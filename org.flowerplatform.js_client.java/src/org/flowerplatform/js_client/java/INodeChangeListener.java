@@ -1,11 +1,14 @@
 package org.flowerplatform.js_client.java;
-		
+	
+/**
+ * @author Cristina Constantinescu
+ */
 public interface INodeChangeListener {
 		
-	void nodeRemoved(JsNode node);
+	void nodeRemoved(Object node);
 	
-	void nodeAdded(JsNode node);
+	void nodeAdded(Object node);
 	
-	void nodeUpdated(JsNode node, String property, Object oldValue, Object newValue);
+	void nodeUpdated(Object node, String property, Object oldValue, Object newValue);
 	
 }

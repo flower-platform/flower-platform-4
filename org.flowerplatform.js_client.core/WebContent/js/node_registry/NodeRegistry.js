@@ -197,8 +197,8 @@ NodeRegistry.prototype.expandCallbackHandler = function(node, children) {
 		return;
 	}	
 	// register each child
-	for (var i = 0; i < children.length; i++) {
-		this.registerNode(children.getItemAt(i), node, -1);
+	for (var i = 0; i < children.length; i++) {	
+		this.registerNode((Object.prototype.toString.call(children) == "[object Array]") ? children[i] : children.getItemAt(i), node, -1);
 	}
 };
 
@@ -309,7 +309,7 @@ NodeRegistry.prototype.mergeOrRegisterNode = function(node) {
 	if (existingNode == null) {
 		this.registerNode(node, null, -1);
 		return node;
-	}
+	}	
 	this.setNodeProperties(existingNode, node.properties);
 	
 	return existingNode;
@@ -380,7 +380,7 @@ NodeRegistry.prototype.setPropertyValue = function(node, property, newValue) {
 	}	
 };
 				
-NodeRegistry.prototype.setNodeProperties = function(node, newProperties) {	
+NodeRegistry.prototype.setNodeProperties = function(node, newProperties) {
 	for (var property in newProperties) {
 		this.setPropertyValue(node, property, newProperties[property]);
 	}

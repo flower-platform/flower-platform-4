@@ -2,6 +2,10 @@ package org.flowerplatform.js_client.java;
 
 import java.util.ArrayList;
 
+/**
+ * Provides additional behavior to match mx.collections.IList.
+ * @author Cristina Constantinescu
+ */
 public class JsList<E> extends ArrayList<E> {
 
 	private static final long serialVersionUID = 1L;
@@ -27,4 +31,12 @@ public class JsList<E> extends ArrayList<E> {
 		return super.size();
 	}
 		
+	public void addItem(E o) {
+		add(o);
+	}
+	
+	public void addItemAt(E o, int index) {
+		add(index, o);
+	}
+	
 }

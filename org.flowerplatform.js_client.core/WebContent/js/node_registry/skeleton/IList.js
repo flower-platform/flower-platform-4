@@ -10,5 +10,8 @@ IList {
 	
 	function length();
 	
+	function addItem(obj:Object);	
+	function addItemAt(obj:Object, index:int);
+	
 }
 */

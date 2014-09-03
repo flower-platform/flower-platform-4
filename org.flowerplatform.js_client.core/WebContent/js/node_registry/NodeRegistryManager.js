@@ -117,17 +117,14 @@ NodeRegistryManager.prototype.linkResourceNodeWithNodeRegistry = function(resour
 	nodeRegistries.push(nodeRegistry);
 		
 	// listen for resourceNode properties modifications like isDirty
-	var resourceNode = nodeRegistry.getNodeById(resourceUri);
-	this.externalInvocator.addEventListener(resourceNode.properties, "propertyChange", this.resourceNodeUpdated);
-	this.resourceNodeUpdated(this.externalInvocator.createUpdateEvent(resourceNode, Constants.IS_DIRTY, false, resourceNode.properties[Constants.IS_DIRTY]));
+	var resourceNode = nodeRegistry.getNodeById(resourceUri);	
+	_nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler.updateGlobalDirtyState(resourceNode.properties[Constants.IS_DIRTY]);
 };
 
 NodeRegistryManager.prototype.unlinkResourceNodeFromNodeRegistry = function(resourceUri, nodeRegistry) {
 	// change isDirty to false and dispatch event
 	var resourceNodeFromRegistry = nodeRegistry.getNodeById(resourceUri);
 	nodeRegistry.setPropertyValue(resourceNodeFromRegistry, Constants.IS_DIRTY, false);
-	
-	this.externalInvocator.removeEventListener(resourceNodeFromRegistry, "propertyChange", this.resourceNodeUpdated);
 	
 	var resourceSet = this.resourceUriToResourceSet[resourceUri];
 	
@@ -255,10 +252,10 @@ NodeRegistryManager.prototype.hasSubscribableResource = function(node, resourceU
 NodeRegistryManager.prototype.subscribe = function(nodeId, nodeRegistry, subscribeResultCallback, subscribeFaultCallback) {
 	var self = this;
 	this.serviceInvocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
-		function (subscriptionInfo) {			
-			subscriptionInfo.rootNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.rootNode);
-			if (subscriptionInfo.resourceNode != null) {
-				subscriptionInfo.resourceNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.resourceNode);
+		function (subscriptionInfo) {
+			subscriptionInfo.rootNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.rootNode);			
+			if (subscriptionInfo.resourceNode != null) {				
+				subscriptionInfo.resourceNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.resourceNode);				
 				self.linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, subscriptionInfo.resourceSet, nodeRegistry);
 			}			
 			if (subscribeResultCallback != null) {
@@ -372,7 +369,7 @@ NodeRegistryManager.prototype.processUpdates = function(resourceNodeIdToUpdates)
 NodeRegistryManager.prototype.unlinkResourceNodesForcefully = function(resourceUris) {
 	var idsList = "";
 	for (var i = 0; i < resourceUris.length; i++) {	
-		var nodeRegistries = this.getNodeRegistriesForResourceSet(resourceUris[i]);
+		var nodeRegistries = this.getNodeRegistriesForResourceSet(resourceUris[i]);		
 		for (var j = 0; j < nodeRegistries.length; j++) {					
 			this.unlinkResourceNodeFromNodeRegistry(resourceUris[i], nodeRegistries[j]);
 			for (var k = 0; k < this.listeners.length; k++) {			

@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.flowerplatform.js_client.java;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.flowerplatform.js_client.core,
  org.flowerplatform.util,
- org.flowerplatform.core,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.flowerplatform.core
 Export-Package: org.flowerplatform.js_client.java,
  org.mozilla.javascript
 Bundle-ClassPath: lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar,
