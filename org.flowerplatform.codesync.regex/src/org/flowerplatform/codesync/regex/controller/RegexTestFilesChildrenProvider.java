@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
+import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -46,24 +47,20 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 		String nodeSpecificPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri());
 		String path = CoreUtils.getRepoFromNode(node) + "/" + REGEX_CONFIGS_FOLDER + "/" + nodeSpecificPart + "/"
 				+ CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
-		Object file = null;
+		Object folder = null;
 		try {
-			file = getFileAccessController().getFile(path);
+			folder = getFileAccessController().getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		List<Node> children = new ArrayList<Node>();
-		Object[] files = getFileAccessController().listFiles(file);
-		if (files != null) {
-			for (Object object : files) {
-				if (((File) object).isFile()) {
+		List<String> testFiles = CodeSyncRegexService.getTestFilesRelativeToFolder((File) folder, "");
+		for (String testFileToBeParsed : testFiles) {
 //					String typeSpecificPart = nodeSpecificPart + "/" + CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER + "/" + ((File) object).getName() + CodeSyncRegexConstants.REGEX_MATCH_EXTENSION; 
-					String typeSpecificPart = nodeSpecificPart + "$" + ((File) object).getName(); 
+					String typeSpecificPart = nodeSpecificPart + "$" + testFileToBeParsed; 
 					Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node), REGEX_TEST_FILE_NODE_TYPE, typeSpecificPart),
 							REGEX_TEST_FILE_NODE_TYPE);
 					children.add(child);
-				}
-			}
 		}
 		return children;
 	}
