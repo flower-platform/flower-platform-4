@@ -60,6 +60,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/open.png")]
 		public static const openIcon:Class;
 		
+		[Embed(source="/core/url_icon.png")]
+		public static const openUrlIcon:Class;
+		
 		[Embed(source="/core/download.png")]
 		public static const downloadIcon:Class;
 		
@@ -83,9 +86,6 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/core/table_gear.png")]
 		public static const tableGear:Class;
-		
-		[Embed(source="/core/url_icon.png")]
-		public static const urlIcon:Class;
 		
 		// Properties
 		

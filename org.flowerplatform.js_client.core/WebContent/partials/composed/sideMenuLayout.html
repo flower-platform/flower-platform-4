@@ -2,16 +2,16 @@
 
 <div>
 
-	<div class="row">
+	<div class="row" id="row-side-menu">
 		
 		<!-- Content area -->
-		<div class="col-sm-10">
+		<div class="col-sm-9" id="col-content-area">
 			<div ng-include="template_content.url"></div>
 		</div>
 		
 		<!-- Side menu -->
-		<div class="col-sm-2">
-			<div ng-include="template_sideMenu.url"></div>
+		<div class="col-sm-3" id="col-side-menu">
+			<div id="side-menu" ng-include="template_sideMenu.url"></div>
 		</div>
 	
 	</div>

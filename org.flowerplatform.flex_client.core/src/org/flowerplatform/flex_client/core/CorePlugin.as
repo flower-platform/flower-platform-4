@@ -80,7 +80,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
-	import org.flowerplatform.flexutil.iframe.IFrameOpenUrl;
+	import org.flowerplatform.flexutil.iframe.OpenUrlInIFrameAction;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
@@ -319,9 +319,9 @@ package org.flowerplatform.flex_client.core {
 					.show();
 				}));
 			
-			registerActionToGlobalMenu(new IFrameOpenUrl()
+			registerActionToGlobalMenu(new OpenUrlInIFrameAction()
 				.setLabel(Resources.getMessage("iframe.title"))
-				.setIcon(Resources.urlIcon)
+				.setIcon(Resources.openUrlIcon)
 				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
 			);
 							

@@ -41,23 +41,3 @@ routesConfig.push({
 		}
 	}
 });
-
-routesConfig.push({
-	path: '/users/:id/settings',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
-	route: {
-		templateUrl: 'partials/composed/sideMenuLayout.html',
-		controller: 'ComposedCtrl',
-		resolve: {
-			contentTemplate : function() {
-				return 'userAccountSettings';
-			},
-			sideMenuTemplate : function() {
-				return 'userSideMenu';
-			},
-			sideMenuContentTemplate : function() {
-				return 'userFormSideMenuContent';
-			}
-		}
-	}
-});

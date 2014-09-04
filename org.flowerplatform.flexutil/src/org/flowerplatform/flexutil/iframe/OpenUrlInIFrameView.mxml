@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+@author Andreea Tita
+-->
 <ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					 xmlns:s="library://ns.adobe.com/flex/spark" 
 					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*" >
@@ -21,9 +24,8 @@
 	
 	<s:Form width="100%" height="100%">
 		<s:FormItem label="URL">
-			<s:TextInput id="inputURL" width="100%"/>
+			<s:TextInput id="inputURL" width="100%" creationComplete="{callLater(inputURL.setFocus)}" />
 		</s:FormItem>
-		
 	</s:Form>
 	
 </ns:BasicViewContent>

@@ -210,5 +210,8 @@ public class CoreConstants {
 	public static final String USERS = "users";
 	public static final String USER = "user";
 	public static final String USERS_PATH = "fpp:|.users";
+	public static final String HASH_ALGORITHM = "SHA-256";
+	public static final String PASS_CHANGED = "Password changed !";
+	public static final String PASS_NOT_CHANGED = "Password doesn't match !";
 	
 }

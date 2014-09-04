@@ -26,7 +26,7 @@
 		<tbody>
 			<tr ng-repeat="user in users.messageResult | filter:query">
 				<td><a ng-href="#/users/{{user.nodeUri}}">{{user.properties.login}}</a></td>
-				<td>{{user.properties.name}}</td>
+				<td>{{user.properties.firstName}} {{user.properties.lastName}}</td>
 				<td>{{user.properties.email}}</td>
 				<td><input type="checkbox" disabled="disabled" ng-checked="{{user.enabled}}"></td>
 			</tr>

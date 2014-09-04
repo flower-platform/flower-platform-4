@@ -1,111 +1,75 @@
-.user-panel {
+html {
+    min-height:100%;
+    position:relative;
+}
+body {
+    height:100%;
+}
+
+/* style for right view */
+#col-side-menu, #side-menu {
+	position: absolute;
+	right: 0;
+	height: 100%;
+    min-height: 100%;
+    min-width: 55%;
+}
+#user-panel {
+	position: absolute;
+	right: 0;
     background:RGB(219,217,214);
-    position:absolute;
-    right:-100px;
-    width: 300px;
+    height: 100%;
+    min-height:100%;
+    min-width: 100%;
 }
 
-.user-panel-name {
-	padding: 40px;
+/* style for user image and name */
+#user-panel-header {
+	text-align: center;
 }
 
+/* style for navbar */
+.navbar-menu {
+	padding-top: 40px;
+}
 .navbar-header {
   float: none;
 }
-
 .navbar-toggle {
   display: block;
 }
-
 .navbar-collapse {
   border-top: 1px solid transparent;
 }
-
 .navbar-collapse.collapse {
   display: none!important;
 }
-
 .navbar-nav {
   float: none!important;
   margin: 7.5px -15px;
 }
-
 .navbar-nav>li {
   float: none;
 }
 
-#profile {
-	border-bottom: 1px solid RGB(219,217,214);
-}
-
-.user-settings {
-	width: 500px;
-	background: none repeat scroll 0 0 #fff;
-    color: #666;
-    padding-left: 30px;
-	padding-right: 30px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
-
-.user-settings h3 {
-	padding-left: 30px;
-	padding-right: 30px;
-}
-
+/* style for the first elements in form */
 .change-username-form , .password-confirmation-form {
 	margin-top: 0;
 }
 
-.button {
-    background-color: #eeeeee;
-    border: 1px solid #d5d5d5;
-    border-radius: 3px;
-    color: #333;
-    font-size: 13px;
-    font-weight: bold;
-    padding: 7px 12px;
-    position: relative;
-    opacity: 0.8;
-}
-
-.navbar-menu {
-	border-left: 20px solid transparent;
-	border-right: 20px solid transparent;
-}
-
-.panel-default {
-	margin-left: 20px;
-	margin-right: 20px;
-}
-
+/* style for elements from Profile panel */
 .nav-pills>li>a {
 	text-decoration:none;
 	color: black;
 }
 
-.panel-danger {
-	margin-left: 20px;
-	margin-right: 20px;
-}
-
-.alert-danger {
-    margin-left: -30px;
-    margin-right: -30px;
-}
-
-.nav-pills>li.active>a {
-	background-color: RGB(219,217,214);
-	color: black;
-}
-
-.nav-pills>li.active>a:hover {
-	background-color: #EEE;
-	color: black;
-}
-
+/* style for input if nothing is written */
 :required {
   box-shadow: 1px 1px 4px transparent;
 }
 
-hr { margin: 0.1em auto; }
+/* style for delete-account button */
+#delete-account-button {
+	color: #8A0808;
+	width: 100%;
+}

@@ -14,18 +14,29 @@ flowerProject.lazy.factory('User', ['$resource', function($resource) {
 		query: 	{ method: 'GET'/*, interceptor: { 'response': getMessageResult }*/ },
 		get:	{ method: 'GET', params: { id: '@id' } },
 		save:	{ method: 'POST' },
-		remove: { method: 'DELETE', params: { id: '@id' } }
+		remove: { method: 'DELETE', params: { id: '@id' } },
 	});
 	
+}]);
+
+flowerProject.lazy.factory('ChangeSettings' , ['$resource', function($resource) {
+	var getMessageResult = function(response) {
+		var messageResult = response.resource.messageResult;
+		return messageResult;
+	};
+	
+	return $resource('http://localhost:8080/org.flowerplatform.host.web_app/ws-dispatcher/users/:id/:path', {}, {
+		changeSettings: { method: 'POST',  params: { id: '@id' , path: '@path' } }
+	});
 }]);
 
 flowerProject.lazy.factory('Login', [function() {
 	
 	return {
-		userID: 'user:test|John',
+		userID:  encodeURIComponent("fpp:|.users#ID_1960040384"),
 		userName: 'John Johnson',
 		login: 'John',
-		nodeUri: 'user:test|John',
+		nodeUri: "fpp:|.users#ID_1960040384",
 		isAdmin: true,
 		repo: 'Repository'
 	};
