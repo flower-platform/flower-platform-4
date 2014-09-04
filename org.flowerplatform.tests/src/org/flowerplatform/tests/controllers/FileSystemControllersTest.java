@@ -70,6 +70,9 @@ public class FileSystemControllersTest {
 			// initialize in case this test is run alone
 			EclipseIndependentTestSuite.beforeClass();
 		}
+		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
+		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
+		
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("", createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), 
 				new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 
