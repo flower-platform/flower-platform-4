@@ -49,6 +49,7 @@ import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
+import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -306,35 +307,35 @@ public class NodeService {
 		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 	
+	private void removeChildDFS(Node node, Node child, ArrayList<ChildrenUpdate> removedNodes) {
+		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
+		removedNode.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		ChildrenUpdate update = new ChildrenUpdate();
+		update.setFullNodeId(node.getNodeUri());
+		update.setTargetNode(removedNode);
+		removedNodes.add(update);
+		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		for (Node grandChild : grandChildren) {
+			removeChildDFS(child, grandChild, removedNodes);
+		}
+	}
+	
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
-		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, context);
-		if (context.get("parentNode") == null) {
-			context.add("parentNode", node);
-		}
-		for (int i = grandChildren.size() - 1; i >= 0; i--) {
-			Node grandChild = grandChildren.get(i);
-			removeChild(child, grandChild, context);
-		}
-		
+
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 
-		// Save full child in context; used for undo
-		// TODO CS: cred ca il putem folosi pe child direct; si cred ca nu mai trebuie pus in cotext
-		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
-		removedNode.getOrPopulateProperties(context);
-		// TODO CS: ar trebui sa fie constante; sa trecem prin modif metodei astea; la o privire rapida nu inteleg
-		context.add("removedNode", removedNode);
-
+		ArrayList<ChildrenUpdate> removedNodes = new ArrayList<>();
+		removeChildDFS(node, child, removedNodes);
+		context.add("removedNodes", removedNodes);
+		
 		// Find next sibbling and save it for undo of position
-		if (context.get("parentNode")==node) {
-			List<Node> sibblings = getChildren(node, context);
-			int childIndex = sibblings.indexOf(child);
-			if (childIndex < sibblings.size() - 1) {
-				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, sibblings.get(childIndex + 1).getNodeUri());
-			}
+		List<Node> sibblings = getChildren(node, context);
+		int childIndex = sibblings.indexOf(child);
+		if (childIndex < sibblings.size() - 1) {
+			context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, sibblings.get(childIndex + 1).getNodeUri());
 		}
 
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
