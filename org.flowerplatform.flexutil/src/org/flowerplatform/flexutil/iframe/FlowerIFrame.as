@@ -15,14 +15,14 @@
  */
 package org.flowerplatform.flexutil.iframe {
 	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
+	import flash.external.ExternalInterface;
 	
-	import mx.containers.TabNavigator;
-	import mx.core.Container;
-	import mx.core.UIComponent;
-	import mx.core.mx_internal;
-	import mx.events.FlexEvent;
-	import mx.graphics.shaderClasses.ExclusionShader;
+	import mx.controls.Alert;
+	
+	import org.flowerplatform.flexutil.FlexUtilConstants;
+	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.view_content_host.IViewContent;
+	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
 	/**
 	 * <code>IFrame</code> code was copied from here:
@@ -31,11 +31,15 @@ package org.flowerplatform.flexutil.iframe {
 	 * <p>
 	 * This class adds specific flower behavior and styles.
 	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
-	public class FlowerIFrame extends IFrame {
+	public class FlowerIFrame extends IFrame implements IFlowerIFrame, IViewContent {
 		
 		public function FlowerIFrame(id:String = null) {
 			super(id);
+			
+			percentHeight = 100;
+			percentWidth = 100;
 			
 			setStyle("paddingLeft", 0);
 			setStyle("paddingRight", 0);
@@ -58,6 +62,42 @@ package org.flowerplatform.flexutil.iframe {
 				// to avoid it, catch it here and call it after, in parentChanged
 			}
 			return false;
+		}
+		
+		public function set url(value:String):void {
+			value = Utils.getUrlWithParameter(value, FlexUtilConstants.EMBED_IN_FLEX_APP, FlexUtilConstants.EMBED_IN_FLEX_APP_WEB);
+			source = value;
+			addCallback("test", function(x:int, y:String):void {
+				Alert.show("called from js" + x + y);
+			});
+		}
+		
+		public function get url():String {
+			return source;	
+		}
+		
+		public function callJSFunction(functionName:String, callback:Function=null, ...parameters):void {
+			callIFrameFunction(functionName, parameters != null ? [].concat(parameters) : null, callback);
+		}
+		
+		public function addCallback(name:String, callback:Function):void {
+			ExternalInterface.addCallback(name, callback);
+		}
+		
+		public function addViewCompleteHandler(handler:Function):void {
+			addEventListener("frameLoad", handler);
+		}
+		
+		public function dispose():void {
+			removeIFrame();
+		}
+		
+		public function set viewHost(viewHost:IViewHost):void {
+			// nothing to do
+		}
+		
+		public function additionalCloseHandler():void {
+			// nothing to do
 		}
 		
 	}

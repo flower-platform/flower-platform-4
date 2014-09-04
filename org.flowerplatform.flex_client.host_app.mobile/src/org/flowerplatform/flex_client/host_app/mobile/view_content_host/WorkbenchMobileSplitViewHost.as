@@ -24,11 +24,8 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.host_app.mobile.stage_web_view.StageWebView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
-	import org.flowerplatform.flexutil.iframe.EmbedView;
-	import org.flowerplatform.flexutil.iframe.EmbedViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.LayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
@@ -90,7 +87,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			var comp:UIComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(viewLayoutData);
 			rightActiveComponent = comp;
 			rightComponents.addItem(comp);
-			showOpenEditorsCalloutButton.addEditorFrontend(comp);
+			showOpenEditorsCalloutButton.addEditorFrontend(comp, viewLayoutData);
 			if (oneViewMode && oneViewModeLeftViewActive) {
 				oneViewModeLeftViewActive = false;
 			}

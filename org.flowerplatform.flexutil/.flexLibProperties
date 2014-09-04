@@ -30,6 +30,8 @@
     <classEntry path="org.flowerplatform.flexutil.view_content_host.IViewHostAware"/>
     <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrl"/>
     <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrlView"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFlowerIFrame"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

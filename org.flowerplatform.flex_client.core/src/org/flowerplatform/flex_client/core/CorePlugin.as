@@ -80,6 +80,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
+	import org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider;
 	import org.flowerplatform.flexutil.iframe.IFrameOpenUrl;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
@@ -178,7 +179,9 @@ package org.flowerplatform.flex_client.core {
 			FlexUtilGlobals.getInstance().registerAction(NodeTreeAction);
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
-						
+			
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new FlowerIFrameViewProvider());
+			
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
 				function (result:Object):void {		

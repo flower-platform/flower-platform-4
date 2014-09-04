@@ -1,22 +1,22 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
-package org.flowerplatform.flex_client.text.codemirror_editor {
-	
-	import es.xperiments.media.StageWebViewBridge;
-	import es.xperiments.media.StageWebViewDisk;
+* 
+* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* Contributors:
+*   Crispico - Initial API and implementation
+*
+* license-end
+*/
+package org.flowerplatform.flexutil.iframe {
 	
 	import flash.display.Stage;
 	import flash.events.ErrorEvent;
@@ -24,7 +24,17 @@ package org.flowerplatform.flex_client.text.codemirror_editor {
 	import flash.events.LocationChangeEvent;
 	import flash.geom.Rectangle;
 	
+	import mx.controls.Alert;
 	import mx.core.UIComponent;
+	
+	import es.xperiments.media.StageWebViewBridge;
+	import es.xperiments.media.StageWebViewBridgeEvent;
+	import es.xperiments.media.StageWebViewDisk;
+	
+	import org.flowerplatform.flexutil.FlexUtilConstants;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.iframe.IFlowerIFrame;
 	
 	[Event(name="complete", type="flash.events.Event")]
 	[Event(name="locationChanging", type="flash.events.LocationChangeEvent")]
@@ -35,7 +45,7 @@ package org.flowerplatform.flex_client.text.codemirror_editor {
 	 * 
 	 * @author Cristina Constantinescu
 	 */
-	public class StageWebViewUIComponent extends UIComponent {
+	public class StageWebViewUIComponent extends UIComponent implements IFlowerIFrame {
 		
 		public var yOffset:int = 80;
 		
@@ -53,14 +63,20 @@ package org.flowerplatform.flex_client.text.codemirror_editor {
 			percentHeight = 100;
 			percentWidth = 100;
 			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
 		}
 		
 		public function set url(url:String):void {
-			_url = url;
+			_url = FlexUtilGlobals.getInstance().createAbsoluteUrl(url);
+			_url = Utils.getUrlWithParameter(_url, FlexUtilConstants.EMBED_IN_FLEX_APP, FlexUtilConstants.EMBED_IN_FLEX_APP_MOBILE);
 			
 			if (_stageWebView) {
-				_stageWebView.loadURL(url);
+				_stageWebView.loadURL(_url);
 			}
+		}
+		
+		public function get url():String {
+			return _url;
 		}
 		
 		public function set text(text:String):void {
@@ -70,7 +86,25 @@ package org.flowerplatform.flex_client.text.codemirror_editor {
 				_stageWebView.loadString(text);
 			}
 		}
-						
+		
+		public function callJSFunction(functionName:String, callback:Function = null, ...parameters):void {
+			if (_stageWebView) {
+				_stageWebView.call(functionName, callback, parameters);
+			}
+		}
+		
+		public function addCallback(name:String, callback:Function):void {
+			if (_stageWebView) {
+				_stageWebView.addCallback(name, callback);
+			}
+		}
+		
+		public function addViewCompleteHandler(handler:Function):void {
+			if (_stageWebView) {
+				_stageWebView.addEventListener(StageWebViewBridgeEvent.DEVICE_READY, handler);
+			}
+		}
+		
 		public function dispose():void {
 			_stageWebView.visible = false;
 			_stageWebView.dispose();
@@ -94,6 +128,15 @@ package org.flowerplatform.flex_client.text.codemirror_editor {
 			} else if (_text) {
 				_stageWebView.loadString(_text);
 			}
+			addCallback("test", function(x:int, y:String):void {
+				trace("called from js" + x + y);
+			});
+		}
+		
+		protected function removedFromStageHandler(event:Event):void {
+			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			
+			_stageWebView.dispose();
 		}
 		
 		protected function completeHandler(event:Event):void {

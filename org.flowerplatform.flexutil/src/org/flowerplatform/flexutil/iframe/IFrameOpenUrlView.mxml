@@ -9,9 +9,7 @@
 			import org.flowerplatform.flexutil.layout.ViewLayoutData;
 			
 			override protected function okHandler(event:Event = null):void {
-				var viewLayoutData:ViewLayoutData = new ViewLayoutData();
-				viewLayoutData.viewId = EmbedViewProvider.ID;
-				viewLayoutData.customData = inputURL.text;
+				var viewLayoutData:ViewLayoutData = new ViewLayoutData(FlowerIFrameViewProvider.ID, inputURL.text);
 				viewLayoutData.isEditor = true;
 				FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);
 				cancelHandler();
@@ -21,7 +19,7 @@
 	
 	<s:Form width="100%" height="100%">
 		<s:FormItem label="URL">
-			<s:TextInput id="inputURL" width="100%"/>
+			<s:TextInput id="inputURL" width="100%" text="js_client.core/index.html"/>
 		</s:FormItem>
 		
 	</s:Form>
