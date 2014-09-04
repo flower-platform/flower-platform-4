@@ -20,6 +20,8 @@ import static org.flowerplatform.core.CoreConstants.RESOURCE_SET;
 import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_ADDED;
 import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_REMOVED;
 
+import java.util.List;
+
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -80,13 +82,14 @@ public class UpdateController extends AbstractController
 			// otherwise the node will reference probably the whole mindmap file, that would lead to memory leaks
 			child.setRawNodeData(null);
 			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
-			Node removedNode = (Node) context.get("removedNode");
+			@SuppressWarnings("unchecked")
+			List<ChildrenUpdate> removedNodes = (List<ChildrenUpdate>) context.get("removedNodes");
 			service.addUpdate(resourceSet, 
 						new ChildrenUpdate()
-							.setTargetNodeAs(removedNode)
+							.setTargetNodeAs(child)
+							.setRemovedNodesAs(removedNodes)
 							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
 							.setTypeAs(UPDATE_CHILD_REMOVED)
-//							.setTargetNodeAs(child)
 							.setFullNodeIdAs(node.getNodeUri()));		
 		}
 	}

@@ -19,6 +19,8 @@ import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,10 +29,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.RemoteMethodInvocationInfo;
+import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.NodeService;
@@ -52,6 +57,10 @@ public class FileSystemControllersTest {
 	public static final String FILE_SYSTEM_CONTROLLERS_DIR = "fileSystemControllers";
 	
 	public static final String DIR = TestUtil.getResourcesDir(FileSystemControllersTest.class);
+
+	private RemoteMethodInvocationInfo remoteMethodInvocationInfo;
+
+	private static RemoteMethodInvocationListener remoteMethodInvocationListener;
 	
 	private static IFileAccessController fileAccessController = new PlainFileAccessController();
 	
@@ -63,12 +72,23 @@ public class FileSystemControllersTest {
 		}
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("", createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), 
 				new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+
+		remoteMethodInvocationListener = spy(CorePlugin.getInstance().getRemoteMethodInvocationListener());
+		doReturn("dummy-session").when(remoteMethodInvocationListener).getSessionId();
+
 	}
 	
 	@Before
 	public void setUp() {
 		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
 		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
+
+		remoteMethodInvocationInfo = spy(new RemoteMethodInvocationInfo());
+		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
+		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
+		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
+		remoteMethodInvocationInfo.setMethodName("test");
+
 	}
 	
 	@Test
@@ -101,7 +121,9 @@ public class FileSystemControllersTest {
 
 		String fullNodeId = createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1");
 	        
+		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 		nodeServiceRemote.addChild(fullNodeId, context);
+		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 							 
 		Object newFile;
 		try {
@@ -121,7 +143,9 @@ public class FileSystemControllersTest {
 
 		fullNodeId = createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1");
 
+		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 		nodeServiceRemote.addChild(fullNodeId, context);
+		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 		Object newFolder;
 		try {
 			newFolder = fileAccessController.getFile(FILE_SYSTEM_CONTROLLERS_DIR + "/A/Folder1/newFolder");

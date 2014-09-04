@@ -35,7 +35,7 @@ import org.flowerplatform.util.controller.TypeDescriptor;
  */
 public class DelegateToResourceController extends AbstractController implements
 	IChildrenProvider, IParentProvider, IAddNodeController, IRemoveNodeController, 
-	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider {
+	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider, IPersistenceController {
 
 	protected String getResource(String scheme) {
 		return CoreConstants.CATEGORY_RESOURCE_PREFIX + scheme;
