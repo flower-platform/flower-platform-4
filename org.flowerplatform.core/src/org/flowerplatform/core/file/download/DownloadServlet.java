@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core.file.download;
 
+import java.io.File;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.flowerplatform.core.CorePlugin;
@@ -40,7 +42,8 @@ public class DownloadServlet extends LoadCustomFileServlet {
 			// no data to download
 			return null;
 		}
-		return FileControllerUtils.getFileAccessController().getFile(downloadInfo.getPath());
+		
+		return FileControllerUtils.getFileAccessController().getFileAsFile(new File(downloadInfo.getPath()));
 	}
 	
 }
