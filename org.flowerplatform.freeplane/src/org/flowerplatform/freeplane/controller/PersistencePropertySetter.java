@@ -16,6 +16,7 @@
 package org.flowerplatform.freeplane.controller;
 
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IPersistenceController;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyWrapper;
@@ -29,7 +30,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Cristina Constantinescu
  */
-public class PersistencePropertySetter extends AbstractController implements IPropertySetter {
+public class PersistencePropertySetter extends AbstractController implements IPropertySetter, IPersistenceController {
 
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {

@@ -148,13 +148,6 @@ public class CoreConstants {
 	 */
 	public static final String DONT_PROCESS_OTHER_CONTROLLERS = "dontProcessOtherControllers";
 	
-	/**
-	 * All controllers except the updater controllers should check this option and not execute their logic
-	 * if this option is set to true (e.g. persistence controllers should not set the <code>IS_DIRTY</code>
-	 * property, but the updater controller must register the update).
-	 */
-//	public static final String EXECUTE_ONLY_FOR_UPDATER = "executeOnlyForUpdater";
-
 	public static final String INVOKE_ONLY_CONTROLLERS_WITH_CLASSES = "invokeOnlyControllersWithClasses";
 	
 	public static final String POPULATE_WITH_PROPERTIES = "populateWithProperties";
@@ -226,6 +219,5 @@ public class CoreConstants {
 	public static final String PNG_EXTENSION = ".png";
 	
 	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
-
 	
 }

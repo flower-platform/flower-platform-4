@@ -19,6 +19,7 @@ import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.RESOURCE_SET;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.FlowerProperties;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IPersistenceController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.update.Command;
@@ -285,21 +287,32 @@ public abstract class ResourceSetService {
 	/**
 	 * @author Claudiu Matei 
 	 */
-	private void undoChildrenUpdate(ChildrenUpdate update) {
-		Node node = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
-		Node child = update.getTargetNode();
+	private void undoChildrenUpdate(ChildrenUpdate childrenUpdate) {
+		Node node = CorePlugin.getInstance().getResourceService().getNode(childrenUpdate.getFullNodeId());
+		Node child = childrenUpdate.getTargetNode();
 		NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(nodeService);
-		switch (update.getType()) {
+		context.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(IPersistenceController.class));
+		switch (childrenUpdate.getType()) {
 		case CoreConstants.UPDATE_CHILD_ADDED:
 			nodeService.removeChild(node, child, context);
 			break;
 		case CoreConstants.UPDATE_CHILD_REMOVED:
-			context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, update.getFullTargetNodeAddedBeforeId());
+			List<ChildrenUpdate> removedNodes = childrenUpdate.getRemovedNodes();
+			context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, childrenUpdate.getFullTargetNodeAddedBeforeId());
 			nodeService.addChild(node, child, context);
-			Map<String, Object> properties = child.getProperties();
-			for (String prop : properties.keySet()) {
-				nodeService.setProperty(child, prop, properties.get(prop), context);
+			context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, null);
+			for (int i = 0; i < removedNodes.size(); i++) {
+				ChildrenUpdate update = removedNodes.get(i);
+				Node removedNode = update.getTargetNode();
+				if (i > 0) {
+					Node removedNodeParent = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
+					nodeService.addChild(removedNodeParent, removedNode, context);
+				}
+				Map<String, Object> properties = removedNode.getProperties();
+				for (String prop : properties.keySet()) {
+					nodeService.setProperty(removedNode, prop, properties.get(prop), context);
+				}
 			}
 			break;
 		}
@@ -369,6 +382,7 @@ public abstract class ResourceSetService {
 	private void redoChildrenUpdate(ChildrenUpdate update) {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		context.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(IPersistenceController.class));
 		switch (update.getType()) {
 		case CoreConstants.UPDATE_CHILD_ADDED:
 			CorePlugin.getInstance().getNodeService().addChild(node, update.getTargetNode(), context);
