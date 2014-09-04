@@ -19,7 +19,8 @@ package org.flowerplatform.flex_client.codesync.regex {
 	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flex_client.codesync.regex.action.ColorTextEditorAction;
-	import org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction;
+	import org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesForAllAction;
+	import org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesForSelectionAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowGroupByRegexMatchesAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorInRightAction;
@@ -68,21 +69,26 @@ package org.flowerplatform.flex_client.codesync.regex {
 					}
 				});	
 
-			FlexUtilGlobals.getInstance().registerAction(GenerateMatchesAction);			
+			FlexUtilGlobals.getInstance().registerAction(GenerateMatchesForAllAction);			
+			FlexUtilGlobals.getInstance().registerAction(GenerateMatchesForSelectionAction);			
 			FlexUtilGlobals.getInstance().registerAction(ShowGroupByRegexMatchesAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowTextEditorAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowTextEditorInRightAction);
 			FlexUtilGlobals.getInstance().registerAction(ColorTextEditorAction);
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_CONFIG_TYPE)
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesAction.ID));
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_CONFIG_TYPE);
+				
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_TYPE);
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_MACRO_TYPE)
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesAction.ID));
-			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_TYPE)
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesAction.ID));
-			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_TECHNOLOGY_NODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesForAllAction.ID));
+
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_TEST_FILES_NODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesForAllAction.ID));
+
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_TEST_FILE_NODE_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesForSelectionAction.ID));
+
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_MATCHES_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowGroupByRegexMatchesAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowTextEditorAction.ID))

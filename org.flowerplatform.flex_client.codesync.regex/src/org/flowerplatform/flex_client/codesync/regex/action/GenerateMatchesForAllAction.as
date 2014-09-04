@@ -23,23 +23,20 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class GenerateMatchesAction extends ActionBase {
+	public class GenerateMatchesForAllAction extends ActionBase {
 		
-		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction";
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesForAllAction";
 				
-		public function GenerateMatchesAction() {
+		public function GenerateMatchesForAllAction() {
 			super();
 			preferShowOnActionBar = true;
-			label = Resources.getMessage("regex.generate");
+			label = Resources.getMessage("regex.generateForAll");
 			icon = Resources.reloadIcon;
 		}
 		
 		override public function run():void {
 			var obj:Object = selection.getItemAt(0);
-			if (obj is MindMapRootModelWrapper) {
-				obj = MindMapRootModelWrapper(obj).model;
-			}
-			CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", [Node(obj).nodeUri], null ); 
+			CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatchesForAll", [Node(obj).nodeUri], null ); 
 		}
 	}
 }
