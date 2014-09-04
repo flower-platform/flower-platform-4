@@ -26,7 +26,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 /**
  * @author Cristina Constantinescu
  */
-public class JsServiceInvocator {
+public class JsServiceInvocator implements IServiceInvocator {
 	
 	private static final String METHOD_INVOCATION_SERVICE = "/ws-dispatcher/javaClientMethodInvocationService";
 	private static final String SERVICE_DOT_METHOD_NAME = "serviceDotMethodName";

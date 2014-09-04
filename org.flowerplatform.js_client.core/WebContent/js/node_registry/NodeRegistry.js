@@ -81,7 +81,7 @@ NodeRegistry.prototype.expand = function(node, context) {
 	if (!(node.nodeUri in this.registry)) {
 		return;
 	}
-			
+	
 	var serviceContext = this.nodeRegistryManager.externalInvocator.getServiceContextInstance();
 	if (context != null) {
 		for (var key in context) {
@@ -192,10 +192,11 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 	}			
 };
 
-NodeRegistry.prototype.expandCallbackHandler = function(node, children) {			
+NodeRegistry.prototype.expandCallbackHandler = function(node, children) {		
 	if (children == null) {
 		return;
 	}	
+	
 	// register each child
 	for (var i = 0; i < children.length; i++) {	
 		this.registerNode((Object.prototype.toString.call(children) == "[object Array]") ? children[i] : children.getItemAt(i), node, -1);
@@ -325,7 +326,7 @@ NodeRegistry.prototype.registerNode = function(node, parent, index) {
 	if (this.rootNodeUri == null) {
 		this.rootNodeUri = node.nodeUri;
 	}
-			
+	
 	this.registry[node.nodeUri] = node;
 	
 	if (parent != null) {
