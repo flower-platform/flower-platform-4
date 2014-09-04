@@ -30,7 +30,7 @@ public class CodeSyncRegexConstants {
 	
 	public static final String REGEX_TYPE = "regex";
 	public static final String REGEX_ACTION_TYPE = "regexAction";
-	public static final String REGEX_MACRO_TYPE = "regexMacro";
+//	public static final String REGEX_MACRO_TYPE = "regexMacro";
 	
 	public static final String CATEGORY_REGEX = UtilConstants.CATEGORY_PREFIX + REGEX_TYPE;
 	public static final String CATEGORY_REGEX_ACTION = UtilConstants.CATEGORY_PREFIX + REGEX_ACTION_TYPE;
