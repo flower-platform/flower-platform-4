@@ -1,77 +1,49 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.freeplane.controller.xml_parser;
 
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.freeplane.FreeplaneConstants;
 import org.xml.sax.Attributes;
 
 /**
  * @author Catalin Burcea
- *
+ * @author Valentina Bojan
  */
-public class TagFullContentProcessor implements ITagProcessor {
-// TODO CS: trebuie facut sa mearga si in modul "unknown"; cred ca pentru asta ar trebui sa fie keyProperty = null
+public class TagFullContentProcessor extends AbstractTagProcessor {
 	
 	private String keyProperty;
-	private int tagIndex;
 
 	public TagFullContentProcessor(String keyProperty) {
 		this.keyProperty = keyProperty;
-		this.tagIndex = 0;
 	}
 
 	@Override
 	public void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
-		if (parser.tagFullContent_nesting == 0) {
-			// i.e. first invocation of this processor
-			parser.forcedTagProcessor = this;
-			parser.tagFullContent_tagName = getPropertyName(tag, attributes);
-			parser.tagFullContent_stringBuffer = new StringBuffer();
-			for (int i = 0; i < attributes.getLength(); i++) {
-				if (!attributes.getQName(i).equals(keyProperty)) {
-					node.getProperties().put(parser.tagFullContent_tagName + "." + attributes.getQName(i), attributes.getValue(i));
-				}
-			}
-		} else {
-			// i.e. we are here because this tag was the current "forcedTagProcessor" => record what we see
-			parser.tagFullContent_stringBuffer.append("<" + tag);
-			for (int i = 0; i < attributes.getLength(); i++) {
-				parser.tagFullContent_stringBuffer.append(" " + attributes.getQName(i) + "='" + attributes.getValue(i) + "'");
-			}
-			parser.tagFullContent_stringBuffer.append(">");
-		}
-		parser.tagFullContent_nesting++;
+		addStartContentAndAttributes(parser, tag, attributes, node, keyProperty);
 	}
 
 	@Override
 	public void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {
-		parser.tagFullContent_nesting--;
-		if (parser.tagFullContent_nesting == 0) {
-			// i.e. we have reached the end tag
-			// TODO CS: as folosi si testul pentru numele tagului; dc nu e corect => exceptie
-			node.getProperties().put(parser.tagFullContent_tagName, parser.tagFullContent_stringBuffer.toString());
-			parser.forcedTagProcessor = null;
-			parser.tagFullContent_tagName = null;
-		} else {
-			// i.e. record a tag ending
-			parser.tagFullContent_stringBuffer.append("</" + tag + ">");
+		addEndContent(parser, tag, node, keyProperty);
+		
+		// we have reached the end of an unknown tag
+		if (parser.tagFullContent_nesting == 0 && keyProperty == null){
+			String currentContent = (String) node.getProperties().get(FreeplaneConstants.UNKNOWN);
+			node.getProperties().put(FreeplaneConstants.UNKNOWN, currentContent == null ? parser.tagFullContent_stringBuffer.toString() : currentContent + parser.tagFullContent_stringBuffer.toString());
 		}
-	}
-
-	// TODO CS: de scos tagIndex; de sters metoda asta
-	private String getPropertyName(String tag, Attributes attributes) {
-		if (keyProperty == null) {
-			return tag + "." + tagIndex++;
-		}
-		String result = null;
-		for (int i = 0; i < attributes.getLength(); i++) {
-			if (attributes.getQName(i).equals(keyProperty)) {
-				result = tag + "." + attributes.getValue(i);
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public void processPlainText(XmlNodePropertiesParser parser, String plainText) {
-		parser.tagFullContent_stringBuffer.append(plainText);
 	}
 }
