@@ -5,6 +5,20 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 
+<script src="js/utils.js"></script>
+<script src="../jsHostAppConfig.js"></script>
+
+<script type="text/javascript">
+	var embed = getURLParam('embedInFlexApp');
+	if (embed == "web") {
+		document.write("<script src='js/embedInFlexApp.js'><\/script>");
+		//logger.debug('mobile');
+	} else if (embed == "mobile") {
+		document.write("<script src='js/StageWebViewBridge.js'><\/script><script src='js/embedMobile.js'><\/script>");
+		//logger.debug('not mobile');
+	}
+</script>
+
 <script src="js/angularjs/angular.js"></script>
 <script src="js/angularjs/angular-route.js"></script>
 <script src="js/angularjs/angular-resource.js"></script>
@@ -13,8 +27,6 @@
 <script src="js/controllers.js"></script>
 <script src="js/services.js"></script>
 <script src="js/app.js"></script>
-
-<script src="js/embedInFlexApp.js"></script>
 
 <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"/>
 <!-- <link rel="stylesheet" type="text/css" href="http://bootswatch.com/spacelab/bootstrap.min.css"/> -->
@@ -25,10 +37,11 @@
 
 </head>
 
-
 <body>
 
 	<a href="#/users">GOTO</a>
+
+	<button onclick="callFlexCallback('test', null, 12, 'bla')">Test</button>
 
 	<div id="content" class="container">
 		<div ng-view></div>		

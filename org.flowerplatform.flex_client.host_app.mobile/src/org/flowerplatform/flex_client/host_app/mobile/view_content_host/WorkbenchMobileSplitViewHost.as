@@ -22,12 +22,10 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.host_app.mobile.stage_web_view.StageWebView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
-	import org.flowerplatform.flexutil.iframe.EmbedView;
-	import org.flowerplatform.flexutil.iframe.EmbedViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.LayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
@@ -64,20 +62,21 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		protected function creationCompleteHandler(event:FlexEvent):void {
 //			leftActiveComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(new ViewLayoutData(ExplorerViewProvider.ID));
 			
-			FlexUtilGlobals.getInstance().workbench = this;
 			this.addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
 			this.addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			
 			showOpenEditorsCalloutButton.splitView = this;
 			
+			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
+			
 			// test for embedded StageWebView
-			var embedView:StageWebView = new StageWebView();
-			embedView.url = FlexUtilGlobals.getInstance().createAbsoluteUrl("test.html?isMobile=true");
-			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-				.setViewContent(embedView)
-				.setWidth(1200)
-				.setHeight(80)
-				.show();
+//			var embedView:StageWebView = new StageWebView();
+//			embedView.url = FlexUtilGlobals.getInstance().createAbsoluteUrl("js_client.core/index.html?isMobile=true#/users");
+//			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+//				.setViewContent(embedView)
+//				.setWidth(1200)
+//				.setHeight(80)
+//				.show();
 		}
 		
 		public function load(layoutData:Object, reuseExistingViews:Boolean = false, keepNewLayoutEditors:Boolean = false):void {
@@ -88,7 +87,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			var comp:UIComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(viewLayoutData);
 			rightActiveComponent = comp;
 			rightComponents.addItem(comp);
-			showOpenEditorsCalloutButton.addEditorFrontend(comp);
+			showOpenEditorsCalloutButton.addEditorFrontend(comp, viewLayoutData);
 			if (oneViewMode && oneViewModeLeftViewActive) {
 				oneViewModeLeftViewActive = false;
 			}

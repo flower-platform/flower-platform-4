@@ -1,11 +1,14 @@
-/**
- * Invokes a callback function on the Flex app.
- * 
- * @param callback
- * @param args
- */
-function callFlexCallback(callback /* : String */, args) /* : Function */ {
-	console.log("call flex: " + callback);
-	console.log("args: " + JSON.stringify(args));
-	parent.getFlexApp()[callback](JSON.stringify(args));
-}
+///**
+// * Invokes a callback function on the Flex app.
+// * 
+// * @param callback
+// * @param args
+// */
+//function callFlexCallback() {
+//	var flexCallback = arguments[0];
+//	var jsCallback = arguments[1];
+//	var flexArgs = Array.prototype.slice.call(arguments, 2);
+//	logger.debug("call flex: " + flexCallback);
+//	logger.debug("args: " + flexArgs);
+//	parent.getFlexApp()[flexCallback](flexArgs);
+//}

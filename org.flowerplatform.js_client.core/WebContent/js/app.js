@@ -2,9 +2,6 @@
 
 'use strict';
 
-//TODO config plugins?
-var plugins = ['js_client.users/js/app.js'];
-
 /**
  * Array of routeConfig objects.
  * 
@@ -23,48 +20,15 @@ var routesConfig = [];
 // Initialize the app.
 var flowerProject = angular.module('flowerProject', [ 'ngRoute', 'flowerControllers', 'flowerServices' ]);
 
-var scriptCache = {};
-
-/**
- * Loads the list of scripts. If all the scripts are
- * loaded successfully, then loadComplete is invoked.
- */
-var loadScripts = function(scripts, allScriptsLoadedCallback) {
-	var loaded = 0;
-	angular.forEach(scripts, function(script) {
-		if (scriptCache[script]) {
-			loaded = scriptLoadedHandler(loaded, scripts.length, allScriptsLoadedCallback);
-		} else {
-			$.getScript('../' + script)
-			.done(function() {
-				console.log('Loaded script: ' + script);
-				scriptCache[script] = true;
-				loaded = scriptLoadedHandler(loaded, scripts.length, allScriptsLoadedCallback);
-			})
-			.fail(function(jqxhr, settings, exception) {
-				console.log('Failed to load script: ' + script + ' with exception ' + exception);
-			});
-		}
-	});
-};
-
-var scriptLoadedHandler = function(loaded, all, allScriptsLoadedCallback) {
-	loaded++;
-	if (loaded == all) {
-		allScriptsLoadedCallback();
-	}
-	return loaded;
-}
-
 // Load plugins. Manually bootstrap the app after plugins are loaded.
 loadScripts(plugins, function() {
-	console.log('bootstrap');
+	logger.debug('bootstrap');
 	angular.bootstrap(document, ['flowerProject']);
 });
 
 flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', function($routeProvider, $provide, $controllerProvider) {
 
-	console.log('do config');
+	logger.debug('do config');
 	
 	// Expose lazy loading for plugins.
 	flowerProject.lazy = {
@@ -75,11 +39,11 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', funct
 	};
 	
 	var loadRouteDependencies = function($q, $rootScope, routeConfig) {
-		console.log('resolve route' + routeConfig.path);
+		logger.debug('resolve route' + routeConfig.path);
 		var deferred = $q.defer();
 		loadScripts(routeConfig.deps, function() {
 			deferred.resolve();
-			console.log('resolved');
+			logger.debug('resolved');
 		});
 		return deferred.promise;
 	};
@@ -93,7 +57,7 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', funct
 		};
 		// add route
 		$routeProvider.when(routeConfig.path, routeConfig.route);
-		console.log('route added' + routeConfig.path);
+		logger.debug('route added' + routeConfig.path);
 	});
 	
 }]);

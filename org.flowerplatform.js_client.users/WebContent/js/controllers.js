@@ -1,6 +1,6 @@
 'use strict';
 
-console.log('init user controllers');
+logger.debug('init user controllers');
 
 flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$route', 'Login', 
   	function($scope, $location, $route, Login) {
