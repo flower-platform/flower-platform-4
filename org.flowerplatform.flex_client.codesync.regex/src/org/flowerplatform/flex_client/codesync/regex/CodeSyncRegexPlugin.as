@@ -25,6 +25,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.ShowTextEditorInRightAction;
 	import org.flowerplatform.flex_client.codesync.regex.action.TestMatchesForAllAction;
+	import org.flowerplatform.flex_client.codesync.regex.action.TestMatchesForSelectionAction;
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
@@ -73,6 +74,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 			FlexUtilGlobals.getInstance().registerAction(GenerateMatchesForAllAction);			
 			FlexUtilGlobals.getInstance().registerAction(GenerateMatchesForSelectionAction);			
 			FlexUtilGlobals.getInstance().registerAction(TestMatchesForAllAction);			
+			FlexUtilGlobals.getInstance().registerAction(TestMatchesForSelectionAction);			
 			FlexUtilGlobals.getInstance().registerAction(ShowGroupByRegexMatchesAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowTextEditorAction);
 			FlexUtilGlobals.getInstance().registerAction(ShowTextEditorInRightAction);
@@ -91,7 +93,8 @@ package org.flowerplatform.flex_client.codesync.regex {
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesForAllAction.ID));
 
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_TEST_FILE_NODE_TYPE)
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesForSelectionAction.ID));
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(GenerateMatchesForSelectionAction.ID))
+			.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(TestMatchesForSelectionAction.ID));
 
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncRegexConstants.REGEX_MATCHES_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR,new ActionDescriptor(ShowGroupByRegexMatchesAction.ID))

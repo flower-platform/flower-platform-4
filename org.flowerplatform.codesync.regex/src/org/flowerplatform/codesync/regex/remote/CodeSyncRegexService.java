@@ -22,9 +22,11 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGE
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIG_FILE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MATCHES_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MODEL_TREE_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCHES_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MODEL_TREE_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_RESULT_FILES_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
@@ -310,32 +312,24 @@ public class CodeSyncRegexService {
 
 		compareResult += "Comparing match files...\n";
 		for(Node testFileNode : testFilesNodeChildren){
-			compareResult += checkTestFileNode(testFileNode);
+			compareResult += checkTestFileNodeForMatches(testFileNode);
+		}
+
+		compareResult += "\nComparing result files...\n";
+		for(Node testFileNode : testFilesNodeChildren){
+			compareResult += checkTestFileNodeForResults(testFileNode);
 		}
 
 		return compareResult;
 	}
 
 	public String testMatchesForSelection(String nodeUri) throws Exception {
-//		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
-//		String typeSpecificPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(nodeUri);
-//		int separatorIndex = typeSpecificPart.indexOf('$');
-//		String technology = typeSpecificPart.substring(separatorIndex + 1);
-//		String repo = CoreUtils.getRepoFromNodeUri(nodeUri);
-//		String compareResult = "";
-		
-//		String testFilesNodeUri = 	virtualNodeHandler.createVirtualNodeUri(repo, REGEX_TEST_FILES_NODE_TYPE, technology);
 		Node testFileNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-//		List<Node> testFilesNodeChildren = CorePlugin.getInstance().getNodeService().getChildren(testFilesNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
-
-//		compareResult += "Comparing match files...\n";
-//		compareResult += checkTestFileNode(testFileNode);
-
-		return checkTestFileNode(testFileNode);
+		return "Matches: " + checkTestFileNodeForMatches(testFileNode) + "Results: " + checkTestFileNodeForResults(testFileNode);
 	}
 
 	
-	private String checkTestFileNode(Node testFileNode){
+	private String checkTestFileNodeForMatches(Node testFileNode){
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		String typeSpecficPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(testFileNode.getNodeUri());
 		String repo = CoreUtils.getRepoFromNodeUri(testFileNode.getNodeUri());
@@ -349,10 +343,26 @@ public class CodeSyncRegexService {
 		// take the two nodes that you want to check
 		return compareNodes(matchesNode, expectedMatchesNode);
 	}
+
+	private String checkTestFileNodeForResults(Node testFileNode){
+		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
+		String typeSpecficPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(testFileNode.getNodeUri());
+		String repo = CoreUtils.getRepoFromNodeUri(testFileNode.getNodeUri());
+		
+		String modelTreeNodeUri = CoreUtils.createNodeUriWithRepo(VIRTUAL_NODE_SCHEME, repo, REGEX_MODEL_TREE_NODE_TYPE + "@" + typeSpecficPart); 
+		Node modelTreeNode = CorePlugin.getInstance().getResourceService().getNode(modelTreeNodeUri);
+
+		String expectedModelTreeNodeUri = CoreUtils.createNodeUriWithRepo(VIRTUAL_NODE_SCHEME, repo, REGEX_EXPECTED_MODEL_TREE_NODE_TYPE + "@" + typeSpecficPart);
+		Node expectedModelTreeNode = CorePlugin.getInstance().getResourceService().getNode(expectedModelTreeNodeUri);
+
+		// take the two nodes that you want to check
+		return compareNodes(modelTreeNode, expectedModelTreeNode);
+	}
+
 	
 	private String compareNodes(Node matchesNode, Node expectedMatchesNode){
 		String partialCompareResult = "	Comparing files " + getRelativePathFromUri(matchesNode.getNodeUri()) + " vs " + getRelativePathFromUri(expectedMatchesNode.getNodeUri());
-		if(recursiveCompare(matchesNode, expectedMatchesNode)){
+		if(recursiveCompare(matchesNode, expectedMatchesNode, true)){
 			partialCompareResult += " IDENTICAL\n";
 		}else{
 			partialCompareResult += " NOT THE SAME\n";
@@ -365,14 +375,14 @@ public class CodeSyncRegexService {
 		return nodeUri.substring(index + 1);
 	}
 	
-	private boolean recursiveCompare(Node matchFileNode, Node expectedMatchFileNode){
+	private boolean recursiveCompare(Node matchFileNode, Node expectedMatchFileNode, boolean firstLevel){
 		ResourceServiceRemote rsr = new ResourceServiceRemote(); 
 		rsr.subscribeToParentResource(matchFileNode.getNodeUri());
 		List<Node> matchChildren = CorePlugin.getInstance().getNodeService().getChildren(matchFileNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 		rsr.subscribeToParentResource(expectedMatchFileNode.getNodeUri());
 		List<Node> expectedMatchChildren = CorePlugin.getInstance().getNodeService().getChildren(expectedMatchFileNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 		// compare properties for current node
-		if (!compareProperties(matchFileNode, expectedMatchFileNode)) {
+		if (!firstLevel &&(!compareProperties(matchFileNode, expectedMatchFileNode))) { // firstLevel means "Matches" vs "Expected Matches"
 			return false;
 		}
 		int noOfMatchChildren = matchChildren.size();
@@ -382,7 +392,7 @@ public class CodeSyncRegexService {
 			return false;
 		}
 		for (int i = 0; i < noOfMatchChildren; i++) {
-			if (!recursiveCompare(matchChildren.get(i), expectedMatchChildren.get(i))) {
+			if (!recursiveCompare(matchChildren.get(i), expectedMatchChildren.get(i), false)) {
 				return false;
 			}
 		}
@@ -392,8 +402,9 @@ public class CodeSyncRegexService {
 	private boolean compareProperties(Node matchFileNode, Node expectedMatchFileNode){
 		// iterate through all expectedMatchFileNode's properties, including node type;
 		// look for all this properties in matchFileNode
-		Map<String, Object> expectedProperties = expectedMatchFileNode.getProperties();
-		Map<String, Object> realProperties = matchFileNode.getProperties();
+		ServiceContext<NodeService> context = new ServiceContext<>();
+		Map<String, Object> expectedProperties = expectedMatchFileNode.getOrPopulateProperties(context);
+		Map<String, Object> realProperties = matchFileNode.getOrPopulateProperties(context);
 		for (String key : expectedProperties.keySet()) {
 			Object realPropertyValue = realProperties.get(key);
 			Object expectedPropertyValue = expectedProperties.get(key);

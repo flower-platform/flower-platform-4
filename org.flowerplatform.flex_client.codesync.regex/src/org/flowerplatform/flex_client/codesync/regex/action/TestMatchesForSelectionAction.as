@@ -19,28 +19,40 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 	
 	/**
-	 * @author Elena Posea 
+	 * @author Elena Posea
 	 */
-	public class GenerateMatchesForSelectionAction extends ActionBase {
+	public class TestMatchesForSelectionAction extends ActionBase {
 		
-		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesForSelectionAction";
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.TestMatchesForSelectionAction";
 				
-		public function GenerateMatchesForSelectionAction() {
+		public function TestMatchesForSelectionAction() {
 			super();
 			preferShowOnActionBar = true;
-			label = Resources.getMessage("regex.generateForSelection");
+			label = Resources.getMessage("regex.testForSelection");
 			icon = Resources.reloadIcon;
 		}
 		
 		override public function run():void {
+			var obj:Object = selection.getItemAt(0);
 			var selectedTestFiles:IList = selection;
 			var size:int = selectedTestFiles.length;
 			for (var i:int = 0; i < size; i++) {
-				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatchesForSelection", [Node(selectedTestFiles.getItemAt(i)).nodeUri], null );
+				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.testMatchesForSelection", [Node(obj).nodeUri], 
+					function(compareResult:String):void {
+						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setWidth(700)
+						.setHeight(300)
+						.setTitle(Resources.getMessage("regex.testMatches.title"))
+						.setText(compareResult)
+						.showMessageBox();
+					} 
+				); 
 			}
+
 		}
 	}
 }
