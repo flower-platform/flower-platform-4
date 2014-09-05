@@ -255,12 +255,6 @@ public class CodeSyncRegexService {
 
 		// get text file & content
 		String testFilesFolderPath = fileController.getPath(parentFile) + "/" + REGEX_TEST_FILES_FOLDER;
-//		Object  testFile = null;
-//		try {
-//			testFile = getFileAccessController().getFile(testFilesFolderPath);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
 		parseFile(testFilesFolderPath, testFileRelativePath, resourceNode, regexConfig);
 	}
 	public void generateMatchesForAll(String nodeUri) throws Exception {
@@ -310,9 +304,8 @@ public class CodeSyncRegexService {
 		String repo = CoreUtils.getRepoFromNodeUri(nodeUri);
 		String compareResult = "";
 		
-		String testFilesNodeUri = 	CoreUtils.createNodeUriWithRepo(CoreConstants.VIRTUAL_NODE_SCHEME, repo, REGEX_TEST_FILES_NODE_TYPE + "@" + technology); //repo + "|" + REGEX_TEST_FILES_NODE_TYPE + "@" + technology;
-		Node testFilesNode = /*virtualNodeHandler.createNodeFromRawNodeData(nodeUri, rawNodeData) createVirtualNodeUri(repo, type, typeSpecificPart) */
-				CorePlugin.getInstance().getResourceService().getNode(testFilesNodeUri);
+		String testFilesNodeUri = virtualNodeHandler.createVirtualNodeUri(repo, REGEX_TEST_FILES_NODE_TYPE, technology); 
+		Node testFilesNode = CorePlugin.getInstance().getResourceService().getNode(testFilesNodeUri);
 		List<Node> testFilesNodeChildren = CorePlugin.getInstance().getNodeService().getChildren(testFilesNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 
 		compareResult += "Comparing match files...\n";
@@ -322,6 +315,25 @@ public class CodeSyncRegexService {
 
 		return compareResult;
 	}
+
+	public String testMatchesForSelection(String nodeUri) throws Exception {
+//		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
+//		String typeSpecificPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(nodeUri);
+//		int separatorIndex = typeSpecificPart.indexOf('$');
+//		String technology = typeSpecificPart.substring(separatorIndex + 1);
+//		String repo = CoreUtils.getRepoFromNodeUri(nodeUri);
+//		String compareResult = "";
+		
+//		String testFilesNodeUri = 	virtualNodeHandler.createVirtualNodeUri(repo, REGEX_TEST_FILES_NODE_TYPE, technology);
+		Node testFileNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+//		List<Node> testFilesNodeChildren = CorePlugin.getInstance().getNodeService().getChildren(testFilesNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+
+//		compareResult += "Comparing match files...\n";
+//		compareResult += checkTestFileNode(testFileNode);
+
+		return checkTestFileNode(testFileNode);
+	}
+
 	
 	private String checkTestFileNode(Node testFileNode){
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
