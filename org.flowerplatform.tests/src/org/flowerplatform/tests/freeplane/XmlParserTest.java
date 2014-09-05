@@ -23,6 +23,7 @@ import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
 import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
 import org.flowerplatform.tests.TestUtil;
 import org.junit.Test;
@@ -51,13 +52,16 @@ public class XmlParserTest {
 		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
 		handler.parseXML(xmlContent);
 		
+		XmlNodePropertiesCreator c = new XmlNodePropertiesCreator(node);
+		c.createXmlFromNodeProperties();
+		
 		assertAndRemoveProperty(node, "TEXT", "test");
 		assertAndRemoveProperty(node, "FOLDED", "false");
 		assertAndRemoveProperty(node, "CREATED", "1407493284393");
 		assertAndRemoveProperty(node, "ID", "ID_1229967238");
 		assertAndRemoveProperty(node, "MODIFIED", "1407493284393");
 		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS).HIDDEN", "true");
-		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS)", "\n\t\t<html>\n\t\t\t" + 
+		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS)_content", "\n\t\t<html>\n\t\t\t" + 
 										"<head></head>\n\t\t\t<body><p>Details .... </p></body>" +
 										"\n\t\t</html>\n\t");
 		assertAndRemoveProperty(node, "icons", Arrays.asList("yes", "checked", "password"));
@@ -68,10 +72,10 @@ public class XmlParserTest {
 		assertAndRemoveProperty(node, "font.ITALIC", "true");
 		assertAndRemoveProperty(node, "font.SIZE", "18");
 		assertAndRemoveProperty(node, "hook(NAME=FirstGroupNode)", null);
-		assertAndRemoveProperty(node, "hook(NAME=MapStyle)", "\n\t\t<map_styles>\n\t\t\t" + 
+		assertAndRemoveProperty(node, "hook(NAME=MapStyle)_content", "\n\t\t<map_styles>\n\t\t\t" + 
 										"<stylenode LOCALIZED_TEXT='styles.root_node'></stylenode>" + 
 										"\n\t\t</map_styles>\n\t");
-		assertAndRemoveProperty(node, "hook(NAME=NodeConditionalStyles)", 
+		assertAndRemoveProperty(node, "hook(NAME=NodeConditionalStyles)_content", 
 										"\n\t\t<conditional_style ACTIVE='true' STYLE_REF='TitlesContent' LAST='false'></conditional_style>" + 
 										"\n\t\t<conditional_style ACTIVE='true' STYLE_REF='BeginnerTopic' LAST='false'></conditional_style>\n\t");
 		assertAndRemoveProperty(node, "attribute(NAME=a1).VALUE", "v1");
@@ -79,7 +83,7 @@ public class XmlParserTest {
 		assertAndRemoveProperty(node, "attribute(NAME=a3).VALUE", "v3");
 		assertAndRemoveProperty(node, "unknownTag2.unknownProp1", "value1");
 		assertAndRemoveProperty(node, "unknownTag2.unknownProp2", "value2");
-		assertAndRemoveProperty(node, "unknownTag2", "\n\t\t<icon BUILTIN='password'></icon>\n\t");
+		assertAndRemoveProperty(node, "unknownTag2_content", "\n\t\t<icon BUILTIN='password'></icon>\n\t");
 		assertAndRemoveProperty(node, "unknown", "<unknownTag1 unknownProp1='value1' unknownProp2='value2'>\n\t\t" + 
 										"<node TEXT='test' ID='ID_1229967238' CREATED='1407493284393' MODIFIED='1407493284393' FOLDED='false'>" + 
 										"\n\t\t\t<richcontent TYPE='DETAILS' HIDDEN='true'>" +
@@ -95,6 +99,8 @@ public class XmlParserTest {
 		Node node = new Node(null, null);
 		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
 		handler.parseXML(xmlContent);
+		
+		
 		
 		assertAndRemoveProperty(node, "TEXT", "Node1");
 		assertAndRemoveProperty(node, "ID", "ID_93279313");
@@ -115,11 +121,11 @@ public class XmlParserTest {
 		assertAndRemoveProperty(node, "arrowlink.SHAPE", "CUBIC_CURVE");
 		assertAndRemoveProperty(node, "arrowlink.COLOR", "#000000");
 		assertAndRemoveProperty(node, "arrowlink.TRANSPARENCY", "80");
-		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS)", "\n\t\t<html><head></head><body><p>Node1_details</p></body></html>\n\t");
-		assertAndRemoveProperty(node, "richcontent(TYPE=NOTE)", "\n\t\t<html><head></head><body><p>Node1_Note</p></body></html>\n\t");
-		assertAndRemoveProperty(node, "richcontent(TYPE=NEW_TYPE)", "\n\t\t<node></node>\n\t");
+		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS)_content", "\n\t\t<html><head></head><body><p>Node1_details</p></body></html>\n\t");
+		assertAndRemoveProperty(node, "richcontent(TYPE=NOTE)_content", "\n\t\t<html><head></head><body><p>Node1_Note</p></body></html>\n\t");
+		assertAndRemoveProperty(node, "richcontent(TYPE=NEW_TYPE)_content", "\n\t\t<node></node>\n\t");
 		assertAndRemoveProperty(node, "hook(NAME=AutomaticEdgeColor).COUNTER", "4");
-		assertAndRemoveProperty(node, "hook(NAME=MapStyle)", 
+		assertAndRemoveProperty(node, "hook(NAME=MapStyle)_content", 
 										"\n\t\t<properties show_note_icons='true' show_icon_for_attributes='true'></properties>" + 
 										"\n\t\t<map_styles>\n\t\t\t<stylenode LOCALIZED_TEXT='styles.root_node'>\n\t\t\t\t" + 
 										"<stylenode LOCALIZED_TEXT='styles.predefined' POSITION='right'>\n\t\t\t\t\t" + 

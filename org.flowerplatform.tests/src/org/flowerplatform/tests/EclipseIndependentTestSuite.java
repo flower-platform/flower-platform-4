@@ -53,10 +53,10 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	CodeSyncTestSuite.class,
-	CoreTestSuite.class,
-	CommandStackTest.class,
-	FileSystemControllersTest.class,
+//	CodeSyncTestSuite.class,
+//	CoreTestSuite.class,
+//	CommandStackTest.class,
+//	FileSystemControllersTest.class,
 	XmlParserTest.class,
 //	RegexTestSuite.class
 })

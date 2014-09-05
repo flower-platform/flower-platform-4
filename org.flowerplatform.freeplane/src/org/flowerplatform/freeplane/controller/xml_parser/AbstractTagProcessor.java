@@ -91,7 +91,7 @@ public abstract class AbstractTagProcessor {
 		if (parser.tagFullContent_nesting == 0 && keyProperty != null) {
 			// i.e. the tag has content
 			if (parser.tagFullContent_stringBuffer.length() != 0) {
-					node.getProperties().put(parser.tagFullContent_tagName, parser.tagFullContent_stringBuffer.toString());
+					node.getProperties().put(parser.tagFullContent_tagName + FreeplaneConstants.CONTENT_MARK, parser.tagFullContent_stringBuffer.toString());
 			} else {
 				// i.e. <hook NAME="FreeNode"/> => no content, no attributes
 				if (!parser.tagFullContent_hasAttributes) {

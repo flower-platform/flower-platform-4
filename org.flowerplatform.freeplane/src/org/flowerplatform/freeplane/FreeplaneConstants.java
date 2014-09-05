@@ -37,4 +37,6 @@ public class FreeplaneConstants {
 	public static final String ICON_KEY_PROPERTY = "BUILTIN";
 	public static final String ATTRIBUTE_KEY_PROPERTY = "NAME";
 	public static final String ICONS = "icons";
+	
+	public static final String CONTENT_MARK = "_content";
 }
