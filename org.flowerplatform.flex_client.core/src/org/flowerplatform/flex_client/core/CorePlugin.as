@@ -33,8 +33,10 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorComposedAction;
+	import org.flowerplatform.flex_client.core.editor.action.RedoAction;
 	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
+	import org.flowerplatform.flex_client.core.editor.action.UndoAction;
 	import org.flowerplatform.flex_client.core.editor.action.UploadAction;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
@@ -128,12 +130,19 @@ package org.flowerplatform.flex_client.core {
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
-				
+
 		/**
 		 * key = command name as String (e.g. "openResources")
 		 * value = parameters as String (e.g. text://file1,file2,file3)
 		 */ 
 		public var linkHandlers:Dictionary;
+		
+		/**
+		 * @author Alina Bratu
+		 */
+		public function getCustomResourceUrl(resource:String):String {
+			return "servlet/load/" + resource;
+		}
 		
 		/**
 		 * @author Sebastian Solomon
@@ -180,6 +189,9 @@ package org.flowerplatform.flex_client.core {
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
 			
+			editorClassFactoryActionProvider.addActionClass(UndoAction);
+			editorClassFactoryActionProvider.addActionClass(RedoAction);
+			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new FlowerIFrameViewProvider());
 			
 			// check version compatibility with server side
@@ -210,7 +222,7 @@ package org.flowerplatform.flex_client.core {
 					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
-				
+
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
 					var list:ArrayCollection = ArrayCollection(result);
@@ -289,7 +301,7 @@ package org.flowerplatform.flex_client.core {
 									
 			// Navigate Menu
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID).setOrderIndex(20));
-						
+			
 			// get/follow link action
 			registerActionToGlobalMenu(new ActionBase()
 				.setLabel(Resources.getMessage("link.title"))
@@ -344,6 +356,8 @@ package org.flowerplatform.flex_client.core {
 				}));
 			
 			// Tools menu
+			globalMenuActionProvider.addAction(resourceNodesManager.showCommandStackAction);
+			
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
 			
 			// assign hot key action

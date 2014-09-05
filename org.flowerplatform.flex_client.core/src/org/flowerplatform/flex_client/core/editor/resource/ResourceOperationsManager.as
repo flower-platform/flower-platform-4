@@ -23,14 +23,15 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
+	import org.flowerplatform.flex_client.core.editor.action.ShowCommandStackAction;
 	import org.flowerplatform.flex_client.core.node.IExternalInvocator;
 	import org.flowerplatform.flex_client.core.node.IResourceOperationsHandler;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -41,6 +42,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public var saveAction:SaveAction = new SaveAction();
 		public var saveAllAction:SaveAllAction = new SaveAllAction();		
 		public var reloadAction:ReloadAction = new ReloadAction();
+		public var showCommandStackAction:ShowCommandStackAction = new ShowCommandStackAction();
 				
 		private var _nodeRegistryManager:NodeRegistryManager;
 				
@@ -64,6 +66,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				var editorFrontend:EditorFrontend = EditorFrontend(activeComponent);
 				enableDisableAction(saveAction, editorFrontend.isDirty(), editorFrontend);
 				enableDisableAction(reloadAction, true, editorFrontend);
+				enableDisableAction(showCommandStackAction, true, editorFrontend);
 			} else {
 				enableDisableAction(saveAction, false, null);
 				enableDisableAction(reloadAction, false, null);

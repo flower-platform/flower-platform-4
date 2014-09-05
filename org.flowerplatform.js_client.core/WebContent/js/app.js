@@ -41,8 +41,8 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', funct
 	var loadRouteDependencies = function($q, $rootScope, routeConfig) {
 		logger.debug('resolve route' + routeConfig.path);
 		var deferred = $q.defer();
-		loadScripts(routeConfig.deps, function() {
-			deferred.resolve();
+		loadScripts(routeConfig.deps, function($rootScope) {
+			deferred.resolve(0);
 			logger.debug('resolved');
 		});
 		return deferred.promise;

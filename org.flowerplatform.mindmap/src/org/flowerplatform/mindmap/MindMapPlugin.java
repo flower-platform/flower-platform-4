@@ -60,7 +60,9 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
+import org.flowerplatform.mindmap.remote.MindMapServiceRemote;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -84,32 +86,32 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MINDMAP_NODE_TYPE)
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER).setNameAs(MIN_WIDTH).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.min_width.title")).setCategoryAs(resourcesPlugin.getMessage("nodeShape")).setOrderIndexAs(300))
+				.setCategoryAs(resourcesPlugin.getMessage("nodeShape")).setOrderIndexAs(300))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER).setNameAs(MAX_WIDTH).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.max_width.title")).setCategoryAs(resourcesPlugin.getMessage("nodeShape")).setOrderIndexAs(310))	
+				.setCategoryAs(resourcesPlugin.getMessage("nodeShape")).setOrderIndexAs(310))	
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE).setNameAs(ICONS)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.icons")).setOrderIndexAs(-10000))	
+				.setOrderIndexAs(-10000))	
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE).setNameAs(STYLE_NAME).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.style.name")).setOrderIndexAs(-20000))	
+				.setOrderIndexAs(-20000))	
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setNameAs(FONT_FAMILY).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.font.family")).setPossibleValuesAs(Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()))
+				.setPossibleValuesAs(Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()))
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.font")).setOrderIndexAs(200))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setNameAs(FONT_SIZE).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.font.size")).setPossibleValuesAs(FONT_SIZES).setReadOnlyAs(false).setCategoryAs(resourcesPlugin.getMessage("mindmap.font")).setOrderIndexAs(210))
+				.setPossibleValuesAs(FONT_SIZES).setReadOnlyAs(false).setCategoryAs(resourcesPlugin.getMessage("mindmap.font")).setOrderIndexAs(210))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setNameAs(FONT_BOLD).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.font.bold")).setCategoryAs(resourcesPlugin.getMessage("mindmap.font")).setOrderIndexAs(220))
+				.setCategoryAs(resourcesPlugin.getMessage("mindmap.font")).setOrderIndexAs(220))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setNameAs(FONT_ITALIC).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.font.italic")).setCategoryAs(resourcesPlugin.getMessage("mindmap.font")).setOrderIndexAs(230))
+				.setCategoryAs(resourcesPlugin.getMessage("mindmap.font")).setOrderIndexAs(230))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER).setNameAs(COLOR_TEXT).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.color.text")).setCategoryAs(resourcesPlugin.getMessage("mindmap.color")).setOrderIndexAs(100))
+				.setCategoryAs(resourcesPlugin.getMessage("mindmap.color")).setOrderIndexAs(100))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER).setNameAs(COLOR_BACKGROUND).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.color.background")).setCategoryAs(resourcesPlugin.getMessage("mindmap.color")).setOrderIndexAs(110))
+				.setCategoryAs(resourcesPlugin.getMessage("mindmap.color")).setOrderIndexAs(110))
 				.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER).setNameAs(CLOUD_COLOR).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.cloud.color")).setCategoryAs(resourcesPlugin.getMessage("mindmap.cloud")).setOrderIndexAs(400))
+				.setCategoryAs(resourcesPlugin.getMessage("mindmap.cloud")).setOrderIndexAs(400))
 		// EDGE		
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_NUMBER).setNameAs(EDGE_WIDTH).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.edge.width")).setCategoryAs(resourcesPlugin.getMessage("mindmap.edges")).setOrderIndexAs(350))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTitleAs(resourcesPlugin.getMessage("mindmap.edge.style")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST)
+				.setCategoryAs(resourcesPlugin.getMessage("mindmap.edges")).setOrderIndexAs(350))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST)
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.edges")).setNameAs(EDGE_STYLE).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
 				.setPossibleValuesAs(Arrays.asList(
 						new Pair<String, String>(EDGE_SMOOTHLY_CURVED, resourcesPlugin.getMessage("mindmap.edge.smoothly.curved")), 
@@ -117,20 +119,22 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 						new Pair<String, String>(EDGE_HORIZONTAL, resourcesPlugin.getMessage("mindmap.edge.horizontal")),
 						new Pair<String, String>(EDGE_LINEAR, resourcesPlugin.getMessage("mindmap.edge.linear"))))
 				.setOrderIndexAs(360))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTitleAs(resourcesPlugin.getMessage("mindmap.edge.color")).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.edges")).setNameAs(EDGE_COLOR).setOrderIndexAs(370))
 				
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setNameAs(CLOUD_SHAPE).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
-				.setTitleAs(resourcesPlugin.getMessage("mindmap.cloud.shape"))
 				.setPossibleValuesAs(Arrays.asList(
 						new Pair<String, String>(SHAPE_NONE, resourcesPlugin.getMessage("mindmap.shape.none")), 
 						new Pair<String, String>(SHAPE_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.rectangle")), 
 						new Pair<String, String>(SHAPE_ROUND_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.roundRectangle"))))
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.cloud")).setOrderIndexAs(410))
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE).setLabelAs(resourcesPlugin.getMessage("mindmap.add")))
+		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE))
 		// lower order index to override the default title property
 		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000))
 		.addSingleController(PROPERTY_FOR_SIDE_DESCRIPTOR, new GenericValueDescriptor(SIDE));
+		
+		// register the MindMapService into the serviceRegistry in CorePlugin
+		CorePlugin.getInstance().getServiceRegistry().registerService("mindMapService", new MindMapServiceRemote());
 	}	
 	
 	public void stop(BundleContext bundleContext) throws Exception {

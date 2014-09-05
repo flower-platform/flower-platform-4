@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Write absolute path to file" basedir="../" default="default">
-	<!--
-		@see FlowerFrameworkLauncher
-	-->
-	<target name="default">
-		<echo file="WebContent/absolute-path-helper.txt">${basedir}</echo>
-	</target>
-</project>

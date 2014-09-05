@@ -128,9 +128,6 @@ package org.flowerplatform.flexutil.iframe {
 			} else if (_text) {
 				_stageWebView.loadString(_text);
 			}
-			addCallback("test", function(x:int, y:String):void {
-				trace("called from js" + x + y);
-			});
 		}
 		
 		protected function removedFromStageHandler(event:Event):void {
