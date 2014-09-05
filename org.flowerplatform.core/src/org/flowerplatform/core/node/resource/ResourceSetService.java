@@ -292,7 +292,10 @@ public abstract class ResourceSetService {
 		Node child = childrenUpdate.getTargetNode();
 		NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(nodeService);
-		context.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(IPersistenceController.class));
+
+//		TODO CM: Se pare ca trebuie apelati si alti controlleri, nu doar cei de persistenta.
+//		context.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(IPersistenceController.class));
+
 		switch (childrenUpdate.getType()) {
 		case CoreConstants.UPDATE_CHILD_ADDED:
 			nodeService.removeChild(node, child, context);

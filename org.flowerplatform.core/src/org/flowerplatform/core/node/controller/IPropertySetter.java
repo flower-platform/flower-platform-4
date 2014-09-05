@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core.node.controller;
 
+import java.util.Map;
+
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -25,7 +27,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IPropertySetter extends IController {
 	
-	public abstract void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context);
+//	public abstract void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context);
+
+	public abstract void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context);
 	
 	public abstract void unsetProperty(Node node, String property, ServiceContext<NodeService> context);
 	

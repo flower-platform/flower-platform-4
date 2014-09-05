@@ -32,7 +32,9 @@ import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -196,14 +198,22 @@ public class NodeService {
 		}
 		return parent;
 	}
-	
+
+	/**
+	 *
+	 * @author Claudiu Matei
+	 */
+	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+		setProperties(node, Collections.singletonMap(property, value), context);
+	}
+		
 	/**
 	 *
 	 * @author Cristian Spiescu
 	 * @author Cristina Constantinescu
 	 * @author Claudiu Matei
 	 */
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {		
+	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -213,18 +223,23 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 		
-		// Save value before the change
-		if (node.getOrPopulateProperties(context).containsKey(property)) {
-			Object oldValue = node.getOrPopulateProperties(context).get(property);
-			context.add(CoreConstants.OLD_VALUE, oldValue);
+		// Save values before the change
+		Map<String,Object> oldValues = new HashMap<>();
+		Map<String,Object> props = node.getOrPopulateProperties(context);
+		for (String property : properties.keySet()) {
+			if (props.containsKey(property)) {
+				Object oldValue = node.getOrPopulateProperties(context).get(property);
+				oldValues.put(property, oldValue);
+			}
 		}
+		context.add(CoreConstants.OLD_VALUES, oldValues);
 		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);		
 		for (IPropertySetter controller : controllers) {
 			if (!CoreUtils.isControllerInvokable(controller, context)) {
 				continue;
 			}
-			controller.setProperty(node, property, value, context);
+			controller.setProperties(node, properties, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
@@ -253,8 +268,10 @@ public class NodeService {
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 
 		// Save value before the change
+		Map<String,Object> oldValues = new HashMap<>();
 		Object oldValue = node.getOrPopulateProperties(context).get(property);
-		context.add(CoreConstants.OLD_VALUE, oldValue);
+		oldValues.put(property, oldValue);
+		context.add(CoreConstants.OLD_VALUES, oldValues);
 		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (IPropertySetter controller : controllers) {
