@@ -18,19 +18,15 @@ package org.flowerplatform.codesync.regex.controller;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TECHNOLOGY_NODE_TYPE;
 import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
-import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
-import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
-import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.remote.Node;

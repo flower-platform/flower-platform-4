@@ -21,11 +21,14 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_L;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIG_FILE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MATCHES_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCHES_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_RESULT_FILES_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILES_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.RESOURCE_URI;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.SHOW_GROUPED_BY_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
@@ -33,12 +36,14 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_C;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_L;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -263,7 +268,6 @@ public class CodeSyncRegexService {
 
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		String technology = virtualNodeHandler.getTypeSpecificPartFromNodeUri(nodeUri);
-//		String repo = CoreUtils.getRepoFromNodeUri(nodeUri);
 		String resourceNodeUri = new String(nodeUri);
 		resourceNodeUri = resourceNodeUri.replaceFirst(CoreConstants.VIRTUAL_NODE_SCHEME, "fpp");
 		int index = resourceNodeUri.indexOf('|');
@@ -300,6 +304,102 @@ public class CodeSyncRegexService {
 		}
 	}
 
+	public String testMatchesForAll(String nodeUri) throws Exception {
+		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
+		String technology = virtualNodeHandler.getTypeSpecificPartFromNodeUri(nodeUri);
+		String repo = CoreUtils.getRepoFromNodeUri(nodeUri);
+		String compareResult = "";
+		
+		String testFilesNodeUri = 	CoreUtils.createNodeUriWithRepo(CoreConstants.VIRTUAL_NODE_SCHEME, repo, REGEX_TEST_FILES_NODE_TYPE + "@" + technology); //repo + "|" + REGEX_TEST_FILES_NODE_TYPE + "@" + technology;
+		Node testFilesNode = /*virtualNodeHandler.createNodeFromRawNodeData(nodeUri, rawNodeData) createVirtualNodeUri(repo, type, typeSpecificPart) */
+				CorePlugin.getInstance().getResourceService().getNode(testFilesNodeUri);
+		List<Node> testFilesNodeChildren = CorePlugin.getInstance().getNodeService().getChildren(testFilesNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+
+		compareResult += "Comparing match files...\n";
+		for(Node testFileNode : testFilesNodeChildren){
+			compareResult += checkTestFileNode(testFileNode);
+		}
+
+		return compareResult;
+	}
+	
+	private String checkTestFileNode(Node testFileNode){
+		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
+		String typeSpecficPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(testFileNode.getNodeUri());
+		String repo = CoreUtils.getRepoFromNodeUri(testFileNode.getNodeUri());
+		
+		String matchesNodeUri = CoreUtils.createNodeUriWithRepo(VIRTUAL_NODE_SCHEME, repo, REGEX_MATCHES_NODE_TYPE + "@" + typeSpecficPart); 
+		Node matchesNode = CorePlugin.getInstance().getResourceService().getNode(matchesNodeUri);
+
+		String expectedMatchesNodeUri = CoreUtils.createNodeUriWithRepo(VIRTUAL_NODE_SCHEME, repo, REGEX_EXPECTED_MATCHES_NODE_TYPE + "@" + typeSpecficPart);
+		Node expectedMatchesNode = CorePlugin.getInstance().getResourceService().getNode(expectedMatchesNodeUri);
+
+		// take the two nodes that you want to check
+		return compareNodes(matchesNode, expectedMatchesNode);
+	}
+	
+	private String compareNodes(Node matchesNode, Node expectedMatchesNode){
+		String partialCompareResult = "	Comparing files " + getRelativePathFromUri(matchesNode.getNodeUri()) + " vs " + getRelativePathFromUri(expectedMatchesNode.getNodeUri());
+		if(recursiveCompare(matchesNode, expectedMatchesNode)){
+			partialCompareResult += " IDENTICAL\n";
+		}else{
+			partialCompareResult += " NOT THE SAME\n";
+		}
+		return partialCompareResult;
+	}
+	
+	private String getRelativePathFromUri(String nodeUri){
+		int index = nodeUri.indexOf('$');
+		return nodeUri.substring(index + 1);
+	}
+	
+	private boolean recursiveCompare(Node matchFileNode, Node expectedMatchFileNode){
+		ResourceServiceRemote rsr = new ResourceServiceRemote(); 
+		rsr.subscribeToParentResource(matchFileNode.getNodeUri());
+		List<Node> matchChildren = CorePlugin.getInstance().getNodeService().getChildren(matchFileNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+		rsr.subscribeToParentResource(expectedMatchFileNode.getNodeUri());
+		List<Node> expectedMatchChildren = CorePlugin.getInstance().getNodeService().getChildren(expectedMatchFileNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+		// compare properties for current node
+		if (!compareProperties(matchFileNode, expectedMatchFileNode)) {
+			return false;
+		}
+		int noOfMatchChildren = matchChildren.size();
+		int noOfExpectedMatchChildren = expectedMatchChildren.size();
+		// then compare its children
+		if (noOfMatchChildren != noOfExpectedMatchChildren) {
+			return false;
+		}
+		for (int i = 0; i < noOfMatchChildren; i++) {
+			if (!recursiveCompare(matchChildren.get(i), expectedMatchChildren.get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean compareProperties(Node matchFileNode, Node expectedMatchFileNode){
+		// iterate through all expectedMatchFileNode's properties, including node type;
+		// look for all this properties in matchFileNode
+		Map<String, Object> expectedProperties = expectedMatchFileNode.getProperties();
+		Map<String, Object> realProperties = matchFileNode.getProperties();
+		for (String key : expectedProperties.keySet()) {
+			Object realPropertyValue = realProperties.get(key);
+			Object expectedPropertyValue = expectedProperties.get(key);
+			if (realPropertyValue == null) {
+				if(expectedPropertyValue != null){
+					return false;
+				}
+				else {
+					continue;
+				}
+			}
+			if(!realPropertyValue.equals(expectedPropertyValue)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public static List<String> getTestFilesRelativeToFolder(File folder, String relativePath) {
 		Object[] files = getFileAccessController().listFiles(folder);
 		List<String> allFilesStartingWithThisFolder = new ArrayList<String>();

@@ -63,6 +63,8 @@ public class CodeSyncRegexConstants {
 
 	public static final String REGEX_MATCH_FILES_FOLDER = "match-files";
 	public static final String REGEX_RESULT_FILES_FOLDER = "result-files";
+	public static final String REGEX_EXPECTED_MATCHES_FOLDER = "expected-matches";
+	public static final String REGEX_EXPECTED_RESULTS_FOLDER = "expected-results";
 	
 	public static final String REGEX_MODEL_TREE_NODE_TYPE = "modelTree";
 	public static final String REGEX_EXPECTED_MODEL_TREE_NODE_TYPE = "expectedModelTree";

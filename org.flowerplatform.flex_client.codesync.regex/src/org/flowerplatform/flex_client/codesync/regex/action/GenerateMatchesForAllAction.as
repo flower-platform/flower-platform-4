@@ -25,7 +25,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 	 */
 	public class GenerateMatchesForAllAction extends ActionBase {
 		
-		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesForAllAction";
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.regex.action.GenerateMatchesAction";
 				
 		public function GenerateMatchesForAllAction() {
 			super();
@@ -36,6 +36,9 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 		
 		override public function run():void {
 			var obj:Object = selection.getItemAt(0);
+			if (obj is MindMapRootModelWrapper) {
+				obj = MindMapRootModelWrapper(obj).model;
+			}
 			CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatchesForAll", [Node(obj).nodeUri], null ); 
 		}
 	}

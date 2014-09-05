@@ -21,14 +21,13 @@ import static org.flowerplatform.core.CoreConstants.SUBSCRIBABLE_RESOURCES;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.controller.AbstractController;
@@ -38,11 +37,14 @@ import org.flowerplatform.util.controller.AbstractController;
  * 
  * @author Elena Posea
  */
-public class CodeSyncRegexSubscribableResourceProvider extends AbstractController implements IChildrenProvider, IPropertiesProvider {
+public abstract class CodeSyncRegexSubscribableResourceProvider extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
+	public CodeSyncRegexSubscribableResourceProvider() {
+		setOrderIndex(-10000);
+	}
+	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		node.getProperties().put(CoreConstants.NAME, "RegExes");
 		String resourceUri = getResourceUri(node);
 		String contentType = "mindmap";
 
@@ -61,7 +63,9 @@ public class CodeSyncRegexSubscribableResourceProvider extends AbstractControlle
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		Node resourceNode = CorePlugin.getInstance().getResourceService().getNode(getResourceUri(node));
+		String resourceUri = getResourceUri(node);
+		new ResourceServiceRemote().subscribeToParentResource(resourceUri);
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getNode(resourceUri);
 		return context.getService().getChildren(resourceNode, context);
 	}
 
@@ -70,11 +74,12 @@ public class CodeSyncRegexSubscribableResourceProvider extends AbstractControlle
 		return true;
 	}
 
-	protected String getResourceUri(Node node) {
-		String repo = CoreUtils.getRepoFromNode(node);
-		String specificPartTechnology = CorePlugin.getInstance().getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
-		return CoreUtils.createNodeUriWithRepo("fpp", repo, CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER + "/" + specificPartTechnology + "/"
-				+ CodeSyncRegexConstants.REGEX_CONFIG_FILE);
-		// fpp:elena/repo1|.regex-configs/ActionScript/.regex-config
-	}
+	protected abstract String getResourceUri(Node node);
+//	{
+//		String repo = CoreUtils.getRepoFromNode(node);
+//		String specificPartTechnology = CorePlugin.getInstance().getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
+//		return CoreUtils.createNodeUriWithRepo("fpp", repo, CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER + "/" + specificPartTechnology + "/"
+//				+ CodeSyncRegexConstants.REGEX_CONFIG_FILE);
+//		// fpp:elena/repo1|.regex-configs/ActionScript/.regex-config
+//	}
 }

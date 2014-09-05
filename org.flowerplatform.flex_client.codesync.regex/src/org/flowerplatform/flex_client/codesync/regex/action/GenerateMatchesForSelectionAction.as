@@ -42,9 +42,6 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			for(var i:int = 0; i < size; i++){
 				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatchesForSelection", [Node(selectedTestFiles.getItemAt(i)).nodeUri], null );
 			}
-//			for each (var file:Node in selectedTestFiles) {
-//				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatchesForSelection", [Node(file).nodeUri], null );
-//			}
 		}
 	}
 }
