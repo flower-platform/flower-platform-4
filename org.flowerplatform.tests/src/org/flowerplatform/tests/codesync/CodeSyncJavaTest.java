@@ -200,7 +200,7 @@ public class CodeSyncJavaTest {
 		// change superCls, superInterfaces
 		Node cls = getChild(root, new String[] {srcDir, SOURCE_FILE, "Test"});
 		nodeService.setProperty(cls, SUPER_CLASS, "SuperClassFromModel", new ServiceContext<NodeService>(nodeService));
-		Node superInterface = new Node(Utils.getUri(CodeSyncJavaConstants.SUPER_INTERFACE, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.SUPER_INTERFACE);
+		Node superInterface = new Node(null, CodeSyncJavaConstants.SUPER_INTERFACE);
 		nodeService.addChild(cls, superInterface, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(superInterface, CoreConstants.NAME, "IFromModel", new ServiceContext<NodeService>(nodeService));
 //		Node deprecated = getChild(cls, new String[] {"Deprecated"});
@@ -216,7 +216,7 @@ public class CodeSyncJavaTest {
 		
 		// change modifiers + annotations
 		Node test = getChild(cls, new String[] {"test(String)"});
-		Node privateModif = new Node(Utils.getUri(CodeSyncJavaConstants.MODIFIER, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.MODIFIER);
+		Node privateModif = new Node(null, CodeSyncJavaConstants.MODIFIER);
 		nodeService.addChild(test, privateModif, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(privateModif, CoreConstants.NAME, "private", new ServiceContext<NodeService>(nodeService));
 		Node publicModif = getChild(test, new String[] {"public"});
@@ -224,14 +224,14 @@ public class CodeSyncJavaTest {
 		Node a = getChild(test, new String[] {"OneToMany"});
 		Node mappedBy = getChild(a, new String[] {"mappedBy"});
 		nodeService.setProperty(mappedBy, ANNOTATION_VALUE_VALUE, "\"modified_by_model\"", new ServiceContext<NodeService>(nodeService));
-		Node orphanRemoval = new Node(Utils.getUri(CodeSyncJavaConstants.MEMBER_VALUE_PAIR, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.MEMBER_VALUE_PAIR);
+		Node orphanRemoval = new Node(null, CodeSyncJavaConstants.MEMBER_VALUE_PAIR);
 		nodeService.addChild(a, orphanRemoval, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, CoreConstants.NAME, "orphanRemoval", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(orphanRemoval, ANNOTATION_VALUE_VALUE, "true", new ServiceContext<NodeService>(nodeService));
 		
 		// change parameters
 		Node getTest = getChild(cls, new String[] {"getTest()"});
-		Node param = new Node(Utils.getUri(CodeSyncJavaConstants.PARAMETER, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.PARAMETER);
+		Node param = new Node(null, CodeSyncJavaConstants.PARAMETER);
 		nodeService.addChild(getTest, param, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(param, CoreConstants.NAME, "a", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(param, TYPED_ELEMENT_TYPE, "int", new ServiceContext<NodeService>(nodeService));
@@ -261,12 +261,12 @@ public class CodeSyncJavaTest {
 ////				CodeSyncCodePlugin.getInstance().getUtils().setModifiers(op, modifiers);
 
 		// add element
-		Node t = new Node(Utils.getUri(CodeSyncJavaConstants.ATTRIBUTE, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.ATTRIBUTE);
+		Node t = new Node(null, CodeSyncJavaConstants.ATTRIBUTE);
 		nodeService.addChild(cls, t, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(t, CoreConstants.NAME, "t", new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(t, TYPED_ELEMENT_TYPE, "int", new ServiceContext<NodeService>(nodeService));
 //		nodeService.setProperty(t, DOCUMENTATION, "doc from model @author test");
-		publicModif = new Node(Utils.getUri(CodeSyncJavaConstants.MODIFIER, Utils.getSchemeSpecificPart(root.getNodeUri()), null), CodeSyncJavaConstants.MODIFIER);
+		publicModif = new Node(null, CodeSyncJavaConstants.MODIFIER);
 		nodeService.addChild(t, publicModif, new ServiceContext<NodeService>(nodeService));
 		nodeService.setProperty(publicModif, CoreConstants.NAME, "public", new ServiceContext<NodeService>(nodeService));
 		

@@ -15,11 +15,12 @@
  */
 package org.flowerplatform.core.node.resource;
 
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES;
 import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
 import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
+import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Utils;
@@ -183,7 +185,7 @@ public abstract class ResourceService implements IResourceHolder {
 				resourceNode, 
 				IS_DIRTY, 
 				resourceHandler.isDirty(resourceData),
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 
 	public void reload(String resourceUri, ServiceContext<ResourceService> context) {
@@ -205,7 +207,7 @@ public abstract class ResourceService implements IResourceHolder {
 				resourceNode, 
 				IS_DIRTY, 
 				resourceHandler.isDirty(resourceData),
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 	
 	public boolean isDirty(String nodeUri, ServiceContext<ResourceService> serviceContext) {

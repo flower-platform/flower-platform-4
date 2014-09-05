@@ -57,8 +57,7 @@ import org.osgi.framework.BundleContext;
 	CoreTestSuite.class,
 	CommandStackTest.class,
 	FileSystemControllersTest.class,
-	XmlParserTest.class,
-//	RegexTestSuite.class
+	XmlParserTest.class
 })
 public class EclipseIndependentTestSuite {
 	
@@ -70,8 +69,8 @@ public class EclipseIndependentTestSuite {
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		// populate from web.xml in the servlet container
-		FrameworkProperties.getProperties().put("osgi.instance.area", WORKSPACE_LOCATION);
+		// populated from FlowerFrameworkLauncher in the servlet container
+		FrameworkProperties.getProperties().put("FLOWER_PLATFORM_HOME", new File("").getAbsolutePath());
 		
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
