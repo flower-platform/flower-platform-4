@@ -92,6 +92,11 @@ package org.flowerplatform.flex_client.core.editor.remote {
 			return properties[property];		
 		}
 		
+		/**
+		 * We need to override the standard serialization mechanism, in order to wrap the 
+		 * <code>properties</code> map with an <code>ObjectProxy</code> (i.e. that dispatches
+		 * <code>PropertyChangedEvent</code>s.
+		 */
 		public function readExternal(input:IDataInput):void { 
 			type = input.readObject() as String; 
 			nodeUri = input.readObject() as String;
@@ -99,9 +104,7 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		} 
 		
 		public function writeExternal(output:IDataOutput):void { 
-			output.writeObject(type); 
-			output.writeObject(nodeUri); 
-			output.writeObject(ObjectProxy(properties).object); 
+			throw new Error("A Node object cannot come from the client. It can only be served by the server to clients");
 		} 
 		
 		public function toString():String {

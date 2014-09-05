@@ -33,6 +33,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			super();
 			label = Resources.getMessage("flex_client.team.git.action.deleteGitRepository");
 			icon = Resources.deleteIcon;
+			orderIndex = 515;
 		}
 		
 		override public function get visible():Boolean {
@@ -49,8 +50,8 @@ package org.flowerplatform.flex_client.team.git.action {
 			deleteGitRepoView.repoNode = node;
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 				.setViewContent(deleteGitRepoView)
-				.setWidth(650)
-				.setHeight(200)
+				.setWidth(450)
+				.setHeight(150)
 				.setTitle(label)
 				.setIcon(icon)
 				.show();

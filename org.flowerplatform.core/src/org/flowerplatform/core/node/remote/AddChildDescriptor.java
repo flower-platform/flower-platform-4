@@ -15,8 +15,10 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * Used to register client-side Add actions for a node type.
@@ -30,7 +32,7 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 	private String label;
 	
 	private String icon;
-	
+
 	public String getChildType() {
 		return childType;
 	}
@@ -74,7 +76,18 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		setOrderIndex(orderIndex);
 		return this;
 	}
-	
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
+		super.setTypeDescriptor(typeDescriptor);
+		if (label == null) {
+			label = ResourcesPlugin.getInstance().getLabelForNodeType(childType);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return String.format("AddChildDescriptor [childType = %s, label = %s, orderIndex = %d]", 
