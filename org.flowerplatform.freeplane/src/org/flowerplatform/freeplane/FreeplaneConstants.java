@@ -31,6 +31,7 @@ public class FreeplaneConstants {
 	public static final String RICHCONTENT = "richcontent";
 	public static final String ATTRIBUTE = "attribute";
 	public static final String UNKNOWN = "unknown";
+	public static final String NODE = "node";
 	public static final String HOOK_KEY_PROPERTY = "NAME";
 	public static final String RICHCONTENT_KEY_PROPERTY = "TYPE";
 	public static final String ICON_KEY_PROPERTY = "BUILTIN";

@@ -16,6 +16,7 @@
 package org.flowerplatform.freeplane.controller.xml_parser;
 
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.freeplane.FreeplaneConstants;
 import org.xml.sax.Attributes;
 
 /**
@@ -36,6 +37,11 @@ public abstract class AbstractTagProcessor {
 		// first invocation of this processor for a well-known tag
 		if (parser.tagFullContent_nesting == 0 && keyProperty != null) {
 			parser.forcedTagProcessor = this;
+			
+			// check the current tag is <node> => exception for nested node tags (our node is a single node => no children)
+			if (tag.equals(FreeplaneConstants.NODE)) {
+				throw new RuntimeException("'Nested node tags' exception for Single Node");
+			}
 			
 			// check for duplicates tags; if there is any duplicate => assign this type of tag to a specific processor
 			if (parser.convertAllAttributes_processedXmlTags.contains(tag)) {
