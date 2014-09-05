@@ -82,7 +82,7 @@ public class UpdateController extends AbstractController
 				resourceSet = resourceNode.getNodeUri();
 			}
 			// otherwise the node will reference probably the whole mindmap file, that would lead to memory leaks
-			child.setRawNodeData(null);
+//			child.setRawNodeData(null);
 			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
 			@SuppressWarnings("unchecked")
 			List<ChildrenUpdate> removedNodes = (List<ChildrenUpdate>) context.get("removedNodes");

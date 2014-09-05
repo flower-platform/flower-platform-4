@@ -1,20 +1,7 @@
-<configuration>
-
-	<!--
-	######################################################################################
-		General configuration
-	######################################################################################
-	-->
+<included>
+	
 	<jmxConfigurator />
 	
-	<!--
-	######################################################################################
-		Appenders
-	######################################################################################
-	-->
-	
-	<include resource="logback_appenders.xml"/>
-
 	<!-- Disable logging the ping() method invocation -->
 	<property scope="context" name="logNodeServicePingInvocation" value="false" />
 
@@ -66,15 +53,26 @@
 		</encoder>		
 	</appender> 
 	-->
-		
+	
 	<!--
 	######################################################################################
-		Loggers
+		Appenders
 	######################################################################################
 	-->
 	
-	<root level="all">		
-		<appender-ref ref="STDOUT" />		
-	</root>
+	<conversionRule conversionWord="flowerHighlight" converterClass="org.flowerplatform.util.log.LogUtil$FlowerHighlightingCompositeConverter" />
+	<conversionRule conversionWord="flowerHighlightDefaultYellow" converterClass="org.flowerplatform.util.log.LogUtil$FlowerHighlightingCompositeConverterDefaultYellow" />
+		
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%flowerHighlight(%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg	[%mdc]%n)</pattern>
+		</encoder>
+	</appender>
 	
-</configuration>
+	<appender name="STDOUT_YELLOW" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%flowerHighlightDefaultYellow(%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg	[%mdc]%n)</pattern>
+		</encoder>
+	</appender>
+	
+</included>

@@ -19,6 +19,7 @@ import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
@@ -31,6 +32,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -70,6 +72,9 @@ public class FileSystemControllersTest {
 			// initialize in case this test is run alone
 			EclipseIndependentTestSuite.beforeClass();
 		}
+		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
+		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
+		
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("", createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), 
 				new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 
@@ -93,21 +98,40 @@ public class FileSystemControllersTest {
 	
 	@Test
 	public void testGetChildren() {
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "B"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/file1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1/oneFile"), FILE_NODE_TYPE)));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2/oneFolder"), FILE_NODE_TYPE)));
+	}
+	
+	/**
+	 * Test if lists contain the same elements. Order does not matter.
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	private void assertEqualsLists(List<Node> actual, List<Node> expected) {
+		assertEquals(expected.size(), actual.size());
+		for (Node node : expected) {
+			if (!actual.contains(node)) {
+				fail("Expected node not found: " + node);
+			}
+		}
+		for (Node node : actual) {
+			if (!expected.contains(node)) {
+				fail("Node not expected: " + node);
+			}
+		}
 	}
 	
 	@Test
