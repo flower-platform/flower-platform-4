@@ -100,7 +100,7 @@ public class CommandStackTest {
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Command> commands = resourceSetService.getCommands(resourceNodeUri);
-		assertEquals("There is one command in the scommand stack", 1, commands.size());
+		assertEquals("There is one command in the command stack", 1, commands.size());
 		List<Update> updates = resourceSetService.getCommandUpdates(commands.get(0));
 		assertEquals("There are 2 updates for the command", 2, updates.size());
 
