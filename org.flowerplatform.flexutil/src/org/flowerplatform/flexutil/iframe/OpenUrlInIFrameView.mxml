@@ -22,7 +22,7 @@
 	
 	<s:Form width="100%" height="100%">
 		<s:FormItem label="URL">
-			<s:TextInput id="inputURL" width="100%" creationComplete="{callLater(inputURL.setFocus)}" />
+			<s:TextInput id="inputURL" width="100%" creationComplete="{callLater(inputURL.setFocus)}" enter="okHandler(event)" />
 		</s:FormItem>
 	</s:Form>
 	
