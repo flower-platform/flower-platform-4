@@ -31,6 +31,7 @@
 		   <![CDATA[
 			   import mx.core.FlexGlobals;
 			   import mx.events.FlexEvent;
+			   import mx.events.ResizeEvent;
 			   
 			   import spark.components.Alert;
 			   
@@ -48,6 +49,10 @@
 			   private var _rootModel:Object;
 			   [Bindable]
 			   protected var selectedItem:SampleMindMapModel;
+			   
+			   protected static const DEFAULT_COLOR_WHITE:uint = 0xFFFFFFFF;
+			   
+			   protected static const DEFAULT_COLOR_BLACK:uint = 0x000000;
 			   
 			   [Bindable]
 			   public function get rootModel():Object {
@@ -101,10 +106,19 @@
 					   color = uint (value);
 				   } 
 				   else {
-					   Alert.show("That's not a suitable value!");
-				   }
-				   toolTip = "toolTip=Type the uint value you want (e.g.:0xFF0000 or 65535)"
+					  if (color == selectedItem.textColor) {
+						  return DEFAULT_COLOR_BLACK;
+					  } else {
+						  return DEFAULT_COLOR_WHITE;
+					  }
+					}
 				   return uint(value);
+			   }
+			   
+			   protected function vgroup1_resizeHandler(event:ResizeEvent):void
+			   {
+				   // TODO Auto-generated method stub
+				   
 			   }
 			   
 		   ]]>
@@ -116,7 +130,8 @@
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>	
-			<s:VGroup width="40%" clipAndEnableScrolling="true">
+		<s:Scroller width="100%" height="100%">
+			<s:VGroup width="100%" clipAndEnableScrolling="true">
 				
 				<s:Panel id="listofChildrenPanel" visible="false" width="100%"
 						 title="List of children for selected node's parent">
@@ -170,20 +185,16 @@
 						<s:FormItem label="Text Color:">
 							<s:TextInput id="textInputTextColor" width="100%" text="{selectedItem.textColor}"/>
 							<s:HGroup>
-								<s:Graphic toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)">
-									<s:BitmapImage source="@Embed('../icons/info.png')"/>
-								</s:Graphic> 
 								<s:Button id="changeTextColor" label="Change" click="onColorChange(textInputTextColor.text, selectedItem.textColor); selectedItem.textColor = onColorChange(textInputTextColor.text, selectedItem.textColor)"/>
+								<s:Button id="changeTextColorToolTip" label="Tooltip" click="Alert.show('Type the uint value you want (e.g.:0xFF0000 or 65535)');"/>
 							</s:HGroup>
 						</s:FormItem>
 						
 						<s:FormItem label="Background Color:">
 							<s:TextInput id="textInputBackgroundColor" width="100%" text="{selectedItem.background}"/>
 							<s:HGroup>
-								<s:Graphic toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)">
-									<s:BitmapImage source="@Embed('../icons/info.png')"/>
-								</s:Graphic> 
 								<s:Button id="changeBackgroundColor" label="Change" click="onColorChange(textInputBackgroundColor.text, selectedItem.background); selectedItem.background = onColorChange(textInputBackgroundColor.text, selectedItem.background)"/>
+								<s:Button id="changeBackgroundColorToolTip" label="Tooltip" click="Alert.show('Type the uint value you want (e.g.:0xFF0000 or 65535)');"/>
 							</s:HGroup>
 						</s:FormItem>
 						
@@ -192,20 +203,16 @@
 							<s:TextInput id="iconsTextInput" width="100%"
 										 text="{selectedItem.icons.toArray().join()}"/>  
 							<s:HGroup>
-								<s:Graphic toolTip="Type the names of the icons you want to add (separated ONLY by a comma)             &#xd;Example of icons:             &#xd;-&gt; family.png            &#xd;-&gt; bee.png            &#xd;-&gt; group.png            &#xd;-&gt; wizard.png            &#xd;-&gt; smiley-angry.png            &#xd;-&gt; bookmark.png                        &#xd;            &#xd;Example of list: bee.png,penguin.png,family.png,wizard.png">
-									<s:BitmapImage source="@Embed('../icons/info.png')"/>
-								</s:Graphic> 
 								<s:Button id="changeIconsButton" label="Change" click="onIconChange()"/>
+								<s:Button id="changeIcon" label="Tooltip" click="Alert.show('Type the names of the icons you want to add (separated ONLY by a comma)\n\n Example of icons:\n ->family.png\n ->bee.png\n ->group.png\n ->wizard.png\n  ->smiley-angry.png\n ->bookmark.png\n\n Example of list: bee.png,penguin.png,family.png,wizard.png');"/>
 							</s:HGroup>
 						</s:FormItem>
 						
 						<s:FormItem label="Cloud Color:">
 							<s:TextInput id="textInputCloudColor" width="100%" text="{selectedItem.cloudColor}"/>
 							<s:HGroup>
-								<s:Graphic toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)">
-									<s:BitmapImage source="@Embed('../icons/info.png')"/>
-								</s:Graphic> 
 								<s:Button id="changeCloudColor" label="Change" click="onColorChange(textInputCloudColor.text, selectedItem.cloudColor); selectedItem.cloudColor = onColorChange(textInputCloudColor.text, selectedItem.cloudColor)" toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)"/>
+								<s:Button id="changeCloudColorToolTip" label="Tooltip" click="Alert.show('Type the uint value you want (e.g.:0xFF0000 or 65535)');"/>
 							</s:HGroup>
 						</s:FormItem>
 						
@@ -231,8 +238,8 @@
 				</s:Panel>
 				
 			</s:VGroup>
+		</s:Scroller>
 		
-	
 	   <infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%" >
 		   <m:MindMapDiagramRenderer id="diagramRenderer" width="100%" height="100%" />			   
 	   </infinitegroup:InfiniteScroller>

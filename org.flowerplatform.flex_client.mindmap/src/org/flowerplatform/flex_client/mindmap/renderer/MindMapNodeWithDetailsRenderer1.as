@@ -33,12 +33,6 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	 */ 
 	public class MindMapNodeWithDetailsRenderer1 extends AbstractMindMapNodeWithDetailsRenderer {
 		
-		override protected function createEmbeddedRenderer():void {
-			embeddedRenderer = new MindMapNodeRenderer2();
-			embeddedRenderer.percentWidth = 100;
-			embeddedRenderer.addEventListener(FlexEvent.INITIALIZE, nodeRendererInitialized);
-		}
-		
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
 				setDetailsGroupVisibile(true);
@@ -90,6 +84,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					details = data.getPropertyValue(MindMapConstants.NODE_DETAILS);
 				}
 			}
+		}
+		
+		override protected function createEmbeddedRenderer():void {
+			embeddedRenderer = new MindMapNodeRenderer2();
+			embeddedRenderer.percentWidth = 100;
+			embeddedRenderer.addEventListener(FlexEvent.INITIALIZE, nodeRendererInitialized);
 		}
 		
 		protected function get node():Node {

@@ -46,7 +46,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public static const arrowUpIcon:Class;
 		
 		[Embed(source="../icons/arrowDown.png")]
-		public static const arrowDownIcon:Class;				
+		public static const arrowDownIcon:Class;
+		
 		/**************************************************************************
 		 * Graphic properties supported by this renderer.
 		 *************************************************************************/

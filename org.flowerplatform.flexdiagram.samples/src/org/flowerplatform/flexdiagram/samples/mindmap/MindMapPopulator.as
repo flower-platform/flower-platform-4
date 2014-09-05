@@ -107,7 +107,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 		protected static function getMindMapModel(parent:Object):SampleMindMapModel {
 			text = "mm";
 			var model:SampleMindMapModel = new SampleMindMapModel();
-			var number:Number = Math.random() * 20;
+			var number:Number = Math.random() * 50;
 			for (var i:int = 0; i < number; i++) {
 				text += "**";	
 			}
