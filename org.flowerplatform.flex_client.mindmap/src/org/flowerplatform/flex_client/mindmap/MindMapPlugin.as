@@ -39,7 +39,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer1;
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer2;
-	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer1;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeSelectionRenderer;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
@@ -96,7 +95,6 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new NodeAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NodeDragController())
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSelectionController(NodeSelectionRenderer))
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(MindMapNodeWithDetailsRenderer1))
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(MindMapNodeRenderer2))
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
 			

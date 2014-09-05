@@ -50,12 +50,14 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected static const FONT_STYLE_DEFAULT:String = "SansSerif";
 		
+		protected static const SCREEN_DPI:Number = (Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72;
+		
 		public static const CLOUD_TYPE_NONE:String = "cloudTypeNone";
 		
 		public static const CLOUD_TYPE_RECTANGLE:String = "cloudTypeRectangle";
 		
 		public static const CLOUD_TYPE_ROUNDED_RECTANGLE:String = "cloudTypeRoundedRectangle";
-		
+				
 		protected var _label:FocusableRichText;
 		
 		protected var backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
@@ -79,18 +81,16 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public function set fontFamily(value:String):void {
 			if (value == null) {
-				_label.setStyle("fontFamily", Utils.getSupportedFontFamily(FONT_STYLE_DEFAULT));
-			} else {
-				_label.setStyle("fontFamily", Utils.getSupportedFontFamily(value));
+				value = FONT_STYLE_DEFAULT;
 			}
+			_label.setStyle("fontFamily", Utils.getSupportedFontFamily(value));
 		}
 		
 		public function set fontSize(value:Number):void {
 			if (value == 0) {
-				_label.setStyle("fontSize", ((Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72) * 9);	
-			} else {
-				_label.setStyle("fontSize", ((Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72) * value);
-			}
+				value = 9;
+			} 
+			_label.setStyle("fontSize", (SCREEN_DPI * value));
 		}
 		
 		public function set fontWeight(value:Boolean):void {
@@ -103,18 +103,15 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public function set textColor(value:uint):void {
 			if (value == 0) {
-				_label.setStyle("color", TEXT_COLOR_DEFAULT);
-			} else {
-				_label.setStyle("color", value);
-			}
+			} 
+			_label.setStyle("color", value);
 		}
 		
 		public function set background(value:uint):void {
 			if (value == 0) {
-				background = BACKGROUND_COLOR_DEFAULT;
-			} else {
-				backgroundColor = value;
+				value = BACKGROUND_COLOR_DEFAULT;
 			}
+			backgroundColor = value;
 		}
 		
 		public function set cloudColor(value:uint):void {
@@ -123,7 +120,17 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		public function set cloudType(value:String):void {
-			_cloudType = value; 
+			switch (value) {
+				case "No shape": 
+					_cloudType = CLOUD_TYPE_NONE;
+					break;
+				case "Rectangle shape": 
+					_cloudType = CLOUD_TYPE_RECTANGLE;
+					break;
+				case "Rounded rectangle shape": 
+					_cloudType = CLOUD_TYPE_ROUNDED_RECTANGLE;
+					break;
+			}
 			invalidateDisplayList();
 		}
 		
@@ -247,7 +254,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * recalculates data in the dynamic object.
 		 */
 		protected function modelChangedHandler(event:PropertyChangeEvent):void {
-			throw new Error("This method needs to be implemented.");
 		}
 		
 		override protected function createChildren():void {
@@ -282,6 +288,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				var expandedWidthRight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidthRight");
 				var expandedHeightLeft:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeightLeft");
 				var expandedHeightRight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeightRight");
+				var additionalPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
 				
 				if (side == MindMapDiagramShell.POSITION_LEFT) {
 					shapeX -= (expandedWidth - width);
@@ -289,7 +296,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				
 				if (side == MindMapDiagramShell.POSITION_CENTER) {
 					shapeX -= expandedWidthLeft - width;
-					shapeY = - diagramShell.getDeltaBetweenExpandedHeightMaxAndHeight(diagramShellContext, data, true)/2;
+					shapeY = - (Math.max(expandedHeightLeft, expandedHeightRight) - height - additionalPadding)/2;
 					shapeWidth = expandedWidthLeft + expandedWidthRight - width; 
 					shapeHeight = Math.max(expandedHeightLeft, expandedHeightRight);
 				}
@@ -346,69 +353,29 @@ package org.flowerplatform.flexdiagram.mindmap {
 			for (var i:Number = 0; i < _icons.length; i++) {
 				var iconDisplay:BitmapImage = new BitmapImage();
 				iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-				iconDisplay.source =FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));// FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying("../../org.flowerplatform.flexdiagram.samples/icons/" + _icons.getItemAt(i));
+				iconDisplay.source =FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
 				iconDisplay.verticalAlign = "middle";
 				iconDisplay.depth = UIComponent(this).depth;
 				addElementAt(iconDisplay, i);
 				}
 			}*/ 
-			var i:Number;
-			var j:Number;
 			var iconDisplay:BitmapImage;
-			var deleted:Boolean;
-			
-			if (_icons == null) {
-				while (getElementAt(0) is BitmapImage) {
-					removeElementAt(0);
-				}
-			} else {
-				var n:int = 0;
-				while (getElementAt(n) is BitmapImage) {
-					n++;
-				}	//number of icons displayed at this moment
-				if (n == 0) {
-					for (i = 0; i <_icons.length; i++) {
+			if (_icons != null) {
+				for (var i:Number = 0; i < _icons.length; i++) {
+					if (getElementAt(i) is BitmapImage) {
+						iconDisplay = BitmapImage (getElementAt(i));
+						iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
+					} else {
 						iconDisplay = new BitmapImage();
 						iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-						iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
+						iconDisplay.source =FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
 						iconDisplay.verticalAlign = "middle";
 						iconDisplay.depth = UIComponent(this).depth;
 						addElementAt(iconDisplay, i);
 					}
-				} else {
-					for (i = 0; i < Math.min(n,_icons.length); i++) {
-						if (getElementAt(i) != _icons.getItemAt(i)) {
-							while (getElementAt(i) is BitmapImage) {
-								removeElementAt(i);
-							}
-							for (j = i; j < Math.min(n,_icons.length); j++) {
-								iconDisplay = new BitmapImage();
-								iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-								iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j));
-								iconDisplay.verticalAlign = "middle";
-								iconDisplay.depth = UIComponent(this).depth;
-								addElementAt(iconDisplay, j);
-							}
-							break;
-							deleted = true;
-						}
-					}
-					if (n >= _icons.length) {
-						if (deleted == false) {
-							while (getElementAt(_icons.length) is BitmapImage) {
-								removeElementAt(_icons.length);	
-							}
-						}
-					} else {
-						for (i = n; i < _icons.length; i++) {
-							iconDisplay = new BitmapImage();
-							iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-							iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(j)); 
-							iconDisplay.verticalAlign = "middle";
-							iconDisplay.depth = UIComponent(this).depth;
-							addElementAt(iconDisplay, i);
-						}	
-					}
+				}
+				while (getElementAt(_icons.length) is BitmapImage) {
+					removeElementAt(_icons.length);
 				}
 			}
 		}

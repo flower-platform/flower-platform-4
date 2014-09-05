@@ -24,12 +24,15 @@
 		   xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*" xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*" 
 		   xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*"
 		   xmlns:m="org.flowerplatform.flexdiagram.mindmap.*"
-		   creationComplete="creationCompleteHandler(event)">
+		   click="clickHandler(event)"
+		   creationComplete="creationCompleteHandler(event)"
+		   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
 	   <fx:Script>
 		   <![CDATA[
-			   import mx.collections.ArrayCollection;
 			   import mx.core.FlexGlobals;
 			   import mx.events.FlexEvent;
+			   
+			   import spark.components.Alert;
 			   
 			   import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			   import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
@@ -41,9 +44,20 @@
 			   import org.flowerplatform.flexdiagram.tool.ZoomTool;
 			   import org.flowerplatform.flexutil.FactoryWithInitialization;
 			   
+			   
+			   private var _rootModel:Object;
 			   [Bindable]
 			   protected var selectedItem:SampleMindMapModel;
-			   			   
+			   
+			   [Bindable]
+			   public function get rootModel():Object {
+				   return _rootModel;
+			   }
+			   
+			   public function set rootModel(value:Object):void {
+				   _rootModel = value;				
+			   }
+			   
 			   protected function creationCompleteHandler(event:FlexEvent):void {
 				   MindMapPopulator.populateRootModel(IModelHolder(FlexGlobals.topLevelApplication));
 				   
@@ -55,6 +69,7 @@
 
 				   MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {FlexGlobals.topLevelApplication.rootModel.expanded = true});
 			   }
+			   
 			   /**
 				* @author Alexandra Topoloaga
 				*/
@@ -81,6 +96,16 @@
 				   selectedItem.icons = new ArrayCollection(iconsTextInput.text.split(","));
 			   }
 			   
+			   public function onColorChange(value:String, color:uint):uint {
+				   if (value != '' && uint(value) != 0) {
+					   color = uint (value);
+				   } 
+				   else {
+					   Alert.show("That's not a suitable value!");
+				   }
+				   toolTip = "toolTip=Type the uint value you want (e.g.:0xFF0000 or 65535)"
+				   return uint(value);
+			   }
 			   
 		   ]]>
 	   </fx:Script>
@@ -88,99 +113,125 @@
 		   <mindmap:SampleMindMapDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}" rootModel="{FlexGlobals.topLevelApplication.rootModel}"/>
 	   </fx:Declarations>
 	
-	<s:layout>
-		<s:HorizontalLayout/>
-	</s:layout>	
-	
-	<s:VGroup width="40%">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>	
+			<s:VGroup width="40%" clipAndEnableScrolling="true">
+				
+				<s:Panel id="listofChildrenPanel" visible="false" width="100%"
+						 title="List of children for selected node's parent">
+					<s:List id="childrenProviderList" width="100%" borderVisible="false"
+							dataProvider="{selectedItem.parent.children}"
+							itemRenderer="org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer"
+							/>
+				</s:Panel>
+				
+				
+				<s:Panel id="formPanel" visible="false" width="100%" title="Properties Editor">
+					<s:Form id="propertiesForm" visible="false" width="100%">
+						<s:layout>
+							<s:FormLayout id="fromLayout" gap="-7"/>
+						</s:layout>
+						
+						<s:FormItem label="Text:">
+							<s:TextInput width="100%" text="@{selectedItem.text}"/>
+						</s:FormItem>
+						
+						<s:FormItem label="Font Family:">
+							<s:DropDownList width="100%" selectedItem="@{selectedItem.fontFamily}"> 
+								<s:ArrayCollection>
+									<fx:String>Arial</fx:String>
+									<fx:String>Courier New</fx:String>
+									<fx:String>Dialog</fx:String>
+									<fx:String>DialogInput</fx:String>
+									<fx:String>Lucida Sans</fx:String>
+									<fx:String>Lucida Sans Typewriter</fx:String>
+									<fx:String>Monospaced</fx:String>
+									<fx:String>SansSerif</fx:String>
+									<fx:String>Serif</fx:String>
+									<fx:String>Times New Roman</fx:String>
+								</s:ArrayCollection>
+							</s:DropDownList>
+						</s:FormItem>
+						
+						<s:FormItem label="Font Size:">
+							<s:TextInput id="textInputFontSize" width="100%" change="onFontSizeChange()"
+										 text="{selectedItem.fontSize}"/>
+						</s:FormItem>
+						
+						<s:FormItem label="Font Bold:">
+							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontWeight}"/> 
+						</s:FormItem>
+						
+						<s:FormItem label="Font Italic:">
+							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontStyle}"/>
+						</s:FormItem>
+						
+						<s:FormItem label="Text Color:">
+							<s:TextInput id="textInputTextColor" width="100%" text="{selectedItem.textColor}"/>
+							<s:HGroup>
+								<s:Graphic toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)">
+									<s:BitmapImage source="@Embed('../icons/info.png')"/>
+								</s:Graphic> 
+								<s:Button id="changeTextColor" label="Change" click="onColorChange(textInputTextColor.text, selectedItem.textColor); selectedItem.textColor = onColorChange(textInputTextColor.text, selectedItem.textColor)"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						<s:FormItem label="Background Color:">
+							<s:TextInput id="textInputBackgroundColor" width="100%" text="{selectedItem.background}"/>
+							<s:HGroup>
+								<s:Graphic toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)">
+									<s:BitmapImage source="@Embed('../icons/info.png')"/>
+								</s:Graphic> 
+								<s:Button id="changeBackgroundColor" label="Change" click="onColorChange(textInputBackgroundColor.text, selectedItem.background); selectedItem.background = onColorChange(textInputBackgroundColor.text, selectedItem.background)"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						
+						<s:FormItem label="Icons:">
+							<s:TextInput id="iconsTextInput" width="100%"
+										 text="{selectedItem.icons.toArray().join()}"/>  
+							<s:HGroup>
+								<s:Graphic toolTip="Type the names of the icons you want to add (separated ONLY by a comma)             &#xd;Example of icons:             &#xd;-&gt; family.png            &#xd;-&gt; bee.png            &#xd;-&gt; group.png            &#xd;-&gt; wizard.png            &#xd;-&gt; smiley-angry.png            &#xd;-&gt; bookmark.png                        &#xd;            &#xd;Example of list: bee.png,penguin.png,family.png,wizard.png">
+									<s:BitmapImage source="@Embed('../icons/info.png')"/>
+								</s:Graphic> 
+								<s:Button id="changeIconsButton" label="Change" click="onIconChange()"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						<s:FormItem label="Cloud Color:">
+							<s:TextInput id="textInputCloudColor" width="100%" text="{selectedItem.cloudColor}"/>
+							<s:HGroup>
+								<s:Graphic toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)">
+									<s:BitmapImage source="@Embed('../icons/info.png')"/>
+								</s:Graphic> 
+								<s:Button id="changeCloudColor" label="Change" click="onColorChange(textInputCloudColor.text, selectedItem.cloudColor); selectedItem.cloudColor = onColorChange(textInputCloudColor.text, selectedItem.cloudColor)" toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
+							<s:DropDownList width="100%" selectedItem="@{selectedItem.cloudType}"> 
+								<s:ArrayCollection>
+									<fx:String>No shape</fx:String>
+									<fx:String>Rectangle shape</fx:String>
+									<fx:String>Rounded rectangle shape</fx:String>
+								</s:ArrayCollection>
+							</s:DropDownList>
+						</s:FormItem>
+						
+						<s:FormItem id="noteInputForm" label="Note:">
+							<s:TextInput width="100%" text="@{selectedItem.note}"/>
+						</s:FormItem>
+						
+						<s:FormItem id="detailsInputForm" label="Details:">
+							<s:TextInput width="100%" text="@{selectedItem.details}"/>
+						</s:FormItem>
+						
+					</s:Form>	
+				</s:Panel>
+				
+			</s:VGroup>
 		
-		<s:Panel id="listofChildrenPanel" visible="false" width="100%"
-				 title="List of children for selected node's parent">
-			<s:List id="childrenProviderList" width="100%" borderVisible="false"
-					dataProvider="{selectedItem.parent.children}"
-					itemRenderer="org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer"
-					/>
-		</s:Panel>
-		
-		
-		<s:Panel id="formPanel" visible="false" width="100%" title="Properties Editor">
-			<s:Form id="propertiesForm" visible="false">
-				<s:layout>
-					<s:FormLayout id="fromLayout" gap="-7"/>
-				</s:layout>
-				
-				<s:FormItem label="Text:">
-					<s:TextInput width="180" text="@{selectedItem.text}"/>
-				</s:FormItem>
-				
-				<s:FormItem label="Font Family:">
-					<s:DropDownList width="180" selectedItem="@{selectedItem.fontFamily}"> 
-						<s:ArrayCollection>
-							<fx:String>Arial</fx:String>
-							<fx:String>Courier New</fx:String>
-							<fx:String>Dialog</fx:String>
-							<fx:String>DialogInput</fx:String>
-							<fx:String>Lucida Sans</fx:String>
-							<fx:String>Lucida Sans Typewriter</fx:String>
-							<fx:String>Monospaced</fx:String>
-							<fx:String>SansSerif</fx:String>
-							<fx:String>Serif</fx:String>
-							<fx:String>Times New Roman</fx:String>
-						</s:ArrayCollection>
-					</s:DropDownList>
-				</s:FormItem>
-				
-				<s:FormItem label="Font Size:">
-					<s:TextInput id="textInputFontSize" width="180" change="onFontSizeChange()"
-								 text="{selectedItem.fontSize}"/>
-				</s:FormItem>
-				
-				<s:FormItem label="Font Bold:">
-					<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontWeight}"/> 
-				</s:FormItem>
-				
-				<s:FormItem label="Font Italic:">
-					<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontStyle}"/>
-				</s:FormItem>
-				
-				<s:FormItem label="Text Color:">
-				<!--	<s:TextInput id="textColorPicker" text="{selectedItem.textColor}" change="onColorChange()"/> -->
-				</s:FormItem>
-				
-				<s:FormItem label="Background Color:">
-					<!--	<s:TextInput id="backgroundColorPicker" text="@{selectedItem.background}"/> -->
-				</s:FormItem>
-				
-				
-				<s:FormItem label="Icons:">
-					<s:TextInput id="iconsTextInput" width="180"
-								 text="{selectedItem.icons.toArray().join()}"/>  
-					<s:HGroup>
-						<s:Graphic toolTip="Type the names of the icons you want to add (separated ONLY by a comma)             &#xd;Example of icons:             &#xd;-&gt; family.png            &#xd;-&gt; bee.png            &#xd;-&gt; group.png            &#xd;-&gt; wizard.png            &#xd;-&gt; smiley-angry.png            &#xd;-&gt; bookmark.png                        &#xd;            &#xd;Example of list: bee.png,penguin.png,family.png,wizard.png">
-							<s:BitmapImage source="@Embed('../icons/info.png')"/>
-						</s:Graphic> 
-						<s:Button id="changeIconsButton" label="Change" click="onIconChange()"/>
-					</s:HGroup>
-				</s:FormItem>
-				
-				<s:FormItem id="cloudColorPickerForm" label="Cloud Color:">
-					<!--	<s:TextInput id="cloudColorPicker" text="@{selectedItem.cloudColor}"/> -->
-				</s:FormItem>
-				
-				<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
-					<s:DropDownList width="180" selectedItem="@{selectedItem.cloudType}"> 
-						<s:ArrayCollection>
-							<fx:String>No shape</fx:String>
-							<fx:String>Rectangle shape</fx:String>
-							<fx:String>Rounded rectangle shape</fx:String>
-						</s:ArrayCollection>
-					</s:DropDownList>
-				</s:FormItem>
-				
-			</s:Form>	
-		</s:Panel>
-		
-	</s:VGroup>
 	
 	   <infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%" >
 		   <m:MindMapDiagramRenderer id="diagramRenderer" width="100%" height="100%" />			   

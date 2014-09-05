@@ -258,26 +258,5 @@ package org.flowerplatform.flexdiagram.mindmap {
 			// (used when we want to calculate the first child position)
 			return expandedHeight - height - (!addAdditionalPaddingIfNecessary ? additionalPadding : 0);			
 		}
-		
-		/**
-		 * @author Alexandra Topoloaga
-		 */
-		public function getDeltaBetweenExpandedHeightMaxAndHeight(context:DiagramShellContext, model:Object, preventNegativeValues:Boolean = false, addAdditionalPaddingIfNecessary:Boolean = true):Number {
-			var dynamicObject:Object = getDynamicObject(context, model);
-			
-			var additionalPadding:Number = getPropertyValue(context, model, "additionalPadding", dynamicObject);			
-			var expandedHeightMax:Number = Math.max(getPropertyValue(context, model, "expandedHeightLeft", dynamicObject), getPropertyValue(context, model, "expandedHeightRight", dynamicObject));
-			var height:Number = getPropertyValue(context, model, "height", dynamicObject);
-			
-			if ((preventNegativeValues && expandedHeightMax < height) || expandedHeightMax == 0) {
-				// expandedHeight is smaller than height and we don't want negative values OR expandedHeght is 0 (model isn't expanded) -> return only the additional delta
-				return addAdditionalPaddingIfNecessary ? additionalPadding : 0;
-			}
-			
-			// expandedHeight exists (model is expanded) -> return delta between expandedHeight and height and, based on addAdditionalPaddingIfNecessary, remove additional padding
-			// (used when we want to calculate the first child position)
-			return expandedHeightMax - height - (!addAdditionalPaddingIfNecessary ? additionalPadding : 0);			
-		}
-		
 	}
 }

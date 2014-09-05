@@ -36,10 +36,12 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			rootModel.children.addItem(getMindMapModel(rootModel));
 			rootModel.children.addItem(getMindMapModel(rootModel));
 			rootModel.expanded = true;
+			rootModel.note = "rootModelNote";
+			rootModel.details = "rootModelDetails";
 			
 			var child2:SampleMindMapModel = getMindMapModel(rootModel);	
 			child2.side = MindMapDiagramShell.POSITION_LEFT; 
-			for (var i:int = 0; i < 10; i++) {
+			for (var i:int = 0; i < 40; i++) {
 				child2.children.addItem(getMindMapModel(child2));
 			}
 			child2.children.addItem(getMindMapModel(child2));	
@@ -82,6 +84,13 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			child111.hasChildren = true;
 			child11.children.addItem(child111);	
 			
+			var child3:SampleMindMapModel = getMindMapModel(rootModel);	
+			child3.side = MindMapDiagramShell.POSITION_RIGHT;
+			child3.children.addItem(getMindMapModel(child3));
+			child3.hasChildren = true;
+			child3.parent = rootModel;				
+			rootModel.children.addItem(child3);	
+			
 			modelHolder.rootModel = rootModel;
 		}
 		
@@ -89,16 +98,20 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 		 * @author Alexandra Topoloaga
 		 */
 		private static var currentModel:int;
+		private static var text:String = "Mm";
 		
 		/**
 		 * @author Cristina Constantinescu
 		 * @author Alexandra Topoloaga
 		 */
-		private static function getMindMapModel(parent:Object):SampleMindMapModel {
-			var model:SampleMindMapModel;
-			
-			model = new SampleMindMapModel();
-			model.text = "MindMap" + currentModel++;
+		protected static function getMindMapModel(parent:Object):SampleMindMapModel {
+			text = "mm";
+			var model:SampleMindMapModel = new SampleMindMapModel();
+			var number:Number = Math.random() * 20;
+			for (var i:int = 0; i < number; i++) {
+				text += "**";	
+			}
+			model.text = text + currentModel++;
 			//			model.width = 151;
 			//			model.height = 22;
 			model.hasChildren = false;

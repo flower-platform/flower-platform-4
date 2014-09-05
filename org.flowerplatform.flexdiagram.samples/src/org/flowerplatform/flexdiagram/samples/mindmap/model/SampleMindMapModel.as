@@ -19,6 +19,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 	
 	/**
 	 * @author Cristina Constantinescu
+	 * @author Alexandra Topoloaga
 	 */
 	[Bindable]
 	public class SampleMindMapModel {
@@ -44,5 +45,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var cloudType:String;
 		
 		public var icons:IList;
+		
+		public var note:String;
+		public var details:String;
 	}	
 }
