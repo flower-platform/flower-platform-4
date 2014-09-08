@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * @author Cristi
@@ -70,7 +71,7 @@ public class TestUtil {
 //				projectName = projectName.substring(1);
 //			}
 //			
-			File to = new File(getWorkspaceResourceAbsolutePath("") + "/" + projectName);
+			File to = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + projectName);
 			if (from != null) {
 				FileUtils.copyDirectory(new File(from), to);
 			} else {
@@ -109,7 +110,16 @@ public class TestUtil {
 			throw new RuntimeException("Cannot copy files/create project needed for test", e);
 		}
 	}
-	
+
+	public static void copyFiles(String from, String dir) {
+		File to = new File("workspace", dir);
+		try {
+			FileUtils.copyDirectory(new File(from), to);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot copy files needed for test", e);
+		}
+	}
+
 	/**
 	 * Copied from http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file
 	 */

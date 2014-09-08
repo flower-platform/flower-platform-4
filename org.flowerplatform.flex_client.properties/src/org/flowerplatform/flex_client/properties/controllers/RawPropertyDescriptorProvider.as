@@ -55,7 +55,7 @@ package org.flowerplatform.flex_client.properties.controllers {
 			pd.type = type;
 			pd.name = property;		
 			pd.category = Resources.getMessage("raw.properties");		
-			pd.orderIndex = int.MAX_VALUE;
+			pd.orderIndex = (property == "nodeUri" ? int.MAX_VALUE - 1 : int.MAX_VALUE);
 			return pd;			
 		}		
 		

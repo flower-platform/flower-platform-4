@@ -123,10 +123,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				// set the type for the new node; needed by the action performed handler
 				String type = correspondingModelAdapterSet.getType(correspondingChild, codeSyncAlgorithm);
 				
-				String scheme = Utils.getScheme(parentNode.getNodeUri());
-				String ssp = Utils.getSchemeSpecificPart(parentNode.getNodeUri());
-				String childUri = Utils.getUri(scheme, ssp, null);
-				Node child = new Node(childUri, type);
+				Node child = new Node(null, type);
 				ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 				context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);
 				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, context);

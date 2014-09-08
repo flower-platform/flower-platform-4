@@ -11,7 +11,6 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.remote.GitBranch"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.GitConstants"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.DeleteBranchAction"/>
-    <classEntry path="org.flowerplatform.flex_client.team.git.action.GitStagingAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.EditRefSpecView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureRemoteView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.RenameBranchView"/>

@@ -33,6 +33,9 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
+import org.flowerplatform.tests.controllers.FileSystemControllersTest;
+import org.flowerplatform.tests.core.CommandStackTest;
+import org.flowerplatform.tests.core.CoreTestSuite;
 import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
@@ -49,10 +52,10 @@ import org.osgi.framework.BundleContext;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	CodeSyncTestSuite.class,
-	JsClientJavaTestSuite.class,
-//	FileSystemControllersTest.class
-	
-//	RegexTestSuite.class
+	FileSystemControllersTest.class,
+	CommandStackTest.class,
+	CoreTestSuite.class,
+	JsClientJavaTestSuite.class
 })
 public class EclipseIndependentTestSuite {
 	
@@ -64,8 +67,8 @@ public class EclipseIndependentTestSuite {
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		// populate from web.xml in the servlet container
-		FrameworkProperties.getProperties().put("osgi.instance.area", WORKSPACE_LOCATION);
+		// populated from FlowerFrameworkLauncher in the servlet container
+		FrameworkProperties.getProperties().put("FLOWER_PLATFORM_HOME", new File("").getAbsolutePath());
 		
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
