@@ -22,7 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	EclipseIndependentTestSuite.class,
-	EclipseDependentTestSuite.class
+	//EclipseDependentTestSuite.class
 })
 public class AllTestSuite {
 
