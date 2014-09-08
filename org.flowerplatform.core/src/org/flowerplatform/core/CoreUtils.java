@@ -31,7 +31,9 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
+import org.flowerplatform.util.controller.IController;
 
 /**
  * @author Mariana Gheorghe
@@ -92,7 +94,7 @@ public class CoreUtils {
 			addFileToZip(path, srcFolder, zip, true);
 		} else {			
 			for (String fileName : folder.list()) {
-				if (folder.equals(new File(CorePlugin.getInstance().getWorkspaceLocation())) && CoreConstants.METADATA.equals(fileName)) {
+				if (folder.equals(new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE)) && CoreConstants.METADATA.equals(fileName)) {
 					continue;
 				}
 				if (path.equals("")) {
@@ -173,5 +175,14 @@ public class CoreUtils {
 		}
 		return ssp.substring(index + 1);
 	}
-	
+
+	public static boolean isControllerInvokable(IController controller, ServiceContext<?> context) {
+		@SuppressWarnings("unchecked")
+		List<Class<?>> invokeOnlyControllersWithClasses = (List<Class<?>>)context.get(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES);
+		if (invokeOnlyControllersWithClasses == null) return true;
+		for (Class<?> marker : invokeOnlyControllersWithClasses) {
+			if (marker.isInstance(controller)) return true;
+		}
+		return false;
+	}
 }

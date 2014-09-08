@@ -19,8 +19,8 @@ import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.HAS_CHILDREN;
+import static org.flowerplatform.core.CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES;
 import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
 import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
 import org.flowerplatform.core.node.controller.IDefaultPropertyValueProvider;
@@ -47,6 +48,8 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.update.controller.UpdateController;
+import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -90,6 +93,9 @@ public class NodeService {
 		List<Node> children = null;
 		// we ask each registered provider for children
 		for (IChildrenProvider provider : providers) {
+			if (!CoreUtils.isControllerInvokable(provider, context)) {
+				continue;
+			}
 			// we take the children ...
 			List<Node> childrenFromCurrentProvider = provider.getChildren(node, context);
 			if (childrenFromCurrentProvider != null) {
@@ -125,6 +131,9 @@ public class NodeService {
 		}
 		List<IChildrenProvider> childrenProviders = descriptor.getAdditiveControllers(CHILDREN_PROVIDER, node);
 		for (IChildrenProvider provider : childrenProviders) {
+			if (!CoreUtils.isControllerInvokable(provider, context)) {
+				continue;
+			}
  			if (provider.hasChildren(node, context)) {
 				return true;
 			}
@@ -146,6 +155,9 @@ public class NodeService {
 		List<IDefaultPropertyValueProvider> defaultPropertyProviders = descriptor.getAdditiveControllers(DEFAULT_PROPERTY_PROVIDER, node);
 		Object propertyValue = null;
 		for (IDefaultPropertyValueProvider provider : defaultPropertyProviders) {
+			if (!CoreUtils.isControllerInvokable(provider, context)) {
+				continue;
+			}
 			propertyValue = provider.getDefaultValue(node, property, context);
  			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
  				break;
@@ -175,6 +187,9 @@ public class NodeService {
 		}
 		
 		IParentProvider provider = descriptor.getSingleController(PARENT_PROVIDER, node);
+		if (!CoreUtils.isControllerInvokable(provider, context)) {
+			return null;
+		}
 		Node parent = provider.getParent(node, context);
 		if (parent == null) {
 			return null;
@@ -206,6 +221,9 @@ public class NodeService {
 		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);		
 		for (IPropertySetter controller : controllers) {
+			if (!CoreUtils.isControllerInvokable(controller, context)) {
+				continue;
+			}
 			controller.setProperty(node, property, value, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -217,7 +235,7 @@ public class NodeService {
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
 	}
 
@@ -240,6 +258,9 @@ public class NodeService {
 		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (IPropertySetter controller : controllers) {
+			if (!CoreUtils.isControllerInvokable(controller, context)) {
+				continue;
+			}
 			controller.unsetProperty(node, property, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -251,7 +272,7 @@ public class NodeService {
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
 	}
 	
@@ -267,6 +288,9 @@ public class NodeService {
 				
 		List<IAddNodeController> controllers = descriptor.getAdditiveControllers(ADD_NODE_CONTROLLER, node);
 		for (IAddNodeController controller : controllers) {
+			if (!CoreUtils.isControllerInvokable(controller, context)) {
+				continue;
+			}
 			controller.addNode(node, child, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -278,40 +302,40 @@ public class NodeService {
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+	}
+	
+	private void removeChildDFS(Node node, Node child, ArrayList<ChildrenUpdate> removedNodes) {
+		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
+		removedNode.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		ChildrenUpdate update = new ChildrenUpdate();
+		update.setFullNodeId(node.getNodeUri());
+		update.setTargetNode(removedNode);
+		removedNodes.add(update);
+		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		for (Node grandChild : grandChildren) {
+			removeChildDFS(child, grandChild, removedNodes);
+		}
 	}
 	
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
-		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, context);
-		if (context.get("parentNode") == null) {
-			context.add("parentNode", node);
-		}
-		for (int i = grandChildren.size() - 1; i >= 0; i--) {
-			Node grandChild = grandChildren.get(i);
-			removeChild(child, grandChild, context);
-		}
-		
+
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
 
-		// Save full child in context; used for undo
-		// TODO CS: cred ca il putem folosi pe child direct; si cred ca nu mai trebuie pus in cotext
-		Node removedNode = CorePlugin.getInstance().getResourceService().getNode(child.getNodeUri());
-		removedNode.getOrPopulateProperties(context);
-		// TODO CS: ar trebui sa fie constante; sa trecem prin modif metodei astea; la o privire rapida nu inteleg
-		context.add("removedNode", removedNode);
-
+		ArrayList<ChildrenUpdate> removedNodes = new ArrayList<>();
+		removeChildDFS(node, child, removedNodes);
+		context.add("removedNodes", removedNodes);
+		
 		// Find next sibbling and save it for undo of position
-		if (context.get("parentNode")==node) {
-			List<Node> sibblings = getChildren(node, context);
-			int childIndex = sibblings.indexOf(child);
-			if (childIndex < sibblings.size() - 1) {
-				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, sibblings.get(childIndex + 1).getNodeUri());
-			}
+		List<Node> sibblings = getChildren(node, context);
+		int childIndex = sibblings.indexOf(child);
+		if (childIndex < sibblings.size() - 1) {
+			context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, sibblings.get(childIndex + 1).getNodeUri());
 		}
 
 		// resourceNode can be modified after this operation, so store current dirty state before executing controllers
@@ -321,6 +345,9 @@ public class NodeService {
 		child.getOrPopulateProperties(context);
 		List<IRemoveNodeController> controllers = descriptor.getAdditiveControllers(REMOVE_NODE_CONTROLLER, node);
 		for (IRemoveNodeController controller : controllers) {
+			if (!CoreUtils.isControllerInvokable(controller, context)) {
+				continue;
+			}
 			controller.removeNode(node, child, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
@@ -332,9 +359,9 @@ public class NodeService {
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(EXECUTE_ONLY_FOR_UPDATER, true));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 	
 	/**
@@ -348,6 +375,9 @@ public class NodeService {
 					
 		List<IPropertiesProvider> providers = descriptor.getAdditiveControllers(PROPERTIES_PROVIDER, node);		
 		for (IPropertiesProvider provider : providers) {
+			if (!CoreUtils.isControllerInvokable(provider, context)) {
+				continue;
+			}
 			provider.populateWithProperties(node, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
