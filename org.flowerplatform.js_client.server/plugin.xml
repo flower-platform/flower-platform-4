@@ -2,6 +2,13 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.equinox.http.registry.filters">
+      <filter
+            alias="/js_client.core"
+            class="org.flowerplatform.js_client.server.LoginFilter">
+      </filter>
+   </extension>
+   <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/ws-dispatcher"
@@ -10,6 +17,13 @@
                name="javax.ws.rs.Application"
                value="org.flowerplatform.js_client.server.WebServicesConfig">
          </init-param>
+      </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/authenticate/loginUser"
+            class="org.flowerplatform.js_client.server.UserValidatorServlet">
       </servlet>
    </extension>
 </plugin>

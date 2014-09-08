@@ -40,4 +40,25 @@
             </filters>
         </target>
     </logging>
+    
+    <security>
+		<!-- This object will be responsible for authorization and authentication 
+			on server side. -->
+		<login-command class="org.flowerplatform.flex_client.server.blazeds.FlowerLoginCommand"
+			server="all">
+			<!-- Based on this property, multiple users can be logged into the system, 
+				using the same browser and more tabs. If true when opening a new tab, the 
+				session is not shared with the other tab. More informations can be found 
+				at http://livedocs.adobe.com/blazeds/1/blazeds_devguide/help.html?content=services_security_5.html 
+				We keep it true because otherwise logging out from a tab made also a logout 
+				on a different tab in the same browser. -->
+			<per-client-authentication>false</per-client-authentication>
+		</login-command>
+		<security-constraint id="tomcatSecurityConstraint">
+			<!-- The Custom value is used in order to use the Flex's application authentication 
+				and not the Browser's authentication. More details in http://livedocs.adobe.com/blazeds/1/blazeds_devguide/help.html?content=services_security_2.html. -->
+			<auth-method>Custom</auth-method>
+		</security-constraint>
+	</security>	
+	
 </services-config>

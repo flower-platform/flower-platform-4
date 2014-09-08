@@ -14,11 +14,13 @@
  * license-end
  */
 package org.flowerplatform.flex_client.web {
+	import flash.display.DisplayObject;
 	import flash.events.EventDispatcher;
 	import flash.external.ExternalInterface;
 	
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
+	import mx.managers.PopUpManager;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -55,8 +57,20 @@ package org.flowerplatform.flex_client.web {
 		}
 		
 		override public function start():void {
+			// TODO VB: Show login popup if no user authenticated or enter main application.
 			super.start();
 			
+			// TODO VB: Make sure that the user is not already logged in.
+			if (CorePlugin.getInstance().channelSet.authenticated == false) {
+				var loginForm:LoginForm = new LoginForm();
+				PopUpManager.addPopUp(loginForm, DisplayObject(FlexGlobals.topLevelApplication), true);
+				PopUpManager.centerPopUp(loginForm);
+			} else {
+				enterApplication();
+			}
+		}
+		
+		public function enterApplication():void {	
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			
