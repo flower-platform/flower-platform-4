@@ -16,6 +16,7 @@
 package org.flowerplatform.tests.js_client.java;
 
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
+import org.flowerplatform.tests.core.NodeRegistryScriptTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -26,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	JsClientNodeRegistryTest.class,
+	NodeRegistryScriptTest.class
 })
 public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {
 		

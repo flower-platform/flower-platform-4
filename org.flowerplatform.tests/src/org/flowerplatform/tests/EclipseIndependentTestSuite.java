@@ -48,7 +48,7 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	CodeSyncTestSuite.class,
+//	CodeSyncTestSuite.class,
 	JsClientJavaTestSuite.class,
 //	FileSystemControllersTest.class
 	
