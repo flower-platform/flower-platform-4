@@ -162,7 +162,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexes.root")))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(REGEX_TYPE).setIconAs(ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new RegexConfigurationProcessor());
-
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TYPE)
 			.addCategory(CATEGORY_REGEX)
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
@@ -340,10 +340,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(CHILDREN_PROVIDER, new VirtualRegexChildrenProvider());
 	
 		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(VIRTUAL_REGEX_TYPE);
-
 	}
-	
-	
 
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);

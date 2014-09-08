@@ -15,7 +15,7 @@
  */
 package org.flowerplatform.freeplane.controller;
 
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
+import static org.flowerplatform.core.CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES;
 import static org.flowerplatform.core.CoreConstants.PNG_EXTENSION;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.CLOUD_SHAPE;
@@ -42,6 +42,7 @@ import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyWrapper;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.StylePropertyWrapper;
+import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.mindmap.MindMapConstants;
 import org.freeplane.core.util.ColorUtils;
 import org.freeplane.features.cloud.CloudModel;
@@ -84,9 +86,6 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 	
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		boolean isPropertySet = false;
@@ -295,11 +294,11 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (addAdditionalSetPropertyUpdatesFor != null) {
 			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {				
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).entrySet()) {
-					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}	 
 			} else {
 				for (String entry : addAdditionalSetPropertyUpdatesFor) {
-					context.getService().setProperty(node, entry, node.getPropertyValue(entry), new ServiceContext<NodeService>(context.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+					context.getService().setProperty(node, entry, node.getPropertyValue(entry), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}
 			}
 		}
@@ -307,9 +306,6 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 	
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> serviceContext) {
-		if (serviceContext.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
 		
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
@@ -396,11 +392,11 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (addAdditionalUnsetPropertyUpdatesFor != null) {
 			if (addAdditionalUnsetPropertyUpdatesFor.isEmpty()) {
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(serviceContext.getService())).entrySet()) {
-					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}	 
 			} else {
 				for (String entry : addAdditionalUnsetPropertyUpdatesFor) {
-					serviceContext.getService().unsetProperty(node, entry, new ServiceContext<NodeService>(serviceContext.getService()).add(EXECUTE_ONLY_FOR_UPDATER, true));
+					serviceContext.getService().unsetProperty(node, entry, new ServiceContext<NodeService>(serviceContext.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}
 			}
 		}

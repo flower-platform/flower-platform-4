@@ -41,7 +41,7 @@ import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.eclipse.jgit.util.FS;
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
@@ -71,7 +71,7 @@ public class GitUtils {
 
 		if (fac.exists(file)) {
 			while (file != null) {
-				if (FilenameUtils.getName(CorePlugin.getInstance().getWorkspaceLocation()).equals(fac.getName(file))) {
+				if (FilenameUtils.getName(CoreConstants.FLOWER_PLATFORM_WORKSPACE).equals(fac.getName(file))) {
 					return null;
 				}
 				try {

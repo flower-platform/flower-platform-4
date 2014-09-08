@@ -16,6 +16,7 @@
 package org.flowerplatform.freeplane.controller;
 
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IPersistenceController;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -27,7 +28,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Cristina Constantinescu
  */
-public class PersistencePropertiesProvider extends AbstractController implements IPropertiesProvider {
+public class PersistencePropertiesProvider extends AbstractController implements IPropertiesProvider, IPersistenceController {
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {

@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.CoreConstants;
 
 /**
  * @author Cristina Constantinescu
@@ -192,7 +192,7 @@ public class PlainFileAccessController implements IFileAccessController {
 	 */
 	@Override
 	public String getPath(Object file) {
-		return getPathRelativeToFile((File) file, new File(CorePlugin.getInstance().getWorkspaceLocation()));
+		return getPathRelativeToFile((File) file, new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE));
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class PlainFileAccessController implements IFileAccessController {
 	@Override
 	public Object getFile(String path) throws Exception {
 		// path == null -> path to workspace location
-		return new File(CorePlugin.getInstance().getWorkspaceLocation(), path == null ? "" : path);
+		return new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE, path == null ? "" : path);
 	}
 	
 	@Override

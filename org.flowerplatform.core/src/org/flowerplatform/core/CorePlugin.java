@@ -17,8 +17,9 @@ package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.CATEGORY_CONFIG_SETTINGS;
 import static org.flowerplatform.core.CoreConstants.CONFIG_SETTING_DISABLED;
+import static org.flowerplatform.core.CoreConstants.DEFAULT_LOG_PATH;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
-import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.LOGBACK_CONFIG_FILE;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
@@ -26,17 +27,17 @@ import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 
+import java.io.File;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -66,12 +67,16 @@ import org.flowerplatform.core.repository.RootPropertiesProvider;
 import org.flowerplatform.core.session.ComposedSessionListener;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.core.session.SessionService;
-import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.flowerplatform.util.servlet.ServletUtils;
 import org.osgi.framework.BundleContext;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
  * @author Cristian Spiescu
@@ -235,28 +240,33 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	}
 
 	/**
-	 * @return workspace location from OSGI property
-	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Cristina Brinza
 	 */
-	public String getWorkspaceLocation() {
-		String location = FrameworkProperties.getProperty("osgi.instance.area");
-		
-		// if property value starts with "file:", remove it
-		if (location.startsWith("file:")) {
-			location = location.substring("file:".length());
-		}
-		return location;
-	}
-	
 	public String getCustomResourceUrl(String resource) {
 		return CoreConstants.LOAD_FILE_SERVLET + "/" + resource;
 	}
 	
 	public CorePlugin() {
 		super();
-			    
+
 		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP, PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP));
 		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));	
+	
+		String customLogPath = CoreConstants.FLOWER_PLATFORM_HOME + LOGBACK_CONFIG_FILE; 
+		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		try {
+			JoranConfigurator configurator = new JoranConfigurator();
+			configurator.setContext(loggerContext);
+			loggerContext.reset();
+			if (new File(customLogPath).exists()) {
+				configurator.doConfigure(customLogPath);
+			} else {
+				configurator.doConfigure(this.getClass().getClassLoader().getResourceAsStream(DEFAULT_LOG_PATH));
+			}
+		} catch (JoranException je) {
+			throw new RuntimeException("Error while loading logback config", je);
+		}
 	}
 
 	@Override
@@ -347,5 +357,4 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		super.stop(bundleContext);
 		INSTANCE = null;
 	}
-
 }
