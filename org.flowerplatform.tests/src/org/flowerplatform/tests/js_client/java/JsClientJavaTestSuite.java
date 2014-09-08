@@ -13,7 +13,7 @@
  * 
  * license-end
  */
-package org.flowerplatform.tests.core;
+package org.flowerplatform.tests.js_client.java;
 
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.junit.runner.RunWith;
@@ -25,8 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	NodeRegistryTest.class
+	JsClientNodeRegistryTest.class,
 })
-public class CoreTestSuite extends EclipseIndependentTestSuite {
+public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {
 		
 }

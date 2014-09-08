@@ -163,7 +163,7 @@ NodeRegistryManager.prototype.expand = function(nodeRegistry, node, context) {
 		nodeRegistry.expand(node, context);
 	} else {
 		var subscribableResources = node == null ? null : node.properties[Constants.SUBSCRIBABLE_RESOURCES];
-		if (subscribableResources != null && subscribableResources.length > 0) {
+		if (subscribableResources != null && subscribableResources.length() > 0) {
 			// a subscribable node => subscribe to the first resource
 			var subscribableResource = subscribableResources.getItemAt(0);
 			this.subscribe(subscribableResource.a, nodeRegistry, function(rootNode, resourceNode) {
@@ -208,7 +208,7 @@ NodeRegistryManager.prototype.collapseHandler = function(node, nodeRegistry, ref
 NodeRegistryManager.prototype.getResourceUrisForSubTree = function(node, nodeRegistry, dirtyResourceUris, savedResourceUris) {
 	var subscribableResources = node.properties[Constants.SUBSCRIBABLE_RESOURCES];
 	if (subscribableResources != null) {	
-		for (var i = 0; i < subscribableResources.length; i++){
+		for (var i = 0; i < subscribableResources.length(); i++){
 			var resourceUri = subscribableResources.getItemAt(i).a;				
 			var resourceNode = nodeRegistry.getNodeById(resourceUri);
 			if (resourceNode != null) {
@@ -223,7 +223,7 @@ NodeRegistryManager.prototype.getResourceUrisForSubTree = function(node, nodeReg
 	
 	// recurse
 	if (node.children != null) {
-		for (var i = 0; i < node.children.length; i++){	
+		for (var i = 0; i < node.children.length(); i++){	
 			this.getResourceUrisForSubTree(node.children.getItemAt(i), nodeRegistry, dirtyResourceUris, savedResourceUris);
 		}
 	}
@@ -231,10 +231,10 @@ NodeRegistryManager.prototype.getResourceUrisForSubTree = function(node, nodeReg
 
 NodeRegistryManager.prototype.hasSubscribableResource = function(node, resourceUri) {
 	var subscribableResources = node.properties[Constants.SUBSCRIBABLE_RESOURCES];
-	if (subscribableResources == null || subscribableResources.length == 0) {
+	if (subscribableResources == null || subscribableResources.length() == 0) {
 		return false;
 	}
-	for (var i = 0; i < subscribableResources.length; i++) {		
+	for (var i = 0; i < subscribableResources.length(); i++) {		
 		if (subscribableResources.getItemAt[i].a == resourceUri) {
 			return true;
 		}

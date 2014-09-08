@@ -56,7 +56,7 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 	if (parent != null) {
 		// remove from parent list of children
 		parent.children.removeItemAt(parent.children.getItemIndex(node));				
-		if (parent.children.length == 0) { // parent has no children left -> parent is leaf
+		if (parent.children.length() == 0) { // parent has no children left -> parent is leaf
 			parent.children = null;
 		}
 	}
@@ -133,7 +133,7 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 		return;
 	}
 			
-	for (var i = updates.length - 1; i >= 0; i--) {
+	for (var i = updates.length() - 1; i >= 0; i--) {
 		var update = updates.getItemAt(i);
 		var nodeFromRegistry = this.getNodeById(update.fullNodeId);	
 		if (nodeFromRegistry == null) { // node not registered, probably it isn't visible for this client
@@ -192,14 +192,13 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 	}			
 };
 
-NodeRegistry.prototype.expandCallbackHandler = function(node, children) {		
+NodeRegistry.prototype.expandCallbackHandler = function(node, children) {	
 	if (children == null) {
 		return;
-	}	
-	
+	}		
 	// register each child
-	for (var i = 0; i < children.length; i++) {	
-		this.registerNode((Object.prototype.toString.call(children) == "[object Array]") ? children[i] : children.getItemAt(i), node, -1);
+	for (var i = 0; i < children.length(); i++) {	
+		this.registerNode(children.getItemAt(i), node, -1);
 	}
 };
 
@@ -224,7 +223,7 @@ NodeRegistry.prototype.getFullNodeIdWithChildren = function(node) {
 	fullNodeIdWithChildren.fullNodeId = node.nodeUri;
 	
 	if (node.children != null) {
-		for (var i = 0; i < node.children.length; i++) {
+		for (var i = 0; i < node.children.length(); i++) {
 			if (fullNodeIdWithChildren.visibleChildren == null) {
 				fullNodeIdWithChildren.visibleChildren = this.nodeRegistryManager.externalInvocator.getNewListInstance();
 			}
@@ -272,7 +271,7 @@ NodeRegistry.prototype.refreshHandler = function(node, nodeWithVisibleChildren) 
 	if (node.children != null) { // node has children -> merge current list with new list
 		// serch for children that doesn't exist in new list
 		var currentChildren = node.children != null ? node.children.slice() : [];			
-		for (i = 0; i < currentChildren.length; i++) {	
+		for (i = 0; i < currentChildren.length(); i++) {	
 			var exists = false;
 			currentChildNode = currentChildren.getItemAt(i);
 			for (var newChildWithVisibleChildren in nodeWithVisibleChildren.children) {
@@ -293,7 +292,7 @@ NodeRegistry.prototype.refreshHandler = function(node, nodeWithVisibleChildren) 
 		}
 	}
 	
-	for (i = 0; i < nodeWithVisibleChildren.children.length; i++) {	
+	for (i = 0; i < nodeWithVisibleChildren.children.length(); i++) {	
 		var newChildNode = nodeWithVisibleChildren.children.getItemAt(i).node;
 		if (!(newChildNode.nodeUri in newNodeToCurrentNodeIndex)) { // new child doesn't exist in current list -> add it
 			this.registerNode(newChildNode, node, i);
@@ -323,7 +322,7 @@ NodeRegistry.prototype.mergeOrRegisterNode = function(node) {
  * If <code>index</code> is -1, the node will be added last.
  */
 NodeRegistry.prototype.registerNode = function(node, parent, index) {
-	if (this.rootNodeUri == null) {
+	if (this.rootNodeUri == null) {		
 		this.rootNodeUri = node.nodeUri;
 	}
 	
@@ -363,7 +362,7 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 	if (parent != null) {
 		// remove from parent list of children
 		parent.children.removeItemAt(parent.children.getItemIndex(node));				
-		if (parent.children.length == 0) { // parent has no children left -> parent is leaf
+		if (parent.children.length() == 0) { // parent has no children left -> parent is leaf
 			parent.children = null;
 		}
 	}

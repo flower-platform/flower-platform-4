@@ -22,7 +22,6 @@ public class ClientObjectMapperProvider implements ContextResolver<ObjectMapper>
 		objectMapper.registerModule(new JaxbAnnotationModule());
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 	}
 	
 	@Override

@@ -22,9 +22,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 		objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JaxbAnnotationModule());
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		// CC: probably this will generate problems on web app!!!
-		objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);		
 	}
 	
 	@Override
