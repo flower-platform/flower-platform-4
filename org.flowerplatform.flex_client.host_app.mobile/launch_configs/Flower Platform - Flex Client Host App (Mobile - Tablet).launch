@@ -5,7 +5,7 @@
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_AIR_PUBLISHER_ID" value=""/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_AIR_SECURITY_POLICY_FILE" value="security-policies/default.xml"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_APPLICATION" value="src/MainMobile.mxml"/>
-<booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_CLEAR_APP_DATA" value="false"/>
+<booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_CLEAR_APP_DATA" value="true"/>
 <booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_DEPLOY_ON_DEVICE" value="true"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_DEVICE_DEBUG_METHOD" value="USB_DEBUGGING"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_MOBILE_DEVICE_NAME" value="Samsung Galaxy Tab"/>

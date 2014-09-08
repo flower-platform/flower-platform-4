@@ -68,15 +68,6 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			showOpenEditorsCalloutButton.splitView = this;
 			
 			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
-			
-			// test for embedded StageWebView
-//			var embedView:StageWebView = new StageWebView();
-//			embedView.url = FlexUtilGlobals.getInstance().createAbsoluteUrl("js_client.core/index.html?isMobile=true#/users");
-//			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-//				.setViewContent(embedView)
-//				.setWidth(1200)
-//				.setHeight(80)
-//				.show();
 		}
 		
 		public function load(layoutData:Object, reuseExistingViews:Boolean = false, keepNewLayoutEditors:Boolean = false):void {

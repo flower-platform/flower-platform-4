@@ -41,13 +41,15 @@
 						import org.flowerplatform.flexutil.layout.ViewLayoutData;
 						
 						public var editorFrontend:UIComponent;
+						
+						[Bindable]
 						public var viewLayoutData:ViewLayoutData;
 						
 						public var container:Group;
 						
 						public var splitView:WorkbenchMobileSplitViewHost;
 						
-						public function getLabel():String {
+						public function getLabel(viewLayoutData:ViewLayoutData):String {
 							return FlexUtilGlobals.getInstance().composedViewProvider.getTitle(viewLayoutData);
 						}
 						
@@ -74,7 +76,7 @@
 					]]>
 				</fx:Script>
 				
-				<s:Button id="switchButton" label="{getLabel()}"
+				<s:Button id="switchButton" label="{getLabel(viewLayoutData)}"
 						  click="switchToEditorFrontend(event)"
 						  width="100%"
 						  skinClass="com.flextras.mobile.shared.skins.ButtonSkinSquare"/>
@@ -111,7 +113,7 @@
 			public function refreshLabels():void {
 				for (var i:int = 0; i < contents.numElements; i++) {
 					var entry:EditorFrontendEntry = EditorFrontendEntry(contents.getElementAt(i));
-					var title:String = entry.getLabel();
+					var title:String = entry.getLabel(entry.viewLayoutData);
 					entry.switchButton.label = title;
 				}
 			}
