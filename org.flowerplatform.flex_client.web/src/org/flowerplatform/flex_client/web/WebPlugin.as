@@ -56,7 +56,7 @@ package org.flowerplatform.flex_client.web {
 		
 		override public function start():void {
 			super.start();
-			
+					
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			

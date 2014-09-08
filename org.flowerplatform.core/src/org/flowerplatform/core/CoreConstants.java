@@ -215,9 +215,22 @@ public class CoreConstants {
 	public static final String DEFAULT_SUFFIX = ".default";
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
-
 	public static final String PNG_EXTENSION = ".png";
 	
 	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
+		
+	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
+	
+	
+	//////////////////////////////////
+	// Users
+	//////////////////////////////////
+	
+	public static final String USERS = "users";
+	public static final String USER = "user";
+	public static final String USERS_PATH = "fpp:|.users";
+	public static final String HASH_ALGORITHM = "SHA-256";
+	public static final String PASS_CHANGED = "Password changed !";
+	public static final String PASS_NOT_CHANGED = "Password doesn't match !";
 	
 }

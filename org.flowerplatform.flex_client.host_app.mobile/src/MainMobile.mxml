@@ -78,7 +78,6 @@
 			import es.xperiments.media.StageWebviewDiskEvent;
 			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
-			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.CommunicationErrorView;
@@ -133,6 +132,11 @@
 				setDescriptorWithUrl(new TextPlugin(), 'servlet/public-resources/org.flowerplatform.flex_client.text/swc/org.flowerplatform.flex_client.text.swc|library.swf?pluginClass=TextPlugin')
 			];
 			
+			
+			public static function isAndroid():Boolean {
+				return (Capabilities.version.substr(0,3) == "AND");
+			}
+			
 			private function startPlugins():void {
 				setBackButtonEnabled(true);
 				for each (var plugin:AbstractFlexPlugin in plugins) {					
@@ -142,7 +146,8 @@
 					plugin.start();
 				}
 				
-				var isAndroid:Boolean = true;
+				var isAndroid:Boolean = isAndroid();
+				
 				if (isAndroid) {
 					CorePlugin.getInstance().serviceLocator.invoke("coreService.getSessionId", null, function(sessionId:String):void {
 						StageWebViewDisk.addEventListener(StageWebviewDiskEvent.END_DISK_PARSING, function onDiskCacheEnd(e:StageWebviewDiskEvent):void {
@@ -188,7 +193,9 @@
 				if (serverAccounts == null || serverAccounts.length == 0 ) {
 					// add FP hub
 					var hub:ServerAccount = new ServerAccount();
-					hub.host = "http://hub.flower-platform.com/";
+
+					// hub.host = "http://hub.flower-platform.com/";
+					hub.host = "http://localhost:8080/org.flowerplatform.host.web_app/";
 					hub.friendlyName = "Flower Platform Hub";
 					hub.user = "";
 					hub.isDefault = true;

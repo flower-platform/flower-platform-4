@@ -25,6 +25,8 @@ import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 
 import java.io.File;
+import static org.flowerplatform.core.CoreConstants.USERS;
+import static org.flowerplatform.core.CoreConstants.USER;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -293,6 +295,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		virtualNodeResourceHandler.addVirtualNodeType(ROOT_TYPE);
 		virtualNodeResourceHandler.addVirtualNodeType(REPOSITORY_TYPE);
 		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
+
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
 			.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new RootChildrenProvider());
@@ -328,7 +333,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(CoreConstants.PROPERTY_SETTER, new PreferencePropertySetter())
 			// TODO CC: to remove when working at preferences persistence
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING).setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
-			
+		
+		
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
 		new TypeDescriptorRegistryDebugControllers().registerControllers();

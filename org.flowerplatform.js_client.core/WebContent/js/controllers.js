@@ -19,3 +19,13 @@ flowerControllers.controller('ComposedCtrl', ['$scope', 'contentTemplate', 'side
 		$scope.template_sideMenuContentTemplate = { url: Template[sideMenuContentTemplate] };
 		
 }]);
+
+flowerControllers.controller('NavigationCtrl', function($scope, $location, $anchorScroll) {
+	   $scope.path='General';
+	   $scope.scrollTo = function(id) {
+		  var old = $location.hash();
+	      $location.hash(id);
+	      $anchorScroll();
+	      $location.hash(old);
+   }
+});
