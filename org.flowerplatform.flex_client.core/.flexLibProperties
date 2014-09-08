@@ -19,6 +19,7 @@
     <classEntry path="org.flowerplatform.flex_client.core.node.IResourceOperationsHandler"/>
     <classEntry path="org.flowerplatform.flex_client.core.node.IExternalInvocator"/>
     <classEntry path="org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener"/>
+    <classEntry path="org.flowerplatform.flex_client.core.editor.action.ActionDescriptor"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider"/>
   </includeClasses>
   <includeResources/>

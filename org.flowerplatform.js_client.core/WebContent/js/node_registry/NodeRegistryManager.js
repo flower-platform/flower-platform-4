@@ -163,7 +163,7 @@ NodeRegistryManager.prototype.expand = function(nodeRegistry, node, context) {
 		nodeRegistry.expand(node, context);
 	} else {
 		var subscribableResources = node == null ? null : node.properties[Constants.SUBSCRIBABLE_RESOURCES];
-		if (subscribableResources != null && subscribableResources.length() > 0) {
+		if (subscribableResources != null && subscribableResources.length > 0) {
 			// a subscribable node => subscribe to the first resource
 			var subscribableResource = subscribableResources.getItemAt(0);
 			this.subscribe(subscribableResource.a, nodeRegistry, function(rootNode, resourceNode) {
