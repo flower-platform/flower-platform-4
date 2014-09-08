@@ -33,7 +33,6 @@ public class AttachSpecificInfoAction extends RegexAction {
 				List<Object> listOfChildrenToBeAdded = (List<Object>) currentValue;
 				for(Object child : listOfChildrenToBeAdded){
 					serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-					//serviceContext.getContext().putAll(((Node)child).getProperties());
 					serviceContext.setContext(((Node)child).getProperties());
 					CorePlugin.getInstance().getNodeService().addChild(currentNode, (Node) child, serviceContext);
 				}

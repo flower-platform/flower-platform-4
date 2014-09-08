@@ -18,12 +18,9 @@ public class AttachNodeToCurrentStateAction extends RegexAction {
 	@Override
 	public void executeAction(RegexProcessingSession param) {
 		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		// serviceContext.getContext().putAll(((Node)param.currentNode).getProperties());
 		Node currentNode = (Node) param.context.get("currentNode");
 		serviceContext.setContext(currentNode.getProperties());
 		State top = (State) ((ArrayList<Object>) param.context.get("stateStack")).get(0);
-		// ((ArrayList<Object>)session.context.get("stateStack")).add(0, new
-		// State(0, child));
 		CorePlugin.getInstance().getNodeService().addChild((Node) top.node, currentNode, serviceContext);
 	}
 

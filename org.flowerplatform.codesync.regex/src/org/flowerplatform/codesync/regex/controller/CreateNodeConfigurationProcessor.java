@@ -27,8 +27,9 @@ public class CreateNodeConfigurationProcessor extends AbstractController impleme
 		List<String> properties = new ArrayList<String>();
 		if (!csvList.equals("")) {
 			String[] prop = csvList.split(",");
-			for (int x = 0; x < prop.length; x++)
+			for (int x = 0; x < prop.length; x++) {
 				properties.add(prop[x]);
+			}
 		}
 		RegexAction ra = new CreateNodeAction(type, properties);
 		parentProcessedDataStructure.getRegexActions().add(ra);

@@ -157,11 +157,6 @@ public class CodeSyncRegexService {
 		final RegexProcessingSession session = regexConfig.startSession(testFileContent);
 
 		session.context.put("stateStack", new ArrayList<Object>());
-		// Node resultRootNode = new Node(null, REGEX_MODEL_TREE_NODE_TYPE);
-		// // CodeSyncConstantsFILE
-
-		// nodeService.addChild(resultRoot, resultRootNode,
-		// resultFilesContext);
 
 		((ArrayList<Object>) session.context.get("stateStack")).add(0, new State(0, resultRoot));
 		// find matches

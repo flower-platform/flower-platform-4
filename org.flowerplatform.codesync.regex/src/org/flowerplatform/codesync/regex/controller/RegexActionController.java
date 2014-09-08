@@ -36,15 +36,11 @@ public class RegexActionController extends AbstractController implements IProper
 
 	@Override
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		// if(property.equals(arg0)){
-		//
-		// }
 	}
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
-		// TODO Auto-generated method stub
-
+		// not used
 	}
 
 	@Override
@@ -70,8 +66,6 @@ public class RegexActionController extends AbstractController implements IProper
 						node.getProperties().put(ACTION_TYPE_ATTACH_SPECIFIC_INFO_KEY_PROPERTY, "");
 					if(node.getProperties().get(ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY) == null)		
 						node.getProperties().put(ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY, false);
-//					if(node.getProperties().get(ACTION_TYPE_ATTACH_ONE_USE_PROPERTY) == null)		
-//						node.getProperties().put(ACTION_TYPE_ATTACH_ONE_USE_PROPERTY, false);
 				} else {
 					if (node.getType().equals(ACTION_TYPE_CLEAR_SPECIFIC_INFO)) {
 						if(node.getProperties().get(ACTION_TYPE_CLEAR_SPECIFIC_INFO_KEY_PROPERTY) == null)		
@@ -82,13 +76,6 @@ public class RegexActionController extends AbstractController implements IProper
 								node.getProperties().put(ACTION_TYPE_VALID_STATES_PROPERTY, "");
 						}
 					}
-					// if(node.getType().equals(ACTION_TYPE_ENTER_STATE)){
-					// node.getProperties().put(ACTION_TYPE_ATTACH_SPECIFIC_INFO_KEY_PROPERTY,
-					// "");
-					// }else{
-					// if(node.getType().equals(ACTION_TYPE_EXIT_STATE)){
-					// }
-					// }
 				}
 			}
 		}

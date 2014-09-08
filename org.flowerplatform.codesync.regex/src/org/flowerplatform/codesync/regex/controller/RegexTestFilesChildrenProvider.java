@@ -56,7 +56,6 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 		List<Node> children = new ArrayList<Node>();
 		List<String> testFiles = CodeSyncRegexService.getTestFilesRelativeToFolder((File) folder, "");
 		for (String testFileToBeParsed : testFiles) {
-//					String typeSpecificPart = nodeSpecificPart + "/" + CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER + "/" + ((File) object).getName() + CodeSyncRegexConstants.REGEX_MATCH_EXTENSION; 
 					String typeSpecificPart = nodeSpecificPart + "$" + testFileToBeParsed; 
 					Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node), REGEX_TEST_FILE_NODE_TYPE, typeSpecificPart),
 							REGEX_TEST_FILE_NODE_TYPE);

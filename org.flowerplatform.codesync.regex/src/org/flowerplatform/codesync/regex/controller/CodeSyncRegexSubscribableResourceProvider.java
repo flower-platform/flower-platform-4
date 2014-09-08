@@ -75,11 +75,4 @@ public abstract class CodeSyncRegexSubscribableResourceProvider extends Abstract
 	}
 
 	protected abstract String getResourceUri(Node node);
-//	{
-//		String repo = CoreUtils.getRepoFromNode(node);
-//		String specificPartTechnology = CorePlugin.getInstance().getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
-//		return CoreUtils.createNodeUriWithRepo("fpp", repo, CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER + "/" + specificPartTechnology + "/"
-//				+ CodeSyncRegexConstants.REGEX_CONFIG_FILE);
-//		// fpp:elena/repo1|.regex-configs/ActionScript/.regex-config
-//	}
 }

@@ -20,8 +20,6 @@ public class RegexWithActionsProcessor extends AbstractController implements ICo
 	public RegexWithActions processConfigNode(Node node, RegexConfiguration parentProcessedDataStructure, ServiceContext<NodeService> context) {
 		RegexWithActions rwa = new RegexWithActions();
 		rwa.setName((String) node.getPropertyValue(NAME));
-		// rwa.setRegexWithMacros((String)
-		// node.getPropertyValue(REGEX_WITH_MACROS));
 		rwa.setRegex((String) node.getPropertyValue(FULL_REGEX));
 		parentProcessedDataStructure.add(rwa);
 		return rwa;
