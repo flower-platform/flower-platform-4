@@ -19,9 +19,9 @@ import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.flowerplatform.tests.TestUtil.assertEqualsLists;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -113,25 +112,6 @@ public class FileSystemControllersTest {
 
 		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2/oneFolder"), FILE_NODE_TYPE)));
-	}
-	
-	/**
-	 * Test if lists contain the same elements. Order does not matter.
-	 * 
-	 * @author Mariana Gheorghe
-	 */
-	private void assertEqualsLists(List<Node> actual, List<Node> expected) {
-		assertEquals(expected.size(), actual.size());
-		for (Node node : expected) {
-			if (!actual.contains(node)) {
-				fail("Expected node not found: " + node);
-			}
-		}
-		for (Node node : actual) {
-			if (!expected.contains(node)) {
-				fail("Node not expected: " + node);
-			}
-		}
 	}
 	
 	@Test

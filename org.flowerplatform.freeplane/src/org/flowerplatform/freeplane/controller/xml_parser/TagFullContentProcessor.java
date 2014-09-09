@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
  * @author Valentina Bojan
  */
 public class TagFullContentProcessor extends AbstractTagProcessor {
-	
+
 	private String keyProperty;
 
 	public TagFullContentProcessor(String keyProperty) {
@@ -39,11 +39,13 @@ public class TagFullContentProcessor extends AbstractTagProcessor {
 	@Override
 	public void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {
 		addEndContent(parser, tag, node, keyProperty);
-		
+
 		// we have reached the end of an unknown tag
-		if (parser.tagFullContent_nesting == 0 && keyProperty == null){
+		if (parser.tagFullContent_nesting == 0 && keyProperty == null) {
 			String currentContent = (String) node.getProperties().get(FreeplaneConstants.UNKNOWN);
-			node.getProperties().put(FreeplaneConstants.UNKNOWN, currentContent == null ? parser.tagFullContent_stringBuffer.toString() : currentContent + parser.tagFullContent_stringBuffer.toString());
+			node.getProperties().put(
+					FreeplaneConstants.UNKNOWN,
+					currentContent == null ? parser.tagFullContent_stringBuffer.toString() : currentContent + "\n\t" + parser.tagFullContent_stringBuffer.toString());
 		}
 	}
 }

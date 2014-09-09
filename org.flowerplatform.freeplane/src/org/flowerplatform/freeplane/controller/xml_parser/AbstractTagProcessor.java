@@ -24,34 +24,38 @@ import org.xml.sax.Attributes;
  * @author Valentina Bojan
  */
 public abstract class AbstractTagProcessor {
-	
-	void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node){}
 
-	void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {}
+	void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
+	}
+
+	void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {
+	}
 
 	void processPlainText(XmlNodePropertiesParser parser, String plainText) {
 		parser.tagFullContent_stringBuffer.append(plainText);
 	}
-	
-	void addStartContentAndAttributes(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node, String keyProperty){
+
+	void addStartContentAndAttributes(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node, String keyProperty) {
 		// first invocation of this processor for a well-known tag
 		if (parser.tagFullContent_nesting == 0 && keyProperty != null) {
 			parser.forcedTagProcessor = this;
-			
-			// check the current tag is <node> => exception for nested node tags (our node is a single node => no children)
+
+			// check the current tag is <node> => exception for nested node tags
+			// (our node is a single node => no children)
 			if (tag.equals(FreeplaneConstants.NODE)) {
 				throw new RuntimeException("'Nested node tags' exception for Single Node");
 			}
-			
-			// check for duplicates tags; if there is any duplicate => assign this type of tag to a specific processor
+
+			// check for duplicates tags; if there is any duplicate => assign
+			// this type of tag to a specific processor
 			if (parser.convertAllAttributes_processedXmlTags.contains(tag)) {
 				parser.convertAllAttributes_tagProcessorDinamicallyAdded = true;
 				parser.logger.debug(String.format("Dynamically adding new processor for unknown tag = {%s}", TagFullContentProcessor.class.getSimpleName()));
 				parser.xmlTagProcessors.put(tag, new TagFullContentProcessor(null));
 				parser.tagFullContent_nesting++;
 				return;
-			}			
-			
+			}
+
 			// i.e. <attribute NAME="a1" VALUE="v1"/>
 			if (!keyProperty.isEmpty()) {
 				parser.tagFullContent_tagName = tag + "(" + keyProperty + "=" + attributes.getValue(keyProperty) + ")";
@@ -66,7 +70,7 @@ public abstract class AbstractTagProcessor {
 					parser.tagFullContent_hasAttributes = true;
 				}
 			}
-		} 
+		}
 		// we are here because this tag was the current "forcedTagProcessor" or
 		// because we have to process an unknown tag => record what we see
 		else {
@@ -74,31 +78,32 @@ public abstract class AbstractTagProcessor {
 			if (parser.tagFullContent_nesting == 0) {
 				parser.tagFullContent_stringBuffer = new StringBuffer();
 			}
-			
-			// in both cases we must take the content of the tag and put it in the buffer
+
+			// in both cases we must take the content of the tag and put it in
+			// the buffer
 			parser.tagFullContent_stringBuffer.append("<" + tag);
 			for (int i = 0; i < attributes.getLength(); i++) {
 				parser.tagFullContent_stringBuffer.append(" " + attributes.getQName(i) + "='" + attributes.getValue(i) + "'");
 			}
 			parser.tagFullContent_stringBuffer.append(">");
 		}
-		parser.tagFullContent_nesting++;		
+		parser.tagFullContent_nesting++;
 	}
 	
-	void addEndContent(XmlNodePropertiesParser parser, String tag, Node node, String keyProperty){
+	void addEndContent(XmlNodePropertiesParser parser, String tag, Node node, String keyProperty) {
 		parser.tagFullContent_nesting--;
 		// we have reached the end of a well-known tag
 		if (parser.tagFullContent_nesting == 0 && keyProperty != null) {
 			// i.e. the tag has content
 			if (parser.tagFullContent_stringBuffer.length() != 0) {
-					node.getProperties().put(parser.tagFullContent_tagName + FreeplaneConstants.CONTENT_MARK, parser.tagFullContent_stringBuffer.toString());
+				node.getProperties().put(parser.tagFullContent_tagName + FreeplaneConstants.CONTENT_MARK, parser.tagFullContent_stringBuffer.toString());
 			} else {
 				// i.e. <hook NAME="FreeNode"/> => no content, no attributes
 				if (!parser.tagFullContent_hasAttributes) {
 					node.getProperties().put(parser.tagFullContent_tagName, null);
-				} 
+				}
 			}
-			
+
 			parser.forcedTagProcessor = null;
 			parser.tagFullContent_tagName = null;
 			parser.tagFullContent_hasAttributes = false;

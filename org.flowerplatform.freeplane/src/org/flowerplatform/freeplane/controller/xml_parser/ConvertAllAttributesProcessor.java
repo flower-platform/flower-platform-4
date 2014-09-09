@@ -36,7 +36,7 @@ public class ConvertAllAttributesProcessor extends AbstractTagProcessor {
 		}
 		parser.convertAllAttributes_processedXmlTags.add(tag);
 	}
-	
+
 	@Override
 	public void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {
 		addEndContent(parser, tag, node, "");

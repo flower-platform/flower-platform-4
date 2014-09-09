@@ -66,7 +66,7 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 		}
 		return defaultTagProcessor;
 	}
-	
+
 	public void parseXML(String xmlContent) throws ParserConfigurationException, SAXException, IOException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser saxParser = factory.newSAXParser();
