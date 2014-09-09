@@ -34,7 +34,6 @@ import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -309,8 +308,6 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 			} else {
 				if (childNode.getProperties().containsKey(REMOVED)) {
 					service.removeChild(node, childNode, new ServiceContext<NodeService>(service));
-					// set childrenSync now, because after this match is synced, the parent won't be notified because this child is already removed
-					CodeSyncControllerUtils.setChildrenSyncTrueAndPropagateToParents(node, service);
 				}
 			}
 		}

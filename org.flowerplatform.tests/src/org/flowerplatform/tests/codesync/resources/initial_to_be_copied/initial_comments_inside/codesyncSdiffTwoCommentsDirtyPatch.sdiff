@@ -1,0 +1,1127 @@
+<map version="freeplane 1.3.0">
+<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
+<node TEXT="New Mindmap" ID="ID_8901783" CREATED="1404746543369" MODIFIED="1404746543369"><hook NAME="MapStyle">
+
+<map_styles>
+<stylenode LOCALIZED_TEXT="styles.root_node">
+<stylenode LOCALIZED_TEXT="styles.predefined" POSITION="right">
+<stylenode LOCALIZED_TEXT="default" COLOR="#000000" STYLE="fork" MAX_WIDTH="600">
+<font NAME="SansSerif" SIZE="12" BOLD="false" ITALIC="false"/>
+<edge STYLE="bezier" COLOR="#808080" WIDTH="1"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="defaultstyle.details"/>
+<stylenode LOCALIZED_TEXT="defaultstyle.note"/>
+<stylenode LOCALIZED_TEXT="defaultstyle.floating">
+<edge STYLE="hide_edge"/>
+<cloud COLOR="#f0f0f0" SHAPE="ROUND_RECT"/>
+</stylenode>
+</stylenode>
+</stylenode>
+</map_styles>
+</hook>
+<attribute NAME="nodeType" VALUE="structureDiff"/>
+<attribute NAME="name" VALUE="codesync.sdiff.patch"/>
+<attribute NAME="containsComment" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<node TEXT="" POSITION="right" ID="ID_1600776284" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="CodeSyncSdiffConstants.java"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE=""/>
+<attribute NAME="modelElementType" VALUE="codesyncFile"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1230640370" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="CodeSyncSdiffConstants"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaClass"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1980079272" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1159827136" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="STRUCTURE_DIFF"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaAttribute"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_83195557" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_97252919" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="static"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_73282725" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="final"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_358793631" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="STRUCTURE_DIFF_EXTENSION"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaAttribute"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1457503509" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_930300006" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="static"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1308101408" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="final"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1206396030" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="STRUCTURE_DIFFS_FOLDER"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaAttribute"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_538447231" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="final"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1744541179" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="static"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_365527776" CREATED="1404746543385" MODIFIED="1404746543385">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_764464628" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="CodeSyncSdiffPlugin.java"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE=""/>
+<attribute NAME="modelElementType" VALUE="codesyncFile"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="containsComment" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<node TEXT="" ID="ID_421654753" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="CodeSyncSdiffPlugin"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaClass"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="containsComment" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<node TEXT="" ID="ID_880632796" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1896491959" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="INSTANCE"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaAttribute"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1822124059" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="protected"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_848966026" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="static"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_869654663" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="getInstance()"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1630545665" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1174735403" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="static"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_251446168" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="start(BundleContext)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_368887674" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_72442394" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="bundleContext"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1706845160" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="stop(BundleContext)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_286044194" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_824118217" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="bundleContext"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1215944254" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="registerMessageBundle()"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="containsComment" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<node TEXT="" ID="ID_1432505108" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="Override"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaAnnotation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1169233616" CREATED="1404746543416" MODIFIED="1404746543416">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1957971556" CREATED="1406887802441" MODIFIED="1406887802441">
+<attribute NAME="nodeType" VALUE="sdiffComment"/>
+<attribute NAME="type" VALUE="sdiffComment"/>
+</node>
+</node>
+</node>
+<node TEXT="" ID="ID_1656671338" CREATED="1406895302446" MODIFIED="1406895302446">
+<attribute NAME="nodeType" VALUE="sdiffComment"/>
+<attribute NAME="type" VALUE="sdiffComment"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1728624844" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="StructureDiffService.java"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE=""/>
+<attribute NAME="modelElementType" VALUE="codesyncFile"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_961155944" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="StructureDiffService"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaClass"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1298708596" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="SuppressWarnings"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaAnnotation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_239317010" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="_"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="annotationValues"/>
+<attribute NAME="modelElementType" VALUE="javaMemberValuePair"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_138101864" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_341370258" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="createStructureDiff(String,String)"/>
+<attribute NAME="matchType" VALUE="_2MATCH_ANCESTOR_LEFT"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_954496567" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_2MATCH_ANCESTOR_LEFT"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1350522118" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="patch"/>
+<attribute NAME="matchType" VALUE="_2MATCH_ANCESTOR_LEFT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_716503966" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="sDiffPath"/>
+<attribute NAME="matchType" VALUE="_2MATCH_ANCESTOR_LEFT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1688994834" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="sync(String,String,String)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<node TEXT="" ID="ID_1305327700" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1544296272" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="before"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1936025975" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="after"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1500501801" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="name"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1212196617" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="addToSdiffFile(Node,Match)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<node TEXT="" ID="ID_1097726777" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1676631457" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="parent"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_932033960" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="match"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1269489956" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="createSdiffFile(String,String)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<node TEXT="" ID="ID_1575258576" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_684992739" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="repo"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1125373445" CREATED="1404746543760" MODIFIED="1404746543760">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="fileName"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_139862827" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="getFilePath(String,boolean)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1236244274" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_443694533" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="path"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1057781323" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="isGitPatch"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_835646155" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="getFileContent(String)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_781760900" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_324375805" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="path"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_140576030" CREATED="1404746543776" MODIFIED="1404746543776">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="StringReaderCreator"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaClass"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_964134941" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="content"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaAttribute"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1737683210" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1594098774" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="StringReaderCreator(String)"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_961180697" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_652555549" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="content"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1540955711" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="createReader()"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="bodyModified" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_17087269" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="Override"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaAnnotation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1292456914" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_3MATCH"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+</node>
+<node TEXT="" ID="ID_1852208405" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="createSdiffsFolder(String)"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_1245197689" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_620362715" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="repo"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_640353031" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="getNextAvailableName(String,String)"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_730840452" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1191656231" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="repo"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1598790842" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="fileName"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" ID="ID_1188718182" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="createStructureDiff(String,String,String)"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="typeMembers"/>
+<attribute NAME="modelElementType" VALUE="javaOperation"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" ID="ID_988887834" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="modifiers"/>
+<attribute NAME="modelElementType" VALUE="javaModifier"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1882229163" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="repo"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_450077093" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="sdiffPath"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+<node TEXT="" ID="ID_1252269278" CREATED="1404746543916" MODIFIED="1404746543916">
+<attribute NAME="nodeType" VALUE="match"/>
+<attribute NAME="name" VALUE="patch"/>
+<attribute NAME="matchType" VALUE="_1MATCH_RIGHT"/>
+<attribute NAME="feature" VALUE="operationParameters"/>
+<attribute NAME="modelElementType" VALUE="javaParameter"/>
+<attribute NAME="childrenModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="childrenConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedLeft" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsModifiedRight" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="diffsConflict" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+</node>
+</node>
+</node>
+</map>

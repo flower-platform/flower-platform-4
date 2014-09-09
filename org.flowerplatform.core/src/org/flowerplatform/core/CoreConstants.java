@@ -149,7 +149,13 @@ public class CoreConstants {
 	public static final String DONT_PROCESS_OTHER_CONTROLLERS = "dontProcessOtherControllers";
 	
 	public static final String INVOKE_ONLY_CONTROLLERS_WITH_CLASSES = "invokeOnlyControllersWithClasses";
-	
+	/**
+	 * All controllers except the updater controllers should check this option and not execute their logic
+	 * if this option is set to true (e.g. persistence controllers should not set the <code>IS_DIRTY</code>
+	 * property, but the updater controller must register the update).
+	 */
+	public static final String EXECUTE_ONLY_FOR_UPDATER = "executeOnlyForUpdater";
+
 	public static final String POPULATE_WITH_PROPERTIES = "populateWithProperties";
 	
 	public static final String POPULATE_WITH_PROPERTIES_FORCEFULLY = "populateWithPropertiesForcefully";

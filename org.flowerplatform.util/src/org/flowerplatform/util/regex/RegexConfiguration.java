@@ -132,5 +132,4 @@ public class RegexConfiguration {
 		return captureGroupToRegexMapping;
 	}
 	
-	
 }

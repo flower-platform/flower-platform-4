@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.codesync.adapter;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.ORIGINAL_SUFFIX;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -166,5 +168,9 @@ public abstract class AbstractModelAdapter implements IModelAdapter {
 	@Override
 	public void setChildrenSync(Object element) {
 		// nothing to do
+	}
+
+	public String getOriginalPropertyName(String property) {
+		return property + ORIGINAL_SUFFIX;
 	}
 }

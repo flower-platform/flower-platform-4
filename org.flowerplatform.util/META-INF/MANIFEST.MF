@@ -7,12 +7,10 @@ Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: ch.qos.logback.classic,
  ch.qos.logback.classic.joran,
- ch.qos.logback.classic.util,
  ch.qos.logback.core,
  ch.qos.logback.core.joran,
  ch.qos.logback.core.joran.spi,
  ch.qos.logback.core.spi,
- ch.qos.logback.core.util,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,
