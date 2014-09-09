@@ -17,8 +17,11 @@ package org.flowerplatform.flex_client.core.node {
 	import mx.collections.IList;
 	
 	/**
+	 * Implemented within the host system. 
+	 * 
 	 * @author Cristina Constantinescu
 	 */
+	// TODO CS: rename IHostResourceOperationsHandler
 	public interface IResourceOperationsHandler	{
 		
 		function get nodeRegistryManager():*;

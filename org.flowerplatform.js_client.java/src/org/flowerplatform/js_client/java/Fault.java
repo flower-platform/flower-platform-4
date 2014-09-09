@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.StatusType;
  * @author Cristina Constantinescu
  */
 //TODO CC: this class can be improved to show exception message too
+// TODO CS: pai sa facem asta; are cred legatura cu o intrebare despre semnatura lui fault de prin AS
 public class Fault {
 	
 	private StatusType status;

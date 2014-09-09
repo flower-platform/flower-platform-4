@@ -14,7 +14,14 @@
  * license-end
  */
 package org.flowerplatform.flex_client.core.node {
-		
+	
+	/**
+	 * Implemented within the host system. The implementation should invoke the 
+	 * service methods on the server.
+	 * 
+	 * @author Cristina Constantinescu
+	 */
+	// TODO CS: rename IHostServiceInvocator
 	public interface IServiceInvocator {
 	
 		function invoke(serviceIdAndMethodName:String, parameters:Array = null, resultCallback:Function = null, faultCallback:Function = null):void;

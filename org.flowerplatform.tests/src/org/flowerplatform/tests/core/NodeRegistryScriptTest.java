@@ -19,6 +19,7 @@ import org.mozilla.javascript.Scriptable;
 /**
  * @author Cristina Constantinescu
  */
+// TODO CS: cred ca nu mai ne trebuie?
 public class NodeRegistryScriptTest {
 		
 	private static String BASE_URL = "http://localhost:8080/org.flowerplatform.host.web_app";

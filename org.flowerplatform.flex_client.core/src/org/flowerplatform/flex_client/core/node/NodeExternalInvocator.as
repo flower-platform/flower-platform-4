@@ -12,6 +12,7 @@ package org.flowerplatform.flex_client.core.node {
 	/**
 	 * @author Cristina Constantinescu
 	 */
+	// TODO CS: de redenumit in FlexHostInvocator
 	public class NodeExternalInvocator implements IExternalInvocator {
 		
 		public function showMessageBox(titleKeyMessage:String, textKeyMessage:String, textParams:Array):void {			

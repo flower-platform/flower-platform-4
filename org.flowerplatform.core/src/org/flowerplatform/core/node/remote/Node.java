@@ -53,6 +53,7 @@ public class Node implements Externalizable {
 	/**
 	 * TODO
 	 */
+	// TODO CS: de ce este acest TODO? Care e problema?
 	public Node() {
 		super();
 	}

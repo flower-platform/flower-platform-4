@@ -174,6 +174,7 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 				}		
 				break;
 			case "REMOVED":
+				// TODO CS: constante!
 				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
 				
 				if (targetNodeInRegistry != null) {

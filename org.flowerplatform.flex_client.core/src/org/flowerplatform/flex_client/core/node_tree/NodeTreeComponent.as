@@ -90,6 +90,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 			invalidateDisplayList();
 		}		
 		
+		// TODO CS: cred ca nu trebuie?
 		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:*):void {
 			// do nothing
 		}

@@ -84,7 +84,8 @@ public class JsClientNodeRegistryTest {
 		
 		verify(listener).nodeAdded(child1);
 		verify(listener).nodeAdded(child2);
-		verify(listener).nodeAdded(child3);			
+		verify(listener).nodeAdded(child3);	
+		// TODO CS: dc. modificam in loc de 1, 2, 3: 1, 2, 2: ne da exceptie? nu trebuie sa facem si ceva sa ne asiguram ca nu s-a apelat altceva apoi?
 	}
 	
 }

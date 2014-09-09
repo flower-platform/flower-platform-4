@@ -70,6 +70,7 @@
 						
 			protected function setAllSelected(value:Boolean):void {
 				for (var i:int = 0; i < resourceNodes.length; i++) {
+					// TODO CS: ce face clasa asta? Este cea care se ocupa de salvare? De ce nu mai folosim "ResourceNode"? Vad ca inca mai exista clasa.
 					var resourceNodeData:Object = resourceNodes.getItemAt(i);
 					resourceNodeData.selected = value;
 				}

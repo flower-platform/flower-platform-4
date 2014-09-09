@@ -5,6 +5,7 @@ import org.mozilla.javascript.Function;
 /**
  * @author Cristina Constantinescu
  */
+// TODO rename Abstract*; de asemenea redenumirile facute pe js, sa se reflecte si in clasele din java
 public abstract class ServiceInvocator {
 
 	public void invoke(String serviceIdAndMethodName, Object[] parameters) throws Exception {
