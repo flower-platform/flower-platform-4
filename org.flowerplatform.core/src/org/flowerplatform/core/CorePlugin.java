@@ -26,6 +26,9 @@ import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 
 import java.io.File;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
@@ -40,6 +43,7 @@ import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -334,7 +338,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
-		
+	
 		// Controllers for Command Stack
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
 				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new CommandStackPropertiesProvider())
@@ -343,8 +347,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
 
 		CorePlugin.getInstance().getResourceService().addResourceHandler(CoreConstants.COMMAND_STACK_SCHEME, commandStackResourceHandler);
-	
-	}
+	}	
 
 	public void stop(BundleContext bundleContext) throws Exception {
 		scheduledExecutorServiceFactory.dispose();

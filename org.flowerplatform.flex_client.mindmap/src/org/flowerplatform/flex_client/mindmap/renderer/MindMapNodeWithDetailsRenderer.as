@@ -16,95 +16,149 @@
 package org.flowerplatform.flex_client.mindmap.renderer {
 	import flash.events.MouseEvent;
 	
+	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
-	import mx.graphics.SolidColorStroke;
+	import mx.events.ResizeEvent;
 	
+	import spark.components.DataRenderer;
 	import spark.components.Group;
 	import spark.components.Image;
 	import spark.components.RichText;
 	import spark.layouts.HorizontalLayout;
 	import spark.layouts.VerticalLayout;
-	import spark.primitives.Line;
 	
 	import flashx.textLayout.conversion.TextConverter;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flex_client.mindmap.ui.NoteAndDetailsComponentExtension;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexutil.Utils;
 	
 	/**
 	 * @author Sebastian Solomon
+	 * @author Mariana Gheorghe
 	 */ 
-	public class MindMapNodeWithDetailsRenderer extends MindMapNodeRenderer {
+	public class MindMapNodeWithDetailsRenderer extends DataRenderer implements IAbstractMindMapModelRenderer, IDiagramShellContextAware {
 		
-		public var horizontalLine:Line;
-		protected var nodeGroup:Group;
+		protected var embeddedRenderer:MindMapNodeRenderer;
 		protected var detailsGroup:Group;
 		protected var detailsIcon:Image;
 		protected var detailsText:RichText;
 		protected var noteComponentExtension:NoteAndDetailsComponentExtension = new NoteAndDetailsComponentExtension();
 		
-		override public function setLayout():void {
+		public function MindMapNodeWithDetailsRenderer() {
 			var vLayout:VerticalLayout = new VerticalLayout();
 			vLayout.gap = 2;
-			vLayout.paddingBottom = 2;
-			vLayout.paddingTop = 2;
-			vLayout.paddingLeft = 2;
-			vLayout.paddingRight = 2;
-			vLayout.verticalAlign = "middle";
-			
 			this.layout = vLayout;
+			
+			addEventListener(ResizeEvent.RESIZE, resizeHandler);
+		}
+		
+		public function get diagramShellContext():DiagramShellContext {
+			return embeddedRenderer.diagramShellContext;
+		}
+		
+		public function set diagramShellContext(value:DiagramShellContext):void {
+			embeddedRenderer.diagramShellContext = value;
+		}
+		
+		public function getLabelDisplay():RichText {
+			return embeddedRenderer.getLabelDisplay();
+		}
+		
+		public function getEmbeddedRenderer():MindMapNodeRenderer {
+			return embeddedRenderer;
+		}
+		
+		/**
+		 * Duplicate from AbstractMindMapModelRenderer.
+		 */
+		override public function set data(value:Object):void {
+			if (node != null) {
+				node.properties.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+				depth = 0;
+				unassignData();
+			}
+
+			embeddedRenderer.data = value;
+			super.data = value;
+			
+			if (data != null) {
+				// set depth from model's dynamic object if available
+				// model's children must have a greater depth than the model because 
+				// when drawing more complex graphics (like clouds), they must be displayed above them
+				var dynamicObject:Object = diagramShellContext.diagramShell.getDynamicObject(diagramShellContext, data);
+				if (dynamicObject.depth) {
+					depth = dynamicObject.depth;
+				}
+				node.properties.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+				assignData();
+			}
+		}
+		
+		/**
+		 * Duplicate from NodeRenderer.
+		 */
+		protected function unassignData():void {
+			// Important: measuredHeight/measuredWidth are reset to their default values; otherwise the renderer will use recycled values for width/height 
+			measuredWidth = 0;
+			measuredHeight = 0;
+		}
+		
+		/**
+		 * Duplicate from NodeRenderer.
+		 */
+		protected function assignData():void {
+			x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");	
+			y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");		
+			var detailsTextVisible:Number = 0;
+			if (data != null) {
+				detailsTextVisible = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "detailsTextVisible");
+			}
+			detailsText.visible = detailsTextVisible == 1;
+			detailsText.includeInLayout = detailsTextVisible == 1;
+			
+			modelChangedHandler();
+		}
+		
+		protected function get mindMapDiagramShell():MindMapEditorDiagramShell {
+			return MindMapEditorDiagramShell(embeddedRenderer.diagramShellContext.diagramShell);	
 		}
 		
 		override protected function createChildren():void {
-			createNodeGroup();
 			super.createChildren();
-
-			createDetailsGroup();
-			createHorizontalLine();
 			
-			addElement(nodeGroup);
-			addElement(horizontalLine);
+			createEmbeddedRenderer();
+			addElement(embeddedRenderer);
+			
+			createDetailsGroup();
 			addElement(detailsGroup);
 		}
 		
-		override protected function setHitArea(unscaledWidth:Number, unscaledHeight:Number):void {
-			if (horizontalLine.visible) {
-				super.setHitArea(unscaledWidth, horizontalLine.y);
-			} else {
-				super.setHitArea(unscaledWidth, unscaledHeight);
-			}
-			nodeGroup.hitArea = hitArea;
-		}
-
-		private function createNodeGroup():void {
-			var hLayout:HorizontalLayout = new HorizontalLayout();
-			hLayout.gap = 2;
-			hLayout.paddingBottom = 2;
-			hLayout.paddingTop = 2;
-			hLayout.paddingLeft = 2;
-			hLayout.paddingRight = 2;
-			hLayout.verticalAlign = "middle";
-			
-			nodeGroup = new Group();
-			nodeGroup.layout = hLayout;
+		private function createEmbeddedRenderer():void {
+			embeddedRenderer = new MindMapNodeRenderer();
+			embeddedRenderer.percentWidth = 100;
+			embeddedRenderer.addEventListener(FlexEvent.INITIALIZE, nodeRendererInitialized);
 		}
 		
-		private function createHorizontalLine():void {
-			horizontalLine = new Line();
-			horizontalLine.percentWidth = 100;
-			var colorStroke:SolidColorStroke = new SolidColorStroke();
-			colorStroke.color = 808080;
-			colorStroke.weight = 1;
-			horizontalLine.stroke = colorStroke;
+		/**
+		 * Must be added after its own listeners are registered on the embedded renderer.
+		 */
+		private function nodeRendererInitialized(event:FlexEvent):void {	
+			embeddedRenderer.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+			embeddedRenderer.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+			embeddedRenderer.addEventListener(ResizeEvent.RESIZE, resizeHandler);
 		}
 		
 		private function createDetailsGroup():void {
 			detailsGroup = new Group();
-			detailsGroup.layout = new HorizontalLayout();;
+			detailsGroup.layout = new HorizontalLayout();
 			detailsGroup.percentWidth = 100;
 			
 			detailsText = new RichText();
@@ -120,59 +174,92 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			detailsText.includeInLayout = false;
 		}
 		
-		
 		protected function detailsIconClickHandler(event:MouseEvent=null):void {
 			if (detailsText.includeInLayout) {
 				detailsText.visible = false;
 				detailsText.includeInLayout = false;
 				detailsIcon.source = Resources.arrowDownIcon;
-				invalidateDisplayList();
 			} else {
 				detailsText.includeInLayout = true;
 				detailsText.visible = true;
 				detailsIcon.source = Resources.arrowUpIcon;				
 			}
-		}
 			
-		override public function getMainComponent():Group {
-			return nodeGroup;
+			if (detailsText.includeInLayout) {
+				var text:String = node.properties[MindMapConstants.NODE_DETAILS] as String;
+				text = Utils.getCompatibleHTMLText(text);
+				detailsText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
+			}
+			
+			mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "detailsTextVisible", detailsText.includeInLayout ? 1 : 0);	
 		}
 		
-		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
-			super.modelChangedHandler(event);
-//			switch (event.property) {
-//				case MindMapConstants.NODE_DETAILS:
-					if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
-						setDetailsGroupVisibile(true);
-						if (detailsText.includeInLayout) {
-							detailsIcon.source = Resources.arrowUpIcon;
-						} else {
-							detailsIcon.source = Resources.arrowDownIcon;
-						}
-						
-						var text:String = node.properties[MindMapConstants.NODE_DETAILS] as String;
-						text = Utils.getCompatibleHTMLText(text);
-						detailsText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
-					} else {
-						setDetailsGroupVisibile(false);
-					}
-//					break;
-//			}			
+		protected function modelChangedHandler(event:PropertyChangeEvent = null):void {
+			if (node.properties[MindMapConstants.NODE_DETAILS] != null && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0) {
+				setDetailsGroupVisibile(true);
+				if (detailsText.includeInLayout) {
+					detailsIcon.source = Resources.arrowUpIcon;
+				} else {
+					detailsIcon.source = Resources.arrowDownIcon;
+				}
+			}  else {
+				setDetailsGroupVisibile(false);
+			}
+			
+			if (detailsText.includeInLayout) {
+				var text:String = node.properties[MindMapConstants.NODE_DETAILS] as String;
+				text = Utils.getCompatibleHTMLText(text);
+				detailsText.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
+			}
+			
+			if (event == null) {
+				return;
+			}
+			
+			// duplicate from NodeRenderer + MindMapNodeRenderer
+			switch (event.property) {
+				case "x":
+					x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");					
+					break;
+				case "y":
+					y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");				
+					break;
+				case MindMapConstants.MIN_WIDTH:
+					minWidth = node.getPropertyValue(MindMapConstants.MIN_WIDTH);
+					invalidateSize();
+					invalidateDisplayList();
+					break;
+				case MindMapConstants.MAX_WIDTH:
+					maxWidth = node.getPropertyValue(MindMapConstants.MAX_WIDTH);
+					invalidateSize();
+					invalidateDisplayList();
+					break;
+				case "depth":
+					depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");				
+					break;
+				case "hasChildren":
+					invalidateSize();
+				case "children":
+				case "expandedHeight":
+				case "expandedWidth":				
+					invalidateDisplayList();
+			}
 		}
 		
 		private function setDetailsGroupVisibile(value:Boolean):void {
-			horizontalLine.includeInLayout = value;
-			horizontalLine.visible = value;
 			detailsGroup.includeInLayout = value;
 			detailsGroup.visible = value;
 		}
+	
+		protected function get node():Node {
+			return Node(data);	
+		}
 		
-		override protected function mouseOverHandler(event:MouseEvent):void {
-			super.mouseOverHandler(event);
+		protected function mouseOverHandler(event:MouseEvent):void {
 			if (noteComponentExtension.parent == null) {
 				var text:String;
 				var hasText:Boolean = false;
-				if (hasNoteDetails(node) && !detailsText.includeInLayout) {
+				if (hasNodeDetails(node) && !detailsText.includeInLayout) {
 					text = node.properties[MindMapConstants.NODE_DETAILS] as String;
 					text = Utils.getCompatibleHTMLText(text);
 					noteComponentExtension.nodeDetails.textFlow = TextConverter.importToFlow(text , Utils.isHTMLText(text) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);
@@ -201,20 +288,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					
 					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
 					noteComponentExtension.x = dynamicObject.x ;
-					if (horizontalLine.visible) {
-						noteComponentExtension.y = dynamicObject.y + horizontalLine.y;
-					} else {
-						noteComponentExtension.y = dynamicObject.y + dynamicObject.height;	
-					}
+					noteComponentExtension.y = dynamicObject.y + dynamicObject.height;	
 				}
-			}
-		}
-		
-		override protected function drawLittleCircle(y:Number=NaN):void {
-			if (horizontalLine.visible) {
-				super.drawLittleCircle(horizontalLine.y/2);
-			} else {
-				super.drawLittleCircle();
 			}
 		}
 		
@@ -222,19 +297,38 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			return node.properties.hasOwnProperty(MindMapConstants.NOTE) && String(node.properties[MindMapConstants.NOTE]).length > 0
 		}
 		
-		private function hasNoteDetails(node:Node):Boolean {
+		private function hasNodeDetails(node:Node):Boolean {
 			return node.properties.hasOwnProperty(MindMapConstants.NODE_DETAILS) && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0
 		}
 		
-		override public function newIconIndex():int {			
-			return nodeGroup.numElements - 1; // add icon before label
-		}
-		
-		override protected function mouseOutHandler(event:MouseEvent):void {	
-			super.mouseOutHandler(event);
+		protected function mouseOutHandler(event:MouseEvent):void {	
 			if (noteComponentExtension.parent != null) {
 				DiagramRenderer(diagramShellContext.diagramShell.diagramRenderer).removeElement(noteComponentExtension);
 			}				
+		}
+		
+		/**
+		 * Duplicate from NodeRenderer.
+		 */
+		protected function resizeHandler(event:ResizeEvent):void {
+			if (height == 0 || width == 0) {
+				// don't change values if first resize, wait until component fully initialized
+				return;
+			}
+			var refresh:Boolean = false;
+			if (mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "width") != width) {
+				mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "width", width);
+				refresh = true;
+			}
+			if (mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "height") != height) {			
+				mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "height", height);
+				refresh = true;
+			}
+			
+			if (refresh) {					
+				mindMapDiagramShell.shouldRefreshModelPositions(diagramShellContext, mindMapDiagramShell.rootModel);
+				mindMapDiagramShell.shouldRefreshVisualChildren(diagramShellContext, mindMapDiagramShell.rootModel);
+			}
 		}
 		
 	}

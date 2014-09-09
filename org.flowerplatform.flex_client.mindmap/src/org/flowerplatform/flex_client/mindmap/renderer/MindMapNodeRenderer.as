@@ -38,8 +38,8 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 		override protected function unassignData():void {
 			super.unassignData();
 			
-			getMainComponent().minWidth = 0;
-			getMainComponent().maxWidth = DEFAULT_MAX_WIDTH;
+			minWidth = 0;
+			maxWidth = DEFAULT_MAX_WIDTH;
 			backgroundColor = BACKGROUND_COLOR_DEFAULT;
 			
 			if (labelDisplay) {
@@ -70,12 +70,12 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 					} 
 					break;
 				case MindMapConstants.MIN_WIDTH:
-					getMainComponent().minWidth = node.getPropertyValue(MindMapConstants.MIN_WIDTH);
+					minWidth = node.getPropertyValue(MindMapConstants.MIN_WIDTH);
 					invalidateSize();
 					invalidateDisplayList();
 					break;
 				case MindMapConstants.MAX_WIDTH:
-					getMainComponent().maxWidth = node.getPropertyValue(MindMapConstants.MAX_WIDTH);
+					maxWidth = node.getPropertyValue(MindMapConstants.MAX_WIDTH);
 					invalidateSize();
 					invalidateDisplayList();
 					break;
@@ -161,7 +161,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			super.drawGraphics(unscaledWidth, unscaledHeight);
 		}
-				
+
 		/**
 		 * @author Sebastian Solomon
 		 */

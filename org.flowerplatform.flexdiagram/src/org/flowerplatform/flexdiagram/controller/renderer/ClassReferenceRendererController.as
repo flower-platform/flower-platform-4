@@ -24,21 +24,29 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	 */
 	public class ClassReferenceRendererController extends RendererController {
 		
-		public var rendererClass:Class;
+		private var _rendererClass:Class;
 		
 		public var removeRendererIfModelIsDisposed:Boolean;
 		
 		public function ClassReferenceRendererController(rendererClass:Class = null, orderIndex:int = 0) {	
 			super(orderIndex);
-			this.rendererClass = rendererClass;
+			setRendererClass(rendererClass);
 		}
 		
+		public function getRendererClass(context:DiagramShellContext, model:Object):Class {
+			return _rendererClass;
+		}
+
+		public function setRendererClass(value:Class):void {
+			_rendererClass = value;
+		}
+
 		override public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
-			return rendererClass;
+			return getRendererClass(context, model);
 		}
 		
 		override public function createRenderer(context:DiagramShellContext, model:Object):IVisualElement {
-			return new rendererClass();
+			return new (getRendererClass(context, model))();
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {

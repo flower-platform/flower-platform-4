@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import flash.events.MouseEvent;
-	
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;

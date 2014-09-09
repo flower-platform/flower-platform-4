@@ -22,6 +22,10 @@ package org.flowerplatform.flexdiagram.mindmap
 	import mx.events.ResizeEvent;
 	import mx.managers.IFocusManagerComponent;
 	
+	import spark.components.DataRenderer;
+	import spark.components.RichText;
+	import spark.layouts.HorizontalLayout;
+	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -30,15 +34,10 @@ package org.flowerplatform.flexdiagram.mindmap
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;
 	import org.flowerplatform.flexutil.renderer.IconsComponentExtension;
 	
-	import spark.components.DataRenderer;
-	import spark.components.Group;
-	import spark.components.RichText;
-	import spark.layouts.HorizontalLayout;
-	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class AbstractMindMapModelRenderer extends DataRenderer implements IDiagramShellContextAware, IIconsComponentExtensionProvider, IFocusManagerComponent {
+	public class AbstractMindMapModelRenderer extends DataRenderer implements IAbstractMindMapModelRenderer, IDiagramShellContextAware, IIconsComponentExtensionProvider, IFocusManagerComponent {
 					
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
 		
@@ -103,10 +102,6 @@ package org.flowerplatform.flexdiagram.mindmap
 			this.layout = hLayout;
 		}
 		
-		public function getMainComponent():Group {
-			return this;
-		}
-		
 		public function get diagramShellContext():DiagramShellContext {			
 			return _context;
 		}
@@ -160,7 +155,7 @@ package org.flowerplatform.flexdiagram.mindmap
 			labelDisplay.percentHeight = 100;
 			labelDisplay.percentWidth = 100;			
 			labelDisplay.setStyle("verticalAlign" , "middle");	
-			getMainComponent().addElement(labelDisplay);
+			addElement(labelDisplay);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
