@@ -15,12 +15,16 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.CoreConstants.DEFAULT_LOG_PATH;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.LOGBACK_CONFIG_FILE;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
+
+import java.io.File;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,6 +43,9 @@ import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.resource.CommandStackChildrenProvider;
+import org.flowerplatform.core.node.resource.CommandStackPropertiesProvider;
+import org.flowerplatform.core.node.resource.CommandStackResourceHandler;
 import org.flowerplatform.core.node.resource.ResourceDebugControllers;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
@@ -63,6 +70,11 @@ import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.flowerplatform.util.servlet.ServletUtils;
 import org.osgi.framework.BundleContext;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
  * @author Cristian Spiescu
@@ -97,10 +109,21 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	protected SessionService sessionService;
 	
 	protected VirtualNodeResourceHandler virtualNodeResourceHandler = new VirtualNodeResourceHandler();
+	protected CommandStackResourceHandler commandStackResourceHandler = new CommandStackResourceHandler();
 		
 	private ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
 	private ScheduledExecutorServiceFactory scheduledExecutorServiceFactory = new ScheduledExecutorServiceFactory();
 
+	/**
+	 * @author Claudiu Matei
+	 */
+	private ThreadLocal<ContextThreadLocal> contextThreadLocal = new ThreadLocal<ContextThreadLocal>();
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private ILockManager lockManager = new InMemoryLockManager(); 
+	
 	public static CorePlugin getInstance() {
 		return INSTANCE;
 	}
@@ -152,6 +175,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return virtualNodeResourceHandler;
 	}
 	
+	public CommandStackResourceHandler getCommandStackResourceHandler() {
+		return commandStackResourceHandler;
+	}
+
 	/**
 	 * Setting/removing must be done from a try/finally block to make sure that 
 	 * the request is cleared, i.e.
@@ -177,6 +204,27 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return scheduledExecutorServiceFactory;
 	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ThreadLocal<ContextThreadLocal> getContextThreadLocal() {
+		return contextThreadLocal;
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ILockManager getLockManager() {
+		return lockManager;
+	}
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	public void setLockManager(ILockManager lockManager) {
+		this.lockManager = lockManager;
+	}
+
 	public ComposedSessionListener getComposedSessionListener() {
 		return composedSessionListener;
 	}
@@ -190,24 +238,33 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	}
 
 	/**
-	 * @return workspace location from OSGI property
-	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Cristina Brinza
 	 */
-	public String getWorkspaceLocation() {
-		String location = FrameworkProperties.getProperty("osgi.instance.area");
-		
-		// if property value starts with "file:", remove it
-		if (location.startsWith("file:")) {
-			location = location.substring("file:".length());
-		}
-		return location;
+	public String getCustomResourceUrl(String resource) {
+		return CoreConstants.LOAD_FILE_SERVLET + "/" + resource;
 	}
 	
 	public CorePlugin() {
 		super();
-			    
+
 		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP, PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP));
 		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));	
+	
+		String customLogPath = CoreConstants.FLOWER_PLATFORM_HOME + LOGBACK_CONFIG_FILE; 
+		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		try {
+			JoranConfigurator configurator = new JoranConfigurator();
+			configurator.setContext(loggerContext);
+			loggerContext.reset();
+			if (new File(customLogPath).exists()) {
+				configurator.doConfigure(customLogPath);
+			} else {
+				configurator.doConfigure(this.getClass().getClassLoader().getResourceAsStream(DEFAULT_LOG_PATH));
+			}
+		} catch (JoranException je) {
+			throw new RuntimeException("Error while loading logback config", je);
+		}
 	}
 
 	@Override
@@ -277,6 +334,16 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
+		
+		// Controllers for Command Stack
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
+				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new CommandStackPropertiesProvider())
+				.addAdditiveController(CoreConstants.CHILDREN_PROVIDER, new CommandStackChildrenProvider());
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
+
+		CorePlugin.getInstance().getResourceService().addResourceHandler(CoreConstants.COMMAND_STACK_SCHEME, commandStackResourceHandler);
+	
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
@@ -284,5 +351,4 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		super.stop(bundleContext);
 		INSTANCE = null;
 	}
-
 }

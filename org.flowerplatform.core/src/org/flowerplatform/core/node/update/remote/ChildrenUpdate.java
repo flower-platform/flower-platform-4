@@ -15,6 +15,9 @@
  */
 package org.flowerplatform.core.node.update.remote;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -25,7 +28,12 @@ public class ChildrenUpdate extends Update {
 	private Node targetNode;
 	
 	private String fullTargetNodeAddedBeforeId;
-		
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private transient List<ChildrenUpdate> removedNodes = new ArrayList<>();
+	
 	public Node getTargetNode() {
 		return targetNode;
 	}
@@ -52,7 +60,21 @@ public class ChildrenUpdate extends Update {
 		return this;
 	}
 		
-	@Override
+	public List<ChildrenUpdate> getRemovedNodes() {
+		return removedNodes;
+	}
+	
+
+	public void setRemovedNodes(List<ChildrenUpdate> removedNodes) {
+		this.removedNodes = removedNodes;
+	}
+
+	
+	public ChildrenUpdate setRemovedNodesAs(List<ChildrenUpdate> removedNodes) {
+		this.removedNodes = removedNodes;
+		return this;
+	}
+	
 	public String toString() {
 		return "ChildrenUpdate [type=" + getType() + " targetNode=" + targetNode + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";
 	}

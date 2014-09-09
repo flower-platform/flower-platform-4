@@ -22,6 +22,16 @@ public class CoreConstants {
 	public static final String APP_VERSION = "0.1.1";
 	public static final String API_VERSION = "0.1.0";
 	
+	/**
+	 * When this class loads, the launcher code (from <code>FlowerFrameworkLauncher</code>) has already
+	 * populated this property. So it's safe to use it as a constant throughout the whole plugins.
+	 */
+	public static final String FLOWER_PLATFORM_HOME = System.getProperty("FLOWER_PLATFORM_HOME");
+	public static final String LOGBACK_CONFIG_FILE = "/logback.xml";
+	public static final String DEFAULT_LOG_PATH = "META-INF" + LOGBACK_CONFIG_FILE;
+	public static final String WORKSPACE = "/workspace";
+	public static final String FLOWER_PLATFORM_WORKSPACE = FLOWER_PLATFORM_HOME + WORKSPACE;
+	
 	//////////////////////////////////
 	// Node types and schemes
 	//////////////////////////////////
@@ -44,6 +54,9 @@ public class CoreConstants {
 	public static final String FILE_SCHEME = "file";
 	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
+	public static final String COMMAND_TYPE = "command";
+	public static final String COMMAND_STACK_TYPE = "commandStack";
+	public static final String COMMAND_STACK_SCHEME = COMMAND_STACK_TYPE;
 	
 	public static final String PREFERENCE_TYPE = "preference";
 	public static final String PREFERENCE_CATEGORY_TYPE = UtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
@@ -135,13 +148,14 @@ public class CoreConstants {
 	 */
 	public static final String DONT_PROCESS_OTHER_CONTROLLERS = "dontProcessOtherControllers";
 	
+	public static final String INVOKE_ONLY_CONTROLLERS_WITH_CLASSES = "invokeOnlyControllersWithClasses";
 	/**
 	 * All controllers except the updater controllers should check this option and not execute their logic
 	 * if this option is set to true (e.g. persistence controllers should not set the <code>IS_DIRTY</code>
 	 * property, but the updater controller must register the update).
 	 */
 	public static final String EXECUTE_ONLY_FOR_UPDATER = "executeOnlyForUpdater";
-	
+
 	public static final String POPULATE_WITH_PROPERTIES = "populateWithProperties";
 	
 	public static final String POPULATE_WITH_PROPERTIES_FORCEFULLY = "populateWithPropertiesForcefully";
@@ -154,8 +168,16 @@ public class CoreConstants {
 	 * An example is {@link CoreConstants#IS_DIRTY}: if option not set, the update will be registered on parent resource -> bad.
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
-	
+
 	public static final String OVERRIDE = "override";
+	
+	
+	/**
+	 * Used to save the last value of a node's property in context, before the property is updated 
+	 * @author Claudiu Matei
+	 */
+	public static final String OLD_VALUE = "oldValue";
+
 	
 	//////////////////////////////////
 	// Resource
@@ -199,6 +221,9 @@ public class CoreConstants {
 	public static final String DEFAULT_SUFFIX = ".default";
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
-		
-	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
+
+	public static final String PNG_EXTENSION = ".png";
+	
+	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
+	
 }

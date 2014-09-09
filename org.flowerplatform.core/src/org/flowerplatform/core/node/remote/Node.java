@@ -159,11 +159,12 @@ public class Node implements Externalizable {
 
 	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-		type = (String) in.readObject(); 
-        nodeUri = (String) in.readObject(); 
-        properties = (Map) in.readObject(); 
+		throw new UnsupportedOperationException("A Node object cannot come from the client. It can only be served by the server to clients");
 	}
 	
+	/** 
+	 * @see Corresponding AS class.
+	 */
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		 out.writeObject(type); 

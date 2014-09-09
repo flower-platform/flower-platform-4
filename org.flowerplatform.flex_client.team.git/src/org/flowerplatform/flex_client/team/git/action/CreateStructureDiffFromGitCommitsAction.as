@@ -14,8 +14,6 @@
  * license-end
  */
 package org.flowerplatform.flex_client.team.git.action {
-	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -36,7 +34,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			label = Resources.getMessage("flex_client.team.git.action.createSdiffFromGitCommits");
 			icon = Resources.gitDiffFromCommitsIcon;
 		}
-		
+				
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var dialog:CreateStructureDiffFromGitCommitsView = new CreateStructureDiffFromGitCommitsView();	

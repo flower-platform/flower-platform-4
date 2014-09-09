@@ -21,23 +21,23 @@
 <s:List xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
-		creationComplete="creationCompleteHandler()" 
-		useVirtualLayout="true"
-		minWidth="16" height="100%" 
-		itemRenderer="org.flowerplatform.flex_client.mindmap.renderer.IconRenderer"
 		click="imageList_clickHandler(event)"
-		horizontalScrollPolicy="off">
+		creationComplete="creationCompleteHandler()" 
+		horizontalScrollPolicy="off"
+		implements="org.flowerplatform.flexutil.dialog.IDialogResultHandler"
+		itemRenderer="org.flowerplatform.flex_client.mindmap.renderer.IconRenderer"
+		minWidth="16" height="100%"
+		useVirtualLayout="true"
+		>
 
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayList;
-			import mx.rpc.events.ResultEvent;
 			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-			import org.flowerplatform.flex_client.mindmap.controller.MindMapIconsViewResultHandler;
 			import org.flowerplatform.flex_client.mindmap.renderer.IconRenderer;
 			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 			import org.flowerplatform.flex_client.resources.Resources;
@@ -47,7 +47,7 @@
 			import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 			
 			public  var diagramShell:DiagramShell;
-			
+						
 			protected function creationCompleteHandler():void {
 				var icons:Array = MindMapConstants.ICONS_LIST.split(';');
 				var iconsDataProvider:Array = new Array();
@@ -91,23 +91,20 @@
 							result.type = Utils.REMOVE_ALL;
 							handleClick(result);
 							break;
-						case "customIconsIcon":
-							
-							var repo:String = "user/repo";
-							if (diagramShell.selectedItems != null && PropertiesPlugin.getInstance().getPropertyDescriptor(Node(diagramShell.selectedItems.getItemAt(0)), CoreConstants.ICONS, false)) {
-								repo = CorePlugin.getInstance().getRepository(diagramShell.selectedItems.getItemAt(0).nodeUri);
+						case "customIconsIcon":							
+							if (diagramShell.selectedItems != null && 
+								diagramShell.selectedItems.length > 0 && 
+								PropertiesPlugin.getInstance().getPropertyDescriptor(Node(diagramShell.selectedItems.getItemAt(0)), CoreConstants.ICONS, false)) {
+								
+								var repo:String = CorePlugin.getInstance().getRepository(diagramShell.selectedItems.getItemAt(0).nodeUri);
 								var customView:MindMapIconsView = new MindMapIconsView();
-								customView.getDefaultIcons = false;
-								customView.repo = repo;
-								customView.setResultHandler(new MindMapIconsViewResultHandler(function(res:Object):void {
-									result.iconUrl = res.iconUrl;
-									result.type = Utils.ADD;
-									handleClick(result);
-								}));
+								customView.showOnlyRepositoryCustomIcons = true;
+								customView.repoPath = repo;
+								customView.setResultHandler(this);
 								FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 									.setViewContent(customView)						
-									.setWidth(300)
-									.setHeight(320)
+									.setWidth(370)
+									.setHeight(340)
 									.show();
 							}
 							
@@ -134,6 +131,10 @@
 					}
 				}
 			}
+			
+			public function handleDialogResult(res:Object):void {
+				handleClick(res);
+			}			
 			
 		]]>
 	</fx:Script>
