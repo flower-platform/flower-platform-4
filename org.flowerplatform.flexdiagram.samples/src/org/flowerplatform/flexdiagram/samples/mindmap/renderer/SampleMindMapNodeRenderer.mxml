@@ -40,7 +40,7 @@
 			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 				
 				var mindMapDiagramShell:MindMapDiagramShell = this.mindMapDiagramShell;
-				
+						
 				if (mindMapDiagramShell != null && diagramShellContext != null) {
 					// i.e. used as a renderer in a mind map diagram
 					if (event == null || event.property == "x") {
@@ -110,8 +110,6 @@
 					return false;
 				}
 			}
-			
-		
 		]]>
 	</fx:Script>
 	

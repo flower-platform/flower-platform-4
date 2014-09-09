@@ -14,17 +14,26 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap {
+	import flash.display.GradientType;
+	import flash.events.Event;
+	import flash.geom.Matrix;
 	import flash.system.Capabilities;
 	
 	import mx.collections.IList;
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
+	import mx.core.IFlexDisplayObject;
+	import mx.core.ILayoutElement;
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
+	import spark.components.DataGroup;
 	import spark.components.DataRenderer;
+	import spark.components.IItemRenderer;
+	import spark.components.supportClasses.InteractionState;
+	import spark.components.supportClasses.InteractionStateDetector;
 	import spark.layouts.HorizontalLayout;
 	import spark.primitives.BitmapImage;
 	
@@ -40,12 +49,12 @@ package org.flowerplatform.flexdiagram.mindmap {
 	 * @author Cristina Constantinescu
 	 * @author Alexandra Topoloaga
 	 */
-	public class AbstractMindMapNodeRenderer extends DataRenderer implements IDiagramShellContextAware {
+	public class AbstractMindMapNodeRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer {
 		
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
 
 		protected static const circleRadius:int = 3;
-		
+			
 		protected static const TEXT_COLOR_DEFAULT:uint = 0x000000;
 		
 		protected static const FONT_STYLE_DEFAULT:String = "SansSerif";
@@ -69,6 +78,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 		protected var _cloudType:String;
 		
 		protected var _icons:IList;
+		
+		public var showSelected:Boolean = false;
 		
 		/**************************************************************************
 		 * Graphic properties supported by this renderer.
@@ -176,6 +187,9 @@ package org.flowerplatform.flexdiagram.mindmap {
 				}
 			}
 			setLayout();
+			
+			interactionStateDetector = new InteractionStateDetector(this);
+			interactionStateDetector.addEventListener(Event.CHANGE, interactionStateDetector_changeHandler);
 		}
 		
 		public function setLayout():void {
@@ -324,6 +338,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				drawLittleCircle();
 			}
 			graphics.endFill();
+			drawBackground(unscaledWidth, unscaledHeight);
 		}
 		
 		protected function shouldDrawCircle():Boolean {			
@@ -377,6 +392,186 @@ package org.flowerplatform.flexdiagram.mindmap {
 				while (getElementAt(_icons.length) is BitmapImage) {
 					removeElementAt(_icons.length);
 				}
+			}
+		}
+		
+		/**************************************************************************
+		 * Functions used for list selection.
+		 *************************************************************************/
+		
+		private var interactionStateDetector:InteractionStateDetector;
+		
+		private var _dragging:Boolean = false;
+		
+		public function get dragging():Boolean {
+			return _dragging;
+		}
+		
+		public function set dragging(value:Boolean):void {
+			_dragging = value;
+			
+		}
+		
+		private var _itemIndex:int;
+		protected var isLastItem:Boolean = false;
+		
+		public function get itemIndex():int {
+			return _itemIndex;
+		}
+		
+		public function set itemIndex(value:int):void {
+			var wasLastItem:Boolean = isLastItem;       
+			var dataGroup:DataGroup = parent as DataGroup;
+			isLastItem = (dataGroup && (value == dataGroup.numElements - 1));
+			
+			// if whether or not we are the last item in the last has changed then
+			// invalidate our display. note:  even if our new index has not changed,
+			// whether or not we're the last item may have so we perform this check 
+			// before the value == _itemIndex check below
+			if (wasLastItem != isLastItem) 
+				invalidateDisplayList();
+			
+			if (value == _itemIndex)
+				return;
+			
+			_itemIndex = value;
+			
+			// only invalidateDisplayList() if this causes use to redraw which
+			// is only if alternatingItemColors are defined (and technically also
+			// only if we are not selected or down, etc..., but we'll ignore those
+			// as this will shortcut 95% of the time anyways)
+			if (getStyle("alternatingItemColors") !== undefined)
+				invalidateDisplayList();
+		}
+
+		public function get label():String {
+			return _label as String;
+		}
+		
+		public function set label(value:String):void {
+
+		}
+		
+		private var _selected:Boolean = false;
+		
+		public function get selected():Boolean {
+			return _selected;
+		}
+		
+		public function set selected(value:Boolean):void {
+			if (value == _selected)
+				return;
+			
+			_selected = value; 
+			invalidateDisplayList();
+		}
+		
+		private var _showsCaret:Boolean = false;
+		
+		public function get showsCaret():Boolean {
+			return _showsCaret;
+		}
+		
+		public function set showsCaret(value:Boolean):void {
+			if (value == _showsCaret)
+				return;
+			
+			_showsCaret = value;
+			invalidateDisplayList();
+		}
+		
+		private var _down:Boolean = false;
+		
+		protected function get down():Boolean {
+			return _down;
+		}
+		
+		protected function set down(value:Boolean):void {
+			if (value == _down)
+				return;
+			
+			_down = value; 
+			invalidateDisplayList();
+		}
+		
+		private var _hovered:Boolean = false;
+		
+		protected function get hovered():Boolean {
+			return _hovered;
+		}
+		
+		protected function set hovered(value:Boolean):void {
+			if (value == _hovered)
+				return;
+			
+			_hovered = value; 
+			invalidateDisplayList();
+		}
+		
+		protected function drawBackground(unscaledWidth:Number, unscaledHeight:Number):void {
+			// figure out backgroundColor
+			var backgroundColor:*;
+			var downColor:* = getStyle("downColor");
+			var drawBackground:Boolean = true;
+			var opaqueBackgroundColor:* = undefined;
+			
+			if (down && downColor !== undefined) {
+				backgroundColor = downColor;
+			} else if (selected) {
+				backgroundColor = getStyle("selectionColor");
+			} else if (hovered) {
+				backgroundColor = getStyle("rollOverColor");
+			} else if (showsCaret) {
+				backgroundColor = getStyle("selectionColor");
+			} else {
+				var alternatingColors:Array;
+				var alternatingColorsStyle:Object = getStyle("alternatingItemColors");
+				
+				if (alternatingColorsStyle)
+					alternatingColors = (alternatingColorsStyle is Array) ? (alternatingColorsStyle as Array) : [alternatingColorsStyle];
+				
+				if (alternatingColors && alternatingColors.length > 0) {
+					// translate these colors into uints
+					styleManager.getColorNames(alternatingColors);
+					
+					backgroundColor = alternatingColors[itemIndex % alternatingColors.length];
+				} else {
+					// don't draw background if it is the contentBackgroundColor. The
+					// list skin handles the background drawing for us. 
+					drawBackground = false;
+				}
+				
+			} 
+			
+			// draw backgroundColor
+			// the reason why we draw it in the case of drawBackground == 0 is for
+			// mouse hit testing purposes
+			if (showSelected) {
+				graphics.beginFill(backgroundColor, drawBackground ? 1 : 0);
+				graphics.lineStyle();
+				graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
+				graphics.endFill();
+			}
+			// Selected and down states have a gradient overlay as well
+			// as different separators colors/alphas
+			if (selected || down) {
+				var colors:Array = [0x000000, 0x000000 ];
+				var alphas:Array = [.2, .1];
+				var ratios:Array = [0, 255];
+				var matrix:Matrix = new Matrix();
+				
+				// gradient overlay
+				matrix.createGradientBox(unscaledWidth, unscaledHeight, Math.PI / 2, 0, 0 );
+				graphics.beginGradientFill(GradientType.LINEAR, colors, alphas, ratios, matrix);
+				graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
+				graphics.endFill();
+			}
+		}
+		
+		private function interactionStateDetector_changeHandler(event:Event):void {
+			if (showSelected) {
+				down = (interactionStateDetector.state == InteractionState.DOWN);
+				hovered = (interactionStateDetector.state == InteractionState.OVER);
 			}
 		}
 	}
