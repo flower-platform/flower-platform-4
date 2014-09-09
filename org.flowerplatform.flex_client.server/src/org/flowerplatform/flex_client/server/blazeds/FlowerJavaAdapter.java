@@ -36,9 +36,8 @@ public class FlowerJavaAdapter extends JavaAdapter {
 	public Object invoke(Message message) {
 		RemotingMessage remoteMessage = (RemotingMessage) message;
 		RemoteMethodInvocationInfo remoteMethodInvocationInfo = new RemoteMethodInvocationInfo();
-		remoteMethodInvocationInfo.setServiceId(remoteMessage.getDestination());
-		remoteMethodInvocationInfo.setMethodName(remoteMessage.getOperation());
-		remoteMethodInvocationInfo.setParameters(remoteMessage.getParameters());
+		remoteMethodInvocationInfo.setServiceMethodOrUrl(String.format("%s.%s()", 
+				remoteMessage.getDestination(), remoteMessage.getOperation()));
 		remoteMethodInvocationInfo.setHeaders(remoteMessage.getHeaders());
 		
 		CorePlugin.getInstance().getRemoteMethodInvocationListener().preInvoke(remoteMethodInvocationInfo);
