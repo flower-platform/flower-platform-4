@@ -61,6 +61,7 @@ package org.flowerplatform.flex_client.team.git {
 		public static const CONFIG_REMOTE:String = "configRemote";
 		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
 		public static const CONFIG_REBASE:String = "configRebase";
+
 		public static const CURRENT_BRANCH:String = "currentBranch";
 		public static const IS_CHECKEDOUT:String = "isCheckedOut";
 
@@ -156,3 +157,4 @@ package org.flowerplatform.flex_client.team.git {
 	}
 	
 }
+

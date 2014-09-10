@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Server
 Bundle-SymbolicName: org.flowerplatform.js_client.server;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar,
  lib-from-maven/hk2-api-2.3.0-b05.jar,

@@ -86,7 +86,7 @@ public class JsClientNodeRegistryTest {
 				
 		// verify children
 		assertNotNull(parent.getChildren());	
-		assertEquals(3, parent.getChildren().length());
+		assertEquals(3, parent.getChildren().length);
 		
 		verify(listener).nodeAdded(child1);
 		verify(listener).nodeAdded(child2);
@@ -125,7 +125,7 @@ public class JsClientNodeRegistryTest {
 
 		// verify children
 		assertNotNull(parent.getChildren());	
-		assertEquals(1, parent.getChildren().length());
+		assertEquals(1, parent.getChildren().length);
 		
 		// verify getNodeById is not null/ node is registered
 		assertNotNull(JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", child.getNodeUri()));

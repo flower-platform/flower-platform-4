@@ -84,12 +84,15 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/table_gear.png")]
 		public static const tableGear:Class;
 		
+		[Embed(source="/core/url_icon.png")]
+		public static const urlIcon:Class;
+		
 		[Embed(source="/core/undo.png")]
 		public static const undoIcon:Class;
 		
 		[Embed(source="/core/redo.png")]
 		public static const redoIcon:Class;
-
+		
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]

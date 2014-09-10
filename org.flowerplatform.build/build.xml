@@ -118,6 +118,7 @@
 		<!-- Copy dependencies -->
 		<artifact:mvn mavenHome="${mavenHome}" fork="true">
 			<arg value="dependency:copy-dependencies" />
+			<arg value="dependency:sources" />
 			<arg value="-f${project_loc}/lib-from-maven-pom.xml" />
 			<arg value="-DoutputDirectory=lib-from-maven" />
 		</artifact:mvn>
