@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	
-	import flash.utils.Dictionary;
-	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
@@ -26,6 +24,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
+	import org.flowerplatform.flexdiagram.samples.BindableDictionary;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.properties.PropertiesHelper;
@@ -47,7 +46,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 			//return EMPTY_LIST;
 			var list:IList = new ArrayCollection();
 			
-			var subModels:Dictionary = Dictionary(PropertiesHelper.getInstance().propertyModelAdapter.getProperties(model));
+			var subModels:BindableDictionary = BindableDictionary(PropertiesHelper.getInstance().propertyModelAdapter.getProperties(model));
 			for(var key:Object in subModels) {
 				var dictionaryEntry:Pair = new Pair();
 				dictionaryEntry.a = key;

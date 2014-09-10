@@ -23,7 +23,6 @@ package org.flowerplatform.flexdiagram {
 	import flash.ui.MultitouchInputMode;
 	import flash.utils.Dictionary;
 	
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IDataRenderer;
 	import mx.core.IInvalidating;
@@ -36,7 +35,6 @@ package org.flowerplatform.flexdiagram {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
@@ -50,6 +48,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -74,9 +73,9 @@ package org.flowerplatform.flexdiagram {
 		
 		public var registry:TypeDescriptorRegistry;
 		
-		private var _typeProvider:ITypeProvider;
+		private var _typeProvider:org.flowerplatform.flexutil.controller.ITypeProvider;
 			
-		public function set typeProvider(provider:ITypeProvider):void {			
+		public function set typeProvider(provider:org.flowerplatform.flexutil.controller.ITypeProvider):void {			
 			_typeProvider = provider;
 		}
 		
@@ -85,7 +84,7 @@ package org.flowerplatform.flexdiagram {
 		 */ 
 		public function getType(context:DiagramShellContext, model:Object):String {
 			if (_typeProvider != null) {				
-				var type:String = _typeProvider.getType(context, model);
+				var type:String = _typeProvider.getType(model);
 				if (type != null) {
 					return type;
 				}

@@ -1,6 +1,7 @@
 package org.flowerplatform.flexutil.properties.ui {
 	import flash.utils.Dictionary;
 	
+	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	import mx.events.PropertyChangeEvent;
 	
@@ -50,7 +51,7 @@ package org.flowerplatform.flexutil.properties.ui {
 			// add listeners to current node				
 			if (currentNodeObject != null) {					
 				PropertiesHelper.getInstance().propertyModelAdapter.getProperties(currentNodeObject)
-					.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, nodeUpdatedHandler);					
+					.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, nodeUpdatedHandler);		
 			}
 		}
 		

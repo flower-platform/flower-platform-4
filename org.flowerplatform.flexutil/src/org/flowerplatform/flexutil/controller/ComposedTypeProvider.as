@@ -10,12 +10,16 @@ package org.flowerplatform.flexutil.controller {
 		public function getType(model:Object):String {
 			
 			for each (var provider:ITypeProvider in typeProviders) {
-				var result:String = getType(provider);
+				var result:String = provider.getType(model);
 				if (result != null) {
 					return result;
 				}
 			}
 			return null;
+		}
+		
+		public function addTypeProvider(provider:ITypeProvider):void {
+			typeProviders.push(provider);
 		}
 		
 	}

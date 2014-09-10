@@ -8,8 +8,17 @@ package org.flowerplatform.flexutil.properties {
 	import org.flowerplatform.flexutil.controller.IPropertyModelAdapter;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.properties.controllers.PropertyDescriptorProvider;
+	import org.flowerplatform.flexutil.properties.property_line_renderer.CategoryPropertyLineRenderer;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.IPropertyLineRenderer;
+	import org.flowerplatform.flexutil.properties.property_line_renderer.PropertyLineRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.BooleanPropertyRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.ColorPickerPropertyRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.DatePropertyRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.DropDownListPropertyRenderer;
 	import org.flowerplatform.flexutil.properties.property_renderer.IPropertyRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.NumberPropertyRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.NumericStepperPropertyRenderer;
+	import org.flowerplatform.flexutil.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flexutil.properties.remote.IPropertyDescriptor;
 	
 	/**
@@ -26,6 +35,7 @@ package org.flowerplatform.flexutil.properties {
 		public var propertyDescriptorTypeToPropertyLineRendererFactory:Dictionary = new Dictionary();
 		public var propertyValueClassToPropertyDescriptorType:Dictionary = new Dictionary();
 		public var propertyDescriptorTypeToPropertyRendererFactory:Dictionary = new Dictionary();
+		public var currentSelectedNodeObject:Object;
 
 		
 		public static function getInstance():PropertiesHelper {
@@ -37,6 +47,7 @@ package org.flowerplatform.flexutil.properties {
 				throw new Error("An instance of PropertiesHelper already exists; it should be a singleton!");
 			}
 			INSTANCE = this;
+			registerPropertyProviders();
 		}
 		
 		public function getNewPropertyLineRendererInstance(propertyLineRendererType:String):IPropertyLineRenderer {
@@ -78,5 +89,23 @@ package org.flowerplatform.flexutil.properties {
 			}
 			return propertyRendererFactory.newInstance(false);
 		}
+		
+		private function registerPropertyProviders():void {
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING] = new FactoryWithInitialization(StringPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN] = new FactoryWithInitialization(BooleanPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER] = new FactoryWithInitialization(NumberPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER] = new FactoryWithInitialization(NumericStepperPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST] = new FactoryWithInitialization(DropDownListPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER] = new FactoryWithInitialization(ColorPickerPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_DATE] = new FactoryWithInitialization(DatePropertyRenderer);
+			
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY] = new FactoryWithInitialization(CategoryPropertyLineRenderer);
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT] = new FactoryWithInitialization(PropertyLineRenderer);
+			
+			propertyValueClassToPropertyDescriptorType[Boolean] = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
+			propertyValueClassToPropertyDescriptorType[Number] = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER;			
+		}
+		
+		
 	}
 }

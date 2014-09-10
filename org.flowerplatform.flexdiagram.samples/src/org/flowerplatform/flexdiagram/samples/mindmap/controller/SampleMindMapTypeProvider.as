@@ -15,16 +15,15 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
 	import org.flowerplatform.flexutil.Pair;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	
-	public class SampleMindMapTypeProvider implements ITypeProvider {
+	public class SampleMindMapTypeProvider implements org.flowerplatform.flexutil.controller.ITypeProvider {
 		
-		public function getType(context:DiagramShellContext, model:Object):String {
+		public function getType(model:Object):String {
 			if (model is MindMapRootModelWrapper) {
 				return MindMapRootModelWrapper.ID;				
 			}
@@ -41,4 +40,5 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		}
 		
 	}
+	
 }

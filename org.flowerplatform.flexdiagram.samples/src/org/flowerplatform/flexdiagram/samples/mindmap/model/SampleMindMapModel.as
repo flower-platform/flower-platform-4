@@ -14,9 +14,9 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
-	import flash.utils.Dictionary;
-	
 	import mx.collections.ArrayList;
+	
+	import org.flowerplatform.flexdiagram.samples.BindableDictionary;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -39,7 +39,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var fontStyle:Boolean;
 		
 		
-		public var subModelsDict:Dictionary  = new Dictionary();
+		public var subModelsDict:BindableDictionary  = new BindableDictionary();
 		
 	}	
 }

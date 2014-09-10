@@ -38,6 +38,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.samples.renderer.DictionaryIconItemRenderer;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -76,7 +77,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(DictionaryIconItemRenderer))
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider());		
 			
-
+			PropertiesHelper.getInstance().nodeTypeDescriptorRegistry = registry;
 
 		}
 				

@@ -15,16 +15,14 @@
  */
 package org.flowerplatform.flexdiagram.samples.controller {
 	
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
-	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
 	import org.flowerplatform.flexdiagram.samples.model.BasicModel;
 	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	
-	public class BasicTypeProvider implements ITypeProvider {
+	public class BasicTypeProvider implements org.flowerplatform.flexutil.controller.ITypeProvider {
 				
-		public function getType(context:DiagramShellContext, model:Object):String {
+		public function getType(model:Object):String {
 			if (model is BasicModel) {
 				return "basicModel";
 			} else if (model is BasicSubModel) {
