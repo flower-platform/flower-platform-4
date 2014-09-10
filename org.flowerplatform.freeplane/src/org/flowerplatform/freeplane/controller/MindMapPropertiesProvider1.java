@@ -15,11 +15,7 @@
  */
 package org.flowerplatform.freeplane.controller;
 
-import java.io.StringReader;
 import java.util.Collections;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
@@ -30,12 +26,10 @@ import org.freeplane.features.clipboard.MindMapNodesSelection;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.mode.ModeController;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * @author Catalin Burcea
- *
+ * @author Valentina Bojan
  */
 public class MindMapPropertiesProvider1 extends PersistencePropertiesProvider {
 
@@ -50,16 +44,8 @@ public class MindMapPropertiesProvider1 extends PersistencePropertiesProvider {
 
 		try {
 			String XMLString = data.getTransferData(MindMapNodesSelection.mindMapNodesFlavor).toString();
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			SAXParser saxParser = factory.newSAXParser();
 			XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
-			InputSource inputSource = new InputSource(new StringReader(XMLString));
-			saxParser.parse(inputSource, handler);
-			if (handler.convertAllAttributes_tagProcessorDinamicallyAdded) {
-				saxParser.reset();
-				inputSource = new InputSource(new StringReader(XMLString));
-				saxParser.parse(inputSource, handler);
-			}
+			handler.parseXML(XMLString);
 		} catch (Exception e) {
 			new RuntimeException(e);
 		}

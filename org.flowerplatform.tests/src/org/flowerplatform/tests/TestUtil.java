@@ -15,14 +15,22 @@
  */
 package org.flowerplatform.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Cristi
@@ -272,5 +280,52 @@ public class TestUtil {
 //				.getService("");
 //		return editorStatefulService.calculateStatefulClientId(editableResourcePath);
 //	}
+	
+	/**
+	 * @author Valentina Bojan
+	 */
+	public static void writeFile(String path, String fileContent) {
+		FileWriter fileWriter = null;
+		try {
+			File newTextFile = new File(path);
+			fileWriter = new FileWriter(newTextFile);
+			fileWriter.write(fileContent);
+			fileWriter.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Error while writing the file " + path, e);
+		}
+	}
+	
+	/**
+	 * Test if two Maps contain the same elements. Order does not matter.
+	 * 
+	 * @author Valentina Bojan
+	 */
+	public static void assertEqualsMaps(Map<?, ?> actualMap, Map<?, ?> expectedMap) {
+		assertEquals("Wrong number of node properties", expectedMap.size(), actualMap.size());
+		for (Entry<?, ?> expectedEntry : expectedMap.entrySet()) {
+			Object property = expectedEntry.getKey();
+			assertEquals("Wrong actual value of '" + property + "'", expectedEntry.getValue(), actualMap.get(property));
+		}
+	}
+	
+	/**
+	 * Test if lists contain the same elements. Order does not matter.
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	public static void assertEqualsLists(List<Node> actual, List<Node> expected) {
+		assertEquals(expected.size(), actual.size());
+		for (Node node : expected) {
+			if (!actual.contains(node)) {
+				fail("Expected node not found: " + node);
+			}
+		}
+		for (Node node : actual) {
+			if (!expected.contains(node)) {
+				fail("Node not expected: " + node);
+			}
+		}
+	}
 	
 }
