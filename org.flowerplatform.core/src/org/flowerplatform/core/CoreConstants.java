@@ -170,7 +170,7 @@ public class CoreConstants {
 	 * Used to save the last value of a node's property in context, before the property is updated 
 	 * @author Claudiu Matei
 	 */
-	public static final String OLD_VALUE = "oldValue";
+	public static final String OLD_VALUES = "oldValue";
 
 	
 	//////////////////////////////////

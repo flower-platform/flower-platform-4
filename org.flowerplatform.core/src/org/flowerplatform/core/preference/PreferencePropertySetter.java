@@ -40,7 +40,7 @@ public class PreferencePropertySetter extends AbstractController implements	IPro
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
 		// refresh all properties on client
 		for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService()).add(CoreConstants.POPULATE_WITH_PROPERTIES_FORCEFULLY, true)).entrySet()) {
 			if (entry.getValue() instanceof PreferencePropertyWrapper) {

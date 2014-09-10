@@ -29,6 +29,8 @@ import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 
+import java.util.Map;
+
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.core.CoreConstants;
@@ -160,15 +162,17 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	}
 
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		if (ICONS.equals(property)) {
-			node.getOrPopulateProperties(context);
-			
-			String codeSyncIcons = getCodeSyncIcons(node);
-			if (codeSyncIcons == null) {
-				codeSyncIcons = "";
+	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
+		for (String property : properties.keySet()) {
+			if (ICONS.equals(property)) {
+				node.getOrPopulateProperties(context);
+				
+				String codeSyncIcons = getCodeSyncIcons(node);
+				if (codeSyncIcons == null) {
+					codeSyncIcons = "";
+				}
+				context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, context);
 			}
-			context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, context);
 		}
 	}
 
