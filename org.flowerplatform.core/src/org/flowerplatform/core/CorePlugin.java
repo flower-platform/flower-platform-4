@@ -25,8 +25,11 @@ import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 
 import java.io.File;
+
 import static org.flowerplatform.core.CoreConstants.USERS;
 import static org.flowerplatform.core.CoreConstants.USER;
+import static org.flowerplatform.core.CoreConstants.REPOSITORIES;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,6 +63,7 @@ import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.preference.PreferencePropertiesProvider;
 import org.flowerplatform.core.preference.PreferencePropertySetter;
 import org.flowerplatform.core.preference.remote.PreferencesServiceRemote;
+import org.flowerplatform.core.repositories.RepositoriesService;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
 import org.flowerplatform.core.repository.RootChildrenProvider;
@@ -288,6 +292,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("uploadService", new UploadService());
 		getServiceRegistry().registerService("preferenceService", new PreferencesServiceRemote());
 		getServiceRegistry().registerService("userService", new UserService());
+		getServiceRegistry().registerService("repositoriesService", new RepositoriesService());
 		
 		new ResourceUnsubscriber().start();
 		
@@ -297,6 +302,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORIES);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY);
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())

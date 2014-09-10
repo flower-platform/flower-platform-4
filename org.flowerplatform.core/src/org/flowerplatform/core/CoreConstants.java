@@ -232,5 +232,19 @@ public class CoreConstants {
 	public static final String HASH_ALGORITHM = "SHA-256";
 	public static final String PASS_CHANGED = "Password changed !";
 	public static final String PASS_NOT_CHANGED = "Password doesn't match !";
+	public static final String OWNED_REPOSITORIES = "ownedRepositories";
+	public static final String MEMBER_IN_REPOSITORIES = "memberInRepositories";
+	public static final String STARRED_REPOSITORIES = "starredRepositories";
 	
+	//////////////////////////////////
+	// Repositories
+	//////////////////////////////////
+	public static final String REPOSITORIES = "repositories";
+	public static final String REPOSITORY = "repositoryy";
+	public static final String DESCRIPTION = "description";
+	public static final String MEMBERS = "members";
+	public static final String STARRED_BY = "starredBy";
+	public static final String EXTENSIONS = "extensions";
+	public static final String REPOSITORIES_URI = USERS_PATH + "#" + REPOSITORIES;
+
 }
