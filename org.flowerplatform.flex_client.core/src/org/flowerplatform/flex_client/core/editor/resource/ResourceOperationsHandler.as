@@ -23,7 +23,13 @@ package org.flowerplatform.flex_client.core.editor.resource {
 	import org.flowerplatform.flex_client.core.editor.action.ReloadAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
+<<<<<<< Temporary merge branch 1:org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/editor/resource/ResourceOperationsHandler.as
+=======
+	import org.flowerplatform.flex_client.core.editor.action.ShowCommandStackAction;
+	import org.flowerplatform.flex_client.core.node.IExternalInvocator;
+>>>>>>> Temporary merge branch 2:org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/editor/resource/ResourceOperationsManager.as
 	import org.flowerplatform.flex_client.core.node.IResourceOperationsHandler;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
@@ -39,10 +45,18 @@ package org.flowerplatform.flex_client.core.editor.resource {
 		public var saveAction:SaveAction = new SaveAction();
 		public var saveAllAction:SaveAllAction = new SaveAllAction();		
 		public var reloadAction:ReloadAction = new ReloadAction();
+<<<<<<< Temporary merge branch 1:org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/editor/resource/ResourceOperationsHandler.as
 		
 		private var _nodeRegistryManager:*;
 		
 		public function get nodeRegistryManager():* {
+=======
+		public var showCommandStackAction:ShowCommandStackAction = new ShowCommandStackAction();
+				
+		private var _nodeRegistryManager:NodeRegistryManager;
+				
+		public function get nodeRegistryManager():NodeRegistryManager {
+>>>>>>> Temporary merge branch 2:org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/editor/resource/ResourceOperationsManager.as
 			return _nodeRegistryManager;
 		}
 		
@@ -62,6 +76,7 @@ package org.flowerplatform.flex_client.core.editor.resource {
 				var editorFrontend:EditorFrontend = EditorFrontend(activeComponent);
 				enableDisableAction(saveAction, editorFrontend.isDirty(), editorFrontend);
 				enableDisableAction(reloadAction, true, editorFrontend);
+				enableDisableAction(showCommandStackAction, true, editorFrontend);
 			} else {
 				enableDisableAction(saveAction, false, null);
 				enableDisableAction(reloadAction, false, null);

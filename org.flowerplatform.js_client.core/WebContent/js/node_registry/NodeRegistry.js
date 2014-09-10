@@ -192,14 +192,14 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 	}			
 };
 
-NodeRegistry.prototype.expandCallbackHandler = function(node, children) {		
+NodeRegistry.prototype.expandCallbackHandler = function(node, children) {	
 	if (children == null) {
 		return;
-	}	
-	
+	}		
+
 	// register each child
 	for (var i = 0; i < children.length; i++) {	
-		this.registerNode((Object.prototype.toString.call(children) == "[object Array]") ? children[i] : children.getItemAt(i), node, -1);
+		this.registerNode(children.getItemAt(i), node, -1);
 	}
 };
 
@@ -323,7 +323,7 @@ NodeRegistry.prototype.mergeOrRegisterNode = function(node) {
  * If <code>index</code> is -1, the node will be added last.
  */
 NodeRegistry.prototype.registerNode = function(node, parent, index) {
-	if (this.rootNodeUri == null) {
+	if (this.rootNodeUri == null) {		
 		this.rootNodeUri = node.nodeUri;
 	}
 	

@@ -1,6 +1,6 @@
 'use strict';
 
-console.log('load users');
+logger.debug('load users');
 
 routesConfig.push({
 	path: '/users',

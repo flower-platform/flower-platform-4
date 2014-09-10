@@ -82,6 +82,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
+	import org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider;
+	import org.flowerplatform.flexutil.iframe.IFrameOpenUrl;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
@@ -186,12 +188,14 @@ package org.flowerplatform.flex_client.core {
 			FlexUtilGlobals.getInstance().registerAction(OpenWithEditorComposedAction);
 		
 			FlexUtilGlobals.getInstance().registerAction(NodeTreeAction);
-						
+			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
 			
 			editorClassFactoryActionProvider.addActionClass(UndoAction);
 			editorClassFactoryActionProvider.addActionClass(RedoAction);
-						
+			
+			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new FlowerIFrameViewProvider());
+			
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
 				function (result:Object):void {		
@@ -331,6 +335,12 @@ package org.flowerplatform.flex_client.core {
 					.setHeight(150)
 					.show();
 				}));
+			
+			registerActionToGlobalMenu(new IFrameOpenUrl()
+				.setLabel(Resources.getMessage("iframe.title"))
+				.setIcon(Resources.urlIcon)
+				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
+			);
 							
 			// Debug Menu
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.debug")).setId(CoreConstants.DEBUG).setOrderIndex(100));	

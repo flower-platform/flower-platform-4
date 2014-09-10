@@ -7,12 +7,12 @@ import java.net.URL;
 import org.flowerplatform.js_client.java.IFunctionInvoker;
 import org.flowerplatform.js_client.java.INodeChangeListener;
 import org.flowerplatform.js_client.java.INodeRegistryManagerListener;
+import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.js_client.java.JsExternalInvocator;
 import org.flowerplatform.js_client.java.JsResourceOperationsHandler;
 import org.flowerplatform.js_client.java.JsServiceInvocator;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 
@@ -63,7 +63,7 @@ public class NodeRegistryScriptTest {
 	@Test
 	public void runJavaScriptFunction() throws Exception {
 		Context cx = Context.enter();
-		Function fct;
+		
 		try {				
 			Scriptable scope = cx.initStandardObjects();
 			
@@ -75,19 +75,16 @@ public class NodeRegistryScriptTest {
 			((Scriptable) scope).put("_nodeRegistryManager", scope, nodeRegistryManager);
 					
 			// add NodeRegistryManagerListener in nodeRegistryManager
-			fct = (Function) nodeRegistryManager.getPrototype().get("addListener", nodeRegistryManager.getPrototype());
-			fct.call(cx, scope, nodeRegistryManager, new Object[] {new NodeRegistryManagerListener()});
+			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "addListener", new NodeRegistryManagerListener());
 				
 			// create nodeRegistry
 			NativeObject nodeRegistry = (NativeObject) cx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		
 			// add NodeChangedListener in nodeRegistry
-			fct = (Function) nodeRegistry.getPrototype().get("addNodeChangeListener", nodeRegistry.getPrototype());
-			fct.call(cx, scope, nodeRegistry, new Object[] {new NodeChangedListener()});
-						
+			JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", new NodeChangedListener());
+			
 			// subscribe
-			fct = (Function) nodeRegistryManager.getPrototype().get("subscribe", nodeRegistryManager.getPrototype());
-			fct.call(cx, scope, nodeRegistryManager, new Object[] {"fpm:user1/repo-1|tt.mm", nodeRegistry, 
+			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "subscribe", "fpm:user1/repo-1|tt.mm", nodeRegistry, 
 				new IFunctionInvoker() {
 					@Override
 					public void call(Object instance, Object... params) {
@@ -99,15 +96,13 @@ public class NodeRegistryScriptTest {
 					public void call(Object instance, Object... params) {
 						System.out.println("subscribeFailedCallback -> " + params[0].toString());						
 					}
-				}});
+				});
 
 			// get root node
-			fct = (Function) nodeRegistry.getPrototype().get("getNodeById", nodeRegistry.getPrototype());
-			NativeObject node = (NativeObject) fct.call(cx, scope, nodeRegistry, new Object[] {"fpm:user1/repo-1|tt.mm"});
+			NativeObject node = (NativeObject) JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", "fpm:user1/repo-1|tt.mm");
 			
 			// expand root node
-			fct = (Function) nodeRegistryManager.getPrototype().get("expand", nodeRegistryManager.getPrototype());
-			fct.call(cx, scope, nodeRegistryManager, new Object[] {nodeRegistry, node, null});
+			JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", nodeRegistry, node, null);
 			
 			System.out.println(node.get("children"));
 		} finally {

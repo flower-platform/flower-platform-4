@@ -84,6 +84,12 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/table_gear.png")]
 		public static const tableGear:Class;
 		
+		[Embed(source="/core/undo.png")]
+		public static const undoIcon:Class;
+		
+		[Embed(source="/core/redo.png")]
+		public static const redoIcon:Class;
+
 		// Properties
 		
 		[Embed(source="/properties/properties.gif")]
@@ -97,9 +103,9 @@ package org.flowerplatform.flex_client.resources {
 		// MindMap
 		
 		[Embed(source="/mindmap/icons/checkout.gif")]
-		public static const mindmap_button_checkout:Class;
+		public static const checkoutIcon:Class;
 		
-				
+
 		[Embed(source="/mindmap/images.png")]
 		public static const imagesIcon:Class;
 		
@@ -418,6 +424,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/EditDetailsInDialogAction.png")]
 		public static const editDetailsInDialogActionIcon:Class;
 		
+		[Embed(source="/mindmap/ExternalImageAddAction.png")]
+		public static const customIconsIcon:Class;
+		
 		[Embed(source="/mindmap/arrowDown.png")]
 		public static const arrowDownIcon:Class;
 		
@@ -549,10 +558,10 @@ package org.flowerplatform.flex_client.resources {
 		public static const percentIcon:Class;
 		
 		[Embed(source="/codesync.regex/wrench.png")]
-		public static const wrenchIcon:Class;
-		
+		public static const wrenchIcon:Class;		
+
 		// Team Git
-		
+
 		[Embed(source="/team.git/new_branch_obj.gif")]
 		public static const createBranchIcon:Class;
 		
@@ -562,17 +571,29 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/remote_entry_tbl.gif")]
 		public static const remoteEntry:Class;
 
-		[Embed(source="/team.git/remoteSpec.gif")]
-		public static const configureFetchPush:Class;
-
 		[Embed(source="/team.git/config.png")]
 		public static const configBranchIcon:Class;
 
+		[Embed(source="/team.git/permission.png")]
+		public static const permission:Class;
+
+		[Embed(source="/team.git/delete_obj.gif")]
+		public static const deleteRemote:Class;
+
+		[Embed(source="/team.git/commit_amend.gif")]
+		public static const amendIcon:Class;
+		
+		[Embed(source="/team.git/remoteSpec.gif")]
+		public static const configureFetchPush:Class;
+
 		[Embed(source="/team.git/merge.gif")]
 		public static const mergeBranch:Class;
-		
+
 		[Embed(source="/team.git/push.gif")]
 		public static const push:Class;	
+
+		[Embed(source="/team.git/rebase.gif")]
+		public static const rebaseIcon:Class;
 
 		[Embed(source="/git/reset.gif")]
 		public static const resetIcon:Class;
@@ -582,10 +603,26 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
+<<<<<<< Temporary merge branch 1
 
 		[Embed(source="/team.git/permission.png")]
 		public static const permission:Class;
 		
+=======
+		
+		[Embed(source="/team.git/switch.gif")]
+		public static const switchIcon:Class;
+		
+		[Embed(source="/team.git/fetch.gif")]
+		public static const fetchIcon:Class;
+		
+		[Embed(source="/team.git/cherry-pick.png")]
+		public static const gitCherryPickIcon:Class;
+		
+		[Embed(source="/team.git/revert.gif")]
+		public static const gitRevertCommitIcon:Class;
+
+>>>>>>> Temporary merge branch 2
 		[Embed(source="/team.git/branch_obj.gif")]
 		public static const branchIcon:Class;
 		
@@ -593,20 +630,10 @@ package org.flowerplatform.flex_client.resources {
 		public static const branchesIcon:Class;
 		
 		[Embed(source="/team.git/cloneGit.gif")]
-		public static const cloneRepoIcon:Class;
-		
+		public static const cloneRepoIcon:Class;		
+
 		[Embed(source="/team.git/gitrepository.gif")]
 		public static const gitRepoIcon:Class;
-
-		[Embed(source="/team.git/delete_obj.gif")]
-		public static const deleteRemote:Class;
-
-		[Embed(source="/team.git/commit_amend.gif")]
-		public static const amendIcon:Class;
-				
-		// Git History 
-		[Embed(source="/git/history.gif")]
-		public static const gitHistoryIcon:Class;
 		
 		[Embed(source="/mindmap/refresh.gif")]
 		public static const refreshIcon:Class;
@@ -619,6 +646,15 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/staging.png")]
 		public static const gitStagingIcon:Class;
+<<<<<<< Temporary merge branch 1
+=======
 
+		[Embed(source="/git/history.gif")]
+		public static const gitHistoryIcon:Class;
+		
+		[Embed(source="/team.git/copy.gif")]
+		public static const copy:Class;
+>>>>>>> Temporary merge branch 2
 	}
 }
+		

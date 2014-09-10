@@ -26,7 +26,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 /**
  * @author Cristina Constantinescu
  */
-public class JsServiceInvocator implements IServiceInvocator {
+public class JsServiceInvocator extends ServiceInvocator {
 	
 	private static final String METHOD_INVOCATION_SERVICE = "/ws-dispatcher/javaClientMethodInvocationService";
 	private static final String SERVICE_DOT_METHOD_NAME = "serviceDotMethodName";
@@ -50,15 +50,7 @@ public class JsServiceInvocator implements IServiceInvocator {
 	private static URI getBaseURI() {
 	    return UriBuilder.fromUri("http://localhost:8080/org.flowerplatform.host.web_app/").build();
 	}
-	
-	public void invoke(String serviceIdAndMethodName, Object[] parameters) {	
-		this.invoke(serviceIdAndMethodName, parameters, null, null);
-	}
-	
-	public void invoke(String serviceIdAndMethodName, Object[] parameters, Function resultCallback) {	
-		this.invoke(serviceIdAndMethodName, parameters, resultCallback, null);
-	}
-	
+		
 	public void invoke(String serviceIdAndMethodName, Object[] parameters, Function resultCallback, Function faultCallback) {
 		// create the map sent as parameter
 		Map<String, Object> requestParams = new HashMap<>();	
