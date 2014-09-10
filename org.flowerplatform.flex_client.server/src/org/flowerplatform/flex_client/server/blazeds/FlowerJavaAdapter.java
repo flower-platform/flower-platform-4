@@ -25,6 +25,9 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
 /**
  * Gives control before and after the client invokes a service method.
  * 
+ * <p>
+ * Equivalent of the Web Services/JS class: <code>RemoteMethodInvocationFilter</code>.
+ * 
  * @author Sebastian Solomon
  * @author Cristina Constantinescu
  */

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:ns="org.flowerplatform.flex_client.host_app.mobile.stage_web_view.*"
+		implements="org.flowerplatform.flexutil.view_content_host.IViewContent">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flexutil.action.IAction;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			[Bindable]
+			public var url:String;
+			
+			private var testBean:Object = { "name" : "Flex Client" };
+			
+			public function set viewHost(viewHost:IViewHost):void {
+			}
+			
+			public function getActions(selection:IList):Vector.<IAction> {
+				return null;
+			}
+			
+			protected function callStageWebViewFunction(functionName:String, url:String = null, json:Object = null):void {
+				if (url == null) {
+					stageWebView.call(functionName);
+				} else {
+					stageWebView.addCallback("successCallback", successCallback);
+					stageWebView.call(functionName, null, url, json, "successCallback");
+				}
+			}
+			
+			protected function successCallback(data:Object):void {
+				jsResult.text = "Result: " + data;
+			}
+			
+			public function additionalCloseHandler():void {
+				// nothing to do
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:HGroup verticalAlign="middle" width="100%">
+		
+		<s:Button label="GET" click="callStageWebViewFunction('getBtnHandler')"/>
+		<s:Button label="POST" click="callStageWebViewFunction('postBtnHandler')"/>
+		
+		<s:Spacer width="50"/>
+		
+		<s:Button label="GET with Flex callback" click="callStageWebViewFunction('getFromFlex', 'servlet/rest/testService/listTyped')"/>
+		<s:Button label="POST with Flex callback" click="callStageWebViewFunction('postFromFlex', 'servlet/rest/testService/set', testBean)"/>
+		<s:Label id="jsResult"/>
+		
+	</s:HGroup>
+	
+	<s:Group width="100%" height="100%">
+		<ns:StageWebViewUIComponent id="stageWebView" width="100%" height="100%" url="{url}"/>
+	</s:Group>
+	
+</s:View>

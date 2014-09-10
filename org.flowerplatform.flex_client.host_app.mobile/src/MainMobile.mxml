@@ -67,6 +67,11 @@
 		<![CDATA[
 			import com.flextras.mobile.dropDownList.DropDownList;
 			
+			import es.xperiments.media.StageWebViewBridge;
+			import es.xperiments.media.StageWebViewBridgeEvent;
+			import es.xperiments.media.StageWebViewDisk;
+			import es.xperiments.media.StageWebviewDiskEvent;
+			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			
@@ -133,6 +138,23 @@
 				}
 				for each (plugin in plugins) {					
 					plugin.start();
+				}
+				
+				var isAndroid:Boolean = true;
+				if (isAndroid) {
+					CorePlugin.getInstance().serviceLocator.invoke("coreService.getSessionId", null, function(sessionId:String):void {
+						StageWebViewDisk.addEventListener(StageWebviewDiskEvent.END_DISK_PARSING, function onDiskCacheEnd(e:StageWebviewDiskEvent):void {
+							var jsBridge:StageWebViewBridge = new StageWebViewBridge();
+							jsBridge.addEventListener(StageWebViewBridgeEvent.DOM_LOADED, function(event:StageWebViewBridgeEvent):void {
+								jsBridge.call("setSessionId", null, sessionId);
+								jsBridge.call("login");
+							});
+							jsBridge.loadURL(FlexUtilGlobals.getInstance().createAbsoluteUrl("login.html?isMobile=true"));
+						});
+						
+						//
+						StageWebViewDisk.initialize(MainMobile.mainApp.stage);
+					});
 				}
 			}
 			
@@ -204,8 +226,6 @@
 							.showMessageBox();
 					}
 				}
-				
-//				CommunicationPlugin.getInstance().bridge.addEventListener(BridgeEvent.WELCOME_RECEIVED_FROM_SERVER, welcomeReceivedFromServerHandler);
 			}
 			
 			/**

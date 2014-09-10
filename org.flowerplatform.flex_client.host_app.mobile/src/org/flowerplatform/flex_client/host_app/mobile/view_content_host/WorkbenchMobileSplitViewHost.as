@@ -23,8 +23,11 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import mx.events.FlexEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.host_app.mobile.stage_web_view.StageWebView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
+	import org.flowerplatform.flexutil.iframe.EmbedView;
+	import org.flowerplatform.flexutil.iframe.EmbedViewProvider;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.LayoutData;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
@@ -66,6 +69,15 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			this.addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			
 			showOpenEditorsCalloutButton.splitView = this;
+			
+			// test for embedded StageWebView
+			var embedView:StageWebView = new StageWebView();
+			embedView.url = FlexUtilGlobals.getInstance().createAbsoluteUrl("test.html?isMobile=true");
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+				.setViewContent(embedView)
+				.setWidth(1200)
+				.setHeight(80)
+				.show();
 		}
 		
 		public function load(layoutData:Object, reuseExistingViews:Boolean = false, keepNewLayoutEditors:Boolean = false):void {

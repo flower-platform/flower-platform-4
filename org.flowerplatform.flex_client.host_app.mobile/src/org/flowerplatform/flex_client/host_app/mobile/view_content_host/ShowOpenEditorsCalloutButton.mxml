@@ -33,10 +33,8 @@
 						import mx.core.IVisualElement;
 						import mx.core.UIComponent;
 						
-						import org.flowerplatform.flex_client.core.CorePlugin;
 						import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 						import org.flowerplatform.flex_client.resources.Resources;
-						import org.flowerplatform.flexutil.FlexUtilGlobals;
 						
 						import spark.components.Group;
 						
@@ -84,6 +82,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
 			import org.flowerplatform.flex_client.core.CorePlugin;			
@@ -98,7 +97,7 @@
 			
 			public function addEditorFrontend(editorFrontend:UIComponent):void {
 				var entry:EditorFrontendEntry = new EditorFrontendEntry();
-				entry.editorFrontend = MindMapEditorFrontend(editorFrontend);
+				entry.editorFrontend = EditorFrontend(editorFrontend);
 				entry.splitView = splitView;
 				entry.container = contents;
 				contents.addElement(entry);

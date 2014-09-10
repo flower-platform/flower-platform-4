@@ -14,13 +14,9 @@
  * license-end
  */
 package org.flowerplatform.flexutil.service {
-	import mx.collections.ArrayCollection;
 	import mx.rpc.IResponder;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
-	
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -53,7 +49,7 @@ package org.flowerplatform.flexutil.service {
 		}
 		
 		public function fault(info:Object):void {
-			serviceLocator.faultHandler(FaultEvent(info), this);
+			serviceLocator.faultHandler(info != null ? FaultEvent(info).fault : null, this);
 		}
 		
 	}
