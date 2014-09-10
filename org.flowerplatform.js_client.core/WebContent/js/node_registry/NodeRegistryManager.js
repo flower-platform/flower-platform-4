@@ -173,7 +173,7 @@ NodeRegistryManager.prototype.expand = function(nodeRegistry, node, context) {
 	}
 };
 
-NodeRegistryManager.prototype.collapse = function(nodeRegistry, node, refreshChildren) {
+NodeRegistryManager.prototype.collapse = function(nodeRegistry, node) {
 	// get all the resources starting from node
 	var dirtyResourceUris = [];
 	var savedResourceUris = [];
@@ -184,22 +184,22 @@ NodeRegistryManager.prototype.collapse = function(nodeRegistry, node, refreshChi
 		this.resourceOperationsManager.showSaveDialog([this], this.getResourceSetsForResourceUris(dirtyResourceUris), 
 			function() {
 				// wait for server response before collapse	
-				this.collapseHandler(node, nodeRegistry, refreshChildren, dirtyResourceUris, savedResourceUris);
+				this.collapseHandler(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 			}
 		);
 	} else {
-		this.collapseHandler(node, nodeRegistry, refreshChildren, dirtyResourceUris, savedResourceUris);
+		this.collapseHandler(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 	}
 };
 
-NodeRegistryManager.prototype.collapseHandler = function(node, nodeRegistry, refreshChildren, dirtyResourceUris, savedResourceUris) {
+NodeRegistryManager.prototype.collapseHandler = function(node, nodeRegistry, dirtyResourceUris, savedResourceUris) {
 	for (var i=0; i < dirtyResourceUris.length; i++) {	
 		this.unlinkResourceNodeFromNodeRegistry(dirtyResourceUris[i], nodeRegistry);
 	}
 	for (var i=0; i < savedResourceUris.length; i++) {	
 		this.unlinkResourceNodeFromNodeRegistry(savedResourceUris[i], nodeRegistry);
 	}
-	nodeRegistry.collapse(node, refreshChildren);
+	nodeRegistry.collapse(node);
 };
 
 /**

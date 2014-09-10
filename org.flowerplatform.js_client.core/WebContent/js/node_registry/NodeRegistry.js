@@ -26,7 +26,10 @@ NodeRegistry.prototype.getRootNodeUri = function() {
 };
 		
 NodeRegistry.prototype.getNodeById = function(id) {
-	return this.registry[id];
+	if(id in this.registry) {
+		return this.registry[id];
+	}
+	return null;
 };
 		
 NodeRegistry.prototype.addNodeChangeListener = function(listener) {
@@ -46,10 +49,9 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 		return;
 	}
 	// remove children recursive
-	this.collapse(node, false);
+	this.collapse(node);
 	
-	var nodeFromRegistry = this.registry[node.nodeUri];
-	if (nodeFromRegistry != null) {
+	if (node.nodeUri in this.registry) {
 		delete this.registry[node.nodeUri];
 	}
 			
@@ -65,7 +67,7 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 	}
 };
 
-NodeRegistry.prototype.collapse = function(node, refreshChildren) {
+NodeRegistry.prototype.collapse = function(node) {
 	if (!(node.nodeUri in this.registry)) {
 		return;
 	}
@@ -257,24 +259,26 @@ NodeRegistry.prototype.refreshHandler = function(node, nodeWithVisibleChildren) 
 	// set new node properties and dispatch event			
 	var nodeFromRegistry = this.getNodeById(node.nodeUri);
 	this.setNodeProperties(nodeFromRegistry, nodeWithVisibleChildren.node.properties);
-				
+	
 	var newNodeToCurrentNodeIndex = [];
 	var i;
 	var currentChildNode;
 	
 	// no children -> remove the old ones
 	if (nodeWithVisibleChildren.children == null) {
-		this.collapse(node, false);
+		this.collapse(node);
 		return;
 	}
 	
 	if (node.children != null) { // node has children -> merge current list with new list
-		// serch for children that doesn't exist in new list
-		var currentChildren = node.children != null ? node.children.slice() : [];			
+		// search for children that doesn't exist in new list
+		var currentChildren = node.children != null ? node.children/*.slice()*/ : [];			
 		for (i = 0; i < currentChildren.length(); i++) {	
 			var exists = false;
 			currentChildNode = currentChildren.getItemAt(i);
-			for (var newChildWithVisibleChildren in nodeWithVisibleChildren.children) {
+			for (var j = 0; j < nodeWithVisibleChildren.children.length(); j++) {
+//			for (var newChildWithVisibleChildren in nodeWithVisibleChildren.children) {
+				newChildWithVisibleChildren = nodeWithVisibleChildren.children.getItemAt(j);
 				if (currentChildNode.nodeUri == newChildWithVisibleChildren.node.nodeUri) {
 					exists = true;
 					break;
@@ -352,10 +356,9 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 		return;
 	}
 	// remove children recursive
-	this.collapse(node, false);
+	this.collapse(node);
 			
-	var nodeFromRegistry = this.registry[node.nodeUri];
-	if (nodeFromRegistry != null) {		
+	if (node.nodeUri in this.registry) {		
 		delete this.registry[node.nodeUri];
 	}
 			
@@ -368,20 +371,27 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 	}
 	for (var i = 0; i < this.nodeChangeListeners.length; i++){
 		this.nodeChangeListeners[i].nodeRemoved(node);
+//		throw node;
 	}
 };
 
 NodeRegistry.prototype.setPropertyValue = function(node, property, newValue) {
 	var oldValue = (property in node.properties) ? node.properties[property] : null;
 	node.properties[property] = newValue;
-		
 	for (var i = 0; i < this.nodeChangeListeners.length; i++){
 		this.nodeChangeListeners[i].nodeUpdated(node, property, oldValue, newValue);
 	}	
 };
-				
+	
 NodeRegistry.prototype.setNodeProperties = function(node, newProperties) {
 	for (var property in newProperties) {
 		this.setPropertyValue(node, property, newProperties[property]);
+	}
+	// remove anything that is not in newProperties
+//	throw newProperties["propertyB"];
+	for(var property in node.properties){
+		if(!(property in newProperties)){
+			delete node.properties[property];
+		}
 	}
 };

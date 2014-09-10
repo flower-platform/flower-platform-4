@@ -1,7 +1,6 @@
 package org.flowerplatform.js_client.java;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.mozilla.javascript.NativeObject;
 
 /**
  * @author Cristina Constantinescu
@@ -16,10 +15,10 @@ public class ClientNode {
 	
 	private JsList<ClientNode> children;
 	
-	private Map<String, Object> properties;
+	private NativeObject properties;
 		
 	public ClientNode() {
-		properties = new HashMap<>();
+		properties = new NativeObject();
 	}
 
 	public String getNodeUri() {
@@ -50,7 +49,7 @@ public class ClientNode {
 		return properties;
 	}
 
-	public void setProperties(Map<String, Object> properties) {
+	public void setProperties(NativeObject properties) {
 		this.properties = properties;
 	}
 
